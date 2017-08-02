@@ -3,7 +3,6 @@
 
 The Waste Permits project - a GOV.UK digital service written in Node.js using Hapi and Mustache
 
-The following Gulp tasks are supported:
 
 ## Setting up the development environment
 Install Node and the following global npm packages:
