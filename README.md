@@ -1,7 +1,7 @@
 
 # Waste Permits
 
-The Waste Permits project for a GOV.UK digital service using Hapi and Mustache
+The Waste Permits project - a GOV.UK digital service written in Node.js using Hapi and Mustache
 
 The following Gulp tasks are supported:
 
