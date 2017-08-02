@@ -5,15 +5,29 @@ The Waste Permits project for a GOV.UK digital service using Hapi and Mustache
 
 The following Gulp tasks are supported:
 
+## Setting up the development environment
+Install Node and the following global npm packages:
+```sh
+$ npm install -g gulp
+$ npm install -g standard
+```
+
+## Building and running the project
 
 Building the project:
 ```sh
-$ gulp build
+$ gulp clean build
 ```
 
 Run the project in Google Chrome using Browser Sync (automatically reloads the browser on SCSS and JS/HTML changes):
 ```sh
 $ gulp
+```
+
+## Testing the project
+Use the following Gulp task. This runs the StandardJS linting and the unit tests and produces a coverage.html report
+```sh
+$ gulp test
 ```
 
 ## Contributing to this project
