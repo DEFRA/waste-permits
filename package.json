@@ -1,14 +1,25 @@
 {
-  "name": "hapi-mustache-base-app",
+  "name": "waste-permits",
   "version": "1.0.0",
-  "description": "Base app for development of systems using Hapi and Mustache",
+  "description": "GOV.UK front end service built using Node.js for the Waste Permits service",
+  "author": "Department for Environment, Food & Rural Affairs",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/DEFRA/waste-permits/issues"
+  },
+  "homepage": "https://github.com/DEFRA/waste-permits#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DEFRA/waste-permits.git"
+  },
+  "engines": {
+    "node": "8.x"
+  },
   "main": "index.js",
   "scripts": {
     "test": "lab -t 90",
     "test-cov-html": "lab -r html -o coverage.html"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "browser-sync": "^2.18.13",
     "code": "^4.1.0",
