@@ -36,15 +36,15 @@
     {{> example}}
   </p>
 
-  <!-- <h1>Hello <script>alert('hello')</script>Duncan</h1> -->
+  <!--
+  {{{ title }}}
+  {{{ message }}}
+  -->
 
-<!-- {{{ title }}}
-{{{ message }}} -->
-
-{{#if errors}}
-<H2>ERROR: {{errors.message}}</H2>
-{{/if}}
-
+  Site entered: {{ siteName }}
+  {{#if errors}}
+    <H2>ERROR: {{errors.message}}</H2>
+  {{/if}}
 
   <p>
     <a href="/">Back</a>

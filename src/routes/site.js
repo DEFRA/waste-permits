@@ -2,28 +2,30 @@ module.exports = [{
   method: ['GET', 'POST'],
   path: '/site',
   handler: (request, reply) => {
-    // console.log(request)
-    // console.log(request.payload)
-    // console.log(request.method)
-    // console.log('Requested site page')
     const context = {
       pageTitle: 'Waste Permits - Site',
       title: 'This is the site page!',
       message: 'Hello, World!'
     }
 
+    let token = request.server.methods.validateToken(request.state.session)
+    if (!token) {
+      // Redirect off an error screen
+      return reply.redirect('/error')
+    }
+
     if (request.method === 'post') {
       // TODO validate post data using Joi
       let valid = true
 
-      valid = (request.payload.siteName === 'test')
+      context.siteName = request.payload.siteName
 
-      // TODO if valid, persist the data
+      valid = (request.payload.siteName !== 'test')
+
+      // TODO if the data is valid then persist it
       if (valid) {
-        console.log('#Persist data: ' + request.payload.siteName)
+        console.log('# Incoming data: ' + request.payload.siteName)
 
-
-        
         return reply.redirect('/task-list')
       } else {
         context.errors = {
@@ -32,6 +34,8 @@ module.exports = [{
       }
     }
 
-    return reply.view('site/site', context)
+    return reply
+      .view('site', context)
+      .state('session', { token: token })
   }
 }]

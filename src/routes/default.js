@@ -1,12 +1,21 @@
+// TODO confirm which version of UUID to use
+const uuid4 = require('uuid/v4')
+
 module.exports = [{
   method: 'GET',
   path: '/',
   handler: (request, reply) => {
-    // console.log('Requested index page')
     const context = {
       pageTitle: 'Waste Permits'
     }
 
-    reply.view('index', context)
+    // Generate a token
+    const token = uuid4()
+    console.log('Generated token: ' + token)
+
+    reply
+      .view('index', context)
+      .unstate('session')                   // Delete existing session cookie
+      .state('session', { token: token })   // Create new session cookie
   }
 }]
