@@ -9,7 +9,7 @@
 
       <p>The site is the area you want the permit to cover.</p>
 
-      <form method="post" action="/v7/site/grid-reference">
+      <form method="POST" action="site">
 
         <div class="form-group">
           <label class="form-label" for="siteName">
@@ -35,6 +35,16 @@
   <p>
     {{> example}}
   </p>
+
+  <!-- <h1>Hello <script>alert('hello')</script>Duncan</h1> -->
+
+<!-- {{{ title }}}
+{{{ message }}} -->
+
+{{#if errors}}
+<H2>ERROR: {{errors.message}}</H2>
+{{/if}}
+
 
   <p>
     <a href="/">Back</a>

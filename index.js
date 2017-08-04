@@ -9,12 +9,16 @@ server.register([require('inert'), require('vision')], (err) => {
   if (err) {
     throw err
   }
-    // load views
+
+  // Load views
   server.views(require('./src/views'))
 
-    // load routes
+  // TODO load in routes using wildcard
+  // Load routes
   server.route(require('./src/routes/public'))
   server.route(require('./src/routes/default'))
+  server.route(require('./src/routes/taskList'))
+  server.route(require('./src/routes/site'))
 })
 
 // Start the server
