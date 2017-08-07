@@ -36,12 +36,17 @@
     "standard": "^10.0.2"
   },
   "dependencies": {
+    "blipp": "^2.3.0",
     "disinfect": "^0.2.1",
     "govuk-elements-sass": "^3.1.1",
     "govuk_frontend_toolkit": "^7.0.1",
     "govuk_template_mustache": "^0.22.3",
+    "gulp-env": "^0.4.0",
     "handlebars": "^4.0.10",
     "hapi": "^16.5.0",
+    "hapi-alive": "^1.4.0",
+    "hapi-dev-errors": "^1.1.0",
+    "hapi-router": "^3.5.0",
     "inert": "^4.2.1",
     "path": "^0.12.7",
     "uuid": "^3.1.0",
