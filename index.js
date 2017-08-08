@@ -22,8 +22,8 @@ server.state('session', {
   strictHeader: true        // Don't allow violations of RFC 6265
 })
 
+// Server methods
 server.method('validateToken', (cookie) => {
-  console.log('Cookie: ' + cookie)
   let token
   if (cookie && cookie.token) {
     token = cookie.token

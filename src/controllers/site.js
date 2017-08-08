@@ -16,7 +16,7 @@ module.exports = function (request, reply) {
 
     context.siteName = request.payload.siteName
 
-    valid = (request.payload.siteName !== 'test')
+    valid = (request.payload.siteName !== 'invalid_site_name')
 
     // TODO if the data is valid then persist it
     if (valid) {
