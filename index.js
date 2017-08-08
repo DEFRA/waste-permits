@@ -23,6 +23,7 @@ server.state('session', {
 })
 
 server.method('validateToken', (cookie) => {
+  console.log('Cookie: ' + cookie)
   let token
   if (cookie && cookie.token) {
     token = cookie.token

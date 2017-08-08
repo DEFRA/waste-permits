@@ -1,7 +1,6 @@
 module.exports = function (request, reply) {
   const context = {
     pageTitle: 'Waste Permits - Site',
-    title: 'This is the site page!',
     message: 'Hello, World!'
   }
 
@@ -21,7 +20,7 @@ module.exports = function (request, reply) {
 
     // TODO if the data is valid then persist it
     if (valid) {
-      console.log('# Incoming data: ' + request.payload.siteName)
+      console.log('Incoming data: ' + request.payload.siteName)
 
       return reply.redirect('/task-list')
     } else {

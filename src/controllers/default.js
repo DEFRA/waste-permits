@@ -12,6 +12,6 @@ module.exports = function (request, reply) {
 
   reply
     .view('index', context)
-    .unstate('session')                   // Delete existing session cookie
+    .unstate('session')                   // Delete existing session cookie (if there is one)
     .state('session', { token: token })   // Create new session cookie
 }
