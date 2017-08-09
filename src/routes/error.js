@@ -1,5 +1,5 @@
 module.exports = [{
-  method: ['GET', 'POST'],
+  method: ['GET'],
   path: '/error',
   handler: (request, reply) => {
     const context = {

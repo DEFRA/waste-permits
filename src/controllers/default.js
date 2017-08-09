@@ -10,6 +10,8 @@ module.exports = function (request, reply) {
   const token = uuid4()
   console.log('Generated token: ' + token)
 
+  // TODO: Confirm how session handling will work and where the most appropriate point is to create
+  // and destroy session cookies
   reply
     .view('index', context)
     .unstate('session')                   // Delete existing session cookie (if there is one)
