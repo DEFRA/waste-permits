@@ -2,6 +2,14 @@ const handlebars = require('handlebars')
 const Path = require('path')
 const fs = require('fs')
 
+const cacheBust = (source) => {
+  // Get the application version number
+  let version = require(Path.join(__dirname, '..', '..', 'package.json')).version
+
+  // Replace the token in the source string with the application version number to bust the browser cache
+  return source.replace('##APP_VERSION##', version)
+}
+
 const loadCommonPartial = (partialName) => {
   return String(fs.readFileSync((Path.join(__dirname, 'partials', 'common', partialName + '.html'))))
 }
@@ -9,7 +17,7 @@ const loadCommonPartial = (partialName) => {
 const defaultContext = {
   assetPath: '/public/',
   topOfPage: '',
-  head: loadCommonPartial('head'),
+  head: cacheBust(loadCommonPartial('head')),
   pageTitle: 'Generic Page',
   htmlLang: 'en',
   bodyClasses: '',

@@ -1,4 +1,5 @@
 const gulp = require('gulp')
+const env = require('gulp-env')
 const sass = require('gulp-sass')
 const sourcemaps = require('gulp-sourcemaps')
 const standard = require('gulp-standard')
@@ -119,6 +120,14 @@ gulp.task('browser-sync', ['nodemon'], () => {
   })
 })
 
+gulp.task('set-env', function () {
+  env({
+    vars: {
+      NODE_ENV: 'development'
+    }
+  })
+})
+
 gulp.task('nodemon', (done) => {
   let started = false
 
@@ -140,4 +149,5 @@ gulp.task('watch', () => {
   gulp.watch(paths.src + '**/*.*').on('change', reload)
 })
 
-gulp.task('default', ['watch', 'sass', 'browser-sync'])
+// The default Gulp task starts the app in development mode
+gulp.task('default', ['set-env', 'watch', 'sass', 'browser-sync'])
