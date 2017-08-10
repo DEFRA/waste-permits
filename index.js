@@ -1,3 +1,5 @@
+'use strict'
+
 const Hapi = require('hapi')
 const HapiRouter = require('hapi-router')
 const Blipp = require('blipp')
@@ -28,12 +30,12 @@ server.method('validateToken', (cookie) => {
   let token
   if (cookie && cookie.token) {
     token = cookie.token
-    console.log('Validate token: ' + token)
+    // console.log('Validate token: ' + token)
     // TODO - Call persistence layer to validate the token
     // e.g.
     // token = dynamics.validateToken(token)
   }
-  console.log('validate token result: ' + token)
+  // console.log('validate token result: ' + token)
   return token
 })
 

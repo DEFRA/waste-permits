@@ -29,11 +29,11 @@
     "gulp-nodemon": "^2.2.1",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.0",
-    "gulp-standard": "^10.0.0",
+    "gulp-standard": "^10.1.0",
     "gulp-watch": "^4.3.11",
     "lab": "^14.1.1",
     "run-sequence": "^2.1.0",
-    "standard": "^10.0.2"
+    "standard": "^10.0.3"
   },
   "dependencies": {
     "blipp": "^2.3.0",
@@ -44,7 +44,7 @@
     "govuk_template_mustache": "^0.22.3",
     "gulp-env": "^0.4.0",
     "handlebars": "^4.0.10",
-    "hapi": "^16.5.0",
+    "hapi": "^16.5.2",
     "hapi-alive": "^1.4.0",
     "hapi-dev-errors": "^1.1.0",
     "hapi-router": "^3.5.0",

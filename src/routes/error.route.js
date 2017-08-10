@@ -1,5 +1,7 @@
+'use strict'
+
 module.exports = [{
-  method: ['GET'],
+  method: 'GET',
   path: '/error',
   handler: (request, reply) => {
     const context = {
