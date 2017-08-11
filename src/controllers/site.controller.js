@@ -6,13 +6,20 @@ module.exports = function (request, reply) {
     message: 'Hello, World!'
   }
 
+  // Validate the session cookie
   let token = request.server.methods.validateToken(request.state.session)
   if (!token) {
     // Redirect off an error screen
     return reply.redirect('/error')
   }
 
-  if (request.method === 'post') {
+  const doGet = (request, reply) => {
+    return reply
+      .view('site', context)
+      .state('session', request.state.session)
+  }
+
+  const doPost = (request, reply) => {
     // TODO validate post data using Joi
     let valid = true
 
@@ -24,7 +31,9 @@ module.exports = function (request, reply) {
     if (valid) {
       console.log('Incoming data: ' + request.payload.siteName)
 
-      return reply.redirect('/task-list')
+      return reply
+        .redirect('/task-list')
+        .state('session', request.state.session)
     } else {
       context.errors = {
         message: 'Invalid site name: [' + request.payload.siteName + ']'
@@ -32,7 +41,9 @@ module.exports = function (request, reply) {
     }
   }
 
-  return reply
-    .view('site', context)
-    .state('session', { token: token })
+  if (request.method === 'get') {
+    doGet(request, reply)
+  } else if (request.method === 'post') {
+    doPost(request, reply)
+  }
 }

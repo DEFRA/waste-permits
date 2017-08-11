@@ -3,10 +3,14 @@
 module.exports = [{
   method: 'GET',
   path: '/public/{param*}',
-  handler: {
-    directory: {
-      path: 'public/',
-      listing: true
+
+  config: {
+    description: 'The public folder',
+    handler: {
+      directory: {
+        path: 'public/',
+        listing: true
+      }
     }
   }
 }]

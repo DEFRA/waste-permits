@@ -3,5 +3,8 @@
 module.exports = [{
   method: ['GET', 'POST'],
   path: '/site',
-  handler: require('../controllers/site.controller')
+  config: {
+    description: 'The site page',
+    handler: require('../controllers/site.controller')
+  }
 }]

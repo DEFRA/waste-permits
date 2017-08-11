@@ -3,5 +3,8 @@
 module.exports = [{
   method: ['GET'],
   path: '/task-list',
-  handler: require('../controllers/taskList.controller')
+  config: {
+    description: 'The task list page',
+    handler: require('../controllers/taskList.controller')
+  }
 }]

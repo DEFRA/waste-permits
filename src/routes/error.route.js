@@ -3,12 +3,8 @@
 module.exports = [{
   method: 'GET',
   path: '/error',
-  handler: (request, reply) => {
-    const context = {
-      pageTitle: 'Waste Permits - Error'
-    }
-
-    return reply
-      .view('error', context)
+  config: {
+    description: 'The error page',
+    handler: require('../controllers/site.controller')
   }
 }]
