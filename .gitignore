@@ -1,4 +1,7 @@
 /node_modules/
 /govuk_modules/
 /public/
+
+# Test coverage output files
 coverage.html
+lcov.info
