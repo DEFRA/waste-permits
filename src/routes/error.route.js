@@ -5,6 +5,6 @@ module.exports = [{
   path: '/error',
   config: {
     description: 'The error page',
-    handler: require('../controllers/site.controller')
+    handler: require('../controllers/error.controller')
   }
 }]
