@@ -1,7 +1,6 @@
 'use strict'
 
-const PersistenceService = require('../services/persistence.service')
-const persistenceService = new PersistenceService()
+// const DynamicsService = require('../services/dynamics.service')
 
 module.exports = function (request, reply) {
   const context = {
@@ -17,11 +16,6 @@ module.exports = function (request, reply) {
 
   const doGet = async (request, reply) => {
     try {
-      const contacts = await persistenceService.listContacts(request.state.session.crmToken)
-      console.log(contacts)
-
-      context.contacts = contacts
-
       return reply
         .view('taskList', context)
         .state('session', request.state.session)

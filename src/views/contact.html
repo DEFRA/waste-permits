@@ -1,0 +1,71 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner}}
+
+  <div class="grid-row">
+
+    <div class="column-two-thirds">
+
+    <h1 class="heading-large">{{title}}</h1>
+
+    <form method="post" action="/contact">
+
+      <div class="form-group">
+        <label class="form-label" for="contactName">
+          Full name
+          <span class="form-hint">
+            For example, John Smith
+          </span>
+        </label>
+        <input class="form-control" id="contactName" name="contactName" type="text" value="{{contact.contactName}}">
+      </div>
+
+      <div class="form-group">
+        <div class="multiple-choice" data-target="agentCompanyYes">
+          <input id="isContactAnAgent" name="isContactAnAgent" type="checkbox" value="yes">
+          <label for="isContactAnAgent">
+          This person is acting as an agent or consultant for this application
+        </label>
+        </div>
+      </div>
+      <div class="panel panel-border-narrow js-hidden" id="agentCompanyYes">
+        <label class="form-label" for="agentCompany">
+          Agent’s trading, business or company name (optional)
+        </label>
+        <input class="form-control form-control-char-50" id="agentCompany" name="agentCompany" type="text" value="contact.agentCompany">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="contactTelephone">
+          Telephone number
+          <span class="form-hint">
+            This can be a landline or mobile
+          </span>
+        </label>
+        <input class="form-control form-control-char-25" id="contactTelephone" name="contactTelephone" type="number" value="{{contact.contactTelephone}}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="contactEmail">
+          Email address
+        </label>
+        <input class="form-control" id="contactEmail" name="contactEmail" type="email" value="{{contact.contactEmail}}">
+      </div>
+
+      <div class="form-group">
+          <input type="submit" class="button" value="Continue">
+      </div>
+    </form>
+
+    </div>
+  </div>
+
+  <h2>Contact List:</h2>
+  <ul>
+  {{#each contacts}}
+  <li>{{this.contactName}}</li>
+  {{/each}}
+  </ul>
+
+
+</main>

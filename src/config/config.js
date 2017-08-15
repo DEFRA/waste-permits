@@ -2,7 +2,8 @@
 
 module.exports = {
 
-  // crmwebapihost: 'FOO CONFIG',
+  port: process.env.PORT,
+
   crmWebApiHost: process.env.CRM_WEB_API_HOST,
 
   crmWebApiPath: process.env.CRM_WEB_API_PATH,

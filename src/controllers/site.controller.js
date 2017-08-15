@@ -12,7 +12,6 @@ module.exports = function (request, reply) {
     // Redirect off an error screen
     return reply.redirect('/error')
   }
-
   const doGet = (request, reply) => {
     return reply
       .view('site', context)
@@ -32,7 +31,7 @@ module.exports = function (request, reply) {
       console.log('Incoming data: ' + request.payload.siteName)
 
       return reply
-        .redirect('/task-list')
+        .redirect('/contact')
         .state('session', request.state.session)
     } else {
       context.errors = {
