@@ -73,7 +73,7 @@ module.exports = class DynamicsService {
       })
       crmRequest.on('error', function (error) {
         console.error('Dynamics error: ' + error)
-        reject(e)
+        reject(error)
       })
 
       // Write the data

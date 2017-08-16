@@ -23,7 +23,6 @@ module.exports = class ContactController extends BaseController {
   }
 
   static async doPost (request, reply) {
-
     if (request.payload.id) {
       // Update existing Contact
       const contact = Contact.getById(request.payload.id)
@@ -35,7 +34,6 @@ module.exports = class ContactController extends BaseController {
 
       // if (result === 'success') {
       return ContactController.doGet(request, reply)
-
     } else {
       // Create new contact
       const contact = new Contact({
