@@ -13,20 +13,21 @@ module.exports = class CrmTokenService {
 
     // Build the authorization query request parameters
     // To learn more about how tokens work, see IETF RFC 6749 - https://tools.ietf.org/html/rfc6749
-    this._queryParams = 'client_id=' + config.clientId +
-      '&resource=' + encodeURIComponent(config.crmOrg) +
-      '&username=' + encodeURIComponent(config.username) +
-      '&password=' + encodeURIComponent(config.userPassword) +
-      '&grant_type=password'
+    this.queryParams =
+      `client_id=${config.clientId}` +
+      `&resource=${encodeURIComponent(config.crmOrg)}` +
+      `&username=${encodeURIComponent(config.username)}` +
+      `&password=${encodeURIComponent(config.userPassword)}` +
+      `&grant_type=password`
 
     // Set the token request parameters
-    this._options = {
+    this.options = {
       host: authHost,
       path: authPath,
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(this._queryParams)
+        'Content-Length': Buffer.byteLength(this.queryParams)
       }
     }
   }
@@ -34,7 +35,7 @@ module.exports = class CrmTokenService {
   getToken () {
     return new Promise((resolve, reject) => {
       // Make the token request
-      const tokenRequest = https.request(this._options, (response) => {
+      const tokenRequest = https.request(this.options, (response) => {
         // Create an array to hold the response parts if we get multiple parts
         const responseParts = []
 
@@ -62,7 +63,7 @@ module.exports = class CrmTokenService {
       })
 
       // Post the token request data
-      tokenRequest.write(this._queryParams)
+      tokenRequest.write(this.queryParams)
 
       // Close the token request
       tokenRequest.end()

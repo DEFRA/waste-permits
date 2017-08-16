@@ -1,40 +1,29 @@
 'use strict'
 
-// const DynamicsService = require('../services/dynamics.service')
+const BaseController = require('./base.controller')
 
-module.exports = function (request, reply) {
-  const context = {
-    pageTitle: 'Waste Permits - Task List'
-  }
-
-  // Validate the session cookie
-  let token = request.server.methods.validateToken(request.state.session)
-  if (!token) {
-    // Redirect off an error screen
-    return reply.redirect('/error')
-  }
-
-  const doGet = async (request, reply) => {
+module.exports = class TaskListController extends BaseController {
+  static async doGet (request, reply) {
     try {
+      const context = {
+        pageTitle: 'Waste Permits - Task List',
+        // TODO: Load task list here
+        taskList: ['TODO']
+      }
       return reply
         .view('taskList', context)
         .state('session', request.state.session)
-    } catch (e) {
-      // TODO log the error ?
-      console.log(e)
+    } catch (error) {
+      console.log(error)
       return reply.redirect('/error')
     }
   }
 
-  const doPost = (request, reply) => {
-    return reply
-      .view('taskList', context)
-      .state('session', request.state.session)
+  static async doPost (request, reply) {
+    // Not implemented yet
   }
 
-  if (request.method === 'get') {
-    doGet(request, reply)
-  } else if (request.method === 'post') {
-    doPost(request, reply)
+  static handler (request, reply) {
+    return BaseController.handler(request, reply, TaskListController)
   }
 }

@@ -1,66 +1,76 @@
 'use strict'
 
+const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
 
-module.exports = function (request, reply) {
-  const context = {
-    pageTitle: 'Waste Permits - Contact Details',
-    message: 'Hello, World!'
-  }
+module.exports = class ContactController extends BaseController {
+  static async doGet (request, reply) {
+    try {
+      const context = {
+        pageTitle: 'Waste Permits - Contact Details',
+        title: 'Who should we contact about this application?',
 
-  // Validate the session cookie
-  let token = request.server.methods.validateToken(request.state.session)
-  if (!token) {
-    // Redirect off an error screen
-    return reply.redirect('/error')
-  }
-
-  const doGet = async (request, reply) => {
-    // List the contacts
-    const contacts = await Contact.list(request.state.session.crmToken)
-
-    context.contacts = contacts
-
-    return reply
-      .view('contact', context)
-      .state('session', request.state.session)
-  }
-
-  const doPost = async (request, reply) => {
-    const contact = new Contact({
-      contactName: request.payload.contactName,
-      contactTelephone: request.payload.contactTelephone,
-      contactEmail: request.payload.contactEmail
-    })
-    context.contact = contact
-
-    if (!contact.isValid) {
-      // TODO: Validate post data using Joi?
-      // TODO: Handle validation error
-      // context.errors = {
-      //   message: 'Invalid site name: [' + request.payload.siteName + ']'
-      // }
-      console.log('Invalid contact:' + contact.toString())
-      doGet(request, reply)
-    } else {
-      // const result =
-      await contact.save(request.state.session.crmToken)
-
-      // if (result === 'success') {
+        // List the contacts
+        contacts: await Contact.list(request.state.session.crmToken)
+      }
       return reply
-        .redirect('/task-list')
+        .view('contact', context)
         .state('session', request.state.session)
-      // }
-    // } else {
-    //   // TODO: Handle save error
-    //   return reply.redirect('/error')
-    // }
+    } catch (error) {
+      console.error(error)
+      return reply.redirect('/error')
     }
   }
 
-  if (request.method === 'get') {
-    doGet(request, reply)
-  } else if (request.method === 'post') {
-    doPost(request, reply)
+  static async doPost (request, reply) {
+
+    if (request.payload.id) {
+      // Update existing Contact
+      const contact = Contact.getById(request.payload.id)
+      contact.contactName = request.payload.updatedContactName
+
+      // TODO handle errors
+      // const result =
+      await contact.update(request.state.session.crmToken)
+
+      // if (result === 'success') {
+      return ContactController.doGet(request, reply)
+
+    } else {
+      // Create new contact
+      const contact = new Contact({
+        contactName: request.payload.contactName,
+        contactTelephone: request.payload.contactTelephone,
+        contactEmail: request.payload.contactEmail
+      })
+
+      if (!contact.isValid) {
+        // TODO: Validate post data using Joi?
+        // TODO: Handle validation error
+        // context.errors = {
+        //   message: 'Invalid site name: [' + request.payload.siteName + ']'
+        // }
+        console.log('Invalid contact:' + contact.toString())
+        return ContactController.doGet(request, reply)
+      } else {
+        // TODO handle errors
+        // const result =
+        await contact.save(request.state.session.crmToken)
+
+        // if (result === 'success') {
+        return reply
+          .redirect('/task-list')
+          .state('session', request.state.session)
+        // }
+      // } else {
+      //   // TODO: Handle save error
+      //   return reply.redirect('/error')
+      // }
+      }
+    }
+  }
+
+  static handler (request, reply) {
+    return BaseController.handler(request, reply, ContactController)
   }
 }

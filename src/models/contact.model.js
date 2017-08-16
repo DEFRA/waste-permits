@@ -1,9 +1,11 @@
 'use strict'
 
 const DynamicsService = require('../services/dynamics.service')
+const BaseModel = require('./base.model')
 
-module.exports = class Contact {
+module.exports = class Contact extends BaseModel {
   constructor (contact) {
+    super()
     if (contact) {
       this.id = contact.id
       this.contactName = contact.contactName
@@ -17,19 +19,35 @@ module.exports = class Contact {
     return (this.contactName && this.contactTelephone && this.contactEmail)
   }
 
+  // Converts full name string into first name and last name for Dynamics
+  convertObject () {
+    const dataObject = {}
+
+    let nameParts = this.contactName.split(' ')
+    const firstName = nameParts[0]
+
+    nameParts.splice(0, 1)
+    let lastName = nameParts.join(' ')
+    dataObject['firstname'] = firstName
+    dataObject['lastname'] = lastName
+
+    return dataObject
+  }
+
   static getById (id) {
-    // TODO Decide if we need this
+    // TODO
     // Define the query
     // const query = 'contacts?$select=contactid'
     // const response = dynamicsService.get(query)
 
-    // TODO parse response
-    // contactDetails = {
-    //   this.contactName = 'x'
-    //   this.contactTelephone = 'y'
-    //   this.contactEmail = 'z'
-    // }
-    // return new Contact(contactDetails)
+    // TODO get from Dynamics
+    const contactDetails = {
+      id: id,
+      contactName: 'xxxxxx',
+      contactTelephone: 'yyyyy',
+      contactEmail: 'zzzzz'
+    }
+    return new Contact(contactDetails)
   }
 
   static async list (crmToken) {
@@ -55,7 +73,8 @@ module.exports = class Contact {
       })
     } catch (error) {
       // TODO: Error handling?
-      console.error('Unable to list Contacts')
+      console.error(`Unable to list Contacts: ${error}`)
+      throw error
     }
     return contacts
   }
@@ -66,16 +85,15 @@ module.exports = class Contact {
     // Define the query
     const query = 'contacts'
 
-    // TODO: Map the Contact to the corresponding Dynamics schema Contact object
-    const dataObject = {}
-    dataObject['firstname'] = this.contactName
-    dataObject['lastname'] = this.contactTelephone
+    // Map the Contact to the corresponding Dynamics schema Contact object
+    const dataObject = this.convertObject()
 
     try {
       return dynamicsService.create(dataObject, query)
     } catch (error) {
       // TODO: Error handling?
-      console.error('Unable to create Contact')
+      console.error(`Unable to create Contact: ${error}`)
+      throw error
     }
   }
 
@@ -83,22 +101,16 @@ module.exports = class Contact {
     const dynamicsService = new DynamicsService(crmToken)
 
     // Define the query
-    const query = 'contacts(' + this.id + ')'
+    const query = `contacts(${this.id})`
 
-    // TODO: Map the Contact to the corresponding Dynamics schema Contact object
-    const dataObject = {}
-    dataObject['firstname'] = this.contactName + 'UPDATED'
-    dataObject['lastname'] = this.contactTelephone + 'UPDATED'
+    // Map the Contact to the corresponding Dynamics schema Contact object
+    const dataObject = this.convertObject()
 
-    // TODO error handling
-    return dynamicsService.update(dataObject, query)
-  }
-
-  toString () {
-    return 'Contact: { \n' +
-      '  contactName: ' + this.contactName + '\n' +
-      '  contactTelephone: ' + this.contactTelephone + '\n' +
-      '  contactEmail: ' + this.contactEmail + '\n' +
-      '}'
+    try {
+      return dynamicsService.update(dataObject, query)
+    } catch (error) {
+      console.error(`Unable to update Contact: ${error}`)
+      throw error
+    }
   }
 }

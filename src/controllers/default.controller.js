@@ -3,15 +3,16 @@
 // TODO confirm which version of UUID to use
 const uuid4 = require('uuid/v4')
 
+const BaseController = require('./base.controller')
 const CrmTokenService = require('../services/crmToken.service')
 const crmTokenService = new CrmTokenService()
 
-module.exports = function (request, reply) {
-  const context = {
-    pageTitle: 'Waste Permits'
-  }
+module.exports = class DefaultController extends BaseController {
+  static async doGet (request, reply) {
+    const context = {
+      pageTitle: 'Waste Permits'
+    }
 
-  const doGet = (request, reply) => {
     // TODO: Confirm when we are going to create the session cookie
 
     // if (!request.state.session.token) {
@@ -28,8 +29,8 @@ module.exports = function (request, reply) {
     reply.view('index', context)
   }
 
-  const doPost = async (request, reply) => {
-    //   // Generate a session token
+  static async doPost (request, reply) {
+    // Generate a session token
     const token = uuid4()
     console.log('Generated session token: ' + token)
 
@@ -56,9 +57,7 @@ module.exports = function (request, reply) {
       .state('session', cookie)
   }
 
-  if (request.method === 'get') {
-    doGet(request, reply)
-  } else if (request.method === 'post') {
-    doPost(request, reply)
+  static handler (request, reply) {
+    return BaseController.handler(request, reply, DefaultController)
   }
 }

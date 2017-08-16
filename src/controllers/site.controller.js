@@ -1,28 +1,30 @@
 'use strict'
 
-module.exports = function (request, reply) {
-  const context = {
-    pageTitle: 'Waste Permits - Site',
-    message: 'Hello, World!'
+const BaseController = require('./base.controller')
+
+module.exports = class SiteController extends BaseController {
+  static async doGet (request, reply) {
+    try {
+      const context = {
+        pageTitle: 'Waste Permits - Site',
+        message: 'Hello, World!'
+      }
+      return reply
+        .view('site', context)
+        .state('session', request.state.session)
+    } catch (error) {
+      console.error(error)
+      return reply.redirect('/error')
+    }
   }
 
-  // Validate the session cookie
-  let token = request.server.methods.validateToken(request.state.session)
-  if (!token) {
-    // Redirect off an error screen
-    return reply.redirect('/error')
-  }
-  const doGet = (request, reply) => {
-    return reply
-      .view('site', context)
-      .state('session', request.state.session)
-  }
-
-  const doPost = (request, reply) => {
+  static async doPost (request, reply) {
     // TODO validate post data using Joi
     let valid = true
 
-    context.siteName = request.payload.siteName
+    const context = {
+      siteName: request.payload.siteName
+    }
 
     valid = (request.payload.siteName !== 'invalid_site_name')
 
@@ -37,12 +39,11 @@ module.exports = function (request, reply) {
       context.errors = {
         message: 'Invalid site name: [' + request.payload.siteName + ']'
       }
+      // TODO error handling
     }
   }
 
-  if (request.method === 'get') {
-    doGet(request, reply)
-  } else if (request.method === 'post') {
-    doPost(request, reply)
+  static handler (request, reply) {
+    return BaseController.handler(request, reply, SiteController)
   }
 }

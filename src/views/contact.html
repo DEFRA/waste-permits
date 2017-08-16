@@ -57,6 +57,35 @@
       </div>
     </form>
 
+    <h2>Update contact:</h2>
+
+    <form method="post" action="/contact">
+
+      <div class="form-group">
+        <label class="form-label" for="id">
+          Identifier
+          <span class="form-hint">
+            For example, e43449a6-4f24-e711-80fd-5065f38a1b01
+          </span>
+        </label>
+        <input class="form-control" id="id" name="id" type="text" value="{{contact.id}}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="updatedContactName">
+          New full name
+          <span class="form-hint">
+            For example, John Smith
+          </span>
+        </label>
+        <input class="form-control" id="updatedContactName" name="updatedContactName" type="text" value="{{contact.updatedContactName}}">
+      </div>
+
+      <div class="form-group">
+          <input type="submit" class="button" value="Update">
+      </div>
+    </form>
+
     </div>
   </div>
 
