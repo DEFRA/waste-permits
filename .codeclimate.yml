@@ -1,0 +1,26 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - javascript
+  eslint:
+    enabled: false
+  scss-lint:
+    enabled: true
+  fixme:
+    enabled: true
+
+ratings:
+  paths:
+    - "**.js"
+    - "**.scss"
+
+exclude_paths:
+  - test/
+  - "**.yml"
+  - "**.md"
+  - "**.html"
+  - "**.json"
+  - LICENSE
+  - Procfile

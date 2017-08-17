@@ -1,5 +1,12 @@
 # Waste Permits Service
 
+[![Build Status](https://travis-ci.org/DEFRA/waste-permits.svg?branch=master)](https://travis-ci.org/DEFRA/waste-permits)
+[![NSP Status](https://nodesecurity.io/orgs/cruikshanks/projects/fb915ae3-9c10-485d-bfc8-38c5c53316cc/badge)](https://nodesecurity.io/orgs/cruikshanks/projects/fb915ae3-9c10-485d-bfc8-38c5c53316cc)
+[![dependencies Status](https://david-dm.org/defra/waste-permits/status.svg)](https://david-dm.org/defra/waste-permits)
+[![Code Climate](https://codeclimate.com/github/DEFRA/waste-permits/badges/gpa.svg)](https://codeclimate.com/github/DEFRA/waste-permits)
+[![Test Coverage](https://codeclimate.com/github/DEFRA/waste-permits/badges/coverage.svg)](https://codeclimate.com/github/DEFRA/waste-permits/coverage)
+[![Dependency Status](https://dependencyci.com/github/DEFRA/waste-permits/badge)](https://dependencyci.com/github/DEFRA/waste-permits)
+
 You may need to apply to the [Environment Agency](https://www.gov.uk/government/organisations/environment-agency) for an environmental permit if your business uses, recycles, treats, stores or disposes of waste or mining waste. This permit can be for activities at one site or for mobile plant that can be used at many sites.
 
 The Waste Permits service will be a new, online way to apply for a waste permit.
