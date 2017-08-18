@@ -4,9 +4,9 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
-const server = require('../index')
+const server = require('../../index')
 
-const Contact = require('../src/models/contact.model')
+const Contact = require('../../src/models/contact.model')
 
 let validateTokenStub
 let contactListStub
@@ -21,7 +21,6 @@ lab.beforeEach((done) => {
 
   contactListStub = Contact.list
   Contact.list = (crmToken) => {
-    console.log('Contact list mock')
     return []
   }
 

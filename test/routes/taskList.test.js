@@ -3,7 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const server = require('../index')
+const server = require('../../index')
 
 lab.experiment('Task List page tests:', () => {
   lab.test('GET /task-list success ', (done) => {
