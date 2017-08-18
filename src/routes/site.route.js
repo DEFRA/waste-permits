@@ -7,6 +7,10 @@ module.exports = [{
   path: '/site',
   config: {
     description: 'The site page',
-    handler: SiteController.handler
+    handler: SiteController.handler,
+    state: {
+      parse: true,
+      failAction: 'error'
+    }
   }
 }]

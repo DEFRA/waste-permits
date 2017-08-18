@@ -7,6 +7,10 @@ module.exports = [{
   path: '/contact',
   config: {
     description: 'The contact page',
-    handler: ContactController.handler
+    handler: ContactController.handler,
+    state: {
+      parse: true,
+      failAction: 'error'
+    }
   }
 }]

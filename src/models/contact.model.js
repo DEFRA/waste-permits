@@ -40,7 +40,7 @@ module.exports = class Contact extends BaseModel {
     // const query = 'contacts?$select=contactid'
     // const response = dynamicsService.get(query)
 
-    // TODO get from Dynamics
+    // TODO get this from Dynamics instead
     const contactDetails = {
       id: id,
       contactName: 'xxxxxx',
@@ -82,34 +82,23 @@ module.exports = class Contact extends BaseModel {
   save (crmToken) {
     const dynamicsService = new DynamicsService(crmToken)
 
-    // Define the query
-    const query = 'contacts'
-
     // Map the Contact to the corresponding Dynamics schema Contact object
     const dataObject = this.convertObject()
 
     try {
-      return dynamicsService.create(dataObject, query)
+      let query
+      if (!this.id) {
+        // New contact
+        query = 'contacts'
+        return dynamicsService.create(dataObject, query)
+      } else {
+        // Update contact
+        query = `contacts(${this.id})`
+        return dynamicsService.update(dataObject, query)
+      }
     } catch (error) {
       // TODO: Error handling?
       console.error(`Unable to create Contact: ${error}`)
-      throw error
-    }
-  }
-
-  update (crmToken) {
-    const dynamicsService = new DynamicsService(crmToken)
-
-    // Define the query
-    const query = `contacts(${this.id})`
-
-    // Map the Contact to the corresponding Dynamics schema Contact object
-    const dataObject = this.convertObject()
-
-    try {
-      return dynamicsService.update(dataObject, query)
-    } catch (error) {
-      console.error(`Unable to update Contact: ${error}`)
       throw error
     }
   }

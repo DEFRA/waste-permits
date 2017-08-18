@@ -1,5 +1,6 @@
 'use strict'
 
+const Constants = require('../constants')
 const BaseController = require('./base.controller')
 
 module.exports = class TaskListController extends BaseController {
@@ -12,7 +13,7 @@ module.exports = class TaskListController extends BaseController {
       }
       return reply
         .view('taskList', context)
-        .state('session', request.state.session)
+        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.log(error)
       return reply.redirect('/error')

@@ -7,6 +7,10 @@ module.exports = [{
   path: '/task-list',
   config: {
     description: 'The task list page',
-    handler: TaskListController.handler
+    handler: TaskListController.handler,
+    state: {
+      parse: true,
+      failAction: 'error'
+    }
   }
 }]

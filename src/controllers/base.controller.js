@@ -1,10 +1,12 @@
 'use strict'
 
+const Constants = require('../constants')
+
 module.exports = class BaseController {
   static handler (request, reply, controllerSubclass, validateToken = true) {
     if (validateToken) {
       // Validate the session cookie
-      let token = request.server.methods.validateToken(request.state.session)
+      let token = request.server.methods.validateToken(request.state[Constants.COOKIE_KEY])
       if (!token) {
         // Redirect off an error screen
         return reply.redirect('/error')

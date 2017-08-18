@@ -1,17 +1,19 @@
 'use strict'
 
+const Constants = require('../constants')
 const BaseController = require('./base.controller')
 
 module.exports = class SiteController extends BaseController {
-  static async doGet (request, reply) {
+  static async doGet (request, reply, errors = undefined) {
     try {
       const context = {
         pageTitle: 'Waste Permits - Site',
-        message: 'Hello, World!'
+        message: 'Hello, World!',
+        errors: errors
       }
       return reply
         .view('site', context)
-        .state('session', request.state.session)
+        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
       return reply.redirect('/error')
@@ -19,27 +21,23 @@ module.exports = class SiteController extends BaseController {
   }
 
   static async doPost (request, reply) {
-    // TODO validate post data using Joi
-    let valid = true
+    // TODO validate post data using Joi?
+    let valid = (request.payload.siteName !== 'invalid_site_name')
 
-    const context = {
-      siteName: request.payload.siteName
-    }
-
-    valid = (request.payload.siteName !== 'invalid_site_name')
-
-    // TODO if the data is valid then persist it
     if (valid) {
-      console.log('Incoming data: ' + request.payload.siteName)
+      // console.log('Incoming data: ' + request.payload.siteName)
+
+      // TODO if the data is valid then persist it here
 
       return reply
         .redirect('/contact')
-        .state('session', request.state.session)
+        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } else {
-      context.errors = {
+      // Handle the validation error
+      const errors = {
         message: 'Invalid site name: [' + request.payload.siteName + ']'
       }
-      // TODO error handling
+      return SiteController.doGet(request, reply, errors)
     }
   }
 

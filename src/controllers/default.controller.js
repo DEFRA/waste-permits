@@ -1,5 +1,7 @@
 'use strict'
 
+const Constants = require('../constants')
+
 // TODO confirm which version of UUID to use
 const uuid4 = require('uuid/v4')
 
@@ -51,13 +53,13 @@ module.exports = class DefaultController extends BaseController {
       .redirect('/site')
 
       // Delete the existing session cookie
-      .unstate('session')
+      .unstate(Constants.COOKIE_KEY)
 
       // Add the new cookie
-      .state('session', cookie)
+      .state(Constants.COOKIE_KEY, cookie)
   }
 
   static handler (request, reply) {
-    return BaseController.handler(request, reply, DefaultController)
+    return BaseController.handler(request, reply, DefaultController, false)
   }
 }
