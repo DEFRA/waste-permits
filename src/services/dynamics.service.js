@@ -18,15 +18,15 @@ module.exports = class DynamicsService {
     }
   }
 
-  create (dataObject, query) {
+  createItem (dataObject, query) {
     return this.runQuery('POST', query, dataObject)
   }
 
-  update (dataObject, query) {
+  updateItem (dataObject, query) {
     return this.runQuery('PATCH', query, dataObject)
   }
 
-  list (query) {
+  listItems (query) {
     return this.runQuery('GET', query)
   }
 

@@ -4,7 +4,7 @@ const DynamicsService = require('../services/dynamics.service')
 const BaseModel = require('./base.model')
 
 module.exports = class Contact extends BaseModel {
-  constructor (contact) {
+  constructor (contact = undefined) {
     super()
     if (contact) {
       this.id = contact.id
@@ -16,7 +16,9 @@ module.exports = class Contact extends BaseModel {
 
   isValid () {
     // TODO validation
-    return (this.contactName && this.contactTelephone && this.contactEmail)
+    return (typeof this.contactName !== 'undefined' && this.contactName !== '' &&
+      typeof this.contactTelephone !== 'undefined' && this.contactTelephone !== '' &&
+      typeof this.contactEmail !== 'undefined' && this.contactEmail !== '')
   }
 
   // Converts full name string into first name and last name for Dynamics
@@ -38,7 +40,7 @@ module.exports = class Contact extends BaseModel {
     // TODO
     // Define the query
     // const query = 'contacts?$select=contactid'
-    // const response = dynamicsService.get(query)
+    // const response = dynamicsService.getItem(query)
 
     // TODO get this from Dynamics instead
     const contactDetails = {
@@ -59,7 +61,7 @@ module.exports = class Contact extends BaseModel {
     // List the Contacts
     const contacts = []
     try {
-      const response = await dynamicsService.list(query)
+      const response = await dynamicsService.listItems(query)
 
       // Parse response into Contact objects
       response.forEach((contact) => {
@@ -79,7 +81,7 @@ module.exports = class Contact extends BaseModel {
     return contacts
   }
 
-  save (crmToken) {
+  async save (crmToken) {
     const dynamicsService = new DynamicsService(crmToken)
 
     // Map the Contact to the corresponding Dynamics schema Contact object
@@ -90,11 +92,11 @@ module.exports = class Contact extends BaseModel {
       if (!this.id) {
         // New contact
         query = 'contacts'
-        return dynamicsService.create(dataObject, query)
+        return await dynamicsService.createItem(dataObject, query)
       } else {
         // Update contact
         query = `contacts(${this.id})`
-        return dynamicsService.update(dataObject, query)
+        return await dynamicsService.updateItem(dataObject, query)
       }
     } catch (error) {
       // TODO: Error handling?

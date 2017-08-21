@@ -49,7 +49,7 @@ module.exports = class CrmTokenService {
           // Once we have all the response parts, concatenate the parts into a single string
           const completeResponse = responseParts.join('')
 
-          // Parse the response JSON and extract the token
+          // Parse the response JSON and extract the CRM access token
           const tokenResponse = JSON.parse(completeResponse)
           const token = tokenResponse.access_token
 

@@ -68,13 +68,12 @@ lab.experiment('Contact page tests:', () => {
     const request = {
       method: 'POST',
       url: '/contact',
-      headers: {}
-    }
-
-    request.payload = {
-      contactName: 'Contact Name',
-      contactTelephone: '012345679890',
-      contactEmail: 'contact@email.com'
+      headers: {},
+      payload: {
+        contactName: 'Contact Name',
+        contactTelephone: '012345679890',
+        contactEmail: 'contact@email.com'
+      }
     }
 
     server.inject(request, (res) => {
@@ -89,14 +88,13 @@ lab.experiment('Contact page tests:', () => {
     const request = {
       method: 'POST',
       url: '/contact',
-      headers: {}
-    }
-
-    request.payload = {
-      id: '12345',
-      contactName: 'Contact Name',
-      contactTelephone: '012345679890',
-      contactEmail: 'contact@email.com'
+      headers: {},
+      payload: {
+        id: '12345',
+        contactName: 'Contact Name',
+        contactTelephone: '012345679890',
+        contactEmail: 'contact@email.com'
+      }
     }
 
     server.inject(request, (res) => {
@@ -116,11 +114,10 @@ lab.experiment('Contact page tests:', () => {
     const request = {
       method: 'POST',
       url: '/contact',
-      headers: {}
-    }
-
-    request.payload = {
-      siteName: 'My Site'
+      headers: {},
+      payload: {
+        siteName: 'My Site'
+      }
     }
 
     server.methods.validateToken = () => {

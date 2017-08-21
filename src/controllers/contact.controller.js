@@ -8,8 +8,7 @@ module.exports = class ContactController extends BaseController {
   static async doGet (request, reply) {
     try {
       const context = {
-        pageTitle: 'Waste Permits - Contact Details',
-        title: 'Who should we contact about this application?'
+        pageTitle: 'Waste Permits - Contact Details'
       }
 
       let crmToken

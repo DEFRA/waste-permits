@@ -7,16 +7,31 @@ const server = require('../../index')
 
 const DOMParser = require('xmldom').DOMParser
 
+let validateTokenStub
+
+lab.beforeEach((done) => {
+  // Stub methods
+  validateTokenStub = server.methods.validateToken
+  server.methods.validateToken = () => {
+    return 'my_token'
+  }
+
+  done()
+})
+
+lab.afterEach((done) => {
+  // Restore stubbed methods
+  server.methods.validateToken = validateTokenStub
+
+  done()
+})
+
 lab.experiment('Site page tests:', () => {
   lab.test('GET /site returns the site page correctly', (done) => {
     const request = {
       method: 'GET',
       url: '/site',
       headers: {}
-    }
-
-    server.methods.validateToken = () => {
-      return 'my_token'
     }
 
     server.inject(request, (res) => {
@@ -44,15 +59,10 @@ lab.experiment('Site page tests:', () => {
     const request = {
       method: 'POST',
       url: '/site',
-      headers: {}
-    }
-
-    request.payload = {
-      siteName: 'My Site'
-    }
-
-    server.methods.validateToken = () => {
-      return 'my_token'
+      headers: {},
+      payload: {
+        siteName: 'My Site'
+      }
     }
 
     server.inject(request, (res) => {
@@ -67,11 +77,10 @@ lab.experiment('Site page tests:', () => {
     const request = {
       method: 'POST',
       url: '/site',
-      headers: {}
-    }
-
-    request.payload = {
-      siteName: 'My Site'
+      headers: {},
+      payload: {
+        siteName: 'My Site'
+      }
     }
 
     server.methods.validateToken = () => {
@@ -89,15 +98,10 @@ lab.experiment('Site page tests:', () => {
     const request = {
       method: 'POST',
       url: '/site',
-      headers: {}
-    }
-
-    request.payload = {
-      siteName: 'invalid_site_name'
-    }
-
-    server.methods.validateToken = () => {
-      return 'my_token'
+      headers: {},
+      payload: {
+        siteName: 'invalid_site_name'
+      }
     }
 
     server.inject(request, (res) => {

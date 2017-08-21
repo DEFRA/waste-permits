@@ -10,11 +10,6 @@ module.exports = class ErrorController extends BaseController {
     return reply.view('error', context)
   }
 
-  static async doPost (request, reply) {
-    // Not supported
-    console.error('Unable to POST to /error')
-  }
-
   static handler (request, reply) {
     return BaseController.handler(request, reply, ErrorController, false)
   }

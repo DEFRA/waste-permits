@@ -6,7 +6,7 @@ const Code = require('code')
 
 const BaseModel = require('../../src/models/base.model')
 
-lab.experiment('Base Model tests', () => {
+lab.experiment('Base Model tests:', () => {
   lab.test('Base Model toString() method serialises a model object correctly', (done) => {
     const modelObject = new BaseModel()
     modelObject.additionalProperty = 'foo'
