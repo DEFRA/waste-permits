@@ -12,7 +12,7 @@ require('dotenv').config()
 const environment = process.env.NODE_ENV
 
 server.connection({
-  port: process.env.PORT
+  port: process.env.WASTE_PERMITS_APP_PORT
 })
 
 // Create a session cookie in which to store a waste permit application token
