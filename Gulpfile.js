@@ -126,14 +126,6 @@ gulp.task('browser-sync', ['nodemon'], () => {
   })
 })
 
-gulp.task('set-env', function () {
-  env({
-    vars: {
-      NODE_ENV: 'development'
-    }
-  })
-})
-
 gulp.task('nodemon', (done) => {
   let started = false
 
@@ -156,4 +148,4 @@ gulp.task('watch', () => {
 })
 
 // The default Gulp task starts the app in development mode
-gulp.task('default', ['set-env', 'watch', 'sass', 'browser-sync'])
+gulp.task('default', ['watch', 'sass', 'browser-sync'])

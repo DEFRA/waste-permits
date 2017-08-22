@@ -9,8 +9,6 @@ const server = new Hapi.Server()
 // Load application configuration using Dotenv (see https://www.npmjs.com/package/dotenv)
 require('dotenv').config()
 
-const environment = process.env.NODE_ENV
-
 server.connection({
   port: process.env.WASTE_PERMITS_APP_PORT
 })
@@ -66,16 +64,16 @@ server.register([
     options: {
       path: '/health',
       healthCheck: function (server, callback) {
-            // TODO: Here you should preform your health checks
-            // If something went wrong provide the callback with an error
+        // TODO: Here you should preform your health checks
+        // If something went wrong provide the callback with an error
         callback()
       }
     }
   }, {
-    // Plugin to return an error view for web request. Only used in development
+    // Plugin to return an error view for web request. Only used when the server is running in DEVELOPMENT mode.
     register: HapiDevErrors,
     options: {
-      showErrors: environment === 'development'
+      showErrors: process.env.NODE_ENV === 'DEVELOPMENT'
     }
   }], (err) => {
   if (err) {
@@ -91,9 +89,8 @@ server.start((err) => {
   if (err) {
     throw err
   }
-  if (environment) {
-    console.info('Server running in environment: [' + environment + ']')
-  }
+
+  console.info('Server running in environment: ' + process.env.NODE_ENV)
   console.info('Server running at:', server.info)
 })
 
