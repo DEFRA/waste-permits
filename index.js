@@ -6,6 +6,9 @@ const HapiAlive = require('hapi-alive')
 const HapiDevErrors = require('hapi-dev-errors')
 const server = new Hapi.Server()
 
+// Load application configuration using Dotenv (see https://www.npmjs.com/package/dotenv)
+require('dotenv').config()
+
 const environment = process.env.NODE_ENV
 
 server.connection({

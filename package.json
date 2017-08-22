@@ -38,6 +38,7 @@
   "dependencies": {
     "blipp": "^2.3.0",
     "disinfect": "^0.2.1",
+    "dotenv": "^4.0.0",
     "govuk-elements-sass": "^3.1.1",
     "govuk_frontend_toolkit": "^7.0.1",
     "govuk_template_mustache": "^0.22.3",
