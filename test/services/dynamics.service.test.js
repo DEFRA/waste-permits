@@ -1,5 +1,7 @@
 'use strict'
 
+const config = require('../../src/config/config')
+
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
@@ -15,16 +17,16 @@ lab.beforeEach((done) => {
   dynamicsService = new DynamicsService('__CRM_TOKEN__')
 
   // Mock the CRM token endpoints
-  nock('https://envregdev.api.crm4.dynamics.com')
-    .get('/api/data/v8.2/__DYNAMICS_LIST_QUERY__')
+  nock(`https://${config.dynamicsWebApiHost}`)
+    .get(`${config.dynamicsWebApiPath}__DYNAMICS_LIST_QUERY__`)
     .reply(200, [])
 
-  nock('https://envregdev.api.crm4.dynamics.com')
-    .post('/api/data/v8.2/__DYNAMICS_INSERT_QUERY__')
+  nock(`https://${config.dynamicsWebApiHost}`)
+    .post(`${config.dynamicsWebApiPath}__DYNAMICS_INSERT_QUERY__`)
     .reply(204)
 
-  nock('https://envregdev.api.crm4.dynamics.com')
-    .patch('/api/data/v8.2/__DYNAMICS_UPDATE_QUERY__')
+  nock(`https://${config.dynamicsWebApiHost}`)
+    .patch(`${config.dynamicsWebApiPath}__DYNAMICS_UPDATE_QUERY__`)
     .reply(204)
 
   done()

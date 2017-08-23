@@ -1,5 +1,7 @@
 'use strict'
 
+const config = require('../../src/config/config')
+
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
@@ -16,7 +18,7 @@ let authTokenResponse = {
   ext_expires_in: '0',
   expires_on: '1503328515',
   not_before: '1503324615',
-  resource: 'https://envregdev.crm4.dynamics.com',
+  resource: config.resourceAddr,
   access_token: '__ACCESS_TOKEN__'
 }
 
@@ -24,8 +26,8 @@ lab.beforeEach((done) => {
   authService = new ActiveDirectoryAuthService()
 
   // Mock the CRM token endpoint
-  nock('https://login.microsoftonline.com')
-    .post('/02958295-d8ae-4368-9e90-3c8230470218/oauth2/token')
+  nock(`https://${config.azureAuthHost}`)
+    .post(config.azureAuthPath)
     .reply(200, authTokenResponse)
 
   done()
