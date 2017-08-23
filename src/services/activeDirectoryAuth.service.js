@@ -9,9 +9,9 @@ module.exports = class ActiveDirectoryAuthService {
     // To learn more about how tokens work, see IETF RFC 6749 - https://tools.ietf.org/html/rfc6749
     this.queryParams =
       `client_id=${config.clientId}` +
-      `&resource=${encodeURIComponent(config.crmOrg)}` +
-      `&username=${encodeURIComponent(config.username)}` +
-      `&password=${encodeURIComponent(config.userPassword)}` +
+      `&resource=${encodeURIComponent(config.resourceAddr)}` +
+      `&username=${encodeURIComponent(config.dynamicsUsername)}` +
+      `&password=${encodeURIComponent(config.dynamicsPassword)}` +
       `&grant_type=password`
 
     // Set the token request parameters

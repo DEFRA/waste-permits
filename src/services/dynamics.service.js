@@ -6,7 +6,7 @@ const config = require('../config/config')
 module.exports = class DynamicsService {
   constructor (authToken) {
     this.crmRequestOptions = {
-      host: config.crmWebApiHost,
+      host: config.dynamicsWebApiHost,
       headers: {
         'Authorization': 'Bearer ' + authToken,
         'OData-MaxVersion': '4.0',
@@ -35,7 +35,7 @@ module.exports = class DynamicsService {
 
     return new Promise((resolve, reject) => {
       // Set the Dynamics query
-      this.crmRequestOptions.path = config.crmWebApiPath + query
+      this.crmRequestOptions.path = config.dynamicsWebApiPath + query
 
       // Set the request method and CRM token
       this.crmRequestOptions.method = method
