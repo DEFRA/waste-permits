@@ -2,7 +2,7 @@
 
 module.exports = {
 
-  port: process.env.PORT,
+  port: process.env.WASTE_PERMITS_APP_PORT,
 
   crmWebApiHost: process.env.CRM_WEB_API_HOST,
 
