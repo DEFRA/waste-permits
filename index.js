@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('./src/constants')
+const config = require('./src/config/config')
 
 const Hapi = require('hapi')
 const HapiRouter = require('hapi-router')
@@ -10,11 +11,8 @@ const HapiAlive = require('hapi-alive')
 const HapiDevErrors = require('hapi-dev-errors')
 const server = new Hapi.Server()
 
-// Load application configuration using Dotenv (see https://www.npmjs.com/package/dotenv)
-require('dotenv').config()
-
 server.connection({
-  port: process.env.WASTE_PERMITS_APP_PORT
+  port: config.port
 })
 
 // Create a session cookie in which to store a waste permit application token
@@ -77,7 +75,7 @@ server.register([
     // Plugin to return an error view for web request. Only used when the server is running in DEVELOPMENT mode.
     register: HapiDevErrors,
     options: {
-      showErrors: process.env.NODE_ENV === 'DEVELOPMENT'
+      showErrors: config.nodeEnvironment === 'DEVELOPMENT'
     }
   }], (err) => {
   if (err) {
@@ -94,7 +92,7 @@ server.start((err) => {
     throw err
   }
 
-  console.info('Server running in environment: ' + process.env.NODE_ENV)
+  console.info('Server running in environment: ' + config.nodeEnvironment)
   console.info('Server running at:', server.info)
 })
 
