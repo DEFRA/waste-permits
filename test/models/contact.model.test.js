@@ -56,32 +56,6 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Contact Model tests:', () => {
-  lab.test('isValid() method validates a Contact object correctly', (done) => {
-    Code.expect(testContact.isValid()).to.be.true()
-
-    testContact = new Contact({
-      contactName: '',
-      contactTelephone: '01234567890',
-      contactEmail: 'john.smith@email.com'
-    })
-    Code.expect(testContact.isValid()).to.be.false()
-
-    testContact = new Contact({
-      contactName: 'John Smith',
-      contactTelephone: '',
-      contactEmail: 'john.smith@email.com'
-    })
-    Code.expect(testContact.isValid()).to.be.false()
-
-    testContact = new Contact({
-      contactName: 'John Smith',
-      contactTelephone: '01234567890',
-      contactEmail: ''
-    })
-    Code.expect(testContact.isValid()).to.be.false()
-
-    done()
-  })
 
   lab.test('convertObject() method converts a Contact object correctly', (done) => {
     const convertedObject = testContact.convertObject()

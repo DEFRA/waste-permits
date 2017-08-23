@@ -14,13 +14,6 @@ module.exports = class Contact extends BaseModel {
     }
   }
 
-  isValid () {
-    // TODO validation
-    return (typeof this.contactName !== 'undefined' && this.contactName !== '' &&
-      typeof this.contactTelephone !== 'undefined' && this.contactTelephone !== '' &&
-      typeof this.contactEmail !== 'undefined' && this.contactEmail !== '')
-  }
-
   // Converts full name string into first name and last name for Dynamics
   convertObject () {
     const dataObject = {}
