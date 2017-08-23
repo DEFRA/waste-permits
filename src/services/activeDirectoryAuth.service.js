@@ -5,12 +5,6 @@ const config = require('../config/config')
 
 module.exports = class ActiveDirectoryAuthService {
   constructor () {
-    // Get the authorization endpoint host name
-    const authHost = config.tokenEndpoint.split('/')[0]
-
-    // Get the authorization endpoint path
-    const authPath = '/' + config.tokenEndpoint.split('/').slice(1).join('/')
-
     // Build the authorization query request parameters
     // To learn more about how tokens work, see IETF RFC 6749 - https://tools.ietf.org/html/rfc6749
     this.queryParams =
@@ -22,8 +16,8 @@ module.exports = class ActiveDirectoryAuthService {
 
     // Set the token request parameters
     this.options = {
-      host: authHost,
-      path: authPath,
+      host: config.azureAuthHost,
+      path: config.azureAuthPath,
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
