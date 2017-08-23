@@ -1,3 +1,7 @@
+'use strict'
+
+const Constants = require('./src/constants')
+
 const Hapi = require('hapi')
 const HapiRouter = require('hapi-router')
 const Blipp = require('blipp')
@@ -14,7 +18,7 @@ server.connection({
 })
 
 // Create a session cookie in which to store a waste permit application token
-server.state('session', {
+server.state(Constants.COOKIE_KEY, {
   ttl: null,                // Session lifespan (deleted when browser closed)
   isSecure: true,           // Secure
   isHttpOnly: true,         // and non-secure
@@ -28,12 +32,12 @@ server.method('validateToken', (cookie) => {
   let token
   if (cookie && cookie.token) {
     token = cookie.token
-    console.log('Validate token: ' + token)
+    // console.log('Validate token: ' + token)
     // TODO - Call persistence layer to validate the token
     // e.g.
     // token = dynamics.validateToken(token)
   }
-  console.log('validate token result: ' + token)
+  // console.log('validate token result: ' + token)
   return token
 })
 
@@ -92,6 +96,16 @@ server.start((err) => {
 
   console.info('Server running in environment: ' + process.env.NODE_ENV)
   console.info('Server running at:', server.info)
+})
+
+// Listen on SIGINT signal and gracefully stop the server
+process.on('SIGINT', function () {
+  console.log('Stopping hapi server')
+
+  server.stop({ timeout: 10000 }).then((err) => {
+    console.log('Hapi server stopped')
+    process.exit((err) ? 1 : 0)
+  })
 })
 
 module.exports = server

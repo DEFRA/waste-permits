@@ -5,17 +5,22 @@
   <div class="grid-row">
     <div class="column-two-thirds">
 
-      <h1 class="heading-large">Waste Permits Home Page</h1>
+      <h1 ID="HOME_PAGE_HEADING" class="form-title heading-large">Waste Permits Home Page</h1>
 
-      <p>
-        Example common partial:
-      </p>
+      <form ID="HOME_PAGE_FORM" action="/" method="post" class="form">
 
-      {{> common/test}}
 
-      <a href="/site">View site sub screen</a>
+          <p>
+            Example common partial:
+          </p>
 
+          {{> common/test}}
+
+          <div class="form-group">
+            <input type="submit" class="button" value="Start">
+          </div>
+
+        </form>
     </div>
   </div>
-
 </main>
