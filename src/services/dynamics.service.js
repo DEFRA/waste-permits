@@ -4,11 +4,11 @@ const https = require('https')
 const config = require('../config/config')
 
 module.exports = class DynamicsService {
-  constructor (crmToken) {
+  constructor (authToken) {
     this.crmRequestOptions = {
       host: config.crmWebApiHost,
       headers: {
-        'Authorization': 'Bearer ' + crmToken,
+        'Authorization': 'Bearer ' + authToken,
         'OData-MaxVersion': '4.0',
         'OData-Version': '4.0',
         'Accept': 'application/json',

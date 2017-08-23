@@ -20,12 +20,12 @@ lab.beforeEach((done) => {
   }
 
   contactListStub = Contact.list
-  Contact.list = (crmToken) => {
+  Contact.list = (authToken) => {
     return []
   }
 
   contactSaveStub = Contact.prototype.save
-  Contact.prototype.save = (crmToken) => {
+  Contact.prototype.save = (authToken) => {
   }
 
   done()

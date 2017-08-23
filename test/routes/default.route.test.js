@@ -6,14 +6,14 @@ const Code = require('code')
 // const DOMParser = require('xmldom').DOMParser
 const server = require('../../index')
 
-const CrmTokenService = require('../../src/services/crmToken.service')
+const ActiveDirectoryAuthService = require('../../src/services/activeDirectoryAuth.service')
 
-let getCrmTokenStub
+let getAuthTokenStub
 
 lab.beforeEach((done) => {
   // Stub methods
-  getCrmTokenStub = CrmTokenService.prototype.getToken
-  CrmTokenService.prototype.getToken = () => {
+  getAuthTokenStub = ActiveDirectoryAuthService.prototype.getToken
+  ActiveDirectoryAuthService.prototype.getToken = () => {
     return '__GENERATED_CRM_TOKEN__'
   }
 
@@ -22,7 +22,7 @@ lab.beforeEach((done) => {
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  CrmTokenService.prototype.getToken = getCrmTokenStub
+  ActiveDirectoryAuthService.prototype.getToken = getAuthTokenStub
 
   done()
 })

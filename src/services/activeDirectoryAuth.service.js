@@ -3,7 +3,7 @@
 const https = require('https')
 const config = require('../config/config')
 
-module.exports = class CrmTokenService {
+module.exports = class ActiveDirectoryAuthService {
   constructor () {
     // Get the authorization endpoint host name
     const authHost = config.tokenEndpoint.split('/')[0]

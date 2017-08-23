@@ -5,11 +5,11 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const nock = require('nock')
 
-const CrmTokenService = require('../../src/services/crmToken.service')
+const ActiveDirectoryAuthService = require('../../src/services/activeDirectoryAuth.service')
 
-let crmTokenService
+let authService
 
-let crmTokenResponse = {
+let authTokenResponse = {
   token_type: 'Bearer',
   scope: 'user_impersonation',
   expires_in: '3600',
@@ -21,12 +21,12 @@ let crmTokenResponse = {
 }
 
 lab.beforeEach((done) => {
-  crmTokenService = new CrmTokenService()
+  authService = new ActiveDirectoryAuthService()
 
   // Mock the CRM token endpoint
   nock('https://login.microsoftonline.com')
     .post('/02958295-d8ae-4368-9e90-3c8230470218/oauth2/token')
-    .reply(200, crmTokenResponse)
+    .reply(200, authTokenResponse)
 
   done()
 })
@@ -38,8 +38,8 @@ lab.afterEach((done) => {
 
 lab.experiment('CRM Token Service tests:', () => {
   lab.test('Get token method should return the correct CRM token', (done) => {
-    crmTokenService.getToken().then((crmToken) => {
-      Code.expect(crmToken).to.equal(crmTokenResponse.access_token)
+    authService.getToken().then((authToken) => {
+      Code.expect(authToken).to.equal(authTokenResponse.access_token)
 
       done()
     })

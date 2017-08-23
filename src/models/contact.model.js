@@ -52,8 +52,8 @@ module.exports = class Contact extends BaseModel {
     return new Contact(contactDetails)
   }
 
-  static async list (crmToken) {
-    const dynamicsService = new DynamicsService(crmToken)
+  static async list (authToken) {
+    const dynamicsService = new DynamicsService(authToken)
 
     // Define the query
     const query = 'contacts?$select=fullname,contactid'
@@ -81,8 +81,8 @@ module.exports = class Contact extends BaseModel {
     return contacts
   }
 
-  async save (crmToken) {
-    const dynamicsService = new DynamicsService(crmToken)
+  async save (authToken) {
+    const dynamicsService = new DynamicsService(authToken)
 
     // Map the Contact to the corresponding Dynamics schema Contact object
     const dataObject = this.convertObject()

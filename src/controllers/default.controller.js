@@ -6,8 +6,8 @@ const Constants = require('../constants')
 const uuid4 = require('uuid/v4')
 
 const BaseController = require('./base.controller')
-const CrmTokenService = require('../services/crmToken.service')
-const crmTokenService = new CrmTokenService()
+const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
+const authService = new ActiveDirectoryAuthService()
 
 module.exports = class DefaultController extends BaseController {
   static async doGet (request, reply) {
@@ -37,8 +37,8 @@ module.exports = class DefaultController extends BaseController {
     console.log('Generated session token: ' + token)
 
     // Generate a CRM token
-    const crmToken = await crmTokenService.getToken()
-    console.log('Generated CRM token:' + crmToken)
+    const authToken = await authService.getToken()
+    console.log('Generated CRM token:' + authToken)
 
     // TODO: Confirm how session handling will work and where the most appropriate point is to create
     // and destroy session cookies
@@ -46,7 +46,7 @@ module.exports = class DefaultController extends BaseController {
     const cookie = {
       // token: request.state.session.token,
       token: token,
-      crmToken: crmToken
+      authToken: authToken
     }
 
     return reply

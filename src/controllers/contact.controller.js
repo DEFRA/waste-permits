@@ -11,13 +11,13 @@ module.exports = class ContactController extends BaseController {
         pageTitle: 'Waste Permits - Contact Details'
       }
 
-      let crmToken
+      let authToken
       if (request.state[Constants.COOKIE_KEY]) {
-        crmToken = request.state[Constants.COOKIE_KEY].crmToken
+        authToken = request.state[Constants.COOKIE_KEY].authToken
       }
 
       // List the contacts
-      context.contacts = await Contact.list(crmToken)
+      context.contacts = await Contact.list(authToken)
 
       return reply
         .view('contact', context)
@@ -29,9 +29,9 @@ module.exports = class ContactController extends BaseController {
   }
 
   static async doPost (request, reply) {
-    let crmToken
+    let authToken
     if (request.state[Constants.COOKIE_KEY]) {
-      crmToken = request.state[Constants.COOKIE_KEY].crmToken
+      authToken = request.state[Constants.COOKIE_KEY].authToken
     }
 
     if (!request.payload.id) {
@@ -52,7 +52,7 @@ module.exports = class ContactController extends BaseController {
         return ContactController.doGet(request, reply)
       } else {
         try {
-          await contact.save(crmToken)
+          await contact.save(authToken)
 
           return reply
             .redirect('/task-list')
@@ -68,7 +68,7 @@ module.exports = class ContactController extends BaseController {
       contact.contactName = request.payload.updatedContactName
 
       try {
-        await contact.save(crmToken)
+        await contact.save(authToken)
 
         return ContactController.doGet(request, reply)
       } catch (error) {
