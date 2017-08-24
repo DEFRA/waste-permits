@@ -9,12 +9,12 @@ const Code = require('code')
 const sinon = require('sinon')
 const nock = require('nock')
 
-const DynamicsService = require('../../src/services/dynamics.service')
+const DynamicsDALService = require('../../src/services/dynamicsDAL.service')
 
-let dynamicsService
+let dynamicsDAL
 
 lab.beforeEach((done) => {
-  dynamicsService = new DynamicsService('__CRM_TOKEN__')
+  dynamicsDAL = new DynamicsDALService('__CRM_TOKEN__')
 
   // Mock the CRM token endpoints
   nock(`https://${config.dynamicsWebApiHost}`)
@@ -33,31 +33,31 @@ lab.beforeEach((done) => {
 })
 
 lab.afterEach((done) => {
-  DynamicsService.prototype.runQuery.restore()
+  DynamicsDALService.prototype.runQuery.restore()
   nock.cleanAll()
   done()
 })
 
 lab.experiment('Dynamics Service tests:', () => {
   lab.test('Create method should create a record in Dynamics', (done) => {
-    const spy = sinon.spy(DynamicsService.prototype, 'runQuery')
-    dynamicsService.createItem({}, '__DYNAMICS_INSERT_QUERY__').then((response) => {
+    const spy = sinon.spy(DynamicsDALService.prototype, 'runQuery')
+    dynamicsDAL.createItem({}, '__DYNAMICS_INSERT_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
       done()
     })
   })
 
   lab.test('Update method should update a record in Dynamics', (done) => {
-    const spy = sinon.spy(DynamicsService.prototype, 'runQuery')
-    dynamicsService.updateItem({}, '__DYNAMICS_UPDATE_QUERY__').then((response) => {
+    const spy = sinon.spy(DynamicsDALService.prototype, 'runQuery')
+    dynamicsDAL.updateItem({}, '__DYNAMICS_UPDATE_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
       done()
     })
   })
 
   lab.test('List method should retrieve a list records in Dynamics', (done) => {
-    const spy = sinon.spy(DynamicsService.prototype, 'runQuery')
-    dynamicsService.listItems('__DYNAMICS_LIST_QUERY__').then((response) => {
+    const spy = sinon.spy(DynamicsDALService.prototype, 'runQuery')
+    dynamicsDAL.listItems('__DYNAMICS_LIST_QUERY__').then((response) => {
       console.log(response)
       Code.expect(spy.callCount).to.equal(1)
       done()

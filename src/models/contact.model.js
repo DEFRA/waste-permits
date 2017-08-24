@@ -1,6 +1,6 @@
 'use strict'
 
-const DynamicsService = require('../services/dynamics.service')
+const DynamicsDALService = require('../services/dynamicsDAL.service')
 const BaseModel = require('./base.model')
 
 module.exports = class Contact extends BaseModel {
@@ -19,7 +19,7 @@ module.exports = class Contact extends BaseModel {
     // TODO
     // Define the query
     // const query = 'contacts?$select=contactid'
-    // const response = dynamicsService.getItem(query)
+    // const response = dynamicsDALService.getItem(query)
 
     // TODO get this from Dynamics instead
     const contactDetails = {
@@ -33,7 +33,7 @@ module.exports = class Contact extends BaseModel {
   }
 
   static async list (authToken) {
-    const dynamicsService = new DynamicsService(authToken)
+    const dynamicsDAL = new DynamicsDALService(authToken)
 
     // Define the query
     const query = 'contacts?$select=contactid,firstname,lastname'
@@ -41,7 +41,7 @@ module.exports = class Contact extends BaseModel {
     // List the Contacts
     const contacts = []
     try {
-      const response = await dynamicsService.listItems(query)
+      const response = await dynamicsDAL.listItems(query)
 
       // Parse response into Contact objects
       response.forEach((contact) => {
@@ -56,7 +56,7 @@ module.exports = class Contact extends BaseModel {
   }
 
   async save (authToken) {
-    const dynamicsService = new DynamicsService(authToken)
+    const dynamicsDAL = new DynamicsDALService(authToken)
 
     // Map the Contact to the corresponding Dynamics schema Contact object
     const dataObject = {
@@ -69,11 +69,11 @@ module.exports = class Contact extends BaseModel {
       if (!this.contactid) {
         // New contact
         query = 'contacts'
-        return await dynamicsService.createItem(dataObject, query)
+        return await dynamicsDAL.createItem(dataObject, query)
       } else {
         // Update contact
         query = `contacts(${this.contactid})`
-        return await dynamicsService.updateItem(dataObject, query)
+        return await dynamicsDAL.updateItem(dataObject, query)
       }
     } catch (error) {
       // TODO: Error handling?

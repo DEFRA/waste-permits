@@ -6,7 +6,7 @@ const Code = require('code')
 const sinon = require('sinon')
 
 const Contact = require('../../src/models/contact.model')
-const DynamicsService = require('../../src/services/dynamics.service')
+const DynamicsDALService = require('../../src/services/dynamicsDAL.service')
 
 let testContact
 let dynamicsCreateItemStub
@@ -22,8 +22,8 @@ lab.beforeEach((done) => {
   })
 
   // Stub methods
-  dynamicsListItemsStub = DynamicsService.prototype.listItems
-  DynamicsService.prototype.listItems = (query) => {
+  dynamicsListItemsStub = DynamicsDALService.prototype.listItems
+  DynamicsDALService.prototype.listItems = (query) => {
     // Dynamics Contact objects
     return [{
       fullname: 'FULL NAME1'
@@ -34,13 +34,13 @@ lab.beforeEach((done) => {
     }]
   }
 
-  dynamicsCreateItemStub = DynamicsService.prototype.createItem
-  DynamicsService.prototype.createItem = (query) => {
+  dynamicsCreateItemStub = DynamicsDALService.prototype.createItem
+  DynamicsDALService.prototype.createItem = (query) => {
     return true
   }
 
-  dynamicsUpdateItemStub = DynamicsService.prototype.updateItem
-  DynamicsService.prototype.updateItem = (query) => {
+  dynamicsUpdateItemStub = DynamicsDALService.prototype.updateItem
+  DynamicsDALService.prototype.updateItem = (query) => {
     return true
   }
 
@@ -49,16 +49,16 @@ lab.beforeEach((done) => {
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  DynamicsService.prototype.createItem = dynamicsCreateItemStub
-  DynamicsService.prototype.listItems = dynamicsListItemsStub
-  DynamicsService.prototype.updateItem = dynamicsUpdateItemStub
+  DynamicsDALService.prototype.createItem = dynamicsCreateItemStub
+  DynamicsDALService.prototype.listItems = dynamicsListItemsStub
+  DynamicsDALService.prototype.updateItem = dynamicsUpdateItemStub
 
   done()
 })
 
 lab.experiment('Contact Model tests:', () => {
   lab.test('list() method returns a list of Contact objects', (done) => {
-    const spy = sinon.spy(DynamicsService.prototype, 'listItems')
+    const spy = sinon.spy(DynamicsDALService.prototype, 'listItems')
     Contact.list().then((contactList) => {
       Code.expect(Array.isArray(contactList)).to.be.true()
       Code.expect(contactList.length).to.equal(3)
@@ -69,7 +69,7 @@ lab.experiment('Contact Model tests:', () => {
   })
 
   lab.test('save() method saves a new Contact object', (done) => {
-    const spy = sinon.spy(DynamicsService.prototype, 'createItem')
+    const spy = sinon.spy(DynamicsDALService.prototype, 'createItem')
     testContact.save().then((response) => {
       Code.expect(response).to.be.true()
       Code.expect(spy.callCount).to.equal(1)
@@ -79,7 +79,7 @@ lab.experiment('Contact Model tests:', () => {
   })
 
   lab.test('save() method updates an existing Contact object', (done) => {
-    const spy = sinon.spy(DynamicsService.prototype, 'updateItem')
+    const spy = sinon.spy(DynamicsDALService.prototype, 'updateItem')
     testContact.contactid = '123'
     testContact.save().then((response) => {
       Code.expect(response).to.be.true()
