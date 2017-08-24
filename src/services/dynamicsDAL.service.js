@@ -19,11 +19,11 @@ module.exports = class DynamicsDALService {
   }
 
   createItem (dataObject, query) {
-    return this.runQuery('POST', query, dataObject)
+    return this._commit(query, 'POST', dataObject)
   }
 
   updateItem (dataObject, query) {
-    return this.runQuery('PATCH', query, dataObject)
+    return this._commit(query, 'PATCH', dataObject)
   }
 
   listItems (query) {
@@ -68,25 +68,21 @@ module.exports = class DynamicsDALService {
     })
   }
 
-  runQuery (method, query, dataObject = undefined) {
-    // console.log('Running Dynamics query:\n..Query string: ' + query + '\n..Method: ' + method + '\n..Data object: ' + dataObject)
-
+  _commit (query, method, dataObject = undefined) {
     return new Promise((resolve, reject) => {
-      // Set the Dynamics query
-      this.crmRequestOptions.path = config.dynamicsWebApiPath + query
+      // Combine the path to Dynamics and the query and add it to our request options
+      this.crmRequestOptions.path = `${config.dynamicsWebApiPath}${query}`
 
       // Set the request method and CRM token
       this.crmRequestOptions.method = method
 
-      if (dataObject) {
-        // Set the content length
-        const contentLength = Buffer.byteLength(JSON.stringify(dataObject))
-        this.crmRequestOptions.headers['Content-Length'] = contentLength
-      }
+      // Set the content length
+      const contentLength = Buffer.byteLength(JSON.stringify(dataObject))
+      this.crmRequestOptions.headers['Content-Length'] = contentLength
 
-      // Make the web api request
+      // Query Dynamics for the data via a HTTPS request
       const crmRequest = https.request(this.crmRequestOptions, function (response) {
-        // Make an array to hold the response parts if we get multiple parts
+        // We use an array to hold the response parts in the event we get multiple parts returned
         const responseParts = []
         response.setEncoding('utf8')
         response.on('data', function (chunk) {
@@ -95,17 +91,11 @@ module.exports = class DynamicsDALService {
         response.on('end', function () {
           console.log(`Dynamics query response: Status Code: ${response.statusCode} Message: ${response.statusMessage}`)
 
-          switch (response.statusCode) {
-            case 200:
-              // Parse the response JSON
-              resolve(JSON.parse(responseParts.join('')).value)
-              break
-            case 204:
-              resolve()
-              break
-            default:
-              const message = `Unknown response from Dynamics. Code: ${response.statusCode} Message: ${response.statusMessage}`
-              reject(message)
+          if (response.statusCode === 204) {
+            resolve()
+          } else {
+            const message = `Unknown response from Dynamics. Code: ${response.statusCode} Message: ${response.statusMessage}`
+            reject(message)
           }
         })
       })
@@ -115,9 +105,7 @@ module.exports = class DynamicsDALService {
       })
 
       // Write the data
-      if (dataObject) {
-        crmRequest.write(JSON.stringify(dataObject))
-      }
+      crmRequest.write(JSON.stringify(dataObject))
 
       // Close the Web Api request
       crmRequest.end()

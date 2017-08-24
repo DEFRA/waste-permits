@@ -33,14 +33,14 @@ lab.beforeEach((done) => {
 })
 
 lab.afterEach((done) => {
-  DynamicsDALService.prototype.runQuery.restore()
+  DynamicsDALService.prototype._commit.restore()
   nock.cleanAll()
   done()
 })
 
 lab.experiment('Dynamics Service tests:', () => {
   lab.test('Create method should create a record in Dynamics', (done) => {
-    const spy = sinon.spy(DynamicsDALService.prototype, 'runQuery')
+    const spy = sinon.spy(DynamicsDALService.prototype, '_commit')
     dynamicsDAL.createItem({}, '__DYNAMICS_INSERT_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
       done()
@@ -48,7 +48,7 @@ lab.experiment('Dynamics Service tests:', () => {
   })
 
   lab.test('Update method should update a record in Dynamics', (done) => {
-    const spy = sinon.spy(DynamicsDALService.prototype, 'runQuery')
+    const spy = sinon.spy(DynamicsDALService.prototype, '_commit')
     dynamicsDAL.updateItem({}, '__DYNAMICS_UPDATE_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
       done()
