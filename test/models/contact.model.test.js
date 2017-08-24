@@ -15,9 +15,10 @@ let dynamicsUpdateItemStub
 
 lab.beforeEach((done) => {
   testContact = new Contact({
-    contactName: 'John Smith',
-    contactTelephone: '01234567890',
-    contactEmail: 'john.smith@email.com'
+    firstname: 'John',
+    lastname: 'Smith,',
+    telephone1: '01234567890',
+    emailaddress1: 'john.smith@email.com'
   })
 
   // Stub methods
@@ -56,16 +57,6 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Contact Model tests:', () => {
-
-  lab.test('convertObject() method converts a Contact object correctly', (done) => {
-    const convertedObject = testContact.convertObject()
-
-    Code.expect(convertedObject.firstname).to.equal('John')
-    Code.expect(convertedObject.lastname).to.equal('Smith')
-
-    done()
-  })
-
   lab.test('list() method returns a list of Contact objects', (done) => {
     const spy = sinon.spy(DynamicsService.prototype, 'listItems')
     Contact.list().then((contactList) => {
@@ -89,7 +80,7 @@ lab.experiment('Contact Model tests:', () => {
 
   lab.test('save() method updates an existing Contact object', (done) => {
     const spy = sinon.spy(DynamicsService.prototype, 'updateItem')
-    testContact.id = '123'
+    testContact.contactid = '123'
     testContact.save().then((response) => {
       Code.expect(response).to.be.true()
       Code.expect(spy.callCount).to.equal(1)

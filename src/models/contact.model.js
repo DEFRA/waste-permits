@@ -7,26 +7,12 @@ module.exports = class Contact extends BaseModel {
   constructor (contact = undefined) {
     super()
     if (contact) {
-      this.id = contact.id
-      this.contactName = contact.contactName
-      this.contactTelephone = contact.contactTelephone
-      this.contactEmail = contact.contactEmail
+      this.id = contact.contactid
+      this.firstname = contact.firstname
+      this.lastname = contact.lastname
+      this.telephone1 = contact.telephone1
+      this.emailaddress1 = contact.emailaddress1
     }
-  }
-
-  // Converts full name string into first name and last name for Dynamics
-  convertObject () {
-    const dataObject = {}
-
-    let nameParts = this.contactName.split(' ')
-    const firstName = nameParts[0]
-
-    nameParts.splice(0, 1)
-    let lastName = nameParts.join(' ')
-    dataObject['firstname'] = firstName
-    dataObject['lastname'] = lastName
-
-    return dataObject
   }
 
   static getById (id) {
@@ -37,10 +23,11 @@ module.exports = class Contact extends BaseModel {
 
     // TODO get this from Dynamics instead
     const contactDetails = {
-      id: id,
-      contactName: 'xxxxxx',
-      contactTelephone: 'yyyyy',
-      contactEmail: 'zzzzz'
+      contactid: id,
+      firstname: 'Alan',
+      lastname: 'Cruikshanks',
+      telephone1: '020 3025 4033',
+      emailaddress1: 'alan.cruikshanks@environment-agency.gov.uk'
     }
     return new Contact(contactDetails)
   }
@@ -49,7 +36,7 @@ module.exports = class Contact extends BaseModel {
     const dynamicsService = new DynamicsService(authToken)
 
     // Define the query
-    const query = 'contacts?$select=fullname,contactid'
+    const query = 'contacts?$select=contactid,firstname,lastname'
 
     // List the Contacts
     const contacts = []
@@ -58,13 +45,7 @@ module.exports = class Contact extends BaseModel {
 
       // Parse response into Contact objects
       response.forEach((contact) => {
-        contacts.push(new Contact({
-          // TODO: Transform Contact objects?
-          // i.e. map from Dynamics Contact objects into application Contact objects
-          contactName: contact.fullname,
-          contactTelephone: '12345',
-          contactEmail: '123@email.com'
-        }))
+        contacts.push(new Contact(contact))
       })
     } catch (error) {
       // TODO: Error handling?
@@ -78,17 +59,20 @@ module.exports = class Contact extends BaseModel {
     const dynamicsService = new DynamicsService(authToken)
 
     // Map the Contact to the corresponding Dynamics schema Contact object
-    const dataObject = this.convertObject()
+    const dataObject = {
+      firstname: this.firstname,
+      lastname: this.lastname
+    }
 
     try {
       let query
-      if (!this.id) {
+      if (!this.contactid) {
         // New contact
         query = 'contacts'
         return await dynamicsService.createItem(dataObject, query)
       } else {
         // Update contact
-        query = `contacts(${this.id})`
+        query = `contacts(${this.contactid})`
         return await dynamicsService.updateItem(dataObject, query)
       }
     } catch (error) {

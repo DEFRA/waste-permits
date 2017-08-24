@@ -11,13 +11,23 @@
     <form method="post" action="/contact">
 
       <div class="form-group">
-        <label class="form-label" for="contactName">
-          Full name
+        <label class="form-label" for="firstname">
+          First name
           <span class="form-hint">
-            For example, John Smith
+            For example, Jane
           </span>
         </label>
-        <input class="form-control" id="contactName" name="contactName" type="text" value="{{contact.contactName}}">
+        <input class="form-control" id="firstname" name="firstname" type="text" value="{{contact.firstname}}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="lastname">
+          First name
+          <span class="form-hint">
+            For example, Smith
+          </span>
+        </label>
+        <input class="form-control" id="lastname" name="lastname" type="text" value="{{contact.lastname}}">
       </div>
 
       <div class="form-group">
@@ -36,20 +46,20 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label" for="contactTelephone">
+        <label class="form-label" for="telephone1">
           Telephone number
           <span class="form-hint">
             This can be a landline or mobile
           </span>
         </label>
-        <input class="form-control form-control-char-25" id="contactTelephone" name="contactTelephone" type="number" value="{{contact.contactTelephone}}">
+        <input class="form-control form-control-char-25" id="telephone1" name="telephone1" type="number" value="{{contact.telephone1}}">
       </div>
 
       <div class="form-group">
-        <label class="form-label" for="contactEmail">
+        <label class="form-label" for="emailaddress1">
           Email address
         </label>
-        <input class="form-control" id="contactEmail" name="contactEmail" type="email" value="{{contact.contactEmail}}">
+        <input class="form-control" id="emailaddress1" name="emailaddress1" type="email" value="{{contact.emailaddress1}}">
       </div>
 
       <div class="form-group">
@@ -92,7 +102,7 @@
   <h2>Contact List:</h2>
   <ul>
   {{#each contacts}}
-  <li>{{this.contactName}}</li>
+    <li>{{this.firstname}} {{this.lastname}}</li>
   {{/each}}
   </ul>
 
