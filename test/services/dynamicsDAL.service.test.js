@@ -56,7 +56,7 @@ lab.experiment('Dynamics Service tests:', () => {
   })
 
   lab.test('List method should retrieve a list records in Dynamics', (done) => {
-    const spy = sinon.spy(DynamicsDALService.prototype, 'runQuery')
+    const spy = sinon.spy(DynamicsDALService.prototype, '_query')
     dynamicsDAL.listItems('__DYNAMICS_LIST_QUERY__').then((response) => {
       console.log(response)
       Code.expect(spy.callCount).to.equal(1)
