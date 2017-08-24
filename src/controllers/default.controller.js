@@ -2,7 +2,7 @@
 
 const Constants = require('../constants')
 
-// TODO confirm which version of UUID to use
+// Used for generating a session id which is saved as a cookie
 const uuid4 = require('uuid/v4')
 
 const BaseController = require('./base.controller')
@@ -14,19 +14,6 @@ module.exports = class DefaultController extends BaseController {
     const context = {
       pageTitle: 'Waste Permits'
     }
-
-    // TODO: Confirm when we are going to create the session cookie
-
-    // if (!request.state.session.token) {
-    //   // Generate a session token
-    //   const token = uuid4()
-    //   console.log('Generated session token: ' + token)
-    //
-    //   request.state.session.token = token
-    // }
-    // reply
-    //   .view('index', context)
-    //   .state('session', request.state.session)
 
     reply.view('index', context)
   }
@@ -40,11 +27,10 @@ module.exports = class DefaultController extends BaseController {
     const authToken = await authService.getToken()
     console.log('Generated CRM token:' + authToken)
 
-    // TODO: Confirm how session handling will work and where the most appropriate point is to create
-    // and destroy session cookies
+    // TODO: Confirm how session handling will work and where the most
+    // appropriate point is to create and destroy session cookies
 
     const cookie = {
-      // token: request.state.session.token,
       token: token,
       authToken: authToken
     }
