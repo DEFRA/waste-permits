@@ -9,7 +9,7 @@ const BaseController = require('./base.controller')
 const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
 const authService = new ActiveDirectoryAuthService()
 
-module.exports = class DefaultController extends BaseController {
+module.exports = class RootController extends BaseController {
   static async doGet (request, reply) {
     const context = {
       pageTitle: 'Waste Permits'
@@ -46,6 +46,6 @@ module.exports = class DefaultController extends BaseController {
   }
 
   static handler (request, reply) {
-    return BaseController.handler(request, reply, DefaultController, false)
+    return BaseController.handler(request, reply, RootController, false)
   }
 }

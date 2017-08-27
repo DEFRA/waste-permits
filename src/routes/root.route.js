@@ -1,12 +1,12 @@
 'use strict'
 
-const DefaultController = require('../controllers/default.controller')
+const RootController = require('../controllers/root.controller')
 
 module.exports = [{
   method: ['GET', 'POST'],
   path: '/',
   config: {
     description: 'The home page',
-    handler: DefaultController.handler
+    handler: RootController.handler
   }
 }]
