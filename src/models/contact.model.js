@@ -2,16 +2,17 @@
 
 const DynamicsDALService = require('../services/dynamicsDAL.service')
 const BaseModel = require('./base.model')
+const uuid4 = require('uuid/v4')
 
 module.exports = class Contact extends BaseModel {
-  constructor (contact = undefined) {
+  constructor (dataObject = undefined) {
     super()
-    if (contact) {
-      this.id = contact.contactid
-      this.firstname = contact.firstname
-      this.lastname = contact.lastname
-      this.telephone1 = contact.telephone1
-      this.emailaddress1 = contact.emailaddress1
+    if (dataObject) {
+      this.id = dataObject.id
+      this.firstName = dataObject.firstName
+      this.lastName = dataObject.lastName
+      this.telephone = dataObject.telephone
+      this.email = dataObject.email
     }
   }
 
@@ -23,11 +24,11 @@ module.exports = class Contact extends BaseModel {
 
     // TODO get this from Dynamics instead
     const contactDetails = {
-      contactid: id,
-      firstname: 'Alan',
-      lastname: 'Cruikshanks',
-      telephone1: '020 3025 4033',
-      emailaddress1: 'alan.cruikshanks@environment-agency.gov.uk'
+      id: uuid4(),
+      firstName: 'Alan',
+      lastName: 'Cruikshanks',
+      telephone: '020 3025 4033',
+      email: 'alan.cruikshanks@environment-agency.gov.uk'
     }
     return new Contact(contactDetails)
   }
@@ -45,7 +46,12 @@ module.exports = class Contact extends BaseModel {
 
       // Parse response into Contact objects
       response.forEach((contact) => {
-        contacts.push(new Contact(contact))
+        contacts.push(new Contact({
+          firstName: contact.firstname,
+          lastName: contact.lastname,
+          telephone: contact.telephone1,
+          email: contact.emailaddress1
+        }))
       })
     } catch (error) {
       // TODO: Error handling?
@@ -60,8 +66,8 @@ module.exports = class Contact extends BaseModel {
 
     // Map the Contact to the corresponding Dynamics schema Contact object
     const dataObject = {
-      firstname: this.firstname,
-      lastname: this.lastname
+      firstname: this.firstName,
+      lastname: this.lastName
     }
 
     try {
