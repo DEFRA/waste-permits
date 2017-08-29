@@ -37,7 +37,7 @@ module.exports = class Contact extends BaseModel {
     const dynamicsDal = new DynamicsDalService(authToken)
 
     // Define the query
-    const query = 'contacts?$select=contactid,firstname,lastname'
+    const query = 'contacts?$select=contactid,firstname,lastname,telephone1,emailaddress1'
 
     // List the Contacts
     const contacts = []
@@ -47,6 +47,7 @@ module.exports = class Contact extends BaseModel {
       // Parse response into Contact objects
       response.forEach((contact) => {
         contacts.push(new Contact({
+          id: contact.contactid,
           firstName: contact.firstname,
           lastName: contact.lastname,
           telephone: contact.telephone1,
