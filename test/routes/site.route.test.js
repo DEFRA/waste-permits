@@ -42,13 +42,13 @@ lab.experiment('Site page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('SITE_HEADING').firstChild
+      let element = doc.getElementById('site-heading').firstChild
       Code.expect(element.nodeValue).to.equal('What\'s the site name?')
 
-      element = doc.getElementById('SITE_NAME_LABEL').firstChild
+      element = doc.getElementById('site-name-label').firstChild
       Code.expect(element.nodeValue).to.equal('Site name')
 
-      element = doc.getElementById('SITE_SUBMIT').firstChild
+      element = doc.getElementById('site-submit').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
 
       done()
@@ -110,7 +110,7 @@ lab.experiment('Site page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      const element = doc.getElementById('SITE_ERROR').firstChild
+      const element = doc.getElementById('site-error').firstChild
       Code.expect(element.nodeValue).to.equal('ERROR: Invalid site name: [invalid_site_name]')
 
       done()

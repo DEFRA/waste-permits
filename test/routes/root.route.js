@@ -44,7 +44,7 @@ lab.experiment('Default page tests:', () => {
       // let element = doc.getElementById('HOME_PAGE_HEADING')
       // Code.expect(element.nodeValue).to.equal('Waste Permits Home Page')
 
-      Code.expect(res.payload.includes('HOME_PAGE_HEADING')).to.be.true()
+      Code.expect(res.payload.includes('home-page-heading')).to.be.true()
       Code.expect(res.payload.includes('Waste Permits Home Page')).to.be.true()
 
       done()

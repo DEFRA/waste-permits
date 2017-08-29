@@ -54,10 +54,10 @@ lab.experiment('Contact page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('CONTACT_HEADING').firstChild
+      let element = doc.getElementById('contact-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
 
-      element = doc.getElementById('CONTACT_CONTINUE').firstChild
+      element = doc.getElementById('contact-continue').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
 
       done()
@@ -103,7 +103,7 @@ lab.experiment('Contact page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('CONTACT_HEADING').firstChild
+      let element = doc.getElementById('contact-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
 
       done()

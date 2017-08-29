@@ -4,7 +4,7 @@
 
   <div class="grid-row">
     <div class="column-two-thirds">
-      <h1 class="heading-large" id="SITE_HEADING">What's the site name?</h1>
+      <h1 class="heading-large" id="site-heading">What's the site name?</h1>
       <p>
         The site is the area you want the permit to cover.
       </p>
@@ -12,14 +12,14 @@
       <form method="POST" action="site">
         <div class="form-group">
           <label class="form-label" for="siteName">
-            <span id="SITE_NAME_LABEL">Site name</span>
+            <span id="site-name-label">Site name</span>
             <span class="form-hint">If it doesn’t already have a name, enter the name you’ll use</span>
           </label>
           <input class="form-control form-control-char-60" id="siteName" name="siteName" type="text" value="">
         </div>
 
         <div class="form-group">
-          <button id="SITE_SUBMIT" type="submit" class="button">Continue</button>
+          <button id="site-submit" type="submit" class="button">Continue</button>
         </div>
       </form>
     </div>
@@ -39,7 +39,7 @@
 
   Site entered: {{ siteName }}
   {{#if errors}}
-    <h2 id="SITE_ERROR">ERROR: {{errors.message}}</h2>
+    <h2 id="site-error">ERROR: {{errors.message}}</h2>
   {{/if}}
 
   <p>

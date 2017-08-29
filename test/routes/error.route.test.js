@@ -28,7 +28,7 @@ lab.experiment('Error page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('ERROR_HEADING').firstChild
+      let element = doc.getElementById('error-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Oops! Something went wrong...')
 
       done()

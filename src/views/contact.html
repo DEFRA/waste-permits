@@ -4,7 +4,7 @@
 
   <div class="grid-row">
     <div class="column-two-thirds">
-      <h1 id="CONTACT_HEADING" class="heading-large">Who should we contact about this application?</h1>
+      <h1 id="contact-heading" class="heading-large">Who should we contact about this application?</h1>
       <form method="post" action="/contact">
         <div class="form-group">
           <label class="form-label" for="firstName">
@@ -51,6 +51,10 @@
           </label>
           <input class="form-control" id="email" name="email" type="email" value="{{contact.email}}">
         </div>
+
+        <div class="form-group">
+          <button id="contact-continue" type="submit" class="button">Continue</button>
+        </div>
       </form>
 
       <h2>Update contact:</h2>
@@ -72,7 +76,7 @@
         </div>
 
         <div class="form-group">
-          <button id="CONTACT_UPDATE" type="submit" class="button">Update</button>
+          <button id="contact-update" type="submit" class="button">Update</button>
         </div>
       </form>
     </div>
