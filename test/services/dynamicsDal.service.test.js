@@ -33,7 +33,6 @@ lab.beforeEach((done) => {
 })
 
 lab.afterEach((done) => {
-  DynamicsDalService.prototype._commit.restore()
   nock.cleanAll()
   done()
 })
@@ -43,6 +42,8 @@ lab.experiment('Dynamics Service tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_commit')
     dynamicsDal.createItem({}, '__DYNAMICS_INSERT_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
+
+      DynamicsDalService.prototype._commit.restore()
       done()
     })
   })
@@ -51,6 +52,8 @@ lab.experiment('Dynamics Service tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_commit')
     dynamicsDal.updateItem({}, '__DYNAMICS_UPDATE_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
+
+      DynamicsDalService.prototype._commit.restore()
       done()
     })
   })
@@ -60,6 +63,8 @@ lab.experiment('Dynamics Service tests:', () => {
     dynamicsDal.listItems('__DYNAMICS_LIST_QUERY__').then((response) => {
       console.log(response)
       Code.expect(spy.callCount).to.equal(1)
+
+      DynamicsDalService.prototype._query.restore()
       done()
     })
   })
