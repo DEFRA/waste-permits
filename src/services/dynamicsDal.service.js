@@ -3,7 +3,7 @@
 const https = require('https')
 const config = require('../config/config')
 
-module.exports = class DynamicsDALService {
+module.exports = class DynamicsDalService {
   constructor (authToken) {
     this.crmRequestOptions = {
       host: config.dynamicsWebApiHost,

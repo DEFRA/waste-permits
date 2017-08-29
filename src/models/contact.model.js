@@ -1,6 +1,6 @@
 'use strict'
 
-const DynamicsDALService = require('../services/dynamicsDAL.service')
+const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const uuid4 = require('uuid/v4')
 
@@ -20,7 +20,7 @@ module.exports = class Contact extends BaseModel {
     // TODO
     // Define the query
     // const query = 'contacts?$select=contactid'
-    // const response = dynamicsDALService.getItem(query)
+    // const response = dynamicsDalService.getItem(query)
 
     // TODO get this from Dynamics instead
     const contactDetails = {
@@ -34,7 +34,7 @@ module.exports = class Contact extends BaseModel {
   }
 
   static async list (authToken) {
-    const dynamicsDAL = new DynamicsDALService(authToken)
+    const dynamicsDal = new DynamicsDalService(authToken)
 
     // Define the query
     const query = 'contacts?$select=contactid,firstname,lastname'
@@ -42,7 +42,7 @@ module.exports = class Contact extends BaseModel {
     // List the Contacts
     const contacts = []
     try {
-      const response = await dynamicsDAL.listItems(query)
+      const response = await dynamicsDal.listItems(query)
 
       // Parse response into Contact objects
       response.forEach((contact) => {
@@ -62,7 +62,7 @@ module.exports = class Contact extends BaseModel {
   }
 
   async save (authToken) {
-    const dynamicsDAL = new DynamicsDALService(authToken)
+    const dynamicsDal = new DynamicsDalService(authToken)
 
     // Map the Contact to the corresponding Dynamics schema Contact object
     const dataObject = {
@@ -75,11 +75,11 @@ module.exports = class Contact extends BaseModel {
       if (!this.contactid) {
         // New contact
         query = 'contacts'
-        return await dynamicsDAL.createItem(dataObject, query)
+        return await dynamicsDal.createItem(dataObject, query)
       } else {
         // Update contact
         query = `contacts(${this.contactid})`
-        return await dynamicsDAL.updateItem(dataObject, query)
+        return await dynamicsDal.updateItem(dataObject, query)
       }
     } catch (error) {
       // TODO: Error handling?
