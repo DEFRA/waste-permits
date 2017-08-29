@@ -6,6 +6,14 @@ const Code = require('code')
 
 const BaseModel = require('../../src/models/base.model')
 
+lab.beforeEach((done) => {
+  done()
+})
+
+lab.afterEach((done) => {
+  done()
+})
+
 lab.experiment('Base Model tests:', () => {
   lab.test('Base Model toString() method serialises a model object correctly', (done) => {
     const modelObject = new BaseModel()
