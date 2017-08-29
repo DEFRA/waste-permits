@@ -4,13 +4,12 @@
 
   <div class="grid-row">
     <div class="column-two-thirds">
-
       <h1 class="heading-large" id="SITE_HEADING">What's the site name?</h1>
-
-      <p>The site is the area you want the permit to cover.</p>
+      <p>
+        The site is the area you want the permit to cover.
+      </p>
 
       <form method="POST" action="site">
-
         <div class="form-group">
           <label class="form-label" for="siteName">
             <span id="SITE_NAME_LABEL">Site name</span>
@@ -22,24 +21,21 @@
         <div class="form-group">
           <button id="SITE_SUBMIT" type="submit" class="button">Continue</button>
         </div>
-
       </form>
-
     </div>
   </div>
 
   <p>
     Example partial with CSS styling from the assets/sass folder:
   </p>
-
   <p>
     {{> example}}
   </p>
 
   {{{ message }}}
 
-  <br />
-  <br />
+  <br>
+  <br>
 
   Site entered: {{ siteName }}
   {{#if errors}}

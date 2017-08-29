@@ -3,99 +3,78 @@
   {{> common/betaBanner}}
 
   <div class="grid-row">
-
     <div class="column-two-thirds">
-
-    <h1 id="CONTACT_HEADING" class="heading-large">Who should we contact about this application?</h1>
-
-    <form method="post" action="/contact">
-
-      <div class="form-group">
-        <label class="form-label" for="firstName">
-          First name
-          <span class="form-hint">
-            For example, Jane
-          </span>
-        </label>
-        <input class="form-control" id="firstName" name="firstName" type="text" value="{{contact.firstName}}">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="lastName">
-          First name
-          <span class="form-hint">
-            For example, Smith
-          </span>
-        </label>
-        <input class="form-control" id="lastName" name="lastName" type="text" value="{{contact.lastName}}">
-      </div>
-
-      <div class="form-group">
-        <div class="multiple-choice" data-target="agentCompanyYes">
-          <input id="isContactAnAgent" name="isContactAnAgent" type="checkbox" value="yes">
-          <label for="isContactAnAgent">
-          This person is acting as an agent or consultant for this application
-        </label>
+      <h1 id="CONTACT_HEADING" class="heading-large">Who should we contact about this application?</h1>
+      <form method="post" action="/contact">
+        <div class="form-group">
+          <label class="form-label" for="firstName">
+            First name
+            <span class="form-hint">For example, Jane</span>
+          </label>
+          <input class="form-control" id="firstName" name="firstName" type="text" value="{{contact.firstName}}">
         </div>
-      </div>
-      <div class="panel panel-border-narrow js-hidden" id="agentCompanyYes">
-        <label class="form-label" for="agentCompany">
-          Agent’s trading, business or company name (optional)
-        </label>
-        <input class="form-control form-control-char-50" id="agentCompany" name="agentCompany" type="text" value="contact.agentCompany">
-      </div>
 
-      <div class="form-group">
-        <label class="form-label" for="telephone">
-          Telephone number
-          <span class="form-hint">
-            This can be a landline or mobile
-          </span>
-        </label>
-        <input class="form-control form-control-char-25" id="telephone" name="telephone" type="number" value="{{contact.telephone}}">
-      </div>
+        <div class="form-group">
+          <label class="form-label" for="lastName">
+            First name
+            <span class="form-hint">For example, Smith</span>
+          </label>
+          <input class="form-control" id="lastName" name="lastName" type="text" value="{{contact.lastName}}">
+        </div>
 
-      <div class="form-group">
-        <label class="form-label" for="email">
-          Email address
-        </label>
-        <input class="form-control" id="email" name="email" type="email" value="{{contact.email}}">
-      </div>
+        <div class="form-group">
+          <div class="multiple-choice" data-target="agentCompanyYes">
+            <input id="isContactAnAgent" name="isContactAnAgent" type="checkbox" value="yes">
+            <label for="isContactAnAgent">
+              This person is acting as an agent or consultant for this application
+            </label>
+          </div>
+        </div>
+        <div class="panel panel-border-narrow js-hidden" id="agentCompanyYes">
+          <label class="form-label" for="agentCompany">
+            Agent’s trading, business or company name (optional)
+          </label>
+          <input class="form-control form-control-char-50" id="agentCompany" name="agentCompany" type="text" value="contact.agentCompany">
+        </div>
 
-      <div class="form-group">
-        <button id="CONTACT_CONTINUE" type="submit" class="button">Continue</button>
-      </div>
-    </form>
+        <div class="form-group">
+          <label class="form-label" for="telephone">
+            Telephone number
+            <span class="form-hint">This can be a landline or mobile</span>
+          </label>
+          <input class="form-control form-control-char-25" id="telephone" name="telephone" type="number" value="{{contact.telephone}}">
+        </div>
 
-    <h2>Update contact:</h2>
+        <div class="form-group">
+          <label class="form-label" for="email">
+            Email address
+          </label>
+          <input class="form-control" id="email" name="email" type="email" value="{{contact.email}}">
+        </div>
+      </form>
 
-    <form method="post" action="/contact">
+      <h2>Update contact:</h2>
+      <form method="post" action="/contact">
+        <div class="form-group">
+          <label class="form-label" for="id">
+            Identifier
+            <span class="form-hint">For example, e43449a6-4f24-e711-80fd-5065f38a1b01</span>
+          </label>
+          <input class="form-control" id="id" name="id" type="text" value="{{contact.id}}">
+        </div>
 
-      <div class="form-group">
-        <label class="form-label" for="id">
-          Identifier
-          <span class="form-hint">
-            For example, e43449a6-4f24-e711-80fd-5065f38a1b01
-          </span>
-        </label>
-        <input class="form-control" id="id" name="id" type="text" value="{{contact.id}}">
-      </div>
+        <div class="form-group">
+          <label class="form-label" for="updatedContactName">
+            New full name
+            <span class="form-hint">For example, John Smith</span>
+          </label>
+          <input class="form-control" id="updatedContactName" name="updatedContactName" type="text" value="{{contact.updatedContactName}}">
+        </div>
 
-      <div class="form-group">
-        <label class="form-label" for="updatedContactName">
-          New full name
-          <span class="form-hint">
-            For example, John Smith
-          </span>
-        </label>
-        <input class="form-control" id="updatedContactName" name="updatedContactName" type="text" value="{{contact.updatedContactName}}">
-      </div>
-
-      <div class="form-group">
-        <button id="CONTACT_UPDATE" type="submit" class="button">Update</button>
-      </div>
-    </form>
-
+        <div class="form-group">
+          <button id="CONTACT_UPDATE" type="submit" class="button">Update</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -105,6 +84,5 @@
     <li>{{this.firstName}} {{this.lastName}}</li>
   {{/each}}
   </ul>
-
 
 </main>
