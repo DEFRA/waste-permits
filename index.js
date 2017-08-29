@@ -1,3 +1,8 @@
+'use strict'
+
+const Constants = require('./src/constants')
+const config = require('./src/config/config')
+
 const Hapi = require('hapi')
 const HapiRouter = require('hapi-router')
 const Blipp = require('blipp')
@@ -6,15 +11,12 @@ const HapiAlive = require('hapi-alive')
 const HapiDevErrors = require('hapi-dev-errors')
 const server = new Hapi.Server()
 
-// Load application configuration using Dotenv (see https://www.npmjs.com/package/dotenv)
-require('dotenv').config()
-
 server.connection({
-  port: process.env.WASTE_PERMITS_APP_PORT
+  port: config.port
 })
 
 // Create a session cookie in which to store a waste permit application token
-server.state('session', {
+server.state(Constants.COOKIE_KEY, {
   ttl: null,                // Session lifespan (deleted when browser closed)
   isSecure: true,           // Secure
   isHttpOnly: true,         // and non-secure
@@ -28,12 +30,12 @@ server.method('validateToken', (cookie) => {
   let token
   if (cookie && cookie.token) {
     token = cookie.token
-    console.log('Validate token: ' + token)
+    // console.log('Validate token: ' + token)
     // TODO - Call persistence layer to validate the token
     // e.g.
     // token = dynamics.validateToken(token)
   }
-  console.log('validate token result: ' + token)
+  // console.log('validate token result: ' + token)
   return token
 })
 
@@ -73,7 +75,7 @@ server.register([
     // Plugin to return an error view for web request. Only used when the server is running in DEVELOPMENT mode.
     register: HapiDevErrors,
     options: {
-      showErrors: process.env.NODE_ENV === 'DEVELOPMENT'
+      showErrors: config.nodeEnvironment === 'DEVELOPMENT'
     }
   }], (err) => {
   if (err) {
@@ -90,8 +92,18 @@ server.start((err) => {
     throw err
   }
 
-  console.info('Server running in environment: ' + process.env.NODE_ENV)
+  console.info('Server running in environment: ' + config.nodeEnvironment)
   console.info('Server running at:', server.info)
+})
+
+// Listen on SIGINT signal and gracefully stop the server
+process.on('SIGINT', function () {
+  console.log('Stopping hapi server')
+
+  server.stop({ timeout: 10000 }).then((err) => {
+    console.log('Hapi server stopped')
+    process.exit((err) ? 1 : 0)
+  })
 })
 
 module.exports = server

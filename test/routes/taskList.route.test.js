@@ -1,20 +1,36 @@
+'use strict'
+
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const server = require('../index')
+const server = require('../../index')
+
+let validateTokenStub
+
+lab.beforeEach((done) => {
+  // Stub methods
+  validateTokenStub = server.methods.validateToken
+  server.methods.validateToken = () => {
+    return 'my_token'
+  }
+
+  done()
+})
+
+lab.afterEach((done) => {
+  // Restore stubbed methods
+  server.methods.validateToken = validateTokenStub
+
+  done()
+})
 
 lab.experiment('Task List page tests:', () => {
   lab.test('GET /task-list success ', (done) => {
     const request = {
       method: 'GET',
       url: '/task-list',
-      headers: {}
-    }
-
-    request.payload = {}
-
-    server.methods.validateToken = () => {
-      return 'my_token'
+      headers: {},
+      payload: {}
     }
 
     server.inject(request, (res) => {
@@ -27,10 +43,9 @@ lab.experiment('Task List page tests:', () => {
     const request = {
       method: 'GET',
       url: '/task-list',
-      headers: {}
+      headers: {},
+      payload: {}
     }
-
-    request.payload = {}
 
     server.methods.validateToken = () => {
       return undefined
