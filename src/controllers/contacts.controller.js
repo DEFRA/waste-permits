@@ -26,8 +26,15 @@ module.exports = class ContactsController extends BaseController {
   }
 
   static async doPost (request, reply) {
+    if (request.payload.id) {
+      const authToken = request.state[Constants.COOKIE_KEY].authToken
+      const contact = await Contact.getById(authToken, request.payload.id)
+
+      console.log(contact)
+    }
+    
     return reply
-      .redirect('/location')
+      .redirect('/search')
       .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
   }
 

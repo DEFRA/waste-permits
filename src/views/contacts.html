@@ -9,7 +9,7 @@
         A temporary page for visualising querying functionality.
       </p>
 
-      <form method="POST" action="location">
+      <form method="POST" action="search">
         <div class="form-group">
           <label class="form-label" for="id">
             <span id="contact-id-label">Contact ID</span>
@@ -47,30 +47,31 @@
           </table>
       </div>
       {{/if}}
-
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Telephone</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-        {{#each contacts}}
-          <tr>
-            <td>{{this.id}}</td>
-            <td>{{this.firstName}}</td>
-            <td>{{this.lastName}}</td>
-            <td>{{this.telephone}}</td>
-            <td>{{this.email}}</td>
-          </tr>
-        {{/each}}
-        </tbody>
-      </table>
     </div>
+
+    <table>
+      <caption>Found {{contacts.count}} contacts</caption>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>Telephone</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+      {{#each contacts.results}}
+        <tr>
+          <td>{{this.id}}</td>
+          <td>{{this.firstName}}</td>
+          <td>{{this.lastName}}</td>
+          <td>{{this.telephone}}</td>
+          <td>{{this.email}}</td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
   </div>
 
 </main>

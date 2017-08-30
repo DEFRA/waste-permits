@@ -14,9 +14,6 @@ module.exports = class ContactController extends BaseController {
         authToken = request.state[Constants.COOKIE_KEY].authToken
       }
 
-      // List the contacts
-      pageContext.contacts = await Contact.list(authToken)
-
       return reply
         .view('contact', pageContext)
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
