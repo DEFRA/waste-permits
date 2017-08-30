@@ -60,11 +60,15 @@ module.exports = class ContactController extends BaseController {
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     } else {
-      // Update existing Contact
-      const contact = Contact.getById(request.payload.id)
-      contact.contactName = request.payload.updatedContactName
-
       try {
+        // Update existing Contact
+        const contact = await Contact.getById(authToken, request.payload.id)
+
+        contact.firstName = request.payload.firstName
+        contact.lastName = request.payload.lastName
+        contact.telephone = request.payload.telephone
+        contact.email = request.payload.email
+
         await contact.save(authToken)
 
         return ContactController.doGet(request, reply, errors)

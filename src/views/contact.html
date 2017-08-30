@@ -53,30 +53,15 @@
         </div>
 
         <div class="form-group">
-          <button id="contact-continue" type="submit" class="button">Continue</button>
-        </div>
-      </form>
-
-      <h2>Update contact:</h2>
-      <form method="post" action="/contact">
-        <div class="form-group">
           <label class="form-label" for="id">
-            Identifier
-            <span class="form-hint">For example, e43449a6-4f24-e711-80fd-5065f38a1b01</span>
+            ID
           </label>
+          <span class="form-hint">For example, e43449a6-4f24-e711-80fd-5065f38a1b01. If found contact wiull be updated rather than created.</span>
           <input class="form-control" id="id" name="id" type="text" value="{{contact.id}}">
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="updated-contact-name">
-            New full name
-            <span class="form-hint">For example, John Smith</span>
-          </label>
-          <input class="form-control" id="updated-contact-name" name="updated-contact-name" type="text" value="{{contact.updatedContactName}}">
-        </div>
-
-        <div class="form-group">
-          <button id="contact-update" type="submit" class="button">Update</button>
+          <button id="contact-continue" type="submit" class="button">Continue</button>
         </div>
       </form>
     </div>
