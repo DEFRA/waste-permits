@@ -26,7 +26,7 @@ module.exports = class DynamicsDalService {
     return this._commit(query, 'PATCH', dataObject)
   }
 
-  listItems (query) {
+  search (query) {
     return this._query(query)
   }
 

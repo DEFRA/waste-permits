@@ -10,7 +10,7 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let testContact
 let dynamicsCreateItemStub
-let dynamicsListItemsStub
+let dynamicsSearchStub
 let dynamicsUpdateItemStub
 
 lab.beforeEach((done) => {
@@ -22,8 +22,8 @@ lab.beforeEach((done) => {
   })
 
   // Stub methods
-  dynamicsListItemsStub = DynamicsDalService.prototype.listItems
-  DynamicsDalService.prototype.listItems = (query) => {
+  dynamicsSearchStub = DynamicsDalService.prototype.search
+  DynamicsDalService.prototype.search = (query) => {
     // Dynamics Contact objects
     return [{
       fullname: 'FULL NAME1'
@@ -50,7 +50,7 @@ lab.beforeEach((done) => {
 lab.afterEach((done) => {
   // Restore stubbed methods
   DynamicsDalService.prototype.createItem = dynamicsCreateItemStub
-  DynamicsDalService.prototype.listItems = dynamicsListItemsStub
+  DynamicsDalService.prototype.search = dynamicsSearchStub
   DynamicsDalService.prototype.updateItem = dynamicsUpdateItemStub
 
   done()
@@ -58,7 +58,7 @@ lab.afterEach((done) => {
 
 lab.experiment('Contact Model tests:', () => {
   lab.test('list() method returns a list of Contact objects', (done) => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'listItems')
+    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     Contact.list().then((contactList) => {
       Code.expect(Array.isArray(contactList)).to.be.true()
       Code.expect(contactList.length).to.equal(3)

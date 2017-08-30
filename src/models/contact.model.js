@@ -42,7 +42,7 @@ module.exports = class Contact extends BaseModel {
     // List the Contacts
     const contacts = []
     try {
-      const response = await dynamicsDal.listItems(query)
+      const response = await dynamicsDal.search(query)
 
       // Parse response into Contact objects
       response.forEach((contact) => {
