@@ -1,0 +1,19 @@
+{{#if errors}}
+<div id="error-summary" class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1">
+
+  <h2 id="error-summary-heading" class="heading-medium error-summary-heading">
+    {{#if panelHeader}}
+      {{panelHeader}}
+    {{else}}
+      A problem to fix
+    {{/if}}
+  </h2>
+
+  <ul id="error-summary-list" class="error-summary-list">
+    {{#each errorList}}
+    <li><a id="error-summary-list-item-{{@index}}" href="#{{this.fieldName}}">{{this.message}}</a></li>
+    {{/each}}
+  </ul>
+
+</div>
+{{/if}}

@@ -1,7 +1,6 @@
 'use strict'
 
 const gulp = require('gulp')
-const env = require('gulp-env')
 const sass = require('gulp-sass')
 const sourcemaps = require('gulp-sourcemaps')
 const standard = require('gulp-standard')

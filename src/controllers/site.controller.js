@@ -2,46 +2,41 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
+const SiteValidator = require('../validators/site.validator')
 
 module.exports = class SiteController extends BaseController {
-  static async doGet (request, reply, errors = undefined) {
+  static async doGet (request, reply, errors) {
     try {
-      const context = {
-        pageTitle: 'Waste Permits - Site',
-        message: 'Hello, World!',
-        errors: errors
+      const pageContext = {
+        pageTitle: 'What\'s the site name? - Waste Permits - GOV.UK'
       }
+
+      if (errors && errors.data.details) {
+        new SiteValidator().addErrorsToPageContext(errors, pageContext)
+      }
+
+      pageContext.formValues = request.payload
+
       return reply
-        .view('site', context)
+        .view('site', pageContext)
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
-      return reply.redirect('/error')
+      return reply.redirect(Constants.Routes.ERROR)
     }
   }
 
-  static async doPost (request, reply) {
-    // TODO validate post data using Joi?
-    let valid = (request.payload.siteName !== 'invalid_site_name')
-
-    if (valid) {
-      // console.log('Incoming data: ' + request.payload.siteName)
-
-      // TODO if the data is valid then persist it here
-
-      return reply
-        .redirect('/contact')
-        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
-    } else {
-      // Handle the validation error
-      const errors = {
-        message: 'Invalid site name: [' + request.payload.siteName + ']'
-      }
+  static async doPost (request, reply, errors) {
+    if (errors && errors.data.details) {
       return SiteController.doGet(request, reply, errors)
+    } else {
+      // TODO persist the data here if required
+
+      return reply.redirect(Constants.Routes.CONTACT)
     }
   }
 
-  static handler (request, reply) {
-    return BaseController.handler(request, reply, SiteController)
+  static handler (request, reply, source, errors) {
+    return BaseController.handler(request, reply, errors, SiteController)
   }
 }

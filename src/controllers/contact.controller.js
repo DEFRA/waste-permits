@@ -5,10 +5,10 @@ const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
 
 module.exports = class ContactController extends BaseController {
-  static async doGet (request, reply) {
+  static async doGet (request, reply, errors) {
     try {
-      const context = {
-        pageTitle: 'Waste Permits - Contact Details'
+      const pageContext = {
+        pageTitle: 'Who should we contact about this application? - Waste Permits - GOV.UK'
       }
 
       let authToken
@@ -17,18 +17,18 @@ module.exports = class ContactController extends BaseController {
       }
 
       // List the contacts
-      context.contacts = await Contact.list(authToken)
+      pageContext.contacts = await Contact.list(authToken)
 
       return reply
-        .view('contact', context)
+        .view('contact', pageContext)
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
-      return reply.redirect('/error')
+      return reply.redirect(Constants.Routes.ERROR)
     }
   }
 
-  static async doPost (request, reply) {
+  static async doPost (request, reply, errors) {
     let authToken
     if (request.state[Constants.COOKIE_KEY]) {
       authToken = request.state[Constants.COOKIE_KEY].authToken
@@ -58,11 +58,11 @@ module.exports = class ContactController extends BaseController {
         await contact.save(authToken)
 
         return reply
-          .redirect('/task-list')
+          .redirect(Constants.Routes.TASK_LIST)
           .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
       } catch (error) {
         console.error(error)
-        return reply.redirect('/error')
+        return reply.redirect(Constants.Routes.ERROR)
       }
     } else {
       // Update existing Contact
@@ -72,15 +72,15 @@ module.exports = class ContactController extends BaseController {
       try {
         await contact.save(authToken)
 
-        return ContactController.doGet(request, reply)
+        return ContactController.doGet(request, reply, errors)
       } catch (error) {
         console.error(error)
-        return reply.redirect('/error')
+        return reply.redirect(Constants.Routes.ERROR)
       }
     }
   }
 
-  static handler (request, reply) {
-    return BaseController.handler(request, reply, ContactController)
+  static handler (request, reply, source, errors) {
+    return BaseController.handler(request, reply, errors, ContactController)
   }
 }

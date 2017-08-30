@@ -4,6 +4,9 @@
 
   <div class="grid-row">
     <div class="column-two-thirds column-minimum">
+
+      {{> common/errorSummary panelHeader='You need to complete these tasks'}}
+      
       <form method="post" action="/v7/check/check-answers" name="tasklist">
         <h1 class="heading-large">
           <span class="font-medium" style="color:#6f777b">Apply for a standard rules waste permit:</span><br>
@@ -32,7 +35,7 @@
                 <a class="task-name" href="/v7/read-rules/index" aria-describedby="operation-rules-complete">
                   Confirm that your operation meets the rules
                 </a>
-                <input type="hidden" name="complete[]" value="Confirm that your operation meets the rules"> 
+                <input type="hidden" name="complete[]" value="Confirm that your operation meets the rules">
               </li>
               <li class="task-list-item " id="tell-us-if-youve-discussed-this-application-with-us">
                 <a class="task-name" href="&#10;                /v7/preapp/preapp-discussion&#10;              " aria-describedby="preapp-completed">

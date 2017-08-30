@@ -37,8 +37,6 @@ lab.experiment('Site page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(200)
 
-      // console.log(res.payload)
-
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
@@ -61,7 +59,8 @@ lab.experiment('Site page tests:', () => {
       url: '/site',
       headers: {},
       payload: {
-        siteName: 'My Site'
+        siteName: 'My Site',
+        anotherName: 'Other site name'
       }
     }
 
@@ -78,9 +77,7 @@ lab.experiment('Site page tests:', () => {
       method: 'POST',
       url: '/site',
       headers: {},
-      payload: {
-        siteName: 'My Site'
-      }
+      payload: {}
     }
 
     server.methods.validateToken = () => {
@@ -94,13 +91,14 @@ lab.experiment('Site page tests:', () => {
     })
   })
 
-  lab.test('POST /site shows an error message when the site is invalid', (done) => {
+  lab.test('POST /site shows the error message summary panel when the site data is invalid', (done) => {
     const request = {
       method: 'POST',
       url: '/site',
       headers: {},
       payload: {
-        siteName: 'invalid_site_name'
+        siteName: '',
+        anotherName: ''
       }
     }
 
@@ -110,8 +108,105 @@ lab.experiment('Site page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      const element = doc.getElementById('site-error').firstChild
-      Code.expect(element.nodeValue).to.equal('ERROR: Invalid site name: [invalid_site_name]')
+      const element = doc.getElementById('error-summary')
+
+      Code.expect(element).to.exist()
+
+      done()
+    })
+  })
+
+  lab.test('POST /site shows an error message when the site name is blank', (done) => {
+    const request = {
+      method: 'POST',
+      url: '/site',
+      headers: {},
+      payload: {
+        siteName: '',
+        anotherName: ''
+      }
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element
+      let errorMessage = 'Enter the site name'
+
+      // Panel summary error item
+      element = doc.getElementById('error-summary-list-item-0').firstChild
+      Code.expect(element.nodeValue).to.equal(errorMessage)
+
+      // Site name field error
+      element = doc.getElementById('site-name-error').firstChild
+      Code.expect(element.nodeValue).to.equal(errorMessage)
+
+      done()
+    })
+  })
+
+  lab.test('POST /site shows an error message when the site name contains invalid characters', (done) => {
+    const request = {
+      method: 'POST',
+      url: '/site',
+      headers: {},
+      payload: {
+        siteName: '___INVALID_SITE_NAME___',
+        anotherName: ''
+      }
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element
+      let errorMessage = 'The site name cannot contain any of these characters: ^ | _ ~ ¬ `'
+
+      // Panel summary error item
+      element = doc.getElementById('error-summary-list-item-0').firstChild
+      Code.expect(element.nodeValue).to.equal(errorMessage)
+
+      // Site name field error
+      element = doc.getElementById('site-name-error').firstChild
+      Code.expect(element.nodeValue).to.equal(errorMessage)
+
+      done()
+    })
+  })
+
+  lab.test('POST /site shows an error message when the site name is too long', (done) => {
+    const request = {
+      method: 'POST',
+      url: '/site',
+      headers: {},
+      payload: {
+        siteName: '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X',
+        anotherName: ''
+      }
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element
+      let errorMessage = 'Enter a shorter site name with no more than 170 characters'
+
+      // Panel summary error item
+      element = doc.getElementById('error-summary-list-item-0').firstChild
+      Code.expect(element.nodeValue).to.equal(errorMessage)
+
+      // Site name field error
+      element = doc.getElementById('site-name-error').firstChild
+      Code.expect(element.nodeValue).to.equal(errorMessage)
 
       done()
     })

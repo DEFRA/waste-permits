@@ -10,15 +10,15 @@ const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.serv
 const authService = new ActiveDirectoryAuthService()
 
 module.exports = class RootController extends BaseController {
-  static async doGet (request, reply) {
-    const context = {
+  static async doGet (request, reply, errors) {
+    const pageContext = {
       pageTitle: 'Waste Permits'
     }
 
-    reply.view('index', context)
+    reply.view('index', pageContext)
   }
 
-  static async doPost (request, reply) {
+  static async doPost (request, reply, errors) {
     // Generate a session token
     const token = uuid4()
     console.log('Generated session token: ' + token)
@@ -36,7 +36,7 @@ module.exports = class RootController extends BaseController {
     }
 
     return reply
-      .redirect('/site')
+      .redirect(Constants.Routes.SITE)
 
       // Delete the existing session cookie
       .unstate(Constants.COOKIE_KEY)
@@ -45,7 +45,7 @@ module.exports = class RootController extends BaseController {
       .state(Constants.COOKIE_KEY, cookie)
   }
 
-  static handler (request, reply) {
-    return BaseController.handler(request, reply, RootController, false)
+  static handler (request, reply, source, errors) {
+    return BaseController.handler(request, reply, errors, RootController, false)
   }
 }

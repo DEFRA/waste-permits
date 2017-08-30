@@ -12,7 +12,14 @@ const HapiDevErrors = require('hapi-dev-errors')
 const server = new Hapi.Server()
 
 server.connection({
-  port: config.port
+  port: process.env.WASTE_PERMITS_APP_PORT,
+  routes: {
+    validate: {
+      options: {
+        abortEarly: false
+      }
+    }
+  }
 })
 
 // Create a session cookie in which to store a waste permit application token
