@@ -11,7 +11,10 @@ module.exports = class ContactsController extends BaseController {
         pageTitle: 'Waste Permits - Contacts'
       }
 
-      const authToken = request.state[Constants.COOKIE_KEY].authToken
+      let authToken
+      if (request.state[Constants.COOKIE_KEY]) {
+        authToken = request.state[Constants.COOKIE_KEY].authToken
+      }
 
       // List the contacts
       context.contacts = await Contact.list(authToken)
@@ -26,13 +29,17 @@ module.exports = class ContactsController extends BaseController {
   }
 
   static async doPost (request, reply) {
+    let authToken
+    if (request.state[Constants.COOKIE_KEY]) {
+      authToken = request.state[Constants.COOKIE_KEY].authToken
+    }
+
     if (request.payload.id) {
-      const authToken = request.state[Constants.COOKIE_KEY].authToken
       const contact = await Contact.getById(authToken, request.payload.id)
 
       console.log(contact)
     }
-    
+
     return reply
       .redirect('/search')
       .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
