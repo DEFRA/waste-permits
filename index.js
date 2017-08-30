@@ -20,8 +20,9 @@ server.state(Constants.COOKIE_KEY, {
   ttl: null,                // Session lifespan (deleted when browser closed)
   isSecure: true,           // Secure
   isHttpOnly: true,         // and non-secure
+  isSameSite: 'Strict',     // Don't attach cookies on cross-site requests, preventing CSRF attacks
   encoding: 'base64json',   // Base 64 JSON encoded
-  clearInvalid: false,      // remove invalid cookies
+  clearInvalid: false,      // Remove invalid cookies
   strictHeader: true        // Don't allow violations of RFC 6265
 })
 
