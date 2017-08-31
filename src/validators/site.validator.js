@@ -27,8 +27,20 @@ module.exports = class SiteValidator extends BaseValidator {
 
   static getFormValidators () {
     return {
-      siteName: Joi.string().max(SITE_NAME_MAX_LENGTH).regex(DISALLOWED_CHARACTERS_REGEX, { invert: true }).required(),
-      anotherName: Joi.string().max(SITE_NAME_MAX_LENGTH).regex(DISALLOWED_CHARACTERS_REGEX, { invert: true }).required()
+      siteName: Joi
+        .string()
+        .max(SITE_NAME_MAX_LENGTH)
+        .regex(DISALLOWED_CHARACTERS_REGEX, {
+          invert: true
+        })
+        .required(),
+      anotherName: Joi
+        .string()
+        .max(SITE_NAME_MAX_LENGTH)
+        .regex(DISALLOWED_CHARACTERS_REGEX, {
+          invert: true
+        })
+        .required()
     }
   }
 }
