@@ -8,7 +8,9 @@ cache:
 before_script:
   - npm install -g gulp-cli
 
-script: gulp test-ci
+script:
+  - gulp test-ci
+  - gulp html-hint
 
 after_success:
   - npm install -g codeclimate-test-reporter
