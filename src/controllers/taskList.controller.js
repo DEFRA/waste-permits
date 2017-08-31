@@ -6,7 +6,7 @@ const BaseController = require('./base.controller')
 module.exports = class TaskListController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.buildPageHeadingAndTitle('Task List')
+      const pageContext = BaseController.createPageContext('Task List')
 
       // TODO: Get the task list from Dynamics
       pageContext.taskList = ['TODO']

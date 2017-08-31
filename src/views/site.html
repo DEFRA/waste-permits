@@ -13,12 +13,7 @@
 
       <form method="POST" action="site">
 
-        {{#if errors.siteName}}
-        <div class="form-group form-group-error">
-        {{else}}
-        <div class="form-group">
-        {{/if}}
-
+        <div class="{{#getFormGroupClass errors.siteName}}{{/getFormGroupClass}}">
           <label class="form-label" for="siteName">
             <span id="site-name-label">Site name</span>
             <span class="form-hint">If it doesn’t already have a name, enter the name you’ll use</span>
@@ -29,12 +24,7 @@
           <input class="form-control form-control-char-60" id="siteName" name="siteName" type="text" value="{{formValues.siteName}}">
         </div>
 
-        {{#if errors.anotherName}}
-        <div class="form-group form-group-error">
-        {{else}}
-        <div class="form-group">
-        {{/if}}
-
+        <div class="{{#getFormGroupClass errors.anotherName}}{{/getFormGroupClass}}">
           <label class="form-label" for="anotherName">
             Another name
             <span class="form-hint">If it doesn’t already have a name, enter the name you’ll use</span>

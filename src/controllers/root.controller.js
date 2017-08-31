@@ -11,7 +11,7 @@ const authService = new ActiveDirectoryAuthService()
 
 module.exports = class RootController extends BaseController {
   static async doGet (request, reply, errors) {
-    const pageContext = BaseController.buildPageHeadingAndTitle('Waste Permits Home Page')
+    const pageContext = BaseController.createPageContext('Waste Permits Home Page')
 
     reply.view('index', pageContext)
   }

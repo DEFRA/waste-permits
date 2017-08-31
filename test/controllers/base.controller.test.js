@@ -15,11 +15,11 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Base Controller tests:', () => {
-  lab.test('Base Controller buildPageHeadingAndTitle() method builds page context object correctly', (done) => {
+  lab.test('createPageContext() method builds page context object correctly', (done) => {
     const pageHeading = 'THE_PAGE_HEADING'
     const pageTitle = 'THE_PAGE_HEADING - Waste Permits - GOV.UK'
 
-    const pageContext = BaseController.buildPageHeadingAndTitle(pageHeading)
+    const pageContext = BaseController.createPageContext(pageHeading)
 
     Code.expect(pageContext.pageHeading).to.equal(pageHeading)
     Code.expect(pageContext.pageTitle).to.equal(pageTitle)

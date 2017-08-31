@@ -3,7 +3,7 @@
 const Constants = require('../constants')
 
 module.exports = class BaseController {
-  static buildPageHeadingAndTitle (pageHeading) {
+  static createPageContext (pageHeading) {
     return {
       pageHeading: pageHeading,
       pageTitle: `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`
