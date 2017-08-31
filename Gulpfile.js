@@ -2,6 +2,7 @@
 
 const gulp = require('gulp')
 const env = require('gulp-env')
+const htmlhint = require('gulp-htmlhint')
 const sass = require('gulp-sass')
 const sourcemaps = require('gulp-sourcemaps')
 const standard = require('gulp-standard')
@@ -96,6 +97,13 @@ gulp.task('standard', () => {
       breakOnError: true,
       quiet: true
     }))
+})
+
+// Run HTML Hint checks
+gulp.task('html-hint', () => {
+  return gulp.src('./src/views/*.html')
+    .pipe(htmlhint('.htmlhintrc'))
+    .pipe(htmlhint.failReporter())
 })
 
 // Test task
