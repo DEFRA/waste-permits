@@ -76,6 +76,27 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Contact Model tests:', () => {
+  lab.test('getById() method returns a single Contact object', (done) => {
+    DynamicsDalService.prototype.search = (query) => {
+      // Dynamics Contact objects
+      return {
+        '@odata.etag': 'W/"1155486"',
+        contactid: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
+        firstname: 'Marlon',
+        lastname: 'Herzog',
+        telephone1: '055 8767 0835',
+        emailaddress1: 'Amparo.Abbott49@example.com'
+      }
+    }
+
+    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    Contact.getById().then((contact) => {
+      Code.expect(spy.callCount).to.equal(1)
+    })
+
+    done()
+  })
+
   lab.test('list() method returns a list of Contact objects', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     Contact.list().then((contactList) => {
