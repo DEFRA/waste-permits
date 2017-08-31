@@ -6,11 +6,11 @@ const BaseController = require('./base.controller')
 module.exports = class TaskListController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = {
-        pageTitle: 'Waste Permits - Task List',
-        // TODO: Load task list here
-        taskList: ['TODO']
-      }
+      const pageContext = BaseController.buildPageHeadingAndTitle('Task List')
+
+      // TODO: Get the task list from Dynamics
+      pageContext.taskList = ['TODO']
+
       return reply
         .view('taskList', pageContext)
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])

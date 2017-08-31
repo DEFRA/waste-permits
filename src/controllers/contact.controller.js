@@ -7,9 +7,7 @@ const Contact = require('../models/contact.model')
 module.exports = class ContactController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = {
-        pageTitle: 'Who should we contact about this application? - Waste Permits - GOV.UK'
-      }
+      const pageContext = BaseController.buildPageHeadingAndTitle('Who should we contact about this application?')
 
       let authToken
       if (request.state[Constants.COOKIE_KEY]) {

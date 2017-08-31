@@ -1,7 +1,8 @@
 'use strict'
 
 module.exports = {
-  APP_TITLE: 'Waste Permits',
+  SERVICE_NAME: 'Waste Permits',
+  GDS_NAME: 'GOV.UK',
 
   COOKIE_KEY: 'DefraSession',
 

@@ -3,6 +3,13 @@
 const Constants = require('../constants')
 
 module.exports = class BaseController {
+  static buildPageHeadingAndTitle (pageHeading) {
+    return {
+      pageHeading: pageHeading,
+      pageTitle: `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`
+    }
+  }
+
   static handler (request, reply, errors, controllerSubclass, validateToken = true) {
     if (validateToken) {
       // Validate the session cookie

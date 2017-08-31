@@ -7,9 +7,7 @@ const SiteValidator = require('../validators/site.validator')
 module.exports = class SiteController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = {
-        pageTitle: 'What\'s the site name? - Waste Permits - GOV.UK'
-      }
+      const pageContext = BaseController.buildPageHeadingAndTitle('What\'s the site name?')
 
       if (errors && errors.data.details) {
         new SiteValidator().addErrorsToPageContext(errors, pageContext)
