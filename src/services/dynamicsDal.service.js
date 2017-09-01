@@ -26,6 +26,10 @@ module.exports = class DynamicsDalService {
     return this._commit(query, 'PATCH', dataObject)
   }
 
+  search (query) {
+    return this._query(query)
+  }
+
   listItems (query) {
     return this._query(query)
   }
@@ -52,6 +56,7 @@ module.exports = class DynamicsDalService {
             // Parse the response JSON
             resolve(JSON.parse(responseParts.join('')).value)
           } else {
+            console.error(responseParts.join(''))
             const message = `Unknown response from Dynamics. Code: ${response.statusCode} Message: ${response.statusMessage}`
             reject(message)
           }

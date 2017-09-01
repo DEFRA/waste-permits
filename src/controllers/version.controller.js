@@ -4,6 +4,8 @@ const moment = require('moment')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 
+const DynamicsSolution = require('../models/dynamicsSolution.model')
+
 module.exports = class VersionController extends BaseController {
   static async doGet (request, reply, errors = undefined) {
     try {
@@ -13,6 +15,13 @@ module.exports = class VersionController extends BaseController {
         pageHeading: 'Waste Permits',
         pageTitle: 'TODO'
       }
+
+      let authToken
+      if (request.state[Constants.COOKIE_KEY]) {
+        authToken = request.state[Constants.COOKIE_KEY].authToken
+      }
+
+      pageContext.dynamicsSolution = await DynamicsSolution.get(authToken)
 
       pageContext.applicationVersion = Constants.getVersion()
       pageContext.githubRef = Constants.getLatestCommit()

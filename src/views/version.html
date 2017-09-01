@@ -18,6 +18,14 @@
           </strong>
         </p>
         <p>
+          <label>Dynamics versions:</label>
+          <ul>
+            {{#each dynamicsSolution}}
+              <li>{{ this.componentName }}: {{ this.version }}</li>
+            {{/each}}
+          </ul>
+        </p>
+        <p>
           <label>Page rendered:</label>
           <strong>{{ renderTimestamp }}</strong>
         </p>
