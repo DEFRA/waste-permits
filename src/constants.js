@@ -7,6 +7,7 @@ const Constants = module.exports = {}
 Constants.APP = 'Waste Permits'
 Constants.COOKIE_KEY = 'DefraSession'
 Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
+Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 
 Constants.getLatestCommit = () => {
   // Read the latest Git commit reference

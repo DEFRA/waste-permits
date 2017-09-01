@@ -4,8 +4,6 @@ const moment = require('moment')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 
-const TIMESTAMP_FORMAT = 'DD/MM/YYYY hh:mm:ss'
-
 module.exports = class VersionController extends BaseController {
   static async doGet (request, reply, errors = undefined) {
     try {
@@ -19,12 +17,13 @@ module.exports = class VersionController extends BaseController {
       pageContext.applicationVersion = Constants.getVersion()
       pageContext.githubRef = Constants.getLatestCommit()
       pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}`
-      pageContext.renderTimestamp = moment().format(TIMESTAMP_FORMAT)
+      pageContext.renderTimestamp = moment().format(Constants.TIMESTAMP_FORMAT)
 
       return reply
         .view('version', pageContext)
     } catch (error) {
       console.error(error)
+      // TODO: This path will need to use the Paths.ERROR Constant once that PR has been merged
       return reply.redirect('/error')
     }
   }
