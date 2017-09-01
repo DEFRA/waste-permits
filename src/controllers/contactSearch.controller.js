@@ -4,11 +4,11 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
 
-module.exports = class ContactsController extends BaseController {
+module.exports = class ContactSearchController extends BaseController {
   static async doGet (request, reply, errors = undefined) {
     try {
       const context = {
-        pageTitle: 'Waste Permits - Contacts'
+        pageTitle: 'Contact search - Waste Permits - GOV.UK'
       }
 
       let authToken
@@ -20,7 +20,7 @@ module.exports = class ContactsController extends BaseController {
       context.contacts = await Contact.list(authToken)
 
       return reply
-        .view('contacts', context)
+        .view('contactSearch', context)
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
@@ -41,11 +41,11 @@ module.exports = class ContactsController extends BaseController {
     }
 
     return reply
-      .redirect('/search')
+      .redirect('/contact-search')
       .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
   }
 
   static handler (request, reply) {
-    return BaseController.handler(request, reply, ContactsController)
+    return BaseController.handler(request, reply, ContactSearchController)
   }
 }

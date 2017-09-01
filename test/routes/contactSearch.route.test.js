@@ -54,11 +54,11 @@ lab.afterEach((done) => {
   done()
 })
 
-lab.experiment('Contacts page tests:', () => {
+lab.experiment('Contact search page tests:', () => {
   lab.test('GET /search returns the contacts page correctly', (done) => {
     const request = {
       method: 'GET',
-      url: '/search',
+      url: '/contact-search',
       headers: {}
     }
 
@@ -69,7 +69,7 @@ lab.experiment('Contacts page tests:', () => {
       const doc = parser.parseFromString(res.payload, 'text/html')
 
       let element = doc.getElementById('contacts-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('Contacts')
+      Code.expect(element.nodeValue).to.equal('Contact search')
 
       done()
     })
@@ -78,7 +78,7 @@ lab.experiment('Contacts page tests:', () => {
   lab.test('POST /search redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'POST',
-      url: '/search',
+      url: '/contact-search',
       headers: {},
       payload: {
         id: ''
