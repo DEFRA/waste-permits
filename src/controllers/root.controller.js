@@ -23,7 +23,14 @@ module.exports = class RootController extends BaseController {
     const token = uuid4()
 
     // Generate a CRM token
-    const authToken = await authService.getToken()
+
+    let authToken
+    try {
+      authToken = await authService.getToken()
+    } catch (err) {
+      console.error(err)
+      return reply.redirect('/error')
+    }
 
     // TODO: Confirm how session handling will work and where the most
     // appropriate point is to create and destroy session cookies
