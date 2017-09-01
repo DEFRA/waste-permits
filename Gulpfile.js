@@ -107,13 +107,13 @@ gulp.task('html-hint', () => {
 })
 
 // Test task
-gulp.task('test', ['standard'], () => {
+gulp.task('test', ['standard', 'html-hint'], () => {
   return gulp.src('test')
     .pipe(lab('--coverage --reporter console --output stdout --reporter html --output coverage.html --verbose'))
 })
 
 // Test task
-gulp.task('test-ci', ['standard'], () => {
+gulp.task('test-ci', () => {
   return gulp.src('test')
     .pipe(lab({
       args: '--coverage --reporter console --output stdout --reporter lcov --output lcov.info --verbose --bail',
