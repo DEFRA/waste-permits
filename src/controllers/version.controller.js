@@ -1,7 +1,10 @@
 'use strict'
 
+const moment = require('moment')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
+
+const TIMESTAMP_FORMAT = 'DD/MM/YYYY hh:mm:ss'
 
 module.exports = class VersionController extends BaseController {
   static async doGet (request, reply, errors = undefined) {
@@ -16,7 +19,7 @@ module.exports = class VersionController extends BaseController {
       pageContext.applicationVersion = Constants.getVersion()
       pageContext.githubRef = Constants.getLatestCommit()
       pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}`
-      pageContext.renderTimestamp = Date.now()
+      pageContext.renderTimestamp = moment().format(TIMESTAMP_FORMAT)
 
       return reply
         .view('version', pageContext)
