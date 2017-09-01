@@ -101,7 +101,7 @@ gulp.task('standard', () => {
 
 // Run HTML Hint checks
 gulp.task('html-hint', () => {
-  return gulp.src('./src/views/*.html')
+  return gulp.src('./src/views/{partials/{common/,},}*.html')
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.failReporter())
 })
