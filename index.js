@@ -66,10 +66,14 @@ server.register([
     register: HapiAlive,
     options: {
       path: '/health',
-      healthCheck: function (server, callback) {
-        // TODO: Here you should preform your health checks
-        // If something went wrong provide the callback with an error
-        callback()
+      responses: {
+        healthy: {
+          message: `<H1>${Constants.APP}</H1>Application version: ${Constants.getVersion()}<br>` +
+            `Latest commit: <a target="_blank" href="${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}">${Constants.getLatestCommit()}</a>`
+        },
+        unhealthy: {
+          statusCode: 400
+        }
       }
     }
   }, {
@@ -83,7 +87,7 @@ server.register([
     throw err
   }
 
-  // Load views
+    // Load views
   server.views(require('./src/views'))
 })
 
@@ -95,6 +99,8 @@ server.start((err) => {
 
   console.info('Server running in environment: ' + config.nodeEnvironment)
   console.info('Server running at:', server.info)
+  console.info(`Service: ${Constants.APP}\nVersion: ${Constants.getVersion()}`)
+  console.info(`Latest commit: ${Constants.getLatestCommit()}`)
 })
 
 // Listen on SIGINT signal and gracefully stop the server

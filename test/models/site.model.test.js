@@ -21,14 +21,11 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Site Model tests:', () => {
-
   lab.test('Constructor creates a Site object correctly', (done) => {
-
     testSite = new Site({})
     Code.expect(testSite.siteName).to.be.undefined()
     Code.expect(testSite.gridRef).to.be.undefined()
 
     done()
   })
-
 })

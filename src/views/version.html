@@ -1,0 +1,27 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner}}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 id="version-heading" class="heading-large">{{ pageHeading }}</h1>
+
+      <section>
+        <p>
+          <label>Application version:</label>
+          <strong>{{ applicationVersion }}</strong>
+        </p>
+        <p>
+          <label>Commit hash:</label>
+          <strong>
+            <a target="_blank" class="btn-link" href="{{ githubUrl }}">{{ githubRef }}</a>
+          </strong>
+        </p>
+        <p>
+          <label>Page rendered at:</label>
+          <strong>{{ renderTimestamp }}</strong>
+        </p>
+      </section>
+    </div>
+  </div>
+</main>
