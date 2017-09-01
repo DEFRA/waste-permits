@@ -3,11 +3,20 @@
 const Constants = require('../constants')
 
 module.exports = class BaseController {
-  static createPageContext (pageHeading) {
-    return {
-      pageHeading: pageHeading,
-      pageTitle: `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`
+  static createPageContext (pageHeading, errors, ValidatorSubClass) {
+    const pageContext = {
+      pageTitle: `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`,
+      pageHeading: pageHeading
     }
+
+    if (errors && errors.data.details) {
+      new ValidatorSubClass().addErrorsToPageContext(errors, pageContext)
+
+      // Add the error prefix to the page title
+      pageContext.pageTitle = `${Constants.PAGE_TITLE_ERROR_PREFIX} ${pageContext.pageTitle}`
+    }
+
+    return pageContext
   }
 
   static handler (request, reply, errors, controllerSubclass, validateToken = true) {

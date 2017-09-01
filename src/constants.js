@@ -1,6 +1,7 @@
 'use strict'
 
 module.exports = {
+  PAGE_TITLE_ERROR_PREFIX: 'Problem: ',
   SERVICE_NAME: 'Waste Permits',
   GDS_NAME: 'GOV.UK',
 
