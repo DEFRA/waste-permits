@@ -15,7 +15,7 @@
   "alt-require": true,
   "doctype-html5": false,
   "id-class-value": "dash",
-  "style-disabled": false,
+  "style-disabled": true,
   "inline-style-disabled": true,
   "inline-script-disabled": false,
   "space-tab-mixed-disabled": true,
