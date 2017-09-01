@@ -38,8 +38,8 @@ lab.afterEach((done) => {
   done()
 })
 
-lab.experiment('CRM Token Service tests:', () => {
-  lab.test('Get token method should return the correct CRM token', (done) => {
+lab.experiment('Active Directory Auth Service tests:', () => {
+  lab.test('Get token method should return the correct authentication token', (done) => {
     authService.getToken().then((authToken) => {
       Code.expect(authToken).to.equal(authTokenResponse.access_token)
 
