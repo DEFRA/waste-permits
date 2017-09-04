@@ -1,16 +1,20 @@
 'use strict'
 
+const Constants = require('../constants')
 const ContactSearchController = require('../controllers/contactSearch.controller')
 
 module.exports = [{
-  method: ['GET', 'POST'],
-  path: '/contact-search',
+  method: ['GET'],
+  path: Constants.Routes.CONTACTSEARCH.path,
   config: {
-    description: 'The contact search page',
-    handler: ContactSearchController.handler,
-    state: {
-      parse: true,
-      failAction: 'error'
-    }
+    description: 'The GET Contact search page',
+    handler: ContactSearchController.handler
+  }
+}, {
+  method: ['POST'],
+  path: Constants.Routes.CONTACTSEARCH.path,
+  config: {
+    description: 'The POST Contact search page',
+    handler: ContactSearchController.handler
   }
 }]

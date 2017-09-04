@@ -9,11 +9,6 @@ module.exports = class ContactController extends BaseController {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.CONTACT.pageHeading, errors, ContactController)
 
-      let authToken
-      if (request.state[Constants.COOKIE_KEY]) {
-        authToken = request.state[Constants.COOKIE_KEY].authToken
-      }
-
       return reply
         .view('contact', pageContext)
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])

@@ -7,9 +7,7 @@ const Contact = require('../models/contact.model')
 module.exports = class ContactSearchController extends BaseController {
   static async doGet (request, reply, errors = undefined) {
     try {
-      const context = {
-        pageTitle: 'Contact search - Waste Permits - GOV.UK'
-      }
+      const pageContext = BaseController.createPageContext(Constants.Routes.CONTACTSEARCH.pageHeading, errors, ContactSearchController)
 
       let authToken
       if (request.state[Constants.COOKIE_KEY]) {
@@ -17,10 +15,10 @@ module.exports = class ContactSearchController extends BaseController {
       }
 
       // List the contacts
-      context.contacts = await Contact.list(authToken)
+      pageContext.contacts = await Contact.list(authToken)
 
       return reply
-        .view('contactSearch', context)
+        .view('contactSearch', pageContext)
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
@@ -35,17 +33,21 @@ module.exports = class ContactSearchController extends BaseController {
     }
 
     if (request.payload.id) {
-      const contact = await Contact.getById(authToken, request.payload.id)
-
-      console.log(contact)
+      try {
+        const contact = await Contact.getById(authToken, request.payload.id)
+        console.log(contact)
+      } catch (error) {
+        console.error(error)
+        return reply.redirect(Constants.Routes.ERROR.path)
+      }
     }
 
     return reply
-      .redirect('/contact-search')
+      .redirect(Constants.Routes.CONTACTSEARCH.path)
       .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
   }
 
-  static handler (request, reply) {
-    return BaseController.handler(request, reply, ContactSearchController)
+  static handler (request, reply, source, errors) {
+    return BaseController.handler(request, reply, errors, ContactSearchController)
   }
 }

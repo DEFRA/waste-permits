@@ -10,6 +10,7 @@ const Contact = require('../../src/models/contact.model')
 
 let validateTokenStub
 let contactListStub
+let contactGetByIdStub
 
 lab.beforeEach((done) => {
   // Stub methods
@@ -43,6 +44,17 @@ lab.beforeEach((done) => {
     }
   }
 
+  contactGetByIdStub = Contact.getById
+  Contact.getById = (authToken, id) => {
+    return new Contact({
+      id: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
+      firstname: 'Marlon',
+      lastname: 'Herzog,',
+      telephone1: '01234567890',
+      emailaddress1: 'marlon.herzog@example.com'
+    })
+  }
+
   done()
 })
 
@@ -50,12 +62,13 @@ lab.afterEach((done) => {
   // Restore stubbed methods
   server.methods.validateToken = validateTokenStub
   Contact.prototype.list = contactListStub
+  Contact.prototype.getById = contactGetByIdStub
 
   done()
 })
 
 lab.experiment('Contact search page tests:', () => {
-  lab.test('GET /search returns the contacts page correctly', (done) => {
+  lab.test('GET /contact-search returns the contact search page correctly', (done) => {
     const request = {
       method: 'GET',
       url: '/contact-search',
@@ -75,7 +88,25 @@ lab.experiment('Contact search page tests:', () => {
     })
   })
 
-  lab.test('POST /search redirects to error screen when the user token is invalid', (done) => {
+  lab.test('POST /contact-search success redirects to contact search page', (done) => {
+    const request = {
+      method: 'POST',
+      url: '/contact-search',
+      headers: {},
+      payload: {
+        id: '7a8e4354-4f24-e711-80fd-5065f38a1b01'
+      }
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/contact-search')
+
+      done()
+    })
+  })
+
+  lab.test('POST /contact-search redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'POST',
       url: '/contact-search',
