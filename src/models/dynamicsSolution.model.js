@@ -12,12 +12,7 @@ const DYNAMICS_COMPONENT_NAMES = [
 module.exports = class DynamicsSolution extends BaseModel {
   static async get (authToken) {
     const dynamicsDal = new DynamicsDalService(authToken)
-
-    // TODO Get the filter to work?
-    const query = 'solutions?$select=friendlyname,installedon,uniquename,version'
-    // const query = 'solutions?$select=friendlyname,installedon,uniquename,version%26$filter=isvisible eq true'
-    // const query = encodeURIComponent('solutions?$select=friendlyname,installedon,uniquename,version&$filter=isvisible eq true')
-
+    const query = encodeURI('solutions?$select=friendlyname,installedon,uniquename,version&$filter=isvisible eq true')
     try {
       const response = await dynamicsDal.search(query)
 
