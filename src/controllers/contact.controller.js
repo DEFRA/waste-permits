@@ -9,14 +9,6 @@ module.exports = class ContactController extends BaseController {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.CONTACT.pageHeading, errors, ContactController)
 
-      let authToken
-      if (request.state[Constants.COOKIE_KEY]) {
-        authToken = request.state[Constants.COOKIE_KEY].authToken
-      }
-
-      // List the contacts
-      pageContext.contacts = await Contact.list(authToken)
-
       return reply
         .view('contact', pageContext)
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
@@ -63,11 +55,15 @@ module.exports = class ContactController extends BaseController {
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     } else {
-      // Update existing Contact
-      const contact = Contact.getById(request.payload.id)
-      contact.contactName = request.payload.updatedContactName
-
       try {
+        // Update existing Contact
+        const contact = await Contact.getById(authToken, request.payload.id)
+
+        contact.firstName = request.payload.firstName
+        contact.lastName = request.payload.lastName
+        contact.telephone = request.payload.telephone
+        contact.email = request.payload.email
+
         await contact.save(authToken)
 
         return ContactController.doGet(request, reply, errors)

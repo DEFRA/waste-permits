@@ -24,6 +24,10 @@ module.exports = {
       path: '/contact',
       pageHeading: 'Who should we contact about this application?'
     },
+    CONTACTSEARCH: {
+      path: '/contact-search',
+      pageHeading: 'Contact search'
+    },
     TASK_LIST: {
       path: '/task-list',
       pageHeading: 'Task List'

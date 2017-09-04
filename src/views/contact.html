@@ -42,7 +42,7 @@
             Telephone number
             <span class="form-hint">This can be a landline or mobile</span>
           </label>
-          <input class="form-control form-control-char-25" id="telephone" name="telephone" type="number" value="{{contact.telephone}}">
+          <input class="form-control form-control-char-25" id="telephone" name="telephone" type="tel" value="{{contact.telephone}}">
         </div>
 
         <div class="form-group">
@@ -53,40 +53,18 @@
         </div>
 
         <div class="form-group">
-          <button id="contact-continue" type="submit" class="button">Continue</button>
-        </div>
-      </form>
-
-      <h2>Update contact:</h2>
-      <form method="post" action="/contact">
-        <div class="form-group">
           <label class="form-label" for="id">
-            Identifier
-            <span class="form-hint">For example, e43449a6-4f24-e711-80fd-5065f38a1b01</span>
+            ID
           </label>
+          <span class="form-hint">For example, e43449a6-4f24-e711-80fd-5065f38a1b01. If found contact will be updated rather than created.</span>
           <input class="form-control" id="id" name="id" type="text" value="{{contact.id}}">
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="updated-contact-name">
-            New full name
-            <span class="form-hint">For example, John Smith</span>
-          </label>
-          <input class="form-control" id="updated-contact-name" name="updated-contact-name" type="text" value="{{contact.updatedContactName}}">
-        </div>
-
-        <div class="form-group">
-          <button id="contact-update" type="submit" class="button">Update</button>
+          <button id="contact-continue" type="submit" class="button">Continue</button>
         </div>
       </form>
     </div>
   </div>
-
-  <h2>Contact List:</h2>
-  <ul>
-  {{#each contacts}}
-    <li>{{this.firstName}} {{this.lastName}}</li>
-  {{/each}}
-  </ul>
 
 </main>

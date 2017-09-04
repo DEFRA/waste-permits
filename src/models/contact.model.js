@@ -2,7 +2,6 @@
 
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
-const uuid4 = require('uuid/v4')
 
 module.exports = class Contact extends BaseModel {
   constructor (dataObject = undefined) {
@@ -16,42 +15,53 @@ module.exports = class Contact extends BaseModel {
     }
   }
 
-  static getById (id) {
-    // TODO
-    // Define the query
-    // const query = 'contacts?$select=contactid'
-    // const response = dynamicsDalService.getItem(query)
+  static async getById (authToken, id) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const query = `contacts(${id})?$select=contactid,firstname,lastname,telephone1,emailaddress1`
+    var contact
 
-    // TODO get this from Dynamics instead
-    const contactDetails = {
-      id: uuid4(),
-      firstName: 'Alan',
-      lastName: 'Cruikshanks',
-      telephone: '020 3025 4033',
-      email: 'alan.cruikshanks@environment-agency.gov.uk'
+    try {
+      const response = await dynamicsDal.search(query)
+
+      contact = new Contact({
+        id: response.contactid,
+        firstName: response.firstname,
+        lastName: response.lastname,
+        telephone: response.telephone1,
+        email: response.emailaddress1
+      })
+    } catch (error) {
+      // TODO: Error handling?
+      console.error(`Unable to list Contacts: ${error}`)
+      throw error
     }
-    return new Contact(contactDetails)
+    return contact
   }
 
   static async list (authToken) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
     // Define the query
-    const query = 'contacts?$select=contactid,firstname,lastname'
+    const query = 'contacts?$select=contactid,firstname,lastname,telephone1,emailaddress1'
 
-    // List the Contacts
-    const contacts = []
+    const contacts = {
+      count: 0,
+      results: []
+    }
+
     try {
-      const response = await dynamicsDal.listItems(query)
+      const response = await dynamicsDal.search(query)
 
       // Parse response into Contact objects
-      response.forEach((contact) => {
-        contacts.push(new Contact({
+      response.value.forEach((contact) => {
+        contacts.results.push(new Contact({
+          id: contact.contactid,
           firstName: contact.firstname,
           lastName: contact.lastname,
           telephone: contact.telephone1,
           email: contact.emailaddress1
         }))
+        contacts.count++
       })
     } catch (error) {
       // TODO: Error handling?
