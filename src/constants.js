@@ -60,8 +60,7 @@ Constants.getVersion = () => {
     } else {
       throw new Error('Application version not found')
     }
-  }
-  catch (err) {
+  } catch (err) {
     version = 'Unknown'
   }
   return version
