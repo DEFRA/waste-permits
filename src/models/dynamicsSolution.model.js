@@ -5,8 +5,8 @@ const BaseModel = require('./base.model')
 
 const DYNAMICS_COMPONENT_NAMES = [
   'Core',
-  'Licensing and Permitting',
-  'Waste Permits'
+  'L & P Application',
+  'Waste Permiting'
 ]
 module.exports = class DynamicsSolution extends BaseModel {
   static async get (authToken) {
@@ -25,8 +25,8 @@ module.exports = class DynamicsSolution extends BaseModel {
 
       // The three solutions we are interested in are:
       // - Core
-      // - LicensingandPermitting
-      // - WastePermits
+      // - Licensing and Permitting
+      // - Waste Permits
       for (var solution of response) {
         if (DYNAMICS_COMPONENT_NAMES.includes(solution.friendlyname)) {
           dynamicsVersionInfo.push({
@@ -35,7 +35,6 @@ module.exports = class DynamicsSolution extends BaseModel {
           })
         }
       }
-      console.log(dynamicsVersionInfo)
     } catch (error) {
       console.error(`Unable to get Dynamics solution details: ${error}`)
       throw error
