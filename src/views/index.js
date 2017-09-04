@@ -47,5 +47,6 @@ module.exports = {
   layoutPath: Path.join(__dirname, 'govuk_template_mustache'),
   layout: 'govuk_template',
   partialsPath: Path.join(__dirname, 'partials/'),
+  helpersPath: Path.join(__dirname, 'helpers'),
   context: defaultContext
 }

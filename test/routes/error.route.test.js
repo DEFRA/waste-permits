@@ -29,7 +29,7 @@ lab.experiment('Error page tests:', () => {
       const doc = parser.parseFromString(res.payload, 'text/html')
 
       let element = doc.getElementById('error-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('Oops! Something went wrong...')
+      Code.expect(element.nodeValue).to.equal('Something went wrong')
 
       done()
     })

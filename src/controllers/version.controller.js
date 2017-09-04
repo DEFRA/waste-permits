@@ -9,12 +9,7 @@ const DynamicsSolution = require('../models/dynamicsSolution.model')
 module.exports = class VersionController extends BaseController {
   static async doGet (request, reply, errors = undefined) {
     try {
-      // TODO: This will need to be updated when merged to master - we have a new way of doing this now!
-      // (The PR in question has not been approved yet)
-      const pageContext = {
-        pageHeading: 'Waste Permits',
-        pageTitle: 'TODO'
-      }
+      const pageContext = BaseController.createPageContext(Constants.Routes.VERSION.pageHeading)
 
       let authToken
       if (request.state[Constants.COOKIE_KEY]) {
@@ -32,12 +27,11 @@ module.exports = class VersionController extends BaseController {
         .view('version', pageContext)
     } catch (error) {
       console.error(error)
-      // TODO: This path will need to use the Paths.ERROR Constant once that PR has been merged
-      return reply.redirect('/error')
+      return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
 
-  static handler (request, reply) {
-    return BaseController.handler(request, reply, VersionController)
+  static handler (request, reply, source, errors) {
+    return BaseController.handler(request, reply, errors, VersionController)
   }
 }

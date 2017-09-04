@@ -12,7 +12,14 @@ const HapiDevErrors = require('hapi-dev-errors')
 const server = new Hapi.Server()
 
 server.connection({
-  port: config.port
+  port: process.env.WASTE_PERMITS_APP_PORT,
+  routes: {
+    validate: {
+      options: {
+        abortEarly: false
+      }
+    }
+  }
 })
 
 // Create a session cookie in which to store a waste permit application token
@@ -68,7 +75,7 @@ server.register([
       path: '/health',
       responses: {
         healthy: {
-          message: `<H1>${Constants.APP}</H1>Application version: ${Constants.getVersion()}<br>` +
+          message: `<H1>${Constants.SERVICE_NAME}</H1>Application version: ${Constants.getVersion()}<br>` +
             `Latest commit: <a target="_blank" href="${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}">${Constants.getLatestCommit()}</a>`
         },
         unhealthy: {
@@ -99,7 +106,7 @@ server.start((err) => {
 
   console.info('Server running in environment: ' + config.nodeEnvironment)
   console.info('Server running at:', server.info)
-  console.info(`Service: ${Constants.APP}\nVersion: ${Constants.getVersion()}`)
+  console.info(`Service: ${Constants.SERVICE_NAME}\nVersion: ${Constants.getVersion()}`)
   console.info(`Latest commit: ${Constants.getLatestCommit()}`)
 })
 

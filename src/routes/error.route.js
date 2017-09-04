@@ -1,10 +1,11 @@
 'use strict'
 
+const Constants = require('../constants')
 const ErrorController = require('../controllers/error.controller')
 
 module.exports = [{
   method: 'GET',
-  path: '/error',
+  path: Constants.Routes.ERROR.path,
   config: {
     description: 'The error page',
     handler: ErrorController.handler

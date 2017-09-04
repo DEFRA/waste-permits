@@ -1,11 +1,11 @@
 'use strict'
 
+const Constants = require('../constants')
 const VersionController = require('../controllers/version.controller')
 
 module.exports = [{
   method: ['GET'],
-  // TODO: This path will be in the Constants once a PR has been approved and merged to master
-  path: '/version',
+  path: Constants.Routes.VERSION.path,
   config: {
     description: 'The version page',
     handler: VersionController.handler
