@@ -5,9 +5,10 @@ const BaseModel = require('./base.model')
 
 const DYNAMICS_COMPONENT_NAMES = [
   'Core',
-  'L & P Application',
-  'Waste Permiting'
+  'Licensing and Permitting',
+  'Waste Permits'
 ]
+
 module.exports = class DynamicsSolution extends BaseModel {
   static async get (authToken) {
     const dynamicsDal = new DynamicsDalService(authToken)
