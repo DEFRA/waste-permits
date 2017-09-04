@@ -6,14 +6,14 @@ const SiteValidator = require('../validators/site.validator')
 
 module.exports = [{
   method: ['GET'],
-  path: Constants.Routes.SITE,
+  path: Constants.Routes.SITE.path,
   config: {
     description: 'The GET Site page',
     handler: SiteController.handler
   }
 }, {
   method: ['POST'],
-  path: Constants.Routes.SITE,
+  path: Constants.Routes.SITE.path,
   config: {
     description: 'The POST Site page',
     handler: SiteController.handler,

@@ -11,7 +11,7 @@ const authService = new ActiveDirectoryAuthService()
 
 module.exports = class RootController extends BaseController {
   static async doGet (request, reply, errors) {
-    const pageContext = BaseController.createPageContext('Waste Permits Home Page', errors)
+    const pageContext = BaseController.createPageContext(Constants.Routes.ROOT.pageHeading, errors)
 
     reply.view('index', pageContext)
   }
@@ -34,7 +34,7 @@ module.exports = class RootController extends BaseController {
     }
 
     return reply
-      .redirect(Constants.Routes.SITE)
+      .redirect(Constants.Routes.SITE.path)
 
       // Delete the existing session cookie
       .unstate(Constants.COOKIE_KEY)

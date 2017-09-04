@@ -1,5 +1,5 @@
-// getFormGroupClass Helper
-// Usage: `{{#getFormGroupClass}}`
+// getFormErrorGroupClass Helper
+// Usage: `{{#getFormErrorGroupClass}}`
 // Inspects the input validation error (if there is one) and returns the correct form group class to be used
 module.exports = (options, context) => {
   if (options === undefined) {

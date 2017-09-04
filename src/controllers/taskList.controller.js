@@ -6,7 +6,7 @@ const BaseController = require('./base.controller')
 module.exports = class TaskListController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext('Task List')
+      const pageContext = BaseController.createPageContext(Constants.Routes.TASK_LIST.pageHeading)
 
       // TODO: Get the task list from Dynamics
       pageContext.taskList = ['TODO']
@@ -16,7 +16,7 @@ module.exports = class TaskListController extends BaseController {
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.log(error)
-      return reply.redirect(Constants.Routes.ERROR)
+      return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
 

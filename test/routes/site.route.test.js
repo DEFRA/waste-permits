@@ -41,7 +41,7 @@ lab.experiment('Site page tests:', () => {
       const doc = parser.parseFromString(res.payload, 'text/html')
 
       let element = doc.getElementById('site-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('What\'s the site name?')
+      Code.expect(element.nodeValue).to.equal(`What's the site name?`)
 
       element = doc.getElementById('site-name-label').firstChild
       Code.expect(element.nodeValue).to.equal('Site name')

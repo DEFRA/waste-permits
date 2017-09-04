@@ -7,7 +7,7 @@ const SiteValidator = require('../validators/site.validator')
 module.exports = class SiteController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext('What\'s the site name?', errors, SiteValidator)
+      const pageContext = BaseController.createPageContext(Constants.Routes.SITE.pageHeading, errors, SiteValidator)
 
       pageContext.formValues = request.payload
 
@@ -16,7 +16,7 @@ module.exports = class SiteController extends BaseController {
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
-      return reply.redirect(Constants.Routes.ERROR)
+      return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
 
@@ -26,7 +26,7 @@ module.exports = class SiteController extends BaseController {
     } else {
       // TODO persist the data here if required
 
-      return reply.redirect(Constants.Routes.CONTACT)
+      return reply.redirect(Constants.Routes.CONTACT.path)
     }
   }
 

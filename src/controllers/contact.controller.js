@@ -7,7 +7,7 @@ const Contact = require('../models/contact.model')
 module.exports = class ContactController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext('Who should we contact about this application?', errors, ContactController)
+      const pageContext = BaseController.createPageContext(Constants.Routes.CONTACT.pageHeading, errors, ContactController)
 
       let authToken
       if (request.state[Constants.COOKIE_KEY]) {
@@ -22,7 +22,7 @@ module.exports = class ContactController extends BaseController {
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
-      return reply.redirect(Constants.Routes.ERROR)
+      return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
 
@@ -56,11 +56,11 @@ module.exports = class ContactController extends BaseController {
         await contact.save(authToken)
 
         return reply
-          .redirect(Constants.Routes.TASK_LIST)
+          .redirect(Constants.Routes.TASK_LIST.path)
           .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
       } catch (error) {
         console.error(error)
-        return reply.redirect(Constants.Routes.ERROR)
+        return reply.redirect(Constants.Routes.ERROR.path)
       }
     } else {
       // Update existing Contact
@@ -73,7 +73,7 @@ module.exports = class ContactController extends BaseController {
         return ContactController.doGet(request, reply, errors)
       } catch (error) {
         console.error(error)
-        return reply.redirect(Constants.Routes.ERROR)
+        return reply.redirect(Constants.Routes.ERROR.path)
       }
     }
   }

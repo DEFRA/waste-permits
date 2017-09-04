@@ -25,7 +25,7 @@ module.exports = class BaseController {
       let token = request.server.methods.validateToken(request.state[Constants.COOKIE_KEY])
       if (!token) {
         // Redirect off an error screen
-        return reply.redirect(Constants.Routes.ERROR)
+        return reply.redirect(Constants.Routes.ERROR.path)
       }
     }
     if (request.method.toUpperCase() === 'GET') {

@@ -13,7 +13,7 @@
 
       <form method="POST" action="site">
 
-        <div class="form-group {{#getFormGroupClass errors.siteName}}{{/getFormGroupClass}}">
+        <div class="form-group {{#getFormErrorGroupClass errors.siteName}}{{/getFormErrorGroupClass}}">
           <label class="form-label" for="siteName">
             <span id="site-name-label">Site name</span>
             <span class="form-hint">If it doesn’t already have a name, enter the name you’ll use</span>
@@ -24,7 +24,7 @@
           <input class="form-control form-control-char-60" id="siteName" name="siteName" type="text" value="{{formValues.siteName}}">
         </div>
 
-        <div class="form-group {{#getFormGroupClass errors.anotherName}}{{/getFormGroupClass}}">
+        <div class="form-group {{#getFormErrorGroupClass errors.anotherName}}{{/getFormErrorGroupClass}}">
           <label class="form-label" for="anotherName">
             Another name
             <span class="form-hint">If it doesn’t already have a name, enter the name you’ll use</span>
@@ -47,13 +47,14 @@
   <p>
     Example partial with CSS styling from the assets/sass folder:
   </p>
+<br>
 
   <p>
     {{> example}}
   </p>
 
-  <br />
-  <br />
+  <br>
+  <br>
 
   <p>
     <a href="/">Back</a>

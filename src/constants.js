@@ -8,11 +8,25 @@ module.exports = {
   COOKIE_KEY: 'DefraSession',
 
   Routes: {
-    ROOT: '/',
-    ERROR: '/error',
-    SITE: '/site',
-    CONTACT: '/contact',
-    TASK_LIST: '/task-list'
+    ROOT: {
+      path: '/',
+      pageHeading: 'Waste Permits Home Page'
+    },
+    ERROR: {
+      path: '/error',
+      pageHeading: 'Something went wrong'
+    },
+    SITE: {
+      path: '/site',
+      pageHeading: `What's the site name?`
+    },
+    CONTACT: {
+      path: '/contact',
+      pageHeading: 'Who should we contact about this application?'
+    },
+    TASK_LIST: {
+      path: '/task-list',
+      pageHeading: 'Task List'
+    }
   }
-
 }

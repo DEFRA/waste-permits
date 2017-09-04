@@ -5,7 +5,7 @@ const TaskListController = require('../controllers/taskList.controller')
 
 module.exports = [{
   method: ['GET'],
-  path: Constants.Routes.TASK_LIST,
+  path: Constants.Routes.TASK_LIST.path,
   config: {
     description: 'The task list page',
     handler: TaskListController.handler,

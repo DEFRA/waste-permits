@@ -6,14 +6,14 @@ const ContactValidator = require('../validators/contact.validator')
 
 module.exports = [{
   method: ['GET'],
-  path: Constants.Routes.CONTACT,
+  path: Constants.Routes.CONTACT.path,
   config: {
     description: 'The GET Contact page',
     handler: ContactController.handler
   }
 }, {
   method: ['POST'],
-  path: Constants.Routes.CONTACT,
+  path: Constants.Routes.CONTACT.path,
   config: {
     description: 'The POST Contact page',
     handler: ContactController.handler,
