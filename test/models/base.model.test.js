@@ -15,7 +15,7 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Base Model tests:', () => {
-  lab.test('Base Model toString() method serialises a model object correctly', (done) => {
+  lab.test('toString() method serialises a model object correctly', (done) => {
     const modelObject = new BaseModel()
     modelObject.additionalProperty = 'foo'
 

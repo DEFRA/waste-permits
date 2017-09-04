@@ -5,6 +5,8 @@
   <div class="grid-row">
     <div class="column-two-thirds column-minimum">
 
+      {{> common/errorSummary panelHeader='You need to complete these tasks'}}
+
       <form method="post" action="/v7/check/check-answers" name="tasklist">
 
         <h1 class="heading-large">
