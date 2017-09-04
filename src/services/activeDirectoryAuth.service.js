@@ -45,9 +45,13 @@ module.exports = class ActiveDirectoryAuthService {
 
           // Parse the response JSON and extract the CRM access token
           const tokenResponse = JSON.parse(completeResponse)
-          const token = tokenResponse.access_token
 
-          resolve(token)
+          const token = tokenResponse.access_token
+          if (token) {
+            resolve(token)
+          } else {
+            reject(new Error('Error obtaining Active Directory auth token: ' + completeResponse))
+          }
         })
       })
 
