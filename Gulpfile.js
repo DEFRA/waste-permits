@@ -106,7 +106,11 @@ gulp.task('test', ['standard'], () => {
 // Test task
 gulp.task('test-ci', ['standard'], () => {
   return gulp.src('test')
-    .pipe(lab('--coverage --reporter console --output stdout --reporter lcov --output lcov.info --verbose'))
+    .pipe(lab({
+      args: '--coverage --reporter console --output stdout --reporter lcov --output lcov.info --verbose --bail',
+      opts: {
+        emitLabError: true
+      }}))
 })
 
 // Build task

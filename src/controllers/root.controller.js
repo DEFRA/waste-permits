@@ -19,11 +19,9 @@ module.exports = class RootController extends BaseController {
   static async doPost (request, reply, errors) {
     // Generate a session token
     const token = uuid4()
-    console.log('Generated session token: ' + token)
 
     // Generate a CRM token
     const authToken = await authService.getToken()
-    console.log('Generated CRM token:' + authToken)
 
     // TODO: Confirm how session handling will work and where the most
     // appropriate point is to create and destroy session cookies

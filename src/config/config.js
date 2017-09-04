@@ -4,26 +4,26 @@ require('dotenv').config()
 
 module.exports = {
 
-  port: process.env.WASTE_PERMITS_APP_PORT,
+  port: process.env.WASTE_PERMITS_APP_PORT || 8000,
 
-  nodeEnvironment: process.env.NODE_ENV,
+  nodeEnvironment: process.env.NODE_ENV || 'PRODUCTION',
 
   // Domain name or IP address of the server to issue the azure AD auth request
   // to. Passed in as value for `host:` option when we make the https.request()
   // call
-  azureAuthHost: process.env.AZURE_ACTIVE_DIRECTORY_HOST,
+  azureAuthHost: process.env.AZURE_ACTIVE_DIRECTORY_HOST || 'login.microsoftonline.com',
 
   // OAuth token endpoint for App registered with Azure AD.
   // This appended to AZURE_ACTIVE_DIRECTORY_HOST gives the full url.
   // Passed in as value for `path:` option when we make the https.request() call
-  azureAuthPath: process.env.AZURE_ACTIVE_DIRECTORY_PATH,
+  azureAuthPath: process.env.AZURE_ACTIVE_DIRECTORY_PATH || '/12345678-oi98-4321-8y8o-8y9456987123/oauth2/token',
 
   // Client ID for this app registered with Azure AD
   clientId: process.env.DYNAMICS_CLIENT_ID,
 
   // Your Dynamics root service address, which Azure AD uses to identify which
   // resource you are trying to authenticate with
-  resourceAddr: process.env.DYNAMICS_RESOURCE_ADDR,
+  resourceAddr: process.env.DYNAMICS_RESOURCE_ADDR || 'https://mycrminstance.crm4.dynamics.com',
 
   // The app's Dynamics Username. When we authenticate with Azure AD rather than
   // taking a user to a web page where they can enter credentials and then
@@ -35,9 +35,9 @@ module.exports = {
   dynamicsPassword: process.env.DYNAMICS_PASSWORD,
 
   // Dynamics host address for queries via its web API
-  dynamicsWebApiHost: process.env.DYNAMICS_WEB_API_HOST,
+  dynamicsWebApiHost: process.env.DYNAMICS_WEB_API_HOST || 'mycrminstance.api.crm4.dynamics.com',
 
   // Dynamics path for queries via its web API.
   // This appended to CRM_WEB_API_HOST gives the full url for the web API
-  dynamicsWebApiPath: process.env.DYNAMICS_WEB_API_PATH
+  dynamicsWebApiPath: process.env.DYNAMICS_WEB_API_PATH || '/api/data/v8.2/'
 }
