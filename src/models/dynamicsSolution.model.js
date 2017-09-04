@@ -15,12 +15,9 @@ module.exports = class DynamicsSolution extends BaseModel {
 
     // TODO Get the filter to work?
     const query = 'solutions?$select=friendlyname,installedon,uniquename,version'
+    // const query = 'solutions?$select=friendlyname,installedon,uniquename,version%26$filter=isvisible eq true'
     // const query = encodeURIComponent('solutions?$select=friendlyname,installedon,uniquename,version&$filter=isvisible eq true')
-    // const query = encodeURIComponent('solutions?$select=friendlyname,installedon,uniquename,version')
-    // const query = 'solutions?$select=friendlyname,installedon,uniquename,version&$filter=isvisible eq true'
-    // const query = 'contacts?$select=contactid,firstname,lastname'
 
-    const dynamicsVersionInfo = []
     try {
       const response = await dynamicsDal.search(query)
 
@@ -28,7 +25,8 @@ module.exports = class DynamicsSolution extends BaseModel {
       // - Core
       // - Licensing and Permitting
       // - Waste Permits
-      for (var solution of response) {
+      const dynamicsVersionInfo = []
+      for (let solution of response) {
         if (DYNAMICS_COMPONENT_NAMES.includes(solution.friendlyname)) {
           dynamicsVersionInfo.push({
             componentName: solution.friendlyname,
@@ -36,10 +34,10 @@ module.exports = class DynamicsSolution extends BaseModel {
           })
         }
       }
+      return dynamicsVersionInfo
     } catch (error) {
       console.error(`Unable to get Dynamics solution details: ${error}`)
       throw error
     }
-    return dynamicsVersionInfo
   }
 }

@@ -39,12 +39,30 @@ Constants.Routes = {
 }
 
 Constants.getLatestCommit = () => {
-  // Read the latest Git commit reference
-  return fs.readFileSync('latestCommit.json', 'utf8')
+  let latestCommit
+  try {
+    // Read the latest Git commit reference
+    latestCommit = fs.readFileSync('latestCommit.json', 'utf8')
+  } catch (err) {
+    latestCommit = 'Unknown'
+  }
+  return latestCommit
 }
 
 Constants.getVersion = () => {
-  // Read the application version number
-  let json = JSON.parse(fs.readFileSync('package.json', 'utf8'))
-  return json.version
+  let version
+
+  try {
+    // Read the application version number
+    let json = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+    if (json) {
+      version = json.version
+    } else {
+      throw new Error('Application version not found')
+    }
+  }
+  catch (err) {
+    version = 'Unknown'
+  }
+  return version
 }

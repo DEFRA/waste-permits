@@ -8,6 +8,7 @@ const DynamicsSolution = require('../models/dynamicsSolution.model')
 
 module.exports = class VersionController extends BaseController {
   static async doGet (request, reply, errors = undefined) {
+
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.VERSION.pageHeading)
 

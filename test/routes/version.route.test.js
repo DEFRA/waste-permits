@@ -5,23 +5,44 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const server = require('../../index')
 
-// const DOMParser = require('xmldom').DOMParser
+const DynamicsSolution = require('../../src/models/dynamicsSolution.model')
 
-// let validateTokenStub
+const DOMParser = require('xmldom').DOMParser
+
+let validateTokenStub
+let dynamicSolutionGetStub
 
 lab.beforeEach((done) => {
   // Stub methods
-  // validateTokenStub = server.methods.validateToken
-  // server.methods.validateToken = () => {
-  //   return 'my_token'
-  // }
+  validateTokenStub = server.methods.validateToken
+  server.methods.validateToken = () => {
+    return 'my_token'
+  }
+
+  const dynamicsVersionInfo = [{
+    componentName: 'FIRST_COMPONENT',
+    version: '1.2.3'
+  }, {
+    componentName: 'SECOND_COMPONENT',
+    version: '4.5.6'
+  }, {
+    componentName: 'THIRD_COMPONENT',
+    version: '7.8.9'
+  }]
+
+  dynamicSolutionGetStub = DynamicsSolution.get
+  DynamicsSolution.get = (authToken) => {
+    return dynamicsVersionInfo
+  }
 
   done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  // server.methods.validateToken = validateTokenStub
+  server.methods.validateToken = validateTokenStub
+
+  DynamicsSolution.get = dynamicSolutionGetStub
 
   done()
 })
@@ -34,17 +55,17 @@ lab.experiment('Version page tests:', () => {
       headers: {}
     }
 
-    // server.inject(request, (res) => {
-    //   console.log('resp=', res.payload)
-    //
-    //   Code.expect(res.statusCode).to.equal(200)
+    server.inject(request, (res) => {
+      console.log('resp=', res.payload)
 
-      // const parser = new DOMParser()
-      // const doc = parser.parseFromString(res.payload, 'text/html')
-      //
-      // let element = doc.getElementById('site-heading').firstChild
-      // Code.expect(element.nodeValue).to.equal('What\'s the site name?')
-      //
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element = doc.getElementById('version-heading').firstChild
+      Code.expect(element.nodeValue).to.equal('Waste Permits')
+
       // element = doc.getElementById('site-name-label').firstChild
       // Code.expect(element.nodeValue).to.equal('Site name')
       //
@@ -52,6 +73,6 @@ lab.experiment('Version page tests:', () => {
       // Code.expect(element.nodeValue).to.equal('Continue')
 
       done()
-    // })
+    })
   })
 })
