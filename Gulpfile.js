@@ -2,6 +2,7 @@
 
 const gulp = require('gulp')
 const env = require('gulp-env')
+const htmlhint = require('gulp-htmlhint')
 const sass = require('gulp-sass')
 const sourcemaps = require('gulp-sourcemaps')
 const standard = require('gulp-standard')
@@ -98,14 +99,21 @@ gulp.task('standard', () => {
     }))
 })
 
+// Run HTML Hint checks
+gulp.task('html-hint', () => {
+  return gulp.src('./src/views/{partials/{common/,},}*.html')
+    .pipe(htmlhint('.htmlhintrc'))
+    .pipe(htmlhint.failReporter())
+})
+
 // Test task
-gulp.task('test', ['standard'], () => {
+gulp.task('test', ['standard', 'html-hint'], () => {
   return gulp.src('test')
     .pipe(lab('--coverage --reporter console --output stdout --reporter html --output coverage.html --verbose'))
 })
 
 // Test task
-gulp.task('test-ci', ['standard'], () => {
+gulp.task('test-ci', () => {
   return gulp.src('test')
     .pipe(lab({
       args: '--coverage --reporter console --output stdout --reporter lcov --output lcov.info --verbose --bail',

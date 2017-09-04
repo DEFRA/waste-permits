@@ -4,18 +4,18 @@
 
   <div class="grid-row">
     <div class="column-two-thirds column-minimum">
+
       <form method="post" action="/v7/check/check-answers" name="tasklist">
+
         <h1 class="heading-large">
-          <span class="font-medium" style="color:#6f777b">Apply for a standard rules waste permit:</span><br>
-          Anaerobic digestion facility including use of the resultant biogas (waste recovery operation)<br>
-          <span class="heading-medium">SR2012 No 12 &nbsp;
-            <a class="font-small" href="/v7/selectpermit/permit-category2">select a different permit</a>
-          </span>
+          <span class="visually-hidden">Task list:</span>
+          Apply for a standard rules waste permit
         </h1>
 
-        <ol class="task-list">
+        <p class="text">Metal recycling, vehicle storage, depollution and dismantling facility <span class="heading-small">SR2015 No 18</span><br><a class="font-small" href="/v7/selectpermit/permit-category2">Select a different permit</a></p>
 
-        <!-- Before you apply ############################################################### -->
+        <ol class="task-list">
+          <!-- 1. BEFORE YOU APPLY ############################################################### -->
           <li>
             <h2 class="task-list-section">
               <span class="task-list-section-number">1. </span> Before you apply
@@ -27,70 +27,91 @@
                 </a>
                 <input type="hidden" name="complete[]" value="Check permit cost and time">
               </li>
+
               <!-- SPECIAL CASES ############################################ -->
+              <li class="task-list-item " id="confirm-the-drainage-system-for-the-vehicle-storage-area">
+                <a class="task-name" href="/v7/check-special-cases">
+                  Confirm the drainage system for the vehicle storage area
+                </a>
+              </li>
+
               <li class="task-list-item " id="confirm-that-your-operation-meets-the-rules">
                 <a class="task-name" href="/v7/read-rules/index" aria-describedby="operation-rules-complete">
                   Confirm that your operation meets the rules
                 </a>
-                <input type="hidden" name="complete[]" value="Confirm that your operation meets the rules"> 
+                <input type="hidden" name="complete[]" value="Confirm that your operation meets the rules">
               </li>
+
               <li class="task-list-item " id="tell-us-if-youve-discussed-this-application-with-us">
-                <a class="task-name" href="&#10;                /v7/preapp/preapp-discussion&#10;              " aria-describedby="preapp-completed">
-                  Tell us if you've discussed this application with us
+                <a class="task-name" href="/v7/preapp/check-your-answers" aria-describedby="preapp-completed">
+                  Tell us if you&#39;ve discussed this application with us
                 </a>
-                <input type="hidden" name="complete[]" value="Tell us if you've discussed this application with us">
+                <input type="hidden" name="complete[]" value="Tell us if you&#39;ve discussed this application with us">
               </li>
             </ul>
           </li>
 
-          <!-- Complete application ############################################################### -->
+          <!-- 2. COMPLETE APPLICATION ############################################################### -->
           <li>
             <h2 class="task-list-section">
               <span class="task-list-section-number">2. </span> Complete application
             </h2>
             <ul class="task-list-items">
               <li class="task-list-item " id="give-contact-details">
-                <a class="task-name" href="&#10;                /v7/contact/contact-details&#10;              " aria-describedby="contact-details-completed">
+                <a class="task-name" href="/v7/contact/check-your-answers" aria-describedby="contact-details-completed">
                   Give contact details
                 </a>
                 <input type="hidden" name="complete[]" value="Give contact details">
               </li>
               <li class="task-list-item " id="give-permit-holder-details">
-                <a class="task-name" href="&#10;                /v7/operator/site-operator&#10;              " aria-describedby="site-operator-completed">
+                <a class="task-name" href="/v7/operator/check-your-answers" aria-describedby="site-operator-completed">
                   Give permit holder details
                 </a>
                 <input type="hidden" name="complete[]" value="Give permit holder details">
               </li>
-              <!-- DONT'T SHOW SITE FOR MOBILE PERMITS -->
+
+              <!-- DON'T SHOW SITE FOR MOBILE PERMITS -->
+
               <li class="task-list-item " id="give-site-name-and-location">
-                <a class="task-name" href="&#10;                  /v7/site/site-name&#10;                " aria-describedby="site-name-completed">
+                <a class="task-name" href="/v7/site/check-your-answers" aria-describedby="site-name-completed">
                   Give site name and location
                 </a>
                 <input type="hidden" name="complete[]" value="Give site name and location">
               </li>
-              <!-- Site plan conditional -->
+
+              <!-- Site plan ############################################################### -->
               <li class="task-list-item " id="upload-the-site-plan">
-                <a class="task-name" href="&#10;                /v7/evidence/upload-site-plan&#10;              " aria-describedby="site-plan-completed">
+                <a class="task-name" href="/v7/site/site-plan-check-your-answers" aria-describedby="site-plan-completed">
                   Upload the site plan
                 </a>
                 <input type="hidden" name="complete[]" value="Upload the site plan">
               </li>
+
               <li class="task-list-item " id="upload-technical-management-qualifications">
-                <a class="task-name" href="&#10;                /v7/evidence/industry-scheme&#10;              " aria-describedby="industry-scheme-completed">
+                <a class="task-name" href="/v7/evidence/industry-check-answers" aria-describedby="industry-scheme-completed">
                   Upload technical management qualifications
                 </a>
                 <input type="hidden" name="complete[]" value="Upload technical management qualifications">
               </li>
+
               <li class="task-list-item " id="tell-us-which-management-system-you-use">
-                <a class="task-name" href="&#10;                /v7/evidence/management-system&#10;              " aria-describedby="management-system-completed">
+                <a class="task-name" href="/v7/evidence/management-check-answers" aria-describedby="management-system-completed">
                   Tell us which management system you use
                 </a>
                 <input type="hidden" name="complete[]" value="Tell us which management system you use">
               </li>
-              <!-- FIRE PREVENTION PLAN ############################################ -->
-              <!-- Make confidentiality conditional to permit and in context rather than on task list? -->
+
+              <!-- Fire prevention plan ############################################################### -->
+              <li class="task-list-item " id="upload-the-fire-prevention-plan">
+                <a class="task-name" href="/v7/evidence/fire-plan-check-answers" aria-describedby="firepp-completed">
+                  Upload the fire prevention plan
+                </a>
+                <input type="hidden" name="complete[]" value="Upload the fire prevention plan">
+              </li>
+
+              <!-- Confidentiality ############################################################### -->
               <li class="task-list-item " id="confirm-confidentiality-needs">
-                <a class="task-name" href="&#10;                /v7/check/claim-confidentiality&#10;              " aria-describedby="confidentiality-completed">
+                <a class="task-name" href="/v7/check/confidentiality-check-answers" aria-describedby="confidentiality-completed">
                   Confirm confidentiality needs
                 </a>
                 <input type="hidden" name="complete[]" value="Confirm confidentiality needs">
@@ -98,7 +119,7 @@
             </ul>
           </li>
 
-          <!-- Apply   ############################################################### -->
+          <!-- 3. END AND PAY  ############################################################### -->
           <li>
             <h2 class="task-list-section">
               <span class="task-list-section-number">3. </span> Send and pay
@@ -112,8 +133,8 @@
             </ul>
           </li>
         </ol>
+
       </form>
     </div>
   </div>
-
 </main>
