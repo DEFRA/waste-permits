@@ -9,19 +9,19 @@
       <section>
         <p>
           <label>Application version:</label>
-          <strong>{{ applicationVersion }}</strong>
+          <strong id="application-version">{{ applicationVersion }}</strong>
         </p>
         <p>
           <label>Commit hash:</label>
           <strong>
-            <a target="_blank" class="btn-link" href="{{ githubUrl }}">{{ githubRef }}</a>
+            <a id="commit-hash" target="_blank" class="btn-link" href="{{ githubUrl }}">{{ githubRef }}</a>
           </strong>
         </p>
         <p>
           <label>Dynamics versions:</label>
           <ul>
             {{#each dynamicsSolution}}
-              <li>{{ this.componentName }}: {{ this.version }}</li>
+              <li><span id="dynamics-item-{{@index}}-component-name">{{ this.componentName }}</span>: <span id="dynamics-item-{{@index}}-component-version">{{ this.version }}</span></li>
             {{/each}}
           </ul>
         </p>

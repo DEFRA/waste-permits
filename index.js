@@ -3,6 +3,8 @@
 const Constants = require('./src/constants')
 const config = require('./src/config/config')
 
+const fs = require('fs')
+const Path = require('path')
 const Hapi = require('hapi')
 const HapiRouter = require('hapi-router')
 const Blipp = require('blipp')
@@ -10,6 +12,16 @@ const Disinfect = require('disinfect')
 const HapiAlive = require('hapi-alive')
 const HapiDevErrors = require('hapi-dev-errors')
 const server = new Hapi.Server()
+
+const loadHealthTemplate = () => {
+  let template = String(fs.readFileSync((Path.join(__dirname, 'src', 'views', 'health.html'))))
+  template = template
+    .replace('##SERVICE_NAME##', Constants.SERVICE_NAME)
+    .replace('##APP_VERSION##', Constants.getVersion())
+    .replace('##GITHUB_HREF##', `${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}`)
+    .replace('##GITHB_COMMIT_REF##', Constants.getLatestCommit())
+  return template
+}
 
 server.connection({
   port: process.env.WASTE_PERMITS_APP_PORT,
@@ -75,8 +87,7 @@ server.register([
       path: '/health',
       responses: {
         healthy: {
-          message: `<H1>${Constants.SERVICE_NAME}</H1>Application version: ${Constants.getVersion()}<br>` +
-            `Latest commit: <a target="_blank" href="${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}">${Constants.getLatestCommit()}</a>`
+          message: loadHealthTemplate()
         },
         unhealthy: {
           statusCode: 400

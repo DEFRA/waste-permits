@@ -1,7 +1,5 @@
 'use strict'
 
-const config = require('../../src/config/config')
-
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
@@ -9,6 +7,7 @@ const Code = require('code')
 const sinon = require('sinon')
 const nock = require('nock')
 
+const config = require('../../src/config/config')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let dynamicsDal

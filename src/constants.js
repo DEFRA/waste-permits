@@ -51,7 +51,6 @@ Constants.getLatestCommit = () => {
 
 Constants.getVersion = () => {
   let version
-
   try {
     // Read the application version number
     let json = JSON.parse(fs.readFileSync('package.json', 'utf8'))
