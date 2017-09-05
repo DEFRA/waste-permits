@@ -52,6 +52,7 @@ module.exports = class DynamicsDalService {
             // Parse the response JSON
             resolve(JSON.parse(responseParts.join('')))
           } else {
+            console.error(responseParts.join(''))
             const message = `Unknown response from Dynamics. Code: ${response.statusCode} Message: ${response.statusMessage}`
             reject(message)
           }

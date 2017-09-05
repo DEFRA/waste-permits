@@ -8,6 +8,8 @@ const standard = require('gulp-standard')
 const lab = require('gulp-lab')
 const runSequence = require('run-sequence')
 const del = require('del')
+const fs = require('fs')
+const git = require('git-rev')
 const nodemon = require('gulp-nodemon')
 const browserSync = require('browser-sync')
 const reload = browserSync.reload
@@ -67,6 +69,17 @@ gulp.task('install-govuk-files', [], (done) => {
     'copy-template-assets',
     'copy-template-view',
     done)
+})
+
+// Query Git for the latest commit reference and store it locally in latestCommit.json
+gulp.task('git-commit-reference', [], (done) => {
+  git.long((commitReference) => {
+    fs.writeFile('latestCommit.json', commitReference, (err) => {
+      if (err) {
+        throw err
+      }
+    })
+  })
 })
 
 // Build the sass
@@ -161,4 +174,4 @@ gulp.task('watch', () => {
 })
 
 // The default Gulp task starts the app in development mode
-gulp.task('default', ['watch', 'sass', 'browser-sync'])
+gulp.task('default', ['git-commit-reference', 'watch', 'sass', 'browser-sync'])

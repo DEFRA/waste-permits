@@ -5,7 +5,7 @@ const Constants = require('../constants')
 module.exports = class BaseController {
   static createPageContext (pageHeading, errors, ValidatorSubClass) {
     const pageContext = {
-      pageTitle: `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`,
+      pageTitle: Constants.buildPageTitle(pageHeading),
       pageHeading: pageHeading
     }
 

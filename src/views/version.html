@@ -1,0 +1,35 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner}}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 id="version-heading" class="heading-large">{{ pageHeading }}</h1>
+
+      <section>
+        <p>
+          <label>Application version:</label>
+          <strong id="application-version">{{ applicationVersion }}</strong>
+        </p>
+        <p>
+          <label>Commit hash:</label>
+          <strong>
+            <a id="commit-hash" target="_blank" class="btn-link" href="{{ githubUrl }}">{{ githubRef }}</a>
+          </strong>
+        </p>
+        <p>
+          <label>Dynamics versions:</label>
+          <ul>
+            {{#each dynamicsSolution}}
+              <li><span id="dynamics-item-{{@index}}-component-name">{{ this.componentName }}</span>: <span id="dynamics-item-{{@index}}-component-version">{{ this.version }}</span></li>
+            {{/each}}
+          </ul>
+        </p>
+        <p>
+          <label>Page rendered:</label>
+          <strong>{{ renderTimestamp }}</strong>
+        </p>
+      </section>
+    </div>
+  </div>
+</main>

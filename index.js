@@ -3,6 +3,8 @@
 const Constants = require('./src/constants')
 const config = require('./src/config/config')
 
+const fs = require('fs')
+const Path = require('path')
 const Hapi = require('hapi')
 const HapiRouter = require('hapi-router')
 const Blipp = require('blipp')
@@ -10,6 +12,17 @@ const Disinfect = require('disinfect')
 const HapiAlive = require('hapi-alive')
 const HapiDevErrors = require('hapi-dev-errors')
 const server = new Hapi.Server()
+
+const loadHealthTemplate = () => {
+  let template = String(fs.readFileSync((Path.join(__dirname, 'src', 'views', 'health.html'))))
+  template = template
+    .replace('##PAGE_TITLE##', Constants.buildPageTitle(Constants.Routes.HEALTH.pageHeading))
+    .replace('##SERVICE_NAME##', Constants.SERVICE_NAME)
+    .replace('##APP_VERSION##', Constants.getVersion())
+    .replace('##GITHUB_HREF##', `${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}`)
+    .replace('##GITHB_COMMIT_REF##', Constants.getLatestCommit())
+  return template
+}
 
 server.connection({
   port: process.env.WASTE_PERMITS_APP_PORT,
@@ -72,11 +85,14 @@ server.register([
     // Plugin providing a health route for the server
     register: HapiAlive,
     options: {
-      path: '/health',
-      healthCheck: function (server, callback) {
-        // TODO: Here you should preform your health checks
-        // If something went wrong provide the callback with an error
-        callback()
+      path: Constants.Routes.HEALTH.path,
+      responses: {
+        healthy: {
+          message: loadHealthTemplate()
+        },
+        unhealthy: {
+          statusCode: 400
+        }
       }
     }
   }, {
@@ -90,7 +106,7 @@ server.register([
     throw err
   }
 
-  // Load views
+    // Load views
   server.views(require('./src/views'))
 })
 
@@ -102,6 +118,8 @@ server.start((err) => {
 
   console.info('Server running in environment: ' + config.nodeEnvironment)
   console.info('Server running at:', server.info)
+  console.info(`Service: ${Constants.SERVICE_NAME}\nVersion: ${Constants.getVersion()}`)
+  console.info(`Latest commit: ${Constants.getLatestCommit()}`)
 })
 
 // Listen on SIGINT signal and gracefully stop the server
