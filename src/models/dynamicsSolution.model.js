@@ -21,7 +21,7 @@ module.exports = class DynamicsSolution extends BaseModel {
       const response = await dynamicsDal.search(query)
 
       const dynamicsVersionInfo = []
-      for (let solution of response) {
+      for (let solution of response.value) {
         dynamicsVersionInfo.push({
           componentName: solution.friendlyname,
           version: solution.version

@@ -13,26 +13,26 @@
 
       <form method="POST" action="site">
 
-        <div class="form-group {{#getFormErrorGroupClass errors.siteName}}{{/getFormErrorGroupClass}}">
+        <div class="form-group {{#getFormErrorGroupClass errors.site-name}}{{/getFormErrorGroupClass}}">
           <label class="form-label" for="site-name">
             <span id="site-name-label">Site name</span>
             <span class="form-hint">If it doesn’t already have a name, enter the name you’ll use</span>
           </label>
 
-          {{> common/fieldError fieldId='site-name-error' message=errors.siteName }}
+          {{> common/fieldError fieldId='site-name-error' message=errors.site-name }}
 
-          <input class="form-control form-control-char-60" id="site-name" name="site-name" type="text" value="{{formValues.siteName}}">
+          <input class="form-control form-control-char-60" id="site-name" name="site-name" type="text" value="{{formValues.site-name}}">
         </div>
 
-        <div class="form-group {{#getFormErrorGroupClass errors.anotherName}}{{/getFormErrorGroupClass}}">
+        <div class="form-group {{#getFormErrorGroupClass errors.another-name}}{{/getFormErrorGroupClass}}">
           <label class="form-label" for="another-name">
             Another name
             <span class="form-hint">If it doesn’t already have a name, enter the name you’ll use</span>
           </label>
 
-          {{> common/fieldError message=errors.anotherName }}
+          {{> common/fieldError message=errors.another-name }}
 
-          <input class="form-control form-control-char-60" id="another-name" name="another-name" type="text" value="{{formValues.anotherName}}">
+          <input class="form-control form-control-char-60" id="another-name" name="another-name" type="text" value="{{formValues.another-name}}">
         </div>
 
         <div class="form-group">

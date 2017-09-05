@@ -59,8 +59,8 @@ lab.experiment('Site page tests:', () => {
       url: '/site',
       headers: {},
       payload: {
-        siteName: 'My Site',
-        anotherName: 'Other site name'
+        'site-name': 'My Site',
+        'another-name': 'Other site name'
       }
     }
 
@@ -97,8 +97,8 @@ lab.experiment('Site page tests:', () => {
       url: '/site',
       headers: {},
       payload: {
-        siteName: '',
-        anotherName: ''
+        'site-name': '',
+        'another-name': ''
       }
     }
 
@@ -122,8 +122,8 @@ lab.experiment('Site page tests:', () => {
       url: '/site',
       headers: {},
       payload: {
-        siteName: '',
-        anotherName: ''
+        'site-name': '',
+        'another-name': ''
       }
     }
 
@@ -154,8 +154,8 @@ lab.experiment('Site page tests:', () => {
       url: '/site',
       headers: {},
       payload: {
-        siteName: '___INVALID_SITE_NAME___',
-        anotherName: ''
+        'site-name': '___INVALID_SITE_NAME___',
+        'another-name': ''
       }
     }
 
@@ -186,8 +186,8 @@ lab.experiment('Site page tests:', () => {
       url: '/site',
       headers: {},
       payload: {
-        siteName: '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X',
-        anotherName: ''
+        'site-name': '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X',
+        'another-name': ''
       }
     }
 
