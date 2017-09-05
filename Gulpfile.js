@@ -4,6 +4,7 @@ const gulp = require('gulp')
 const htmlhint = require('gulp-htmlhint')
 const sass = require('gulp-sass')
 const sourcemaps = require('gulp-sourcemaps')
+const contains = require('gulp-contains')
 const standard = require('gulp-standard')
 const lab = require('gulp-lab')
 const runSequence = require('run-sequence')
@@ -111,6 +112,19 @@ gulp.task('standard', () => {
     }))
 })
 
+// Check the code to make sure we are not using Handlebars triple braces {{{ anywhere
+gulp.task('check-handlebars', function () {
+  gulp.src(['./src/**/*.html', '!./src/**/govuk_template.html'])
+    .pipe(contains({
+      search: '{{{',
+      onFound: function (string, file, cb) {
+        console.error('Validation check failed: Suspected non-escapted Handlebars code found in the following file:')
+        console.error(file.path)
+        process.exit()
+      }
+    }))
+})
+
 // Run HTML Hint checks
 gulp.task('html-hint', () => {
   return gulp.src('./src/views/{partials/{common/,},}*.html')
@@ -119,7 +133,7 @@ gulp.task('html-hint', () => {
 })
 
 // Test task
-gulp.task('test', ['standard', 'html-hint'], () => {
+gulp.task('test', ['check-handlebars', 'standard', 'html-hint'], () => {
   return gulp.src('test')
     .pipe(lab('--coverage --reporter console --output stdout --reporter html --output coverage.html --verbose'))
 })
