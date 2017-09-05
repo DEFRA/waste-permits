@@ -46,7 +46,7 @@ lab.beforeEach((done) => {
   nock(`https://${config.dynamicsWebApiHost}`)
     .get(`${config.dynamicsWebApiPath}__DYNAMICS_ID_QUERY__`)
     .reply(200, {
-      '@odata.context': `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}/api/data/v8.2/$metadata#contacts(contactid,firstname,lastname,telephone1,emailaddress1)/$entity`,
+      '@odata.context': `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}/$metadata#contacts(contactid,firstname,lastname,telephone1,emailaddress1)/$entity`,
       '@odata.etag': 'W/"1700525"',
       contactid: '9b658b69-8386-e711-810a-5065f38a1b01',
       firstname: 'Marlon',
@@ -57,11 +57,15 @@ lab.beforeEach((done) => {
 
   nock(`https://${config.dynamicsWebApiHost}`)
     .post(`${config.dynamicsWebApiPath}__DYNAMICS_INSERT_QUERY__`)
-    .reply(204)
+    .reply(204, '', {
+      'odata-entityid': `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}contacts(7a8e4354-4f24-e711-80fd-5065f38a1b01)`
+    })
 
   nock(`https://${config.dynamicsWebApiHost}`)
     .patch(`${config.dynamicsWebApiPath}__DYNAMICS_UPDATE_QUERY__`)
-    .reply(204)
+    .reply(204, '', {
+      'odata-entityid': `${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}/contacts(7a8e4354-4f24-e711-80fd-5065f38a1b01)`
+    })
 
   done()
 })
@@ -72,26 +76,27 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Dynamics Service tests:', () => {
-  lab.test('Create method should create a record in Dynamics', (done) => {
+  lab.test('createItem() returns the ID on success', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_commit')
     dynamicsDal.createItem({}, '__DYNAMICS_INSERT_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
-
+      Code.expect(response).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
       DynamicsDalService.prototype._commit.restore()
       done()
     })
   })
 
-  lab.test('Update method should update a record in Dynamics', (done) => {
+  lab.test('updateItem() should update a record in Dynamics', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_commit')
     dynamicsDal.updateItem({}, '__DYNAMICS_UPDATE_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
+      Code.expect(response).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
       DynamicsDalService.prototype._commit.restore()
       done()
     })
   })
 
-  lab.test('Search method can retrieve a list of records from Dynamics', (done) => {
+  lab.test('search() can retrieve a list of records from Dynamics', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_query')
     dynamicsDal.search('__DYNAMICS_LIST_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
@@ -100,7 +105,7 @@ lab.experiment('Dynamics Service tests:', () => {
     })
   })
 
-  lab.test('Search method can retrieve a single record from Dynamics', (done) => {
+  lab.test('search() can retrieve a single record from Dynamics', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_query')
     dynamicsDal.search('__DYNAMICS_ID_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
