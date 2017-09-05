@@ -77,23 +77,25 @@ module.exports = class Contact extends BaseModel {
     // Map the Contact to the corresponding Dynamics schema Contact object
     const dataObject = {
       firstname: this.firstName,
-      lastname: this.lastName
+      lastname: this.lastName,
+      telephone1: this.telephone,
+      emailaddress1: this.email
     }
 
     try {
       let query
-      if (!this.contactid) {
-        // New contact
-        query = 'contacts'
-        return await dynamicsDal.createItem(dataObject, query)
-      } else {
+      if (this.id) {
         // Update contact
         query = `contacts(${this.contactid})`
-        return await dynamicsDal.updateItem(dataObject, query)
+        await dynamicsDal.updateItem(dataObject, query)
+      } else {
+        // New contact
+        query = 'contacts'
+        this.id = await dynamicsDal.createItem(dataObject, query)
       }
     } catch (error) {
       // TODO: Error handling?
-      console.error(`Unable to create Contact: ${error}`)
+      console.error(`Unable to save Contact: ${error}`)
       throw error
     }
   }

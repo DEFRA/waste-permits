@@ -93,7 +93,8 @@ module.exports = class DynamicsDalService {
           console.log(`Dynamics query response: Status Code: ${response.statusCode} Message: ${response.statusMessage}`)
 
           if (response.statusCode === 204) {
-            resolve()
+            const id = /\((.*?)\)/.exec(response.headers['odata-entityid'])[1]
+            resolve(id)
           } else {
             const message = `Unknown response from Dynamics. Code: ${response.statusCode} Message: ${response.statusMessage}`
             reject(message)
