@@ -12,12 +12,12 @@ module.exports = class SiteValidator extends BaseValidator {
     super()
 
     this.errorMessages = {
-      siteName: {
+      'site-name': {
         'any.empty': `Enter the site name`,
         'string.max': `Enter a shorter site name with no more than 170 characters`,
         'string.regex.invert.base': `The site name cannot contain any of these characters: ${DISALLOWED_CHARACTERS}`
       },
-      anotherName: {
+      'another-name': {
         'any.empty': `Enter the other name`,
         'string.max': `Enter a shorter other name with no more than 170 characters`,
         'string.regex.invert.base': `The other name cannot contain any of these characters: ${DISALLOWED_CHARACTERS}`
@@ -27,14 +27,14 @@ module.exports = class SiteValidator extends BaseValidator {
 
   static getFormValidators () {
     return {
-      siteName: Joi
+      'site-name': Joi
         .string()
         .max(SITE_NAME_MAX_LENGTH)
         .regex(DISALLOWED_CHARACTERS_REGEX, {
           invert: true
         })
         .required(),
-      anotherName: Joi
+      'another-name': Joi
         .string()
         .max(SITE_NAME_MAX_LENGTH)
         .regex(DISALLOWED_CHARACTERS_REGEX, {
