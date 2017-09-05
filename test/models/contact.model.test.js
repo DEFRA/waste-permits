@@ -54,13 +54,13 @@ lab.beforeEach((done) => {
   }
 
   dynamicsCreateItemStub = DynamicsDalService.prototype.createItem
-  DynamicsDalService.prototype.createItem = (query) => {
-    return true
+  DynamicsDalService.prototype.createItem = (dataObject, query) => {
+    return '7a8e4354-4f24-e711-80fd-5065f38a1b01'
   }
 
   dynamicsUpdateItemStub = DynamicsDalService.prototype.updateItem
-  DynamicsDalService.prototype.updateItem = (query) => {
-    return true
+  DynamicsDalService.prototype.updateItem = (dataObject, query) => {
+    return dataObject.id
   }
 
   done()
@@ -111,9 +111,9 @@ lab.experiment('Contact Model tests:', () => {
 
   lab.test('save() method saves a new Contact object', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'createItem')
-    testContact.save().then((response) => {
-      Code.expect(response).to.be.true()
+    testContact.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)
+      Code.expect(testContact.id).to.be.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
 
       done()
     })
@@ -121,10 +121,10 @@ lab.experiment('Contact Model tests:', () => {
 
   lab.test('save() method updates an existing Contact object', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'updateItem')
-    testContact.contactid = '123'
-    testContact.save().then((response) => {
-      Code.expect(response).to.be.true()
+    testContact.id = '123'
+    testContact.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)
+      Code.expect(testContact.id).to.be.equal('123')
 
       done()
     })
