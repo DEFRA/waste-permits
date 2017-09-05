@@ -16,6 +16,7 @@ const server = new Hapi.Server()
 const loadHealthTemplate = () => {
   let template = String(fs.readFileSync((Path.join(__dirname, 'src', 'views', 'health.html'))))
   template = template
+    .replace('##PAGE_TITLE##', Constants.buildPageTitle(Constants.Routes.HEALTH.pageHeading))
     .replace('##SERVICE_NAME##', Constants.SERVICE_NAME)
     .replace('##APP_VERSION##', Constants.getVersion())
     .replace('##GITHUB_HREF##', `${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}`)
@@ -84,7 +85,7 @@ server.register([
     // Plugin providing a health route for the server
     register: HapiAlive,
     options: {
-      path: '/health',
+      path: Constants.Routes.HEALTH.path,
       responses: {
         healthy: {
           message: loadHealthTemplate()

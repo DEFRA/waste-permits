@@ -24,6 +24,10 @@ Constants.Routes = {
     path: '/error',
     pageHeading: 'Something went wrong'
   },
+  HEALTH: {
+    path: '/health',
+    pageHeading: 'Health'
+  },
   SITE: {
     path: '/site',
     pageHeading: `What's the site name?`
@@ -36,6 +40,10 @@ Constants.Routes = {
     path: '/version',
     pageHeading: 'Waste Permits'
   }
+}
+
+Constants.buildPageTitle = (pageHeading) => {
+  return `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`
 }
 
 Constants.getLatestCommit = () => {
