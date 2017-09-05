@@ -18,11 +18,11 @@ module.exports = class DynamicsDalService {
     }
   }
 
-  createItem (dataObject, query) {
+  create (dataObject, query) {
     return this._commit(query, 'POST', dataObject)
   }
 
-  updateItem (dataObject, query) {
+  update (dataObject, query) {
     return this._commit(query, 'PATCH', dataObject)
   }
 

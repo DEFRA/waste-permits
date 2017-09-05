@@ -11,9 +11,9 @@ const Contact = require('../../src/models/contact.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let testContact
-let dynamicsCreateItemStub
+let dynamicsCreateStub
 let dynamicsSearchStub
-let dynamicsUpdateItemStub
+let dynamicsUpdateStub
 
 lab.beforeEach((done) => {
   testContact = new Contact({
@@ -53,13 +53,13 @@ lab.beforeEach((done) => {
     }
   }
 
-  dynamicsCreateItemStub = DynamicsDalService.prototype.createItem
-  DynamicsDalService.prototype.createItem = (dataObject, query) => {
+  dynamicsCreateStub = DynamicsDalService.prototype.create
+  DynamicsDalService.prototype.create = (dataObject, query) => {
     return '7a8e4354-4f24-e711-80fd-5065f38a1b01'
   }
 
-  dynamicsUpdateItemStub = DynamicsDalService.prototype.updateItem
-  DynamicsDalService.prototype.updateItem = (dataObject, query) => {
+  dynamicsUpdateStub = DynamicsDalService.prototype.update
+  DynamicsDalService.prototype.update = (dataObject, query) => {
     return dataObject.id
   }
 
@@ -68,9 +68,9 @@ lab.beforeEach((done) => {
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  DynamicsDalService.prototype.createItem = dynamicsCreateItemStub
+  DynamicsDalService.prototype.create = dynamicsCreateStub
   DynamicsDalService.prototype.search = dynamicsSearchStub
-  DynamicsDalService.prototype.updateItem = dynamicsUpdateItemStub
+  DynamicsDalService.prototype.update = dynamicsUpdateStub
 
   done()
 })
@@ -110,7 +110,7 @@ lab.experiment('Contact Model tests:', () => {
   })
 
   lab.test('save() method saves a new Contact object', (done) => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'createItem')
+    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     testContact.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)
       Code.expect(testContact.id).to.be.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
@@ -120,7 +120,7 @@ lab.experiment('Contact Model tests:', () => {
   })
 
   lab.test('save() method updates an existing Contact object', (done) => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'updateItem')
+    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testContact.id = '123'
     testContact.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)

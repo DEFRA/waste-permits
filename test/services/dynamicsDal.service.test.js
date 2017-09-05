@@ -76,9 +76,9 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Dynamics Service tests:', () => {
-  lab.test('createItem() returns the ID on success', (done) => {
+  lab.test('create() returns the ID on success', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_commit')
-    dynamicsDal.createItem({}, '__DYNAMICS_INSERT_QUERY__').then((response) => {
+    dynamicsDal.create({}, '__DYNAMICS_INSERT_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
       Code.expect(response).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
       DynamicsDalService.prototype._commit.restore()
@@ -86,9 +86,9 @@ lab.experiment('Dynamics Service tests:', () => {
     })
   })
 
-  lab.test('updateItem() should update a record in Dynamics', (done) => {
+  lab.test('update() should update a record in Dynamics', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_commit')
-    dynamicsDal.updateItem({}, '__DYNAMICS_UPDATE_QUERY__').then((response) => {
+    dynamicsDal.update({}, '__DYNAMICS_UPDATE_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
       Code.expect(response).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
       DynamicsDalService.prototype._commit.restore()
