@@ -20,6 +20,10 @@ Constants.Routes = {
     path: '/contact',
     pageHeading: 'Who should we contact about this application?'
   },
+  CONTACTSEARCH: {
+    path: '/contact-search',
+    pageHeading: 'Contact search'
+  },
   ERROR: {
     path: '/error',
     pageHeading: 'Something went wrong'

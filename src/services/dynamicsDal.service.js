@@ -30,10 +30,6 @@ module.exports = class DynamicsDalService {
     return this._query(query)
   }
 
-  listItems (query) {
-    return this._query(query)
-  }
-
   _query (query) {
     return new Promise((resolve, reject) => {
       // Combine the path to Dynamics and the query and add it to our request options
@@ -54,7 +50,7 @@ module.exports = class DynamicsDalService {
 
           if (response.statusCode === 200) {
             // Parse the response JSON
-            resolve(JSON.parse(responseParts.join('')).value)
+            resolve(JSON.parse(responseParts.join('')))
           } else {
             console.error(responseParts.join(''))
             const message = `Unknown response from Dynamics. Code: ${response.statusCode} Message: ${response.statusMessage}`

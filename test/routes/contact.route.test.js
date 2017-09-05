@@ -9,8 +9,8 @@ const server = require('../../index')
 const Contact = require('../../src/models/contact.model')
 
 let validateTokenStub
-let contactListStub
 let contactSaveStub
+let contactGetByIdStub
 
 lab.beforeEach((done) => {
   // Stub methods
@@ -19,9 +19,15 @@ lab.beforeEach((done) => {
     return 'my_token'
   }
 
-  contactListStub = Contact.list
-  Contact.list = (authToken) => {
-    return []
+  contactGetByIdStub = Contact.getById
+  Contact.getById = (authToken, id) => {
+    return new Contact({
+      id: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
+      firstname: 'John',
+      lastname: 'Smith,',
+      telephone1: '01234567890',
+      emailaddress1: 'john.smith@email.com'
+    })
   }
 
   contactSaveStub = Contact.prototype.save
@@ -34,7 +40,7 @@ lab.beforeEach((done) => {
 lab.afterEach((done) => {
   // Restore stubbed methods
   server.methods.validateToken = validateTokenStub
-  Contact.list = contactListStub
+  Contact.prototype.getById = contactGetByIdStub
   Contact.prototype.save = contactSaveStub
 
   done()
@@ -70,9 +76,11 @@ lab.experiment('Contact page tests:', () => {
       url: '/contact',
       headers: {},
       payload: {
-        contactName: 'Contact Name',
-        contactTelephone: '012345679890',
-        contactEmail: 'contact@email.com'
+        id: '',
+        firstName: 'Marlon',
+        lastName: 'Herzog',
+        telephone: '055 8767 0835',
+        email: 'Amparo.Abbott49@example.com'
       }
     }
 
@@ -91,9 +99,10 @@ lab.experiment('Contact page tests:', () => {
       headers: {},
       payload: {
         id: '12345',
-        contactName: 'Contact Name',
-        contactTelephone: '012345679890',
-        contactEmail: 'contact@email.com'
+        firstName: 'Marlon',
+        lastName: 'Herzog',
+        telephone: '055 8767 0835',
+        email: 'Amparo.Abbott49@example.com'
       }
     }
 
