@@ -50,7 +50,7 @@ module.exports = class BaseController {
       authToken = await authService.getToken()
     } catch (err) {
       console.error(err)
-      return reply.redirect('/error')
+      return reply.redirect(Constants.Routes.ERROR.path)
     }
 
     // TODO: Confirm how session handling will work and where the most
