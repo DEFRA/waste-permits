@@ -120,7 +120,7 @@ gulp.task('check-handlebars', function () {
       onFound: function (string, file, cb) {
         console.error('Validation check failed: Suspected non-escapted Handlebars code found in the following file:')
         console.error(file.path)
-        process.exit()
+        process.exit(1)
       }
     }))
 })
