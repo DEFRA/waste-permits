@@ -17,4 +17,14 @@ module.exports = class BaseModel {
 
     return returnValue
   }
+
+  isNew () {
+    let result
+    if (this.id) {
+      result = false
+    } else {
+      result = true
+    }
+    return result
+  }
 }
