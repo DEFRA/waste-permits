@@ -10,6 +10,7 @@ const HapiRouter = require('hapi-router')
 const Blipp = require('blipp')
 const Disinfect = require('disinfect')
 const HapiAlive = require('hapi-alive')
+const Good = require('good')
 const HapiDevErrors = require('hapi-dev-errors')
 const server = new Hapi.Server()
 
@@ -100,6 +101,36 @@ server.register([
     register: HapiDevErrors,
     options: {
       showErrors: config.nodeEnvironment === 'DEVELOPMENT'
+    }
+  }, {
+    // Plugin for logging
+    register: Good,
+    options: {
+      ops: {
+        interval: 1000
+      },
+      reporters: {
+        // Output to console
+        consoleReporter: [{
+          module: 'good-squeeze',
+          name: 'Squeeze',
+          args: [{ log: '*', response: '*' }]
+        }, {
+          module: 'good-console'
+        }, 'stdout'],
+        // Output to file
+        fileReporter: [{
+          module: 'good-squeeze',
+          name: 'Squeeze',
+          args: [{ log: '*', response: '*' }]
+        }, {
+          module: 'good-squeeze',
+          name: 'SafeJson'
+        }, {
+          module: 'good-file',
+          args: ['./log/' + config.nodeEnvironment + '.log']
+        }]
+      }
     }
   }], (err) => {
   if (err) {

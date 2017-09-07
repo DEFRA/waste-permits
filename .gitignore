@@ -2,6 +2,7 @@
 
 /node_modules/
 /govuk_modules/
+/log/
 /public/
 
 # Test coverage output files
