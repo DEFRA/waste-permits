@@ -10,8 +10,6 @@ module.exports = class BaseValidator {
     pageContext.errorList = []
 
     validationErrors.data.details.forEach((error) => {
-      console.log(error)
-
       const fieldName = error.path
 
       if (!this.errorMessages[fieldName]) {
