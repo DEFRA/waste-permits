@@ -7,7 +7,7 @@ const SiteValidator = require('../validators/site.validator')
 module.exports = class SiteController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.SITE.pageHeading, errors, SiteValidator)
+      const pageContext = BaseController.createPageContext(Constants.Routes.SITE, errors, SiteValidator)
 
       pageContext.formValues = request.payload
 

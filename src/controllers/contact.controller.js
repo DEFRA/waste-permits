@@ -7,7 +7,7 @@ const Contact = require('../models/contact.model')
 module.exports = class ContactController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.CONTACT.pageHeading, errors, ContactController)
+      const pageContext = BaseController.createPageContext(Constants.Routes.CONTACT, errors, ContactController)
 
       return reply
         .view('contact', pageContext)

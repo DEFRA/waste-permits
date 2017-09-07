@@ -7,7 +7,7 @@
 
       {{> common/errorSummary panelHeader='You need to complete these tasks'}}
 
-      <form method="post" action="/v7/check/check-answers" name="tasklist">
+      <form method="post" action="{{ formAction }}" name="tasklist">
 
         <h1 class="heading-large">
           <span class="visually-hidden">Task list:</span>

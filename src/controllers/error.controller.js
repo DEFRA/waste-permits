@@ -5,7 +5,7 @@ const BaseController = require('./base.controller')
 
 module.exports = class ErrorController extends BaseController {
   static async doGet (request, reply, errors) {
-    const pageContext = BaseController.createPageContext(Constants.Routes.ERROR.pageHeading, errors)
+    const pageContext = BaseController.createPageContext(Constants.Routes.ERROR, errors)
     return reply.view('error', pageContext)
   }
 
