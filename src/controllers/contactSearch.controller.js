@@ -22,7 +22,7 @@ module.exports = class ContactSearchController extends BaseController {
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
-      return reply.redirect('/error')
+      return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
 
