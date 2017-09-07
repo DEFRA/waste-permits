@@ -2,6 +2,11 @@
 
 const Constants = require('../constants')
 
+// Used for generating a session id which is saved as a cookie
+const uuid4 = require('uuid/v4')
+const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
+const authService = new ActiveDirectoryAuthService()
+
 module.exports = class BaseController {
   static createPageContext (pageHeading, errors, ValidatorSubClass) {
     const pageContext = {
@@ -33,5 +38,29 @@ module.exports = class BaseController {
     } else if (request.method.toUpperCase() === 'POST') {
       return controllerSubclass.doPost(request, reply, errors)
     }
+  }
+
+  static async generateCookie (reply) {
+    // Generate a session token
+    const token = uuid4()
+
+    // Generate a CRM token
+    let authToken
+    try {
+      authToken = await authService.getToken()
+    } catch (err) {
+      console.error(err)
+      return reply.redirect(Constants.Routes.ERROR.path)
+    }
+
+    // TODO: Confirm how session handling will work and where the most
+    // appropriate point is to create and destroy session cookies
+
+    const cookie = {
+      token: token,
+      authToken: authToken
+    }
+
+    return cookie
   }
 }

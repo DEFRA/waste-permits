@@ -7,8 +7,9 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../index')
 const DynamicsSolution = require('../../src/models/dynamicsSolution.model')
+const BaseController = require('../../src/controllers/base.controller')
 
-let validateTokenStub
+let generateCookieStub
 let dynamicSolutionGetStub
 
 // Test data
@@ -23,11 +24,16 @@ const dynamicsVersionInfo = [{
   version: '7.8.9'
 }]
 
+const fakeCookie = {
+  token: 'my_token',
+  authToken: 'my_auth_token'
+}
+
 lab.beforeEach((done) => {
   // Stub methods
-  validateTokenStub = server.methods.validateToken
-  server.methods.validateToken = () => {
-    return 'my_token'
+  generateCookieStub = BaseController.generateCookie
+  BaseController.generateCookie = (reply) => {
+    return fakeCookie
   }
 
   dynamicSolutionGetStub = DynamicsSolution.get
@@ -40,8 +46,7 @@ lab.beforeEach((done) => {
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  server.methods.validateToken = validateTokenStub
-
+  this.generateCookie = generateCookieStub
   DynamicsSolution.get = dynamicSolutionGetStub
 
   done()
