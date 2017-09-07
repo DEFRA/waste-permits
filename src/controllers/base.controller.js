@@ -8,10 +8,11 @@ const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.serv
 const authService = new ActiveDirectoryAuthService()
 
 module.exports = class BaseController {
-  static createPageContext (pageHeading, errors, ValidatorSubClass) {
+  static createPageContext (route, errors, ValidatorSubClass) {
     const pageContext = {
-      pageTitle: Constants.buildPageTitle(pageHeading),
-      pageHeading: pageHeading
+      pageTitle: Constants.buildPageTitle(route.pageHeading),
+      pageHeading: route.pageHeading,
+      formAction: route.path
     }
 
     if (errors && errors.data.details) {
