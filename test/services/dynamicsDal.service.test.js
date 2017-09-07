@@ -67,6 +67,10 @@ lab.beforeEach((done) => {
       'odata-entityid': `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}/contacts(7a8e4354-4f24-e711-80fd-5065f38a1b01)`
     })
 
+  nock(`https://${config.dynamicsWebApiHost}`)
+    .get(`${config.dynamicsWebApiPath}__DYNAMICS_BAD_QUERY__`)
+    .reply(500, {})
+
   done()
 })
 
@@ -108,6 +112,18 @@ lab.experiment('Dynamics Service tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     dynamicsDal.search('__DYNAMICS_ID_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
+
+      DynamicsDalService.prototype._call.restore()
+      done()
+    })
+  })
+
+  lab.test('service handles unknown result from Dynamics', (done) => {
+    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
+    dynamicsDal.search('__DYNAMICS_BAD_QUERY__')
+    .catch((err) => {
+      Code.expect(spy.callCount).to.equal(1)
+      Code.expect(err).to.endWith('Code: 500 Message: null')
 
       DynamicsDalService.prototype._call.restore()
       done()
