@@ -84,7 +84,7 @@ module.exports = class Contact extends BaseModel {
 
     try {
       let query
-      if (this.id) {
+      if (this.isNew()) {
         // Update contact
         query = `contacts(${this.contactid})`
         await dynamicsDal.update(dataObject, query)
