@@ -64,7 +64,7 @@ lab.beforeEach((done) => {
   nock(`https://${config.dynamicsWebApiHost}`)
     .patch(`${config.dynamicsWebApiPath}__DYNAMICS_UPDATE_QUERY__`)
     .reply(204, '', {
-      'odata-entityid': `${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}/contacts(7a8e4354-4f24-e711-80fd-5065f38a1b01)`
+      'odata-entityid': `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}/contacts(7a8e4354-4f24-e711-80fd-5065f38a1b01)`
     })
 
   done()
