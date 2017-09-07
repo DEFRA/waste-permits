@@ -76,41 +76,40 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Dynamics Service tests:', () => {
-  lab.test('create() returns the ID on success', (done) => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_commit')
-    dynamicsDal.create({}, '__DYNAMICS_INSERT_QUERY__').then((response) => {
+  lab.test('create() can create a new record in Dynamics', (done) => {
+    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
+    dynamicsDal.create('__DYNAMICS_INSERT_QUERY__', {}).then((response) => {
       Code.expect(spy.callCount).to.equal(1)
       Code.expect(response).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-      DynamicsDalService.prototype._commit.restore()
+      DynamicsDalService.prototype._call.restore()
       done()
     })
   })
 
-  lab.test('update() should update a record in Dynamics', (done) => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_commit')
-    dynamicsDal.update({}, '__DYNAMICS_UPDATE_QUERY__').then((response) => {
+  lab.test('update() can update a record in Dynamics', (done) => {
+    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
+    dynamicsDal.update('__DYNAMICS_UPDATE_QUERY__', {}).then((response) => {
       Code.expect(spy.callCount).to.equal(1)
-      Code.expect(response).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-      DynamicsDalService.prototype._commit.restore()
+      DynamicsDalService.prototype._call.restore()
       done()
     })
   })
 
   lab.test('search() can retrieve a list of records from Dynamics', (done) => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_query')
+    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     dynamicsDal.search('__DYNAMICS_LIST_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
-      DynamicsDalService.prototype._query.restore()
+      DynamicsDalService.prototype._call.restore()
       done()
     })
   })
 
   lab.test('search() can retrieve a single record from Dynamics', (done) => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_query')
+    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     dynamicsDal.search('__DYNAMICS_ID_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
 
-      DynamicsDalService.prototype._query.restore()
+      DynamicsDalService.prototype._call.restore()
       done()
     })
   })

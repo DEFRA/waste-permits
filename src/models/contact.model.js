@@ -87,11 +87,11 @@ module.exports = class Contact extends BaseModel {
       if (this.isNew()) {
         // New contact
         query = 'contacts'
-        this.id = await dynamicsDal.create(dataObject, query)
+        this.id = await dynamicsDal.create(query, dataObject)
       } else {
         // Update contact
         query = `contacts(${this.id})`
-        await dynamicsDal.update(dataObject, query)
+        await dynamicsDal.update(query, dataObject)
       }
     } catch (error) {
       // TODO: Error handling?
