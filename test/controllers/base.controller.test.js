@@ -16,13 +16,17 @@ lab.afterEach((done) => {
 
 lab.experiment('Base Controller tests:', () => {
   lab.test('createPageContext() method builds page context object correctly', (done) => {
-    const pageHeading = 'THE_PAGE_HEADING'
-    const pageTitle = 'THE_PAGE_HEADING - Waste Permits - GOV.UK'
+    const route = {
+      pageHeading: 'THE_PAGE_HEADING',
+      pageTitle: 'THE_PAGE_HEADING - Waste Permits - GOV.UK',
+      path: 'THE_ROUTE_PATH'
+    }
 
-    const pageContext = BaseController.createPageContext(pageHeading)
+    const pageContext = BaseController.createPageContext(route)
 
-    Code.expect(pageContext.pageHeading).to.equal(pageHeading)
-    Code.expect(pageContext.pageTitle).to.equal(pageTitle)
+    Code.expect(pageContext.pageHeading).to.equal(route.pageHeading)
+    Code.expect(pageContext.pageTitle).to.equal(route.pageTitle)
+    Code.expect(pageContext.formAction).to.equal(route.path)
     done()
   })
 })

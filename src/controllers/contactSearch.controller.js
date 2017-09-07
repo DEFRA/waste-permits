@@ -7,7 +7,7 @@ const Contact = require('../models/contact.model')
 module.exports = class ContactSearchController extends BaseController {
   static async doGet (request, reply, errors = undefined) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.CONTACTSEARCH.pageHeading, errors, ContactSearchController)
+      const pageContext = BaseController.createPageContext(Constants.Routes.CONTACTSEARCH, errors, ContactSearchController)
 
       let authToken
       if (request.state[Constants.COOKIE_KEY]) {
