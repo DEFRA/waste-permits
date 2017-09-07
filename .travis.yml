@@ -12,6 +12,7 @@ script:
   - gulp test-ci
   - gulp html-hint
   - gulp standard
+  - gulp check-handlebars
 
 after_success:
   - npm install -g codeclimate-test-reporter
