@@ -11,7 +11,7 @@ module.exports = class RootController extends BaseController {
   }
 
   static async doPost (request, reply, errors) {
-    const cookie = await this.generateCookie(reply)
+    const cookie = await BaseController.generateCookie(reply)
 
     return reply
       .redirect(Constants.Routes.SITE.path)

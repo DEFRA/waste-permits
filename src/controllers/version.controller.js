@@ -18,7 +18,7 @@ module.exports = class VersionController extends BaseController {
         authToken = request.state[Constants.COOKIE_KEY].authToken
       // Otherwise, create a new one
       } else {
-        let newCookie = await this.generateCookie(reply)
+        let newCookie = await BaseController.generateCookie(reply)
         authToken = newCookie.authToken
       }
 

@@ -7,7 +7,7 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../index')
 const DynamicsSolution = require('../../src/models/dynamicsSolution.model')
-const VersionController = require('../../src/controllers/version.controller')
+const BaseController = require('../../src/controllers/base.controller')
 
 let generateCookieStub
 let dynamicSolutionGetStub
@@ -31,8 +31,8 @@ const fakeCookie = {
 
 lab.beforeEach((done) => {
   // Stub methods
-  generateCookieStub = VersionController.generateCookie
-  VersionController.generateCookie = (reply) => {
+  generateCookieStub = BaseController.generateCookie
+  BaseController.generateCookie = (reply) => {
     return fakeCookie
   }
 
