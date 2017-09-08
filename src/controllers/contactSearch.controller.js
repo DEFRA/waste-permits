@@ -19,7 +19,7 @@ module.exports = class ContactSearchController extends BaseController {
 
       return reply
         .view('contactSearch', pageContext)
-        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
+        // .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
       return reply.redirect(Constants.Routes.ERROR.path)
