@@ -92,10 +92,10 @@ module.exports = class DynamicsDalService {
   }
 
   /*
-    Extracts id of an entity from the value Dyanmics returns
+    Extracts id of an entity from the value Dynamics returns
 
     Rather than providing the ID in the response body, when performing either a POST or PATCH Dynamics will return
-    return the full url to the entity which includes the ID, and place it in a custom header. For example
+    the full url to the entity which includes the ID, and place it in a custom header. For example
 
     'odata-entityid': https://mycrminstance.api.crm4.dynamics.com/api/data/v8.2/contacts(7a8e4354-4f24-e711-80fd-5065f38a1b01)
 
