@@ -1,5 +1,7 @@
 # Waste Permits Service
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/DEFRA/waste-permits.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/DEFRA/waste-permits.svg?branch=master)](https://travis-ci.org/DEFRA/waste-permits)
 [![NSP Status](https://nodesecurity.io/orgs/cruikshanks/projects/fb915ae3-9c10-485d-bfc8-38c5c53316cc/badge)](https://nodesecurity.io/orgs/cruikshanks/projects/fb915ae3-9c10-485d-bfc8-38c5c53316cc)
 [![Known Vulnerabilities](https://snyk.io/test/github/defra/waste-permits/badge.svg)](https://snyk.io/test/github/defra/waste-permits)
