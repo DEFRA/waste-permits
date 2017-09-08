@@ -120,9 +120,14 @@ server.register([
             'request': '*',
             'response': '*',
             'error': '*',
-            'ops': '*'}]
+            'ops': '*'
+          }]
         }, {
-          module: 'good-console'
+          module: 'good-console',
+          args: [{
+            'format': 'YYYY-MM-DD HH:mm:ss',
+            'utc': false
+          }]
         }, 'stdout'],
         // Output to file
         fileReporter: [{
@@ -133,7 +138,8 @@ server.register([
             'request': '*',
             'response': '*',
             'error': '*',
-            'ops': '*'}]
+            'ops': '*'
+          }]
         }, {
           module: 'good-squeeze',
           name: 'SafeJson'
