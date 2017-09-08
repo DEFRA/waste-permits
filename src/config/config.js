@@ -4,7 +4,7 @@ require('dotenv').config()
 
 module.exports = {
 
-  port: process.env.WASTE_PERMITS_APP_PORT || 8000,
+  port: process.env.PORT || 8000,
 
   nodeEnvironment: process.env.NODE_ENV || 'PRODUCTION',
 

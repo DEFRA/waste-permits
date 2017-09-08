@@ -25,7 +25,7 @@ const loadHealthTemplate = () => {
 }
 
 server.connection({
-  port: process.env.WASTE_PERMITS_APP_PORT,
+  port: config.port,
   routes: {
     validate: {
       options: {

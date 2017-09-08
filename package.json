@@ -17,6 +17,7 @@
   },
   "main": "index.js",
   "scripts": {
+    "postinstall": "gulp build",
     "test": "lab -t 90",
     "test-cov-html": "lab -r html -o coverage.html"
   },
