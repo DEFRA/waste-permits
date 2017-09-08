@@ -3,7 +3,10 @@
 const gulp = require('gulp')
 const htmlhint = require('gulp-htmlhint')
 const sass = require('gulp-sass')
+const concat = require('gulp-concat')
+const uglify = require('gulp-uglify')
 const sourcemaps = require('gulp-sourcemaps')
+const autoprefixer = require('gulp-autoprefixer')
 const contains = require('gulp-contains')
 const standard = require('gulp-standard')
 const lab = require('gulp-lab')
@@ -86,6 +89,8 @@ gulp.task('git-commit-reference', [], (done) => {
 // Copy the javascript
 gulp.task('scripts', () => {
   return gulp.src(paths.assets + 'javascripts/*.js')
+    .pipe(concat('application.min.js'))
+    .pipe(uglify())
     .pipe(gulp.dest(paths.public + 'javascripts/'))
     .pipe(reload({
       stream: true
@@ -97,7 +102,7 @@ gulp.task('sass', () => {
   return gulp.src(paths.assets + 'sass/*.scss')
     .pipe(sourcemaps.init())
     .pipe(sass({
-      outputStyle: 'expanded',
+      outputStyle: 'compressed',
       includePaths: [
         paths.govukModules + 'govuk_frontend_toolkit/stylesheets',
         paths.govukModules + 'govuk_template_mustache/assets/stylesheets',
@@ -105,6 +110,7 @@ gulp.task('sass', () => {
       ]
     }).on('error', sass.logError))
     .pipe(sourcemaps.write())
+    .pipe(autoprefixer('last 2 versions'))
     .pipe(gulp.dest(paths.public + 'stylesheets/'))
     .pipe(reload({
       stream: true
