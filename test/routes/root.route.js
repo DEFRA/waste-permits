@@ -41,7 +41,7 @@ lab.experiment('Default page tests:', () => {
       // TODO get the dom parsing test to work
       // const parser = new DOMParser()
       // const doc = parser.parseFromString(res.payload, 'text/html')
-      // let element = doc.getElementById('HOME_PAGE_HEADING')
+      // let element = doc.getElementById('home-page-heading')
       // Code.expect(element.nodeValue).to.equal('Waste Permits Home Page')
 
       Code.expect(res.payload.includes('home-page-heading')).to.be.true()
@@ -51,7 +51,7 @@ lab.experiment('Default page tests:', () => {
     })
   })
 
-  lab.test('POST / success redirects to the Site route', (done) => {
+  lab.test('POST / success redirects to the Start or Open Saved route', (done) => {
     const request = {
       method: 'POST',
       url: '/',
@@ -61,7 +61,7 @@ lab.experiment('Default page tests:', () => {
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/site')
+      Code.expect(res.headers['location']).to.equal('/start/start-or-open-saved')
 
       done()
     })

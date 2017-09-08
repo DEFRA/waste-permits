@@ -13,7 +13,7 @@ module.exports = class SiteController extends BaseController {
 
       return reply
         .view('site', pageContext)
-        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
+        // .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
       return reply.redirect(Constants.Routes.ERROR.path)

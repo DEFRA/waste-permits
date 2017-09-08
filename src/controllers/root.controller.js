@@ -14,7 +14,7 @@ module.exports = class RootController extends BaseController {
     const cookie = await BaseController.generateCookie(reply)
 
     return reply
-      .redirect(Constants.Routes.SITE.path)
+      .redirect(Constants.Routes.START_OR_OPEN_SAVED.path)
 
       // Delete the existing session cookie
       .unstate(Constants.COOKIE_KEY)
