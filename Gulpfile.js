@@ -83,6 +83,16 @@ gulp.task('git-commit-reference', [], (done) => {
   })
 })
 
+// Copy the javascript
+gulp.task('scripts', () => {
+  return gulp.src(paths.assets + 'javascripts/*.js')
+    .pipe(gulp.dest(paths.public + 'javascripts/'))
+    .pipe(reload({
+      stream: true
+    }))
+})
+
+
 // Build the sass
 gulp.task('sass', () => {
   return gulp.src(paths.assets + 'sass/*.scss')
@@ -154,6 +164,7 @@ gulp.task('build', ['clean'], (done) => {
     'copy-govuk-files',
     'install-govuk-files',
     'sass',
+    'scripts',
     done)
 })
 
@@ -182,10 +193,11 @@ gulp.task('nodemon', (done) => {
 })
 
 gulp.task('watch', () => {
+  gulp.watch(paths.assets + 'javascripts/**/*.js', ['scripts'])
   gulp.watch(paths.assets + 'sass/**/*.scss', ['sass'])
   gulp.watch(paths.public + '**/*.*').on('change', reload)
   gulp.watch(paths.src + '**/*.*').on('change', reload)
 })
 
 // The default Gulp task starts the app in development mode
-gulp.task('default', ['git-commit-reference', 'watch', 'sass', 'browser-sync'])
+gulp.task('default', ['git-commit-reference', 'watch', 'sass', 'scripts', 'browser-sync'])
