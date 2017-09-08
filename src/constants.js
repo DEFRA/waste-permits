@@ -50,17 +50,6 @@ Constants.buildPageTitle = (pageHeading) => {
   return `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`
 }
 
-Constants.getLatestCommit = () => {
-  let latestCommit
-  try {
-    // Read the latest Git commit reference
-    latestCommit = fs.readFileSync('latestCommit.json', 'utf8')
-  } catch (err) {
-    latestCommit = 'Unknown'
-  }
-  return latestCommit
-}
-
 Constants.getVersion = () => {
   let version
   try {

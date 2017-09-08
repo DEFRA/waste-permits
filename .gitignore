@@ -1,5 +1,4 @@
 .env
-latestCommit.json
 
 /node_modules/
 /govuk_modules/
