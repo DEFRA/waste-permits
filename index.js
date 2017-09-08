@@ -106,12 +106,21 @@ server.register([
     // Plugin for logging
     register: Good,
     options: {
+      ops: {
+        // Log ops stats every 30 seconds
+        interval: 30000
+      },
       reporters: {
         // Output to console
         consoleReporter: [{
           module: 'good-squeeze',
           name: 'Squeeze',
-          args: [{ log: '*', response: '*' }]
+          args: [{
+            'log': '*',
+            'request': '*',
+            'response': '*',
+            'error': '*',
+            'ops': '*'}]
         }, {
           module: 'good-console'
         }, 'stdout'],
@@ -119,7 +128,12 @@ server.register([
         fileReporter: [{
           module: 'good-squeeze',
           name: 'Squeeze',
-          args: [{ log: '*', response: '*' }]
+          args: [{
+            'log': '*',
+            'request': '*',
+            'response': '*',
+            'error': '*',
+            'ops': '*'}]
         }, {
           module: 'good-squeeze',
           name: 'SafeJson'
