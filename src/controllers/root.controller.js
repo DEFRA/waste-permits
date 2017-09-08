@@ -7,7 +7,7 @@ module.exports = class RootController extends BaseController {
   static async doGet (request, reply, errors) {
     const pageContext = BaseController.createPageContext(Constants.Routes.ROOT, errors)
 
-    reply.view('index', pageContext)
+    reply.view('root', pageContext)
   }
 
   static async doPost (request, reply, errors) {
