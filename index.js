@@ -106,9 +106,6 @@ server.register([
     // Plugin for logging
     register: Good,
     options: {
-      ops: {
-        interval: 1000
-      },
       reporters: {
         // Output to console
         consoleReporter: [{
