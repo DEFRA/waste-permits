@@ -92,7 +92,6 @@ gulp.task('scripts', () => {
     }))
 })
 
-
 // Build the sass
 gulp.task('sass', () => {
   return gulp.src(paths.assets + 'sass/*.scss')
