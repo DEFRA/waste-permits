@@ -4,9 +4,11 @@ require('dotenv').config()
 
 module.exports = {
 
-  port: process.env.WASTE_PERMITS_APP_PORT || 8000,
+  port: process.env.PORT || 8000,
 
   nodeEnvironment: process.env.NODE_ENV || 'PRODUCTION',
+
+  gitSha: process.env.GIT_SHA,
 
   // Domain name or IP address of the server to issue the azure AD auth request
   // to. Passed in as value for `host:` option when we make the https.request()
