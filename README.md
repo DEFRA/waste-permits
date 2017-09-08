@@ -7,6 +7,7 @@
 [![Code Climate](https://codeclimate.com/github/DEFRA/waste-permits/badges/gpa.svg)](https://codeclimate.com/github/DEFRA/waste-permits)
 [![Test Coverage](https://codeclimate.com/github/DEFRA/waste-permits/badges/coverage.svg)](https://codeclimate.com/github/DEFRA/waste-permits/coverage)
 [![Dependency Status](https://dependencyci.com/github/DEFRA/waste-permits/badge)](https://dependencyci.com/github/DEFRA/waste-permits)
+[![Greenkeeper badge](https://badges.greenkeeper.io/DEFRA/waste-permits.svg)](https://greenkeeper.io/)
 
 You may need to apply to the [Environment Agency](https://www.gov.uk/government/organisations/environment-agency) for an environmental permit if your business uses, recycles, treats, stores or disposes of waste or mining waste. This permit can be for activities at one site or for mobile plant that can be used at many sites.
 
