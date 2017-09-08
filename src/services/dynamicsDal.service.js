@@ -60,8 +60,6 @@ module.exports = class DynamicsDalService {
           responseParts.push(chunk)
         })
         response.on('end', function () {
-          console.log(`Dynamics query response: Status Code: ${response.statusCode} Message: ${response.statusMessage}`)
-
           switch (response.statusCode) {
             case 200:
               // Parse the response JSON
