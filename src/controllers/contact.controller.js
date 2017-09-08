@@ -38,10 +38,10 @@ module.exports = class ContactController extends BaseController {
     if (!request.payload.id) {
       // Create new contact
       const contact = new Contact({
-        firstname: request.payload.firstname,
-        lastname: request.payload.lastname,
-        telephone1: request.payload.telephone1,
-        emailaddress1: request.payload.emailaddress1
+        firstName: request.payload['first-name'],
+        lastName: request.payload['last-name'],
+        telephone: request.payload.telephone,
+        email: request.payload.email
       })
 
       try {
