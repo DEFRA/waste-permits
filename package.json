@@ -17,6 +17,8 @@
   },
   "main": "index.js",
   "scripts": {
+    "postinstall": "gulp build",
+    "start": "node index.js",
     "test": "lab -t 90",
     "test-cov-html": "lab -r html -o coverage.html"
   },
