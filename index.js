@@ -19,8 +19,8 @@ const loadHealthTemplate = () => {
     .replace('##PAGE_TITLE##', Constants.buildPageTitle(Constants.Routes.HEALTH.pageHeading))
     .replace('##SERVICE_NAME##', Constants.SERVICE_NAME)
     .replace('##APP_VERSION##', Constants.getVersion())
-    .replace('##GITHUB_HREF##', `${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}`)
-    .replace('##GITHB_COMMIT_REF##', Constants.getLatestCommit())
+    .replace('##GITHUB_HREF##', `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`)
+    .replace('##GITHB_COMMIT_REF##', config.gitSha)
   return template
 }
 
@@ -119,7 +119,7 @@ server.start((err) => {
   console.info('Server running in environment: ' + config.nodeEnvironment)
   console.info('Server running at:', server.info)
   console.info(`Service: ${Constants.SERVICE_NAME}\nVersion: ${Constants.getVersion()}`)
-  console.info(`Latest commit: ${Constants.getLatestCommit()}`)
+  console.info(`Latest commit: ${config.gitSha}`)
 })
 
 // Listen on SIGINT signal and gracefully stop the server
