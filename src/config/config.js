@@ -8,6 +8,8 @@ module.exports = {
 
   nodeEnvironment: process.env.NODE_ENV || 'PRODUCTION',
 
+  gitSha: process.env.GIT_SHA,
+
   // Domain name or IP address of the server to issue the azure AD auth request
   // to. Passed in as value for `host:` option when we make the https.request()
   // call

@@ -75,11 +75,12 @@ gulp.task('install-govuk-files', [], (done) => {
 // Query Git for the latest commit reference and store it locally in latestCommit.json
 gulp.task('git-commit-reference', [], (done) => {
   git.long((commitReference) => {
-    fs.writeFile('latestCommit.json', commitReference, (err) => {
-      if (err) {
-        throw err
-      }
-    })
+    process.env['GIT_SHA'] = commitReference
+    // fs.writeFile('latestCommit.json', commitReference, (err) => {
+    //   if (err) {
+    //     throw err
+    //   }
+    // })
   })
 })
 

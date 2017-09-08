@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 const Constants = require('../constants')
+const config = require('../config/config')
 const BaseController = require('./base.controller')
 
 const DynamicsSolution = require('../models/dynamicsSolution.model')
@@ -25,8 +26,8 @@ module.exports = class VersionController extends BaseController {
       pageContext.dynamicsSolution = await DynamicsSolution.get(authToken)
 
       pageContext.applicationVersion = Constants.getVersion()
-      pageContext.githubRef = Constants.getLatestCommit()
-      pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}`
+      pageContext.githubRef = config.gitSha
+      pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`
       pageContext.renderTimestamp = moment().format(Constants.TIMESTAMP_FORMAT)
 
       return reply
