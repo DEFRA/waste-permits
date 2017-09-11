@@ -36,6 +36,10 @@ Constants.Routes = {
     path: '/site',
     pageHeading: `What's the site name?`
   },
+  START_OR_OPEN_SAVED: {
+    path: `/start/start-or-open-saved`,
+    pageHeading: 'Apply for a standard rules waste permit'
+  },
   TASK_LIST: {
     path: '/task-list',
     pageHeading: 'Task List'
@@ -43,6 +47,15 @@ Constants.Routes = {
   VERSION: {
     path: '/version',
     pageHeading: 'Waste Permits'
+  }
+}
+
+Constants.PermitTypes = {
+  STANDARD_RULES: {
+    cost: {
+      lower: 720,
+      upper: 1690
+    }
   }
 }
 

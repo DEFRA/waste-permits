@@ -13,7 +13,7 @@ module.exports = class TaskListController extends BaseController {
 
       return reply
         .view('taskList', pageContext)
-        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
+        // .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.log(error)
       return reply.redirect(Constants.Routes.ERROR.path)
