@@ -2,6 +2,7 @@
 
 const Constants = require('./src/constants')
 const config = require('./src/config/config')
+const logConfig = require('./src/config/logConfig')
 
 const fs = require('fs')
 const Path = require('path')
@@ -105,50 +106,7 @@ server.register([
   }, {
     // Plugin for logging
     register: Good,
-    options: {
-      ops: {
-        // Log ops stats every 30 seconds
-        interval: 30000
-      },
-      reporters: {
-        // Output to console
-        consoleReporter: [{
-          module: 'good-squeeze',
-          name: 'Squeeze',
-          args: [{
-            'error': '*',
-            'log': '*',
-            'ops': '*',
-            'request': '*',
-            'response': { exclude: 'public' }
-          }]
-        }, {
-          module: 'good-console',
-          args: [{
-            'format': 'YYYY-MM-DD HH:mm:ss',
-            'utc': false
-          }]
-        }, 'stdout'],
-        // Output to file
-        fileReporter: [{
-          module: 'good-squeeze',
-          name: 'Squeeze',
-          args: [{
-            'error': '*',
-            'log': '*',
-            'ops': '*',
-            'request': '*',
-            'response': { exclude: 'public' }
-          }]
-        }, {
-          module: 'good-squeeze',
-          name: 'SafeJson'
-        }, {
-          module: 'good-file',
-          args: ['./log/' + config.nodeEnvironment + '.log']
-        }]
-      }
-    }
+    options: logConfig.options
   }], (err) => {
   if (err) {
     throw err
