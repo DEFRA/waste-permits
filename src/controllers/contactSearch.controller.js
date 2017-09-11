@@ -21,7 +21,7 @@ module.exports = class ContactSearchController extends BaseController {
         .view('contactSearch', pageContext)
         // .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
-      console.error(error)
+      request.log('ERROR', error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
@@ -35,9 +35,9 @@ module.exports = class ContactSearchController extends BaseController {
     if (request.payload.id) {
       try {
         const contact = await Contact.getById(authToken, request.payload.id)
-        console.log(contact)
+        request.log('INFO', contact)
       } catch (error) {
-        console.error(error)
+        request.log('ERROR', error)
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }

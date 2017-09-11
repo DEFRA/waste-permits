@@ -53,12 +53,10 @@ server.method('validateToken', (cookie) => {
   let token
   if (cookie && cookie.token) {
     token = cookie.token
-    // console.log('Validate token: ' + token)
     // TODO - Call persistence layer to validate the token
     // e.g.
     // token = dynamics.validateToken(token)
   }
-  // console.log('validate token result: ' + token)
   return token
 })
 
@@ -122,18 +120,19 @@ server.start((err) => {
     throw err
   }
 
-  console.info('Server running in environment: ' + config.nodeEnvironment)
-  console.info('Server running at:', server.info)
-  console.info(`Service: ${Constants.SERVICE_NAME}\nVersion: ${Constants.getVersion()}`)
-  console.info(`Latest commit: ${config.gitSha}`)
+  server.log('INFO', 'Server running in environment: ' + config.nodeEnvironment)
+  server.log('INFO', 'Server running at:' + JSON.stringify(server.info))
+  server.log('INFO', `Service: ${Constants.SERVICE_NAME}`)
+  server.log('INFO', `Version: ${Constants.getVersion()}`)
+  server.log('INFO', `Latest commit: ${config.gitSha}`)
 })
 
 // Listen on SIGINT signal and gracefully stop the server
 process.on('SIGINT', function () {
-  console.log('Stopping hapi server')
+  server.log('ERROR', 'Stopping hapi server')
 
   server.stop({ timeout: 10000 }).then((err) => {
-    console.log('Hapi server stopped')
+    server.log('ERROR', 'Hapi server stopped')
     process.exit((err) ? 1 : 0)
   })
 })

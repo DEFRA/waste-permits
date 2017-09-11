@@ -49,8 +49,8 @@ module.exports = class BaseController {
     let authToken
     try {
       authToken = await authService.getToken()
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      server.log('ERROR', error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
 

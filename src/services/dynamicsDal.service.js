@@ -2,6 +2,7 @@
 
 const https = require('https')
 const config = require('../config/config')
+const server = require('../../server')
 
 module.exports = class DynamicsDalService {
   constructor (authToken) {
@@ -75,7 +76,7 @@ module.exports = class DynamicsDalService {
         })
       })
       crmRequest.on('error', function (error) {
-        console.error('Dynamics error: ' + error)
+        server.log('ERROR', 'Dynamics error: ' + error)
         reject(error)
       })
 
