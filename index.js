@@ -116,11 +116,11 @@ server.register([
           module: 'good-squeeze',
           name: 'Squeeze',
           args: [{
-            'log': '*',
-            'request': '*',
-            'response': { exclude: 'public' },
             'error': '*',
-            'ops': '*'
+            'log': '*',
+            'ops': '*',
+            'request': '*',
+            'response': { exclude: 'public' }
           }]
         }, {
           module: 'good-console',
@@ -134,11 +134,11 @@ server.register([
           module: 'good-squeeze',
           name: 'Squeeze',
           args: [{
-            'log': '*',
-            'request': '*',
-            'response': { exclude: 'public' },
             'error': '*',
-            'ops': '*'
+            'log': '*',
+            'ops': '*',
+            'request': '*',
+            'response': { exclude: 'public' }
           }]
         }, {
           module: 'good-squeeze',
