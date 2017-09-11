@@ -29,6 +29,7 @@
     "gulp-concat": "^2.6.1",
     "gulp-contains": "^1.1.0",
     "gulp-htmlhint": "^0.3.1",
+    "gulp-imagemin": "^3.3.0",
     "gulp-lab": "^1.0.7",
     "gulp-nodemon": "^2.2.1",
     "gulp-sass": "^3.1.0",
