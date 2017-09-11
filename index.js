@@ -118,7 +118,7 @@ server.register([
           args: [{
             'log': '*',
             'request': '*',
-            'response': '*',
+            'response': { exclude: 'public' },
             'error': '*',
             'ops': '*'
           }]
@@ -136,7 +136,7 @@ server.register([
           args: [{
             'log': '*',
             'request': '*',
-            'response': '*',
+            'response': { exclude: 'public' },
             'error': '*',
             'ops': '*'
           }]

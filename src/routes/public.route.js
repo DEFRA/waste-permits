@@ -11,6 +11,8 @@ module.exports = [{
         path: 'public/',
         listing: true
       }
-    }
+    },
+    // Tag so we can suppress public assets in the log
+    tags: ['public']
   }
 }]
