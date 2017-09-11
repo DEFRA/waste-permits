@@ -5,7 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 
-const server = require('../../index')
+const server = require('../../server')
 
 lab.beforeEach((done) => {
   done()

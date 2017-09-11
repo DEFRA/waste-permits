@@ -15,7 +15,7 @@
   "engines": {
     "node": "8.x"
   },
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "postinstall": "gulp build",
     "test": "lab -t 90",

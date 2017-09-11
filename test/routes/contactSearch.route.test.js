@@ -3,7 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const server = require('../../index')
+const server = require('../../server')
 const DOMParser = require('xmldom').DOMParser
 
 const Contact = require('../../src/models/contact.model')
@@ -14,7 +14,7 @@ let contactGetByIdStub
 
 lab.beforeEach((done) => {
   // Stub methods
-  validateTokenStub = server.methods.validateTokenStub
+  validateTokenStub = server.methods.validateToken
   server.methods.validateToken = () => {
     return 'my_token'
   }

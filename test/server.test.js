@@ -3,7 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const server = require('../index')
+const server = require('../server')
 
 lab.beforeEach((done) => {
   done()

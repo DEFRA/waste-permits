@@ -4,4 +4,4 @@
 # collector using flags.
 # On the Heroku free tier we are limted to only 512mb per dyno, so the
 # following tailors node to run in a container of this size.
-web: node --optimize_for_size --max_old_space_size=460 --gc_interval=100 index.js
+web: node --optimize_for_size --max_old_space_size=460 --gc_interval=100 server.js
