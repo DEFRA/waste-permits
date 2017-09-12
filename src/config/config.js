@@ -4,9 +4,19 @@ require('dotenv').config()
 
 module.exports = {
 
-  port: process.env.WASTE_PERMITS_APP_PORT || 8000,
+  port: process.env.PORT || 8000,
 
   nodeEnvironment: process.env.NODE_ENV || 'PRODUCTION',
+
+  // When running locally using the default gulp task it will call
+  // `gulp git-commit-reference`. This will set the env var `GIT_SHA` with the
+  // latest git commit sha, which we then read in here.
+  // When deployed to heroku we make use of a custom build pack
+  // https://github.com/dive-networks/heroku-buildpack-git-sha that also sets
+  // an env var called GIT_SHA. This means whether running locally or on heroku
+  // we can read the git commit sha and display it correctly in the /health and
+  // /version views.
+  gitSha: process.env.GIT_SHA,
 
   // Domain name or IP address of the server to issue the azure AD auth request
   // to. Passed in as value for `host:` option when we make the https.request()

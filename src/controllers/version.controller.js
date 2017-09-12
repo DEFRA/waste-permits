@@ -1,6 +1,7 @@
 'use strict'
 
 const moment = require('moment')
+const config = require('../config/config')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 
@@ -25,8 +26,8 @@ module.exports = class VersionController extends BaseController {
       pageContext.dynamicsSolution = await DynamicsSolution.get(authToken)
 
       pageContext.applicationVersion = Constants.getVersion()
-      pageContext.githubRef = Constants.getLatestCommit()
-      pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${Constants.getLatestCommit()}`
+      pageContext.githubRef = config.gitSha
+      pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`
       pageContext.renderTimestamp = moment().format(Constants.TIMESTAMP_FORMAT)
 
       return reply

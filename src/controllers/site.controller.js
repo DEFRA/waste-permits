@@ -10,7 +10,6 @@ module.exports = class SiteController extends BaseController {
       const pageContext = BaseController.createPageContext(Constants.Routes.SITE, errors, SiteValidator)
 
       pageContext.formValues = request.payload
-
       return reply.view('site', pageContext)
     } catch (error) {
       console.error(error)

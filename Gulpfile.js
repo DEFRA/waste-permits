@@ -6,6 +6,7 @@ const sass = require('gulp-sass')
 const concat = require('gulp-concat')
 const uglify = require('gulp-uglify')
 const sourcemaps = require('gulp-sourcemaps')
+const imagemin = require('gulp-imagemin')
 const autoprefixer = require('gulp-autoprefixer')
 const contains = require('gulp-contains')
 const standard = require('gulp-standard')
@@ -78,15 +79,11 @@ gulp.task('install-govuk-files', [], (done) => {
 // Query Git for the latest commit reference and store it locally in latestCommit.json
 gulp.task('git-commit-reference', [], (done) => {
   git.long((commitReference) => {
-    fs.writeFile('latestCommit.json', commitReference, (err) => {
-      if (err) {
-        throw err
-      }
-    })
+    process.env['GIT_SHA'] = commitReference
   })
 })
 
-// Copy the javascript
+// Copy and unglify the javascript
 gulp.task('scripts', () => {
   return gulp.src(paths.assets + 'javascripts/*.js')
     .pipe(concat('application.min.js'))
@@ -96,6 +93,17 @@ gulp.task('scripts', () => {
       stream: true
     }))
 })
+
+// Copy and minify the images
+gulp.task('images', () =>
+  gulp.src(paths.assets + 'images/*')
+    .pipe(imagemin({
+        progressive: true,
+        interlaced: true,
+        svgoPlugins: [ {removeViewBox:false}, {removeUselessStrokeAndFill:false} ]
+    }))
+    .pipe(gulp.dest(paths.public + 'images/'))
+)
 
 // Build the sass
 gulp.task('sass', () => {
@@ -170,6 +178,7 @@ gulp.task('build', ['clean'], (done) => {
     'install-govuk-files',
     'sass',
     'scripts',
+    'images',
     done)
 })
 
@@ -199,10 +208,11 @@ gulp.task('nodemon', (done) => {
 
 gulp.task('watch', () => {
   gulp.watch(paths.assets + 'javascripts/**/*.js', ['scripts'])
+  gulp.watch(paths.assets + 'images/*', ['images'])
   gulp.watch(paths.assets + 'sass/**/*.scss', ['sass'])
   gulp.watch(paths.public + '**/*.*').on('change', reload)
   gulp.watch(paths.src + '**/*.*').on('change', reload)
 })
 
 // The default Gulp task starts the app in development mode
-gulp.task('default', ['git-commit-reference', 'watch', 'sass', 'scripts', 'browser-sync'])
+gulp.task('default', ['git-commit-reference', 'watch', 'sass', 'scripts', 'images', 'browser-sync'])
