@@ -48,7 +48,7 @@ server.state(Constants.COOKIE_KEY, {
 
 // Server methods
 server.method('validateCookie', (cookie) => {
-  let isValid = false;
+  let isValid = false
 
   if (!cookie) {
     throw new Error('Unable to validate undefined cookie')

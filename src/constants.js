@@ -20,7 +20,11 @@ Constants.Routes = {
     path: '/contact',
     pageHeading: 'Who should we contact about this application?'
   },
-  CONTACTSEARCH: {
+  CHECK_YOUR_EMAIL: {
+    path: '/save-and-return/check-your-email',
+    pageHeading: `Search for 'standard rules permit application' in your email`
+  },
+  CONTACT_SEARCH: {
     path: '/contact-search',
     pageHeading: 'Contact search'
   },
@@ -31,6 +35,10 @@ Constants.Routes = {
   HEALTH: {
     path: '/health',
     pageHeading: 'Health'
+  },
+  PERMIT_CATEGORY: {
+    path: '/permit-category',
+    pageHeading: 'What do you want the permit for?'
   },
   SITE: {
     path: '/site',

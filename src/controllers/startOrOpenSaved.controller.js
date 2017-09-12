@@ -33,8 +33,17 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
       const cookie = await BaseController.generateCookie(reply)
 
+      let nextPage
+      if (request.payload['started-application'] === 'new') {
+        // TODO: Create an application in Dynamics and set the applicationId in the cookie
+
+        nextPage = Constants.Routes.PERMIT_CATEGORY
+      } else {
+        nextPage = Constants.Routes.CHECK_YOUR_EMAIL
+      }
+
       return reply
-        .redirect(Constants.Routes.SITE.path)
+        .redirect(nextPage.path)
 
         // Delete the existing session cookie (if there is one)
         .unstate(Constants.COOKIE_KEY, {path: '/'})

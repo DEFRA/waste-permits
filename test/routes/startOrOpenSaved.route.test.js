@@ -58,19 +58,37 @@ lab.experiment('Start or Open Saved page tests:', () => {
     })
   })
 
-  lab.test('POST on Start or Open Saved page success redirects to the Site route', (done) => {
+  lab.test('POST on Start or Open Saved page for a new application redirects to the correct route', (done) => {
     const request = {
       method: 'POST',
       url: routePath,
       headers: {},
       payload: {
-        'started-application': 'yes'
+        'started-application': 'new'
       }
     }
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/site')
+      Code.expect(res.headers['location']).to.equal('/permit-category')
+
+      done()
+    })
+  })
+
+  lab.test('POST on Start or Open Saved page to open an existing application redirects to the correct route', (done) => {
+    const request = {
+      method: 'POST',
+      url: routePath,
+      headers: {},
+      payload: {
+        'started-application': 'open'
+      }
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/save-and-return/check-your-email')
 
       done()
     })
