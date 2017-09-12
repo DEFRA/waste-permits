@@ -1,8 +1,8 @@
 'use strict'
 
 const Constants = require('../constants')
-const CheckYourEmailController = require('../controllers/CheckYourEmail.controller')
-const CheckYourEmailValidator = require('../validators/CheckYourEmail.validator')
+const CheckYourEmailController = require('../controllers/checkYourEmail.controller')
+const CheckYourEmailValidator = require('../validators/checkYourEmail.validator')
 
 module.exports = [{
   method: ['GET'],
