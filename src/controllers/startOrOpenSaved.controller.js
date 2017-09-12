@@ -10,8 +10,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       // TODO use this once another PR has been merged to master
       const pageContext = BaseController.createPageContext(Constants.Routes.START_OR_OPEN_SAVED, errors, StartOrOpenSavedValidator)
 
-      // console.log('sor doGet', request.state[Constants.COOKIE_KEY])
-
       pageContext.cost = {
         lower: (Constants.PermitTypes.STANDARD_RULES.cost.lower).toLocaleString(),
         upper: (Constants.PermitTypes.STANDARD_RULES.cost.upper).toLocaleString()
@@ -21,9 +19,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
       return reply
         .view('startOrOpenSaved', pageContext)
-
-        // TODO figure out why this breaks the session
-        // .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
       return reply.redirect(Constants.Routes.ERROR.path)
@@ -35,14 +30,21 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       return StartOrOpenSavedController.doGet(request, reply, errors)
     } else {
       // TODO persist the data here if required
-      console.log('payload', request.payload)
 
-      return reply.redirect(Constants.Routes.SITE.path)
+      const cookie = await BaseController.generateCookie(reply)
+
+      return reply
+        .redirect(Constants.Routes.SITE.path)
+
+        // Delete the existing session cookie (if there is one)
+        .unstate(Constants.COOKIE_KEY, {path: '/'})
+
+        // Add the new cookie
+        .state(Constants.COOKIE_KEY, cookie, {path: '/'})
     }
   }
 
   static handler (request, reply, source, errors) {
-    // console.log('sor rhandler')
-    return BaseController.handler(request, reply, errors, StartOrOpenSavedController)
+    return BaseController.handler(request, reply, errors, StartOrOpenSavedController, false)
   }
 }

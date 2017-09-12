@@ -8,15 +8,15 @@ const DOMParser = require('xmldom').DOMParser
 
 const Contact = require('../../src/models/contact.model')
 
-let validateTokenStub
+let validateCookieStub
 let contactListStub
 let contactGetByIdStub
 
 lab.beforeEach((done) => {
   // Stub methods
-  validateTokenStub = server.methods.validateTokenStub
-  server.methods.validateToken = () => {
-    return 'my_token'
+  validateCookieStub = server.methods.validateCookie
+  server.methods.validateCookie = (cookie) => {
+    return true
   }
 
   contactListStub = Contact.list
@@ -60,7 +60,7 @@ lab.beforeEach((done) => {
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  server.methods.validateToken = validateTokenStub
+  server.methods.validateCookie = validateCookieStub
   Contact.prototype.list = contactListStub
   Contact.prototype.getById = contactGetByIdStub
 
@@ -116,7 +116,7 @@ lab.experiment('Contact search page tests:', () => {
       }
     }
 
-    server.methods.validateToken = () => {
+    server.methods.validateCookie = () => {
       return undefined
     }
 

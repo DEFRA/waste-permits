@@ -8,15 +8,17 @@ const server = require('../../index')
 
 const Contact = require('../../src/models/contact.model')
 
-let validateTokenStub
+let validateCookieStub
 let contactSaveStub
 let contactGetByIdStub
 
+let routePath = '/contact'
+
 lab.beforeEach((done) => {
   // Stub methods
-  validateTokenStub = server.methods.validateToken
-  server.methods.validateToken = () => {
-    return 'my_token'
+  validateCookieStub = server.methods.validateCookie
+  server.methods.validateCookie = (cookie) => {
+    return true
   }
 
   contactGetByIdStub = Contact.getById
@@ -39,7 +41,7 @@ lab.beforeEach((done) => {
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  server.methods.validateToken = validateTokenStub
+  server.methods.validateCookie = validateCookieStub
   Contact.prototype.getById = contactGetByIdStub
   Contact.prototype.save = contactSaveStub
 
@@ -50,7 +52,7 @@ lab.experiment('Contact page tests:', () => {
   lab.test('GET /contact returns the contact page correctly', (done) => {
     const request = {
       method: 'GET',
-      url: '/contact',
+      url: routePath,
       headers: {}
     }
 
@@ -73,7 +75,7 @@ lab.experiment('Contact page tests:', () => {
   lab.test('POST /contact success redirects to the Task List route after a CREATE', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact',
+      url: routePath,
       headers: {},
       payload: {
         id: '',
@@ -95,7 +97,7 @@ lab.experiment('Contact page tests:', () => {
   lab.test('POST /contact success stays on the Contact page after an UPDATE', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact',
+      url: routePath,
       headers: {},
       payload: {
         id: '12345',
@@ -122,14 +124,14 @@ lab.experiment('Contact page tests:', () => {
   lab.test('POST /contact redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact',
+      url: routePath,
       headers: {},
       payload: {
         siteName: 'My Site'
       }
     }
 
-    server.methods.validateToken = () => {
+    server.methods.validateCookie = () => {
       return undefined
     }
 

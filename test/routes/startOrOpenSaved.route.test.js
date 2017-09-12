@@ -7,15 +7,15 @@ const server = require('../../index')
 
 const DOMParser = require('xmldom').DOMParser
 
-let validateTokenStub
+let validateCookieStub
 
 let routePath = '/start/start-or-open-saved'
 
 lab.beforeEach((done) => {
   // Stub methods
-  validateTokenStub = server.methods.validateToken
-  server.methods.validateToken = () => {
-    return 'my_token'
+  validateCookieStub = server.methods.validateCookie
+  server.methods.validateCookie = (cookie) => {
+    return true
   }
 
   done()
@@ -23,7 +23,7 @@ lab.beforeEach((done) => {
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  server.methods.validateToken = validateTokenStub
+  server.methods.validateCookie = validateCookieStub
 
   done()
 })
@@ -72,25 +72,6 @@ lab.experiment('Start or Open Saved page tests:', () => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/site')
 
-      done()
-    })
-  })
-
-  lab.test('POST Start or Open Saved page redirects to error screen when the user token is invalid', (done) => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    server.methods.validateToken = () => {
-      return undefined
-    }
-
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
       done()
     })
   })

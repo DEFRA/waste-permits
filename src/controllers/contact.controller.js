@@ -11,7 +11,6 @@ module.exports = class ContactController extends BaseController {
 
       return reply
         .view('contact', pageContext)
-        // .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       console.error(error)
       return reply.redirect(Constants.Routes.ERROR.path)
@@ -49,7 +48,6 @@ module.exports = class ContactController extends BaseController {
 
         return reply
           .redirect(Constants.Routes.TASK_LIST.path)
-          .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
       } catch (error) {
         console.error(error)
         return reply.redirect(Constants.Routes.ERROR.path)

@@ -28,35 +28,11 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Default page tests:', () => {
-  lab.test('Get / returns the application home page', (done) => {
+  lab.test('Get / re-directs to the first page in the application flow', (done) => {
     const request = {
       method: 'GET',
       url: '/',
       headers: {}
-    }
-
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
-
-      // TODO get the dom parsing test to work
-      // const parser = new DOMParser()
-      // const doc = parser.parseFromString(res.payload, 'text/html')
-      // let element = doc.getElementById('home-page-heading')
-      // Code.expect(element.nodeValue).to.equal('Waste Permits Home Page')
-
-      Code.expect(res.payload.includes('home-page-heading')).to.be.true()
-      Code.expect(res.payload.includes('Waste Permits Home Page')).to.be.true()
-
-      done()
-    })
-  })
-
-  lab.test('POST / success redirects to the Start or Open Saved route', (done) => {
-    const request = {
-      method: 'POST',
-      url: '/',
-      headers: {},
-      payload: {}
     }
 
     server.inject(request, (res) => {

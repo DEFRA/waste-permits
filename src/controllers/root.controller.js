@@ -5,22 +5,8 @@ const BaseController = require('./base.controller')
 
 module.exports = class RootController extends BaseController {
   static async doGet (request, reply, errors) {
-    const pageContext = BaseController.createPageContext(Constants.Routes.ROOT, errors)
-
-    reply.view('root', pageContext)
-  }
-
-  static async doPost (request, reply, errors) {
-    const cookie = await BaseController.generateCookie(reply)
-
-    return reply
-      .redirect(Constants.Routes.START_OR_OPEN_SAVED.path)
-
-      // Delete the existing session cookie
-      .unstate(Constants.COOKIE_KEY)
-
-      // Add the new cookie
-      .state(Constants.COOKIE_KEY, cookie)
+    // For now we are re-directing off to the 'Apply for a standard rules permit' page
+    reply.redirect(Constants.Routes.START_OR_OPEN_SAVED.path)
   }
 
   static handler (request, reply, source, errors) {

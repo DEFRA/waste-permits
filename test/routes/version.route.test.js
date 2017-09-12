@@ -25,7 +25,7 @@ const dynamicsVersionInfo = [{
 }]
 
 const fakeCookie = {
-  token: 'my_token',
+  applicationId: 'my_token',
   authToken: 'my_auth_token'
 }
 

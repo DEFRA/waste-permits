@@ -7,13 +7,15 @@ const server = require('../../index')
 
 const DOMParser = require('xmldom').DOMParser
 
-let validateTokenStub
+let validateCookieStub
+
+let routePath = '/site'
 
 lab.beforeEach((done) => {
   // Stub methods
-  validateTokenStub = server.methods.validateToken
-  server.methods.validateToken = () => {
-    return 'my_token'
+  validateCookieStub = server.methods.validateCookie
+  server.methods.validateCookie = (cookie) => {
+    return true
   }
 
   done()
@@ -21,7 +23,7 @@ lab.beforeEach((done) => {
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  server.methods.validateToken = validateTokenStub
+  server.methods.validateCookie = validateCookieStub
 
   done()
 })
@@ -30,7 +32,7 @@ lab.experiment('Site page tests:', () => {
   lab.test('GET /site returns the site page correctly', (done) => {
     const request = {
       method: 'GET',
-      url: '/site',
+      url: routePath,
       headers: {}
     }
 
@@ -56,7 +58,7 @@ lab.experiment('Site page tests:', () => {
   lab.test('POST /site success redirects to the Contact route', (done) => {
     const request = {
       method: 'POST',
-      url: '/site',
+      url: routePath,
       headers: {},
       payload: {
         'site-name': 'My Site',
@@ -75,12 +77,12 @@ lab.experiment('Site page tests:', () => {
   lab.test('POST /site redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'POST',
-      url: '/site',
+      url: routePath,
       headers: {},
       payload: {}
     }
 
-    server.methods.validateToken = () => {
+    server.methods.validateCookie = () => {
       return undefined
     }
 
@@ -94,7 +96,7 @@ lab.experiment('Site page tests:', () => {
   lab.test('POST /site shows the error message summary panel when the site data is invalid', (done) => {
     const request = {
       method: 'POST',
-      url: '/site',
+      url: routePath,
       headers: {},
       payload: {
         'site-name': '',
@@ -119,7 +121,7 @@ lab.experiment('Site page tests:', () => {
   lab.test('POST /site shows an error message when the site name is blank', (done) => {
     const request = {
       method: 'POST',
-      url: '/site',
+      url: routePath,
       headers: {},
       payload: {
         'site-name': '',
@@ -151,7 +153,7 @@ lab.experiment('Site page tests:', () => {
   lab.test('POST /site shows an error message when the site name contains invalid characters', (done) => {
     const request = {
       method: 'POST',
-      url: '/site',
+      url: routePath,
       headers: {},
       payload: {
         'site-name': '___INVALID_SITE_NAME___',
@@ -183,7 +185,7 @@ lab.experiment('Site page tests:', () => {
   lab.test('POST /site shows an error message when the site name is too long', (done) => {
     const request = {
       method: 'POST',
-      url: '/site',
+      url: routePath,
       headers: {},
       payload: {
         'site-name': '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X',

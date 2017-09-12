@@ -16,10 +16,11 @@ lab.afterEach((done) => {
 lab.experiment('Server methods:', () => {
   lab.test('Validate token', (done) => {
     const cookie = {
-      token: 'my_token'
+      applicationId: 'my_token',
+      authToken: 'my_crm_token'
     }
 
-    Code.expect(server.methods.validateToken(cookie)).to.equal(cookie.token)
+    Code.expect(server.methods.validateCookie(cookie)).to.be.true
     done()
   })
 })

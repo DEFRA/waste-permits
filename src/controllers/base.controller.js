@@ -25,25 +25,9 @@ module.exports = class BaseController {
     return pageContext
   }
 
-  static handler (request, reply, errors, controllerSubclass, validateToken = true) {
-    if (validateToken) {
-      // Validate the session cookie
-      let token = request.server.methods.validateToken(request.state[Constants.COOKIE_KEY])
-      if (!token) {
-        // Redirect off an error screen
-        return reply.redirect(Constants.Routes.ERROR.path)
-      }
-    }
-    if (request.method.toUpperCase() === 'GET') {
-      return controllerSubclass.doGet(request, reply, errors)
-    } else if (request.method.toUpperCase() === 'POST') {
-      return controllerSubclass.doPost(request, reply, errors)
-    }
-  }
-
   static async generateCookie (reply) {
-    // Generate a session token
-    const token = uuid4()
+    // Generate an application ID
+    const applicationId = uuid4()
 
     // Generate a CRM token
     let authToken
@@ -58,10 +42,28 @@ module.exports = class BaseController {
     // appropriate point is to create and destroy session cookies
 
     const cookie = {
-      token: token,
+      applicationId: applicationId,
       authToken: authToken
     }
 
     return cookie
+  }
+
+  static handler (request, reply, errors, controllerSubclass, validateToken = true) {
+    if (validateToken) {
+      const cookie = request.state[Constants.COOKIE_KEY]
+
+      // Validate the cookie
+      if (!request.server.methods.validateCookie(cookie)) {
+        // Redirect off an error screen
+        console.error(request.path + ': Invalid token. Re-directing to the error screen')
+        return reply.redirect(Constants.Routes.ERROR.path)
+      }
+    }
+    if (request.method.toUpperCase() === 'GET') {
+      return controllerSubclass.doGet(request, reply, errors)
+    } else if (request.method.toUpperCase() === 'POST') {
+      return controllerSubclass.doPost(request, reply, errors)
+    }
   }
 }

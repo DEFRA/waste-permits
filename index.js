@@ -47,17 +47,24 @@ server.state(Constants.COOKIE_KEY, {
 })
 
 // Server methods
-server.method('validateToken', (cookie) => {
-  let token
-  if (cookie && cookie.token) {
-    token = cookie.token
-    // console.log('Validate token: ' + token)
-    // TODO - Call persistence layer to validate the token
-    // e.g.
-    // token = dynamics.validateToken(token)
+server.method('validateCookie', (cookie) => {
+  let isValid = false;
+
+  if (!cookie) {
+    throw new Error('Unable to validate undefined cookie')
   }
-  // console.log('validate token result: ' + token)
-  return token
+
+  const applicationId = cookie.applicationId
+  if (applicationId) {
+    const token = cookie.applicationId
+    // TODO - Call persistence layer to validate the applicationId
+    // e.g.
+    // result = dynamics.validateApplicationId(applicationId)
+    if (token && token.length > 0) {
+      isValid = true
+    }
+  }
+  return isValid
 })
 
 server.register([

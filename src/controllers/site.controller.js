@@ -11,9 +11,7 @@ module.exports = class SiteController extends BaseController {
 
       pageContext.formValues = request.payload
 
-      return reply
-        .view('site', pageContext)
-        // .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
+      return reply.view('site', pageContext)
     } catch (error) {
       console.error(error)
       return reply.redirect(Constants.Routes.ERROR.path)
@@ -25,6 +23,7 @@ module.exports = class SiteController extends BaseController {
       return SiteController.doGet(request, reply, errors)
     } else {
       // TODO persist the data here if required
+      // const applicationId = request.state[Constants.COOKIE_KEY].applicationId
 
       return reply.redirect(Constants.Routes.CONTACT.path)
     }
