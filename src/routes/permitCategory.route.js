@@ -1,8 +1,8 @@
 'use strict'
 
 const Constants = require('../constants')
-const PermitCategoryController = require('../controllers/PermitCategory.controller')
-const PermitCategoryValidator = require('../validators/PermitCategory.validator')
+const PermitCategoryController = require('../controllers/permitCategory.controller')
+const PermitCategoryValidator = require('../validators/permitCategory.validator')
 
 module.exports = [{
   method: ['GET'],
