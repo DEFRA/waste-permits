@@ -20,7 +20,7 @@ lab.experiment('Server methods:', () => {
       authToken: 'my_crm_token'
     }
 
-    Code.expect(server.methods.validateCookie(cookie)).to.be.true
+    Code.expect(server.methods.validateCookie(cookie)).to.be.true()
     done()
   })
 })
