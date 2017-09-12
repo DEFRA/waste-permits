@@ -1,6 +1,8 @@
 'use strict'
 
 const Constants = require('../constants')
+const LoggingService = require('../services/logging.service')
+const loggingService = new LoggingService()
 
 // Used for generating a session id which is saved as a cookie
 const uuid4 = require('uuid/v4')
@@ -50,7 +52,7 @@ module.exports = class BaseController {
     try {
       authToken = await authService.getToken()
     } catch (error) {
-      server.log('ERROR', error)
+      loggingService.logError(error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
 

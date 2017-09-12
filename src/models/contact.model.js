@@ -2,7 +2,8 @@
 
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
-const server = require('../../server')
+const LoggingService = require('../services/logging.service')
+const loggingService = new LoggingService()
 
 module.exports = class Contact extends BaseModel {
   constructor (dataObject = undefined) {
@@ -33,7 +34,7 @@ module.exports = class Contact extends BaseModel {
       })
     } catch (error) {
       // TODO: Error handling?
-      server.log('ERROR', `Unable to list Contacts: ${error}`)
+      loggingService.logError(`Unable to list Contacts: ${error}`)
       throw error
     }
     return contact
@@ -66,7 +67,7 @@ module.exports = class Contact extends BaseModel {
       })
     } catch (error) {
       // TODO: Error handling?
-      server.log('ERROR', `Unable to list Contacts: ${error}`)
+      loggingService.logError(`Unable to list Contacts: ${error}`)
       throw error
     }
     return contacts
@@ -95,7 +96,7 @@ module.exports = class Contact extends BaseModel {
         await dynamicsDal.update(query, dataObject)
       }
     } catch (error) {
-      server.log('ERROR', `Unable to save Contact: ${error}`)
+      loggingService.logError(`Unable to save Contact: ${error}`)
       throw error
     }
   }
