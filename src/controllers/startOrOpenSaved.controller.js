@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const ServerLoggingService = require('../services/serverLogging.service')
 const BaseController = require('./base.controller')
 const StartOrOpenSavedValidator = require('../validators/startOrOpenSaved.validator')
 const Application = require('../models/application.model')
@@ -8,7 +9,6 @@ const Application = require('../models/application.model')
 module.exports = class StartOrOpenSavedController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      // TODO use this once another PR has been merged to master
       const pageContext = BaseController.createPageContext(Constants.Routes.START_OR_OPEN_SAVED, errors, StartOrOpenSavedValidator)
 
       pageContext.cost = {
@@ -21,7 +21,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       return reply
         .view('startOrOpenSaved', pageContext)
     } catch (error) {
-      console.error(error)
+      ServerLoggingService.logError(error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
@@ -46,7 +46,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
         nextPage = Constants.Routes.PERMIT_CATEGORY
       } catch (error) {
-        console.error(error)
+        ServerLoggingService.logError(error)
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     } else {

@@ -12,6 +12,11 @@ Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
 Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
 
+Constants.LogLevel = {
+  ERROR: 'ERROR',
+  INFO: 'INFO'
+}
+
 Constants.Routes = {
   ROOT: {
     path: '/',

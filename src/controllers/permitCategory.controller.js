@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const ServerLoggingService = require('../services/serverLogging.service')
 const BaseController = require('./base.controller')
 const PermitCategoryValidator = require('../validators/permitCategory.validator')
 
@@ -12,7 +13,7 @@ module.exports = class PermitCategoryController extends BaseController {
       pageContext.formValues = request.payload
       return reply.view('permitCategory', pageContext)
     } catch (error) {
-      console.error(error)
+      ServerLoggingService.logError(error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }

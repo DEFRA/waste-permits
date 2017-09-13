@@ -2,7 +2,6 @@
 
 const Constants = require('../constants')
 const ServerLoggingService = require('../services/serverLogging.service')
-const serverLoggingService = new ServerLoggingService()
 
 // Used for generating a session id which is saved as a cookie
 const uuid4 = require('uuid/v4')
@@ -37,7 +36,7 @@ module.exports = class BaseController {
     try {
       authToken = await authService.getToken()
     } catch (error) {
-      serverLoggingService.logError(error)
+      ServerLoggingService.logError(error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
 
@@ -59,7 +58,8 @@ module.exports = class BaseController {
       // Validate the cookie
       if (!CookieService.validateCookie(cookie)) {
         // Redirect off an error screen
-        console.error(request.path + ': Invalid token. Re-directing to the error screen')
+        ServerLoggingService.logError(`${request.path}: Invalid token. Re-directing to the error screen`)
+
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }

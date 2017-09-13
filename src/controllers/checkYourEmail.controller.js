@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const ServerLoggingService = require('../services/serverLogging.service')
 const BaseController = require('./base.controller')
 const CheckYourEmailValidator = require('../validators/checkYourEmail.validator')
 
@@ -12,7 +13,7 @@ module.exports = class CheckYourEmailController extends BaseController {
       pageContext.formValues = request.payload
       return reply.view('checkYourEmail', pageContext)
     } catch (error) {
-      console.error(error)
+      ServerLoggingService.logError(error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
