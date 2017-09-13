@@ -46,27 +46,6 @@ server.state(Constants.COOKIE_KEY, {
   strictHeader: true        // Don't allow violations of RFC 6265
 })
 
-// Server methods
-server.method('validateCookie', (cookie) => {
-  let isValid = false
-
-  if (!cookie) {
-    throw new Error('Unable to validate undefined cookie')
-  }
-
-  const applicationId = cookie.applicationId
-  if (applicationId) {
-    const token = cookie.applicationId
-    // TODO - Call persistence layer to validate the applicationId
-    // e.g.
-    // result = dynamics.validateApplicationId(applicationId)
-    if (token && token.length > 0) {
-      isValid = true
-    }
-  }
-  return isValid
-})
-
 server.register([
   require('inert'),
   require('vision'),

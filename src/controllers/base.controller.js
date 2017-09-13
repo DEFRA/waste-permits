@@ -4,6 +4,7 @@ const Constants = require('../constants')
 
 // Used for generating a session id which is saved as a cookie
 const uuid4 = require('uuid/v4')
+const CookieService = require('../services/cookie.service')
 const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
 const authService = new ActiveDirectoryAuthService()
 
@@ -49,12 +50,12 @@ module.exports = class BaseController {
     return cookie
   }
 
-  static handler (request, reply, errors, controllerSubclass, validateToken = true) {
-    if (validateToken) {
+  static handler (request, reply, errors, controllerSubclass, cookieValidationRequired = true) {
+    if (cookieValidationRequired) {
       const cookie = request.state[Constants.COOKIE_KEY]
 
       // Validate the cookie
-      if (!request.server.methods.validateCookie(cookie)) {
+      if (!CookieService.validateCookie(cookie)) {
         // Redirect off an error screen
         console.error(request.path + ': Invalid token. Re-directing to the error screen')
         return reply.redirect(Constants.Routes.ERROR.path)

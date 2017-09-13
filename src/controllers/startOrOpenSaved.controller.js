@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const StartOrOpenSavedValidator = require('../validators/startOrOpenSaved.validator')
+const Application = require('../models/application.model')
 
 module.exports = class StartOrOpenSavedController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -28,29 +29,38 @@ module.exports = class StartOrOpenSavedController extends BaseController {
   static async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
       return StartOrOpenSavedController.doGet(request, reply, errors)
-    } else {
-      // TODO persist the data here if required
+    }
 
-      const cookie = await BaseController.generateCookie(reply)
+    const cookie = await BaseController.generateCookie(reply)
+    let authToken = cookie.authToken
 
-      let nextPage
-      if (request.payload['started-application'] === 'new') {
-        // TODO: Create an application in Dynamics and set the applicationId in the cookie
+    let nextPage
+    if (request.payload['started-application'] === 'new') {
+      // Create new application in Dynamics and set the applicationId in the cookie
+      try {
+        const application = new Application()
+        await application.save(authToken)
+
+        // Set the application ID in the cookie
+        cookie.applicationId = application.id
 
         nextPage = Constants.Routes.PERMIT_CATEGORY
-      } else {
-        nextPage = Constants.Routes.CHECK_YOUR_EMAIL
+      } catch (error) {
+        console.error(error)
+        return reply.redirect(Constants.Routes.ERROR.path)
       }
-
-      return reply
-        .redirect(nextPage.path)
-
-        // Delete the existing session cookie (if there is one)
-        .unstate(Constants.COOKIE_KEY, {path: '/'})
-
-        // Add the new cookie
-        .state(Constants.COOKIE_KEY, cookie, {path: '/'})
+    } else {
+      nextPage = Constants.Routes.CHECK_YOUR_EMAIL
     }
+
+    return reply
+      .redirect(nextPage.path)
+
+      // Delete the existing session cookie (if there is one)
+      .unstate(Constants.COOKIE_KEY, Constants.COOKIE_PATH)
+
+      // Add the new cookie
+      .state(Constants.COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 
   static handler (request, reply, source, errors) {

@@ -7,6 +7,7 @@ const Constants = module.exports = {}
 Constants.SERVICE_NAME = 'Waste Permits'
 Constants.GDS_NAME = 'GOV.UK'
 Constants.COOKIE_KEY = 'DefraSession'
+Constants.COOKIE_PATH = { path: '/' }
 Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
 Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
