@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = class ActiveDirectoryAuthService {
+module.exports = class ServerLoggingService {
   logError (message) {
     const server = require('../../server')
     server.log('ERROR', message)
