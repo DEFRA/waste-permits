@@ -23,6 +23,7 @@ lab.experiment('Server logging:', () => {
     ServerLoggingService.logError('An error has occurred')
     Code.expect(spy.calledOnce).to.equal(true)
     Code.expect(spy.calledWith('ERROR', 'An error has occurred')).to.equal(true)
+    Code.expect(spy.threw()).to.equal(false)
 
     server.log.restore()
     done()
@@ -34,6 +35,7 @@ lab.experiment('Server logging:', () => {
     ServerLoggingService.logInfo('Something has happened')
     Code.expect(spy.calledOnce).to.equal(true)
     Code.expect(spy.calledWith('INFO', 'Something has happened')).to.equal(true)
+    Code.expect(spy.threw()).to.equal(false)
 
     server.log.restore()
     done()
