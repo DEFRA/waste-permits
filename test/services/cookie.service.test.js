@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const CookieService = require('../../src/services/cookie.service')
-// const ActiveDirectoryAuthService = require('../../src/services/activeDirectoryAuth.service')
 
 lab.beforeEach((done) => {
   done()

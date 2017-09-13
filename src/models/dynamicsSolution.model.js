@@ -2,6 +2,7 @@
 
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
+const ServerLoggingService = require('../services/serverLogging.service')
 
 module.exports = class DynamicsSolution extends BaseModel {
   static async get (authToken) {
@@ -29,7 +30,7 @@ module.exports = class DynamicsSolution extends BaseModel {
       }
       return dynamicsVersionInfo
     } catch (error) {
-      console.error(`Unable to get Dynamics solution details: ${error}`)
+      ServerLoggingService.logError(`Unable to get Dynamics solution details: ${error}`)
       throw error
     }
   }

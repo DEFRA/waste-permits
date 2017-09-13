@@ -12,7 +12,7 @@ module.exports = class ContactController extends BaseController {
       return reply
         .view('contact', pageContext)
     } catch (error) {
-      console.error(error)
+      request.log('ERROR', error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
@@ -49,7 +49,7 @@ module.exports = class ContactController extends BaseController {
         return reply
           .redirect(Constants.Routes.TASK_LIST.path)
       } catch (error) {
-        console.error(error)
+        request.log('ERROR', error)
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     } else {
@@ -66,7 +66,7 @@ module.exports = class ContactController extends BaseController {
 
         return ContactController.doGet(request, reply, errors)
       } catch (error) {
-        console.error(error)
+        request.log('ERROR', error)
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }

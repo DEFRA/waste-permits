@@ -5,7 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 
-const server = require('../../index')
+const server = require('../../server')
 const DynamicsSolution = require('../../src/models/dynamicsSolution.model')
 const BaseController = require('../../src/controllers/base.controller')
 

@@ -14,7 +14,7 @@ module.exports = class TaskListController extends BaseController {
       return reply
         .view('taskList', pageContext)
     } catch (error) {
-      console.log(error)
+      request.log('ERROR', error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }

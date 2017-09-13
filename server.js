@@ -2,6 +2,7 @@
 
 const Constants = require('./src/constants')
 const config = require('./src/config/config')
+const logConfig = require('./src/config/logConfig')
 
 const fs = require('fs')
 const Path = require('path')
@@ -10,6 +11,7 @@ const HapiRouter = require('hapi-router')
 const Blipp = require('blipp')
 const Disinfect = require('disinfect')
 const HapiAlive = require('hapi-alive')
+const Good = require('good')
 const HapiDevErrors = require('hapi-dev-errors')
 const server = new Hapi.Server()
 
@@ -87,6 +89,10 @@ server.register([
     options: {
       showErrors: config.nodeEnvironment === 'DEVELOPMENT'
     }
+  }, {
+    // Plugin for logging
+    register: Good,
+    options: logConfig.options
   }], (err) => {
   if (err) {
     throw err
@@ -102,18 +108,19 @@ server.start((err) => {
     throw err
   }
 
-  console.info('Server running in environment: ' + config.nodeEnvironment)
-  console.info('Server running at:', server.info)
-  console.info(`Service: ${Constants.SERVICE_NAME}\nVersion: ${Constants.getVersion()}`)
-  console.info(`Latest commit: ${config.gitSha}`)
+  server.log('INFO', 'Server running in environment: ' + config.nodeEnvironment)
+  server.log('INFO', 'Server running at:' + JSON.stringify(server.info))
+  server.log('INFO', `Service: ${Constants.SERVICE_NAME}`)
+  server.log('INFO', `Version: ${Constants.getVersion()}`)
+  server.log('INFO', `Latest commit: ${config.gitSha}`)
 })
 
 // Listen on SIGINT signal and gracefully stop the server
 process.on('SIGINT', function () {
-  console.log('Stopping hapi server')
+  server.log('ERROR', 'Stopping hapi server')
 
   server.stop({ timeout: 10000 }).then((err) => {
-    console.log('Hapi server stopped')
+    server.log('ERROR', 'Hapi server stopped')
     process.exit((err) ? 1 : 0)
   })
 })

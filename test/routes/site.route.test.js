@@ -3,7 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const server = require('../../index')
+const server = require('../../server')
 
 const DOMParser = require('xmldom').DOMParser
 const CookieService = require('../../src/services/cookie.service')

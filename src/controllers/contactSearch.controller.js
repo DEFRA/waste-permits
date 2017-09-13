@@ -20,7 +20,7 @@ module.exports = class ContactSearchController extends BaseController {
       return reply
         .view('contactSearch', pageContext)
     } catch (error) {
-      console.error(error)
+      request.log('ERROR', error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
@@ -34,9 +34,9 @@ module.exports = class ContactSearchController extends BaseController {
     if (request.payload.id) {
       try {
         const contact = await Contact.getById(authToken, request.payload.id)
-        console.log(contact)
+        request.log('INFO', contact)
       } catch (error) {
-        console.error(error)
+        request.log('ERROR', error)
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }

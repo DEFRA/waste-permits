@@ -12,7 +12,7 @@ module.exports = class SiteController extends BaseController {
       pageContext.formValues = request.payload
       return reply.view('site', pageContext)
     } catch (error) {
-      console.error(error)
+      request.log('ERROR', error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
