@@ -3,7 +3,6 @@
 const https = require('https')
 const config = require('../config/config')
 const ServerLoggingService = require('../services/serverLogging.service')
-const serverLoggingService = new ServerLoggingService()
 
 module.exports = class ActiveDirectoryAuthService {
   constructor () {
@@ -58,7 +57,7 @@ module.exports = class ActiveDirectoryAuthService {
       })
 
       tokenRequest.on('error', function (error) {
-        serverLoggingService.logError(error)
+        ServerLoggingService.logError(error)
         reject(error)
       })
 
