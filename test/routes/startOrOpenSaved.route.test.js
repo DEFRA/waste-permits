@@ -6,11 +6,14 @@ const Code = require('code')
 const server = require('../../server')
 
 const DOMParser = require('xmldom').DOMParser
+const Application = require('../../src/models/application.model')
 const CookieService = require('../../src/services/cookie.service')
 
 let validateCookieStub
+let applicationSaveStub
 
 let routePath = '/start/start-or-open-saved'
+let applicationId = 'TEST_APPLICATION_ID'
 
 lab.beforeEach((done) => {
   // Stub methods
@@ -19,12 +22,18 @@ lab.beforeEach((done) => {
     return true
   }
 
+  applicationSaveStub = Application.save
+  Application.save = () => {
+    return applicationId
+  }
+
   done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
+  Application.save = applicationSaveStub
 
   done()
 })
