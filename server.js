@@ -114,6 +114,14 @@ server.register([
   server.views(require('./src/views'))
 })
 
+server.ext('onPreResponse', function (request, reply) {
+  if (request.response.isBoom) {
+    // If there is an error response then redirect to the 404 page
+    return reply.redirect(Constants.Routes.PAGE_NOT_FOUND.path)
+  }
+  return reply.continue()
+})
+
 // Start the server
 server.start((err) => {
   if (err) {

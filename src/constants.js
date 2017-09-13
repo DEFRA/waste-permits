@@ -32,6 +32,10 @@ Constants.Routes = {
     path: '/health',
     pageHeading: 'Health'
   },
+  PAGE_NOT_FOUND: {
+    path: '/page-not-found',
+    pageHeading: `We can't find that page`
+  },
   SITE: {
     path: '/site',
     pageHeading: `What's the site name?`
