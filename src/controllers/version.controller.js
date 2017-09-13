@@ -33,7 +33,7 @@ module.exports = class VersionController extends BaseController {
       return reply
         .view('version', pageContext)
     } catch (error) {
-      console.error(error)
+      request.log('ERROR', error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }

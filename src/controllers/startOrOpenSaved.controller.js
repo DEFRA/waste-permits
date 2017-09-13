@@ -10,8 +10,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       // TODO use this once another PR has been merged to master
       const pageContext = BaseController.createPageContext(Constants.Routes.START_OR_OPEN_SAVED, errors, StartOrOpenSavedValidator)
 
-      // console.log('sor doGet', request.state[Constants.COOKIE_KEY])
-
       pageContext.cost = {
         lower: (Constants.PermitTypes.STANDARD_RULES.cost.lower).toLocaleString(),
         upper: (Constants.PermitTypes.STANDARD_RULES.cost.upper).toLocaleString()
@@ -42,7 +40,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
   }
 
   static handler (request, reply, source, errors) {
-    // console.log('sor rhandler')
     return BaseController.handler(request, reply, errors, StartOrOpenSavedController)
   }
 }

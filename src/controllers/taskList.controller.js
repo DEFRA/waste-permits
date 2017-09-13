@@ -15,7 +15,7 @@ module.exports = class TaskListController extends BaseController {
         .view('taskList', pageContext)
         // .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
-      console.log(error)
+      request.log('ERROR', error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
