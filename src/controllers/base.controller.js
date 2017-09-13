@@ -3,11 +3,7 @@
 const Constants = require('../constants')
 const ServerLoggingService = require('../services/serverLogging.service')
 
-// Used for generating a session id which is saved as a cookie
-const uuid4 = require('uuid/v4')
 const CookieService = require('../services/cookie.service')
-const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
-const authService = new ActiveDirectoryAuthService()
 
 module.exports = class BaseController {
   static createPageContext (route, errors, ValidatorSubClass) {
@@ -25,30 +21,6 @@ module.exports = class BaseController {
     }
 
     return pageContext
-  }
-
-  static async generateCookie (reply) {
-    // Generate an application ID
-    const applicationId = uuid4()
-
-    // Generate a CRM token
-    let authToken
-    try {
-      authToken = await authService.getToken()
-    } catch (error) {
-      ServerLoggingService.logError(error)
-      return reply.redirect(Constants.Routes.ERROR.path)
-    }
-
-    // TODO: Confirm how session handling will work and where the most
-    // appropriate point is to create and destroy session cookies
-
-    const cookie = {
-      applicationId: applicationId,
-      authToken: authToken
-    }
-
-    return cookie
   }
 
   static handler (request, reply, errors, controllerSubclass, cookieValidationRequired = true) {

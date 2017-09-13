@@ -2,6 +2,7 @@
 
 const Constants = require('../constants')
 const ServerLoggingService = require('../services/serverLogging.service')
+const CookieService = require('../services/cookie.service')
 const BaseController = require('./base.controller')
 const StartOrOpenSavedValidator = require('../validators/startOrOpenSaved.validator')
 const Application = require('../models/application.model')
@@ -31,15 +32,14 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       return StartOrOpenSavedController.doGet(request, reply, errors)
     }
 
-    const cookie = await BaseController.generateCookie(reply)
-    let authToken = cookie.authToken
+    const cookie = await CookieService.generateCookie(reply)
 
     let nextPage
     if (request.payload['started-application'] === 'new') {
       // Create new application in Dynamics and set the applicationId in the cookie
       try {
         const application = new Application()
-        await application.save(authToken)
+        await application.save(cookie.authToken)
 
         // Set the application ID in the cookie
         cookie.applicationId = application.id

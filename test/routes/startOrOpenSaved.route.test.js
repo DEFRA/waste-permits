@@ -9,31 +9,41 @@ const DOMParser = require('xmldom').DOMParser
 const Application = require('../../src/models/application.model')
 const CookieService = require('../../src/services/cookie.service')
 
+let generateCookieStub
 let validateCookieStub
 let applicationSaveStub
 
 let routePath = '/start/start-or-open-saved'
 let applicationId = 'TEST_APPLICATION_ID'
 
+const fakeCookie = {
+  applicationId: 'my_application_id',
+  authToken: 'my_auth_token'
+}
+
 lab.beforeEach((done) => {
   // Stub methods
+  generateCookieStub = CookieService.generateCookie
+  CookieService.generateCookie = (reply) => {
+    return fakeCookie
+  }
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = (cookie) => {
     return true
   }
 
-  applicationSaveStub = Application.save
-  Application.save = () => {
+  applicationSaveStub = Application.prototype.save
+  Application.prototype.save = (authToken) => {
     return applicationId
   }
-
   done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
+  CookieService.generateCookie = generateCookieStub
   CookieService.validateCookie = validateCookieStub
-  Application.save = applicationSaveStub
+  Application.prototype.save = applicationSaveStub
 
   done()
 })

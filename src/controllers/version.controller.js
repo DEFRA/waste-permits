@@ -4,6 +4,7 @@ const moment = require('moment')
 const config = require('../config/config')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
+const CookieService = require('../services/cookie.service')
 
 const DynamicsSolution = require('../models/dynamicsSolution.model')
 
@@ -19,8 +20,8 @@ module.exports = class VersionController extends BaseController {
         authToken = request.state[Constants.COOKIE_KEY].authToken
       // Otherwise, create a new one
       } else {
-        let newCookie = await BaseController.generateCookie(reply)
-        authToken = newCookie.authToken
+        const cookie = await CookieService.generateCookie(reply)
+        authToken = cookie.authToken
       }
 
       pageContext.dynamicsSolution = await DynamicsSolution.get(authToken)
