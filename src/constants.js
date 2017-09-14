@@ -40,6 +40,10 @@ Constants.Routes = {
     path: '/health',
     pageHeading: 'Health'
   },
+  PRE_APPLICATION: {
+    path: '/pre-application',
+    pageHeading: 'Have you discussed this application with us?'
+  },
   SITE: {
     path: '/site',
     pageHeading: `What's the site name?`
