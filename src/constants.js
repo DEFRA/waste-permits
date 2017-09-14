@@ -20,6 +20,10 @@ Constants.Routes = {
     path: '/confidentiality',
     pageHeading: 'Is part of your application commercially confidential?'
   },
+  CONFIRM_RULES: {
+    path: '/confirm-rules',
+    pageHeading: 'Confirm that your operation meets the rules'
+  },
   CONTACT_DETAILS: {
     path: '/contact-details',
     pageHeading: 'Who should we contact about this application?'
