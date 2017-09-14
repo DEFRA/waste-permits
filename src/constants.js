@@ -28,6 +28,10 @@ Constants.Routes = {
     path: '/cost-time',
     pageHeading: 'Cost and time for this permit'
   },
+  DRAINAGE_TYPE_DRAIN: {
+    path: '/drainage-type/drain',
+    pageHeading: 'Where does the vehicle storage area drain to?'
+  },
   ERROR: {
     path: '/error',
     pageHeading: 'Something went wrong'
