@@ -25,7 +25,7 @@ module.exports = class PermitCategoryController extends BaseController {
       // TODO persist the data here if required
       // const applicationId = request.state[Constants.COOKIE_KEY].applicationId
 
-      return reply.redirect(Constants.Routes.CONTACT.path)
+      return reply.redirect(Constants.Routes.PERMIT_SELECT.path)
     }
   }
 

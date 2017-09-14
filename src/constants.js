@@ -26,6 +26,10 @@ Constants.Routes = {
     path: '/check-before-sending',
     pageHeading: 'Check your answers before sending your application'
   },
+  CHECK_YOUR_EMAIL: {
+    path: '/save-and-return/check-your-email',
+    pageHeading: `Search for 'standard rules permit application' in your email`
+  },
   CONFIDENTIALITY: {
     path: '/confidentiality',
     pageHeading: 'Is part of your application commercially confidential?'
@@ -37,10 +41,6 @@ Constants.Routes = {
   CONTACT_DETAILS: {
     path: '/contact-details',
     pageHeading: 'Who should we contact about this application?'
-  },
-  CHECK_YOUR_EMAIL: {
-    path: '/save-and-return/check-your-email',
-    pageHeading: `Search for 'standard rules permit application' in your email`
   },
   CONTACT_SEARCH: {
     path: '/contact-search',
@@ -71,12 +71,16 @@ Constants.Routes = {
     pageHeading: 'Which management system will you use?'
   },
   PERMIT_CATEGORY: {
-    path: '/permit-category',
+    path: '/permit/category',
     pageHeading: 'What do you want the permit for?'
   },
   PERMIT_HOLDER_TYPE: {
     path: '/permit-holder/type',
     pageHeading: 'Who will be the permit holder?'
+  },
+  PERMIT_SELECT: {
+    path: '/permit/select',
+    pageHeading: 'Select a permit'
   },
   PRE_APPLICATION: {
     path: '/pre-application',
