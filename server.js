@@ -48,18 +48,6 @@ server.state(Constants.COOKIE_KEY, {
   strictHeader: true        // Don't allow violations of RFC 6265
 })
 
-// Server methods
-server.method('validateToken', (cookie) => {
-  let token
-  if (cookie && cookie.token) {
-    token = cookie.token
-    // TODO - Call persistence layer to validate the token
-    // e.g.
-    // token = dynamics.validateToken(token)
-  }
-  return token
-})
-
 server.register([
   require('inert'),
   require('vision'),

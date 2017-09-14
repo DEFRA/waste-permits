@@ -6,24 +6,42 @@ const Code = require('code')
 const server = require('../../server')
 
 const DOMParser = require('xmldom').DOMParser
+const Application = require('../../src/models/application.model')
+const CookieService = require('../../src/services/cookie.service')
 
-let validateTokenStub
+let generateCookieStub
+let validateCookieStub
+let applicationSaveStub
 
 let routePath = '/start/start-or-open-saved'
+let applicationId = 'TEST_APPLICATION_ID'
+
+const fakeCookie = {
+  applicationId: 'my_application_id',
+  authToken: 'my_auth_token'
+}
 
 lab.beforeEach((done) => {
   // Stub methods
-  validateTokenStub = server.methods.validateToken
-  server.methods.validateToken = () => {
-    return 'my_token'
+  generateCookieStub = CookieService.generateCookie
+  CookieService.generateCookie = (reply) => {
+    return fakeCookie
+  }
+  validateCookieStub = CookieService.validateCookie
+  CookieService.validateCookie = (cookie) => {
+    return true
   }
 
+  applicationSaveStub = Application.prototype.save
+  Application.prototype.save = (authToken) => {}
   done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  server.methods.validateToken = validateTokenStub
+  CookieService.generateCookie = generateCookieStub
+  CookieService.validateCookie = validateCookieStub
+  Application.prototype.save = applicationSaveStub
 
   done()
 })
@@ -58,39 +76,38 @@ lab.experiment('Start or Open Saved page tests:', () => {
     })
   })
 
-  lab.test('POST on Start or Open Saved page success redirects to the Site route', (done) => {
+  lab.test('POST on Start or Open Saved page for a new application redirects to the correct route', (done) => {
     const request = {
       method: 'POST',
       url: routePath,
       headers: {},
       payload: {
-        'started-application': 'yes'
+        'started-application': 'new'
       }
     }
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/site')
+      Code.expect(res.headers['location']).to.equal('/permit-category')
 
       done()
     })
   })
 
-  lab.test('POST Start or Open Saved page redirects to error screen when the user token is invalid', (done) => {
+  lab.test('POST on Start or Open Saved page to open an existing application redirects to the correct route', (done) => {
     const request = {
       method: 'POST',
       url: routePath,
       headers: {},
-      payload: {}
-    }
-
-    server.methods.validateToken = () => {
-      return undefined
+      payload: {
+        'started-application': 'open'
+      }
     }
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
+      Code.expect(res.headers['location']).to.equal('/save-and-return/check-your-email')
+
       done()
     })
   })

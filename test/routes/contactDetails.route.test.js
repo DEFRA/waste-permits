@@ -7,16 +7,19 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 
 const Contact = require('../../src/models/contact.model')
+const CookieService = require('../../src/services/cookie.service')
 
-let validateTokenStub
+let validateCookieStub
 let contactSaveStub
 let contactGetByIdStub
 
+let routePath = '/contact-details'
+
 lab.beforeEach((done) => {
   // Stub methods
-  validateTokenStub = server.methods.validateToken
-  server.methods.validateToken = () => {
-    return 'my_token'
+  validateCookieStub = CookieService.validateCookie
+  CookieService.validateCookie = (cookie) => {
+    return true
   }
 
   contactGetByIdStub = Contact.getById
@@ -39,18 +42,18 @@ lab.beforeEach((done) => {
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  server.methods.validateToken = validateTokenStub
+  CookieService.validateCookie = validateCookieStub
   Contact.prototype.getById = contactGetByIdStub
   Contact.prototype.save = contactSaveStub
 
   done()
 })
 
-lab.experiment('Contact page tests:', () => {
-  lab.test('GET /contact returns the contact page correctly', (done) => {
+lab.experiment('Contact details page tests:', () => {
+  lab.test('GET /contact-details returns the contact page correctly', (done) => {
     const request = {
       method: 'GET',
-      url: '/contact',
+      url: routePath,
       headers: {}
     }
 
@@ -60,20 +63,20 @@ lab.experiment('Contact page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('contact-heading').firstChild
+      let element = doc.getElementById('contact-details-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
 
-      element = doc.getElementById('contact-continue').firstChild
+      element = doc.getElementById('contact-details-continue').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
 
       done()
     })
   })
 
-  lab.test('POST /contact success redirects to the Task List route after a CREATE', (done) => {
+  lab.test('POST /contact-details success redirects to the Task List route after a CREATE', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact',
+      url: routePath,
       headers: {},
       payload: {
         id: '',
@@ -92,10 +95,10 @@ lab.experiment('Contact page tests:', () => {
     })
   })
 
-  lab.test('POST /contact success stays on the Contact page after an UPDATE', (done) => {
+  lab.test('POST /contact-details success stays on the Contact details page after an UPDATE', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact',
+      url: routePath,
       headers: {},
       payload: {
         id: '12345',
@@ -112,24 +115,24 @@ lab.experiment('Contact page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('contact-heading').firstChild
+      let element = doc.getElementById('contact-details-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
 
       done()
     })
   })
 
-  lab.test('POST /contact redirects to error screen when the user token is invalid', (done) => {
+  lab.test('POST /contact-details redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact',
+      url: routePath,
       headers: {},
       payload: {
         siteName: 'My Site'
       }
     }
 
-    server.methods.validateToken = () => {
+    CookieService.validateCookie = () => {
       return undefined
     }
 
