@@ -16,6 +16,10 @@ Constants.Routes = {
     path: '/',
     pageHeading: 'Waste Permits Home Page'
   },
+  CHECK_BEFORE_SENDING: {
+    path: '/check-before-sending',
+    pageHeading: 'Check your answers before sending your application'
+  },
   CONFIDENTIALITY: {
     path: '/confidentiality',
     pageHeading: 'Is part of your application commercially confidential?'
