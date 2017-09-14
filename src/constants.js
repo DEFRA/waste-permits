@@ -24,6 +24,10 @@ Constants.Routes = {
     path: '/contact-search',
     pageHeading: 'Contact search'
   },
+  COST_TIME: {
+    path: '/cost-time',
+    pageHeading: 'Cost and time for this permit'
+  },
   ERROR: {
     path: '/error',
     pageHeading: 'Something went wrong'
