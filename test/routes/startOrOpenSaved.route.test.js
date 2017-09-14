@@ -33,9 +33,7 @@ lab.beforeEach((done) => {
   }
 
   applicationSaveStub = Application.prototype.save
-  Application.prototype.save = (authToken) => {
-    return applicationId
-  }
+  Application.prototype.save = (authToken) => {}
   done()
 })
 

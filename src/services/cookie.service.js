@@ -1,8 +1,5 @@
 'use strict'
 
-// Used for generating a session id which is saved as a cookie
-const uuid4 = require('uuid/v4')
-
 const Constants = require('../constants')
 const ServerLoggingService = require('../services/serverLogging.service')
 const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
@@ -10,21 +7,18 @@ const authService = new ActiveDirectoryAuthService()
 
 module.exports = class CookieService {
   static async generateCookie (reply) {
-    // Generate an application ID
-    const applicationId = uuid4()
-
-    // Generate a CRM token
-    let authToken
     try {
-      authToken = await authService.getToken()
+      // Generate a CRM token
+      let authToken = await authService.getToken()
+
+      // Create the cookie
+      return {
+        applicationId: undefined,
+        authToken: authToken
+      }
     } catch (error) {
       ServerLoggingService.logError(error)
       return reply.redirect(Constants.Routes.ERROR.path)
-    }
-
-    return {
-      applicationId: applicationId,
-      authToken: authToken
     }
   }
 
