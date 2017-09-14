@@ -28,21 +28,27 @@ module.exports = class CookieService {
     }
   }
 
-  static validateCookie (cookie) {
-    if (!cookie) {
-      throw new Error('Unable to validate undefined cookie')
-    }
-
+  static validateCookie (request) {
     let isValid = false
-    const applicationId = cookie.applicationId
-    if (applicationId) {
-      // TODO - Call persistence layer to validate the applicationId
-      // e.g.
-      // result = dynamics.validateApplicationId(applicationId)
-      if (applicationId.length > 0) {
-        isValid = true
+    const cookie = request.state[Constants.COOKIE_KEY]
+    if (!cookie) {
+      request.log('INFO', `${request.path}: Unable to validate undefined cookie`)
+    } else {
+      const applicationId = cookie.applicationId
+      if (applicationId) {
+        // TODO - Determine if we are going to call Dynamics to validate the applicationId
+        // e.g.
+        // isValid = dynamics.validateApplicationId(applicationId)
+        if (applicationId.length > 0) {
+          isValid = true
+        } else {
+          request.log('INFO', `${request.path}: Invalid application ID [${applicationId}]`)
+        }
+      } else {
+        request.log('INFO', `${request.path}: Missing application ID`)
       }
     }
+
     return isValid
   }
 }

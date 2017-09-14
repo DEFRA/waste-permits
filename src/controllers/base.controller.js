@@ -1,8 +1,6 @@
 'use strict'
 
 const Constants = require('../constants')
-const ServerLoggingService = require('../services/serverLogging.service')
-
 const CookieService = require('../services/cookie.service')
 
 module.exports = class BaseController {
@@ -25,13 +23,8 @@ module.exports = class BaseController {
 
   static handler (request, reply, errors, controllerSubclass, cookieValidationRequired = true) {
     if (cookieValidationRequired) {
-      const cookie = request.state[Constants.COOKIE_KEY]
-
       // Validate the cookie
-      if (!CookieService.validateCookie(cookie)) {
-        // Redirect off an error screen
-        ServerLoggingService.logError(`${request.path}: Invalid token. Re-directing to the error screen`)
-
+      if (!CookieService.validateCookie(request)) {
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }

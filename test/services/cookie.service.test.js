@@ -3,9 +3,26 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
+
 const CookieService = require('../../src/services/cookie.service')
 
+let fakeRequest
+let logStub
+
 lab.beforeEach((done) => {
+  fakeRequest = {
+    path: '/some/path',
+    state: {
+      DefraSession: {
+        applicationId: 'my_application_id',
+        authToken: 'my_crm_token'
+      }
+    },
+
+    log: (token, message) => {}
+  }
+
   done()
 })
 
@@ -15,32 +32,23 @@ lab.afterEach((done) => {
 
 lab.experiment('Cookie Service methods:', () => {
   lab.test('Validate cookie should successfully validate a valid cookie', (done) => {
-    const cookie = {
-      applicationId: 'my_application_od',
-      authToken: 'my_crm_token'
-    }
-
-    Code.expect(CookieService.validateCookie(cookie)).to.be.true()
+    Code.expect(CookieService.validateCookie(fakeRequest)).to.be.true()
     done()
   })
 
   lab.test('Validate cookie should successfully validate a missing cookie', (done) => {
-    try {
-      CookieService.validateCookie(undefined)
-    } catch (error) {
-      Code.expect(error).to.be.an.instanceof(Error)
-      Code.expect(error.message).to.equal('Unable to validate undefined cookie')
-      done()
-    }
+    fakeRequest.state = {}
+    CookieService.validateCookie(fakeRequest)
+    Code.expect(CookieService.validateCookie(fakeRequest)).to.be.false()
+    done()
   })
 
   lab.test('Validate cookie should successfully validate an invalid cookie', (done) => {
-    const cookie = {
-      applicationId: '',
-      authToken: 'my_crm_token'
-    }
+    fakeRequest.state.DefraSession.applicationId = undefined
+    Code.expect(CookieService.validateCookie(fakeRequest)).to.be.false()
 
-    Code.expect(CookieService.validateCookie(cookie)).to.be.false()
+    fakeRequest.state.DefraSession.applicationId = ''
+    Code.expect(CookieService.validateCookie(fakeRequest)).to.be.false()
     done()
   })
 })
