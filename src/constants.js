@@ -48,6 +48,10 @@ Constants.Routes = {
     path: '/pre-application',
     pageHeading: 'Have you discussed this application with us?'
   },
+  SITE_PLAN: {
+    path: '/site-plan',
+    pageHeading: 'Upload the site plan'
+  },
   SITE_SITE_NAME: {
     path: '/site/site-name',
     pageHeading: `What's the site name?`
