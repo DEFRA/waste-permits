@@ -64,6 +64,10 @@ Constants.Routes = {
     path: '/task-list',
     pageHeading: 'Task List'
   },
+  TECHNICAL_QUALIFICATION: {
+    path: '/technical-qualification',
+    pageHeading: 'Which qualification does the person providing technical management have?'
+  },
   VERSION: {
     path: '/version',
     pageHeading: 'Waste Permits'
