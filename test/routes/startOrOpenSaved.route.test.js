@@ -58,7 +58,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
     })
   })
 
-  lab.test('POST on Start or Open Saved page success redirects to the Site route', (done) => {
+  lab.test('POST on Start or Open Saved page success redirects to the task list route', (done) => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -70,7 +70,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/site')
+      Code.expect(res.headers['location']).to.equal('/task-list')
 
       done()
     })

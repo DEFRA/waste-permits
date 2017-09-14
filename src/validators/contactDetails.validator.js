@@ -2,7 +2,7 @@
 
 const BaseValidator = require('./base.validator')
 
-module.exports = class ContactValidator extends BaseValidator {
+module.exports = class ContactDetailsValidator extends BaseValidator {
   constructor () {
     super()
 

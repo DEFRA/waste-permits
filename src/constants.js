@@ -16,24 +16,64 @@ Constants.Routes = {
     path: '/',
     pageHeading: 'Waste Permits Home Page'
   },
-  CONTACT: {
-    path: '/contact',
+  CHECK_BEFORE_SENDING: {
+    path: '/check-before-sending',
+    pageHeading: 'Check your answers before sending your application'
+  },
+  CONFIDENTIALITY: {
+    path: '/confidentiality',
+    pageHeading: 'Is part of your application commercially confidential?'
+  },
+  CONFIRM_RULES: {
+    path: '/confirm-rules',
+    pageHeading: 'Confirm that your operation meets the rules'
+  },
+  CONTACT_DETAILS: {
+    path: '/contact-details',
     pageHeading: 'Who should we contact about this application?'
   },
   CONTACTSEARCH: {
     path: '/contact-search',
     pageHeading: 'Contact search'
   },
+  COST_TIME: {
+    path: '/cost-time',
+    pageHeading: 'Cost and time for this permit'
+  },
+  DRAINAGE_TYPE_DRAIN: {
+    path: '/drainage-type/drain',
+    pageHeading: 'Where does the vehicle storage area drain to?'
+  },
   ERROR: {
     path: '/error',
     pageHeading: 'Something went wrong'
+  },
+  FIRE_PREVENTION_PLAN: {
+    path: '/fire-prevention-plan',
+    pageHeading: 'Upload the fire prevention plan'
   },
   HEALTH: {
     path: '/health',
     pageHeading: 'Health'
   },
-  SITE: {
-    path: '/site',
+  MANAGEMENT_SYSTEM: {
+    path: '/management-system',
+    pageHeading: 'Which management system will you use?'
+  },
+  PERMIT_HOLDER_TYPE: {
+    path: '/permit-holder/type',
+    pageHeading: 'Who will be the permit holder?'
+  },
+  PRE_APPLICATION: {
+    path: '/pre-application',
+    pageHeading: 'Have you discussed this application with us?'
+  },
+  SITE_PLAN: {
+    path: '/site-plan',
+    pageHeading: 'Upload the site plan'
+  },
+  SITE_SITE_NAME: {
+    path: '/site/site-name',
     pageHeading: `What's the site name?`
   },
   START_OR_OPEN_SAVED: {
@@ -43,6 +83,10 @@ Constants.Routes = {
   TASK_LIST: {
     path: '/task-list',
     pageHeading: 'Task List'
+  },
+  TECHNICAL_QUALIFICATION: {
+    path: '/technical-qualification',
+    pageHeading: 'Which qualification does the person providing technical management have?'
   },
   VERSION: {
     path: '/version',
