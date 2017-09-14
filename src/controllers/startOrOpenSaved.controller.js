@@ -40,6 +40,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
   }
 
   static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, StartOrOpenSavedController)
+    return BaseController.handler(request, reply, errors, StartOrOpenSavedController, false)
   }
 }

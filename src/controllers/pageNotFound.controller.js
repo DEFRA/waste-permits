@@ -14,6 +14,13 @@ module.exports = class PageNotFoundController extends BaseController {
   }
 
   static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, PageNotFoundController, false)
+    // TODO refactor this to use the CookieService.validateCookie method once the PR has been merged
+    // if (!CookieService.validateCookie(request) {
+    if (!request.server.methods.validateToken(request.state[Constants.COOKIE_KEY])) {
+      // Re-direct to the start page if they don't have a valid cookie
+       reply.redirect(Constants.Routes.START_OR_OPEN_SAVED.path)
+    } else {
+      return BaseController.handler(request, reply, errors, PageNotFoundController, false)
+    }
   }
 }
