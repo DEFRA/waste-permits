@@ -6,6 +6,7 @@ const CookieService = require('../services/cookie.service')
 module.exports = class BaseController {
   static createPageContext (route, errors, ValidatorSubClass) {
     const pageContext = {
+      skipLinkMessage: Constants.SKIP_LINK_MESSAGE,
       pageTitle: Constants.buildPageTitle(route.pageHeading),
       pageHeading: route.pageHeading,
       formAction: route.path
