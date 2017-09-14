@@ -26,7 +26,7 @@ module.exports = class SiteController extends BaseController {
     } else {
       // TODO persist the data here if required
 
-      return reply.redirect(Constants.Routes.CONTACT.path)
+      return reply.redirect(Constants.Routes.CONTACT_DETAILS.path)
     }
   }
 

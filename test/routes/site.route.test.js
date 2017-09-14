@@ -53,7 +53,7 @@ lab.experiment('Site page tests:', () => {
     })
   })
 
-  lab.test('POST /site success redirects to the Contact route', (done) => {
+  lab.test('POST /site success redirects to the Contact details route', (done) => {
     const request = {
       method: 'POST',
       url: '/site',
@@ -66,7 +66,7 @@ lab.experiment('Site page tests:', () => {
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/contact')
+      Code.expect(res.headers['location']).to.equal('/contact-details')
 
       done()
     })

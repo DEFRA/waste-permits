@@ -16,8 +16,8 @@ Constants.Routes = {
     path: '/',
     pageHeading: 'Waste Permits Home Page'
   },
-  CONTACT: {
-    path: '/contact',
+  CONTACT_DETAILS: {
+    path: '/contact-details',
     pageHeading: 'Who should we contact about this application?'
   },
   CONTACTSEARCH: {

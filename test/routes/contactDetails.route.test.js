@@ -46,11 +46,11 @@ lab.afterEach((done) => {
   done()
 })
 
-lab.experiment('Contact page tests:', () => {
-  lab.test('GET /contact returns the contact page correctly', (done) => {
+lab.experiment('Contact details page tests:', () => {
+  lab.test('GET /contact-details returns the contact page correctly', (done) => {
     const request = {
       method: 'GET',
-      url: '/contact',
+      url: '/contact-details',
       headers: {}
     }
 
@@ -60,20 +60,20 @@ lab.experiment('Contact page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('contact-heading').firstChild
+      let element = doc.getElementById('contact-details-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
 
-      element = doc.getElementById('contact-continue').firstChild
+      element = doc.getElementById('contact-details-continue').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
 
       done()
     })
   })
 
-  lab.test('POST /contact success redirects to the Task List route after a CREATE', (done) => {
+  lab.test('POST /contact-details success redirects to the Task List route after a CREATE', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact',
+      url: '/contact-details',
       headers: {},
       payload: {
         id: '',
@@ -92,10 +92,10 @@ lab.experiment('Contact page tests:', () => {
     })
   })
 
-  lab.test('POST /contact success stays on the Contact page after an UPDATE', (done) => {
+  lab.test('POST /contact-details success stays on the Contact details page after an UPDATE', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact',
+      url: '/contact-details',
       headers: {},
       payload: {
         id: '12345',
@@ -112,17 +112,17 @@ lab.experiment('Contact page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('contact-heading').firstChild
+      let element = doc.getElementById('contact-details-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
 
       done()
     })
   })
 
-  lab.test('POST /contact redirects to error screen when the user token is invalid', (done) => {
+  lab.test('POST /contact-details redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact',
+      url: '/contact-details',
       headers: {},
       payload: {
         siteName: 'My Site'

@@ -4,13 +4,13 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
 
-module.exports = class ContactController extends BaseController {
+module.exports = class ContactDetailsController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.CONTACT, errors, ContactController)
+      const pageContext = BaseController.createPageContext(Constants.Routes.CONTACT_DETAILS, errors, ContactDetailsController)
 
       return reply
-        .view('contact', pageContext)
+        .view('contactDetails', pageContext)
         // .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       request.log('ERROR', error)
@@ -66,7 +66,7 @@ module.exports = class ContactController extends BaseController {
 
         await contact.save(authToken)
 
-        return ContactController.doGet(request, reply, errors)
+        return ContactDetailsController.doGet(request, reply, errors)
       } catch (error) {
         request.log('ERROR', error)
         return reply.redirect(Constants.Routes.ERROR.path)
@@ -75,6 +75,6 @@ module.exports = class ContactController extends BaseController {
   }
 
   static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, ContactController)
+    return BaseController.handler(request, reply, errors, ContactDetailsController)
   }
 }
