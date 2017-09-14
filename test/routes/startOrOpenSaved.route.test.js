@@ -14,7 +14,6 @@ let validateCookieStub
 let applicationSaveStub
 
 let routePath = '/start/start-or-open-saved'
-let applicationId = 'TEST_APPLICATION_ID'
 
 const fakeCookie = {
   applicationId: 'my_application_id',
