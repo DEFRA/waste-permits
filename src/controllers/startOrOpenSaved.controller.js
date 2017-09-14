@@ -35,7 +35,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       // TODO persist the data here if required
       console.log('payload', request.payload)
 
-      return reply.redirect(Constants.Routes.SITE.path)
+      return reply.redirect(Constants.Routes.TASK_LIST.path)
     }
   }
 
