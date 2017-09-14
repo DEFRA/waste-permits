@@ -40,6 +40,10 @@ Constants.Routes = {
     path: '/health',
     pageHeading: 'Health'
   },
+  PERMIT_HOLDER_TYPE: {
+    path: '/permit-holder/type',
+    pageHeading: 'Who will be the permit holder?'
+  },
   PRE_APPLICATION: {
     path: '/pre-application',
     pageHeading: 'Have you discussed this application with us?'
