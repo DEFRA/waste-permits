@@ -7,9 +7,15 @@ const Constants = module.exports = {}
 Constants.SERVICE_NAME = 'Waste Permits'
 Constants.GDS_NAME = 'GOV.UK'
 Constants.COOKIE_KEY = 'DefraSession'
+Constants.COOKIE_PATH = { path: '/' }
 Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
 Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
+
+Constants.LogLevel = {
+  ERROR: 'ERROR',
+  INFO: 'INFO'
+}
 
 Constants.Routes = {
   ROOT: {
@@ -32,7 +38,11 @@ Constants.Routes = {
     path: '/contact-details',
     pageHeading: 'Who should we contact about this application?'
   },
-  CONTACTSEARCH: {
+  CHECK_YOUR_EMAIL: {
+    path: '/save-and-return/check-your-email',
+    pageHeading: `Search for 'standard rules permit application' in your email`
+  },
+  CONTACT_SEARCH: {
     path: '/contact-search',
     pageHeading: 'Contact search'
   },
@@ -59,6 +69,10 @@ Constants.Routes = {
   MANAGEMENT_SYSTEM: {
     path: '/management-system',
     pageHeading: 'Which management system will you use?'
+  },
+  PERMIT_CATEGORY: {
+    path: '/permit-category',
+    pageHeading: 'What do you want the permit for?'
   },
   PERMIT_HOLDER_TYPE: {
     path: '/permit-holder/type',

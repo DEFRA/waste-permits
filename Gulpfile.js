@@ -13,7 +13,6 @@ const standard = require('gulp-standard')
 const lab = require('gulp-lab')
 const runSequence = require('run-sequence')
 const del = require('del')
-const fs = require('fs')
 const git = require('git-rev')
 const nodemon = require('gulp-nodemon')
 const browserSync = require('browser-sync')
@@ -98,9 +97,9 @@ gulp.task('scripts', () => {
 gulp.task('images', () =>
   gulp.src(paths.assets + 'images/*')
     .pipe(imagemin({
-        progressive: true,
-        interlaced: true,
-        svgoPlugins: [ {removeViewBox:false}, {removeUselessStrokeAndFill:false} ]
+      progressive: true,
+      interlaced: true,
+      svgoPlugins: [ {removeViewBox: false}, {removeUselessStrokeAndFill: false} ]
     }))
     .pipe(gulp.dest(paths.public + 'images/'))
 )

@@ -5,13 +5,15 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const server = require('../../server')
 
-let validateTokenStub
+const CookieService = require('../../src/services/cookie.service')
+
+let validateCookieStub
 
 lab.beforeEach((done) => {
   // Stub methods
-  validateTokenStub = server.methods.validateToken
-  server.methods.validateToken = () => {
-    return 'my_token'
+  validateCookieStub = CookieService.validateCookie
+  CookieService.validateCookie = (cookie) => {
+    return true
   }
 
   done()
@@ -19,7 +21,7 @@ lab.beforeEach((done) => {
 
 lab.afterEach((done) => {
   // Restore stubbed methods
-  server.methods.validateToken = validateTokenStub
+  CookieService.validateCookie = validateCookieStub
 
   done()
 })
@@ -47,7 +49,7 @@ lab.experiment('Task List page tests:', () => {
       payload: {}
     }
 
-    server.methods.validateToken = () => {
+    CookieService.validateCookie = () => {
       return undefined
     }
 

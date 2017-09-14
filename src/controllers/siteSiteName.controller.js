@@ -13,7 +13,6 @@ module.exports = class SiteSiteNameController extends BaseController {
 
       return reply
         .view('siteSiteName', pageContext)
-        // .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY])
     } catch (error) {
       request.log('ERROR', error)
       return reply.redirect(Constants.Routes.ERROR.path)
@@ -25,6 +24,7 @@ module.exports = class SiteSiteNameController extends BaseController {
       return SiteSiteNameController.doGet(request, reply, errors)
     } else {
       // TODO persist the data here if required
+      // const applicationId = request.state[Constants.COOKIE_KEY].applicationId
 
       return reply.redirect(Constants.Routes.TASK_LIST.path)
     }
