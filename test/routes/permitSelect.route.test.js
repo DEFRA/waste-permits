@@ -40,6 +40,22 @@ lab.experiment('Select a permit page tests:', () => {
     })
   })
 
+  lab.test('POST /permit/select success redirects to the task list route', (done) => {
+    const request = {
+      method: 'POST',
+      url: '/permit/select',
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/task-list')
+
+      done()
+    })
+  })
+
   lab.test('GET /permit/select redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'GET',

@@ -40,6 +40,22 @@ lab.experiment('What do you want the permit for? page tests:', () => {
     })
   })
 
+  lab.test('POST /permit/category success redirects to the permit select route', (done) => {
+    const request = {
+      method: 'POST',
+      url: '/permit/category',
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/permit/select')
+
+      done()
+    })
+  })
+
   lab.test('GET /permit/category redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'GET',
