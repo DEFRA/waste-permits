@@ -2,15 +2,17 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const SiteValidator = require('../validators/site.validator')
+const SiteSiteNameValidator = require('../validators/siteSiteName.validator')
 
-module.exports = class SiteController extends BaseController {
+module.exports = class SiteSiteNameController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.SITE, errors, SiteValidator)
+      const pageContext = BaseController.createPageContext(Constants.Routes.SITE_SITE_NAME, errors, SiteSiteNameValidator)
 
       pageContext.formValues = request.payload
-      return reply.view('site', pageContext)
+
+      return reply
+        .view('siteSiteName', pageContext)
     } catch (error) {
       request.log('ERROR', error)
       return reply.redirect(Constants.Routes.ERROR.path)
@@ -19,16 +21,16 @@ module.exports = class SiteController extends BaseController {
 
   static async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return SiteController.doGet(request, reply, errors)
+      return SiteSiteNameController.doGet(request, reply, errors)
     } else {
       // TODO persist the data here if required
       // const applicationId = request.state[Constants.COOKIE_KEY].applicationId
 
-      return reply.redirect(Constants.Routes.CONTACT.path)
+      return reply.redirect(Constants.Routes.TASK_LIST.path)
     }
   }
 
   static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, SiteController)
+    return BaseController.handler(request, reply, errors, SiteSiteNameController)
   }
 }

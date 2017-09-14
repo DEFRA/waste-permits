@@ -24,7 +24,7 @@
             </h2>
             <ul class="task-list-items">
               <li class="task-list-item " id="check-permit-cost-and-time">
-                <a class="task-name" href="/v7/selectpermit/cost-and-time" aria-describedby="cost-and-time-completed">
+                <a class="task-name" href="/cost-time" aria-describedby="cost-and-time-completed">
                   Check permit cost and time
                 </a>
                 <input type="hidden" name="complete[]" value="Check permit cost and time">
@@ -32,20 +32,20 @@
 
               <!-- SPECIAL CASES ############################################ -->
               <li class="task-list-item " id="confirm-the-drainage-system-for-the-vehicle-storage-area">
-                <a class="task-name" href="/v7/check-special-cases">
+                <a class="task-name" href="/drainage-type/drain">
                   Confirm the drainage system for the vehicle storage area
                 </a>
               </li>
 
               <li class="task-list-item " id="confirm-that-your-operation-meets-the-rules">
-                <a class="task-name" href="/v7/read-rules/index" aria-describedby="operation-rules-complete">
+                <a class="task-name" href="/confirm-rules" aria-describedby="operation-rules-complete">
                   Confirm that your operation meets the rules
                 </a>
                 <input type="hidden" name="complete[]" value="Confirm that your operation meets the rules">
               </li>
 
               <li class="task-list-item " id="tell-us-if-youve-discussed-this-application-with-us">
-                <a class="task-name" href="/v7/preapp/check-your-answers" aria-describedby="preapp-completed">
+                <a class="task-name" href="/pre-application" aria-describedby="preapp-completed">
                   Tell us if you&#39;ve discussed this application with us
                 </a>
                 <input type="hidden" name="complete[]" value="Tell us if you&#39;ve discussed this application with us">
@@ -60,13 +60,13 @@
             </h2>
             <ul class="task-list-items">
               <li class="task-list-item " id="give-contact-details">
-                <a class="task-name" href="/v7/contact/check-your-answers" aria-describedby="contact-details-completed">
+                <a class="task-name" href="/contact-details" aria-describedby="contact-details-completed">
                   Give contact details
                 </a>
                 <input type="hidden" name="complete[]" value="Give contact details">
               </li>
               <li class="task-list-item " id="give-permit-holder-details">
-                <a class="task-name" href="/v7/operator/check-your-answers" aria-describedby="site-operator-completed">
+                <a class="task-name" href="/permit-holder/type" aria-describedby="site-operator-completed">
                   Give permit holder details
                 </a>
                 <input type="hidden" name="complete[]" value="Give permit holder details">
@@ -75,7 +75,7 @@
               <!-- DON'T SHOW SITE FOR MOBILE PERMITS -->
 
               <li class="task-list-item " id="give-site-name-and-location">
-                <a class="task-name" href="/v7/site/check-your-answers" aria-describedby="site-name-completed">
+                <a class="task-name" href="/site/site-name" aria-describedby="site-name-completed">
                   Give site name and location
                 </a>
                 <input type="hidden" name="complete[]" value="Give site name and location">
@@ -83,21 +83,21 @@
 
               <!-- Site plan ############################################################### -->
               <li class="task-list-item " id="upload-the-site-plan">
-                <a class="task-name" href="/v7/site/site-plan-check-your-answers" aria-describedby="site-plan-completed">
+                <a class="task-name" href="/site-plan" aria-describedby="site-plan-completed">
                   Upload the site plan
                 </a>
                 <input type="hidden" name="complete[]" value="Upload the site plan">
               </li>
 
               <li class="task-list-item " id="upload-technical-management-qualifications">
-                <a class="task-name" href="/v7/evidence/industry-check-answers" aria-describedby="industry-scheme-completed">
+                <a class="task-name" href="/technical-qualification" aria-describedby="industry-scheme-completed">
                   Upload technical management qualifications
                 </a>
                 <input type="hidden" name="complete[]" value="Upload technical management qualifications">
               </li>
 
               <li class="task-list-item " id="tell-us-which-management-system-you-use">
-                <a class="task-name" href="/v7/evidence/management-check-answers" aria-describedby="management-system-completed">
+                <a class="task-name" href="/management-system" aria-describedby="management-system-completed">
                   Tell us which management system you use
                 </a>
                 <input type="hidden" name="complete[]" value="Tell us which management system you use">
@@ -105,7 +105,7 @@
 
               <!-- Fire prevention plan ############################################################### -->
               <li class="task-list-item " id="upload-the-fire-prevention-plan">
-                <a class="task-name" href="/v7/evidence/fire-plan-check-answers" aria-describedby="firepp-completed">
+                <a class="task-name" href="/fire-prevention-plan" aria-describedby="firepp-completed">
                   Upload the fire prevention plan
                 </a>
                 <input type="hidden" name="complete[]" value="Upload the fire prevention plan">
@@ -113,7 +113,7 @@
 
               <!-- Confidentiality ############################################################### -->
               <li class="task-list-item " id="confirm-confidentiality-needs">
-                <a class="task-name" href="/v7/check/confidentiality-check-answers" aria-describedby="confidentiality-completed">
+                <a class="task-name" href="/confidentiality" aria-describedby="confidentiality-completed">
                   Confirm confidentiality needs
                 </a>
                 <input type="hidden" name="complete[]" value="Confirm confidentiality needs">
@@ -128,7 +128,7 @@
             </h2>
             <ul class="task-list-items">
               <li class="task-list-item" id="submit-pay">
-                <a onclick="document.tasklist.submit(); return false;" class="task-name" href="#" aria-describedby="submit-and-pay">
+                <a class="task-name" href="/check-before-sending"  aria-describedby="submit-and-pay">
                   Send application and pay
                 </a>
               </li>

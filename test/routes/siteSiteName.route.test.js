@@ -3,14 +3,14 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const server = require('../../server')
-
 const DOMParser = require('xmldom').DOMParser
+
+const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 
 let validateCookieStub
 
-let routePath = '/site'
+let routePath = '/site/site-name'
 
 lab.beforeEach((done) => {
   // Stub methods
@@ -30,7 +30,7 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Site page tests:', () => {
-  lab.test('GET /site returns the site page correctly', (done) => {
+  lab.test('GET /site/site-name returns the site page correctly', (done) => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -43,20 +43,20 @@ lab.experiment('Site page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('site-heading').firstChild
+      let element = doc.getElementById('site-site-name-heading').firstChild
       Code.expect(element.nodeValue).to.equal(`What's the site name?`)
 
       element = doc.getElementById('site-name-label').firstChild
       Code.expect(element.nodeValue).to.equal('Site name')
 
-      element = doc.getElementById('site-submit').firstChild
+      element = doc.getElementById('site-site-name-submit').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
 
       done()
     })
   })
 
-  lab.test('POST /site success redirects to the Contact route', (done) => {
+  lab.test('POST /site/site-name success redirects to the task list route', (done) => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -69,13 +69,13 @@ lab.experiment('Site page tests:', () => {
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/contact')
+      Code.expect(res.headers['location']).to.equal('/task-list')
 
       done()
     })
   })
 
-  lab.test('POST /site redirects to error screen when the user token is invalid', (done) => {
+  lab.test('POST /site/site-name redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -94,7 +94,7 @@ lab.experiment('Site page tests:', () => {
     })
   })
 
-  lab.test('POST /site shows the error message summary panel when the site data is invalid', (done) => {
+  lab.test('POST /site/site-name shows the error message summary panel when the site data is invalid', (done) => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -119,7 +119,7 @@ lab.experiment('Site page tests:', () => {
     })
   })
 
-  lab.test('POST /site shows an error message when the site name is blank', (done) => {
+  lab.test('POST /site/site-name shows an error message when the site name is blank', (done) => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -151,7 +151,7 @@ lab.experiment('Site page tests:', () => {
     })
   })
 
-  lab.test('POST /site shows an error message when the site name contains invalid characters', (done) => {
+  lab.test('POST /site/site-name shows an error message when the site name contains invalid characters', (done) => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -183,7 +183,7 @@ lab.experiment('Site page tests:', () => {
     })
   })
 
-  lab.test('POST /site shows an error message when the site name is too long', (done) => {
+  lab.test('POST /site/site-name shows an error message when the site name is too long', (done) => {
     const request = {
       method: 'POST',
       url: routePath,
