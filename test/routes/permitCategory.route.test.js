@@ -26,10 +26,10 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('What do you want the permit for? page tests:', () => {
-  lab.test('GET /permit-category success ', (done) => {
+  lab.test('GET /permit/category success ', (done) => {
     const request = {
       method: 'GET',
-      url: '/permit-category',
+      url: '/permit/category',
       headers: {},
       payload: {}
     }
@@ -40,10 +40,10 @@ lab.experiment('What do you want the permit for? page tests:', () => {
     })
   })
 
-  lab.test('GET /permit-category redirects to error screen when the user token is invalid', (done) => {
+  lab.test('GET /permit/category redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'GET',
-      url: '/permit-category',
+      url: '/permit/category',
       headers: {},
       payload: {}
     }

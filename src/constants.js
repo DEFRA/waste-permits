@@ -71,7 +71,7 @@ Constants.Routes = {
     pageHeading: 'Which management system will you use?'
   },
   PERMIT_CATEGORY: {
-    path: '/permit-category',
+    path: '/permit/category',
     pageHeading: 'What do you want the permit for?'
   },
   PERMIT_HOLDER_TYPE: {

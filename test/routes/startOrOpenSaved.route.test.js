@@ -88,7 +88,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/permit-category')
+      Code.expect(res.headers['location']).to.equal('/permit/category')
 
       done()
     })
