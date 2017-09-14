@@ -36,6 +36,10 @@ Constants.Routes = {
     path: '/error',
     pageHeading: 'Something went wrong'
   },
+  FIRE_PREVENTION_PLAN: {
+    path: '/fire-prevention-plan',
+    pageHeading: 'Upload the fire prevention plan'
+  },
   HEALTH: {
     path: '/health',
     pageHeading: 'Health'
