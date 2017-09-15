@@ -3,30 +3,32 @@
   float: none;
 }
 
-label.permit-item {
+.permit-item {
   display: inline-block;
   width: 100%;
 
-  span.permit-name {
+  .permit-name {
     float: left;
     width: 66.66667%;
+
     @include media(mobile) {
       width: 100%;
     }
 
-    span.permit-weight {
-      color: #6f777b;
+    .permit-weight {
+      color: $grey-1;
     }
   }
 
-  span.permit-code {
+  .permit-code {
     float: right;
     font-weight: bold;
     text-align: right;
     width: 33.33333%;
+
     @include media(mobile) {
-      width: 100%;
       text-align: left;
+      width: 100%;
     }
   }
 }
