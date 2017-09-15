@@ -11,6 +11,7 @@ Constants.COOKIE_PATH = { path: '/' }
 Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
 Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
+Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 
 Constants.LogLevel = {
   ERROR: 'ERROR',
@@ -26,6 +27,10 @@ Constants.Routes = {
     path: '/check-before-sending',
     pageHeading: 'Check your answers before sending your application'
   },
+  CHECK_YOUR_EMAIL: {
+    path: '/save-and-return/check-your-email',
+    pageHeading: `Search for 'standard rules permit application' in your email`
+  },
   CONFIDENTIALITY: {
     path: '/confidentiality',
     pageHeading: 'Is part of your application commercially confidential?'
@@ -37,10 +42,6 @@ Constants.Routes = {
   CONTACT_DETAILS: {
     path: '/contact-details',
     pageHeading: 'Who should we contact about this application?'
-  },
-  CHECK_YOUR_EMAIL: {
-    path: '/save-and-return/check-your-email',
-    pageHeading: `Search for 'standard rules permit application' in your email`
   },
   CONTACT_SEARCH: {
     path: '/contact-search',
@@ -75,12 +76,16 @@ Constants.Routes = {
     pageHeading: `We can't find that page`
   },
   PERMIT_CATEGORY: {
-    path: '/permit-category',
+    path: '/permit/category',
     pageHeading: 'What do you want the permit for?'
   },
   PERMIT_HOLDER_TYPE: {
     path: '/permit-holder/type',
     pageHeading: 'Who will be the permit holder?'
+  },
+  PERMIT_SELECT: {
+    path: '/permit/select',
+    pageHeading: 'Select a permit'
   },
   PRE_APPLICATION: {
     path: '/pre-application',
