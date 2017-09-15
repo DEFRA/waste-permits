@@ -11,6 +11,35 @@
 
       <form method="POST" action="{{ formAction }}">
 
+        <fieldset class="permit-list" aria-labelledby="permit-select-heading">
+          <legend class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div class="panel panel-border-wide">
+            <p>Showing permits for car and vehicle dismantling.<br>
+              <a href="/permit/category">
+                Back to all permit groups
+              </a>
+            </p>
+          </div>
+
+          <div class="form-group">
+            <div class="multiple-choice permit-selector">
+              <input id="chosen-permit-id-36" type="radio" name="chosen-permit-id" value="sr-2015-18">
+              <label class="selection-button-radio permit-item" for="chosen-permit-id-36">
+                <span class="permit-name">
+                  Metal recycling, vehicle storage, depollution and dismantling facility
+                  <span class="permit-weight">
+                    <br>
+                    Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles
+                  </span>
+                </span>
+                <span class="permit-code">SR2015 No 18</span>
+              </label>
+             </div>
+          </div>
+
+        </fieldset>
+
         <div class="form-group">
           <button id="permit-select-submit" type="submit" class="button">Continue</button>
         </div>
