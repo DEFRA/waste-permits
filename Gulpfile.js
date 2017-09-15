@@ -157,8 +157,8 @@ gulp.task('html-hint', () => {
 
 // Test task
 gulp.task('test', ['check-handlebars', 'standard', 'html-hint'], () => {
-  const port = parseInt(process.env.WASTE_PERMITS_APP_PORT) + 1
-  process.env.WASTE_PERMITS_APP_PORT = port
+  const port = parseInt(process.env.PORT) + 1
+  process.env.PORT = port
   console.log(`Running tests on port: ${port}`)
   return gulp.src('test')
     .pipe(lab('--coverage --reporter console --output stdout --reporter html --output coverage.html --verbose'))
