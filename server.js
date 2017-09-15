@@ -102,12 +102,14 @@ server.register([
   server.views(require('./src/views'))
 })
 
-server.ext('onPreResponse', function (request, reply) {
-  if (request.response.isBoom) {
-    // If there is an error response then redirect to the 404 page
+server.ext('onPreResponse', (request, reply) => {
+  // if the response is a Boom error object and the status code is 404
+  if (request.response.isBoom && request.response.output.statusCode === 404) {
+    // Redirect to the 404 page
     return reply.redirect(Constants.Routes.PAGE_NOT_FOUND.path)
+  } else {
+    return reply.continue()
   }
-  return reply.continue()
 })
 
 // Start the server
@@ -124,7 +126,7 @@ server.start((err) => {
 })
 
 // Listen on SIGINT signal and gracefully stop the server
-process.on('SIGINT', function () {
+process.on('SIGINT', () => {
   server.log('ERROR', 'Stopping hapi server')
 
   server.stop({ timeout: 10000 }).then((err) => {
