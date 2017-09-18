@@ -3,12 +3,10 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const sinon = require('sinon')
 
 const CookieService = require('../../src/services/cookie.service')
 
 let fakeRequest
-let logStub
 
 lab.beforeEach((done) => {
   fakeRequest = {

@@ -35,12 +35,12 @@ module.exports = class ActiveDirectoryAuthService {
         const responseParts = []
 
         response.setEncoding('utf8')
-        response.on('data', function (chunk) {
+        response.on('data', (chunk) => {
           // Add each response chunk to the responseParts array
           responseParts.push(chunk)
         })
 
-        response.on('end', function () {
+        response.on('end', () => {
           // Once we have all the response parts, concatenate the parts into a single string
           const completeResponse = responseParts.join('')
 
@@ -56,7 +56,7 @@ module.exports = class ActiveDirectoryAuthService {
         })
       })
 
-      tokenRequest.on('error', function (error) {
+      tokenRequest.on('error', (error) => {
         ServerLoggingService.logError(error)
         reject(error)
       })

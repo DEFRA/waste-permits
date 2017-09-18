@@ -71,6 +71,10 @@ Constants.Routes = {
     path: '/management-system',
     pageHeading: 'Which management system will you use?'
   },
+  PAGE_NOT_FOUND: {
+    path: '/page-not-found',
+    pageHeading: `We can't find that page`
+  },
   PERMIT_CATEGORY: {
     path: '/permit/category',
     pageHeading: 'What do you want the permit for?'
