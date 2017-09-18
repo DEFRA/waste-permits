@@ -5,6 +5,7 @@ const config = require('../config/config')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
+const LoggingService = require('../services/logging.service')
 
 const DynamicsSolution = require('../models/dynamicsSolution.model')
 
@@ -34,7 +35,7 @@ module.exports = class VersionController extends BaseController {
       return reply
         .view('version', pageContext)
     } catch (error) {
-      request.log('ERROR', error)
+      LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }

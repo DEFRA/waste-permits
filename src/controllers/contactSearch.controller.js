@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
+const LoggingService = require('../services/logging.service')
 
 module.exports = class ContactSearchController extends BaseController {
   static async doGet (request, reply, errors = undefined) {
@@ -20,7 +21,7 @@ module.exports = class ContactSearchController extends BaseController {
       return reply
         .view('contactSearch', pageContext)
     } catch (error) {
-      request.log('ERROR', error)
+      LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
@@ -34,9 +35,9 @@ module.exports = class ContactSearchController extends BaseController {
     if (request.payload.id) {
       try {
         const contact = await Contact.getById(authToken, request.payload.id)
-        request.log('INFO', contact)
+        LoggingService.logInfo(contact, request)
       } catch (error) {
-        request.log('ERROR', error)
+        LoggingService.logError(error, request)
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }

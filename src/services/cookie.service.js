@@ -1,7 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
-const ServerLoggingService = require('../services/serverLogging.service')
+const LoggingService = require('../services/logging.service')
 const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
 const authService = new ActiveDirectoryAuthService()
 
@@ -17,7 +17,7 @@ module.exports = class CookieService {
         authToken: authToken
       }
     } catch (error) {
-      ServerLoggingService.logError(error)
+      LoggingService.logError(error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
@@ -26,7 +26,7 @@ module.exports = class CookieService {
     let isValid = false
     const cookie = request.state[Constants.COOKIE_KEY]
     if (!cookie) {
-      request.log('INFO', `${request.path}: Unable to validate undefined cookie`)
+      LoggingService.logInfo(`${request.path}: Unable to validate undefined cookie`, request)
     } else {
       const applicationId = cookie.applicationId
       if (applicationId) {
@@ -36,10 +36,10 @@ module.exports = class CookieService {
         if (applicationId.length > 0) {
           isValid = true
         } else {
-          request.log('INFO', `${request.path}: Invalid application ID [${applicationId}]`)
+          LoggingService.logInfo(`${request.path}: Invalid application ID [${applicationId}]`, request)
         }
       } else {
-        request.log('INFO', `${request.path}: Missing application ID`)
+        LoggingService.logInfo(`${request.path}: Missing application ID`, request)
       }
     }
 

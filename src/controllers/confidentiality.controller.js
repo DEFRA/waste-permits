@@ -2,6 +2,7 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
+const LoggingService = require('../services/logging.service')
 
 module.exports = class ConfidentialityController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -10,7 +11,7 @@ module.exports = class ConfidentialityController extends BaseController {
       return reply
         .view('confidentiality', pageContext)
     } catch (error) {
-      request.log('ERROR', error)
+      LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }

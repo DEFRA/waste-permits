@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
+const LoggingService = require('../services/logging.service')
 
 module.exports = class ContactDetailsController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -12,7 +13,7 @@ module.exports = class ContactDetailsController extends BaseController {
       return reply
         .view('contactDetails', pageContext)
     } catch (error) {
-      request.log('ERROR', error)
+      LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
@@ -49,7 +50,7 @@ module.exports = class ContactDetailsController extends BaseController {
         return reply
           .redirect(Constants.Routes.TASK_LIST.path)
       } catch (error) {
-        request.log('ERROR', error)
+        LoggingService.logError(error, request)
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     } else {
@@ -66,7 +67,7 @@ module.exports = class ContactDetailsController extends BaseController {
 
         return ContactDetailsController.doGet(request, reply, errors)
       } catch (error) {
-        request.log('ERROR', error)
+        LoggingService.logError(error, request)
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }

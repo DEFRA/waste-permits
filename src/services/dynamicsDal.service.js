@@ -2,7 +2,7 @@
 
 const https = require('https')
 const config = require('../config/config')
-const ServerLoggingService = require('../services/serverLogging.service')
+const LoggingService = require('../services/logging.service')
 
 module.exports = class DynamicsDalService {
   constructor (authToken) {
@@ -76,7 +76,7 @@ module.exports = class DynamicsDalService {
         })
       })
       crmRequest.on('error', (error) => {
-        ServerLoggingService.logError('Dynamics error: ' + error)
+        LoggingService.logError('Dynamics error: ' + error)
         reject(error)
       })
 
