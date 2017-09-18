@@ -3,11 +3,12 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const LoggingService = require('../services/logging.service')
+const PermitSelectValidator = require('../validators/permitSelect.validator')
 
 module.exports = class PermitSelectController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.PERMIT_SELECT)
+      const pageContext = BaseController.createPageContext(Constants.Routes.PERMIT_SELECT, errors, PermitSelectValidator)
 
       pageContext.formValues = request.payload
       return reply

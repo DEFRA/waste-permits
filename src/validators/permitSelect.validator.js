@@ -1,16 +1,28 @@
 'use strict'
 
-// const Joi = require('joi')
+const Joi = require('joi')
 const BaseValidator = require('./base.validator')
+
+const ALLOWED_PERMITS = ['sr-2015-18']
 
 module.exports = class PermitSelectValidator extends BaseValidator {
   constructor () {
     super()
 
-    this.errorMessages = {}
+    this.errorMessages = {
+      'chosen-permit-id': {
+        'any.required': `Select which permit you want to apply for`,
+        'any.allowOnly': `Select a valid permit`
+      }
+    }
   }
 
   static getFormValidators () {
-    return {}
+    return {
+      'chosen-permit-id': Joi
+        .string()
+        .required()
+        .valid(ALLOWED_PERMITS)
+    }
   }
 }

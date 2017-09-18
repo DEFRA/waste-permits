@@ -10,6 +10,8 @@ const CookieService = require('../../src/services/cookie.service')
 
 let validateCookieStub
 
+let routePath = '/permit/select'
+
 lab.beforeEach((done) => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
@@ -31,7 +33,7 @@ lab.experiment('Select a permit page tests:', () => {
   lab.test('GET /permit/select returns the permit selection page correctly', (done) => {
     const request = {
       method: 'GET',
-      url: '/permit/select',
+      url: routePath,
       headers: {},
       payload: {}
     }
@@ -64,9 +66,11 @@ lab.experiment('Select a permit page tests:', () => {
   lab.test('POST /permit/select success redirects to the task list route', (done) => {
     const request = {
       method: 'POST',
-      url: '/permit/select',
+      url: routePath,
       headers: {},
-      payload: {}
+      payload: {
+        'chosen-permit-id': 'sr-2015-18'
+      }
     }
 
     server.inject(request, (res) => {
@@ -80,7 +84,7 @@ lab.experiment('Select a permit page tests:', () => {
   lab.test('GET /permit/select redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'GET',
-      url: '/permit/select',
+      url: routePath,
       headers: {},
       payload: {}
     }
@@ -92,6 +96,90 @@ lab.experiment('Select a permit page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/error')
+      done()
+    })
+  })
+
+  lab.test('POST /permit/select shows the error message summary panel when the site data is invalid', (done) => {
+    const request = {
+      method: 'POST',
+      url: routePath,
+      headers: {},
+      payload: {
+        'chosen-permit-id': ''
+      }
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      const element = doc.getElementById('error-summary')
+
+      Code.expect(element).to.exist()
+
+      done()
+    })
+  })
+
+  lab.test('POST /permit/select shows an error message when no permit is selected', (done) => {
+    const request = {
+      method: 'POST',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element
+      let errorMessage = 'Select which permit you want to apply for'
+
+      // Panel summary error item
+      element = doc.getElementById('error-summary-list-item-0').firstChild
+      Code.expect(element.nodeValue).to.equal(errorMessage)
+
+      // Chosen permit ID error
+      element = doc.getElementById('chosen-permit-id-error').firstChild
+      Code.expect(element.nodeValue).to.equal(errorMessage)
+
+      done()
+    })
+  })
+
+  lab.test('POST /permit/select shows an error message when the permit value is not allowed', (done) => {
+    const request = {
+      method: 'POST',
+      url: routePath,
+      headers: {},
+      payload: {
+        'chosen-permit-id': 'not-a-real-permit'
+      }
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element
+      let errorMessage = 'Select a valid permit'
+
+      // Panel summary error item
+      element = doc.getElementById('error-summary-list-item-0').firstChild
+      Code.expect(element.nodeValue).to.equal(errorMessage)
+
+      // Chosen permit ID error
+      element = doc.getElementById('chosen-permit-id-error').firstChild
+      Code.expect(element.nodeValue).to.equal(errorMessage)
+
       done()
     })
   })
