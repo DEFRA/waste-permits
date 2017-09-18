@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const LoggingService = require('../services/logging.service')
 const BaseController = require('./base.controller')
 
 module.exports = class PermitHolderTypeController extends BaseController {
@@ -10,7 +11,7 @@ module.exports = class PermitHolderTypeController extends BaseController {
       return reply
         .view('permitHolderType', pageContext)
     } catch (error) {
-      request.log('ERROR', error)
+      LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }

@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const SiteSiteNameValidator = require('../validators/siteSiteName.validator')
+const LoggingService = require('../services/logging.service')
 
 module.exports = class SiteSiteNameController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -14,7 +15,7 @@ module.exports = class SiteSiteNameController extends BaseController {
       return reply
         .view('siteSiteName', pageContext)
     } catch (error) {
-      request.log('ERROR', error)
+      LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }

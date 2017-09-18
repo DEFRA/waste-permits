@@ -1,7 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
-const ServerLoggingService = require('../services/serverLogging.service')
+const LoggingService = require('../services/logging.service')
 const CookieService = require('../services/cookie.service')
 const BaseController = require('./base.controller')
 const StartOrOpenSavedValidator = require('../validators/startOrOpenSaved.validator')
@@ -22,7 +22,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       return reply
         .view('startOrOpenSaved', pageContext)
     } catch (error) {
-      ServerLoggingService.logError(error)
+      LoggingService.logError(error)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
@@ -46,7 +46,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
         nextPage = Constants.Routes.PERMIT_CATEGORY
       } catch (error) {
-        ServerLoggingService.logError(error)
+        LoggingService.logError(error)
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     } else {

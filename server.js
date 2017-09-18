@@ -108,19 +108,19 @@ server.start((err) => {
     throw err
   }
 
-  server.log('INFO', 'Server running in environment: ' + config.nodeEnvironment)
-  server.log('INFO', 'Server running at:' + JSON.stringify(server.info))
-  server.log('INFO', `Service: ${Constants.SERVICE_NAME}`)
-  server.log('INFO', `Version: ${Constants.getVersion()}`)
-  server.log('INFO', `Latest commit: ${config.gitSha}`)
+  server.log(Constants.LogLevel.INFO, 'Server running in environment: ' + config.nodeEnvironment)
+  server.log(Constants.LogLevel.INFO, 'Server running at:' + JSON.stringify(server.info))
+  server.log(Constants.LogLevel.INFO, `Service: ${Constants.SERVICE_NAME}`)
+  server.log(Constants.LogLevel.INFO, `Version: ${Constants.getVersion()}`)
+  server.log(Constants.LogLevel.INFO, `Latest commit: ${config.gitSha}`)
 })
 
 // Listen on SIGINT signal and gracefully stop the server
 process.on('SIGINT', function () {
-  server.log('ERROR', 'Stopping hapi server')
+  server.log(Constants.LogLevel.ERROR, 'Stopping hapi server')
 
   server.stop({ timeout: 10000 }).then((err) => {
-    server.log('ERROR', 'Hapi server stopped')
+    server.log(Constants.LogLevel.ERROR, 'Hapi server stopped')
     process.exit((err) ? 1 : 0)
   })
 })
