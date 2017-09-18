@@ -3,6 +3,7 @@
 const Constants = require('./src/constants')
 const config = require('./src/config/config')
 const logConfig = require('./src/config/logConfig')
+const LoggingService = require('./src/services/logging.service')
 
 const fs = require('fs')
 const Path = require('path')
@@ -118,19 +119,19 @@ server.start((err) => {
     throw err
   }
 
-  server.log(Constants.LogLevel.INFO, 'Server running in environment: ' + config.nodeEnvironment)
-  server.log(Constants.LogLevel.INFO, 'Server running at:' + JSON.stringify(server.info))
-  server.log(Constants.LogLevel.INFO, `Service: ${Constants.SERVICE_NAME}`)
-  server.log(Constants.LogLevel.INFO, `Version: ${Constants.getVersion()}`)
-  server.log(Constants.LogLevel.INFO, `Latest commit: ${config.gitSha}`)
+  LoggingService.logInfo(`Server running in environment: ${config.nodeEnvironment}`)
+  LoggingService.logInfo(`Server running at: ${JSON.stringify(server.info)}`)
+  LoggingService.logInfo(`Service: ${Constants.SERVICE_NAME}`)
+  LoggingService.logInfo(`Version: ${Constants.getVersion()}`)
+  LoggingService.logInfo(`Latest commit: ${config.gitSha}`)
 })
 
 // Listen on SIGINT signal and gracefully stop the server
 process.on('SIGINT', () => {
-  server.log(Constants.LogLevel.ERROR, 'Stopping hapi server')
+  LoggingService.logInfo('Stopping hapi server')
 
   server.stop({ timeout: 10000 }).then((err) => {
-    server.log(Constants.LogLevel.ERROR, 'Hapi server stopped')
+    console.log('Hapi server stopped')
     process.exit((err) ? 1 : 0)
   })
 })
