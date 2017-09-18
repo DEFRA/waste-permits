@@ -3,6 +3,8 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const DOMParser = require('xmldom').DOMParser
+
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 
@@ -26,7 +28,7 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Select a permit page tests:', () => {
-  lab.test('GET /permit/select success ', (done) => {
+  lab.test('GET /permit/select returns the permit selection page correctly', (done) => {
     const request = {
       method: 'GET',
       url: '/permit/select',
@@ -36,6 +38,25 @@ lab.experiment('Select a permit page tests:', () => {
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element = doc.getElementById('permit-select-heading').firstChild
+      Code.expect(element.nodeValue).to.equal('Select a permit')
+
+      element = doc.getElementById('chosen-permit-id-36-name').firstChild
+      Code.expect(element.nodeValue).to.include('Metal recycling, vehicle storage, depollution and dismantling facility')
+
+      element = doc.getElementById('chosen-permit-id-36-weight').firstChild
+      Code.expect(element.nodeValue).to.include('Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles')
+
+      element = doc.getElementById('chosen-permit-id-36-code').firstChild
+      Code.expect(element.nodeValue).to.equal('SR2015 No 18')
+
+      element = doc.getElementById('permit-select-submit').firstChild
+      Code.expect(element.nodeValue).to.equal('Continue')
+
       done()
     })
   })
