@@ -11,7 +11,7 @@ module.exports = class PermitSelectValidator extends BaseValidator {
 
     this.errorMessages = {
       'chosen-permit-id': {
-        'any.required': `Select which permit you want to apply for`,
+        'any.required': `Select the permit you want`,
         'any.allowOnly': `Select a valid permit`
       }
     }

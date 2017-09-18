@@ -139,7 +139,7 @@ lab.experiment('Select a permit page tests:', () => {
       const doc = parser.parseFromString(res.payload, 'text/html')
 
       let element
-      let errorMessage = 'Select which permit you want to apply for'
+      let errorMessage = 'Select the permit you want'
 
       // Panel summary error item
       element = doc.getElementById('error-summary-list-item-0').firstChild
