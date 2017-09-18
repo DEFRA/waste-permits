@@ -52,15 +52,15 @@ module.exports = class DynamicsDalService {
   _call (query, dataObject = undefined) {
     return new Promise((resolve, reject) => {
       // Query Dynamics for the data via a HTTPS request
-      const crmRequest = https.request(this.crmRequestOptions, function (response) {
+      const crmRequest = https.request(this.crmRequestOptions, (response) => {
         response.setEncoding('utf8')
 
         // We use an array to hold the response parts in the event we get multiple parts returned
         const responseParts = []
-        response.on('data', function (chunk) {
+        response.on('data', (chunk) => {
           responseParts.push(chunk)
         })
-        response.on('end', function () {
+        response.on('end', () => {
           switch (response.statusCode) {
             case 200:
               // Parse the response JSON
@@ -75,7 +75,7 @@ module.exports = class DynamicsDalService {
           }
         })
       })
-      crmRequest.on('error', function (error) {
+      crmRequest.on('error', (error) => {
         LoggingService.logError('Dynamics error: ' + error)
         reject(error)
       })
