@@ -3,12 +3,14 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const server = require('../../server')
 const DOMParser = require('xmldom').DOMParser
 
-const server = require('../../server')
+const StandardRule = require('../../src/models/standardRule.model')
 const CookieService = require('../../src/services/cookie.service')
 
 let validateCookieStub
+let standardRuleListStub
 
 let routePath = '/permit/select'
 
@@ -19,12 +21,26 @@ lab.beforeEach((done) => {
     return true
   }
 
+  standardRuleListStub = StandardRule.list
+  StandardRule.list = (authToken) => {
+    return {
+      count: 1,
+      results: [
+        { name: 'Metal recycling, vehicle storage, depollution and dismantling facility',
+          limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
+          code: 'SR2015 No 18',
+          codeForId: 'sr2015-no-18'}
+      ]
+    }
+  }
+
   done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
+  StandardRule.prototype.list = standardRuleListStub
 
   done()
 })
@@ -47,13 +63,13 @@ lab.experiment('Select a permit page tests:', () => {
       let element = doc.getElementById('permit-select-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Select a permit')
 
-      element = doc.getElementById('chosen-permit-sr-2015-18-name').firstChild
+      element = doc.getElementById('chosen-permit-sr2015-no-18-name').firstChild
       Code.expect(element.nodeValue).to.include('Metal recycling, vehicle storage, depollution and dismantling facility')
 
-      element = doc.getElementById('chosen-permit-sr-2015-18-weight').firstChild
+      element = doc.getElementById('chosen-permit-sr2015-no-18-weight').firstChild
       Code.expect(element.nodeValue).to.include('Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles')
 
-      element = doc.getElementById('chosen-permit-sr-2015-18-code').firstChild
+      element = doc.getElementById('chosen-permit-sr2015-no-18-code').firstChild
       Code.expect(element.nodeValue).to.equal('SR2015 No 18')
 
       element = doc.getElementById('permit-select-submit').firstChild
@@ -69,7 +85,7 @@ lab.experiment('Select a permit page tests:', () => {
       url: routePath,
       headers: {},
       payload: {
-        'chosen-permit': 'sr-2015-18'
+        'chosen-permit': 'SR2015 No 18'
       }
     }
 
@@ -159,7 +175,7 @@ lab.experiment('Select a permit page tests:', () => {
       url: routePath,
       headers: {},
       payload: {
-        'chosen-permit': 'not-a-real-permit'
+        'chosen-permit': 'not a real permit'
       }
     }
 

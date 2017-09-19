@@ -2,6 +2,7 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
+const StandardRule = require('../models/standardRule.model')
 const LoggingService = require('../services/logging.service')
 const PermitSelectValidator = require('../validators/permitSelect.validator')
 
@@ -10,7 +11,19 @@ module.exports = class PermitSelectController extends BaseController {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.PERMIT_SELECT, errors, PermitSelectValidator)
 
+      let authToken
+      if (request.state[Constants.COOKIE_KEY]) {
+        authToken = request.state[Constants.COOKIE_KEY].authToken
+      }
+
       pageContext.formValues = request.payload
+
+      pageContext.standardRules = await StandardRule.list(authToken)
+
+      pageContext.dinner = 'elbow macaroni'
+
+      console.log(pageContext.standardRules)
+
       return reply
         .view('permitSelect', pageContext)
     } catch (error) {

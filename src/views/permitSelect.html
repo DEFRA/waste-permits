@@ -25,19 +25,21 @@
           <div class="form-group {{#getFormErrorGroupClass errors.started-application}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='chosen-permit-error' message=errors.chosen-permit }}
 
+            {{#each standardRules.results}}
             <div class="multiple-choice permit-selector">
-              <input id="chosen-permit-sr-2015-18-input" type="radio" name="chosen-permit" value="sr-2015-18">
-              <label id="chosen-permit-sr-2015-18-label" class="selection-button-radio permit-item" for="chosen-permit-sr-2015-18-input">
-                <span id="chosen-permit-sr-2015-18-name" class="permit-name">
-                  Metal recycling, vehicle storage, depollution and dismantling facility
+              <input id="chosen-permit-{{this.codeForId}}-input" type="radio" name="chosen-permit" value="{{this.code}}">
+              <label id="chosen-permit-{{this.codeForId}}-label" class="selection-button-radio permit-item" for="chosen-permit-{{this.codeForId}}-input">
+                <span id="chosen-permit-{{this.codeForId}}-name" class="permit-name">
+                  {{this.name}}
                   <br>
-                  <span id="chosen-permit-sr-2015-18-weight" class="permit-weight">
-                    Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles
+                  <span id="chosen-permit-{{this.codeForId}}-weight" class="permit-weight">
+                    {{this.limits}}
                   </span>
                 </span>
-                <span id="chosen-permit-sr-2015-18-code" class="permit-code">SR2015 No 18</span>
+                <span id="chosen-permit-{{this.codeForId}}-code" class="permit-code">{{this.code}}</span>
               </label>
              </div>
+             {{/each}}
           </div>
 
         </fieldset>

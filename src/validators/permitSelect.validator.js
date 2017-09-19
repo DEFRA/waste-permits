@@ -3,7 +3,7 @@
 const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
-const ALLOWED_PERMITS = ['sr-2015-18']
+const ALLOWED_PERMITS = ['SR2015 No 18']
 
 module.exports = class PermitSelectValidator extends BaseValidator {
   constructor () {
