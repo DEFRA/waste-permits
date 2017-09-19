@@ -47,13 +47,13 @@ lab.experiment('Select a permit page tests:', () => {
       let element = doc.getElementById('permit-select-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Select a permit')
 
-      element = doc.getElementById('chosen-permit-id-36-name').firstChild
+      element = doc.getElementById('chosen-permit-sr-2015-18-name').firstChild
       Code.expect(element.nodeValue).to.include('Metal recycling, vehicle storage, depollution and dismantling facility')
 
-      element = doc.getElementById('chosen-permit-id-36-weight').firstChild
+      element = doc.getElementById('chosen-permit-sr-2015-18-weight').firstChild
       Code.expect(element.nodeValue).to.include('Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles')
 
-      element = doc.getElementById('chosen-permit-id-36-code').firstChild
+      element = doc.getElementById('chosen-permit-sr-2015-18-code').firstChild
       Code.expect(element.nodeValue).to.equal('SR2015 No 18')
 
       element = doc.getElementById('permit-select-submit').firstChild
@@ -69,7 +69,7 @@ lab.experiment('Select a permit page tests:', () => {
       url: routePath,
       headers: {},
       payload: {
-        'chosen-permit-id': 'sr-2015-18'
+        'chosen-permit': 'sr-2015-18'
       }
     }
 
@@ -106,7 +106,7 @@ lab.experiment('Select a permit page tests:', () => {
       url: routePath,
       headers: {},
       payload: {
-        'chosen-permit-id': ''
+        'chosen-permit': ''
       }
     }
 
@@ -146,7 +146,7 @@ lab.experiment('Select a permit page tests:', () => {
       Code.expect(element.nodeValue).to.equal(errorMessage)
 
       // Chosen permit ID error
-      element = doc.getElementById('chosen-permit-id-error').firstChild
+      element = doc.getElementById('chosen-permit-error').firstChild
       Code.expect(element.nodeValue).to.equal(errorMessage)
 
       done()
@@ -159,7 +159,7 @@ lab.experiment('Select a permit page tests:', () => {
       url: routePath,
       headers: {},
       payload: {
-        'chosen-permit-id': 'not-a-real-permit'
+        'chosen-permit': 'not-a-real-permit'
       }
     }
 
@@ -177,7 +177,7 @@ lab.experiment('Select a permit page tests:', () => {
       Code.expect(element.nodeValue).to.equal(errorMessage)
 
       // Chosen permit ID error
-      element = doc.getElementById('chosen-permit-id-error').firstChild
+      element = doc.getElementById('chosen-permit-error').firstChild
       Code.expect(element.nodeValue).to.equal(errorMessage)
 
       done()

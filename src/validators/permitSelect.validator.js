@@ -10,7 +10,7 @@ module.exports = class PermitSelectValidator extends BaseValidator {
     super()
 
     this.errorMessages = {
-      'chosen-permit-id': {
+      'chosen-permit': {
         'any.required': `Select the permit you want`,
         'any.allowOnly': `Select a valid permit`
       }
@@ -19,7 +19,7 @@ module.exports = class PermitSelectValidator extends BaseValidator {
 
   static getFormValidators () {
     return {
-      'chosen-permit-id': Joi
+      'chosen-permit': Joi
         .string()
         .required()
         .valid(ALLOWED_PERMITS)
