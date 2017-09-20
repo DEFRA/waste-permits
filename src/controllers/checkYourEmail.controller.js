@@ -30,6 +30,6 @@ module.exports = class CheckYourEmailController extends BaseController {
   }
 
   static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, CheckYourEmailController)
+    return BaseController.handler(request, reply, errors, CheckYourEmailController, false)
   }
 }
