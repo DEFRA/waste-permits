@@ -61,4 +61,11 @@ lab.experiment('StandardRule Model tests:', () => {
       done()
     })
   })
+
+  lab.test('transformPermitCode() method formats string for an ID correctly', (done) => {
+    const string = 'SR2015 No 10'
+    Code.expect(StandardRule.prototype.transformPermitCode(string)).to.equal('sr2015-no-10')
+
+    done()
+  })
 })
