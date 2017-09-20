@@ -20,10 +20,6 @@ module.exports = class PermitSelectController extends BaseController {
 
       pageContext.standardRules = await StandardRule.list(authToken)
 
-      pageContext.dinner = 'elbow macaroni'
-
-      console.log(pageContext.standardRules)
-
       return reply
         .view('permitSelect', pageContext)
     } catch (error) {

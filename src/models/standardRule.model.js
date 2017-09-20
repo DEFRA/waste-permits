@@ -18,7 +18,6 @@ module.exports = class StandardRule extends BaseModel {
   static async list (authToken) {
     const dynamicsDal = new DynamicsDalService(authToken)
     // Define the query
-    // TODO: get proper query
     // For now, we are just getting SR2015 No 18
     const today = new Date()
     const formattedDate = StandardRule.formatDate(today)
@@ -49,7 +48,6 @@ module.exports = class StandardRule extends BaseModel {
       response.value.forEach((standardRule) => {
         standardRules.results.push(new StandardRule({
           // Construct the permit
-          // TODO: Confirm param names
           name: standardRule.defra_rulesnamegovuk,
           limits: standardRule.defra_limits,
           code: standardRule.defra_code
@@ -57,7 +55,6 @@ module.exports = class StandardRule extends BaseModel {
         standardRules.count++
       })
     } catch (error) {
-      // TODO: Error handling?
       LoggingService.logError(`Unable to list StandardRules: ${error}`)
       throw error
     }
