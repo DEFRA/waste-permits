@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "blipp": "^2.3.0",
+    "crumb": "^6.0.0",
     "disinfect": "^0.2.1",
     "dotenv": "^4.0.0",
     "git-rev": "^0.2.1",
