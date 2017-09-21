@@ -11,6 +11,39 @@
 
       <form method="POST" action="{{ formAction }}">
 
+        <fieldset class="permit-list" aria-labelledby="permit-select-heading">
+          <legend class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div class="panel panel-border-wide">
+            <p>Showing permits for car and vehicle dismantling.<br>
+              <a href="/permit/category">
+                Back to all permit groups
+              </a>
+            </p>
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.started-application}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='chosen-permit-error' message=errors.chosen-permit }}
+
+            {{#each standardRules.results}}
+            <div class="multiple-choice permit-selector">
+              <input id="chosen-permit-{{this.codeForId}}-input" type="radio" name="chosen-permit" value="{{this.code}}">
+              <label id="chosen-permit-{{this.codeForId}}-label" class="selection-button-radio permit-item" for="chosen-permit-{{this.codeForId}}-input">
+                <span id="chosen-permit-{{this.codeForId}}-name" class="permit-name">
+                  {{this.name}}
+                  <br>
+                  <span id="chosen-permit-{{this.codeForId}}-weight" class="permit-weight">
+                    {{this.limits}}
+                  </span>
+                </span>
+                <span id="chosen-permit-{{this.codeForId}}-code" class="permit-code">{{this.code}}</span>
+              </label>
+             </div>
+             {{/each}}
+          </div>
+
+        </fieldset>
+
         <div class="form-group">
           <button id="permit-select-submit" type="submit" class="button">Continue</button>
         </div>

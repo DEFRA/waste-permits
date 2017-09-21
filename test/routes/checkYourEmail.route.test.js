@@ -39,23 +39,4 @@ lab.experiment(`Search for 'standard rules permit application' in your email pag
       done()
     })
   })
-
-  lab.test('GET /save-and-return/check-your-email redirects to error screen when the user token is invalid', (done) => {
-    const request = {
-      method: 'GET',
-      url: '/save-and-return/check-your-email',
-      headers: {},
-      payload: {}
-    }
-
-    CookieService.validateCookie = () => {
-      return undefined
-    }
-
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-      done()
-    })
-  })
 })
