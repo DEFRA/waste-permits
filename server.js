@@ -3,6 +3,7 @@
 const Constants = require('./src/constants')
 const config = require('./src/config/config')
 const logConfig = require('./src/config/logConfig')
+const crumbConfig = require('./src/config/crumbConfig')
 const LoggingService = require('./src/services/logging.service')
 
 const fs = require('fs')
@@ -101,7 +102,7 @@ server.register([
   }, {
     // Plugin for CSRF tokens
     register: Crumb,
-    options: {}
+    options: crumbConfig.options
   }], (err) => {
   if (err) {
     throw err
