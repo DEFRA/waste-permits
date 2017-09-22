@@ -12,6 +12,7 @@
       <p>The site is the area you want the permit to cover.</p>
 
       <form method="POST" action="{{ formAction }}">
+        <input type="hidden" name="crumb" value="{{crumb}}">
 
         <div class="form-group {{#getFormErrorGroupClass errors.site-name}}{{/getFormErrorGroupClass}}">
           <label class="form-label" for="site-name">

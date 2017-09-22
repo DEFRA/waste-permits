@@ -8,6 +8,7 @@
       {{> common/errorSummary panelHeader='You need to complete these tasks'}}
 
       <form method="post" action="{{ formAction }}" name="tasklist">
+        <input type="hidden" name="crumb" value="{{crumb}}">
 
         <h1 class="heading-large">
           <span class="visually-hidden">Task list:</span>

@@ -3,6 +3,7 @@
 const Constants = require('./src/constants')
 const config = require('./src/config/config')
 const logConfig = require('./src/config/logConfig')
+const crumbConfig = require('./src/config/crumbConfig')
 const LoggingService = require('./src/services/logging.service')
 
 const fs = require('fs')
@@ -14,6 +15,7 @@ const Disinfect = require('disinfect')
 const HapiAlive = require('hapi-alive')
 const Good = require('good')
 const HapiDevErrors = require('hapi-dev-errors')
+const Crumb = require('crumb')
 const server = new Hapi.Server()
 
 const loadHealthTemplate = () => {
@@ -97,6 +99,10 @@ server.register([
     // Plugin for logging
     register: Good,
     options: logConfig.options
+  }, {
+    // Plugin for CSRF tokens
+    register: Crumb,
+    options: crumbConfig.options
   }], (err) => {
   if (err) {
     throw err

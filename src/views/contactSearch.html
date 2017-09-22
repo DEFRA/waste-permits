@@ -10,6 +10,8 @@
       </p>
 
       <form method="POST" action="{{ formAction }}">
+        <input type="hidden" name="crumb" value="{{crumb}}">
+
         <div class="form-group">
           <label class="form-label" for="id">
             <span id="contact-id-label">Contact ID</span>
