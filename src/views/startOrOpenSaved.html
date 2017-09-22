@@ -19,7 +19,7 @@
             <p>You'll need a debit or credit card to pay the application cost. This is between £{{ cost.lower }} and £{{ cost.upper }}, depending on the permit.</p>
           </div>
 
-          <div class="form-group {{#getFormErrorGroupClass errors.started-application}}{{/getFormErrorGroupClass}}">
+          <div id="started-application" class="form-group {{#getFormErrorGroupClass errors.started-application}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='started-application-error' message=errors.started-application }}
 
             <div class="multiple-choice">
