@@ -22,7 +22,7 @@
             </p>
           </div>
 
-          <div class="form-group {{#getFormErrorGroupClass errors.started-application}}{{/getFormErrorGroupClass}}">
+          <div id="chosen-permit" class="form-group {{#getFormErrorGroupClass errors.started-application}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='chosen-permit-error' message=errors.chosen-permit }}
 
             {{#each standardRules.results}}
