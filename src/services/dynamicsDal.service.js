@@ -19,6 +19,28 @@ module.exports = class DynamicsDalService {
     }
   }
 
+  // _requestOptions (authToken) {
+  //   const options = {
+  //     headers: {
+  //       'Authorization': 'Bearer ' + authToken,
+  //       'OData-MaxVersion': '4.0',
+  //       'OData-Version': '4.0',
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json; charset=utf-8',
+  //       'Prefer': 'odata.maxpagesize=500, odata.include-annotations=OData.Community.Display.V1.FormattedValue'
+  //     }
+  //   }
+  //   // We will assume if the http_proxy env is set, so to will the https_proxy
+  //   // env var
+  //   if (config.http_proxy) {
+  //     options.host =
+  //   } else {
+  //     options.host = config.dynamicsWebApiHost
+  //   }
+
+  //   return options
+  // }
+
   async create (query, dataObject) {
     this._setCallSpecificRequestOptions(query, 'POST', dataObject)
     const result = await this._call(query, dataObject)
