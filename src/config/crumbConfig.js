@@ -1,4 +1,5 @@
 const config = require('./config')
+const cookieConfig = require('./cookieConfig')
 
 const crumbOptions = {
   // Ideally we would get this value from constants.js in the same way we have
@@ -14,7 +15,8 @@ const crumbOptions = {
   // `pageContext.crumbKey = Constants.CRSF_COOKIE_KEY` but if we then do this
   // <input type="hidden" name="crumb" value="{{pageContext.crumbKey}}">  we'll
   // just get the string value 'DefraCsrfToken`.
-  key: 'DefraCsrfToken'
+  key: 'DefraCsrfToken',
+  cookieOptions: cookieConfig.options
 }
 
 // Don't require CSRF tokens when running tests
