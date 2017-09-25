@@ -54,7 +54,7 @@ module.exports = class CommitHashService {
     // Whatever the result by now, we set the env var to the value we have. This
     // means after the first call to commitHash() subsequent calls should return
     // immediately after reading GIT_SHAs
-    process.env['GIT_SHA'] = commitReference
+    process.env.GIT_SHA = commitReference
 
     return commitReference
   }
