@@ -59,9 +59,8 @@ config.dynamicsWebApiPath = process.env.DYNAMICS_WEB_API_PATH || '/api/data/v8.2
 config.getAddress = (url) => {
   let result
   if (url) {
-    console.log(url)
     const parts = url.split(':')
-    result = `${parts[0]}:${parts[1]}`
+    result = `${parts[1].replace('//', '')}`
   }
   return result
 }

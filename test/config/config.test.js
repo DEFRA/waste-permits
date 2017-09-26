@@ -39,7 +39,7 @@ lab.experiment('Config tests:', () => {
   lab.test('config correctly extracts the address and port from the http_proxy env var', (done) => {
     // This is the format we expect based on our current environments
     const fakeProxyEnvVar = 'http://instance.cloudprovider.myorg.net:4321'
-    Code.expect(config.getAddress(fakeProxyEnvVar)).to.equal('http://instance.cloudprovider.myorg.net')
+    Code.expect(config.getAddress(fakeProxyEnvVar)).to.equal('instance.cloudprovider.myorg.net')
     Code.expect(config.getPort(fakeProxyEnvVar)).to.equal(4321)
 
     done()
