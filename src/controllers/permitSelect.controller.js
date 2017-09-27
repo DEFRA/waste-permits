@@ -19,6 +19,7 @@ module.exports = class PermitSelectController extends BaseController {
       pageContext.formValues = request.payload
 
       pageContext.standardRules = await StandardRule.list(authToken)
+      pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
       return reply
         .view('permitSelect', pageContext)
@@ -32,8 +33,16 @@ module.exports = class PermitSelectController extends BaseController {
     if (errors && errors.data.details) {
       return PermitSelectController.doGet(request, reply, errors)
     } else {
-      // TODO persist the data here if required
+      // TODO persist the chosen permit to Dynamics
+      // let authToken
+      // if (request.state[Constants.COOKIE_KEY]) {
+      //   authToken = request.state[Constants.COOKIE_KEY].authToken
+      // }
+      //
       // const applicationId = request.state[Constants.COOKIE_KEY].applicationId
+      // const chosenPermit = request.payload['chosen-permit']
+      //
+      // Dynamics.setPermit(applicationId, chosenPermit)
 
       return reply.redirect(Constants.Routes.TASK_LIST.path)
     }

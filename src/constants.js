@@ -25,35 +25,43 @@ Constants.Routes = {
   },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',
-    pageHeading: 'Check your answers before sending your application'
+    pageHeading: 'Check your answers before sending your application',
+    taskListHeading: 'Send application and pay'
   },
   CHECK_YOUR_EMAIL: {
     path: '/save-and-return/check-your-email',
-    pageHeading: `Search for 'standard rules permit application' in your email`
+    pageHeading: `Search for 'standard rules permit application' in your email`,
+    taskListHeading: `Search for 'standard rules permit application' in your email`
   },
   CONFIDENTIALITY: {
     path: '/confidentiality',
-    pageHeading: 'Is part of your application commercially confidential?'
+    pageHeading: 'Is part of your application commercially confidential?',
+    taskListHeading: 'Confirm confidentiality needs'
   },
   CONFIRM_RULES: {
     path: '/confirm-rules',
-    pageHeading: 'Confirm that your operation meets the rules'
+    pageHeading: 'Confirm that your operation meets the rules',
+    taskListHeading: 'Confirm that your operation meets the rules'
   },
   CONTACT_DETAILS: {
     path: '/contact-details',
-    pageHeading: 'Who should we contact about this application?'
+    pageHeading: 'Who should we contact about this application?',
+    taskListHeading: 'Give contact details'
   },
   CONTACT_SEARCH: {
     path: '/contact-search',
-    pageHeading: 'Contact search'
+    pageHeading: 'Contact search',
+    taskListHeading: 'Contact search'
   },
   COST_TIME: {
     path: '/cost-time',
-    pageHeading: 'Cost and time for this permit'
+    pageHeading: 'Cost and time for this permit',
+    taskListHeading: 'Cost and time for this permit'
   },
   DRAINAGE_TYPE_DRAIN: {
     path: '/drainage-type/drain',
-    pageHeading: 'Where does the vehicle storage area drain to?'
+    pageHeading: 'Declaration for vehicle storage, depolution and dismantling facilities',
+    taskListHeading: 'Confirm the drainage system for your site'
   },
   ERROR: {
     path: '/error',
@@ -61,7 +69,8 @@ Constants.Routes = {
   },
   FIRE_PREVENTION_PLAN: {
     path: '/fire-prevention-plan',
-    pageHeading: 'Upload the fire prevention plan'
+    pageHeading: 'Upload the fire prevention plan',
+    taskListHeading: 'Upload the fire prevention plan'
   },
   HEALTH: {
     path: '/health',
@@ -69,7 +78,8 @@ Constants.Routes = {
   },
   MANAGEMENT_SYSTEM: {
     path: '/management-system',
-    pageHeading: 'Which management system will you use?'
+    pageHeading: 'Which management system will you use?',
+    taskListHeading: 'Tell us which management system you use'
   },
   PAGE_NOT_FOUND: {
     path: '/page-not-found',
@@ -81,7 +91,8 @@ Constants.Routes = {
   },
   PERMIT_HOLDER_TYPE: {
     path: '/permit-holder/type',
-    pageHeading: 'Who will be the permit holder?'
+    pageHeading: 'Who will be the permit holder?',
+    taskListHeading: 'Give permit holder details'
   },
   PERMIT_SELECT: {
     path: '/permit/select',
@@ -89,15 +100,18 @@ Constants.Routes = {
   },
   PRE_APPLICATION: {
     path: '/pre-application',
-    pageHeading: 'Have you discussed this application with us?'
+    pageHeading: 'Have you discussed this application with us?',
+    taskListHeading: `Tell us if you've discussed this application with us`
   },
   SITE_PLAN: {
     path: '/site-plan',
-    pageHeading: 'Upload the site plan'
+    pageHeading: 'Upload the site plan',
+    taskListHeading: 'Upload the site plan'
   },
   SITE_SITE_NAME: {
     path: '/site/site-name',
-    pageHeading: `What's the site name?`
+    pageHeading: `What's the site name?`,
+    taskListHeading: 'Give site name and location'
   },
   START_OR_OPEN_SAVED: {
     path: `/start/start-or-open-saved`,
@@ -105,11 +119,12 @@ Constants.Routes = {
   },
   TASK_LIST: {
     path: '/task-list',
-    pageHeading: 'Task List'
+    pageHeading: 'Apply for a standard rules waste permit'
   },
   TECHNICAL_QUALIFICATION: {
     path: '/technical-qualification',
-    pageHeading: 'Which qualification does the person providing technical management have?'
+    pageHeading: 'Which qualification does the person providing technical management have?',
+    taskListHeading: 'Upload technical management qualifications'
   },
   VERSION: {
     path: '/version',

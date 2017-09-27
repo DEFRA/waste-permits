@@ -15,26 +15,55 @@ module.exports = class StandardRule extends BaseModel {
     }
   }
 
+  static async getByCode (authToken, code) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    // Define the query
+    const today = new Date().toISOString()
+    const query = encodeURI(`defra_standardrules?$select=defra_rulesnamegovuk,defra_limits,defra_code` +
+                  // Only get standard rules which are valid for the current date
+                  `&$filter=defra_validfrom le ${today} ` +
+                  ` and defra_validto ge ${today}` +
+                  // Must be open for applications
+                  ` and defra_canapplyfor eq true` +
+                  // Must be open for online applications
+                  ` and defra_canapplyonline eq true` +
+                  // Must be SR2015 No 18 - this is temporary
+                  ` and defra_code eq '${code}'` +
+                  // Status code must be 1
+                  ` and statuscode eq 1`)
+    try {
+      const response = await dynamicsDal.search(query)
+      const result = response.value[0]
+
+      // Construct and return the permit
+      return new StandardRule({
+        name: result.defra_rulesnamegovuk,
+        limits: result.defra_limits,
+        code: result.defra_code
+      })
+    } catch (error) {
+      LoggingService.logError(`Unable to get StandardRule by code: ${error}`)
+      throw error
+    }
+  }
+
   static async list (authToken) {
     const dynamicsDal = new DynamicsDalService(authToken)
     // Define the query
     // For now, we are just getting SR2015 No 18
     const today = new Date().toISOString()
-    console.log(today)
-    const query = `defra_standardrules?$select=defra_rulesnamegovuk,defra_limits,defra_code` +
+    const query = encodeURI(`defra_standardrules?$select=defra_rulesnamegovuk,defra_limits,defra_code` +
                   // Only get standard rules which are valid for the current date
-                  `&$filter=defra_validfrom%20le%20` +
-                  today +
-                  `%20and%20defra_validto%20ge%20` +
-                  today +
+                  `&$filter=defra_validfrom le ${today} ` +
+                  ` and defra_validto ge ${today}` +
                   // Must be open for applications
-                  `%20and%20defra_canapplyfor%20eq%20true` +
+                  ` and defra_canapplyfor eq true` +
                   // Must be open for online applications
-                  `%20and%20defra_canapplyonline%20eq%20true` +
+                  ` and defra_canapplyonline eq true` +
                   // Must be SR2015 No 18 - this is temporary
-                  `%20and%20defra_code%20eq%20%27SR2015%20No%2018%27` +
+                  ` and defra_code eq 'SR2015 No 18'` +
                   // Status code must be 1
-                  `%20and%20statuscode%20eq%201`
+                  ` and statuscode eq 1`)
 
     const standardRules = {
       count: 0,
@@ -46,6 +75,7 @@ module.exports = class StandardRule extends BaseModel {
 
       // Parse response into Contact objects
       response.value.forEach((standardRule) => {
+        console.log(standardRule)
         standardRules.results.push(new StandardRule({
           // Construct the permit
           name: standardRule.defra_rulesnamegovuk,
