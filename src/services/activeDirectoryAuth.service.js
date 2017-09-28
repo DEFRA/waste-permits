@@ -61,6 +61,11 @@ module.exports = class ActiveDirectoryAuthService {
         reject(error)
       })
 
+      tokenRequest.setTimeout(config.requestTimeout, () => {
+        LoggingService.logError('Active directory auth request timed out')
+        tokenRequest.abort()
+      })
+
       // Post the token request data
       tokenRequest.write(this.queryParams)
 
