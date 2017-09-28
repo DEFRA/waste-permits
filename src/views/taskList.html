@@ -4,7 +4,10 @@
 
   <div class="grid-row">
     <div class="column-two-thirds column-minimum">
-      <h1 class="heading-large">
+
+      {{> common/errorSummary panelHeader='You need to complete these tasks'}}
+
+      <h1 id="task-list-heading" class="heading-large">
         <span class="visually-hidden">Task list:</span>
         {{ pageHeading }}
       </h1>
@@ -35,7 +38,7 @@
             </ul>
           </li>
           {{/each}}
-          
+
         </ol>
       </form>
     </div>
