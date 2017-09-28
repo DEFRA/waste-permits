@@ -31,6 +31,7 @@ module.exports = class ActiveDirectoryAuthService {
     if (config.http_proxy) {
       options.agent = new HttpsProxyAgent(config.http_proxy)
     }
+    console.log(options)
 
     return options
   }
@@ -57,6 +58,8 @@ module.exports = class ActiveDirectoryAuthService {
 
           const token = tokenResponse.access_token
           if (token) {
+            console.log('Got a token')
+            console.log(token)
             resolve(token)
           } else {
             reject(new Error('Error obtaining Active Directory auth token: ' + completeResponse))

@@ -24,6 +24,7 @@ module.exports = class DynamicsDalService {
     if (config.http_proxy) {
       options.agent = new HttpsProxyAgent(config.http_proxy)
     }
+    console.log(options)
 
     return options
   }
