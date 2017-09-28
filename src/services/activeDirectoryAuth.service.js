@@ -16,7 +16,11 @@ module.exports = class ActiveDirectoryAuthService {
       `&grant_type=password`
 
     // Set the token request parameters
-    this.options = {
+    this.options = this._requestOptions()
+  }
+
+  _requestOptions () {
+    const options = {
       host: config.azureAuthHost,
       path: config.azureAuthPath,
       method: 'POST',
@@ -25,6 +29,8 @@ module.exports = class ActiveDirectoryAuthService {
         'Content-Length': Buffer.byteLength(this.queryParams)
       }
     }
+
+    return options
   }
 
   getToken () {

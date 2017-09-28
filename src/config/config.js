@@ -74,5 +74,8 @@ config.getPort = (url) => {
   return result
 }
 
-config.http_proxy = config.getAddress(process.env.http_proxy)
-config.http_proxy_port = config.getPort(process.env.http_proxy)
+// config.http_proxy = config.getAddress(process.env.http_proxy)
+// config.http_proxy_port = config.getPort(process.env.http_proxy)
+
+config.http_proxy = process.env.http_proxy
+config.http_proxy_port = process.env.http_proxy

@@ -1,53 +1,25 @@
 'use strict'
 
-// const https = require('https')
+const https = require('https')
 const config = require('../config/config')
 const LoggingService = require('../services/logging.service')
 
 module.exports = class DynamicsDalService {
   constructor (authToken) {
-    this.protocol = this._setProtocol(config.http_proxy)
     this.crmRequestOptions = this._requestOptions(authToken)
-    // this.crmRequestOptions = {
-    //   host: config.dynamicsWebApiHost,
-    //   headers: {
-    //     'Authorization': 'Bearer ' + authToken,
-    //     'OData-MaxVersion': '4.0',
-    //     'OData-Version': '4.0',
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json; charset=utf-8',
-    //     'Prefer': 'odata.maxpagesize=500, odata.include-annotations=OData.Community.Display.V1.FormattedValue'
-    //   }
-    // }
-  }
-
-  _setProtocol (proxy) {
-    if (proxy) {
-      return require('http')
-    } else {
-      return require('https')
-    }
   }
 
   _requestOptions (authToken) {
     const options = {
+      host: config.dynamicsWebApiHost,
       headers: {
         'Authorization': 'Bearer ' + authToken,
         'OData-MaxVersion': '4.0',
         'OData-Version': '4.0',
         'Accept': 'application/json',
         'Content-Type': 'application/json; charset=utf-8',
-        'Prefer': 'odata.maxpagesize=500, odata.include-annotations=OData.Community.Display.V1.FormattedValue',
-        'Host': `${config.dynamicsWebApiPath}`
+        'Prefer': 'odata.maxpagesize=500, odata.include-annotations=OData.Community.Display.V1.FormattedValue'
       }
-    }
-    // We will assume if the http_proxy env is set, so to will the https_proxy
-    // env var
-    if (config.http_proxy) {
-      options.host = config.http_proxy
-      options.port = config.http_proxy_port
-    } else {
-      options.host = config.dynamicsWebApiHost
     }
 
     return options
@@ -86,7 +58,7 @@ module.exports = class DynamicsDalService {
   _call (query, dataObject = undefined) {
     return new Promise((resolve, reject) => {
       // Query Dynamics for the data via a HTTPS request
-      const crmRequest = this.protocol.request(this.crmRequestOptions, (response) => {
+      const crmRequest = https.request(this.crmRequestOptions, (response) => {
         response.setEncoding('utf8')
 
         // We use an array to hold the response parts in the event we get multiple parts returned
