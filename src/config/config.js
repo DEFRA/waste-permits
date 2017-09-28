@@ -56,26 +56,5 @@ config.dynamicsWebApiHost = process.env.DYNAMICS_WEB_API_HOST || 'mycrminstance.
 // This appended to CRM_WEB_API_HOST gives the full url for the web API
 config.dynamicsWebApiPath = process.env.DYNAMICS_WEB_API_PATH || '/api/data/v8.2/'
 
-config.getAddress = (url) => {
-  let result
-  if (url) {
-    const parts = url.split(':')
-    result = `${parts[1].replace('//', '')}`
-  }
-  return result
-}
-
-config.getPort = (url) => {
-  let result
-  if (url && url) {
-    const parts = url.split(':')
-    result = parseInt(parts[2])
-  }
-  return result
-}
-
-// config.http_proxy = config.getAddress(process.env.http_proxy)
-// config.http_proxy_port = config.getPort(process.env.http_proxy)
-
 config.http_proxy = process.env.http_proxy
-config.http_proxy_port = process.env.http_proxy
+config.https_proxy = process.env.https_proxy

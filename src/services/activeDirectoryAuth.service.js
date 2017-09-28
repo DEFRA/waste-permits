@@ -1,6 +1,8 @@
 'use strict'
 
+const url = require('url')
 const https = require('https')
+const HttpsProxyAgent = require('https-proxy-agent')
 const config = require('../config/config')
 const LoggingService = require('../services/logging.service')
 
@@ -20,14 +22,14 @@ module.exports = class ActiveDirectoryAuthService {
   }
 
   _requestOptions () {
-    const options = {
-      host: config.azureAuthHost,
-      path: config.azureAuthPath,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(this.queryParams)
-      }
+    const options = url.parse(`https://${config.azureAuthHost}${config.azureAuthPath}`)
+    options.method = 'POST'
+    options.headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(this.queryParams)
+    }
+    if (config.http_proxy) {
+      options.agent = new HttpsProxyAgent(config.http_proxy)
     }
 
     return options

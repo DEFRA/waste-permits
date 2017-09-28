@@ -1,6 +1,8 @@
 'use strict'
 
+const url = require('url')
 const https = require('https')
+const HttpsProxyAgent = require('https-proxy-agent')
 const config = require('../config/config')
 const LoggingService = require('../services/logging.service')
 
@@ -10,16 +12,17 @@ module.exports = class DynamicsDalService {
   }
 
   _requestOptions (authToken) {
-    const options = {
-      host: config.dynamicsWebApiHost,
-      headers: {
-        'Authorization': 'Bearer ' + authToken,
-        'OData-MaxVersion': '4.0',
-        'OData-Version': '4.0',
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=utf-8',
-        'Prefer': 'odata.maxpagesize=500, odata.include-annotations=OData.Community.Display.V1.FormattedValue'
-      }
+    const options = url.parse(`https://${config.dynamicsWebApiHost}`)
+    options.headers = {
+      'Authorization': `Bearer ${authToken}`,
+      'OData-MaxVersion': '4.0',
+      'OData-Version': '4.0',
+      'Accept': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
+      'Prefer': 'odata.maxpagesize=500, odata.include-annotations=OData.Community.Display.V1.FormattedValue'
+    }
+    if (config.http_proxy) {
+      options.agent = new HttpsProxyAgent(config.http_proxy)
     }
 
     return options
