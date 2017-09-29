@@ -14,13 +14,10 @@ module.exports = class VersionController extends BaseController {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.VERSION)
 
-      let authToken
+      let authToken = CookieService.getAuthToken(request)
 
-      // If a cookie already exists, use that token
-      if (request.state[Constants.COOKIE_KEY]) {
-        authToken = request.state[Constants.COOKIE_KEY].authToken
-      // Otherwise, create a new one
-      } else {
+      // If we didn't get an Auth token from the cookie then create a new one
+      if (!authToken) {
         const cookie = await CookieService.generateCookie(reply)
         authToken = cookie.authToken
       }

@@ -4,6 +4,7 @@ const Constants = require('../constants')
 
 module.exports = class LoggingService {
   static logError (message, request) {
+    console.error(message)
     LoggingService._log(Constants.LogLevel.ERROR, message, request)
   }
 

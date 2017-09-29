@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const StandardRule = require('../models/standardRule.model')
+const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const TaskListValidator = require('../validators/taskList.validator')
 const permits = require('../models/permit.model')
@@ -12,13 +13,12 @@ module.exports = class TaskListController extends BaseController {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.TASK_LIST, errors, TaskListValidator)
 
-      const applicationId = request.state[Constants.COOKIE_KEY].applicationId
-      console.log('applicationId: ', applicationId)
+      // We will need to use the applicationId to work out which task list items are complete
+      // const applicationId = CookieService.getApplicationId(request)
+      // console.log('applicationId: ', applicationId)
 
-      let authToken
-      if (request.state[Constants.COOKIE_KEY]) {
-        authToken = request.state[Constants.COOKIE_KEY].authToken
-      }
+      const authToken = CookieService.getAuthToken(request)
+
       pageContext.formValues = request.payload
 
       // For now we are only getting the SR2015 No 18 permit

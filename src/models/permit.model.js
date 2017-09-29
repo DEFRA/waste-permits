@@ -2,6 +2,7 @@
 
 const Constants = require('../constants')
 
+// This is only temporary because we need to get some or all of this data from Dynamics
 module.exports = {
   'SR2015 No 18': [{
     sectionIndex: 1,
