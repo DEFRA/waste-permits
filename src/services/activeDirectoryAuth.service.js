@@ -1,6 +1,8 @@
 'use strict'
 
+const url = require('url')
 const https = require('https')
+const HttpsProxyAgent = require('https-proxy-agent')
 const config = require('../config/config')
 const LoggingService = require('../services/logging.service')
 
@@ -14,23 +16,12 @@ module.exports = class ActiveDirectoryAuthService {
       `&username=${encodeURIComponent(config.dynamicsUsername)}` +
       `&password=${encodeURIComponent(config.dynamicsPassword)}` +
       `&grant_type=password`
-
-    // Set the token request parameters
-    this.options = {
-      host: config.azureAuthHost,
-      path: config.azureAuthPath,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(this.queryParams)
-      }
-    }
   }
 
   getToken () {
     return new Promise((resolve, reject) => {
       // Make the token request
-      const tokenRequest = https.request(this.options, (response) => {
+      const tokenRequest = https.request(this._requestOptions(), (response) => {
         // Create an array to hold the response parts if we get multiple parts
         const responseParts = []
 
@@ -72,5 +63,19 @@ module.exports = class ActiveDirectoryAuthService {
       // Close the token request
       tokenRequest.end()
     })
+  }
+
+  _requestOptions () {
+    const options = url.parse(`https://${config.azureAuthHost}${config.azureAuthPath}`)
+    options.method = 'POST'
+    options.headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(this.queryParams)
+    }
+    if (config.http_proxy) {
+      options.agent = new HttpsProxyAgent(config.http_proxy)
+    }
+
+    return options
   }
 }
