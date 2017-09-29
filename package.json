@@ -46,7 +46,7 @@
     "lab": "^14.3.0",
     "nock": "^9.0.14",
     "run-sequence": "^2.1.0",
-    "sinon": "^3.2.1",
+    "sinon": "^4.0.0",
     "standard": "^10.0.3",
     "xmldom": "^0.1.27"
   },
@@ -57,7 +57,7 @@
     "dotenv": "^4.0.0",
     "govuk-elements-sass": "^3.1.1",
     "govuk_frontend_toolkit": "^7.0.1",
-    "govuk_template_mustache": "^0.22.3",
+    "govuk_template_mustache": "^0.23.0",
     "handlebars": "^4.0.10",
     "hapi": "^16.6.0",
     "hapi-alive": "^1.4.0",
