@@ -63,6 +63,7 @@
     "hapi-alive": "^1.4.0",
     "hapi-dev-errors": "^1.2.0",
     "hapi-router": "^3.5.0",
+    "https-proxy-agent": "^2.1.0",
     "inert": "^4.2.1",
     "joi": "^11.0.1",
     "moment": "^2.18.1",
