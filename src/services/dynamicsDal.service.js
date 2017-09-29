@@ -80,6 +80,11 @@ module.exports = class DynamicsDalService {
         reject(error)
       })
 
+      crmRequest.setTimeout(config.requestTimeout, () => {
+        LoggingService.logError('Dynamics request timed out')
+        crmRequest.abort()
+      })
+
       // Write the data
       if (dataObject) {
         crmRequest.write(JSON.stringify(dataObject))

@@ -71,6 +71,11 @@ lab.beforeEach((done) => {
     .get(`${config.dynamicsWebApiPath}__DYNAMICS_BAD_QUERY__`)
     .reply(500, {})
 
+  nock(`https://${config.dynamicsWebApiHost}`)
+    .get(`${config.dynamicsWebApiPath}__DYNAMICS_TIMEOUT_QUERY__`)
+    .socketDelay(7000)
+    .reply(200, {})
+
   done()
 })
 
@@ -121,12 +126,24 @@ lab.experiment('Dynamics Service tests:', () => {
   lab.test('service handles unknown result from Dynamics', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     dynamicsDal.search('__DYNAMICS_BAD_QUERY__')
-    .catch((err) => {
-      Code.expect(spy.callCount).to.equal(1)
-      Code.expect(err).to.endWith('Code: 500 Message: null')
+      .catch((err) => {
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(err).to.endWith('Code: 500 Message: null')
 
-      DynamicsDalService.prototype._call.restore()
-      done()
-    })
+        DynamicsDalService.prototype._call.restore()
+        done()
+      })
+  })
+
+  lab.test('search() times out based on app configuration', (done) => {
+    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
+    dynamicsDal.search('__DYNAMICS_TIMEOUT_QUERY__')
+      .catch((err) => {
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(err.message).to.equal('socket hang up')
+
+        DynamicsDalService.prototype._call.restore()
+        done()
+      })
   })
 })
