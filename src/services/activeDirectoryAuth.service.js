@@ -18,20 +18,6 @@ module.exports = class ActiveDirectoryAuthService {
       `&grant_type=password`
   }
 
-  _requestOptions () {
-    const options = url.parse(`https://${config.azureAuthHost}${config.azureAuthPath}`)
-    options.method = 'POST'
-    options.headers = {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(this.queryParams)
-    }
-    if (config.http_proxy) {
-      options.agent = new HttpsProxyAgent(config.http_proxy)
-    }
-
-    return options
-  }
-
   getToken () {
     return new Promise((resolve, reject) => {
       // Make the token request
@@ -54,8 +40,6 @@ module.exports = class ActiveDirectoryAuthService {
 
           const token = tokenResponse.access_token
           if (token) {
-            console.log('Got a token')
-            console.log(token)
             resolve(token)
           } else {
             reject(new Error('Error obtaining Active Directory auth token: ' + completeResponse))
@@ -79,5 +63,19 @@ module.exports = class ActiveDirectoryAuthService {
       // Close the token request
       tokenRequest.end()
     })
+  }
+
+  _requestOptions () {
+    const options = url.parse(`https://${config.azureAuthHost}${config.azureAuthPath}`)
+    options.method = 'POST'
+    options.headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(this.queryParams)
+    }
+    if (config.http_proxy) {
+      options.agent = new HttpsProxyAgent(config.http_proxy)
+    }
+
+    return options
   }
 }

@@ -20,7 +20,6 @@ module.exports = class StandardRule extends BaseModel {
     // Define the query
     // For now, we are just getting SR2015 No 18
     const today = new Date().toISOString()
-    console.log(today)
     const query = `defra_standardrules?$select=defra_rulesnamegovuk,defra_limits,defra_code` +
                   // Only get standard rules which are valid for the current date
                   `&$filter=defra_validfrom%20le%20` +

@@ -18,14 +18,11 @@ module.exports = class VersionController extends BaseController {
 
       // If a cookie already exists, use that token
       if (request.state[Constants.COOKIE_KEY]) {
-        console.log('No cookie')
         authToken = request.state[Constants.COOKIE_KEY].authToken
-        console.log('Got token without error')
       // Otherwise, create a new one
       } else {
         const cookie = await CookieService.generateCookie(reply)
         authToken = cookie.authToken
-        console.log('Got token from the cookie')
       }
 
       pageContext.dynamicsSolution = await DynamicsSolution.get(authToken)
