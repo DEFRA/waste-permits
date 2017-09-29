@@ -19,6 +19,7 @@ module.exports = class DynamicsSolution extends BaseModel {
 
     const query = encodeURI(`solutions?$select=friendlyname,version&$filter=${filter}`)
     try {
+      console.log('Call Dynamics looking for solution details')
       const response = await dynamicsDal.search(query)
 
       const dynamicsVersionInfo = []
@@ -30,6 +31,7 @@ module.exports = class DynamicsSolution extends BaseModel {
       }
       return dynamicsVersionInfo
     } catch (error) {
+      console.log('BOOM - solution details search failed')
       LoggingService.logError(`Unable to get Dynamics solution details: ${error}`)
       throw error
     }

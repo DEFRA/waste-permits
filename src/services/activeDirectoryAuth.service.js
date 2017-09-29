@@ -16,9 +16,6 @@ module.exports = class ActiveDirectoryAuthService {
       `&username=${encodeURIComponent(config.dynamicsUsername)}` +
       `&password=${encodeURIComponent(config.dynamicsPassword)}` +
       `&grant_type=password`
-
-    // Set the token request parameters
-    this.options = this._requestOptions()
   }
 
   _requestOptions () {
@@ -31,7 +28,6 @@ module.exports = class ActiveDirectoryAuthService {
     if (config.http_proxy) {
       options.agent = new HttpsProxyAgent(config.http_proxy)
     }
-    console.log(options)
 
     return options
   }
@@ -39,7 +35,7 @@ module.exports = class ActiveDirectoryAuthService {
   getToken () {
     return new Promise((resolve, reject) => {
       // Make the token request
-      const tokenRequest = https.request(this.options, (response) => {
+      const tokenRequest = https.request(this._requestOptions(), (response) => {
         // Create an array to hold the response parts if we get multiple parts
         const responseParts = []
 
