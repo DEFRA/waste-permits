@@ -1,5 +1,5 @@
 <li class="task-list-item" id="{{ id }}">
-   <a class="task-name" href="{{ href }}" aria-describedby="{{ completedLabelId }}">
+   <a id="{{ id }}-link" class="task-name" href="{{ href }}" aria-describedby="{{ completedLabelId }}">
      {{ label }}
    </a>
    {{> common/completedLabel completedLabelId=completedLabelId }}

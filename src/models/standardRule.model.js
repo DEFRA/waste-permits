@@ -75,7 +75,6 @@ module.exports = class StandardRule extends BaseModel {
 
       // Parse response into Contact objects
       response.value.forEach((standardRule) => {
-        console.log(standardRule)
         standardRules.results.push(new StandardRule({
           // Construct the permit
           name: standardRule.defra_rulesnamegovuk,

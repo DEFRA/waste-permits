@@ -2,8 +2,12 @@
 
 const Constants = require('../constants')
 
+// const DynamicsDalService = require('../services/dynamicsDal.service')
+const BaseModel = require('./base.model')
+const LoggingService = require('../services/logging.service')
+
 // This is only temporary because we need to get some or all of this data from Dynamics
-module.exports = {
+const dynamicsData = {
   'SR2015 No 18': [{
     sectionIndex: 1,
     sectionName: 'Before you apply',
@@ -18,7 +22,7 @@ module.exports = {
       label: Constants.Routes.CONFIRM_RULES.taskListHeading,
       href: Constants.Routes.CONFIRM_RULES.path,
       completedLabelId: 'operation-rules-completed',
-      complete: true
+      complete: false
     }]
   }, {
     sectionIndex: 2,
@@ -99,4 +103,28 @@ module.exports = {
       complete: false
     }]
   }]
+}
+
+module.exports = class Permit extends BaseModel {
+  constructor (dataObject = undefined) {
+    super()
+    if (dataObject) {
+      this['SR2015 No 18'] = dataObject['SR2015 No 18']
+    }
+  }
+
+  static async getById (authToken, id) {
+    // const dynamicsDal = new DynamicsDalService(authToken)
+    // const query = `contacts(${id})?$select=contactid,firstname,lastname,telephone1,emailaddress1`
+    let permit
+    try {
+      // const response = await dynamicsDal.search(query)
+      permit = new Permit(dynamicsData)
+    } catch (error) {
+      // TODO: Error handling?
+      LoggingService.logError(`Unable to get Permit by ID: ${error}`)
+      throw error
+    }
+    return permit
+  }
 }
