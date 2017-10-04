@@ -22,13 +22,13 @@
 
         <ol class="task-list">
 
-          {{#each taskList}}
+          {{#each standardRule.sections}}
           <li>
             <h2 class="task-list-section">
               <span class="task-list-section-number">{{ this.sectionIndex }}. </span>{{ this.sectionName }}
             </h2>
             <ul class="task-list-items">
-              {{#each this.listItems}}
+              {{#each this.sectionItems}}
                 {{> common/taskListItem
                   id=this.id
                   label=this.label

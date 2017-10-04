@@ -6,7 +6,6 @@ const StandardRule = require('../models/standardRule.model')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const TaskListValidator = require('../validators/taskList.validator')
-const Permit = require('../models/permit.model')
 
 module.exports = class TaskListController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -15,16 +14,11 @@ module.exports = class TaskListController extends BaseController {
       const chosenPermit = 'SR2015 No 18'
 
       const pageContext = BaseController.createPageContext(Constants.Routes.TASK_LIST, errors, TaskListValidator)
-      const applicationId = CookieService.getApplicationId(request)
       const authToken = CookieService.getAuthToken(request)
 
       pageContext.formValues = request.payload
-
       pageContext.chosenPermit = chosenPermit
       pageContext.standardRule = await StandardRule.getByCode(authToken, pageContext.chosenPermit)
-
-      const permit = await Permit.getById(applicationId)
-      pageContext.taskList = permit[chosenPermit]
       pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
       return reply

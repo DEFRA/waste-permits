@@ -6,14 +6,12 @@ const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
-const Permit = require('../../src/models/permit.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const CookieService = require('../../src/services/cookie.service')
 
 let generateCookieStub
 let validateCookieStub
 let standardRuleGetByCodeStub
-let permitGetByIdStub
 
 let routePath = '/task-list'
 
@@ -22,51 +20,51 @@ const fakeCookie = {
   authToken: 'my_auth_token'
 }
 
-const fakeData = {
-  'SR2015 No 18': [{
-    sectionIndex: 1,
-    sectionName: 'Before you apply',
-    listItems: [{
-      id: 'check-permit-cost-and-time',
-      label: 'LABEL_1',
-      href: 'HREF_1',
-      completedLabelId: 'cost-and-time-completed',
-      complete: true
-    }, {
-      id: 'confirm-that-your-operation-meets-the-rules',
-      label: 'LABEL_2',
-      href: 'HREF_2',
-      completedLabelId: 'operation-rules-completed',
-      complete: false
-    }]
-  }, {
-    sectionIndex: 2,
-    sectionName: 'Prepare to apply',
-    listItems: [{
-      id: 'tell-us-if-youve-discussed-this-application-with-us',
-      label: 'LABEL_3',
-      href: 'HREF_3',
-      completedLabelId: 'preapp-completed',
-      complete: true
-    }]
-  }, {
-    sectionIndex: 3,
-    sectionName: 'Complete application',
-    listItems: [{
-      id: 'give-contact-details',
-      label: 'LABEL_4',
-      href: 'HREF_4',
-      completedLabelId: 'contact-details-completed',
-      complete: false
-    }, {
-      id: 'give-permit-holder-details',
-      label: 'LABEL_5',
-      href: 'HREF_5',
-      completedLabelId: 'site-operator-completed',
-      complete: true
-    }]
-  }]
-}
+// const fakeData = {
+//   'SR2015 No 18': [{
+//     sectionIndex: 1,
+//     sectionName: 'Before you apply',
+//     listItems: [{
+//       id: 'check-permit-cost-and-time',
+//       label: 'LABEL_1',
+//       href: 'HREF_1',
+//       completedLabelId: 'cost-and-time-completed',
+//       complete: true
+//     }, {
+//       id: 'confirm-that-your-operation-meets-the-rules',
+//       label: 'LABEL_2',
+//       href: 'HREF_2',
+//       completedLabelId: 'operation-rules-completed',
+//       complete: false
+//     }]
+//   }, {
+//     sectionIndex: 2,
+//     sectionName: 'Prepare to apply',
+//     listItems: [{
+//       id: 'tell-us-if-youve-discussed-this-application-with-us',
+//       label: 'LABEL_3',
+//       href: 'HREF_3',
+//       completedLabelId: 'preapp-completed',
+//       complete: true
+//     }]
+//   }, {
+//     sectionIndex: 3,
+//     sectionName: 'Complete application',
+//     listItems: [{
+//       id: 'give-contact-details',
+//       label: 'LABEL_4',
+//       href: 'HREF_4',
+//       completedLabelId: 'contact-details-completed',
+//       complete: false
+//     }, {
+//       id: 'give-permit-holder-details',
+//       label: 'LABEL_5',
+//       href: 'HREF_5',
+//       completedLabelId: 'site-operator-completed',
+//       complete: true
+//     }]
+//   }]
+// }
 
 lab.beforeEach((done) => {
   // Stub methods
@@ -90,10 +88,6 @@ lab.beforeEach((done) => {
     }
   }
 
-  permitGetByIdStub = Permit.prototype.getById
-  Permit.getById = (authToken, id) => {
-    return fakeData
-  }
   done()
 })
 
@@ -102,7 +96,6 @@ lab.afterEach((done) => {
   CookieService.generateCookie = generateCookieStub
   CookieService.validateCookie = validateCookieStub
   StandardRule.prototype.getByCode = standardRuleGetByCodeStub
-  Permit.prototype.getById = permitGetByIdStub
 
   done()
 })
