@@ -25,6 +25,7 @@ module.exports = class TaskListController extends BaseController {
 
       const permit = await Permit.getById(applicationId)
       pageContext.taskList = permit[chosenPermit]
+      pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
       return reply
         .view('taskList', pageContext)
