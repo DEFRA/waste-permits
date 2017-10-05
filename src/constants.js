@@ -141,6 +141,52 @@ Constants.PermitTypes = {
   }
 }
 
+// TODO remove this
+// section items:
+// defra_allowpermitstartdate
+// defra_baselinereportreq
+// defra_cnfconfidentialityreq
+// defra_confirmreadrules
+// defra_contactdetailsrequired
+// defra_extwasteweightreq
+// defra_fireplanrequired
+// defra_locationrequired
+// defra_mansystemrequired
+// defra_miningwastemanplanreq
+// defra_nhscreeningrequired
+// defra_pholderdetailsrequired
+// defra_preapprequired
+// defra_showcostandtime
+// defra_siteplanrequired
+// defra_stackheightreq
+// defra_surfacedrainagereq
+// defra_techcompetenceevreq
+// defra_wasterecoveryplanreq
+Constants.RulesetIds = {
+  ALLOW_PERMIT_START_DATE: 'defra_allowpermitstartdate',
+  BASELINE_REPORT: 'defra_baselinereportreq',
+  // TODO: BEFORE YOU APPLY ?
+  // TODO: CHECK_BEFORE_SENDING ?
+  CONFIRM_CONFIDENTIALLY: 'defra_cnfconfidentialityreq',
+  CONFIRM_RULES: 'defra_confirmreadrules',
+  CONTACT_DETAILS: 'defra_contactdetailsrequired',
+  DEFRA_WASTE_WEIGHT: 'defra_extwasteweightreq',
+  FIRE_PREVENTION_PLAN: 'defra_fireplanrequired',
+  LOCATION: 'defra_locationrequired',
+  MANAGEMENT_SYSTEM: 'defra_mansystemrequired',
+  MINING_WASTE_MANAGEMENT_PLAN: 'defra_miningwastemanplanreq',
+  NHS_SCREENING: 'defra_nhscreeningrequired',
+  PERMIT_HOLDER_DETAILS: 'defra_pholderdetailsrequired',
+  PRE_APPLICATION: 'defra_preapprequired',
+  SHOW_COST_AND_TIME: 'defra_showcostandtime',
+  // TODO: SITE NAME AND LOCATION?
+  SITE_PLAN: 'defra_siteplanrequired',
+  STACK_HEIGHT: 'defra_stackheightreq',
+  SURFACE_DRAINAGE: 'defra_surfacedrainagereq',
+  TECHNICAL_QUALIFICATION: 'defra_techcompetenceevreq',
+  WASTE_RECOVERY_PLAN: 'defra_wasterecoveryplanreq'
+}
+
 Constants.buildPageTitle = (pageHeading) => {
   return `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`
 }
