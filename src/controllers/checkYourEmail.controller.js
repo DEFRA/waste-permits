@@ -22,8 +22,7 @@ module.exports = class CheckYourEmailController extends BaseController {
     if (errors && errors.data.details) {
       return CheckYourEmailController.doGet(request, reply, errors)
     } else {
-      // TODO persist the data here if required
-      // const applicationId = request.state[Constants.COOKIE_KEY].applicationId
+      // TODO persist the data here if required using the applicationId from the cookie
 
       return reply.redirect(Constants.Routes.CONTACT.path)
     }
