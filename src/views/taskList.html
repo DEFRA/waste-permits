@@ -8,13 +8,13 @@
       {{> common/errorSummary panelHeader='You need to complete these tasks'}}
 
       <h1 id="task-list-heading" class="heading-large">
-        <span class="visually-hidden">Task list:</span>
+        <span id="task-list-heading-visually-hidden" class="visually-hidden">Task list:</span>
         {{ pageHeading }}
       </h1>
 
       <p class="text">
-        {{standardRule.name}} - {{standardRule.code}}<br>
-        <a class="font-small" href="{{ permitCategoryRoute }}">Select a different permit</a>
+        <span id="standard-rule-name-and-code">{{standardRule.name}} - {{standardRule.code}}</span><br>
+        <a id="select-a-different-permit" class="font-small" href="{{ permitCategoryRoute }}">Select a different permit</a>
       </p>
 
       <form method="post" action="{{ formAction }}" name="tasklist">
@@ -25,7 +25,7 @@
           {{#each standardRule.sections}}
           <li>
             <h2 class="task-list-section">
-              <span class="task-list-section-number">{{this.sectionIndex}}. </span>{{this.sectionName}}
+              <span id="{{this.id}}-number" class="task-list-section-number">{{this.sectionNumber}}. </span><span id="{{this.id}}-heading">{{this.sectionName}}</span>
             </h2>
 
             <ul class="task-list-items">
