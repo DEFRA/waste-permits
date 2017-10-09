@@ -25,11 +25,6 @@ let authTokenResponse = {
 lab.beforeEach((done) => {
   authService = new ActiveDirectoryAuthService()
 
-  // Mock the CRM token endpoint
-  nock(`https://${config.azureAuthHost}`)
-    .post(config.azureAuthPath)
-    .reply(200, authTokenResponse)
-
   done()
 })
 
@@ -39,11 +34,38 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Active Directory Auth Service tests:', () => {
-  lab.test('Get token method should return the correct authentication token', (done) => {
+  lab.test('getToken() should return the correct authentication token', (done) => {
+    // Mock the CRM token endpoint
+    setHttpMock()
+
     authService.getToken().then((authToken) => {
       Code.expect(authToken).to.equal(authTokenResponse.access_token)
 
       done()
     })
   })
+
+  lab.test('getToken() times out based on app configuration', (done) => {
+    // Mock the CRM token endpoint
+    setHttpMock(7000)
+
+    authService.getToken()
+      .catch((error) => {
+        Code.expect(error.message).to.equal('socket hang up')
+        done()
+      })
+  })
 })
+
+const setHttpMock = (delay) => {
+  if (delay) {
+    return nock(`https://${config.azureAuthHost}`)
+      .post(config.azureAuthPath)
+      .socketDelay(delay)
+      .reply(200, authTokenResponse)
+  } else {
+    return nock(`https://${config.azureAuthHost}`)
+      .post(config.azureAuthPath)
+      .reply(200, authTokenResponse)
+  }
+}

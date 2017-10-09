@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const StandardRule = require('../models/standardRule.model')
+const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const PermitSelectValidator = require('../validators/permitSelect.validator')
 
@@ -11,14 +12,12 @@ module.exports = class PermitSelectController extends BaseController {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.PERMIT_SELECT, errors, PermitSelectValidator)
 
-      let authToken
-      if (request.state[Constants.COOKIE_KEY]) {
-        authToken = request.state[Constants.COOKIE_KEY].authToken
-      }
+      const authToken = CookieService.getAuthToken(request)
 
       pageContext.formValues = request.payload
 
       pageContext.standardRules = await StandardRule.list(authToken)
+      pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
       return reply
         .view('permitSelect', pageContext)
@@ -32,8 +31,9 @@ module.exports = class PermitSelectController extends BaseController {
     if (errors && errors.data.details) {
       return PermitSelectController.doGet(request, reply, errors)
     } else {
-      // TODO persist the data here if required
-      // const applicationId = request.state[Constants.COOKIE_KEY].applicationId
+      // TODO persist the chosen permit to Dynamics using the applicationId and authToken from the cookie
+      // const chosenPermit = request.payload['chosen-permit']
+      // Dynamics.setPermit(applicationId, chosenPermit)
 
       return reply.redirect(Constants.Routes.TASK_LIST.path)
     }

@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
+const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 
 module.exports = class ContactSearchController extends BaseController {
@@ -10,10 +11,7 @@ module.exports = class ContactSearchController extends BaseController {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.CONTACT_SEARCH, errors, ContactSearchController)
 
-      let authToken
-      if (request.state[Constants.COOKIE_KEY]) {
-        authToken = request.state[Constants.COOKIE_KEY].authToken
-      }
+      const authToken = CookieService.getAuthToken(request)
 
       // List the contacts
       pageContext.contacts = await Contact.list(authToken)
@@ -27,10 +25,7 @@ module.exports = class ContactSearchController extends BaseController {
   }
 
   static async doPost (request, reply) {
-    let authToken
-    if (request.state[Constants.COOKIE_KEY]) {
-      authToken = request.state[Constants.COOKIE_KEY].authToken
-    }
+    const authToken = CookieService.getAuthToken(request)
 
     if (request.payload.id) {
       try {

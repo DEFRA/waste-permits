@@ -2,15 +2,24 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
+const StandardRule = require('../models/standardRule.model')
+const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
+const TaskListValidator = require('../validators/taskList.validator')
 
 module.exports = class TaskListController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.TASK_LIST)
+      // For now we are only getting the SR2015 No 18 permit
+      const chosenPermit = 'SR2015 No 18'
 
-      // TODO: Get the task list from Dynamics
-      pageContext.taskList = ['TODO']
+      const pageContext = BaseController.createPageContext(Constants.Routes.TASK_LIST, errors, TaskListValidator)
+      const authToken = CookieService.getAuthToken(request)
+
+      pageContext.formValues = request.payload
+      pageContext.chosenPermit = chosenPermit
+      pageContext.standardRule = await StandardRule.getByCode(authToken, pageContext.chosenPermit)
+      pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
       return reply
         .view('taskList', pageContext)

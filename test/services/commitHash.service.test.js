@@ -43,7 +43,7 @@ lab.experiment('Commit hash service tests:', () => {
     done()
   })
 
-  lab.test('commitHash() returns contents of GIT_SHA file when env var not set', (done) => {
+  lab.test('commitHash() returns contents of REVISION file when env var not set', (done) => {
     fs.readFileSync = (file, encoding) => {
       return 'fromfile-fromfile-fromfile'
     }
@@ -59,7 +59,7 @@ lab.experiment('Commit hash service tests:', () => {
     done()
   })
 
-  lab.test('commitHash() sets the env var GIT_SHA after having read the reference from the GIT_SHA file', (done) => {
+  lab.test('commitHash() sets the env var GIT_SHA after having read the reference from the REVISION file', (done) => {
     fs.readFileSync = (file, encoding) => {
       return 'setfileenv-setfileenv-setfileenv'
     }

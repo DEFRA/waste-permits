@@ -9,7 +9,7 @@ module.exports = class CookieService {
   static async generateCookie (reply) {
     try {
       // Generate a CRM token
-      let authToken = await authService.getToken()
+      const authToken = await authService.getToken()
 
       // Create the cookie
       return {
@@ -42,7 +42,22 @@ module.exports = class CookieService {
         LoggingService.logInfo(`${request.path}: Missing application ID`, request)
       }
     }
-
     return isValid
+  }
+
+  static getAuthToken (request) {
+    let authToken
+    if (request.state[Constants.COOKIE_KEY]) {
+      authToken = request.state[Constants.COOKIE_KEY].authToken
+    }
+    return authToken
+  }
+
+  static getApplicationId (request) {
+    let applicationId
+    if (request.state[Constants.COOKIE_KEY]) {
+      applicationId = request.state[Constants.COOKIE_KEY].applicationId
+    }
+    return applicationId
   }
 }

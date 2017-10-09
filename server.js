@@ -3,6 +3,7 @@
 const Constants = require('./src/constants')
 const config = require('./src/config/config')
 const logConfig = require('./src/config/logConfig')
+const cookieConfig = require('./src/config/cookieConfig')
 const crumbConfig = require('./src/config/crumbConfig')
 const LoggingService = require('./src/services/logging.service')
 
@@ -41,18 +42,7 @@ server.connection({
 })
 
 // Create a session cookie in which to store a waste permit application token
-server.state(Constants.COOKIE_KEY, {
-  ttl: null,                // Session lifespan (deleted when browser closed)
-  isSecure: true,           // Secure
-  isHttpOnly: true,         // and non-secure
-  isSameSite: 'Strict',     // Don't attach cookies on cross-site requests, preventing CSRF attacks
-  encoding: 'base64json',   // Base 64 JSON encoded
-  sign: {                   // Sign values assigned to the cookie to ensure they came from the server
-    password: config.cookieValidationPassword
-  },
-  clearInvalid: false,      // Remove invalid cookies
-  strictHeader: true        // Don't allow violations of RFC 6265
-})
+server.state(Constants.COOKIE_KEY, cookieConfig.options)
 
 server.register([
   require('inert'),

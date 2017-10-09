@@ -24,8 +24,7 @@ module.exports = class SiteSiteNameController extends BaseController {
     if (errors && errors.data.details) {
       return SiteSiteNameController.doGet(request, reply, errors)
     } else {
-      // TODO persist the data here if required
-      // const applicationId = request.state[Constants.COOKIE_KEY].applicationId
+      // TODO persist the data here if required using the applicationId from the cookie
 
       return reply.redirect(Constants.Routes.TASK_LIST.path)
     }

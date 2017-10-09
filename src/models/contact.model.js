@@ -33,7 +33,7 @@ module.exports = class Contact extends BaseModel {
       })
     } catch (error) {
       // TODO: Error handling?
-      LoggingService.logError(`Unable to list Contacts: ${error}`)
+      LoggingService.logError(`Unable to get Contact by ID: ${error}`)
       throw error
     }
     return contact

@@ -7,136 +7,42 @@
 
       {{> common/errorSummary panelHeader='You need to complete these tasks'}}
 
+      <h1 id="task-list-heading" class="heading-large">
+        <span id="task-list-heading-visually-hidden" class="visually-hidden">Task list:</span>
+        {{ pageHeading }}
+      </h1>
+
+      <p class="text">
+        <span id="standard-rule-name-and-code">{{standardRule.name}} - {{standardRule.code}}</span><br>
+        <a id="select-a-different-permit" class="font-small" href="{{ permitCategoryRoute }}">Select a different permit</a>
+      </p>
+
       <form method="post" action="{{ formAction }}" name="tasklist">
-        <input type="hidden" name="crumb" value="{{crumb}}">
-
-        <h1 class="heading-large">
-          <span class="visually-hidden">Task list:</span>
-          Apply for a standard rules waste permit
-        </h1>
-
-        <p class="text">Metal recycling, vehicle storage, depollution and dismantling facility <span class="heading-small">SR2015 No 18</span><br><a class="font-small" href="/permit-category">Select a different permit</a></p>
+        <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
         <ol class="task-list">
-          <!-- 1. BEFORE YOU APPLY ############################################################### -->
+
+          {{#each standardRule.sections}}
           <li>
             <h2 class="task-list-section">
-              <span class="task-list-section-number">1. </span> Before you apply
+              <span id="{{this.id}}-number" class="task-list-section-number">{{this.sectionNumber}}. </span><span id="{{this.id}}-heading">{{this.sectionName}}</span>
             </h2>
+
             <ul class="task-list-items">
-              <li class="task-list-item " id="check-permit-cost-and-time">
-                <a class="task-name" href="/cost-time" aria-describedby="cost-and-time-completed">
-                  Check permit cost and time
-                </a>
-                <input type="hidden" name="complete[]" value="Check permit cost and time">
-              </li>
-
-              <!-- SPECIAL CASES ############################################ -->
-              <li class="task-list-item " id="confirm-the-drainage-system-for-the-vehicle-storage-area">
-                <a class="task-name" href="/drainage-type/drain">
-                  Confirm the drainage system for the vehicle storage area
-                </a>
-              </li>
-
-              <li class="task-list-item " id="confirm-that-your-operation-meets-the-rules">
-                <a class="task-name" href="/confirm-rules" aria-describedby="operation-rules-complete">
-                  Confirm that your operation meets the rules
-                </a>
-                <input type="hidden" name="complete[]" value="Confirm that your operation meets the rules">
-              </li>
-
-              <li class="task-list-item " id="tell-us-if-youve-discussed-this-application-with-us">
-                <a class="task-name" href="/pre-application" aria-describedby="preapp-completed">
-                  Tell us if you&#39;ve discussed this application with us
-                </a>
-                <input type="hidden" name="complete[]" value="Tell us if you&#39;ve discussed this application with us">
-              </li>
+              {{#each this.sectionItems}}
+                {{#if this.available}}
+                  {{> common/taskListItem
+                    id=this.id
+                    label=this.label
+                    href=this.href
+                    completedLabelId=this.completedLabelId }}
+                {{/if}}
+              {{/each}}
             </ul>
           </li>
+          {{/each}}
 
-          <!-- 2. COMPLETE APPLICATION ############################################################### -->
-          <li>
-            <h2 class="task-list-section">
-              <span class="task-list-section-number">2. </span> Complete application
-            </h2>
-            <ul class="task-list-items">
-              <li class="task-list-item " id="give-contact-details">
-                <a class="task-name" href="/contact-details" aria-describedby="contact-details-completed">
-                  Give contact details
-                </a>
-                <input type="hidden" name="complete[]" value="Give contact details">
-              </li>
-              <li class="task-list-item " id="give-permit-holder-details">
-                <a class="task-name" href="/permit-holder/type" aria-describedby="site-operator-completed">
-                  Give permit holder details
-                </a>
-                <input type="hidden" name="complete[]" value="Give permit holder details">
-              </li>
-
-              <!-- DON'T SHOW SITE FOR MOBILE PERMITS -->
-
-              <li class="task-list-item " id="give-site-name-and-location">
-                <a class="task-name" href="/site/site-name" aria-describedby="site-name-completed">
-                  Give site name and location
-                </a>
-                <input type="hidden" name="complete[]" value="Give site name and location">
-              </li>
-
-              <!-- Site plan ############################################################### -->
-              <li class="task-list-item " id="upload-the-site-plan">
-                <a class="task-name" href="/site-plan" aria-describedby="site-plan-completed">
-                  Upload the site plan
-                </a>
-                <input type="hidden" name="complete[]" value="Upload the site plan">
-              </li>
-
-              <li class="task-list-item " id="upload-technical-management-qualifications">
-                <a class="task-name" href="/technical-qualification" aria-describedby="industry-scheme-completed">
-                  Upload technical management qualifications
-                </a>
-                <input type="hidden" name="complete[]" value="Upload technical management qualifications">
-              </li>
-
-              <li class="task-list-item " id="tell-us-which-management-system-you-use">
-                <a class="task-name" href="/management-system" aria-describedby="management-system-completed">
-                  Tell us which management system you use
-                </a>
-                <input type="hidden" name="complete[]" value="Tell us which management system you use">
-              </li>
-
-              <!-- Fire prevention plan ############################################################### -->
-              <li class="task-list-item " id="upload-the-fire-prevention-plan">
-                <a class="task-name" href="/fire-prevention-plan" aria-describedby="firepp-completed">
-                  Upload the fire prevention plan
-                </a>
-                <input type="hidden" name="complete[]" value="Upload the fire prevention plan">
-              </li>
-
-              <!-- Confidentiality ############################################################### -->
-              <li class="task-list-item " id="confirm-confidentiality-needs">
-                <a class="task-name" href="/confidentiality" aria-describedby="confidentiality-completed">
-                  Confirm confidentiality needs
-                </a>
-                <input type="hidden" name="complete[]" value="Confirm confidentiality needs">
-              </li>
-            </ul>
-          </li>
-
-          <!-- 3. END AND PAY  ############################################################### -->
-          <li>
-            <h2 class="task-list-section">
-              <span class="task-list-section-number">3. </span> Send and pay
-            </h2>
-            <ul class="task-list-items">
-              <li class="task-list-item" id="submit-pay">
-                <a class="task-name" href="/check-before-sending"  aria-describedby="submit-and-pay">
-                  Send application and pay
-                </a>
-              </li>
-            </ul>
-          </li>
         </ol>
-
       </form>
     </div>
   </div>

@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
+const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 
 module.exports = class ContactDetailsController extends BaseController {
@@ -19,10 +20,7 @@ module.exports = class ContactDetailsController extends BaseController {
   }
 
   static async doPost (request, reply, errors) {
-    let authToken
-    if (request.state[Constants.COOKIE_KEY]) {
-      authToken = request.state[Constants.COOKIE_KEY].authToken
-    }
+    const authToken = CookieService.getAuthToken(request)
 
     // TODO: Our first step after confirming the user session is valid and we
     // have an authToken would be to validate the post data, possibly using
