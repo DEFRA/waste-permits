@@ -19,6 +19,8 @@ lab.beforeEach((done) => {
     return true
   }
 
+  // TOOD stub Dynamics create, update and search methods
+
   done()
 })
 
@@ -38,6 +40,7 @@ lab.experiment('Site page tests:', () => {
     }
 
     server.inject(request, (res) => {
+      console.log(res.payload)
       Code.expect(res.statusCode).to.equal(200)
 
       const parser = new DOMParser()

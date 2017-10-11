@@ -38,7 +38,7 @@ lab.beforeEach((done) => {
   DynamicsDalService.prototype.search = (query) => {
     // Dynamics StandardRule object
     return {
-      '@odata.context': `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}/$metadata#defra_standardrules(defra_rulesnamegovuk,defra_limits,defra_code,defra_wasteparametersId,defra_wasteparametersId(defra_showcostandtime,defra_confirmreadrules,defra_preapprequired,defra_contactdetailsrequired,defra_pholderdetailsrequired,defra_locationrequired,defra_siteplanrequired,defra_techcompetenceevreq,defra_mansystemrequired,defra_fireplanrequired,defra_surfacedrainagereq,defra_cnfconfidentialityreq))`,
+      '@odata.context': 'THE_DAL_QUERY',
       value: [{
         '@odata.etag': 'W/"1234567"',
         defra_rulesnamegovuk: 'Metal recycling, vehicle storage, depollution and dismantling facility',

@@ -28,7 +28,7 @@ lab.beforeEach((done) => {
   DynamicsDalService.prototype.search = (query) => {
     // Dynamics Contact objects
     return {
-      '@odata.context': `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}/$metadata#contacts(contactid,firstname,lastname,telephone1,emailaddress1)`,
+      '@odata.context': 'THE_DAL_QUERY',
       value: [
         { '@odata.etag': 'W/"1155486"',
           contactid: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
