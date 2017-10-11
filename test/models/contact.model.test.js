@@ -1,7 +1,5 @@
 'use strict'
 
-const config = require('../../src/config/config')
-
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
@@ -113,7 +111,7 @@ lab.experiment('Contact Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     testContact.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)
-      Code.expect(testContact.id).to.be.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
+      Code.expect(testContact.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
 
       done()
     })
@@ -124,7 +122,7 @@ lab.experiment('Contact Model tests:', () => {
     testContact.id = '123'
     testContact.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)
-      Code.expect(testContact.id).to.be.equal('123')
+      Code.expect(testContact.id).to.equal('123')
 
       done()
     })

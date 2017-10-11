@@ -18,6 +18,7 @@ module.exports = class Site extends BaseModel {
     const query = encodeURI(`defra_locations?$select=defra_name&$filter=${filter}`)
     try {
       const response = await dynamicsDal.search(query)
+
       const result = response.value[0]
 
       let site

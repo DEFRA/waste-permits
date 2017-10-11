@@ -1,7 +1,5 @@
 'use strict'
 
-const config = require('../../src/config/config')
-
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
@@ -30,7 +28,7 @@ lab.beforeEach((done) => {
   }
 
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (cookie) => {
+  CookieService.validateCookie = (request) => {
     return true
   }
 
