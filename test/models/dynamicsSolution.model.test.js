@@ -15,7 +15,7 @@ lab.beforeEach((done) => {
   DynamicsDalService.prototype.search = (query) => {
     // Dynamics DynamicsSolution objects
     return {
-      '@odata.context': 'THE_DAL_QUERY',
+      '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
       value: [{
         '@odata.etag': 'W/"560861"',
         friendlyname: 'Core',

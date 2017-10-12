@@ -43,7 +43,7 @@ lab.beforeEach((done) => {
   dynamicsSearchStub = DynamicsDalService.prototype.search
   DynamicsDalService.prototype.search = (query) => {
     return {
-      '@odata.context': 'THE_DAL_QUERY',
+      '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
       value: [fakeData]
     }
   }
@@ -72,7 +72,7 @@ lab.experiment('Site page tests:', () => {
     // Empty site details response
     DynamicsDalService.prototype.search = (query) => {
       return {
-        '@odata.context': 'THE_DAL_QUERY',
+        '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
         value: []
       }
     }
@@ -153,7 +153,7 @@ lab.experiment('Site page tests:', () => {
     // Empty site details response
     DynamicsDalService.prototype.search = (query) => {
       return {
-        '@odata.context': 'THE_DAL_QUERY',
+        '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
         value: []
       }
     }

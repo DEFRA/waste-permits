@@ -26,7 +26,7 @@ lab.beforeEach((done) => {
   DynamicsDalService.prototype.search = (query) => {
     // Dynamics Contact objects
     return {
-      '@odata.context': 'THE_DAL_QUERY',
+      '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
       value: [
         { '@odata.etag': 'W/"1155486"',
           contactid: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
