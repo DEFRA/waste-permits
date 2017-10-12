@@ -6525,6 +6525,32 @@
         }
       }
     },
+    "hapi-sanitize-payload": {
+      "version": "1.5.0",
+      "resolved": "https://registry.npmjs.org/hapi-sanitize-payload/-/hapi-sanitize-payload-1.5.0.tgz",
+      "integrity": "sha1-oXcj2gMhhzxwWLhsl8wkKhS7jXU=",
+      "requires": {
+        "joi": "9.2.0",
+        "lodash.clonedeep": "4.5.0",
+        "lodash.isplainobject": "4.0.6",
+        "lodash.isstring": "4.0.1",
+        "lodash.unset": "4.5.2"
+      },
+      "dependencies": {
+        "joi": {
+          "version": "9.2.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz",
+          "integrity": "sha1-M4WseQGSEwy+Iw6ALsAskhW7/to=",
+          "requires": {
+            "hoek": "4.2.0",
+            "isemail": "2.2.1",
+            "items": "2.1.1",
+            "moment": "2.18.1",
+            "topo": "2.0.2"
+          }
+        }
+      }
+    },
     "hapi-scope-start": {
       "version": "2.1.1",
       "resolved": "https://registry.npmjs.org/hapi-scope-start/-/hapi-scope-start-2.1.1.tgz",
@@ -8153,8 +8179,7 @@
     "lodash.clonedeep": {
       "version": "4.5.0",
       "resolved": "https://registry.npmjs.org/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz",
-      "integrity": "sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=",
-      "dev": true
+      "integrity": "sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8="
     },
     "lodash.cond": {
       "version": "4.5.2",
@@ -8236,14 +8261,12 @@
     "lodash.isplainobject": {
       "version": "4.0.6",
       "resolved": "https://registry.npmjs.org/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz",
-      "integrity": "sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs=",
-      "dev": true
+      "integrity": "sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs="
     },
     "lodash.isstring": {
       "version": "4.0.1",
       "resolved": "https://registry.npmjs.org/lodash.isstring/-/lodash.isstring-4.0.1.tgz",
-      "integrity": "sha1-1SfftUVuynzJu5XV2ur4i6VKVFE=",
-      "dev": true
+      "integrity": "sha1-1SfftUVuynzJu5XV2ur4i6VKVFE="
     },
     "lodash.keys": {
       "version": "3.1.2",
@@ -8300,6 +8323,11 @@
         "lodash._reinterpolate": "3.0.0",
         "lodash.escape": "3.2.0"
       }
+    },
+    "lodash.unset": {
+      "version": "4.5.2",
+      "resolved": "https://registry.npmjs.org/lodash.unset/-/lodash.unset-4.5.2.tgz",
+      "integrity": "sha1-Nw0dPoW3Kn4bDN8tJyEhMG8j5O0="
     },
     "lodash.values": {
       "version": "2.4.1",

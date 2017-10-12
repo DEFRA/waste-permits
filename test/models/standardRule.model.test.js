@@ -47,7 +47,7 @@ lab.experiment('StandardRule Model tests:', () => {
   lab.test('list() method returns a list of StandardRule objects', (done) => {
     DynamicsDalService.prototype.search = (query) => {
       return {
-        '@odata.context': 'THE_DAL_QUERY',
+        '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
         value: [{
           '@odata.etag': 'W/"1234567"',
           defra_limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
@@ -87,7 +87,7 @@ lab.experiment('StandardRule Model tests:', () => {
   lab.test('getByCode() method returns a StandardRule object', (done) => {
     DynamicsDalService.prototype.search = (query) => {
       return {
-        '@odata.context': 'THE_DAL_QUERY',
+        '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
         value: [{
           '@odata.etag': 'W/"1234567"',
           defra_limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',

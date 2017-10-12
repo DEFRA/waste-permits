@@ -18,7 +18,7 @@ let routePath = '/contact-details'
 lab.beforeEach((done) => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (cookie) => {
+  CookieService.validateCookie = (request) => {
     return true
   }
 

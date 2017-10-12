@@ -10,9 +10,12 @@ const LoggingService = require('./src/services/logging.service')
 const fs = require('fs')
 const Path = require('path')
 const Hapi = require('hapi')
+const Inert = require('inert')
+const Vision = require('vision')
 const HapiRouter = require('hapi-router')
 const Blipp = require('blipp')
 const Disinfect = require('disinfect')
+const SanitizePayload = require('hapi-sanitize-payload')
 const HapiAlive = require('hapi-alive')
 const Good = require('good')
 const HapiDevErrors = require('hapi-dev-errors')
@@ -45,28 +48,46 @@ server.connection({
 server.state(Constants.COOKIE_KEY, cookieConfig.options)
 
 server.register([
-  require('inert'),
-  require('vision'),
+  // Static file and directory handlers plugin for hapi.js
+  // See https://www.npmjs.com/package/inert
+  Inert,
+
+  // Templates rendering plugin support for hapi.js
+  // See https://www.npmjs.com/package/vision
+  Vision,
   {
-    // Plugin to automatically load the routes
+    // Plugin to automatically load the routes based on their file location
+    // See https://www.npmjs.com/package/hapi-router
     register: HapiRouter,
     options: {
       routes: './src/routes/*.js'
     }
   }, {
     // Plugin to display the routes table to console at startup
+    // See https://www.npmjs.com/package/blipp
     register: Blipp,
     options: {}
   }, {
     // Plugin to prevent CSS attack by applying Google's Caja HTML Sanitizer on route query, payload, and params
+    // See https://www.npmjs.com/package/disinfect
     register: Disinfect,
     options: {
+      deleteEmpty: true,
+      deleteWhitespace: true,
       disinfectQuery: true,
       disinfectParams: true,
       disinfectPayload: true
     }
   }, {
+    // Plugin to recursively sanitize or prune values in a request.payload object
+    // See https://www.npmjs.com/package/hapi-sanitize-payload
+    register: SanitizePayload,
+    options: {
+      pruneMethod: 'delete'
+    }
+  }, {
     // Plugin providing a health route for the server
+    // See https://www.npmjs.com/package/hapi-alive
     register: HapiAlive,
     options: {
       path: Constants.Routes.HEALTH.path,
@@ -81,16 +102,19 @@ server.register([
     }
   }, {
     // Plugin to return an error view for web request. Only used when the server is running in DEVELOPMENT mode.
+    // See https://www.npmjs.com/package/hapi-dev-errors
     register: HapiDevErrors,
     options: {
       showErrors: config.nodeEnvironment === 'DEVELOPMENT'
     }
   }, {
     // Plugin for logging
+    // See https://www.npmjs.com/package/good
     register: Good,
     options: logConfig.options
   }, {
     // Plugin for CSRF tokens
+    // See https://www.npmjs.com/package/crumb
     register: Crumb,
     options: crumbConfig.options
   }], (err) => {

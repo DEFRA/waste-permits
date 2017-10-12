@@ -27,7 +27,7 @@ lab.beforeEach((done) => {
     return fakeCookie
   }
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (cookie) => {
+  CookieService.validateCookie = (request) => {
     return true
   }
 

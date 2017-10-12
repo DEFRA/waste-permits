@@ -35,7 +35,7 @@ lab.experiment('Application Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     testApplication.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)
-      Code.expect(testApplication.id).to.be.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
+      Code.expect(testApplication.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
 
       done()
     })
