@@ -10,6 +10,11 @@ module.exports = class Site extends BaseModel {
     this.id = site.id
     this.name = site.name
     this.applicationId = site.applicationId
+    this.complete = this.isComplete()
+  }
+
+  isComplete () {
+    return this.name !== undefined
   }
 
   static async getByApplicationId (authToken, applicationId) {
@@ -55,6 +60,10 @@ module.exports = class Site extends BaseModel {
         // Update Site
         query = `defra_locations(${this.id})`
         await dynamicsDal.update(query, dataObject)
+      }
+
+      if (this.isComplete()) {
+        // TODO: Persist completeness to Dyanmics
       }
     } catch (error) {
       LoggingService.logError(`Unable to save Site: ${error}`)
