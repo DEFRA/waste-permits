@@ -47,7 +47,7 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Select a permit page tests:', () => {
-  lab.test('The page should have a back link', (done) => {
+  lab.test('The page should NOT have a back link', (done) => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -62,7 +62,7 @@ lab.experiment('Select a permit page tests:', () => {
       const doc = parser.parseFromString(res.payload, 'text/html')
 
       const element = doc.getElementById('back-link')
-      Code.expect(element).to.exist()
+      Code.expect(element).to.not.exist()
 
       done()
     })
