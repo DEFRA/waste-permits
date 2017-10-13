@@ -36,6 +36,16 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(200)
+
+      // Should have:
+      // confirm-rules-heading
+      // confirm-rules-paragraph-1
+      // operation-meets-rules-button
+
+      // After post:
+      // confirm-result-message
+      // return-to-task-list-button
+
       done()
     })
   })
