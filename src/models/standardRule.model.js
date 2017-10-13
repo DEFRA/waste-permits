@@ -169,6 +169,23 @@ module.exports = class StandardRule extends BaseModel {
     finalItem.available = true
   }
 
+  // TODO - feed in the real completeness values
+  setCompleteness (rulesets) {
+    this.sections.forEach((section) => {
+      section.sectionItems.forEach((sectionItem) => {
+        if (sectionItem.available) {
+          sectionItem.complete = true
+        }
+      })
+    })
+
+    // Set the final item (Send application and pay) to be always available
+    // Since this is always available this is currently not obtained from Dynamics
+    const finalSection = this.sections[this.sections.length - 1]
+    const finalItem = finalSection.sectionItems[finalSection.sectionItems.length - 1]
+    finalItem.available = true
+  }
+
   static async getByCode (authToken, code) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
@@ -192,6 +209,9 @@ module.exports = class StandardRule extends BaseModel {
 
       // Set the availability of each task list item
       standardRule.setRulesetAvailability(result.defra_wasteparametersId)
+
+      // TODO
+      standardRule.setCompleteness(result.defra_wasteparametersId)
     } catch (error) {
       LoggingService.logError(`Unable to get StandardRule by code: ${error}`)
       throw error

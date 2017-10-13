@@ -3,10 +3,14 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const DOMParser = require('xmldom').DOMParser
+
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 
 let validateCookieStub
+
+let routePath = '/permit/category'
 
 lab.beforeEach((done) => {
   // Stub methods
@@ -26,10 +30,31 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('What do you want the permit for? page tests:', () => {
+  lab.test('The page should have a back link', (done) => {
+    const request = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      const element = doc.getElementById('back-link')
+      Code.expect(element).to.exist()
+
+      done()
+    })
+  })
+
   lab.test('GET /permit/category success ', (done) => {
     const request = {
       method: 'GET',
-      url: '/permit/category',
+      url: routePath,
       headers: {},
       payload: {}
     }
@@ -43,7 +68,7 @@ lab.experiment('What do you want the permit for? page tests:', () => {
   lab.test('POST /permit/category success redirects to the permit select route', (done) => {
     const request = {
       method: 'POST',
-      url: '/permit/category',
+      url: routePath,
       headers: {},
       payload: {}
     }
@@ -59,7 +84,7 @@ lab.experiment('What do you want the permit for? page tests:', () => {
   lab.test('GET /permit/category redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'GET',
-      url: '/permit/category',
+      url: routePath,
       headers: {},
       payload: {}
     }

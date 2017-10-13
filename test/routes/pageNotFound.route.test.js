@@ -8,7 +8,7 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 
 let validateCookieStub
-let pageNotFoundRoute = '/page-not-found'
+let routePath = '/page-not-found'
 
 lab.beforeEach((done) => {
   // Stub methods
@@ -26,35 +26,52 @@ lab.afterEach((done) => {
   done()
 })
 
-let validate404Page = (res) => {
-  Code.expect(res.statusCode).to.equal(200)
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
-
-  let element = doc.getElementById('page-not-found-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`We can't find that page`)
-
-  element = doc.getElementById('page-not-found-paragraph').firstChild
-  Code.expect(element.nodeValue).to.exist()
-
-  element = doc.getElementById('page-not-found-task-list-link').firstChild
-  Code.expect(element.nodeValue).to.exist()
-
-  element = doc.getElementById('page-not-found-apply-link').firstChild
-  Code.expect(element.nodeValue).to.exist()
-}
-
 lab.experiment('Page Not Found (404) page tests:', () => {
+  lab.test('The page should NOT have a back link', (done) => {
+    const request = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element = doc.getElementById('back-link')
+      Code.expect(element).to.not.exist()
+
+      done()
+    })
+  })
+
   lab.test('GET /page-not-found returns the 404 page correctly when the user has a valid cookie', (done) => {
     const request = {
       method: 'GET',
-      url: pageNotFoundRoute,
+      url: routePath,
       headers: {}
     }
 
     server.inject(request, (res) => {
-      validate404Page(res)
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element = doc.getElementById('page-not-found-heading').firstChild
+      Code.expect(element.nodeValue).to.equal(`We can't find that page`)
+
+      element = doc.getElementById('page-not-found-paragraph').firstChild
+      Code.expect(element.nodeValue).to.exist()
+
+      element = doc.getElementById('page-not-found-task-list-link').firstChild
+      Code.expect(element.nodeValue).to.exist()
+
+      element = doc.getElementById('page-not-found-apply-link').firstChild
+      Code.expect(element.nodeValue).to.exist()
 
       done()
     })
@@ -63,7 +80,7 @@ lab.experiment('Page Not Found (404) page tests:', () => {
   lab.test('GET /page-not-found redirects to the start page when the user does not have a valid cookie', (done) => {
     const request = {
       method: 'GET',
-      url: pageNotFoundRoute,
+      url: routePath,
       headers: {}
     }
 
@@ -87,7 +104,7 @@ lab.experiment('Page Not Found (404) page tests:', () => {
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(pageNotFoundRoute)
+      Code.expect(res.headers['location']).to.equal(routePath)
       done()
     })
   })

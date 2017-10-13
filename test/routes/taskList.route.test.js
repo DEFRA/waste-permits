@@ -77,6 +77,27 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Task List page tests:', () => {
+  lab.test('The page should NOT have a back link', (done) => {
+    const request = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element = doc.getElementById('back-link')
+      Code.expect(element).to.not.exist()
+
+      done()
+    })
+  })
+
   lab.test('GET /task-list success ', (done) => {
     const request = {
       method: 'GET',

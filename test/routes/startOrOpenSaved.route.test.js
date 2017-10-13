@@ -46,6 +46,27 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Start or Open Saved page tests:', () => {
+  lab.test('The page should NOT have a back link', (done) => {
+    const request = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element = doc.getElementById('back-link')
+      Code.expect(element).to.not.exist()
+
+      done()
+    })
+  })
+
   lab.test('GET returns the Start or Open Saved page correctly', (done) => {
     const request = {
       method: 'GET',
