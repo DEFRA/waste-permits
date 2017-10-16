@@ -6,3 +6,9 @@ $(window).on('load', function () {
     $('.error-summary').focus()
   }
 })
+
+$(document).ready(function () {
+  // Remove the no-js class if the user has Javascript available. This will show any elements
+  // on the page that should only be visible when Javascript is available.
+  $('.no-js').removeClass('no-js')
+})

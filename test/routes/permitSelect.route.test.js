@@ -3,8 +3,9 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const server = require('../../server')
 const DOMParser = require('xmldom').DOMParser
+
+const server = require('../../server')
 
 const StandardRule = require('../../src/models/standardRule.model')
 const CookieService = require('../../src/services/cookie.service')
@@ -46,6 +47,27 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Select a permit page tests:', () => {
+  lab.test('The page should NOT have a back link', (done) => {
+    const request = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      const element = doc.getElementById('back-link')
+      Code.expect(element).to.not.exist()
+
+      done()
+    })
+  })
+
   lab.test('GET /permit/select returns the permit selection page correctly', (done) => {
     const request = {
       method: 'GET',
