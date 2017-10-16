@@ -30,6 +30,7 @@ const loadHealthTemplate = () => {
     .replace('##APP_VERSION##', Constants.getVersion())
     .replace('##GITHUB_HREF##', `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`)
     .replace('##GITHB_COMMIT_REF##', config.gitSha)
+    .replace('##APP_PATH##', fs.realpathSync(__dirname))
   return template
 }
 
