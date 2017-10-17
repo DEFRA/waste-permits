@@ -11,9 +11,8 @@ $path: "/public/images/";
 @import 'patterns/permit-select';
 @import 'patterns/task-list';
 
-
-.teststyle {
-  color: green;
+.no-js {
+  display: none;
 }
 
 // EA footer links

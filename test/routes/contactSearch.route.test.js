@@ -3,8 +3,9 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const server = require('../../server')
 const DOMParser = require('xmldom').DOMParser
+
+const server = require('../../server')
 
 const Contact = require('../../src/models/contact.model')
 const CookieService = require('../../src/services/cookie.service')
@@ -12,6 +13,8 @@ const CookieService = require('../../src/services/cookie.service')
 let validateCookieStub
 let contactListStub
 let contactGetByIdStub
+
+let routePath = '/contact-search'
 
 lab.beforeEach((done) => {
   // Stub methods
@@ -69,10 +72,31 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Contact search page tests:', () => {
+  lab.test('The page should have a back link', (done) => {
+    const request = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      const element = doc.getElementById('back-link')
+      Code.expect(element).to.exist()
+
+      done()
+    })
+  })
+
   lab.test('GET /contact-search returns the contact search page correctly', (done) => {
     const request = {
       method: 'GET',
-      url: '/contact-search',
+      url: routePath,
       headers: {}
     }
 
@@ -92,7 +116,7 @@ lab.experiment('Contact search page tests:', () => {
   lab.test('POST /contact-search success redirects to contact search page', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact-search',
+      url: routePath,
       headers: {},
       payload: {
         id: '7a8e4354-4f24-e711-80fd-5065f38a1b01'
@@ -101,7 +125,7 @@ lab.experiment('Contact search page tests:', () => {
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/contact-search')
+      Code.expect(res.headers['location']).to.equal(routePath)
 
       done()
     })
@@ -110,7 +134,7 @@ lab.experiment('Contact search page tests:', () => {
   lab.test('POST /contact-search redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'POST',
-      url: '/contact-search',
+      url: routePath,
       headers: {},
       payload: {
         id: ''

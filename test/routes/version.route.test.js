@@ -12,6 +12,8 @@ const CookieService = require('../../src/services/cookie.service')
 let generateCookieStub
 let dynamicSolutionGetStub
 
+let routePath = '/version'
+
 // Test data
 const dynamicsVersionInfo = [{
   componentName: 'FIRST_COMPONENT',
@@ -53,10 +55,31 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Version page tests:', () => {
+  lab.test('The page should NOT have a back link', (done) => {
+    const request = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element = doc.getElementById('back-link')
+      Code.expect(element).to.not.exist()
+
+      done()
+    })
+  })
+
   lab.test('GET /version returns the version page correctly', (done) => {
     const request = {
       method: 'GET',
-      url: '/version',
+      url: routePath,
       headers: {}
     }
 

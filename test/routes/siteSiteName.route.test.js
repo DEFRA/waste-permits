@@ -62,6 +62,34 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Site page tests:', () => {
+  lab.test('The page should have a back link', (done) => {
+    const request = {
+      method: 'GET',
+      url: routePath,
+      headers: {}
+    }
+
+    // Empty site details response
+    DynamicsDalService.prototype.search = (query) => {
+      return {
+        '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
+        value: []
+      }
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      const element = doc.getElementById('back-link')
+      Code.expect(element).to.exist()
+
+      done()
+    })
+  })
+
   lab.test('GET /site/site-name returns the site page correctly when it is a new application', (done) => {
     const request = {
       method: 'GET',
