@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+
 const server = require('../../server')
 
 const Contact = require('../../src/models/contact.model')
@@ -50,6 +51,27 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Contact details page tests:', () => {
+  lab.test('The page should have a back link', (done) => {
+    const request = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      const element = doc.getElementById('back-link')
+      Code.expect(element).to.exist()
+
+      done()
+    })
+  })
+
   lab.test('GET /contact-details returns the contact page correctly', (done) => {
     const request = {
       method: 'GET',
