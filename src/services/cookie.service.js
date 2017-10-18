@@ -60,4 +60,18 @@ module.exports = class CookieService {
     }
     return applicationId
   }
+
+  static getApplicationLineId (request) {
+    let applicationLineId
+    if (request.state[Constants.COOKIE_KEY]) {
+      applicationLineId = request.state[Constants.COOKIE_KEY].applicationLineId
+    }
+    return applicationLineId
+  }
+
+  static setApplicationLineId (request, applicationLineId) {
+    if (request.state[Constants.COOKIE_KEY]) {
+      request.state[Constants.COOKIE_KEY].applicationLineId = applicationLineId
+    }
+  }
 }

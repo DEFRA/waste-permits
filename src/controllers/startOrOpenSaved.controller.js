@@ -2,8 +2,8 @@
 
 const Constants = require('../constants')
 const LoggingService = require('../services/logging.service')
-const CookieService = require('../services/cookie.service')
 const BaseController = require('./base.controller')
+const CookieService = require('../services/cookie.service')
 const StartOrOpenSavedValidator = require('../validators/startOrOpenSaved.validator')
 const Application = require('../models/application.model')
 

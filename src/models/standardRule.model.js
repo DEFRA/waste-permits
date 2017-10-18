@@ -185,6 +185,7 @@ module.exports = class StandardRule extends BaseModel {
       const result = response.value[0]
 
       // Set StandardRule properties
+      standardRule.id = result.defra_standardruleid
       standardRule.name = result.defra_rulesnamegovuk
       standardRule.limits = result.defra_limits
       standardRule.code = result.defra_code
@@ -224,6 +225,7 @@ module.exports = class StandardRule extends BaseModel {
       response.value.forEach((standardRule) => {
         standardRules.results.push(new StandardRule({
           // Construct the permit
+          id: standardRule.defra_standardruleid,
           name: standardRule.defra_rulesnamegovuk,
           limits: standardRule.defra_limits,
           code: standardRule.defra_code

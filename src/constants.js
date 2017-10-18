@@ -163,6 +163,14 @@ Constants.RulesetIds = {
   WASTE_RECOVERY_PLAN: 'defra_wasterecoveryplanreq'
 }
 
+Constants.Dynamics = {
+  WASTE_REGIME: 910400000,
+  PermitTypes: {
+    STANDARD: 910400000,
+    BESPOKE: 910400001
+  }
+}
+
 Constants.TaskList = {
   SectionHeadings: {
     BEFORE_YOU_APPLY: 'Before you apply',
