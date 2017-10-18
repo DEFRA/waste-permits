@@ -13,7 +13,7 @@ let generateCookieStub
 let validateCookieStub
 let dynamicsSearchStub
 
-let routePath = '/task-list'
+const routePath = '/task-list'
 
 const fakeCookie = {
   applicationId: 'my_application_id',

@@ -6,14 +6,18 @@ const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
+const CookieService = require('../../src/services/cookie.service')
+const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 const StandardRule = require('../../src/models/standardRule.model')
-const CookieService = require('../../src/services/cookie.service')
+
 
 let validateCookieStub
 let standardRuleListStub
+let dynamicsSearchStub
+let dynamicsCreateStub
 
-let routePath = '/permit/select'
+const routePath = '/permit/select'
 
 lab.beforeEach((done) => {
   // Stub methods
@@ -26,13 +30,51 @@ lab.beforeEach((done) => {
   StandardRule.list = (authToken) => {
     return {
       count: 1,
-      results: [
-        { name: 'Metal recycling, vehicle storage, depollution and dismantling facility',
-          limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
-          code: 'SR2015 No 18',
-          codeForId: 'sr2015-no-18'}
-      ]
+      results: [{
+        id: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
+        name: 'Metal recycling, vehicle storage, depollution and dismantling facility',
+        limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
+        code: 'SR2015 No 18',
+        codeForId: 'sr2015-no-18'
+      }]
     }
+  }
+
+  dynamicsSearchStub = DynamicsDalService.prototype.search
+  DynamicsDalService.prototype.search = (query) => {
+    // Dynamics StandardRule object
+    return {
+      '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
+      value: [{
+        '@odata.etag': 'W/"1234567"',
+        defra_rulesnamegovuk: 'Metal recycling, vehicle storage, depollution and dismantling facility',
+        defra_limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
+        defra_code: 'SR2015 No 18',
+        defra_standardruleid: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
+        defra_wasteparametersId: {
+          defra_showcostandtime: true,
+          defra_confirmreadrules: true,
+          defra_preapprequired: true,
+          defra_contactdetailsrequired: true,
+          defra_pholderdetailsrequired: true,
+          defra_locationrequired: true,
+
+          // Turn off the Upload Site Plan section
+          defra_siteplanrequired: false,
+
+          defra_techcompetenceevreq: true,
+          defra_mansystemrequired: true,
+          defra_fireplanrequired: true,
+          defra_surfacedrainagereq: true,
+          defra_cnfconfidentialityreq: true
+        }
+      }]
+    }
+  }
+
+  dynamicsCreateStub = DynamicsDalService.prototype.create
+  DynamicsDalService.prototype.create = (dataObject, query) => {
+    return '7a8e4354-4f24-e711-80fd-5065f38a1b01'
   }
 
   done()
@@ -42,6 +84,8 @@ lab.afterEach((done) => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
   StandardRule.prototype.list = standardRuleListStub
+  DynamicsDalService.prototype.search = dynamicsSearchStub
+  DynamicsDalService.prototype.create = dynamicsCreateStub
 
   done()
 })
