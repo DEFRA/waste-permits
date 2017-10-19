@@ -9,10 +9,9 @@ const PermitSelectValidator = require('../validators/permitSelect.validator')
 const ApplicationLine = require('../models/applicationLine.model')
 
 module.exports = class PermitSelectController extends BaseController {
-  static async doGet (request, reply, errors) {
+  static async doGet(request, reply, errors) {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.PERMIT_SELECT, errors, PermitSelectValidator)
-
       const authToken = CookieService.getAuthToken(request)
 
       pageContext.formValues = request.payload
@@ -28,7 +27,7 @@ module.exports = class PermitSelectController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  static async doPost(request, reply, errors) {
     if (errors && errors.data.details) {
       return PermitSelectController.doGet(request, reply, errors)
     } else {
@@ -50,6 +49,10 @@ module.exports = class PermitSelectController extends BaseController {
         CookieService.setApplicationLineId(request, applicationLine.id)
 
         return reply.redirect(Constants.Routes.TASK_LIST.path)
+
+          // Add the updated cookie
+          .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY], Constants.COOKIE_PATH)
+
       } catch (error) {
         LoggingService.logError(error)
         return reply.redirect(Constants.Routes.ERROR.path)
@@ -57,7 +60,7 @@ module.exports = class PermitSelectController extends BaseController {
     }
   }
 
-  static handler (request, reply, source, errors) {
+  static handler(request, reply, source, errors) {
     return BaseController.handler(request, reply, errors, PermitSelectController)
   }
 }

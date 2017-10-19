@@ -30,9 +30,6 @@ module.exports = class CookieService {
     } else {
       const applicationId = cookie.applicationId
       if (applicationId) {
-        // TODO - Determine if we are going to call Dynamics to validate the applicationId
-        // e.g.
-        // isValid = dynamics.validateApplicationId(applicationId)
         if (applicationId.length > 0) {
           isValid = true
         } else {

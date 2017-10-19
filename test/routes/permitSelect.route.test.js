@@ -11,7 +11,6 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 const StandardRule = require('../../src/models/standardRule.model')
 
-
 let validateCookieStub
 let standardRuleListStub
 let dynamicsSearchStub
