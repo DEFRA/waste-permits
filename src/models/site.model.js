@@ -10,14 +10,13 @@ module.exports = class Site extends BaseModel {
     this.id = site.id
     this.name = site.name
     this.applicationId = site.applicationId
-    this.complete = this.isComplete()
   }
 
   isComplete () {
     return this.name !== undefined
   }
 
-  static async getByApplicationId (authToken, applicationId) {
+  static async getByApplicationId (authToken, applicationId, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const filter = `_defra_applicationid_value eq ${applicationId}`
     const query = encodeURI(`defra_locations?$select=defra_name&$filter=${filter}`)
@@ -31,6 +30,7 @@ module.exports = class Site extends BaseModel {
         site = new Site({
           id: result.defra_locationid,
           applicationId: applicationId,
+          applicationLineId: applicationLineId,
           name: result.defra_name
         })
       }
@@ -62,9 +62,21 @@ module.exports = class Site extends BaseModel {
         await dynamicsDal.update(query, dataObject)
       }
 
-      if (this.isComplete()) {
-        // TODO: Persist completeness to Dyanmics
-      }
+      // TODO REMOVE THIS !!!!!!!!!!!!!!!!!!!!!!
+      // this.applicationLineId = '41241144-c1b4-e711-810d-5065f38a5b01'
+
+      // Need to confirm if/how we are going to pass in applicationLineId
+
+      // Persist completeness to Dyanmics
+      // const completeDataObject = {
+      //   defra_locationrequired_completed: true
+      //   // defra_locationrequired_completed: this.isComplete()
+      // }
+      // query = `defra_wasteparams(${this.applicationLineId})/defra_locationrequired_completed`
+      // query = `defra_wasteparamses(${this.applicationLineId})/defra_locationrequired_completed`
+
+      // TODO get tbis to work
+      // this.id = await dynamicsDal.partialUpdate(query, completeDataObject)
     } catch (error) {
       LoggingService.logError(`Unable to save Site: ${error}`)
       throw error

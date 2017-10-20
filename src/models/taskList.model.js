@@ -21,7 +21,7 @@ module.exports = class TaskList extends BaseModel {
 
       taskList._setRulesetAvailabilityAndCompleteness(response.defra_parametersId)
     } catch (error) {
-      LoggingService.logError(`Unable to get StandardRule by code: ${error}`)
+      LoggingService.logError(`Unable to get Task List by applicationLineId: ${error}`)
       throw error
     }
 
@@ -171,17 +171,14 @@ module.exports = class TaskList extends BaseModel {
   }
 
   _setRulesetAvailabilityAndCompleteness (rulesets) {
-    console.log('rulesets:', rulesets)
     // Iterate through the task list section items
     this.sections.forEach((section) => {
       section.sectionItems.forEach((sectionItem) => {
-
         // Set availability
         sectionItem.available = rulesets[sectionItem.rulesetId]
 
         // Set completeness
         sectionItem.complete = rulesets[sectionItem.rulesetId + '_completed']
-        console.log(rulesets[sectionItem.rulesetId + '_completed'])
       })
     })
 
