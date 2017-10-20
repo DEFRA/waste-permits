@@ -15,8 +15,6 @@ let validateCookieStub
 let standardRuleGetByCodeStub
 let taskListGetByApplicationLineIdStub
 
-let srStub
-
 const routePath = '/task-list'
 
 const fakeCookie = {
@@ -200,51 +198,6 @@ lab.beforeEach((done) => {
   TaskList.getByApplicationLineId = (authToken, applicationLineId) => {
     return fakeTaskList
   }
-
-  // dynamicsSearchStub = DynamicsDalService.prototype.search
-  // DynamicsDalService.prototype.search = (query) => {
-  //   // TODO confirm this
-  //   // Dynamics Task List (ApplicationLine) object
-  //   return {
-  //     '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
-  //     value: [{
-  //       '@odata.etag': 'W/"1234567"',
-  //       defra_rulesnamegovuk: 'Metal recycling, vehicle storage, depollution and dismantling facility',
-  //       defra_limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
-  //       defra_code: 'SR2015 No 18',
-  //       defra_standardruleid: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
-  //       defra_wasteparametersId: {
-  //         defra_showcostandtime: true,
-  //         defra_showcostandtime_completed: false,
-  //         defra_confirmreadrules: true,
-  //         defra_confirmreadrules_completed: false,
-  //         defra_preapprequired: true,
-  //         defra_preapprequired_completed: false,
-  //         defra_contactdetailsrequired: true,
-  //         defra_contactdetailsrequired_completed: false,
-  //         defra_pholderdetailsrequired: true,
-  //         defra_pholderdetailsrequired_completed: false,
-  //         defra_locationrequired: true,
-  //         defra_locationrequired_completed: false,
-  //
-  //         // Turn off the Upload Site Plan section
-  //         defra_siteplanrequired: false,
-  //         defra_siteplanrequired_completed: false,
-  //
-  //         defra_techcompetenceevreq: true,
-  //         defra_techcompetenceevreq_completed: false,
-  //         defra_mansystemrequired: true,
-  //         defra_mansystemrequired_completed: false,
-  //         defra_fireplanrequired: true,
-  //         defra_fireplanrequired_completed: false,
-  //         defra_surfacedrainagereq: true,
-  //         defra_surfacedrainagereq_completed: false,
-  //         defra_cnfconfidentialityreq: true
-  //         defra_cnfconfidentialityreq_completed: false
-  //       }
-  //     }]
-  //   }
-  // }
 
   done()
 })
