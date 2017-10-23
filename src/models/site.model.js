@@ -12,7 +12,11 @@ module.exports = class Site extends BaseModel {
     this.applicationId = site.applicationId
   }
 
-  static async getByApplicationId (authToken, applicationId) {
+  isComplete () {
+    return this.name !== undefined
+  }
+
+  static async getByApplicationId (authToken, applicationId, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const filter = `_defra_applicationid_value eq ${applicationId}`
     const query = encodeURI(`defra_locations?$select=defra_name&$filter=${filter}`)
@@ -26,6 +30,7 @@ module.exports = class Site extends BaseModel {
         site = new Site({
           id: result.defra_locationid,
           applicationId: applicationId,
+          applicationLineId: applicationLineId,
           name: result.defra_name
         })
       }

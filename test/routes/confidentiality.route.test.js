@@ -10,7 +10,7 @@ const CookieService = require('../../src/services/cookie.service')
 
 let validateCookieStub
 
-let routePath = '/confidentiality'
+const routePath = '/confidentiality'
 
 lab.beforeEach((done) => {
   // Stub methods

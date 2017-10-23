@@ -14,7 +14,7 @@ let validateCookieStub
 let contactListStub
 let contactGetByIdStub
 
-let routePath = '/contact-search'
+const routePath = '/contact-search'
 
 lab.beforeEach((done) => {
   // Stub methods

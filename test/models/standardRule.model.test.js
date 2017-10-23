@@ -10,23 +10,12 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let dynamicsSearchStub
 
-// Dynamics StandardRule objects
-const wasteParameters = {
-  defra_showcostandtime: true,
-  defra_confirmreadrules: true,
-  defra_preapprequired: true,
-  defra_contactdetailsrequired: true,
-  defra_pholderdetailsrequired: true,
-  defra_locationrequired: true,
-
-  // Turn off the Upload Site Plan section
-  defra_siteplanrequired: false,
-
-  defra_techcompetenceevreq: true,
-  defra_mansystemrequired: true,
-  defra_fireplanrequired: true,
-  defra_surfacedrainagereq: true,
-  defra_cnfconfidentialityreq: true
+const fakeStandardRule = {
+  id: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
+  name: 'Metal recycling, vehicle storage, depollution and dismantling facility',
+  limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
+  code: 'SR2015 No 18',
+  codeForId: 'sr2015-no-18'
 }
 
 lab.beforeEach((done) => {
@@ -93,28 +82,18 @@ lab.experiment('StandardRule Model tests:', () => {
           defra_limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
           defra_code: 'SR2015 No 18',
           defra_rulesnamegovuk: 'Metal recycling, vehicle storage, depollution and dismantling facility',
-          defra_standardruleid: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
-          defra_wasteparametersId: wasteParameters
+          defra_standardruleid: '7a8e4354-4f24-e711-80fd-5065f38a1b01'
         }]
       }
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     StandardRule.getByCode().then((standardRule) => {
-      Code.expect(Array.isArray(standardRule.sections)).to.be.true()
-      Code.expect(standardRule.sections.length).to.equal(4)
-
-      Code.expect(Array.isArray(standardRule.sections[0].sectionItems)).to.be.true()
-      Code.expect(standardRule.sections[0].sectionItems.length).to.equal(2)
-
-      Code.expect(Array.isArray(standardRule.sections[1].sectionItems)).to.be.true()
-      Code.expect(standardRule.sections[1].sectionItems.length).to.equal(1)
-
-      Code.expect(Array.isArray(standardRule.sections[2].sectionItems)).to.be.true()
-      Code.expect(standardRule.sections[2].sectionItems.length).to.equal(9)
-
-      Code.expect(Array.isArray(standardRule.sections[3].sectionItems)).to.be.true()
-      Code.expect(standardRule.sections[3].sectionItems.length).to.equal(1)
+      Code.expect(standardRule.id).to.equal(fakeStandardRule.id)
+      Code.expect(standardRule.name).to.equal(fakeStandardRule.name)
+      Code.expect(standardRule.limits).to.equal(fakeStandardRule.limits)
+      Code.expect(standardRule.code).to.equal(fakeStandardRule.code)
+      Code.expect(standardRule.codeForId).to.equal(fakeStandardRule.codeForId)
 
       Code.expect(spy.callCount).to.equal(1)
 

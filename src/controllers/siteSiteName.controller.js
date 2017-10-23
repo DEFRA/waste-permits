@@ -13,6 +13,7 @@ module.exports = class SiteSiteNameController extends BaseController {
       const pageContext = BaseController.createPageContext(Constants.Routes.SITE_SITE_NAME, errors, SiteSiteNameValidator)
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
+      const applicationLineId = CookieService.getApplicationLineId(request)
 
       if (request.payload) {
         // If we have Site details in the payload then display them in the form
@@ -20,7 +21,7 @@ module.exports = class SiteSiteNameController extends BaseController {
       } else {
         // Get the Site for this application (if we have one)
         try {
-          const site = await Site.getByApplicationId(authToken, applicationId)
+          const site = await Site.getByApplicationId(authToken, applicationId, applicationLineId)
           if (site) {
             pageContext.formValues = {
               'site-name': site.name
@@ -46,15 +47,17 @@ module.exports = class SiteSiteNameController extends BaseController {
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
+      const applicationLineId = CookieService.getApplicationLineId(request)
 
       // Get the Site for this application (if we have one)
-      let site = await Site.getByApplicationId(authToken, applicationId)
+      let site = await Site.getByApplicationId(authToken, applicationId, applicationLineId)
 
       if (!site) {
         // Create new Site
         site = new Site({
           name: request.payload['site-name'],
-          applicationId: applicationId
+          applicationId: applicationId,
+          applicationLineId: applicationLineId
         })
       } else {
         // Update existing Site

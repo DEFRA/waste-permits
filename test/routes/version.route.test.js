@@ -12,7 +12,7 @@ const CookieService = require('../../src/services/cookie.service')
 let generateCookieStub
 let dynamicSolutionGetStub
 
-let routePath = '/version'
+const routePath = '/version'
 
 // Test data
 const dynamicsVersionInfo = [{

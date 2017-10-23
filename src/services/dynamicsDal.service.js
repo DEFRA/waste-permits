@@ -23,6 +23,11 @@ module.exports = class DynamicsDalService {
     this._call(options, dataObject)
   }
 
+  async partialUpdate (query, dataObject) {
+    const options = this._requestOptions(this.authToken, query, 'PUT', dataObject)
+    this._call(options, dataObject)
+  }
+
   async search (query) {
     const options = this._requestOptions(this.authToken, query, 'GET')
     const result = await this._call(options)
