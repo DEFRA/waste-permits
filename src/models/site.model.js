@@ -61,7 +61,6 @@ module.exports = class Site extends BaseModel {
         query = `defra_locations(${this.id})`
         await dynamicsDal.update(query, dataObject)
       }
-
     } catch (error) {
       LoggingService.logError(`Unable to save Site: ${error}`)
       throw error
