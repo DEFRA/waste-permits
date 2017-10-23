@@ -40,28 +40,28 @@ module.exports = class TaskList extends BaseModel {
         label: Constants.Routes.COST_TIME.taskListHeading,
         href: Constants.Routes.COST_TIME.path,
         completedLabelId: 'cost-and-time-completed',
-        rulesetId: Constants.RulesetIds.SHOW_COST_AND_TIME,
+        rulesetId: Constants.Dynamics.RulesetIds.SHOW_COST_AND_TIME,
         available: false
       }, {
         id: 'confirm-that-your-operation-meets-the-rules',
         label: Constants.Routes.CONFIRM_RULES.taskListHeading,
         href: Constants.Routes.CONFIRM_RULES.path,
         completedLabelId: 'operation-rules-completed',
-        rulesetId: Constants.RulesetIds.CONFIRM_RULES,
+        rulesetId: Constants.Dynamics.RulesetIds.CONFIRM_RULES,
         available: false
       }, {
         id: 'waste-recovery-plan',
         label: Constants.Routes.WASTE_RECOVERY_PLAN.taskListHeading,
         href: Constants.Routes.WASTE_RECOVERY_PLAN.path,
         completedLabelId: 'waste-recovery-plan-completed',
-        rulesetId: Constants.RulesetIds.WASTE_RECOVERY_PLAN,
+        rulesetId: Constants.Dynamics.RulesetIds.WASTE_RECOVERY_PLAN,
         available: false
       }, {
         id: 'tell-us-if-youve-discussed-this-application-with-us',
         label: Constants.Routes.PRE_APPLICATION.taskListHeading,
         href: Constants.Routes.PRE_APPLICATION.path,
         completedLabelId: 'preapp-completed',
-        rulesetId: Constants.RulesetIds.PRE_APPLICATION,
+        rulesetId: Constants.Dynamics.RulesetIds.PRE_APPLICATION,
         available: false
       }]
     }
@@ -75,63 +75,63 @@ module.exports = class TaskList extends BaseModel {
         label: Constants.Routes.CONTACT_DETAILS.taskListHeading,
         href: Constants.Routes.CONTACT_DETAILS.path,
         completedLabelId: 'contact-details-completed',
-        rulesetId: Constants.RulesetIds.CONTACT_DETAILS,
+        rulesetId: Constants.Dynamics.RulesetIds.CONTACT_DETAILS,
         available: false
       }, {
         id: 'give-permit-holder-details',
         label: Constants.Routes.PERMIT_HOLDER_TYPE.taskListHeading,
         href: Constants.Routes.PERMIT_HOLDER_TYPE.path,
         completedLabelId: 'site-operator-completed',
-        rulesetId: Constants.RulesetIds.PERMIT_HOLDER_DETAILS,
+        rulesetId: Constants.Dynamics.RulesetIds.PERMIT_HOLDER_DETAILS,
         available: false
       }, {
         id: 'give-site-name-and-location',
         label: Constants.Routes.SITE_SITE_NAME.taskListHeading,
         href: Constants.Routes.SITE_SITE_NAME.path,
         completedLabelId: 'site-name-completed',
-        rulesetId: Constants.RulesetIds.SITE_NAME_LOCATION,
+        rulesetId: Constants.Dynamics.RulesetIds.SITE_NAME_LOCATION,
         available: false
       }, {
         id: 'upload-the-site-plan',
         label: Constants.Routes.SITE_PLAN.taskListHeading,
         href: Constants.Routes.SITE_PLAN.path,
         completedLabelId: 'site-plan-completed',
-        rulesetId: Constants.RulesetIds.SITE_PLAN,
+        rulesetId: Constants.Dynamics.RulesetIds.SITE_PLAN,
         available: false
       }, {
         id: 'upload-technical-management-qualifications',
         label: Constants.Routes.TECHNICAL_QUALIFICATION.taskListHeading,
         href: Constants.Routes.TECHNICAL_QUALIFICATION.path,
         completedLabelId: 'industry-scheme-completed',
-        rulesetId: Constants.RulesetIds.TECHNICAL_QUALIFICATION,
+        rulesetId: Constants.Dynamics.RulesetIds.TECHNICAL_QUALIFICATION,
         available: false
       }, {
         id: 'tell-us-which-management-system-you-use',
         label: Constants.Routes.MANAGEMENT_SYSTEM.taskListHeading,
         href: Constants.Routes.MANAGEMENT_SYSTEM.path,
         completedLabelId: 'management-system-completed',
-        rulesetId: Constants.RulesetIds.MANAGEMENT_SYSTEM,
+        rulesetId: Constants.Dynamics.RulesetIds.MANAGEMENT_SYSTEM,
         available: false
       }, {
         id: 'upload-the-fire-prevention-plan',
         label: Constants.Routes.FIRE_PREVENTION_PLAN.taskListHeading,
         href: Constants.Routes.FIRE_PREVENTION_PLAN.path,
         completedLabelId: 'firepp-completed',
-        rulesetId: Constants.RulesetIds.FIRE_PREVENTION_PLAN,
+        rulesetId: Constants.Dynamics.RulesetIds.FIRE_PREVENTION_PLAN,
         available: false
       }, {
         id: 'confirm-the-drainage-system-for-the-vehicle-storage-area',
         label: Constants.Routes.DRAINAGE_TYPE_DRAIN.taskListHeading,
         href: Constants.Routes.DRAINAGE_TYPE_DRAIN.path,
         completedLabelId: 'confirm-drainage-completed',
-        rulesetId: Constants.RulesetIds.SURFACE_DRAINAGE,
+        rulesetId: Constants.Dynamics.RulesetIds.SURFACE_DRAINAGE,
         available: false
       }, {
         id: 'confirm-confidentiality-needs',
         label: Constants.Routes.CONFIDENTIALITY.taskListHeading,
         href: Constants.Routes.CONFIDENTIALITY.path,
         completedLabelId: 'confidentiality-completed',
-        rulesetId: Constants.RulesetIds.CONFIRM_CONFIDENTIALLY,
+        rulesetId: Constants.Dynamics.RulesetIds.CONFIRM_CONFIDENTIALLY,
         available: false
       }]
     }

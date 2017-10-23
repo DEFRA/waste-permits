@@ -87,14 +87,28 @@ lab.experiment('Site Model tests:', () => {
     })
   })
 
-  lab.test('save() method updates an existing Contact object', (done) => {
+  lab.test('save() method updates an existing Site object', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testSite.id = '123'
     testSite.save().then(() => {
-      Code.expect(spy.callCount).to.equal(1)
+      Code.expect(spy.callCount).to.equal(2)
       Code.expect(testSite.id).to.equal('123')
 
       done()
     })
+  })
+
+  lab.test('isComplete() method correctly determines the completeness of a Site object', (done) => {
+    const fakeEmptySiteData = {
+      name: undefined,
+      applicationId: '05486b21-a4ae-e711-8117-5065f38ac931'
+    }
+    testSite = new Site(fakeEmptySiteData)
+    Code.expect(testSite.isComplete()).to.be.false()
+
+    testSite = new Site(fakeSiteData)
+    Code.expect(testSite.isComplete()).to.be.true()
+
+    done()
   })
 })

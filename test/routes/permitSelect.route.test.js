@@ -7,7 +7,6 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
-const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 const StandardRule = require('../../src/models/standardRule.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
