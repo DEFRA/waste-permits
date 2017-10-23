@@ -7,20 +7,20 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
-const DynamicsDalService = require('../../src/services/dynamicsDal.service')
+const Site = require('../../src/models/site.model')
 
 let validateCookieStub
-let dynamicsCreateStub
-let dynamicsUpdateStub
-let dynamicsSearchStub
+let siteSaveStub
+let getByApplicationIdStub
 
 const routePath = '/site/site-name'
 
-// Dynamics Site data
-let fakeData = {
-  '@odata.etag': 'W/"697235"',
-  defra_name: 'THE_SITE_NAME',
-  defra_locationid: '22c353ab-72ae-e711-810c-5065f38a5b01'
+let fakeSite = {
+  id: 'dff66fce-18b8-e711-8119-5065f38ac931',
+  name: 'THE_SITE_NAME',
+  applicationId: '403710b7-18b8-e711-810d-5065f38bb461',
+  applicationLineId: '423710b7-18b8-e711-810d-5065f38bb461',
+  save: (authToken) => {}
 }
 
 lab.beforeEach((done) => {
@@ -30,22 +30,12 @@ lab.beforeEach((done) => {
     return true
   }
 
-  dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => {
-    return '7a8e4354-4f24-e711-80fd-5065f38a1b01'
-  }
+  siteSaveStub = Site.prototype.save
+  Site.prototype.save = (authToken) => {}
 
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => {
-    return dataObject.id
-  }
-
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = (query) => {
-    return {
-      '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
-      value: [fakeData]
-    }
+  getByApplicationIdStub = Site.getByApplicationId
+  Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+    return fakeSite
   }
 
   done()
@@ -54,9 +44,9 @@ lab.beforeEach((done) => {
 lab.afterEach((done) => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-  DynamicsDalService.prototype.create = dynamicsCreateStub
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
-  DynamicsDalService.prototype.search = dynamicsSearchStub
+
+  Site.prototype.save = siteSaveStub
+  Site.getByApplicationId = getByApplicationIdStub
 
   done()
 })
@@ -70,11 +60,8 @@ lab.experiment('Site page tests:', () => {
     }
 
     // Empty site details response
-    DynamicsDalService.prototype.search = (query) => {
-      return {
-        '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
-        value: []
-      }
+    Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+      return undefined
     }
 
     server.inject(request, (res) => {
@@ -98,11 +85,8 @@ lab.experiment('Site page tests:', () => {
     }
 
     // Empty site details response
-    DynamicsDalService.prototype.search = (query) => {
-      return {
-        '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
-        value: []
-      }
+    Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+      return {}
     }
 
     server.inject(request, (res) => {
@@ -159,7 +143,7 @@ lab.experiment('Site page tests:', () => {
       Code.expect(element.nodeValue).to.exist()
 
       element = doc.getElementById('site-name')
-      Code.expect(element.getAttribute('value')).to.equal(fakeData.defra_name)
+      Code.expect(element.getAttribute('value')).to.equal(fakeSite.name)
 
       element = doc.getElementById('site-site-name-submit').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
@@ -179,11 +163,8 @@ lab.experiment('Site page tests:', () => {
     }
 
     // Empty site details response
-    DynamicsDalService.prototype.search = (query) => {
-      return {
-        '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
-        value: []
-      }
+    Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+      return undefined
     }
 
     server.inject(request, (res) => {

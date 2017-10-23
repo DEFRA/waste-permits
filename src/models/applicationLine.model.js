@@ -10,6 +10,25 @@ module.exports = class ApplicationLine extends BaseModel {
     super()
     this.applicationId = applicationLine.applicationId
     this.standardRuleId = applicationLine.standardRuleId
+    this.parametersId = applicationLine.parametersId
+  }
+
+  static async getById (authToken, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const query = encodeURI(`defra_applicationlines(${applicationLineId})`)
+    try {
+      const result = await dynamicsDal.search(query)
+      const applicationLine = new ApplicationLine({
+        applicationId: result._defra_applicationid_value,
+        standardRuleId: result._defra_standardruleid_value,
+        parametersId: result._defra_parametersid_value
+      })
+      applicationLine.id = applicationLineId
+      return applicationLine
+    } catch (error) {
+      LoggingService.logError(`Unable to get ApplicationLine by applicationLineId: ${error}`)
+      throw error
+    }
   }
 
   async save (authToken) {

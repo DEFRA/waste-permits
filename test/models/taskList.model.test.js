@@ -160,8 +160,6 @@ lab.experiment('Task List Model tests:', () => {
       Code.expect(taskList.sections[1].sectionItems[7].id).to.equal('confirm-the-drainage-system-for-the-vehicle-storage-area')
       Code.expect(taskList.sections[1].sectionItems[8].id).to.equal('confirm-confidentiality-needs')
 
-      console.log(taskList.sections[2].sectionItems)
-
       Code.expect(Array.isArray(taskList.sections[2].sectionItems)).to.be.true()
       Code.expect(taskList.sections[2].sectionItems.length).to.equal(1)
       Code.expect(taskList.sections[2].sectionItems[0].id).to.equal('submit-pay')
