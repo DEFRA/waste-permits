@@ -14,7 +14,7 @@ let dynamicsCreateStub
 let dynamicsUpdateStub
 let dynamicsSearchStub
 
-let routePath = '/site/site-name'
+const routePath = '/site/site-name'
 
 // Dynamics Site data
 let fakeData = {

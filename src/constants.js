@@ -55,8 +55,8 @@ Constants.Routes = {
   },
   COST_TIME: {
     path: '/cost-time',
-    pageHeading: 'Cost and time for this permit',
-    taskListHeading: 'Cost and time for this permit'
+    pageHeading: 'Costs and processing time',
+    taskListHeading: 'Check costs and processing time'
   },
   DRAINAGE_TYPE_DRAIN: {
     path: '/drainage-type/drain',
@@ -129,6 +129,11 @@ Constants.Routes = {
   VERSION: {
     path: '/version',
     pageHeading: 'Waste Permits'
+  },
+  WASTE_RECOVERY_PLAN: {
+    path: '/waste-recovery-plan',
+    pageHeading: 'Have we checked your waste recovery plan?',
+    taskListHeading: 'Get your waste recovery plan checked'
   }
 }
 
@@ -161,6 +166,14 @@ Constants.RulesetIds = {
   SURFACE_DRAINAGE: 'defra_surfacedrainagereq',
   TECHNICAL_QUALIFICATION: 'defra_techcompetenceevreq',
   WASTE_RECOVERY_PLAN: 'defra_wasterecoveryplanreq'
+}
+
+Constants.Dynamics = {
+  WASTE_REGIME: 910400000,
+  PermitTypes: {
+    STANDARD: 910400000,
+    BESPOKE: 910400001
+  }
 }
 
 Constants.TaskList = {

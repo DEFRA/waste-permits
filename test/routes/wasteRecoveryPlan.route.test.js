@@ -10,7 +10,7 @@ const CookieService = require('../../src/services/cookie.service')
 
 let validateCookieStub
 
-const routePath = '/site-plan'
+const routePath = '/waste-recovery-plan'
 
 lab.beforeEach((done) => {
   // Stub methods
@@ -29,7 +29,7 @@ lab.afterEach((done) => {
   done()
 })
 
-lab.experiment('Upload the site plan page tests:', () => {
+lab.experiment('Waste Recovery Plan page tests:', () => {
   lab.test('The page should have a back link', (done) => {
     const request = {
       method: 'GET',
@@ -51,7 +51,7 @@ lab.experiment('Upload the site plan page tests:', () => {
     })
   })
 
-  lab.test('GET /site-plan success ', (done) => {
+  lab.test('GET /waste-recovery-plan success ', (done) => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -65,7 +65,7 @@ lab.experiment('Upload the site plan page tests:', () => {
     })
   })
 
-  lab.test('GET /site-plan redirects to error screen when the user token is invalid', (done) => {
+  lab.test('GET /waste-recovery-plan redirects to error screen when the user token is invalid', (done) => {
     const request = {
       method: 'GET',
       url: routePath,

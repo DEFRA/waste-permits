@@ -6,18 +6,175 @@ const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
-const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 const CookieService = require('../../src/services/cookie.service')
+const StandardRule = require('../../src/models/standardRule.model')
+const TaskList = require('../../src/models/taskList.model')
 
 let generateCookieStub
 let validateCookieStub
-let dynamicsSearchStub
+let standardRuleGetByCodeStub
+let taskListGetByApplicationLineIdStub
 
-let routePath = '/task-list'
+const routePath = '/task-list'
 
 const fakeCookie = {
   applicationId: 'my_application_id',
   authToken: 'my_auth_token'
+}
+
+const fakeStandardRule = {
+  id: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
+  name: 'Metal recycling, vehicle storage, depollution and dismantling facility',
+  limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
+  code: 'SR2015 No 18',
+  codeForId: 'sr2015-no-18'
+}
+
+const fakeTaskList = {
+  sections: [{
+    id: 'before-you-apply-section',
+    sectionNumber: 1,
+    sectionName: 'Before you apply',
+    sectionItems: [{
+      id: 'check-permit-cost-and-time',
+      label: 'Check costs and processing time',
+      href: '/cost-time',
+      completedLabelId: 'cost-and-time-completed',
+      rulesetId: 'defra_showcostandtime',
+      available: true,
+      complete: false
+    },
+    {
+      id: 'confirm-that-your-operation-meets-the-rules',
+      label: 'Confirm that your operation meets the rules',
+      href: '/confirm-rules',
+      completedLabelId: 'operation-rules-completed',
+      rulesetId: 'defra_confirmreadrules',
+      available: true,
+      complete: false
+    },
+    {
+      id: 'waste-recovery-plan',
+      label: 'Get your waste recovery plan checked',
+      href: '/waste-recovery-plan',
+      completedLabelId: 'waste-recovery-plan-completed',
+      rulesetId: 'defra_wasterecoveryplanreq',
+      available: false,
+      complete: false
+    },
+    {
+      id: 'tell-us-if-youve-discussed-this-application-with-us',
+      label: 'Tell us if you\'ve discussed this application with us',
+      href: '/pre-application',
+      completedLabelId: 'preapp-completed',
+      rulesetId: 'defra_preapprequired',
+      available: true,
+      complete: false
+    }
+    ]
+  },
+  {
+    id: 'complete-application-section',
+    sectionNumber: 2,
+    sectionName: 'Complete application',
+    sectionItems: [{
+      id: 'give-contact-details',
+      label: 'Give contact details',
+      href: '/contact-details',
+      completedLabelId: 'contact-details-completed',
+      rulesetId: 'defra_contactdetailsrequired',
+      available: true,
+      complete: false
+    },
+    {
+      id: 'give-permit-holder-details',
+      label: 'Give permit holder details',
+      href: '/permit-holder/type',
+      completedLabelId: 'site-operator-completed',
+      rulesetId: 'defra_pholderdetailsrequired',
+      available: true,
+      complete: false
+    },
+    {
+      id: 'give-site-name-and-location',
+      label: 'Give site name and location',
+      href: '/site/site-name',
+      completedLabelId: 'site-name-completed',
+      rulesetId: 'defra_locationrequired',
+      available: true,
+      complete: true
+    },
+    {
+      id: 'upload-the-site-plan',
+      label: 'Upload the site plan',
+      href: '/site-plan',
+      completedLabelId: 'site-plan-completed',
+      rulesetId: 'defra_siteplanrequired',
+      available: false,
+      complete: false
+    },
+    {
+      id: 'upload-technical-management-qualifications',
+      label: 'Upload technical management qualifications',
+      href: '/technical-qualification',
+      completedLabelId: 'industry-scheme-completed',
+      rulesetId: 'defra_techcompetenceevreq',
+      available: true,
+      complete: false
+    },
+    {
+      id: 'tell-us-which-management-system-you-use',
+      label: 'Tell us which management system you use',
+      href: '/management-system',
+      completedLabelId: 'management-system-completed',
+      rulesetId: 'defra_mansystemrequired',
+      available: true,
+      complete: false
+    },
+    {
+      id: 'upload-the-fire-prevention-plan',
+      label: 'Upload the fire prevention plan',
+      href: '/fire-prevention-plan',
+      completedLabelId: 'firepp-completed',
+      rulesetId: 'defra_fireplanrequired',
+      available: true,
+      complete: false
+    },
+    {
+      id: 'confirm-the-drainage-system-for-the-vehicle-storage-area',
+      label: 'Confirm the drainage system for your site',
+      href: '/drainage-type/drain',
+      completedLabelId: 'confirm-drainage-completed',
+      rulesetId: 'defra_surfacedrainagereq',
+      available: true,
+      complete: false
+    },
+    {
+      id: 'confirm-confidentiality-needs',
+      label: 'Confirm confidentiality needs',
+      href: '/confidentiality',
+      completedLabelId: 'confidentiality-completed',
+      rulesetId: 'defra_cnfconfidentialityreq',
+      available: true,
+      complete: false
+    }
+    ]
+
+  },
+  {
+    id: 'send-and-pay-section',
+    sectionNumber: 3,
+    sectionName: 'Send and pay',
+    sectionItems: [{
+      id: 'submit-pay',
+      label: 'Send application and pay',
+      href: '/check-before-sending',
+      completedLabelId: 'submit-and-pay',
+      available: true,
+      complete: undefined
+    }]
+  }
+  ]
 }
 
 lab.beforeEach((done) => {
@@ -32,36 +189,14 @@ lab.beforeEach((done) => {
     return true
   }
 
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = (query) => {
-    // Dynamics StandardRule object
-    return {
-      '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
-      value: [{
-        '@odata.etag': 'W/"1234567"',
-        defra_rulesnamegovuk: 'Metal recycling, vehicle storage, depollution and dismantling facility',
-        defra_limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
-        defra_code: 'SR2015 No 18',
-        defra_standardruleid: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
-        defra_wasteparametersId: {
-          defra_showcostandtime: true,
-          defra_confirmreadrules: true,
-          defra_preapprequired: true,
-          defra_contactdetailsrequired: true,
-          defra_pholderdetailsrequired: true,
-          defra_locationrequired: true,
+  standardRuleGetByCodeStub = StandardRule.getByCode
+  StandardRule.getByCode = async (authToken, code) => {
+    return fakeStandardRule
+  }
 
-          // Turn off the Upload Site Plan section
-          defra_siteplanrequired: false,
-
-          defra_techcompetenceevreq: true,
-          defra_mansystemrequired: true,
-          defra_fireplanrequired: true,
-          defra_surfacedrainagereq: true,
-          defra_cnfconfidentialityreq: true
-        }
-      }]
-    }
+  taskListGetByApplicationLineIdStub = TaskList.getByApplicationLineId
+  TaskList.getByApplicationLineId = (authToken, applicationLineId) => {
+    return fakeTaskList
   }
 
   done()
@@ -71,8 +206,8 @@ lab.afterEach((done) => {
   // Restore stubbed methods
   CookieService.generateCookie = generateCookieStub
   CookieService.validateCookie = validateCookieStub
-  DynamicsDalService.prototype.search = dynamicsSearchStub
-
+  StandardRule.getByCode = standardRuleGetByCodeStub
+  TaskList.getByApplicationLineId = taskListGetByApplicationLineIdStub
   done()
 })
 
@@ -167,11 +302,6 @@ lab.experiment('Task List page tests:', () => {
       element = doc.getElementById('before-you-apply-section-heading')
       Code.expect(element).to.exist()
 
-      element = doc.getElementById('prepare-to-apply-section-number')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('prepare-to-apply-section-heading')
-      Code.expect(element).to.exist()
-
       element = doc.getElementById('complete-application-section-number')
       Code.expect(element).to.exist()
       element = doc.getElementById('complete-application-section-heading')
@@ -202,109 +332,110 @@ lab.experiment('Task List page tests:', () => {
 
       let element
 
-      // Check existence of task list items
-      element = doc.getElementById('check-permit-cost-and-time')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('check-permit-cost-and-time-link')
-      Code.expect(element).to.exist()
+      const taskListItemIds = [
+        'check-permit-cost-and-time',
+        'confirm-that-your-operation-meets-the-rules',
+        'tell-us-if-youve-discussed-this-application-with-us',
+        'give-contact-details',
+        'give-permit-holder-details',
+        'give-site-name-and-location',
+        'upload-technical-management-qualifications',
+        'tell-us-which-management-system-you-use',
+        'upload-the-fire-prevention-plan',
+        'confirm-the-drainage-system-for-the-vehicle-storage-area',
+        'confirm-confidentiality-needs',
+        'submit-pay'
+      ]
 
-      element = doc.getElementById('confirm-that-your-operation-meets-the-rules')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('confirm-that-your-operation-meets-the-rules-link')
-      Code.expect(element).to.exist()
+      // These task list items should exist
+      taskListItemIds.forEach((id) => {
+        element = doc.getElementById(id)
+        Code.expect(element).to.exist()
+      })
 
-      element = doc.getElementById('tell-us-if-youve-discussed-this-application-with-us')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('tell-us-if-youve-discussed-this-application-with-us-link')
-      Code.expect(element).to.exist()
+      const taskListItemLinkIds = [
+        'check-permit-cost-and-time-link',
+        'confirm-that-your-operation-meets-the-rules-link',
+        'tell-us-if-youve-discussed-this-application-with-us-link',
+        'give-contact-details-link',
+        'give-permit-holder-details-link',
+        'give-site-name-and-location-link',
+        'upload-technical-management-qualifications-link',
+        'tell-us-which-management-system-you-use-link',
+        'upload-the-fire-prevention-plan-link',
+        'confirm-the-drainage-system-for-the-vehicle-storage-area-link',
+        'confirm-confidentiality-needs-link',
+        'submit-pay-link'
+      ]
 
-      element = doc.getElementById('give-contact-details')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('give-contact-details-link')
-      Code.expect(element).to.exist()
+      // These task list item links should exist
+      taskListItemLinkIds.forEach((id) => {
+        element = doc.getElementById(id)
+        Code.expect(element).to.exist()
+      })
 
-      element = doc.getElementById('give-permit-holder-details')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('give-permit-holder-details-link')
-      Code.expect(element).to.exist()
-
-      element = doc.getElementById('give-site-name-and-location')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('give-site-name-and-location-link')
-      Code.expect(element).to.exist()
-
-      // Site plan section should not exist
+      // This task list item should NOT exist
       element = doc.getElementById('upload-the-site-plan')
       Code.expect(element).to.not.exist()
       element = doc.getElementById('upload-the-site-plan-link')
       Code.expect(element).to.not.exist()
-
-      element = doc.getElementById('upload-technical-management-qualifications')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('upload-technical-management-qualifications-link')
-      Code.expect(element).to.exist()
-
-      element = doc.getElementById('tell-us-which-management-system-you-use')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('tell-us-which-management-system-you-use-link')
-      Code.expect(element).to.exist()
-
-      element = doc.getElementById('upload-the-fire-prevention-plan')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('upload-the-fire-prevention-plan-link')
-      Code.expect(element).to.exist()
-
-      element = doc.getElementById('confirm-the-drainage-system-for-the-vehicle-storage-area')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('confirm-the-drainage-system-for-the-vehicle-storage-area-link')
-      Code.expect(element).to.exist()
-
-      element = doc.getElementById('confirm-confidentiality-needs')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('confirm-confidentiality-needs-link')
-      Code.expect(element).to.exist()
-
-      element = doc.getElementById('submit-pay')
-      Code.expect(element).to.exist()
-      element = doc.getElementById('submit-pay-link')
-      Code.expect(element).to.exist()
 
       done()
     })
   })
 
   // Completeness flags are not in scope yet
-  // lab.test('Task list items have the correct completeness flags', (done) => {
-  //   const request = {
-  //     method: 'GET',
-  //     url: routePath,
-  //     headers: {},
-  //     payload: {}
-  //   }
-  //
-  //   server.inject(request, (res) => {
-  //     Code.expect(res.statusCode).to.equal(200)
-  //
-  //     const parser = new DOMParser()
-  //     const doc = parser.parseFromString(res.payload, 'text/html')
-  //
-  //     let element
-  //
-  //     // Check completed flags on task list items
-  //     element = doc.getElementById('cost-and-time-completed')
-  //     Code.expect(element).to.exist()
-  //     element = doc.getElementById('operation-rules-completed')
-  //     Code.expect(element).to.not.exist()
-  //     element = doc.getElementById('preapp-completed')
-  //     Code.expect(element).to.exist()
-  //     element = doc.getElementById('contact-details-completed')
-  //     Code.expect(element).to.not.exist()
-  //     element = doc.getElementById('site-operator-completed')
-  //     Code.expect(element).to.exist()
-  //
-  //     done()
-  //   })
-  // })
+  lab.test('Task list items have the correct completeness flags', (done) => {
+    const request = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element
+
+      const completedItemIds = [
+        'site-name-completed'
+      ]
+
+      const incompleteItemIds = [
+        'cost-and-time-completed',
+        'operation-rules-completed',
+        'waste-recovery-plan-completed',
+        'preapp-completed',
+        'contact-details-completed',
+        'site-operator-completed',
+        'site-plan-completed',
+        'industry-scheme-completed',
+        'management-system-completed',
+        'firepp-completed',
+        'confirm-drainage-completed',
+        'confidentiality-completed',
+        'submit-and-pay'
+      ]
+
+      // These task list item complete flags should be there
+      completedItemIds.forEach((id) => {
+        element = doc.getElementById(id)
+        Code.expect(element).to.exist()
+      })
+
+      // These task list item complete flags should NOT be there
+      incompleteItemIds.forEach((id) => {
+        element = doc.getElementById(id)
+        Code.expect(element).to.not.exist()
+      })
+
+      done()
+    })
+  })
 
   lab.test('GET /task-list redirects to error screen when the user token is invalid', (done) => {
     const request = {

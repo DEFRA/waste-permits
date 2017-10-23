@@ -104,6 +104,16 @@ lab.experiment('Dynamics Service tests:', () => {
     })
   })
 
+  // TODO - need to confirm PUT is required and if so then add this test
+  // lab.test('partialUpdate() can update a record in Dynamics', (done) => {
+  //   const spy = sinon.spy(DynamicsDalService.prototype, '_call')
+  //   dynamicsDal.update('__DYNAMICS_UPDATE_QUERY__', {}).then((response) => {
+  //     Code.expect(spy.callCount).to.equal(1)
+  //     DynamicsDalService.prototype._call.restore()
+  //     done()
+  //   })
+  // })
+
   lab.test('search() can retrieve a list of records from Dynamics', (done) => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     dynamicsDal.search('__DYNAMICS_LIST_QUERY__').then((response) => {

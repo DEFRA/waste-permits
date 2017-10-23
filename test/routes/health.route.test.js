@@ -7,7 +7,7 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 
-let routePath = '/health'
+const routePath = '/health'
 
 lab.beforeEach((done) => {
   done()

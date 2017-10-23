@@ -6,7 +6,7 @@ const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 
-let routePath = '/error'
+const routePath = '/error'
 
 lab.beforeEach((done) => {
   done()

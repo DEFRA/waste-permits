@@ -1,5 +1,6 @@
 'use strict'
 
+const Constants = require('../constants')
 const LoggingService = require('../services/logging.service')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
@@ -8,7 +9,9 @@ module.exports = class Application extends BaseModel {
   async save (authToken) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
-    const dataObject = {}
+    const dataObject = {
+      defra_regime: Constants.Dynamics.WASTE_REGIME
+    }
 
     try {
       let query
