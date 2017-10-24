@@ -37,8 +37,6 @@ lab.beforeEach((done) => {
   Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
     return fakeSite
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
@@ -47,8 +45,6 @@ lab.afterEach((done) => {
 
   Site.prototype.save = siteSaveStub
   Site.getByApplicationId = getByApplicationIdStub
-
-  done()
 })
 
 lab.experiment('Site page tests:', () => {
@@ -72,8 +68,6 @@ lab.experiment('Site page tests:', () => {
 
       const element = doc.getElementById('back-link')
       Code.expect(element).to.exist()
-
-      done()
     })
   })
 
@@ -112,8 +106,6 @@ lab.experiment('Site page tests:', () => {
 
       element = doc.getElementById('site-site-name-submit').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
-
-      done()
     })
   })
 
@@ -147,8 +139,6 @@ lab.experiment('Site page tests:', () => {
 
       element = doc.getElementById('site-site-name-submit').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
-
-      done()
     })
   })
 
@@ -170,8 +160,6 @@ lab.experiment('Site page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/task-list')
-
-      done()
     })
   })
 
@@ -188,8 +176,6 @@ lab.experiment('Site page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/task-list')
-
-      done()
     })
   })
 
@@ -208,7 +194,6 @@ lab.experiment('Site page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/error')
-      done()
     })
   })
 
@@ -231,8 +216,6 @@ lab.experiment('Site page tests:', () => {
       const element = doc.getElementById('error-summary')
 
       Code.expect(element).to.exist()
-
-      done()
     })
   })
 
@@ -262,8 +245,6 @@ lab.experiment('Site page tests:', () => {
       // Site name field error
       element = doc.getElementById('site-name-error').firstChild
       Code.expect(element.nodeValue).to.equal(errorMessage)
-
-      done()
     })
   })
 
@@ -293,8 +274,6 @@ lab.experiment('Site page tests:', () => {
       // Site name field error
       element = doc.getElementById('site-name-error').firstChild
       Code.expect(element.nodeValue).to.equal(errorMessage)
-
-      done()
     })
   })
 
@@ -324,8 +303,6 @@ lab.experiment('Site page tests:', () => {
       // Site name field error
       element = doc.getElementById('site-name-error').firstChild
       Code.expect(element.nodeValue).to.equal(errorMessage)
-
-      done()
     })
   })
 })

@@ -16,15 +16,11 @@ lab.beforeEach((done) => {
   ActiveDirectoryAuthService.prototype.getToken = () => {
     return '__GENERATED_CRM_TOKEN__'
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   ActiveDirectoryAuthService.prototype.getToken = getAuthTokenStub
-
-  done()
 })
 
 lab.experiment('Default page tests:', () => {
@@ -38,8 +34,6 @@ lab.experiment('Default page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/start/start-or-open-saved')
-
-      done()
     })
   })
 })

@@ -33,7 +33,6 @@ lab.beforeEach((done) => {
 
   applicationSaveStub = Application.prototype.save
   Application.prototype.save = (authToken) => {}
-  done()
 })
 
 lab.afterEach((done) => {
@@ -41,8 +40,6 @@ lab.afterEach((done) => {
   CookieService.generateCookie = generateCookieStub
   CookieService.validateCookie = validateCookieStub
   Application.prototype.save = applicationSaveStub
-
-  done()
 })
 
 lab.experiment('Start or Open Saved page tests:', () => {
@@ -62,8 +59,6 @@ lab.experiment('Start or Open Saved page tests:', () => {
 
       let element = doc.getElementById('back-link')
       Code.expect(element).to.not.exist()
-
-      done()
     })
   })
 
@@ -91,8 +86,6 @@ lab.experiment('Start or Open Saved page tests:', () => {
 
       element = doc.getElementById('start-or-open-saved-submit').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
-
-      done()
     })
   })
 
@@ -109,8 +102,6 @@ lab.experiment('Start or Open Saved page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/permit/category')
-
-      done()
     })
   })
 
@@ -127,8 +118,6 @@ lab.experiment('Start or Open Saved page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/save-and-return/check-your-email')
-
-      done()
     })
   })
 
@@ -156,8 +145,6 @@ lab.experiment('Start or Open Saved page tests:', () => {
       // Site name field error
       element = doc.getElementById('started-application-error').firstChild
       Code.expect(element.nodeValue).to.equal(errorMessage)
-
-      done()
     })
   })
 })

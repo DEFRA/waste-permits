@@ -10,11 +10,11 @@ const server = require('../../server')
 const routePath = '/health'
 
 lab.beforeEach((done) => {
-  done()
+
 })
 
 lab.afterEach((done) => {
-  done()
+
 })
 
 lab.experiment('Health page tests:', () => {
@@ -34,8 +34,6 @@ lab.experiment('Health page tests:', () => {
 
       let element = doc.getElementById('back-link')
       Code.expect(element).to.not.exist()
-
-      done()
     })
   })
 
@@ -60,8 +58,6 @@ lab.experiment('Health page tests:', () => {
 
       element = doc.getElementById('health-application-commit-ref').firstChild
       Code.expect(element.nodeValue).to.exist()
-
-      done()
     })
   })
 })

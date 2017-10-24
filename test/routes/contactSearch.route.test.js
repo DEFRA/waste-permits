@@ -58,8 +58,6 @@ lab.beforeEach((done) => {
       emailaddress1: 'marlon.herzog@example.com'
     })
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
@@ -67,8 +65,6 @@ lab.afterEach((done) => {
   CookieService.validateCookie = validateCookieStub
   Contact.prototype.list = contactListStub
   Contact.prototype.getById = contactGetByIdStub
-
-  done()
 })
 
 lab.experiment('Contact search page tests:', () => {
@@ -88,8 +84,6 @@ lab.experiment('Contact search page tests:', () => {
 
       const element = doc.getElementById('back-link')
       Code.expect(element).to.exist()
-
-      done()
     })
   })
 
@@ -108,8 +102,6 @@ lab.experiment('Contact search page tests:', () => {
 
       let element = doc.getElementById('contacts-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Contact search')
-
-      done()
     })
   })
 
@@ -126,8 +118,6 @@ lab.experiment('Contact search page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(routePath)
-
-      done()
     })
   })
 
@@ -148,8 +138,6 @@ lab.experiment('Contact search page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/error')
-
-      done()
     })
   })
 })

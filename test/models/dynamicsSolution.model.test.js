@@ -37,15 +37,11 @@ lab.beforeEach((done) => {
       ]
     }
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   DynamicsDalService.prototype.search = dynamicsSearchStub
-
-  done()
 })
 
 lab.experiment('DynamicsSolution Model tests:', () => {
@@ -62,8 +58,6 @@ lab.experiment('DynamicsSolution Model tests:', () => {
       Code.expect(dynamicsVersionInfo[1].version).to.equal('1.1.10.0')
       Code.expect(dynamicsVersionInfo[2].componentName).to.equal('Licensing and Permitting')
       Code.expect(dynamicsVersionInfo[2].version).to.equal('1.1.11.0')
-
-      done()
     })
   })
 })

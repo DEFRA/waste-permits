@@ -9,11 +9,11 @@ const server = require('../../server')
 const routePath = '/error'
 
 lab.beforeEach((done) => {
-  done()
+
 })
 
 lab.afterEach((done) => {
-  done()
+
 })
 
 lab.experiment('Error page tests:', () => {
@@ -33,8 +33,6 @@ lab.experiment('Error page tests:', () => {
 
       let element = doc.getElementById('back-link')
       Code.expect(element).to.not.exist()
-
-      done()
     })
   })
 
@@ -53,8 +51,6 @@ lab.experiment('Error page tests:', () => {
 
       let element = doc.getElementById('error-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Something went wrong')
-
-      done()
     })
   })
 })

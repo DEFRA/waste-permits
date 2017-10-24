@@ -20,25 +20,19 @@ lab.beforeEach((done) => {
 
     log: (token, message) => {}
   }
-
-  done()
 })
 
-lab.afterEach((done) => {
-  done()
-})
+lab.afterEach((done) => {})
 
 lab.experiment('Cookie Service tests:', () => {
   lab.test('Validate cookie should successfully validate a valid cookie', (done) => {
     Code.expect(CookieService.validateCookie(fakeRequest)).to.be.true()
-    done()
   })
 
   lab.test('Validate cookie should successfully validate a missing cookie', (done) => {
     fakeRequest.state = {}
     CookieService.validateCookie(fakeRequest)
     Code.expect(CookieService.validateCookie(fakeRequest)).to.be.false()
-    done()
   })
 
   lab.test('Validate cookie should successfully validate an invalid cookie', (done) => {
@@ -47,6 +41,5 @@ lab.experiment('Cookie Service tests:', () => {
 
     fakeRequest.state.DefraSession.applicationId = ''
     Code.expect(CookieService.validateCookie(fakeRequest)).to.be.false()
-    done()
   })
 })

@@ -24,13 +24,10 @@ let authTokenResponse = {
 
 lab.beforeEach((done) => {
   authService = new ActiveDirectoryAuthService()
-
-  done()
 })
 
 lab.afterEach((done) => {
   nock.cleanAll()
-  done()
 })
 
 lab.experiment('Active Directory Auth Service tests:', () => {
@@ -40,8 +37,6 @@ lab.experiment('Active Directory Auth Service tests:', () => {
 
     authService.getToken().then((authToken) => {
       Code.expect(authToken).to.equal(authTokenResponse.access_token)
-
-      done()
     })
   })
 
@@ -52,7 +47,6 @@ lab.experiment('Active Directory Auth Service tests:', () => {
     authService.getToken()
       .catch((error) => {
         Code.expect(error.message).to.equal('socket hang up')
-        done()
       })
   })
 })

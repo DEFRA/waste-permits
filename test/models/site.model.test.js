@@ -42,8 +42,6 @@ lab.beforeEach((done) => {
   DynamicsDalService.prototype.update = (dataObject, query) => {
     return dataObject.id
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
@@ -51,8 +49,6 @@ lab.afterEach((done) => {
   DynamicsDalService.prototype.create = dynamicsCreateStub
   DynamicsDalService.prototype.search = dynamicsSearchStub
   DynamicsDalService.prototype.update = dynamicsUpdateStub
-
-  done()
 })
 
 lab.experiment('Site Model tests:', () => {
@@ -62,8 +58,6 @@ lab.experiment('Site Model tests:', () => {
 
     Code.expect(testSite.name).to.equal(fakeSiteData.name)
     Code.expect(testSite.applicationId).to.equal(fakeSiteData.applicationId)
-
-    done()
   })
 
   lab.test('getByApplicationId() method returns a single Site object', (done) => {
@@ -72,8 +66,6 @@ lab.experiment('Site Model tests:', () => {
       Code.expect(spy.callCount).to.equal(1)
 
       Code.expect(site.name).to.equal(fakeSiteData.name)
-
-      done()
     })
   })
 
@@ -82,8 +74,6 @@ lab.experiment('Site Model tests:', () => {
     testSite.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)
       Code.expect(testSite.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-
-      done()
     })
   })
 
@@ -93,8 +83,6 @@ lab.experiment('Site Model tests:', () => {
     testSite.save().then(() => {
       Code.expect(spy.callCount).to.equal(2)
       Code.expect(testSite.id).to.equal('123')
-
-      done()
     })
   })
 
@@ -108,7 +96,5 @@ lab.experiment('Site Model tests:', () => {
 
     testSite = new Site(fakeSiteData)
     Code.expect(testSite.isComplete()).to.be.true()
-
-    done()
   })
 })

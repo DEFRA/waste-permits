@@ -25,22 +25,18 @@ lab.beforeEach((done) => {
   processEnvStub = Object.assign({}, process.env)
   readFileSyncStub = fs.readFileSync
   execSyncStub = fs.readFileSync
-
-  done()
 })
 
 lab.afterEach((done) => {
   process.env = processEnvStub
   fs.readFileSync = readFileSyncStub
   childProcess.execSync = execSyncStub
-  done()
 })
 
 lab.experiment('Commit hash service tests:', () => {
   lab.test('commitHash() returns the value of GIT_SHA env var when set', (done) => {
     process.env.GIT_SHA = 'foobar-foobar-foobar'
     Code.expect(CommitHashService.commitHash()).to.equal('foobar-foobar-foobar')
-    done()
   })
 
   lab.test('commitHash() returns contents of REVISION file when env var not set', (done) => {
@@ -48,7 +44,6 @@ lab.experiment('Commit hash service tests:', () => {
       return 'fromfile-fromfile-fromfile'
     }
     Code.expect(CommitHashService.commitHash()).to.equal('fromfile-fromfile-fromfile')
-    done()
   })
 
   lab.test('commitHash() returns the result of quering git directly when both the GIT_SHA env var and file are not set', (done) => {
@@ -56,7 +51,6 @@ lab.experiment('Commit hash service tests:', () => {
       return 'fromgit-fromgit-fromgit'
     }
     Code.expect(CommitHashService.commitHash()).to.equal('fromgit-fromgit-fromgit')
-    done()
   })
 
   lab.test('commitHash() sets the env var GIT_SHA after having read the reference from the REVISION file', (done) => {
@@ -65,7 +59,6 @@ lab.experiment('Commit hash service tests:', () => {
     }
     Code.expect(CommitHashService.commitHash()).to.equal('setfileenv-setfileenv-setfileenv')
     Code.expect(process.env.GIT_SHA).to.equal('setfileenv-setfileenv-setfileenv')
-    done()
   })
 
   lab.test('commitHash() sets the env var GIT_SHA after having queried git for the reference', (done) => {
@@ -74,6 +67,5 @@ lab.experiment('Commit hash service tests:', () => {
     }
     Code.expect(CommitHashService.commitHash()).to.equal('setgitenv-setgitenv-setgitenv')
     Code.expect(process.env.GIT_SHA).to.equal('setgitenv-setgitenv-setgitenv')
-    done()
   })
 })

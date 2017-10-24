@@ -198,8 +198,6 @@ lab.beforeEach((done) => {
   TaskList.getByApplicationLineId = (authToken, applicationLineId) => {
     return fakeTaskList
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
@@ -208,7 +206,6 @@ lab.afterEach((done) => {
   CookieService.validateCookie = validateCookieStub
   StandardRule.getByCode = standardRuleGetByCodeStub
   TaskList.getByApplicationLineId = taskListGetByApplicationLineIdStub
-  done()
 })
 
 lab.experiment('Task List page tests:', () => {
@@ -228,8 +225,6 @@ lab.experiment('Task List page tests:', () => {
 
       let element = doc.getElementById('back-link')
       Code.expect(element).to.not.exist()
-
-      done()
     })
   })
 
@@ -243,7 +238,6 @@ lab.experiment('Task List page tests:', () => {
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(200)
-      done()
     })
   })
 
@@ -275,8 +269,6 @@ lab.experiment('Task List page tests:', () => {
 
       element = doc.getElementById('select-a-different-permit')
       Code.expect(element).to.exist()
-
-      done()
     })
   })
 
@@ -311,8 +303,6 @@ lab.experiment('Task List page tests:', () => {
       Code.expect(element).to.exist()
       element = doc.getElementById('send-and-pay-section-heading')
       Code.expect(element).to.exist()
-
-      done()
     })
   })
 
@@ -379,8 +369,6 @@ lab.experiment('Task List page tests:', () => {
       Code.expect(element).to.not.exist()
       element = doc.getElementById('upload-the-site-plan-link')
       Code.expect(element).to.not.exist()
-
-      done()
     })
   })
 
@@ -432,8 +420,6 @@ lab.experiment('Task List page tests:', () => {
         element = doc.getElementById(id)
         Code.expect(element).to.not.exist()
       })
-
-      done()
     })
   })
 
@@ -452,7 +438,6 @@ lab.experiment('Task List page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/error')
-      done()
     })
   })
 })

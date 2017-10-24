@@ -7,11 +7,11 @@ const Code = require('code')
 const BaseController = require('../../src/controllers/base.controller')
 
 lab.beforeEach((done) => {
-  done()
+
 })
 
 lab.afterEach((done) => {
-  done()
+
 })
 
 lab.experiment('Base Controller tests:', () => {
@@ -27,6 +27,5 @@ lab.experiment('Base Controller tests:', () => {
     Code.expect(pageContext.pageHeading).to.equal(route.pageHeading)
     Code.expect(pageContext.pageTitle).to.equal(route.pageTitle)
     Code.expect(pageContext.formAction).to.equal(route.path)
-    done()
   })
 })
