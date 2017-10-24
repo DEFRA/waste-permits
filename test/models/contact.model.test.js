@@ -60,8 +60,6 @@ lab.beforeEach((done) => {
   DynamicsDalService.prototype.update = (dataObject, query) => {
     return dataObject.id
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
@@ -69,8 +67,6 @@ lab.afterEach((done) => {
   DynamicsDalService.prototype.create = dynamicsCreateStub
   DynamicsDalService.prototype.search = dynamicsSearchStub
   DynamicsDalService.prototype.update = dynamicsUpdateStub
-
-  done()
 })
 
 lab.experiment('Contact Model tests:', () => {
@@ -91,8 +87,6 @@ lab.experiment('Contact Model tests:', () => {
     Contact.getById().then((contact) => {
       Code.expect(spy.callCount).to.equal(1)
     })
-
-    done()
   })
 
   lab.test('list() method returns a list of Contact objects', (done) => {
@@ -102,8 +96,6 @@ lab.experiment('Contact Model tests:', () => {
       Code.expect(contactList.results.length).to.equal(3)
       Code.expect(contactList.count).to.equal(3)
       Code.expect(spy.callCount).to.equal(1)
-
-      done()
     })
   })
 
@@ -112,8 +104,6 @@ lab.experiment('Contact Model tests:', () => {
     testContact.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)
       Code.expect(testContact.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-
-      done()
     })
   })
 
@@ -123,8 +113,6 @@ lab.experiment('Contact Model tests:', () => {
     testContact.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)
       Code.expect(testContact.id).to.equal('123')
-
-      done()
     })
   })
 })

@@ -17,13 +17,11 @@ lab.beforeEach((done) => {
   CookieService.validateCookie = () => {
     return true
   }
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-  done()
 })
 
 lab.experiment('Page Not Found (404) page tests:', () => {
@@ -43,8 +41,6 @@ lab.experiment('Page Not Found (404) page tests:', () => {
 
       let element = doc.getElementById('back-link')
       Code.expect(element).to.not.exist()
-
-      done()
     })
   })
 
@@ -72,8 +68,6 @@ lab.experiment('Page Not Found (404) page tests:', () => {
 
       element = doc.getElementById('page-not-found-apply-link').firstChild
       Code.expect(element.nodeValue).to.exist()
-
-      done()
     })
   })
 
@@ -91,7 +85,6 @@ lab.experiment('Page Not Found (404) page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/start/start-or-open-saved')
-      done()
     })
   })
 
@@ -105,7 +98,6 @@ lab.experiment('Page Not Found (404) page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(routePath)
-      done()
     })
   })
 })

@@ -75,13 +75,10 @@ lab.beforeEach((done) => {
     .get(`${config.dynamicsWebApiPath}__DYNAMICS_TIMEOUT_QUERY__`)
     .socketDelay(7000)
     .reply(200, {})
-
-  done()
 })
 
 lab.afterEach((done) => {
   nock.cleanAll()
-  done()
 })
 
 lab.experiment('Dynamics Service tests:', () => {
@@ -91,7 +88,6 @@ lab.experiment('Dynamics Service tests:', () => {
       Code.expect(spy.callCount).to.equal(1)
       Code.expect(response).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
       DynamicsDalService.prototype._call.restore()
-      done()
     })
   })
 
@@ -100,7 +96,6 @@ lab.experiment('Dynamics Service tests:', () => {
     dynamicsDal.update('__DYNAMICS_UPDATE_QUERY__', {}).then((response) => {
       Code.expect(spy.callCount).to.equal(1)
       DynamicsDalService.prototype._call.restore()
-      done()
     })
   })
 
@@ -109,7 +104,6 @@ lab.experiment('Dynamics Service tests:', () => {
     dynamicsDal.search('__DYNAMICS_LIST_QUERY__').then((response) => {
       Code.expect(spy.callCount).to.equal(1)
       DynamicsDalService.prototype._call.restore()
-      done()
     })
   })
 
@@ -119,7 +113,6 @@ lab.experiment('Dynamics Service tests:', () => {
       Code.expect(spy.callCount).to.equal(1)
 
       DynamicsDalService.prototype._call.restore()
-      done()
     })
   })
 
@@ -131,7 +124,6 @@ lab.experiment('Dynamics Service tests:', () => {
         Code.expect(err).to.endWith('Code: 500 Message: null')
 
         DynamicsDalService.prototype._call.restore()
-        done()
       })
   })
 
@@ -143,7 +135,6 @@ lab.experiment('Dynamics Service tests:', () => {
         Code.expect(err.message).to.equal('socket hang up')
 
         DynamicsDalService.prototype._call.restore()
-        done()
       })
   })
 })

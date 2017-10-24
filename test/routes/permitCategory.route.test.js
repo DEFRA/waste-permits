@@ -18,15 +18,11 @@ lab.beforeEach((done) => {
   CookieService.validateCookie = () => {
     return true
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-
-  done()
 })
 
 lab.experiment('What do you want the permit for? page tests:', () => {
@@ -46,8 +42,6 @@ lab.experiment('What do you want the permit for? page tests:', () => {
 
       const element = doc.getElementById('back-link')
       Code.expect(element).to.not.exist()
-
-      done()
     })
   })
 
@@ -61,7 +55,6 @@ lab.experiment('What do you want the permit for? page tests:', () => {
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(200)
-      done()
     })
   })
 
@@ -76,8 +69,6 @@ lab.experiment('What do you want the permit for? page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/permit/select')
-
-      done()
     })
   })
 
@@ -96,7 +87,6 @@ lab.experiment('What do you want the permit for? page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/error')
-      done()
     })
   })
 })

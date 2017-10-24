@@ -8,13 +8,9 @@ const sinon = require('sinon')
 const LoggingService = require('../../src/services/logging.service')
 const server = require('../../server')
 
-lab.beforeEach((done) => {
-  done()
-})
+lab.beforeEach((done) => {})
 
-lab.afterEach((done) => {
-  done()
-})
+lab.afterEach((done) => {})
 
 lab.experiment('LoggingService tests: Server logging:', () => {
   lab.test('Error messages are logged', (done) => {
@@ -26,7 +22,6 @@ lab.experiment('LoggingService tests: Server logging:', () => {
     Code.expect(spy.threw()).to.equal(false)
 
     server.log.restore()
-    done()
   })
 
   lab.test('Info messages are logged', (done) => {
@@ -38,7 +33,6 @@ lab.experiment('LoggingService tests: Server logging:', () => {
     Code.expect(spy.threw()).to.equal(false)
 
     server.log.restore()
-    done()
   })
 })
 
@@ -53,8 +47,6 @@ lab.experiment('LoggingService tests: Request logging:', () => {
     Code.expect(spy.calledOnce).to.equal(true)
     Code.expect(spy.calledWith('ERROR', 'An error has occurred')).to.equal(true)
     Code.expect(spy.threw()).to.equal(false)
-
-    done()
   })
 
   lab.test('Info messages are logged', (done) => {
@@ -67,7 +59,5 @@ lab.experiment('LoggingService tests: Request logging:', () => {
     Code.expect(spy.calledOnce).to.equal(true)
     Code.expect(spy.calledWith('INFO', 'Something has happened')).to.equal(true)
     Code.expect(spy.threw()).to.equal(false)
-
-    done()
   })
 })

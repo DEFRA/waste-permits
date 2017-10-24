@@ -18,15 +18,11 @@ lab.beforeEach((done) => {
   CookieService.validateCookie = () => {
     return true
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-
-  done()
 })
 
 lab.experiment('Confirm that your operation meets the rules page tests:', () => {
@@ -46,8 +42,6 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
       const element = doc.getElementById('back-link')
       Code.expect(element).to.exist()
-
-      done()
     })
   })
 
@@ -70,8 +64,6 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
       // After post:
       // confirm-result-message
       // return-to-task-list-button
-
-      done()
     })
   })
 
@@ -90,7 +82,6 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/error')
-      done()
     })
   })
 })

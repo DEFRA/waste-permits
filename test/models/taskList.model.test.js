@@ -114,15 +114,11 @@ lab.beforeEach((done) => {
       }
     }
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   DynamicsDalService.prototype.search = dynamicsSearchStub
-
-  done()
 })
 
 lab.experiment('Task List Model tests:', () => {
@@ -131,8 +127,6 @@ lab.experiment('Task List Model tests:', () => {
     TaskList.getByApplicationLineId().then((taskList) => {
       Code.expect(taskList).to.not.be.null()
       Code.expect(spy.callCount).to.equal(1)
-
-      done()
     })
   })
 
@@ -163,8 +157,6 @@ lab.experiment('Task List Model tests:', () => {
       Code.expect(Array.isArray(taskList.sections[2].sectionItems)).to.be.true()
       Code.expect(taskList.sections[2].sectionItems.length).to.equal(1)
       Code.expect(taskList.sections[2].sectionItems[0].id).to.equal('submit-pay')
-
-      done()
     })
   })
 })

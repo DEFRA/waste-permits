@@ -18,15 +18,11 @@ lab.beforeEach((done) => {
   CookieService.validateCookie = () => {
     return true
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-
-  done()
 })
 
 lab.experiment('Is part of your application commercially confidential? page tests:', () => {
@@ -46,8 +42,6 @@ lab.experiment('Is part of your application commercially confidential? page test
 
       const element = doc.getElementById('back-link')
       Code.expect(element).to.exist()
-
-      done()
     })
   })
 
@@ -61,7 +55,6 @@ lab.experiment('Is part of your application commercially confidential? page test
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(200)
-      done()
     })
   })
 
@@ -80,7 +73,6 @@ lab.experiment('Is part of your application commercially confidential? page test
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/error')
-      done()
     })
   })
 })

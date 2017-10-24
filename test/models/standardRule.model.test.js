@@ -21,15 +21,11 @@ const fakeStandardRule = {
 lab.beforeEach((done) => {
   // Stub methods
   dynamicsSearchStub = DynamicsDalService.prototype.search
-
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   DynamicsDalService.prototype.search = dynamicsSearchStub
-
-  done()
 })
 
 lab.experiment('StandardRule Model tests:', () => {
@@ -68,8 +64,6 @@ lab.experiment('StandardRule Model tests:', () => {
       Code.expect(standardRuleList.results.length).to.equal(3)
       Code.expect(standardRuleList.count).to.equal(3)
       Code.expect(spy.callCount).to.equal(1)
-
-      done()
     })
   })
 
@@ -96,15 +90,11 @@ lab.experiment('StandardRule Model tests:', () => {
       Code.expect(standardRule.codeForId).to.equal(fakeStandardRule.codeForId)
 
       Code.expect(spy.callCount).to.equal(1)
-
-      done()
     })
   })
 
   lab.test('transformPermitCode() method formats string for an ID correctly', (done) => {
     const string = 'SR2015 No 10'
     Code.expect(StandardRule.transformPermitCode(string)).to.equal('sr2015-no-10')
-
-    done()
   })
 })

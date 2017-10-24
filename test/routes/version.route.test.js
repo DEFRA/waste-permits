@@ -42,16 +42,12 @@ lab.beforeEach((done) => {
   DynamicsSolution.get = (authToken) => {
     return dynamicsVersionInfo
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   this.generateCookie = generateCookieStub
   DynamicsSolution.get = dynamicSolutionGetStub
-
-  done()
 })
 
 lab.experiment('Version page tests:', () => {
@@ -71,8 +67,6 @@ lab.experiment('Version page tests:', () => {
 
       let element = doc.getElementById('back-link')
       Code.expect(element).to.not.exist()
-
-      done()
     })
   })
 
@@ -99,7 +93,6 @@ lab.experiment('Version page tests:', () => {
         element = doc.getElementById(`dynamics-item-${i}-component-version`).firstChild
         Code.expect(element.nodeValue).to.equal(dynamicsVersionInfo[i].version)
       }
-      done()
     })
   })
 })

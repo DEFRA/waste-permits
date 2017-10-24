@@ -19,15 +19,11 @@ lab.beforeEach((done) => {
   DynamicsDalService.prototype.create = (dataObject, query) => {
     return '7a8e4354-4f24-e711-80fd-5065f38a1b01'
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   DynamicsDalService.prototype.create = dynamicsCreateStub
-
-  done()
 })
 
 lab.experiment('Application Model tests:', () => {
@@ -36,8 +32,6 @@ lab.experiment('Application Model tests:', () => {
     testApplication.save().then(() => {
       Code.expect(spy.callCount).to.equal(1)
       Code.expect(testApplication.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-
-      done()
     })
   })
 })

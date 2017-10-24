@@ -48,8 +48,6 @@ lab.beforeEach((done) => {
 
   applicationLineSaveStub = ApplicationLine.save
   ApplicationLine.prototype.save = (authToken) => {}
-
-  done()
 })
 
 lab.afterEach((done) => {
@@ -58,8 +56,6 @@ lab.afterEach((done) => {
   StandardRule.prototype.list = standardRuleListStub
   StandardRule.getByCode = standardRuleGetByCodeStub
   ApplicationLine.prototype.save = applicationLineSaveStub
-
-  done()
 })
 
 lab.experiment('Select a permit page tests:', () => {
@@ -79,8 +75,6 @@ lab.experiment('Select a permit page tests:', () => {
 
       const element = doc.getElementById('back-link')
       Code.expect(element).to.not.exist()
-
-      done()
     })
   })
 
@@ -112,8 +106,6 @@ lab.experiment('Select a permit page tests:', () => {
 
       element = doc.getElementById('permit-select-submit').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
-
-      done()
     })
   })
 
@@ -130,8 +122,6 @@ lab.experiment('Select a permit page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/task-list')
-
-      done()
     })
   })
 
@@ -150,7 +140,6 @@ lab.experiment('Select a permit page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/error')
-      done()
     })
   })
 
@@ -173,8 +162,6 @@ lab.experiment('Select a permit page tests:', () => {
       const element = doc.getElementById('error-summary')
 
       Code.expect(element).to.exist()
-
-      done()
     })
   })
 
@@ -202,8 +189,6 @@ lab.experiment('Select a permit page tests:', () => {
       // Chosen permit ID error
       element = doc.getElementById('chosen-permit-error').firstChild
       Code.expect(element.nodeValue).to.equal(errorMessage)
-
-      done()
     })
   })
 
@@ -233,8 +218,6 @@ lab.experiment('Select a permit page tests:', () => {
       // Chosen permit ID error
       element = doc.getElementById('chosen-permit-error').firstChild
       Code.expect(element.nodeValue).to.equal(errorMessage)
-
-      done()
     })
   })
 })

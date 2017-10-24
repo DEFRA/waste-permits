@@ -18,15 +18,11 @@ lab.beforeEach((done) => {
   CookieService.validateCookie = () => {
     return true
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-
-  done()
 })
 
 lab.experiment(`Search for 'standard rules permit application' in your email page tests:`, () => {
@@ -46,8 +42,6 @@ lab.experiment(`Search for 'standard rules permit application' in your email pag
 
       const element = doc.getElementById('back-link')
       Code.expect(element).to.exist()
-
-      done()
     })
   })
 
@@ -61,7 +55,6 @@ lab.experiment(`Search for 'standard rules permit application' in your email pag
 
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(200)
-      done()
     })
   })
 })

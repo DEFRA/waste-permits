@@ -37,8 +37,6 @@ lab.beforeEach((done) => {
   contactSaveStub = Contact.prototype.save
   Contact.prototype.save = (authToken) => {
   }
-
-  done()
 })
 
 lab.afterEach((done) => {
@@ -46,8 +44,6 @@ lab.afterEach((done) => {
   CookieService.validateCookie = validateCookieStub
   Contact.prototype.getById = contactGetByIdStub
   Contact.prototype.save = contactSaveStub
-
-  done()
 })
 
 lab.experiment('Contact details page tests:', () => {
@@ -67,8 +63,6 @@ lab.experiment('Contact details page tests:', () => {
 
       const element = doc.getElementById('back-link')
       Code.expect(element).to.exist()
-
-      done()
     })
   })
 
@@ -90,8 +84,6 @@ lab.experiment('Contact details page tests:', () => {
 
       element = doc.getElementById('contact-details-continue').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
-
-      done()
     })
   })
 
@@ -112,8 +104,6 @@ lab.experiment('Contact details page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/task-list')
-
-      done()
     })
   })
 
@@ -139,8 +129,6 @@ lab.experiment('Contact details page tests:', () => {
 
       let element = doc.getElementById('contact-details-heading').firstChild
       Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
-
-      done()
     })
   })
 
@@ -161,8 +149,6 @@ lab.experiment('Contact details page tests:', () => {
     server.inject(request, (res) => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal('/error')
-
-      done()
     })
   })
 })
