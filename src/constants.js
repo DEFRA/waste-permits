@@ -15,7 +15,8 @@ Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 
 Constants.LogLevel = {
   ERROR: 'ERROR',
-  INFO: 'INFO'
+  INFO: 'INFO',
+  DEBUG: 'DEBUG'
 }
 
 Constants.Routes = {

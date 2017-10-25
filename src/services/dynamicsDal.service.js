@@ -13,6 +13,7 @@ module.exports = class DynamicsDalService {
 
   async create (query, dataObject) {
     const options = this._requestOptions(this.authToken, query, 'POST', dataObject)
+    LoggingService.logDebug('Dynamics POST options', options)
     const result = await this._call(options, dataObject)
     const id = this._extractId(result)
     return id
@@ -20,11 +21,13 @@ module.exports = class DynamicsDalService {
 
   async update (query, dataObject) {
     const options = this._requestOptions(this.authToken, query, 'PATCH', dataObject)
+    LoggingService.logDebug('Dynamics PATCH options', options)
     this._call(options, dataObject)
   }
 
   async search (query) {
     const options = this._requestOptions(this.authToken, query, 'GET')
+    LoggingService.logDebug('Dynamics GET options', options)
     const result = await this._call(options)
     return result
   }
@@ -60,6 +63,7 @@ module.exports = class DynamicsDalService {
         // We use an array to hold the response parts in the event we get multiple parts returned
         const responseParts = []
         response.on('data', (chunk) => {
+          LoggingService.logDebug(undefined, chunk)
           responseParts.push(chunk)
         })
         response.on('end', () => {

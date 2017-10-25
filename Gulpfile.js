@@ -179,9 +179,9 @@ gulp.task('build', ['clean'], (done) => {
 
 gulp.task('browser-sync', ['nodemon'], () => {
   browserSync.init({
-    proxy: 'http://localhost:8000',
+    proxy: 'http://localhost:3000',
     browser: 'google chrome',
-    port: 3000,
+    port: 8000,
     reloadDelay: 1000
   })
 })
