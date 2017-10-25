@@ -16,7 +16,7 @@ module.exports = class LoggingService {
   static logDebug (message, data, request) {
     if (Config.LOG_LEVEL === Constants.LogLevel.DEBUG) {
       if (message) {
-        LoggingService._log(Constants.LogLevel.DEBUG, message, request)        
+        LoggingService._log(Constants.LogLevel.DEBUG, message, request)
       }
       if (data) {
         LoggingService._log(Constants.LogLevel.DEBUG, data, request)
