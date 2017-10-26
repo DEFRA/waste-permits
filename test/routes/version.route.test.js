@@ -31,7 +31,7 @@ const fakeCookie = {
   authToken: 'my_auth_token'
 }
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   // Stub methods
   generateCookieStub = CookieService.generateCookie
   CookieService.generateCookie = (reply) => {
@@ -44,14 +44,14 @@ lab.beforeEach((done) => {
   }
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   this.generateCookie = generateCookieStub
   DynamicsSolution.get = dynamicSolutionGetStub
 })
 
 lab.experiment('Version page tests:', () => {
-  lab.test('The page should NOT have a back link', (done) => {
+  lab.test('The page should NOT have a back link', async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -59,40 +59,38 @@ lab.experiment('Version page tests:', () => {
       payload: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('back-link')
-      Code.expect(element).to.not.exist()
-    })
+    let element = doc.getElementById('back-link')
+    Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET /version returns the version page correctly', (done) => {
+  lab.test('GET /version returns the version page correctly', async () => {
     const request = {
       method: 'GET',
       url: routePath,
       headers: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('version-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('Waste Permits')
+    let element = doc.getElementById('version-heading').firstChild
+    Code.expect(element.nodeValue).to.equal('Waste Permits')
 
-      for (let i = 0; i < dynamicsVersionInfo.length; i++) {
-        element = doc.getElementById(`dynamics-item-${i}-component-name`).firstChild
-        Code.expect(element.nodeValue).to.equal(dynamicsVersionInfo[i].componentName)
+    for (let i = 0; i < dynamicsVersionInfo.length; i++) {
+      element = doc.getElementById(`dynamics-item-${i}-component-name`).firstChild
+      Code.expect(element.nodeValue).to.equal(dynamicsVersionInfo[i].componentName)
 
-        element = doc.getElementById(`dynamics-item-${i}-component-version`).firstChild
-        Code.expect(element.nodeValue).to.equal(dynamicsVersionInfo[i].version)
-      }
-    })
+      element = doc.getElementById(`dynamics-item-${i}-component-version`).firstChild
+      Code.expect(element.nodeValue).to.equal(dynamicsVersionInfo[i].version)
+    }
   })
 })

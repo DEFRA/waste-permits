@@ -10,7 +10,7 @@ const CookieService = require('../../src/services/cookie.service')
 let validateCookieStub
 const routePath = '/page-not-found'
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   // Stub methods
 
   validateCookieStub = CookieService.validateCookie
@@ -19,13 +19,13 @@ lab.beforeEach((done) => {
   }
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
 })
 
 lab.experiment('Page Not Found (404) page tests:', () => {
-  lab.test('The page should NOT have a back link', (done) => {
+  lab.test('The page should NOT have a back link', async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -33,45 +33,43 @@ lab.experiment('Page Not Found (404) page tests:', () => {
       payload: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('back-link')
-      Code.expect(element).to.not.exist()
-    })
+    let element = doc.getElementById('back-link')
+    Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET /page-not-found returns the 404 page correctly when the user has a valid cookie', (done) => {
+  lab.test('GET /page-not-found returns the 404 page correctly when the user has a valid cookie', async () => {
     const request = {
       method: 'GET',
       url: routePath,
       headers: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('page-not-found-heading').firstChild
-      Code.expect(element.nodeValue).to.equal(`We can't find that page`)
+    let element = doc.getElementById('page-not-found-heading').firstChild
+    Code.expect(element.nodeValue).to.equal(`We can't find that page`)
 
-      element = doc.getElementById('page-not-found-paragraph').firstChild
-      Code.expect(element.nodeValue).to.exist()
+    element = doc.getElementById('page-not-found-paragraph').firstChild
+    Code.expect(element.nodeValue).to.exist()
 
-      element = doc.getElementById('page-not-found-task-list-link').firstChild
-      Code.expect(element.nodeValue).to.exist()
+    element = doc.getElementById('page-not-found-task-list-link').firstChild
+    Code.expect(element.nodeValue).to.exist()
 
-      element = doc.getElementById('page-not-found-apply-link').firstChild
-      Code.expect(element.nodeValue).to.exist()
-    })
+    element = doc.getElementById('page-not-found-apply-link').firstChild
+    Code.expect(element.nodeValue).to.exist()
   })
 
-  lab.test('GET /page-not-found redirects to the start page when the user does not have a valid cookie', (done) => {
+  lab.test('GET /page-not-found redirects to the start page when the user does not have a valid cookie', async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -82,22 +80,20 @@ lab.experiment('Page Not Found (404) page tests:', () => {
       return false
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/start/start-or-open-saved')
-    })
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/start/start-or-open-saved')
   })
 
-  lab.test('GET /an-invalid-route shows the 404 page when the user has a valid cookie', (done) => {
+  lab.test('GET /an-invalid-route shows the 404 page when the user has a valid cookie', async () => {
     const request = {
       method: 'GET',
       url: '/an-invalid-route',
       headers: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(routePath)
-    })
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal(routePath)
   })
 })

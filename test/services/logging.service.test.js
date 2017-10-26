@@ -8,12 +8,12 @@ const sinon = require('sinon')
 const LoggingService = require('../../src/services/logging.service')
 const server = require('../../server')
 
-lab.beforeEach((done) => {})
+lab.beforeEach(() => {})
 
-lab.afterEach((done) => {})
+lab.afterEach(() => {})
 
 lab.experiment('LoggingService tests: Server logging:', () => {
-  lab.test('Error messages are logged', (done) => {
+  lab.test('Error messages are logged', () => {
     const spy = sinon.spy(server, 'log')
 
     LoggingService.logError('An error has occurred')
@@ -24,7 +24,7 @@ lab.experiment('LoggingService tests: Server logging:', () => {
     server.log.restore()
   })
 
-  lab.test('Info messages are logged', (done) => {
+  lab.test('Info messages are logged', () => {
     const spy = sinon.spy(server, 'log')
 
     LoggingService.logInfo('Something has happened')
@@ -37,7 +37,7 @@ lab.experiment('LoggingService tests: Server logging:', () => {
 })
 
 lab.experiment('LoggingService tests: Request logging:', () => {
-  lab.test('Error messages are logged', (done) => {
+  lab.test('Error messages are logged', () => {
     const request = {
       log: () => {}
     }
@@ -49,7 +49,7 @@ lab.experiment('LoggingService tests: Request logging:', () => {
     Code.expect(spy.threw()).to.equal(false)
   })
 
-  lab.test('Info messages are logged', (done) => {
+  lab.test('Info messages are logged', () => {
     const request = {
       log: () => {}
     }

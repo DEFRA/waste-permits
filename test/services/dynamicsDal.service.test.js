@@ -12,7 +12,7 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let dynamicsDal
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   dynamicsDal = new DynamicsDalService('__CRM_TOKEN__')
 
   // Mock the CRM token endpoints
@@ -77,46 +77,42 @@ lab.beforeEach((done) => {
     .reply(200, {})
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   nock.cleanAll()
 })
 
 lab.experiment('Dynamics Service tests:', () => {
-  lab.test('create() can create a new record in Dynamics', (done) => {
+  lab.test('create() can create a new record in Dynamics', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
-    dynamicsDal.create('__DYNAMICS_INSERT_QUERY__', {}).then((response) => {
-      Code.expect(spy.callCount).to.equal(1)
-      Code.expect(response).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-      DynamicsDalService.prototype._call.restore()
-    })
+    const response = await dynamicsDal.create('__DYNAMICS_INSERT_QUERY__', {})
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(response).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
+    DynamicsDalService.prototype._call.restore()
   })
 
-  lab.test('update() can update a record in Dynamics', (done) => {
+  lab.test('update() can update a record in Dynamics', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
-    dynamicsDal.update('__DYNAMICS_UPDATE_QUERY__', {}).then((response) => {
-      Code.expect(spy.callCount).to.equal(1)
-      DynamicsDalService.prototype._call.restore()
-    })
+    const response = await dynamicsDal.update('__DYNAMICS_UPDATE_QUERY__', {})
+    Code.expect(spy.callCount).to.equal(1)
+    DynamicsDalService.prototype._call.restore()
   })
 
-  lab.test('search() can retrieve a list of records from Dynamics', (done) => {
+  lab.test('search() can retrieve a list of records from Dynamics', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
-    dynamicsDal.search('__DYNAMICS_LIST_QUERY__').then((response) => {
-      Code.expect(spy.callCount).to.equal(1)
-      DynamicsDalService.prototype._call.restore()
-    })
+    const response = await dynamicsDal.search('__DYNAMICS_LIST_QUERY__')
+    Code.expect(spy.callCount).to.equal(1)
+    DynamicsDalService.prototype._call.restore()
   })
 
-  lab.test('search() can retrieve a single record from Dynamics', (done) => {
+  lab.test('search() can retrieve a single record from Dynamics', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
-    dynamicsDal.search('__DYNAMICS_ID_QUERY__').then((response) => {
-      Code.expect(spy.callCount).to.equal(1)
+    const response = await dynamicsDal.search('__DYNAMICS_ID_QUERY__')
+    Code.expect(spy.callCount).to.equal(1)
 
-      DynamicsDalService.prototype._call.restore()
-    })
+    DynamicsDalService.prototype._call.restore()
   })
 
-  lab.test('service handles unknown result from Dynamics', (done) => {
+  lab.test('service handles unknown result from Dynamics', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     dynamicsDal.search('__DYNAMICS_BAD_QUERY__')
       .catch((err) => {
@@ -127,7 +123,7 @@ lab.experiment('Dynamics Service tests:', () => {
       })
   })
 
-  lab.test('search() times out based on app configuration', (done) => {
+  lab.test('search() times out based on app configuration', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     dynamicsDal.search('__DYNAMICS_TIMEOUT_QUERY__')
       .catch((err) => {

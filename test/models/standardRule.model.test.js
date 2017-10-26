@@ -18,18 +18,18 @@ const fakeStandardRule = {
   codeForId: 'sr2015-no-18'
 }
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   // Stub methods
   dynamicsSearchStub = DynamicsDalService.prototype.search
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   DynamicsDalService.prototype.search = dynamicsSearchStub
 })
 
 lab.experiment('StandardRule Model tests:', () => {
-  lab.test('list() method returns a list of StandardRule objects', (done) => {
+  lab.test('list() method returns a list of StandardRule objects', async () => {
     DynamicsDalService.prototype.search = (query) => {
       return {
         '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
@@ -59,15 +59,14 @@ lab.experiment('StandardRule Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    StandardRule.list().then((standardRuleList) => {
-      Code.expect(Array.isArray(standardRuleList.results)).to.be.true()
-      Code.expect(standardRuleList.results.length).to.equal(3)
-      Code.expect(standardRuleList.count).to.equal(3)
-      Code.expect(spy.callCount).to.equal(1)
-    })
+    const standardRuleList = await StandardRule.list()
+    Code.expect(Array.isArray(standardRuleList.results)).to.be.true()
+    Code.expect(standardRuleList.results.length).to.equal(3)
+    Code.expect(standardRuleList.count).to.equal(3)
+    Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('getByCode() method returns a StandardRule object', (done) => {
+  lab.test('getByCode() method returns a StandardRule object', async () => {
     DynamicsDalService.prototype.search = (query) => {
       return {
         '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
@@ -82,18 +81,17 @@ lab.experiment('StandardRule Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    StandardRule.getByCode().then((standardRule) => {
-      Code.expect(standardRule.id).to.equal(fakeStandardRule.id)
-      Code.expect(standardRule.name).to.equal(fakeStandardRule.name)
-      Code.expect(standardRule.limits).to.equal(fakeStandardRule.limits)
-      Code.expect(standardRule.code).to.equal(fakeStandardRule.code)
-      Code.expect(standardRule.codeForId).to.equal(fakeStandardRule.codeForId)
+    const standardRule = await StandardRule.getByCode()
+    Code.expect(standardRule.id).to.equal(fakeStandardRule.id)
+    Code.expect(standardRule.name).to.equal(fakeStandardRule.name)
+    Code.expect(standardRule.limits).to.equal(fakeStandardRule.limits)
+    Code.expect(standardRule.code).to.equal(fakeStandardRule.code)
+    Code.expect(standardRule.codeForId).to.equal(fakeStandardRule.codeForId)
 
-      Code.expect(spy.callCount).to.equal(1)
-    })
+    Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('transformPermitCode() method formats string for an ID correctly', (done) => {
+  lab.test('transformPermitCode() method formats string for an ID correctly', () => {
     const string = 'SR2015 No 10'
     Code.expect(StandardRule.transformPermitCode(string)).to.equal('sr2015-no-10')
   })
