@@ -20,7 +20,18 @@ const HapiAlive = require('hapi-alive')
 const Good = require('good')
 const HapiDevErrors = require('hapi-dev-errors')
 const Crumb = require('crumb')
-const server = new Hapi.Server()
+
+let server
+if (config.LOG_LEVEL === Constants.LogLevels.DEBUG) {
+  // Start the server in DEBUG mode
+  server = new Hapi.Server({
+    debug: {
+      log: ['error']
+    }
+  })
+} else {
+  server = new Hapi.Server()
+}
 
 const loadHealthTemplate = () => {
   let template = String(fs.readFileSync((Path.join(__dirname, 'src', 'views', 'health.html'))))
@@ -148,6 +159,7 @@ server.start((err) => {
   LoggingService.logInfo(`Service: ${Constants.SERVICE_NAME}`)
   LoggingService.logInfo(`Version: ${Constants.getVersion()}`)
   LoggingService.logInfo(`Latest commit: ${config.gitSha}`)
+  LoggingService.logInfo(`Log level: ${config.LOG_LEVEL}`)
 })
 
 // Listen on SIGINT signal and gracefully stop the server

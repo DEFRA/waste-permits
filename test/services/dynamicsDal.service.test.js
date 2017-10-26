@@ -92,21 +92,21 @@ lab.experiment('Dynamics Service tests:', () => {
 
   lab.test('update() can update a record in Dynamics', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
-    const response = await dynamicsDal.update('__DYNAMICS_UPDATE_QUERY__', {})
+    await dynamicsDal.update('__DYNAMICS_UPDATE_QUERY__', {})
     Code.expect(spy.callCount).to.equal(1)
     DynamicsDalService.prototype._call.restore()
   })
 
   lab.test('search() can retrieve a list of records from Dynamics', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
-    const response = await dynamicsDal.search('__DYNAMICS_LIST_QUERY__')
+    await dynamicsDal.search('__DYNAMICS_LIST_QUERY__')
     Code.expect(spy.callCount).to.equal(1)
     DynamicsDalService.prototype._call.restore()
   })
 
   lab.test('search() can retrieve a single record from Dynamics', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
-    const response = await dynamicsDal.search('__DYNAMICS_ID_QUERY__')
+    await dynamicsDal.search('__DYNAMICS_ID_QUERY__')
     Code.expect(spy.callCount).to.equal(1)
 
     DynamicsDalService.prototype._call.restore()

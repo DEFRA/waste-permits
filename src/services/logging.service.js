@@ -6,20 +6,20 @@ const Constants = require('../constants')
 module.exports = class LoggingService {
   static logError (message, request) {
     console.error(message)
-    LoggingService._log(Constants.LogLevel.ERROR, message, request)
+    LoggingService._log(Constants.LogLevels.ERROR, message, request)
   }
 
   static logInfo (message, request) {
-    LoggingService._log(Constants.LogLevel.INFO, message, request)
+    LoggingService._log(Constants.LogLevels.INFO, message, request)
   }
 
   static logDebug (message, data, request) {
-    if (Config.LOG_LEVEL === Constants.LogLevel.DEBUG) {
+    if (Config.LOG_LEVEL === Constants.LogLevels.DEBUG) {
       if (message) {
-        LoggingService._log(Constants.LogLevel.DEBUG, message, request)
+        LoggingService._log(Constants.LogLevels.DEBUG, message, request)
       }
       if (data) {
-        LoggingService._log(Constants.LogLevel.DEBUG, data, request)
+        LoggingService._log(Constants.LogLevels.DEBUG, data, request)
       }
     }
   }

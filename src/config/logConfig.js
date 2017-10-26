@@ -29,6 +29,7 @@ if (config.nodeEnvironment !== 'test') {
           'utc': false
         }]
       }, 'stdout'],
+
       // Output to file
       fileReporter: [{
         module: 'good-squeeze',

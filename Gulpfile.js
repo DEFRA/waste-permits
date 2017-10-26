@@ -149,7 +149,7 @@ gulp.task('html-hint', () => {
 
 // Test task
 gulp.task('test', ['check-handlebars', 'standard', 'html-hint'], () => {
-  const port = parseInt(process.env.PORT) + 1
+  const port = parseInt(process.env.PORT) + 2
   process.env.PORT = port
   console.log(`Running tests on port: ${port}`)
   return gulp.src('test')
@@ -179,7 +179,7 @@ gulp.task('build', ['clean'], (done) => {
 
 gulp.task('browser-sync', ['nodemon'], () => {
   browserSync.init({
-    proxy: 'http://localhost:3000',
+    proxy: 'http://localhost:' + process.env.PORT,
     browser: 'google chrome',
     port: 8000,
     reloadDelay: 1000
