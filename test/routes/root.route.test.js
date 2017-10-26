@@ -10,7 +10,7 @@ const ActiveDirectoryAuthService = require('../../src/services/activeDirectoryAu
 
 let getAuthTokenStub
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   // Stub methods
   getAuthTokenStub = ActiveDirectoryAuthService.prototype.getToken
   ActiveDirectoryAuthService.prototype.getToken = () => {
@@ -18,22 +18,21 @@ lab.beforeEach((done) => {
   }
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   ActiveDirectoryAuthService.prototype.getToken = getAuthTokenStub
 })
 
 lab.experiment('Default page tests:', () => {
-  lab.test('Get / re-directs to the first page in the application flow', (done) => {
+  lab.test('Get / re-directs to the first page in the application flow', async () => {
     const request = {
       method: 'GET',
       url: '/',
       headers: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/start/start-or-open-saved')
-    })
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/start/start-or-open-saved')
   })
 })

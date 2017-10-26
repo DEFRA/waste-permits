@@ -8,16 +8,16 @@ const server = require('../../server')
 
 const routePath = '/error'
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
 
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
 
 })
 
 lab.experiment('Error page tests:', () => {
-  lab.test('The page should NOT have a back link', (done) => {
+  lab.test('The page should NOT have a back link', async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -25,32 +25,30 @@ lab.experiment('Error page tests:', () => {
       payload: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('back-link')
-      Code.expect(element).to.not.exist()
-    })
+    let element = doc.getElementById('back-link')
+    Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET /error returns the error page correctly', (done) => {
+  lab.test('GET /error returns the error page correctly', async () => {
     const request = {
       method: 'GET',
       url: routePath,
       headers: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('error-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('Something went wrong')
-    })
+    let element = doc.getElementById('error-heading').firstChild
+    Code.expect(element.nodeValue).to.equal('Something went wrong')
   })
 })

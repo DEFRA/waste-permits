@@ -10,7 +10,7 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let dynamicsSearchStub
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   dynamicsSearchStub = DynamicsDalService.prototype.search
   DynamicsDalService.prototype.search = (query) => {
     // Dynamics DynamicsSolution objects
@@ -39,25 +39,24 @@ lab.beforeEach((done) => {
   }
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   DynamicsDalService.prototype.search = dynamicsSearchStub
 })
 
 lab.experiment('DynamicsSolution Model tests:', () => {
-  lab.test('get() method returns the correct DynamicsSolution objects', (done) => {
+  lab.test('get() method returns the correct DynamicsSolution objects', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    DynamicsSolution.get().then((dynamicsVersionInfo) => {
-      Code.expect(spy.callCount).to.equal(1)
+    const dynamicsVersionInfo = await DynamicsSolution.get()
+    Code.expect(spy.callCount).to.equal(1)
 
-      Code.expect(dynamicsVersionInfo.length).to.equal(3)
+    Code.expect(dynamicsVersionInfo.length).to.equal(3)
 
-      Code.expect(dynamicsVersionInfo[0].componentName).to.equal('Core')
-      Code.expect(dynamicsVersionInfo[0].version).to.equal('1.6.3.0')
-      Code.expect(dynamicsVersionInfo[1].componentName).to.equal('Waste Permits')
-      Code.expect(dynamicsVersionInfo[1].version).to.equal('1.1.10.0')
-      Code.expect(dynamicsVersionInfo[2].componentName).to.equal('Licensing and Permitting')
-      Code.expect(dynamicsVersionInfo[2].version).to.equal('1.1.11.0')
-    })
+    Code.expect(dynamicsVersionInfo[0].componentName).to.equal('Core')
+    Code.expect(dynamicsVersionInfo[0].version).to.equal('1.6.3.0')
+    Code.expect(dynamicsVersionInfo[1].componentName).to.equal('Waste Permits')
+    Code.expect(dynamicsVersionInfo[1].version).to.equal('1.1.10.0')
+    Code.expect(dynamicsVersionInfo[2].componentName).to.equal('Licensing and Permitting')
+    Code.expect(dynamicsVersionInfo[2].version).to.equal('1.1.11.0')
   })
 })

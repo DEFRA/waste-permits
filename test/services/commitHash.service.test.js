@@ -13,7 +13,7 @@ let processEnvStub
 let readFileSyncStub
 let execSyncStub
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   // Object.assign() is used to copy the values of all enumerable own properties
   // from one or more source objects to a target object. It returns the target
   // object.
@@ -27,33 +27,33 @@ lab.beforeEach((done) => {
   execSyncStub = fs.readFileSync
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   process.env = processEnvStub
   fs.readFileSync = readFileSyncStub
   childProcess.execSync = execSyncStub
 })
 
 lab.experiment('Commit hash service tests:', () => {
-  lab.test('commitHash() returns the value of GIT_SHA env var when set', (done) => {
+  lab.test('commitHash() returns the value of GIT_SHA env var when set', () => {
     process.env.GIT_SHA = 'foobar-foobar-foobar'
     Code.expect(CommitHashService.commitHash()).to.equal('foobar-foobar-foobar')
   })
 
-  lab.test('commitHash() returns contents of REVISION file when env var not set', (done) => {
+  lab.test('commitHash() returns contents of REVISION file when env var not set', () => {
     fs.readFileSync = (file, encoding) => {
       return 'fromfile-fromfile-fromfile'
     }
     Code.expect(CommitHashService.commitHash()).to.equal('fromfile-fromfile-fromfile')
   })
 
-  lab.test('commitHash() returns the result of quering git directly when both the GIT_SHA env var and file are not set', (done) => {
+  lab.test('commitHash() returns the result of quering git directly when both the GIT_SHA env var and file are not set', () => {
     childProcess.execSync = (command) => {
       return 'fromgit-fromgit-fromgit'
     }
     Code.expect(CommitHashService.commitHash()).to.equal('fromgit-fromgit-fromgit')
   })
 
-  lab.test('commitHash() sets the env var GIT_SHA after having read the reference from the REVISION file', (done) => {
+  lab.test('commitHash() sets the env var GIT_SHA after having read the reference from the REVISION file', () => {
     fs.readFileSync = (file, encoding) => {
       return 'setfileenv-setfileenv-setfileenv'
     }
@@ -61,7 +61,7 @@ lab.experiment('Commit hash service tests:', () => {
     Code.expect(process.env.GIT_SHA).to.equal('setfileenv-setfileenv-setfileenv')
   })
 
-  lab.test('commitHash() sets the env var GIT_SHA after having queried git for the reference', (done) => {
+  lab.test('commitHash() sets the env var GIT_SHA after having queried git for the reference', () => {
     childProcess.execSync = (command) => {
       return 'setgitenv-setgitenv-setgitenv'
     }

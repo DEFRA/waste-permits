@@ -13,7 +13,7 @@ let dynamicsCreateStub
 let dynamicsSearchStub
 let dynamicsUpdateStub
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   testContact = new Contact({
     firstname: 'John',
     lastname: 'Smith,',
@@ -62,7 +62,7 @@ lab.beforeEach((done) => {
   }
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   DynamicsDalService.prototype.create = dynamicsCreateStub
   DynamicsDalService.prototype.search = dynamicsSearchStub
@@ -70,7 +70,7 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Contact Model tests:', () => {
-  lab.test('getById() method returns a single Contact object', (done) => {
+  lab.test('getById() method returns a single Contact object', async () => {
     DynamicsDalService.prototype.search = (query) => {
       // Dynamics Contact objects
       return {
@@ -84,35 +84,31 @@ lab.experiment('Contact Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    Contact.getById().then((contact) => {
-      Code.expect(spy.callCount).to.equal(1)
-    })
+    await Contact.getById()
+    Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('list() method returns a list of Contact objects', (done) => {
+  lab.test('list() method returns a list of Contact objects', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    Contact.list().then((contactList) => {
-      Code.expect(Array.isArray(contactList.results)).to.be.true()
-      Code.expect(contactList.results.length).to.equal(3)
-      Code.expect(contactList.count).to.equal(3)
-      Code.expect(spy.callCount).to.equal(1)
-    })
+    const contactList = await Contact.list()
+    Code.expect(Array.isArray(contactList.results)).to.be.true()
+    Code.expect(contactList.results.length).to.equal(3)
+    Code.expect(contactList.count).to.equal(3)
+    Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('save() method saves a new Contact object', (done) => {
+  lab.test('save() method saves a new Contact object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    testContact.save().then(() => {
-      Code.expect(spy.callCount).to.equal(1)
-      Code.expect(testContact.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-    })
+    await testContact.save()
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(testContact.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
   })
 
-  lab.test('save() method updates an existing Contact object', (done) => {
+  lab.test('save() method updates an existing Contact object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testContact.id = '123'
-    testContact.save().then(() => {
-      Code.expect(spy.callCount).to.equal(1)
-      Code.expect(testContact.id).to.equal('123')
-    })
+    await testContact.save()
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(testContact.id).to.equal('123')
   })
 })

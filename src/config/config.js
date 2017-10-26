@@ -5,6 +5,8 @@ const CommitHashService = require('../services/commitHash.service')
 
 const config = module.exports = {}
 
+config.LOG_LEVEL = process.env.LOG_LEVEL
+
 config.port = process.env.PORT || 8000
 config.nodeEnvironment = process.env.NODE_ENV || 'PRODUCTION'
 

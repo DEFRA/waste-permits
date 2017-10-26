@@ -12,7 +12,7 @@ let validateCookieStub
 
 const routePath = '/save-and-return/check-your-email'
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => {
@@ -20,13 +20,13 @@ lab.beforeEach((done) => {
   }
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
 })
 
 lab.experiment(`Search for 'standard rules permit application' in your email page tests:`, () => {
-  lab.test('The page should have a back link', (done) => {
+  lab.test('The page should have a back link', async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -34,18 +34,17 @@ lab.experiment(`Search for 'standard rules permit application' in your email pag
       payload: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      const element = doc.getElementById('back-link')
-      Code.expect(element).to.exist()
-    })
+    const element = doc.getElementById('back-link')
+    Code.expect(element).to.exist()
   })
 
-  lab.test('GET /save-and-return/check-your-email success ', (done) => {
+  lab.test('GET /save-and-return/check-your-email success ', async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -53,8 +52,7 @@ lab.experiment(`Search for 'standard rules permit application' in your email pag
       payload: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
-    })
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
   })
 })

@@ -6,23 +6,23 @@ const Code = require('code')
 
 const BaseModel = require('../../src/models/base.model')
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
 
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
 
 })
 
 lab.experiment('Base Model tests:', () => {
-  lab.test('toString() method serialises a model object correctly', (done) => {
+  lab.test('toString() method serialises a model object correctly', () => {
     const modelObject = new BaseModel()
     modelObject.additionalProperty = 'foo'
 
     Code.expect(modelObject.toString()).to.equal('BaseModel: {\n  additionalProperty: foo\n}')
   })
 
-  lab.test('isNew() correctly identifies if the instance has a Dynamics ID', (done) => {
+  lab.test('isNew() correctly identifies if the instance has a Dynamics ID', () => {
     const modelObject = new BaseModel()
     modelObject.additionalProperty = 'id'
 

@@ -20,7 +20,7 @@ const fakeCookie = {
   authToken: 'my_auth_token'
 }
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   // Stub methods
   generateCookieStub = CookieService.generateCookie
   CookieService.generateCookie = (reply) => {
@@ -35,7 +35,7 @@ lab.beforeEach((done) => {
   Application.prototype.save = (authToken) => {}
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.generateCookie = generateCookieStub
   CookieService.validateCookie = validateCookieStub
@@ -43,7 +43,7 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Start or Open Saved page tests:', () => {
-  lab.test('The page should NOT have a back link', (done) => {
+  lab.test('The page should NOT have a back link', async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -51,45 +51,43 @@ lab.experiment('Start or Open Saved page tests:', () => {
       payload: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('back-link')
-      Code.expect(element).to.not.exist()
-    })
+    let element = doc.getElementById('back-link')
+    Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET returns the Start or Open Saved page correctly', (done) => {
+  lab.test('GET returns the Start or Open Saved page correctly', async () => {
     const request = {
       method: 'GET',
       url: routePath,
       headers: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('start-or-open-saved-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('Apply for a standard rules waste permit')
+    let element = doc.getElementById('start-or-open-saved-heading').firstChild
+    Code.expect(element.nodeValue).to.equal('Apply for a standard rules waste permit')
 
-      element = doc.getElementById('start-application')
-      Code.expect(element).to.exist()
+    element = doc.getElementById('start-application')
+    Code.expect(element).to.exist()
 
-      element = doc.getElementById('open-application')
-      Code.expect(element).to.exist()
+    element = doc.getElementById('open-application')
+    Code.expect(element).to.exist()
 
-      element = doc.getElementById('start-or-open-saved-submit').firstChild
-      Code.expect(element.nodeValue).to.equal('Continue')
-    })
+    element = doc.getElementById('start-or-open-saved-submit').firstChild
+    Code.expect(element.nodeValue).to.equal('Continue')
   })
 
-  lab.test('POST on Start or Open Saved page for a new application redirects to the correct route', (done) => {
+  lab.test('POST on Start or Open Saved page for a new application redirects to the correct route', async () => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -99,13 +97,12 @@ lab.experiment('Start or Open Saved page tests:', () => {
       }
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/permit/category')
-    })
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/permit/category')
   })
 
-  lab.test('POST on Start or Open Saved page to open an existing application redirects to the correct route', (done) => {
+  lab.test('POST on Start or Open Saved page to open an existing application redirects to the correct route', async () => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -115,13 +112,12 @@ lab.experiment('Start or Open Saved page tests:', () => {
       }
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/save-and-return/check-your-email')
-    })
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/save-and-return/check-your-email')
   })
 
-  lab.test('POST Start or Open Saved page shows the error message summary panel when new or open has not been selected', (done) => {
+  lab.test('POST Start or Open Saved page shows the error message summary panel when new or open has not been selected', async () => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -129,22 +125,21 @@ lab.experiment('Start or Open Saved page tests:', () => {
       payload: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element
-      let errorMessage = 'Select start new or open a saved application'
+    let element
+    let errorMessage = 'Select start new or open a saved application'
 
-      // Panel summary error item
-      element = doc.getElementById('error-summary-list-item-0').firstChild
-      Code.expect(element.nodeValue).to.equal(errorMessage)
+    // Panel summary error item
+    element = doc.getElementById('error-summary-list-item-0').firstChild
+    Code.expect(element.nodeValue).to.equal(errorMessage)
 
-      // Site name field error
-      element = doc.getElementById('started-application-error').firstChild
-      Code.expect(element.nodeValue).to.equal(errorMessage)
-    })
+    // Site name field error
+    element = doc.getElementById('started-application-error').firstChild
+    Code.expect(element.nodeValue).to.equal(errorMessage)
   })
 })

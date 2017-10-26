@@ -16,7 +16,7 @@ let contactGetByIdStub
 
 const routePath = '/contact-details'
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = (request) => {
@@ -35,11 +35,10 @@ lab.beforeEach((done) => {
   }
 
   contactSaveStub = Contact.prototype.save
-  Contact.prototype.save = (authToken) => {
-  }
+  Contact.prototype.save = (authToken) => {}
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
   Contact.prototype.getById = contactGetByIdStub
@@ -47,7 +46,7 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Contact details page tests:', () => {
-  lab.test('The page should have a back link', (done) => {
+  lab.test('The page should have a back link', async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -55,39 +54,37 @@ lab.experiment('Contact details page tests:', () => {
       payload: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      const element = doc.getElementById('back-link')
-      Code.expect(element).to.exist()
-    })
+    const element = doc.getElementById('back-link')
+    Code.expect(element).to.exist()
   })
 
-  lab.test('GET /contact-details returns the contact page correctly', (done) => {
+  lab.test('GET /contact-details returns the contact page correctly', async () => {
     const request = {
       method: 'GET',
       url: routePath,
       headers: {}
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('contact-details-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
+    let element = doc.getElementById('contact-details-heading').firstChild
+    Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
 
-      element = doc.getElementById('contact-details-continue').firstChild
-      Code.expect(element.nodeValue).to.equal('Continue')
-    })
+    element = doc.getElementById('contact-details-continue').firstChild
+    Code.expect(element.nodeValue).to.equal('Continue')
   })
 
-  lab.test('POST /contact-details success redirects to the Task List route after a CREATE', (done) => {
+  lab.test('POST /contact-details success redirects to the Task List route after a CREATE', async () => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -101,13 +98,12 @@ lab.experiment('Contact details page tests:', () => {
       }
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/task-list')
-    })
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/task-list')
   })
 
-  lab.test('POST /contact-details success stays on the Contact details page after an UPDATE', (done) => {
+  lab.test('POST /contact-details success stays on the Contact details page after an UPDATE', async () => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -121,18 +117,17 @@ lab.experiment('Contact details page tests:', () => {
       }
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(200)
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('contact-details-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
-    })
+    let element = doc.getElementById('contact-details-heading').firstChild
+    Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
   })
 
-  lab.test('POST /contact-details redirects to error screen when the user token is invalid', (done) => {
+  lab.test('POST /contact-details redirects to error screen when the user token is invalid', async () => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -146,9 +141,8 @@ lab.experiment('Contact details page tests:', () => {
       return undefined
     }
 
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/error')
   })
 })

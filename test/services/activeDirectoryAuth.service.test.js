@@ -22,29 +22,28 @@ let authTokenResponse = {
   access_token: '__ACCESS_TOKEN__'
 }
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   authService = new ActiveDirectoryAuthService()
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   nock.cleanAll()
 })
 
 lab.experiment('Active Directory Auth Service tests:', () => {
-  lab.test('getToken() should return the correct authentication token', (done) => {
+  lab.test('getToken() should return the correct authentication token', async () => {
     // Mock the CRM token endpoint
     setHttpMock()
 
-    authService.getToken().then((authToken) => {
-      Code.expect(authToken).to.equal(authTokenResponse.access_token)
-    })
+    const authToken = await authService.getToken()
+    Code.expect(authToken).to.equal(authTokenResponse.access_token)
   })
 
-  lab.test('getToken() times out based on app configuration', (done) => {
+  lab.test('getToken() times out based on app configuration', async () => {
     // Mock the CRM token endpoint
     setHttpMock(7000)
 
-    authService.getToken()
+    await authService.getToken()
       .catch((error) => {
         Code.expect(error.message).to.equal('socket hang up')
       })
