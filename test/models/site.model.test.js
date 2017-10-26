@@ -18,7 +18,7 @@ const fakeSiteData = {
   applicationId: '05486b21-a4ae-e711-8117-5065f38ac931'
 }
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   testSite = new Site(fakeSiteData)
   dynamicsSearchStub = DynamicsDalService.prototype.search
   DynamicsDalService.prototype.search = (query) => {
@@ -44,7 +44,7 @@ lab.beforeEach((done) => {
   }
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   DynamicsDalService.prototype.create = dynamicsCreateStub
   DynamicsDalService.prototype.search = dynamicsSearchStub
@@ -52,7 +52,7 @@ lab.afterEach((done) => {
 })
 
 lab.experiment('Site Model tests:', () => {
-  lab.test('Constructor creates a Site object correctly', (done) => {
+  lab.test('Constructor creates a Site object correctly', () => {
     const emptySite = new Site({})
     Code.expect(emptySite.name).to.be.undefined()
 
@@ -60,33 +60,29 @@ lab.experiment('Site Model tests:', () => {
     Code.expect(testSite.applicationId).to.equal(fakeSiteData.applicationId)
   })
 
-  lab.test('getByApplicationId() method returns a single Site object', (done) => {
+  lab.test('getByApplicationId() method returns a single Site object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    Site.getByApplicationId().then((site) => {
-      Code.expect(spy.callCount).to.equal(1)
-
-      Code.expect(site.name).to.equal(fakeSiteData.name)
-    })
+    const site = await Site.getByApplicationId()
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(site.name).to.equal(fakeSiteData.name)
   })
 
-  lab.test('save() method saves a new Site object', (done) => {
+  lab.test('save() method saves a new Site object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    testSite.save().then(() => {
-      Code.expect(spy.callCount).to.equal(1)
-      Code.expect(testSite.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-    })
+    await testSite.save()
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(testSite.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
   })
 
-  lab.test('save() method updates an existing Site object', (done) => {
+  lab.test('save() method updates an existing Site object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testSite.id = '123'
-    testSite.save().then(() => {
-      Code.expect(spy.callCount).to.equal(2)
-      Code.expect(testSite.id).to.equal('123')
-    })
+    await testSite.save()
+    Code.expect(spy.callCount).to.equal(2)
+    Code.expect(testSite.id).to.equal('123')
   })
 
-  lab.test('isComplete() method correctly determines the completeness of a Site object', (done) => {
+  lab.test('isComplete() method correctly determines the completeness of a Site object', () => {
     const fakeEmptySiteData = {
       name: undefined,
       applicationId: '05486b21-a4ae-e711-8117-5065f38ac931'

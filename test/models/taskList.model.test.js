@@ -10,7 +10,7 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let dynamicsSearchStub
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   // Stub methods
   dynamicsSearchStub = DynamicsDalService.prototype.search
   DynamicsDalService.prototype.search = (query) => {
@@ -116,47 +116,45 @@ lab.beforeEach((done) => {
   }
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   DynamicsDalService.prototype.search = dynamicsSearchStub
 })
 
 lab.experiment('Task List Model tests:', () => {
-  lab.test('getByApplicationLineId() method returns a TaskList object', (done) => {
+  lab.test('getByApplicationLineId() method returns a TaskList object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    TaskList.getByApplicationLineId().then((taskList) => {
-      Code.expect(taskList).to.not.be.null()
-      Code.expect(spy.callCount).to.equal(1)
-    })
+    const taskList = await TaskList.getByApplicationLineId()
+    Code.expect(taskList).to.not.be.null()
+    Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('TaskList returned by getByApplicationLineId() method has the correct sections', (done) => {
-    TaskList.getByApplicationLineId().then((taskList) => {
-      Code.expect(Array.isArray(taskList.sections)).to.be.true()
-      Code.expect(taskList.sections.length).to.equal(3)
+  lab.test('TaskList returned by getByApplicationLineId() method has the correct sections', async () => {
+    const taskList = await TaskList.getByApplicationLineId()
+    Code.expect(Array.isArray(taskList.sections)).to.be.true()
+    Code.expect(taskList.sections.length).to.equal(3)
 
-      Code.expect(Array.isArray(taskList.sections[0].sectionItems)).to.be.true()
-      Code.expect(taskList.sections[0].sectionItems.length).to.equal(4)
-      Code.expect(taskList.sections[0].sectionItems[0].id).to.equal('check-permit-cost-and-time')
-      Code.expect(taskList.sections[0].sectionItems[1].id).to.equal('confirm-that-your-operation-meets-the-rules')
-      Code.expect(taskList.sections[0].sectionItems[2].id).to.equal('waste-recovery-plan')
-      Code.expect(taskList.sections[0].sectionItems[3].id).to.equal('tell-us-if-youve-discussed-this-application-with-us')
+    Code.expect(Array.isArray(taskList.sections[0].sectionItems)).to.be.true()
+    Code.expect(taskList.sections[0].sectionItems.length).to.equal(4)
+    Code.expect(taskList.sections[0].sectionItems[0].id).to.equal('check-permit-cost-and-time')
+    Code.expect(taskList.sections[0].sectionItems[1].id).to.equal('confirm-that-your-operation-meets-the-rules')
+    Code.expect(taskList.sections[0].sectionItems[2].id).to.equal('waste-recovery-plan')
+    Code.expect(taskList.sections[0].sectionItems[3].id).to.equal('tell-us-if-youve-discussed-this-application-with-us')
 
-      Code.expect(Array.isArray(taskList.sections[1].sectionItems)).to.be.true()
-      Code.expect(taskList.sections[1].sectionItems.length).to.equal(9)
-      Code.expect(taskList.sections[1].sectionItems[0].id).to.equal('give-contact-details')
-      Code.expect(taskList.sections[1].sectionItems[1].id).to.equal('give-permit-holder-details')
-      Code.expect(taskList.sections[1].sectionItems[2].id).to.equal('give-site-name-and-location')
-      Code.expect(taskList.sections[1].sectionItems[3].id).to.equal('upload-the-site-plan')
-      Code.expect(taskList.sections[1].sectionItems[4].id).to.equal('upload-technical-management-qualifications')
-      Code.expect(taskList.sections[1].sectionItems[5].id).to.equal('tell-us-which-management-system-you-use')
-      Code.expect(taskList.sections[1].sectionItems[6].id).to.equal('upload-the-fire-prevention-plan')
-      Code.expect(taskList.sections[1].sectionItems[7].id).to.equal('confirm-the-drainage-system-for-the-vehicle-storage-area')
-      Code.expect(taskList.sections[1].sectionItems[8].id).to.equal('confirm-confidentiality-needs')
+    Code.expect(Array.isArray(taskList.sections[1].sectionItems)).to.be.true()
+    Code.expect(taskList.sections[1].sectionItems.length).to.equal(9)
+    Code.expect(taskList.sections[1].sectionItems[0].id).to.equal('give-contact-details')
+    Code.expect(taskList.sections[1].sectionItems[1].id).to.equal('give-permit-holder-details')
+    Code.expect(taskList.sections[1].sectionItems[2].id).to.equal('give-site-name-and-location')
+    Code.expect(taskList.sections[1].sectionItems[3].id).to.equal('upload-the-site-plan')
+    Code.expect(taskList.sections[1].sectionItems[4].id).to.equal('upload-technical-management-qualifications')
+    Code.expect(taskList.sections[1].sectionItems[5].id).to.equal('tell-us-which-management-system-you-use')
+    Code.expect(taskList.sections[1].sectionItems[6].id).to.equal('upload-the-fire-prevention-plan')
+    Code.expect(taskList.sections[1].sectionItems[7].id).to.equal('confirm-the-drainage-system-for-the-vehicle-storage-area')
+    Code.expect(taskList.sections[1].sectionItems[8].id).to.equal('confirm-confidentiality-needs')
 
-      Code.expect(Array.isArray(taskList.sections[2].sectionItems)).to.be.true()
-      Code.expect(taskList.sections[2].sectionItems.length).to.equal(1)
-      Code.expect(taskList.sections[2].sectionItems[0].id).to.equal('submit-pay')
-    })
+    Code.expect(Array.isArray(taskList.sections[2].sectionItems)).to.be.true()
+    Code.expect(taskList.sections[2].sectionItems.length).to.equal(1)
+    Code.expect(taskList.sections[2].sectionItems[0].id).to.equal('submit-pay')
   })
 })

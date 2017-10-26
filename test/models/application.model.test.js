@@ -11,7 +11,7 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 let testApplication
 let dynamicsCreateStub
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   testApplication = new Application()
 
   // Stub methods
@@ -21,17 +21,16 @@ lab.beforeEach((done) => {
   }
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
   // Restore stubbed methods
   DynamicsDalService.prototype.create = dynamicsCreateStub
 })
 
 lab.experiment('Application Model tests:', () => {
-  lab.test('save() method saves a new Application object', (done) => {
+  lab.test('save() method saves a new Application object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    testApplication.save().then(() => {
-      Code.expect(spy.callCount).to.equal(1)
-      Code.expect(testApplication.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-    })
+    await testApplication.save()
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(testApplication.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
   })
 })
