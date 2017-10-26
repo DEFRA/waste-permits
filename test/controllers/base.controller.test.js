@@ -6,16 +6,16 @@ const Code = require('code')
 
 const BaseController = require('../../src/controllers/base.controller')
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
 
 })
 
-lab.afterEach((done) => {
+lab.afterEach(() => {
 
 })
 
 lab.experiment('Base Controller tests:', () => {
-  lab.test('createPageContext() method builds page context object correctly', (done) => {
+  lab.test('createPageContext() method builds page context object correctly', () => {
     const route = {
       pageHeading: 'THE_PAGE_HEADING',
       pageTitle: 'THE_PAGE_HEADING - Waste Permits - GOV.UK',

@@ -8,7 +8,7 @@ const CookieService = require('../../src/services/cookie.service')
 
 let fakeRequest
 
-lab.beforeEach((done) => {
+lab.beforeEach(() => {
   fakeRequest = {
     path: '/some/path',
     state: {
@@ -22,20 +22,20 @@ lab.beforeEach((done) => {
   }
 })
 
-lab.afterEach((done) => {})
+lab.afterEach(() => {})
 
 lab.experiment('Cookie Service tests:', () => {
-  lab.test('Validate cookie should successfully validate a valid cookie', (done) => {
+  lab.test('Validate cookie should successfully validate a valid cookie', () => {
     Code.expect(CookieService.validateCookie(fakeRequest)).to.be.true()
   })
 
-  lab.test('Validate cookie should successfully validate a missing cookie', (done) => {
+  lab.test('Validate cookie should successfully validate a missing cookie', () => {
     fakeRequest.state = {}
     CookieService.validateCookie(fakeRequest)
     Code.expect(CookieService.validateCookie(fakeRequest)).to.be.false()
   })
 
-  lab.test('Validate cookie should successfully validate an invalid cookie', (done) => {
+  lab.test('Validate cookie should successfully validate an invalid cookie', () => {
     fakeRequest.state.DefraSession.applicationId = undefined
     Code.expect(CookieService.validateCookie(fakeRequest)).to.be.false()
 
