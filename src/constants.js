@@ -13,7 +13,7 @@ Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
 Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 
-Constants.LogLevel = {
+Constants.LogLevels = {
   ERROR: 'ERROR',
   INFO: 'INFO',
   DEBUG: 'DEBUG'
