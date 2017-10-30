@@ -28,7 +28,7 @@ module.exports = class ActiveDirectoryAuthService {
         response.setEncoding('utf8')
         response.on('data', (chunk) => {
           LoggingService.logDebug(undefined, chunk)
-          
+
           // Add each response chunk to the responseParts array
           responseParts.push(chunk)
         })
@@ -77,6 +77,8 @@ module.exports = class ActiveDirectoryAuthService {
     if (config.http_proxy) {
       options.agent = new HttpsProxyAgent(config.http_proxy)
     }
+
+    LoggingService.logDebug('ActiveDirectoryAuthService request options:', options)
 
     return options
   }
