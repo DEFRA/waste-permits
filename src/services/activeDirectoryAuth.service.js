@@ -78,6 +78,8 @@ module.exports = class ActiveDirectoryAuthService {
       options.agent = new HttpsProxyAgent(config.http_proxy)
     }
 
+    LoggingService.logDebug('ActiveDirectoryAuthService request options:', options)
+
     return options
   }
 }
