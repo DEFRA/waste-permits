@@ -27,6 +27,8 @@ module.exports = class ActiveDirectoryAuthService {
 
         response.setEncoding('utf8')
         response.on('data', (chunk) => {
+          LoggingService.logDebug(undefined, chunk)
+          
           // Add each response chunk to the responseParts array
           responseParts.push(chunk)
         })
