@@ -11,6 +11,7 @@ module.exports = class Site extends BaseModel {
     super()
     this.id = site.id
     this.name = site.name
+    this.gridReference = site.gridReference
     this.applicationId = site.applicationId
     this.applicationLineId = site.applicationLineId
   }
@@ -18,7 +19,8 @@ module.exports = class Site extends BaseModel {
   isComplete () {
     // For now, we mark the item as complete if the site name is populated.
     // We will update this in the future when we add the other site screens.
-    return this.name !== undefined
+    return this.name !== undefined &&
+      this.gridReference !== undefined
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {
@@ -35,7 +37,9 @@ module.exports = class Site extends BaseModel {
           id: result.defra_locationid,
           applicationId: applicationId,
           applicationLineId: applicationLineId,
-          name: result.defra_name
+          name: result.defra_name,
+          // TODO
+          gridReference: 'TODO'
         })
       }
       return site
@@ -53,6 +57,7 @@ module.exports = class Site extends BaseModel {
       // Map the Site to the corresponding Dynamics schema Site object
       const dataObject = {
         defra_name: this.name,
+        // TODO gird reference
         'defra_applicationId@odata.bind': `defra_applications(${this.applicationId})`
       }
       let query

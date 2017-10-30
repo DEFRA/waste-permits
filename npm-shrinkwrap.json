@@ -3863,7 +3863,7 @@
       "dev": true,
       "requires": {
         "iconv-lite": "0.4.19",
-        "jschardet": "1.5.1",
+        "jschardet": "1.6.0",
         "tmp": "0.0.33"
       }
     },
@@ -7615,9 +7615,9 @@
       "optional": true
     },
     "jschardet": {
-      "version": "1.5.1",
-      "resolved": "https://registry.npmjs.org/jschardet/-/jschardet-1.5.1.tgz",
-      "integrity": "sha512-vE2hT1D0HLZCLLclfBSfkfTTedhVj0fubHpJBHKwwUWX0nSbhPAfk+SG9rTX95BYNmau8rGFfCeaT6T5OW1C2A==",
+      "version": "1.6.0",
+      "resolved": "https://registry.npmjs.org/jschardet/-/jschardet-1.6.0.tgz",
+      "integrity": "sha512-xYuhvQ7I9PDJIGBWev9xm0+SMSed3ZDBAmvVjbFR1ZRLAF+vlXcQu6cRI9uAlj81rzikElRVteehwV7DuX2ZmQ==",
       "dev": true
     },
     "jshint": {
@@ -7778,9 +7778,9 @@
       }
     },
     "lab": {
-      "version": "15.1.0",
-      "resolved": "https://registry.npmjs.org/lab/-/lab-15.1.0.tgz",
-      "integrity": "sha512-Azgm0gxn3kegp9op+hZniR99dKfzkm5a/OmGdO1xrtBAzbSaBm/Ezh5PqeiA1gwn0RCvzo1mFcc1uEA+376n1A==",
+      "version": "15.1.1",
+      "resolved": "https://registry.npmjs.org/lab/-/lab-15.1.1.tgz",
+      "integrity": "sha512-dx8bzt7VuX/h87qw0Z5tzc9jAsZ50TqPgtGIuVM+V23qXJFFl3iUqLlhVTUMDXWEqEw/zuXLZY+7E8EwH3x3Ew==",
       "dev": true,
       "requires": {
         "bossy": "4.0.0",
@@ -8803,9 +8803,9 @@
       "dev": true
     },
     "nock": {
-      "version": "9.0.25",
-      "resolved": "https://registry.npmjs.org/nock/-/nock-9.0.25.tgz",
-      "integrity": "sha512-NG11AOS9UnnTJ0macXJoeUjp4s/DEoPB4724/Cd5ULIu3k/5tRnn+rCX5Z+S10wwWnHQjKBSh94rTdHZxKOTlA==",
+      "version": "9.0.27",
+      "resolved": "https://registry.npmjs.org/nock/-/nock-9.0.27.tgz",
+      "integrity": "sha512-UCdl4VFGBrnNLgk4Rx2NKjPbzVVk6BSsG4xjDhPcKwWwHWVxYT/TcuCT/9ObG46ez5d/jg7+4EFbPuF3XjDRtQ==",
       "dev": true,
       "requires": {
         "chai": "3.5.0",
@@ -11937,7 +11937,7 @@
       "dev": true,
       "requires": {
         "ajv": "5.3.0",
-        "ajv-keywords": "2.1.0",
+        "ajv-keywords": "2.1.1",
         "chalk": "2.3.0",
         "lodash": "4.17.4",
         "slice-ansi": "1.0.0",
@@ -11957,9 +11957,9 @@
           }
         },
         "ajv-keywords": {
-          "version": "2.1.0",
-          "resolved": "https://registry.npmjs.org/ajv-keywords/-/ajv-keywords-2.1.0.tgz",
-          "integrity": "sha1-opbhf3v658HOT34N5T0pyzIWLfA=",
+          "version": "2.1.1",
+          "resolved": "https://registry.npmjs.org/ajv-keywords/-/ajv-keywords-2.1.1.tgz",
+          "integrity": "sha1-YXmX/F9gV2iUxDX5QNgZ4TW4B2I=",
           "dev": true
         },
         "ansi-styles": {

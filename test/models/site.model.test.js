@@ -15,6 +15,7 @@ let dynamicsUpdateStub
 let testSite
 const fakeSiteData = {
   name: 'THE_SITE_NAME',
+  gridReference: 'AB1234567890',
   applicationId: '05486b21-a4ae-e711-8117-5065f38ac931'
 }
 
@@ -85,6 +86,7 @@ lab.experiment('Site Model tests:', () => {
   lab.test('isComplete() method correctly determines the completeness of a Site object', () => {
     const fakeEmptySiteData = {
       name: undefined,
+      gridReference: undefined,
       applicationId: '05486b21-a4ae-e711-8117-5065f38ac931'
     }
     testSite = new Site(fakeEmptySiteData)

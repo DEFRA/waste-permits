@@ -13,11 +13,12 @@ let validateCookieStub
 let siteSaveStub
 let getByApplicationIdStub
 
-const routePath = '/site/site-name'
+const routePath = '/site/grid-reference'
 
 let fakeSite = {
   id: 'dff66fce-18b8-e711-8119-5065f38ac931',
-  name: 'THE_SITE_NAME',
+  name: 'THE SITE NAME',
+  gridReference: 'AB1234567890',
   applicationId: '403710b7-18b8-e711-810d-5065f38bb461',
   applicationLineId: '423710b7-18b8-e711-810d-5065f38bb461',
   save: (authToken) => {}
@@ -47,7 +48,7 @@ lab.afterEach(() => {
   Site.getByApplicationId = getByApplicationIdStub
 })
 
-lab.experiment('Site Name page tests:', () => {
+lab.experiment('Site Grid Reference page tests:', () => {
   lab.test('The page should have a back link', async () => {
     const request = {
       method: 'GET',
@@ -70,7 +71,7 @@ lab.experiment('Site Name page tests:', () => {
     Code.expect(element).to.exist()
   })
 
-  lab.test('GET /site/site-name returns the site page correctly when it is a new application', async () => {
+  lab.test('GET /site/grid-reference returns the site grid reference page correctly when the grid reference has not been entered yet', async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -88,26 +89,33 @@ lab.experiment('Site Name page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('site-site-name-heading').firstChild
-    Code.expect(element.nodeValue).to.equal(`What's the site name?`)
+    let element = doc.getElementById('site-grid-reference-heading').firstChild
+    Code.expect(element.nodeValue).to.equal(`What's the grid reference for the centre of the site?`)
 
-    element = doc.getElementById('site-site-name-subheading').firstChild
+    element = doc.getElementById('site-grid-reference-label').firstChild
     Code.expect(element.nodeValue).to.exist()
 
-    element = doc.getElementById('site-name-label').firstChild
+    element = doc.getElementById('site-grid-reference-hint').firstChild
     Code.expect(element.nodeValue).to.exist()
 
-    element = doc.getElementById('site-name-hint').firstChild
-    Code.expect(element.nodeValue).to.exist()
-
-    element = doc.getElementById('site-name')
+    element = doc.getElementById('site-grid-reference')
     Code.expect(element.getAttribute('value')).to.equal('')
 
-    element = doc.getElementById('site-site-name-submit').firstChild
+    element = doc.getElementById('site-grid-reference-summary').firstChild
+    Code.expect(element.nodeValue).to.exist()
+
+    // TODO check this page element exists
+    // element = doc.getElementById('site-grid-reference-finder-link ').firstChild
+    // Code.expect(element.nodeValue).to.exist()
+
+    element = doc.getElementById('grid-reference-help-list').firstChild
+    Code.expect(element.nodeValue).to.exist()
+
+    element = doc.getElementById('site-grid-reference-submit').firstChild
     Code.expect(element.nodeValue).to.equal('Continue')
   })
 
-  lab.test('GET /site/site-name returns the site page correctly when there is an existing Site name', async () => {
+  lab.test('GET /site/grid-reference returns the site page correctly when there is an existing Site grid reference', async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -120,61 +128,68 @@ lab.experiment('Site Name page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('site-site-name-heading').firstChild
-    Code.expect(element.nodeValue).to.equal(`What's the site name?`)
+    let element = doc.getElementById('site-grid-reference-heading').firstChild
+    Code.expect(element.nodeValue).to.equal(`What's the grid reference for the centre of the site?`)
 
-    element = doc.getElementById('site-site-name-subheading').firstChild
+    element = doc.getElementById('site-grid-reference-label').firstChild
     Code.expect(element.nodeValue).to.exist()
 
-    element = doc.getElementById('site-name-label').firstChild
+    element = doc.getElementById('site-grid-reference-hint').firstChild
     Code.expect(element.nodeValue).to.exist()
 
-    element = doc.getElementById('site-name-hint').firstChild
+    element = doc.getElementById('site-grid-reference')
+    Code.expect(element.getAttribute('value')).to.equal(fakeSite.gridReference)
+
+    element = doc.getElementById('site-grid-reference-summary').firstChild
     Code.expect(element.nodeValue).to.exist()
 
-    element = doc.getElementById('site-name')
-    Code.expect(element.getAttribute('value')).to.equal(fakeSite.name)
+    // TODO check this page element exists
+    // element = doc.getElementById('site-grid-reference-finder-link ').firstChild
+    // Code.expect(element.nodeValue).to.exist()
 
-    element = doc.getElementById('site-site-name-submit').firstChild
+    element = doc.getElementById('grid-reference-help-list').firstChild
+    Code.expect(element.nodeValue).to.exist()
+
+    element = doc.getElementById('site-grid-reference-submit').firstChild
     Code.expect(element.nodeValue).to.equal('Continue')
   })
 
-  lab.test('POST /site/site-name success (new Site) redirects to the Site Grid Reference route', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        'site-name': 'My Site'
-      }
-    }
+  // lab.test('POST /site/grid-reference success (new grid reference) redirects to the Task List route', async () => {
+  //   const request = {
+  //     method: 'POST',
+  //     url: routePath,
+  //     headers: {},
+  //     payload: {
+  //       'grid-reference': fakeSite.gridReference
+  //     }
+  //   }
+  //
+  //   // Empty site details response
+  //   Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+  //     return undefined
+  //   }
+  //
+  //   const res = await server.inject(request)
+  //   Code.expect(res.statusCode).to.equal(302)
+  //   Code.expect(res.headers['location']).to.equal('/task-list')
+  // })
 
-    // Empty site details response
-    Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-      return undefined
-    }
+  // lab.test('POST /site/grid-reference success (existing grid reference) redirects to the Task List route', async () => {
+  //   const request = {
+  //     method: 'POST',
+  //     url: routePath,
+  //     headers: {},
+  //     payload: {
+  //       'grid-reference': fakeSite.gridReference
+  //     }
+  //   }
+  //
+  //   const res = await server.inject(request)
+  //   Code.expect(res.statusCode).to.equal(302)
+  //   Code.expect(res.headers['location']).to.equal('/site/grid-reference')
+  // })
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/site/grid-reference')
-  })
-
-  lab.test('POST /site/site-name success (existing Site) redirects to the Site Grid Reference route', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        'site-name': 'My Site'
-      }
-    }
-
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/site/grid-reference')
-  })
-
-  lab.test('POST /site/site-name redirects to error screen when the user token is invalid', async () => {
+  lab.test('POST /site/grid-reference redirects to error screen when the user token is invalid', async () => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -191,34 +206,13 @@ lab.experiment('Site Name page tests:', () => {
     Code.expect(res.headers['location']).to.equal('/error')
   })
 
-  lab.test('POST /site/site-name shows the error message summary panel when the site data is invalid', async () => {
+  lab.test('POST /site/grid-reference shows an error message when the site grid reference is blank', async () => {
     const request = {
       method: 'POST',
       url: routePath,
       headers: {},
       payload: {
-        'site-name': ''
-      }
-    }
-
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    const element = doc.getElementById('error-summary')
-
-    Code.expect(element).to.exist()
-  })
-
-  lab.test('POST /site/site-name shows an error message when the site name is blank', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        'site-name': ''
+        'site-grid-reference': ''
       }
     }
 
@@ -229,24 +223,24 @@ lab.experiment('Site Name page tests:', () => {
     const doc = parser.parseFromString(res.payload, 'text/html')
 
     let element
-    let errorMessage = 'Enter the site name'
+    let errorMessage = 'Enter a grid reference'
 
     // Panel summary error item
     element = doc.getElementById('error-summary-list-item-0').firstChild
     Code.expect(element.nodeValue).to.equal(errorMessage)
 
-    // Site name field error
-    element = doc.getElementById('site-name-error').firstChild
+    // Site grid reference field error
+    element = doc.getElementById('site-grid-reference-error').firstChild
     Code.expect(element.nodeValue).to.equal(errorMessage)
   })
 
-  lab.test('POST /site/site-name shows an error message when the site name contains invalid characters', async () => {
+  lab.test('POST /site/grid-reference shows an error message when the site grid reference is whitespace', async () => {
     const request = {
       method: 'POST',
       url: routePath,
       headers: {},
       payload: {
-        'site-name': '___INVALID_SITE_NAME___'
+        'site-grid-reference': '             '
       }
     }
 
@@ -257,24 +251,24 @@ lab.experiment('Site Name page tests:', () => {
     const doc = parser.parseFromString(res.payload, 'text/html')
 
     let element
-    let errorMessage = 'The site name cannot contain any of these characters: ^ | _ ~ ¬ `'
+    let errorMessage = 'Enter a grid reference'
 
     // Panel summary error item
     element = doc.getElementById('error-summary-list-item-0').firstChild
     Code.expect(element.nodeValue).to.equal(errorMessage)
 
-    // Site name field error
-    element = doc.getElementById('site-name-error').firstChild
+    // Site grid reference field error
+    element = doc.getElementById('site-grid-reference-error').firstChild
     Code.expect(element.nodeValue).to.equal(errorMessage)
   })
 
-  lab.test('POST /site/site-name shows an error message when the site name is too long', async () => {
+  lab.test('POST /site/grid-reference shows an error message when the site grid reference is in the wrong format', async () => {
     const request = {
       method: 'POST',
       url: routePath,
       headers: {},
       payload: {
-        'site-name': '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
+        'site-grid-reference': 'AB123456789X'
       }
     }
 
@@ -285,14 +279,14 @@ lab.experiment('Site Name page tests:', () => {
     const doc = parser.parseFromString(res.payload, 'text/html')
 
     let element
-    let errorMessage = 'Enter a shorter site name with no more than 170 characters'
+    let errorMessage = 'Make sure that the grid reference has 2 letters and 10 digits'
 
     // Panel summary error item
     element = doc.getElementById('error-summary-list-item-0').firstChild
     Code.expect(element.nodeValue).to.equal(errorMessage)
 
-    // Site name field error
-    element = doc.getElementById('site-name-error').firstChild
+    // Site grid reference field error
+    element = doc.getElementById('site-grid-reference-error').firstChild
     Code.expect(element.nodeValue).to.equal(errorMessage)
   })
 })
