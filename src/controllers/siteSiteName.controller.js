@@ -5,7 +5,7 @@ const BaseController = require('./base.controller')
 const SiteSiteNameValidator = require('../validators/siteSiteName.validator')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
-const Site = require('../models/site.model')
+const Location = require('../models/location.model')
 
 module.exports = class SiteSiteNameController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -16,15 +16,15 @@ module.exports = class SiteSiteNameController extends BaseController {
       const applicationLineId = CookieService.getApplicationLineId(request)
 
       if (request.payload) {
-        // If we have Site details in the payload then display them in the form
+        // If we have Location name in the payload then display them in the form
         pageContext.formValues = request.payload
       } else {
-        // Get the Site for this application (if we have one)
+        // Get the Location for this application (if we have one)
         try {
-          const site = await Site.getByApplicationId(authToken, applicationId, applicationLineId)
-          if (site) {
+          const location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+          if (location) {
             pageContext.formValues = {
-              'site-name': site.name
+              'site-name': location.name
             }
           }
         } catch (error) {
@@ -50,22 +50,21 @@ module.exports = class SiteSiteNameController extends BaseController {
       const applicationLineId = CookieService.getApplicationLineId(request)
 
       // Get the Site for this application (if we have one)
-      let site = await Site.getByApplicationId(authToken, applicationId, applicationLineId)
-
-      if (!site) {
+      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+      if (!location) {
         // Create new Site
-        site = new Site({
+        location = new Location({
           name: request.payload['site-name'],
           applicationId: applicationId,
           applicationLineId: applicationLineId
         })
       } else {
         // Update existing Site
-        site.name = request.payload['site-name']
+        location.name = request.payload['site-name']
       }
 
       try {
-        await site.save(authToken)
+        await location.save(authToken)
         return reply.redirect(Constants.Routes.SITE_GRID_REFERENCE.path)
       } catch (error) {
         LoggingService.logError(error, request)

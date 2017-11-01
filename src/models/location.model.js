@@ -1,26 +1,27 @@
 'use strict'
 
-const Constants = require('../constants')
+// TODO remove this?
+// const Constants = require('../constants')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
-const ApplicationLine = require('./applicationLine.model')
+// const ApplicationLine = require('./applicationLine.model')
 
-module.exports = class Site extends BaseModel {
-  constructor (site) {
+module.exports = class Location extends BaseModel {
+  constructor (location) {
     super()
-    this.id = site.id
-    this.name = site.name
-    this.gridReference = site.gridReference
-    this.applicationId = site.applicationId
-    this.applicationLineId = site.applicationLineId
+    this.id = location.id
+    this.name = location.name
+    this.applicationId = location.applicationId
+    this.applicationLineId = location.applicationLineId
   }
 
+  // TODO rework this
   isComplete () {
-    // For now, we mark the item as complete if the site name is populated.
+    // For now, we mark the item as complete if the location name is populated.
     // We will update this in the future when we add the other site screens.
-    return this.name !== undefined &&
-      this.gridReference !== undefined
+    return this.name !== undefined
+    // this.gridReference !== undefined
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {
@@ -31,18 +32,16 @@ module.exports = class Site extends BaseModel {
       const response = await dynamicsDal.search(query)
       const result = response.value[0]
 
-      let site
+      let location
       if (result) {
-        site = new Site({
+        location = new Location({
           id: result.defra_locationid,
           applicationId: applicationId,
           applicationLineId: applicationLineId,
-          name: result.defra_name,
-          // TODO
-          gridReference: 'TODO'
+          name: result.defra_name
         })
       }
-      return site
+      return location
     } catch (error) {
       LoggingService.logError(`Unable to get Site by application ID: ${error}`)
       throw error
@@ -52,41 +51,41 @@ module.exports = class Site extends BaseModel {
   async save (authToken) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
-    // Update the Site
+    // Update the Location
     try {
-      // Map the Site to the corresponding Dynamics schema Site object
+      // Map the Location to the corresponding Dynamics schema Location object
       const dataObject = {
         defra_name: this.name,
-        // TODO gird reference
         'defra_applicationId@odata.bind': `defra_applications(${this.applicationId})`
       }
       let query
       if (this.isNew()) {
-        // New Site
+        // New Location
         query = 'defra_locations'
         this.id = await dynamicsDal.create(query, dataObject)
       } else {
-        // Update Site
+        // Update Location
         query = `defra_locations(${this.id})`
         await dynamicsDal.update(query, dataObject)
       }
     } catch (error) {
-      LoggingService.logError(`Unable to save Site: ${error}`)
+      LoggingService.logError(`Unable to save Location: ${error}`)
       throw error
     }
 
+    // TODO rework this
     // Update the completeness flag
-    try {
-      const applicationLine = await ApplicationLine.getById(authToken, this.applicationLineId)
-      if (applicationLine) {
-        const entity = {}
-        entity[Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION] = true
-        const query = `defra_wasteparamses(${applicationLine.parametersId})`
-        await dynamicsDal.update(query, entity)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to update Site completeness: ${error}`)
-      throw error
-    }
+    // try {
+    //   const applicationLine = await ApplicationLine.getById(authToken, this.applicationLineId)
+    //   if (applicationLine) {
+    //     const entity = {}
+    //     entity[Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION] = true
+    //     const query = `defra_wasteparamses(${applicationLine.parametersId})`
+    //     await dynamicsDal.update(query, entity)
+    //   }
+    // } catch (error) {
+    //   LoggingService.logError(`Unable to update Site completeness: ${error}`)
+    //   throw error
+    // }
   }
 }

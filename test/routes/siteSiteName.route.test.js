@@ -7,7 +7,7 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
-const Site = require('../../src/models/site.model')
+const Site = require('../../src/models/location.model')
 
 let validateCookieStub
 let siteSaveStub

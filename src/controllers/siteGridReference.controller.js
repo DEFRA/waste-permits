@@ -5,7 +5,8 @@ const BaseController = require('./base.controller')
 const SiteGridReferenceValidator = require('../validators/siteGridReference.validator')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
-const Site = require('../models/site.model')
+const Location = require('../models/location.model')
+const LocationDetail = require('../models/locationDetail.model')
 
 module.exports = class SiteGridReferenceController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -19,12 +20,15 @@ module.exports = class SiteGridReferenceController extends BaseController {
         // If we have Site details in the payload then display them in the form
         pageContext.formValues = request.payload
       } else {
-        // Get the Site for this application (if we have one)
         try {
-          const site = await Site.getByApplicationId(authToken, applicationId, applicationLineId)
-          if (site) {
+          // Get the Location for this application
+          let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+
+          // Get the LocationDetail for this application (if there is one)
+          let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+          if (locationDetail) {
             pageContext.formValues = {
-              'site-grid-reference': site.gridReference
+              'site-grid-reference': locationDetail.gridReference
             }
           }
         } catch (error) {
@@ -49,31 +53,30 @@ module.exports = class SiteGridReferenceController extends BaseController {
       const applicationId = CookieService.getApplicationId(request)
       const applicationLineId = CookieService.getApplicationLineId(request)
 
-      // Get the Site for this application (if we have one)
-      let site = await Site.getByApplicationId(authToken, applicationId, applicationLineId)
+      // Get the Location for this application
+      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
 
-      if (!site) {
-        // TODO: decide if we need isnew clause below
+      if (location) {
+        // Get the LocationDetail for this application (if there is one)
+        let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+        if (!locationDetail) {
+          // Create new LocationDetail
+          locationDetail = new LocationDetail({
+            gridReference: request.payload['site-grid-reference'],
+            locationId: location.id
+          })
+        } else {
+          // Update existing LocationDetail
+          locationDetail.gridReference = request.payload['site-grid-reference']
+        }
 
-        // Create new Site
-        site = new Site({
-          name: request.payload['site-name'],
-          gridReference: request.payload['site-grid-reference'],
-          applicationId: applicationId,
-          applicationLineId: applicationLineId
-        })
-      } else {
-        // Update existing Site
-        site.name = request.payload['site-name']
-        site.gridReference = request.payload['site-grid-reference']
-      }
-
-      try {
-        await site.save(authToken)
-        return reply.redirect(Constants.Routes.TASK_LIST.path)
-      } catch (error) {
-        LoggingService.logError(error, request)
-        return reply.redirect(Constants.Routes.ERROR.path)
+        try {
+          await locationDetail.save(authToken)
+          return reply.redirect(Constants.Routes.TASK_LIST.path)
+        } catch (error) {
+          LoggingService.logError(error, request)
+          return reply.redirect(Constants.Routes.ERROR.path)
+        }
       }
     }
   }
