@@ -1,0 +1,66 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }} {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      <h1 class="heading-large" id="radio_label">{{ pageHeading }}</h1>
+
+      <form method="post" action="{{formAction}}">
+        <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+
+        <p>
+          <span class="postcode-prefix">Postcode:</span>
+          <span class="postcode">BS1 5AH</span>
+          <a href="/{{folder}}/address/postcode">
+            Change<span class="visuallyhidden"> postcode</span>
+        </a>
+        </p>
+
+        <fieldset>
+          <legend id="manual-address" class="visuallyhidden">Site address</legend>
+
+          <div class="form-group">
+            <label class="form-label" for="the_address">Site address</label>
+            <select class="address-select form-control form-control-char-auto" id="the_address" aria-describedby="manual_hint" name="siteAddress">
+              <option value="">15 addresses found</option>
+              <option value="3, GRANGE ROAD, BRISTOL">3, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="5, GRANGE ROAD, BRISTOL">5, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="7, GRANGE ROAD, BRISTOL">7, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="9a, GRANGE ROAD, BRISTOL">9a, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="9b, GRANGE ROAD, BRISTOL">9b, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="10, GRANGE ROAD, BRISTOL">10, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="11, GRANGE ROAD, BRISTOL">11, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="12, GRANGE ROAD, BRISTOL">12, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="13, GRANGE ROAD, BRISTOL">13, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="15, GRANGE ROAD, BRISTOL">15, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="17, GRANGE ROAD, BRISTOL">17, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="Flat 1, 19, GRANGE ROAD, BRISTOL">Flat 1, 19, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="Flat 2, 19, GRANGE ROAD, BRISTOL">Flat 2, 19, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="21, GRANGE ROAD, BRISTOL">21, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="22, GRANGE ROAD, BRISTOL">22, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+              <option value="19, GRANGE ROAD, BRISTOL">19, GRANGE ROAD, BRISTOL, BS1 5AH</option>
+            </select>
+          </div>
+
+          <p id="manual_hint">
+            <a href="/{{folder}}/address/address-manual">
+            <span class="visuallyhidden">Enter address manually</span>
+            I can’t find the address in the list</a>
+          </p>
+
+        </fieldset>
+
+        <div class="form-group">
+          <button type="submit" class="button" name="Continue">Continue</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</main>

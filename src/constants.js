@@ -24,6 +24,10 @@ Constants.Routes = {
     path: '/',
     pageHeading: 'Waste Permits Home Page'
   },
+  ADDRESS_SELECT: {
+    path: '/site/address/select-address',
+    pageHeading: `What's the site address?`
+  },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',
     pageHeading: 'Check your answers before sending your application',
@@ -98,6 +102,10 @@ Constants.Routes = {
   PERMIT_SELECT: {
     path: '/permit/select',
     pageHeading: 'Select a permit'
+  },
+  POSTCODE: {
+    path: '/site/address/postcode',
+    pageHeading: `What's the postcode for the site?`
   },
   PRE_APPLICATION: {
     path: '/pre-application',
