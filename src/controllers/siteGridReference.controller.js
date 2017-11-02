@@ -56,41 +56,9 @@ module.exports = class SiteGridReferenceController extends BaseController {
       const applicationId = CookieService.getApplicationId(request)
       const applicationLineId = CookieService.getApplicationLineId(request)
 
-      // Get the Location for this application
-      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
-
-      if (!location) {
-        // Create a Location in Dynamics
-        location = new Location({
-          name: undefined,
-          applicationId: applicationId,
-          applicationLineId: applicationLineId
-        })
-        try {
-          await location.save(authToken)
-        } catch (error) {
-          LoggingService.logError(error, request)
-          return reply.redirect(Constants.Routes.ERROR.path)
-        }
-      }
-
-      // Get the LocationDetail for this application (if there is one)
-      let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
-      if (!locationDetail) {
-        // Create new LocationDetail
-        locationDetail = new LocationDetail({
-          gridReference: request.payload['site-grid-reference'],
-          locationId: location.id
-        })
-      } else {
-        // Update existing LocationDetail
-        locationDetail.gridReference = request.payload['site-grid-reference']
-      }
-
       try {
-        await locationDetail.save(authToken)
-
-        await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
+        await SiteNameAndLocation.saveGridReference(request, reply, request.payload['site-grid-reference'],
+          authToken, applicationId, applicationLineId)
 
         return reply.redirect(Constants.Routes.TASK_LIST.path)
       } catch (error) {

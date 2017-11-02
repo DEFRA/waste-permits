@@ -47,7 +47,7 @@ lab.beforeEach(() => {
   }
 
   applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = (authToken, applicationLineId) =>{
+  ApplicationLine.getById = (authToken, applicationLineId) => {
     return fakeApplicationLine
   }
 
@@ -70,7 +70,7 @@ lab.afterEach(() => {
   LocationDetail.getByLocationId = locationDetailGetByLocationIdStub
 })
 
-async function testCompleteness(obj, expectedResult) {
+const testCompleteness = async (obj, expectedResult) => {
   fakeLocation.name = obj.name
   fakeLocationDetail.gridReference = obj.gridReference
   let result = await SiteNameAndLocation._isComplete(obj.params.authToken, obj.params.applicationId, obj.params.applicationLineId)
@@ -79,7 +79,6 @@ async function testCompleteness(obj, expectedResult) {
 
 lab.experiment('Task List: Site Name and Location Model tests:', () => {
   lab.test('updateCompleteness() method updates the task list item completeness', async () => {
-
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
 
     const authToken = 'THE_AUTH_TOKEN'
@@ -112,7 +111,7 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
 
     await testCompleteness({
       params: params,
-      name: undefined,
+      name: null,
       gridReference: 'AB1234567890'
     }, false)
 
@@ -125,7 +124,7 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
     await testCompleteness({
       params: params,
       name: 'THE SITE NAME',
-      gridReference: undefined
+      gridReference: null
     }, false)
 
     await testCompleteness({

@@ -6,6 +6,7 @@ const SiteSiteNameValidator = require('../validators/siteSiteName.validator')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const Location = require('../models/location.model')
+const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
 module.exports = class SiteSiteNameController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -49,22 +50,10 @@ module.exports = class SiteSiteNameController extends BaseController {
       const applicationId = CookieService.getApplicationId(request)
       const applicationLineId = CookieService.getApplicationLineId(request)
 
-      // Get the Site for this application (if we have one)
-      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
-      if (!location) {
-        // Create new Location
-        location = new Location({
-          name: request.payload['site-name'],
-          applicationId: applicationId,
-          applicationLineId: applicationLineId
-        })
-      } else {
-        // Update existing Site
-        location.name = request.payload['site-name']
-      }
-
       try {
-        await location.save(authToken)
+        await SiteNameAndLocation.saveSiteName(request, reply, request.payload['site-name'],
+          authToken, applicationId, applicationLineId)
+
         return reply.redirect(Constants.Routes.SITE_GRID_REFERENCE.path)
       } catch (error) {
         LoggingService.logError(error, request)
