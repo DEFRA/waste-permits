@@ -106,8 +106,7 @@ Constants.Routes = {
   },
   SITE_GRID_REFERENCE: {
     path: '/site/grid-reference',
-    pageHeading: `What's the grid reference for the centre of the site?`,
-    taskListHeading: 'Give site grid reference'
+    pageHeading: `What's the grid reference for the centre of the site?`
   },
   SITE_PLAN: {
     path: '/site-plan',

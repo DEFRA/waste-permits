@@ -7,6 +7,7 @@ const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const Location = require('../models/location.model')
 const LocationDetail = require('../models/locationDetail.model')
+const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
 module.exports = class SiteGridReferenceController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -24,11 +25,13 @@ module.exports = class SiteGridReferenceController extends BaseController {
           // Get the Location for this application
           let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
 
-          // Get the LocationDetail for this application (if there is one)
-          let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
-          if (locationDetail) {
-            pageContext.formValues = {
-              'site-grid-reference': locationDetail.gridReference
+          if (location) {
+            // Get the LocationDetail for this application (if there is one)
+            let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+            if (locationDetail) {
+              pageContext.formValues = {
+                'site-grid-reference': locationDetail.gridReference
+              }
             }
           }
         } catch (error) {
@@ -56,27 +59,43 @@ module.exports = class SiteGridReferenceController extends BaseController {
       // Get the Location for this application
       let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
 
-      if (location) {
-        // Get the LocationDetail for this application (if there is one)
-        let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
-        if (!locationDetail) {
-          // Create new LocationDetail
-          locationDetail = new LocationDetail({
-            gridReference: request.payload['site-grid-reference'],
-            locationId: location.id
-          })
-        } else {
-          // Update existing LocationDetail
-          locationDetail.gridReference = request.payload['site-grid-reference']
-        }
-
+      if (!location) {
+        // Create a Location in Dynamics
+        location = new Location({
+          name: undefined,
+          applicationId: applicationId,
+          applicationLineId: applicationLineId
+        })
         try {
-          await locationDetail.save(authToken)
-          return reply.redirect(Constants.Routes.TASK_LIST.path)
+          await location.save(authToken)
         } catch (error) {
           LoggingService.logError(error, request)
           return reply.redirect(Constants.Routes.ERROR.path)
         }
+      }
+
+      // Get the LocationDetail for this application (if there is one)
+      let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+      if (!locationDetail) {
+        // Create new LocationDetail
+        locationDetail = new LocationDetail({
+          gridReference: request.payload['site-grid-reference'],
+          locationId: location.id
+        })
+      } else {
+        // Update existing LocationDetail
+        locationDetail.gridReference = request.payload['site-grid-reference']
+      }
+
+      try {
+        await locationDetail.save(authToken)
+
+        await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
+
+        return reply.redirect(Constants.Routes.TASK_LIST.path)
+      } catch (error) {
+        LoggingService.logError(error, request)
+        return reply.redirect(Constants.Routes.ERROR.path)
       }
     }
   }

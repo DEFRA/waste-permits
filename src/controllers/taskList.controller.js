@@ -6,7 +6,7 @@ const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const TaskListValidator = require('../validators/taskList.validator')
 const StandardRule = require('../models/standardRule.model')
-const TaskList = require('../models/taskList.model')
+const TaskList = require('../models/taskList/taskList.model')
 
 module.exports = class TaskListController extends BaseController {
   static async doGet (request, reply, errors) {

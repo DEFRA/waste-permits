@@ -8,7 +8,7 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const StandardRule = require('../../src/models/standardRule.model')
-const TaskList = require('../../src/models/taskList.model')
+const TaskList = require('../../src/models/taskList/taskList.model')
 
 let generateCookieStub
 let validateCookieStub

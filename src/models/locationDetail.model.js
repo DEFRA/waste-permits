@@ -1,11 +1,8 @@
 'use strict'
 
-// TODO remove this?
-// const Constants = require('../constants')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
-// const ApplicationLine = require('./applicationLine.model')
 
 module.exports = class LocationDetail extends BaseModel {
   constructor (locationDetail) {
@@ -33,7 +30,7 @@ module.exports = class LocationDetail extends BaseModel {
       }
       return locationDetail
     } catch (error) {
-      LoggingService.logError(`Unable to get Site by application ID: ${error}`)
+      LoggingService.logError(`Unable to get LocationDetail by Location ID: ${error}`)
       throw error
     }
   }

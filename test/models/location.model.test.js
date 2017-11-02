@@ -15,7 +15,6 @@ let dynamicsUpdateStub
 let testLocation
 const fakeLocationData = {
   name: 'THE_SITE_NAME',
-  gridReference: 'AB1234567890',
   applicationId: '05486b21-a4ae-e711-8117-5065f38ac931'
 }
 
@@ -79,21 +78,7 @@ lab.experiment('Location Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testLocation.id = '123'
     await testLocation.save()
-    Code.expect(spy.callCount).to.equal(2)
+    Code.expect(spy.callCount).to.equal(1)
     Code.expect(testLocation.id).to.equal('123')
   })
-
-  // TODO rework this
-  // lab.test('isComplete() method correctly determines the completeness of a Location object', () => {
-  //   const fakeEmptyLocationData = {
-  //     name: undefined,
-  //     gridReference: undefined,
-  //     applicationId: '05486b21-a4ae-e711-8117-5065f38ac931'
-  //   }
-  //   testLocation = new Location(fakeEmptyLocationData)
-  //   Code.expect(testLocation.isComplete()).to.be.false()
-  //
-  //   testLocation = new Location(fakeLocationData)
-  //   Code.expect(testLocation.isComplete()).to.be.true()
-  // })
 })

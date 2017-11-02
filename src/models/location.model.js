@@ -1,11 +1,8 @@
 'use strict'
 
-// TODO remove this?
-// const Constants = require('../constants')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
-// const ApplicationLine = require('./applicationLine.model')
 
 module.exports = class Location extends BaseModel {
   constructor (location) {
@@ -14,14 +11,6 @@ module.exports = class Location extends BaseModel {
     this.name = location.name
     this.applicationId = location.applicationId
     this.applicationLineId = location.applicationLineId
-  }
-
-  // TODO rework this
-  isComplete () {
-    // For now, we mark the item as complete if the location name is populated.
-    // We will update this in the future when we add the other site screens.
-    return this.name !== undefined
-    // this.gridReference !== undefined
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {
@@ -43,7 +32,7 @@ module.exports = class Location extends BaseModel {
       }
       return location
     } catch (error) {
-      LoggingService.logError(`Unable to get Site by application ID: ${error}`)
+      LoggingService.logError(`Unable to get Location by application ID: ${error}`)
       throw error
     }
   }
@@ -72,20 +61,5 @@ module.exports = class Location extends BaseModel {
       LoggingService.logError(`Unable to save Location: ${error}`)
       throw error
     }
-
-    // TODO rework this
-    // Update the completeness flag
-    // try {
-    //   const applicationLine = await ApplicationLine.getById(authToken, this.applicationLineId)
-    //   if (applicationLine) {
-    //     const entity = {}
-    //     entity[Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION] = true
-    //     const query = `defra_wasteparamses(${applicationLine.parametersId})`
-    //     await dynamicsDal.update(query, entity)
-    //   }
-    // } catch (error) {
-    //   LoggingService.logError(`Unable to update Site completeness: ${error}`)
-    //   throw error
-    // }
   }
 }

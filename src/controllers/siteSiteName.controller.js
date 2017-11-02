@@ -52,7 +52,7 @@ module.exports = class SiteSiteNameController extends BaseController {
       // Get the Site for this application (if we have one)
       let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
       if (!location) {
-        // Create new Site
+        // Create new Location
         location = new Location({
           name: request.payload['site-name'],
           applicationId: applicationId,

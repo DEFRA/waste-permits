@@ -3,50 +3,139 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
-const Site = require('../../src/models/location.model')
+const Location = require('../../src/models/location.model')
+const LocationDetail = require('../../src/models/locationDetail.model')
+const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 
 let validateCookieStub
-let siteSaveStub
-let getByApplicationIdStub
+let locationSaveStub
+let locationDetailSaveStub
+let locationGetByApplicationIdStub
+let getByLocationIdStub
+let siteNameAndLocationUpdateCompletenessStub
 
 const routePath = '/site/grid-reference'
+let postRequest
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {}
+}
 
-let fakeSite = {
+const fakeLocation = {
   id: 'dff66fce-18b8-e711-8119-5065f38ac931',
   name: 'THE SITE NAME',
-  gridReference: 'AB1234567890',
   applicationId: '403710b7-18b8-e711-810d-5065f38bb461',
   applicationLineId: '423710b7-18b8-e711-810d-5065f38bb461',
   save: (authToken) => {}
 }
 
+const fakeLocationDetail = {
+  id: '11111-22222-33333-44444-55555-666666',
+  gridReference: 'AB1234567890',
+  locationId: '22222-33333-44444-55555-66666-777777',
+  save: (authToken) => {}
+}
+
 lab.beforeEach(() => {
+  postRequest = {
+    method: 'POST',
+    url: routePath,
+    headers: {},
+    payload: {}
+  }
+
   // Stub methods
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = (request) => {
     return true
   }
 
-  siteSaveStub = Site.prototype.save
-  Site.prototype.save = (authToken) => {}
+  locationSaveStub = Location.prototype.save
+  Location.prototype.save = (authToken) => {}
 
-  getByApplicationIdStub = Site.getByApplicationId
-  Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-    return fakeSite
+  locationDetailSaveStub = LocationDetail.prototype.save
+  LocationDetail.prototype.save = (authToken) => {}
+
+  locationGetByApplicationIdStub = Location.getByApplicationId
+  Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+    return fakeLocation
   }
+
+  getByLocationIdStub = LocationDetail.getByLocationId
+  LocationDetail.getByLocationId = (authToken, locationId) => {
+    return fakeLocationDetail
+  }
+
+  siteNameAndLocationUpdateCompletenessStub = SiteNameAndLocation.updateCompleteness
+  SiteNameAndLocation.updateCompleteness = (authToken, applicationId, applicationLineId) => {}
 })
 
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
 
-  Site.prototype.save = siteSaveStub
-  Site.getByApplicationId = getByApplicationIdStub
+  Location.prototype.save = locationSaveStub
+  LocationDetail.prototype.save = locationDetailSaveStub
+  Location.getByApplicationId = locationGetByApplicationIdStub
+  LocationDetail.getByLocationId = getByLocationIdStub
+  SiteNameAndLocation.updateCompleteness = siteNameAndLocationUpdateCompletenessStub
 })
+
+async function checkPageElements(getRequest, expectedValue) {
+  const res = await server.inject(getRequest)
+  Code.expect(res.statusCode).to.equal(200)
+
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(res.payload, 'text/html')
+
+  let element = doc.getElementById('site-grid-reference-heading').firstChild
+  Code.expect(element.nodeValue).to.equal(`What's the grid reference for the centre of the site?`)
+
+  element = doc.getElementById('site-grid-reference-label').firstChild
+  Code.expect(element.nodeValue).to.exist()
+
+  element = doc.getElementById('site-grid-reference-hint').firstChild
+  Code.expect(element.nodeValue).to.exist()
+
+  element = doc.getElementById('site-grid-reference')
+  Code.expect(element.getAttribute('value')).to.equal(expectedValue)
+
+  element = doc.getElementById('site-grid-reference-summary').firstChild
+  Code.expect(element.nodeValue).to.exist()
+
+  element = doc.getElementById('site-grid-reference-finder-link').firstChild
+  Code.expect(element.nodeValue).to.exist()
+
+  element = doc.getElementById('grid-reference-help-list').firstChild
+  Code.expect(element.nodeValue).to.exist()
+
+  element = doc.getElementById('site-grid-reference-submit').firstChild
+  Code.expect(element.nodeValue).to.equal('Continue')
+}
+
+async function checkValidationError(expectedErrorMessage) {
+  const res = await server.inject(postRequest)
+  Code.expect(res.statusCode).to.equal(200)
+
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(res.payload, 'text/html')
+
+  let element
+
+  // Panel summary error item
+  element = doc.getElementById('error-summary-list-item-0').firstChild
+  Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
+
+  // Location grid reference field error
+  element = doc.getElementById('site-grid-reference-error').firstChild
+  Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
+}
 
 lab.experiment('Site Grid Reference page tests:', () => {
   lab.test('The page should have a back link', async () => {
@@ -56,8 +145,8 @@ lab.experiment('Site Grid Reference page tests:', () => {
       headers: {}
     }
 
-    // Empty site details response
-    Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+    // Empty location details response
+    Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
       return undefined
     }
 
@@ -71,222 +160,101 @@ lab.experiment('Site Grid Reference page tests:', () => {
     Code.expect(element).to.exist()
   })
 
-  lab.test('GET /site/grid-reference returns the site grid reference page correctly when the grid reference has not been entered yet', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {}
+  lab.test('GET /site/grid-reference returns the Site grid reference page correctly when the grid reference has not been entered yet', async () => {
+    LocationDetail.getByLocationId = (authToken, locationId) => {
+      return undefined
     }
 
-    // Empty site details response
-    Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+    // Empty location details response
+    Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
       return {}
     }
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    let element = doc.getElementById('site-grid-reference-heading').firstChild
-    Code.expect(element.nodeValue).to.equal(`What's the grid reference for the centre of the site?`)
-
-    element = doc.getElementById('site-grid-reference-label').firstChild
-    Code.expect(element.nodeValue).to.exist()
-
-    element = doc.getElementById('site-grid-reference-hint').firstChild
-    Code.expect(element.nodeValue).to.exist()
-
-    element = doc.getElementById('site-grid-reference')
-    Code.expect(element.getAttribute('value')).to.equal('')
-
-    element = doc.getElementById('site-grid-reference-summary').firstChild
-    Code.expect(element.nodeValue).to.exist()
-
-    // TODO check this page element exists
-    // element = doc.getElementById('site-grid-reference-finder-link ').firstChild
-    // Code.expect(element.nodeValue).to.exist()
-
-    element = doc.getElementById('grid-reference-help-list').firstChild
-    Code.expect(element.nodeValue).to.exist()
-
-    element = doc.getElementById('site-grid-reference-submit').firstChild
-    Code.expect(element.nodeValue).to.equal('Continue')
+    await checkPageElements(getRequest, '')
   })
 
-  lab.test('GET /site/grid-reference returns the site page correctly when there is an existing Site grid reference', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {}
-    }
-
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    let element = doc.getElementById('site-grid-reference-heading').firstChild
-    Code.expect(element.nodeValue).to.equal(`What's the grid reference for the centre of the site?`)
-
-    element = doc.getElementById('site-grid-reference-label').firstChild
-    Code.expect(element.nodeValue).to.exist()
-
-    element = doc.getElementById('site-grid-reference-hint').firstChild
-    Code.expect(element.nodeValue).to.exist()
-
-    element = doc.getElementById('site-grid-reference')
-    Code.expect(element.getAttribute('value')).to.equal(fakeSite.gridReference)
-
-    element = doc.getElementById('site-grid-reference-summary').firstChild
-    Code.expect(element.nodeValue).to.exist()
-
-    // TODO check this page element exists
-    // element = doc.getElementById('site-grid-reference-finder-link ').firstChild
-    // Code.expect(element.nodeValue).to.exist()
-
-    element = doc.getElementById('grid-reference-help-list').firstChild
-    Code.expect(element.nodeValue).to.exist()
-
-    element = doc.getElementById('site-grid-reference-submit').firstChild
-    Code.expect(element.nodeValue).to.equal('Continue')
+  lab.test('GET /site/grid-reference returns the Site Grid Reference page correctly when there is an existing grid reference', async () => {
+    await checkPageElements(getRequest, fakeLocationDetail.gridReference)
   })
 
-  // lab.test('POST /site/grid-reference success (new grid reference) redirects to the Task List route', async () => {
-  //   const request = {
-  //     method: 'POST',
-  //     url: routePath,
-  //     headers: {},
-  //     payload: {
-  //       'grid-reference': fakeSite.gridReference
-  //     }
-  //   }
-  //
-  //   // Empty site details response
-  //   Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-  //     return undefined
-  //   }
-  //
-  //   const res = await server.inject(request)
-  //   Code.expect(res.statusCode).to.equal(302)
-  //   Code.expect(res.headers['location']).to.equal('/task-list')
-  // })
-
-  // lab.test('POST /site/grid-reference success (existing grid reference) redirects to the Task List route', async () => {
-  //   const request = {
-  //     method: 'POST',
-  //     url: routePath,
-  //     headers: {},
-  //     payload: {
-  //       'grid-reference': fakeSite.gridReference
-  //     }
-  //   }
-  //
-  //   const res = await server.inject(request)
-  //   Code.expect(res.statusCode).to.equal(302)
-  //   Code.expect(res.headers['location']).to.equal('/site/grid-reference')
-  // })
 
   lab.test('POST /site/grid-reference redirects to error screen when the user token is invalid', async () => {
+    CookieService.validateCookie = () => {
+      return undefined
+    }
+
+    const res = await server.inject(postRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/error')
+  })
+
+  lab.test('POST /site/grid-reference shows an error message when the location grid reference is blank', async () => {
+    postRequest.payload['site-grid-reference'] = ''
+    await checkValidationError('Enter a grid reference')
+  })
+
+  lab.test('POST /site/grid-reference shows an error message when the location grid reference is whitespace', async () => {
+    postRequest.payload['site-grid-reference'] = '            '
+    await checkValidationError('Enter a grid reference')
+  })
+
+  lab.test('POST /site/grid-reference shows an error message when the location grid reference is in the wrong format', async () => {
+    postRequest.payload['site-grid-reference'] = 'AB123456789X'
+    await checkValidationError('Make sure that the grid reference has 2 letters and 10 digits')
+  })
+
+  lab.test('POST /site/grid-reference success (new grid reference) redirects to the Task List route', async () => {
     const request = {
       method: 'POST',
       url: routePath,
       headers: {},
-      payload: {}
+      payload: {
+        'site-grid-reference': fakeLocationDetail.gridReference
+      }
     }
 
-    CookieService.validateCookie = () => {
+    // Empty location details response
+    LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
       return undefined
     }
 
     const res = await server.inject(request)
     Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/error')
+    Code.expect(res.headers['location']).to.equal('/task-list')
   })
 
-  lab.test('POST /site/grid-reference shows an error message when the site grid reference is blank', async () => {
+  lab.test('POST /site/grid-reference success (existing grid reference) redirects to the Task List route', async () => {
     const request = {
       method: 'POST',
       url: routePath,
       headers: {},
       payload: {
-        'site-grid-reference': ''
+        'site-grid-reference': fakeLocationDetail.gridReference
       }
     }
 
     const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    let element
-    let errorMessage = 'Enter a grid reference'
-
-    // Panel summary error item
-    element = doc.getElementById('error-summary-list-item-0').firstChild
-    Code.expect(element.nodeValue).to.equal(errorMessage)
-
-    // Site grid reference field error
-    element = doc.getElementById('site-grid-reference-error').firstChild
-    Code.expect(element.nodeValue).to.equal(errorMessage)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/task-list')
   })
 
-  lab.test('POST /site/grid-reference shows an error message when the site grid reference is whitespace', async () => {
+  lab.test('The completeness is recalculated when the grid reference is updated', async () => {
     const request = {
       method: 'POST',
       url: routePath,
       headers: {},
       payload: {
-        'site-grid-reference': '             '
+        'site-grid-reference': fakeLocationDetail.gridReference
       }
     }
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    let element
-    let errorMessage = 'Enter a grid reference'
-
-    // Panel summary error item
-    element = doc.getElementById('error-summary-list-item-0').firstChild
-    Code.expect(element.nodeValue).to.equal(errorMessage)
-
-    // Site grid reference field error
-    element = doc.getElementById('site-grid-reference-error').firstChild
-    Code.expect(element.nodeValue).to.equal(errorMessage)
-  })
-
-  lab.test('POST /site/grid-reference shows an error message when the site grid reference is in the wrong format', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        'site-grid-reference': 'AB123456789X'
-      }
+    // Empty location details response
+    LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
+      return undefined
     }
 
+    const spy = sinon.spy(SiteNameAndLocation, 'updateCompleteness')
     const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    let element
-    let errorMessage = 'Make sure that the grid reference has 2 letters and 10 digits'
-
-    // Panel summary error item
-    element = doc.getElementById('error-summary-list-item-0').firstChild
-    Code.expect(element.nodeValue).to.equal(errorMessage)
-
-    // Site grid reference field error
-    element = doc.getElementById('site-grid-reference-error').firstChild
-    Code.expect(element.nodeValue).to.equal(errorMessage)
+    Code.expect(spy.callCount).to.equal(1)
   })
 })
