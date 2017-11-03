@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "browser-sync": "^2.18.13",
-    "code": "^5.1.0",
+    "code": "^5.1.2",
     "del": "^3.0.0",
     "good": "^7.3.0",
     "good-console": "^6.4.0",
@@ -43,10 +43,10 @@
     "gulp-uglify": "^3.0.0",
     "gulp-watch": "^4.3.11",
     "htmlhint": "^0.9.13",
-    "lab": "^15.1.0",
-    "nock": "^9.0.25",
+    "lab": "^15.1.2",
+    "nock": "^9.0.27",
     "run-sequence": "^2.2.0",
-    "sinon": "^4.0.2",
+    "sinon": "^4.1.1",
     "standard": "^10.0.3",
     "xmldom": "^0.1.27"
   },
