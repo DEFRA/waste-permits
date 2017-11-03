@@ -191,7 +191,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
     await checkValidationError('Make sure that the grid reference has 2 letters and 10 digits')
   })
 
-  lab.test('POST /site/grid-reference success (new grid reference) redirects to the Task List route', async () => {
+  lab.test('POST /site/grid-reference success (new grid reference) redirects to the Site Postcode route', async () => {
     postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
 
     // Empty location details response
@@ -201,15 +201,15 @@ lab.experiment('Site Grid Reference page tests:', () => {
 
     const res = await server.inject(postRequest)
     Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/task-list')
+    Code.expect(res.headers['location']).to.equal('/site/address/postcode')
   })
 
-  lab.test('POST /site/grid-reference success (existing grid reference) redirects to the Task List route', async () => {
+  lab.test('POST /site/grid-reference success (existing grid reference) redirects to the Site Postcode route', async () => {
     postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
 
     const res = await server.inject(postRequest)
     Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/task-list')
+    Code.expect(res.headers['location']).to.equal('/site/address/postcode')
   })
 
   lab.test('The completeness is recalculated when the grid reference is updated', async () => {
