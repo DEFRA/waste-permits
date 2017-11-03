@@ -69,7 +69,7 @@
     "joi": "^13.0.1",
     "moment": "^2.19.1",
     "path": "^0.12.7",
-    "vision": "^4.1.1"
+    "vision": "^5.0.0"
   },
   "standard": {
     "ignore": [
