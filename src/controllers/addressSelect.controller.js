@@ -5,7 +5,7 @@ const BaseController = require('./base.controller')
 const AddressSelectValidator = require('../validators/addressSelect.validator')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
-const Site = require('../models/site.model')
+const Site = require('../models/location.model')
 
 module.exports = class AddressSelectController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -43,7 +43,7 @@ module.exports = class AddressSelectController extends BaseController {
 
   static async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return SiteSiteNameController.doGet(request, reply, errors)
+      return AddressSelectController.doGet(request, reply, errors)
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)

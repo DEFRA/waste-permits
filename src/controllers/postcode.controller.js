@@ -5,7 +5,7 @@ const BaseController = require('./base.controller')
 const PostcodeValidator = require('../validators/postcode.validator')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
-const Site = require('../models/site.model')
+const Site = require('../models/location.model')
 
 module.exports = class PostcodeController extends BaseController {
   static async doGet (request, reply, errors) {
