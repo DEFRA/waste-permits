@@ -2,29 +2,28 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const SiteSiteNameValidator = require('../validators/siteSiteName.validator')
+const SiteGridReferenceValidator = require('../validators/siteGridReference.validator')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
-module.exports = class SiteSiteNameController extends BaseController {
+module.exports = class SiteGridReferenceController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.SITE_SITE_NAME, errors, SiteSiteNameValidator)
+      const pageContext = BaseController.createPageContext(Constants.Routes.SITE_GRID_REFERENCE, errors, SiteGridReferenceValidator)
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
       const applicationLineId = CookieService.getApplicationLineId(request)
 
       if (request.payload) {
-        // If we have Location name in the payload then display them in the form
+        // If we have Site details in the payload then display them in the form
         pageContext.formValues = request.payload
       } else {
         pageContext.formValues = {
-          'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
+          'site-grid-reference': await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
         }
       }
-
-      return reply.view('siteSiteName', pageContext)
+      return reply.view('siteGridReference', pageContext)
     } catch (error) {
       LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)
@@ -33,17 +32,17 @@ module.exports = class SiteSiteNameController extends BaseController {
 
   static async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return SiteSiteNameController.doGet(request, reply, errors)
+      return SiteGridReferenceController.doGet(request, reply, errors)
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
       const applicationLineId = CookieService.getApplicationLineId(request)
 
       try {
-        await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'],
+        await SiteNameAndLocation.saveGridReference(request, request.payload['site-grid-reference'],
           authToken, applicationId, applicationLineId)
 
-        return reply.redirect(Constants.Routes.SITE_GRID_REFERENCE.path)
+        return reply.redirect(Constants.Routes.TASK_LIST.path)
       } catch (error) {
         LoggingService.logError(error, request)
         return reply.redirect(Constants.Routes.ERROR.path)
@@ -52,6 +51,6 @@ module.exports = class SiteSiteNameController extends BaseController {
   }
 
   static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, SiteSiteNameController)
+    return BaseController.handler(request, reply, errors, SiteGridReferenceController)
   }
 }

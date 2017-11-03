@@ -15,6 +15,12 @@ $path: "/public/images/";
   display: none;
 }
 
+// Add spacing below details (progressive disclosure)
+// Check if this is always required. If not, introduce class.
+details {
+  margin-bottom: 30px;
+}
+
 // EA footer links
 @include media(mobile) {
   .ea-footer, .ea-footer li  {

@@ -112,6 +112,10 @@ Constants.Routes = {
     pageHeading: 'Have you discussed this application with us?',
     taskListHeading: `Tell us if you've discussed this application with us`
   },
+  SITE_GRID_REFERENCE: {
+    path: '/site/grid-reference',
+    pageHeading: `What's the grid reference for the centre of the site?`
+  },
   SITE_PLAN: {
     path: '/site-plan',
     pageHeading: 'Upload the site plan',

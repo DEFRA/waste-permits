@@ -1,10 +1,10 @@
 'use strict'
 
-const Constants = require('../constants')
+const Constants = require('../../constants')
 
-const DynamicsDalService = require('../services/dynamicsDal.service')
-const BaseModel = require('./base.model')
-const LoggingService = require('../services/logging.service')
+const DynamicsDalService = require('../../services/dynamicsDal.service')
+const BaseModel = require('../base.model')
+const LoggingService = require('../../services/logging.service')
 
 module.exports = class TaskList extends BaseModel {
   static async getByApplicationLineId (authToken, applicationLineId) {

@@ -5,8 +5,8 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 
-const TaskList = require('../../src/models/taskList.model')
-const DynamicsDalService = require('../../src/services/dynamicsDal.service')
+const TaskList = require('../../../src/models/taskList/taskList.model')
+const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 
 let dynamicsSearchStub
 

@@ -10,6 +10,7 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let testApplication
 let dynamicsCreateStub
+let applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {
   testApplication = new Application()
@@ -17,7 +18,7 @@ lab.beforeEach(() => {
   // Stub methods
   dynamicsCreateStub = DynamicsDalService.prototype.create
   DynamicsDalService.prototype.create = (dataObject, query) => {
-    return '7a8e4354-4f24-e711-80fd-5065f38a1b01'
+    return applicationLineId
   }
 })
 
@@ -31,6 +32,6 @@ lab.experiment('Application Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     await testApplication.save()
     Code.expect(spy.callCount).to.equal(1)
-    Code.expect(testApplication.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
+    Code.expect(testApplication.id).to.equal(applicationLineId)
   })
 })
