@@ -10,7 +10,7 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let testApplication
 let dynamicsCreateStub
-let applicationLineId = '44444-55555-66666-77777-88888-999999'
+let applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {
   testApplication = new Application()

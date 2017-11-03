@@ -36,9 +36,9 @@ const fakeLocation = {
 }
 
 const fakeLocationDetail = {
-  id: '11111-22222-33333-44444-55555-666666',
+  id: 'LOCATION_DETAIL_ID',
   gridReference: 'AB1234567890',
-  locationId: '22222-33333-44444-55555-66666-777777',
+  locationId: 'LOCATION_ID',
   save: (authToken) => {}
 }
 
