@@ -5,38 +5,39 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 
-const Location = require('../../src/models/location.model')
+const LocationDetail = require('../../src/models/locationDetail.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let dynamicsCreateStub
 let dynamicsSearchStub
 let dynamicsUpdateStub
 
-let testLocation
+let testLocationDetail
 const fakeLocationDetailData = {
   gridReference: 'AB1234567890',
-  locationId: '05486b21-a4ae-e711-8117-5065f38ac931'
+  locationId: 'LOCATION_ID'
 }
+const testLocationDetailId = 'LOCATION_DETAIL_ID'
 
 lab.beforeEach(() => {
-  testLocation = new Location(fakeLocationData)
+  testLocationDetail = new LocationDetail(fakeLocationDetailData)
+
   dynamicsSearchStub = DynamicsDalService.prototype.search
   DynamicsDalService.prototype.search = (query) => {
     // Dynamics LocationDetail object
-    // TODO
     return {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
       value: [{
         '@odata.etag': 'W/"1234567"',
-        defra_name: fakeLocationData.name,
-        defra_locationid: fakeLocationData.applicationId
+        defra_gridreferenceid: fakeLocationDetailData.gridReference,
+        defra_locationdetailsid: fakeLocationDetailData.locationId
       }]
     }
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
   DynamicsDalService.prototype.create = (dataObject, query) => {
-    return '7a8e4354-4f24-e711-80fd-5065f38a1b01'
+    return testLocationDetailId
   }
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
@@ -53,48 +54,33 @@ lab.afterEach(() => {
 })
 
 lab.experiment('LocationDetail Model tests:', () => {
-  // TODO
-  // lab.test('Constructor creates a Location object correctly', () => {
-  //   const emptyLocation = new Location({})
-  //   Code.expect(emptyLocation.name).to.be.undefined()
-  //
-  //   Code.expect(testLocation.name).to.equal(fakeLocationData.name)
-  //   Code.expect(testLocation.applicationId).to.equal(fakeLocationData.applicationId)
-  // })
-  //
-  // lab.test('getByApplicationId() method returns a single Location object', async () => {
-  //   const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-  //   const site = await Location.getByApplicationId()
-  //   Code.expect(spy.callCount).to.equal(1)
-  //   Code.expect(site.name).to.equal(fakeLocationData.name)
-  // })
-  //
-  // lab.test('save() method saves a new Location object', async () => {
-  //   const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-  //   await testLocation.save()
-  //   Code.expect(spy.callCount).to.equal(1)
-  //   Code.expect(testLocation.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-  // })
-  //
-  // lab.test('save() method updates an existing Location object', async () => {
-  //   const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-  //   testLocation.id = '123'
-  //   await testLocation.save()
-  //   Code.expect(spy.callCount).to.equal(1)
-  //   Code.expect(testLocation.id).to.equal('123')
-  // })
+  lab.test('Constructor creates a LocationDetail object correctly', () => {
+    const emptyLocationDetail = new LocationDetail({})
+    Code.expect(emptyLocationDetail.gridReference).to.be.undefined()
 
-  // TODO rework this
-  // lab.test('isComplete() method correctly determines the completeness of a Location object', () => {
-  //   const fakeEmptyLocationData = {
-  //     name: undefined,
-  //     gridReference: undefined,
-  //     applicationId: '05486b21-a4ae-e711-8117-5065f38ac931'
-  //   }
-  //   testLocation = new Location(fakeEmptyLocationData)
-  //   Code.expect(testLocation.isComplete()).to.be.false()
-  //
-  //   testLocation = new Location(fakeLocationData)
-  //   Code.expect(testLocation.isComplete()).to.be.true()
-  // })
+    Code.expect(testLocationDetail.gridReference).to.equal(fakeLocationDetailData.gridReference)
+    Code.expect(testLocationDetail.locationId).to.equal(fakeLocationDetailData.locationId)
+  })
+
+  lab.test('getByLocationId() method returns a single LocationDetail object', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const locationDetail = await LocationDetail.getByLocationId()
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(locationDetail.gridReference).to.equal(fakeLocationDetailData.gridReference)
+  })
+
+  lab.test('save() method saves a new LocationDetail object', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    await testLocationDetail.save()
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(testLocationDetail.id).to.equal(testLocationDetailId)
+  })
+
+  lab.test('save() method updates an existing LocationDetail object', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    testLocationDetail.id = testLocationDetailId
+    await testLocationDetail.save()
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(testLocationDetail.id).to.equal(testLocationDetailId)
+  })
 })

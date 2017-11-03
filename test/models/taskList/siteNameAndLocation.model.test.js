@@ -15,6 +15,8 @@ let dynamicsUpdateStub
 let applicationLineGetByIdStub
 let locationGetByApplicationIdStub
 let locationDetailGetByLocationIdStub
+let locationSaveStub
+let locationDetailSaveStub
 
 const fakeApplicationLine = {
   id: 'ca6b60f0-c1bf-e711-8111-5065f38adb81',
@@ -24,19 +26,22 @@ const fakeApplicationLine = {
 }
 
 const fakeLocation = {
-  id: 'dff66fce-18b8-e711-8119-5065f38ac931',
+  id: 'LOCATION_ID',
   name: 'THE SITE NAME',
-  applicationId: '403710b7-18b8-e711-810d-5065f38bb461',
-  applicationLineId: '423710b7-18b8-e711-810d-5065f38bb461',
-  save: (authToken) => {}
+  applicationId: 'APPLICATION_ID',
+  applicationLineId: 'APPLICATION_LINE_ID'
 }
 
 const fakeLocationDetail = {
-  id: 'dff66fce-18b8-e711-8119-5065f38ac931',
+  id: 'LOCATION_DETAIL_ID',
   gridReference: 'AB1234567890',
-  locationId: fakeLocation.id,
-  save: (authToken) => {}
+  locationId: fakeLocation.id
 }
+
+const request = undefined
+const authToken = 'THE_AUTH_TOKEN'
+const applicationId = fakeApplicationLine.applicationId
+const applicationLineId = fakeApplicationLine.id
 
 lab.beforeEach(() => {
   // Stub methods
@@ -53,13 +58,19 @@ lab.beforeEach(() => {
 
   locationGetByApplicationIdStub = Location.getByApplicationId
   Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-    return fakeLocation
+    return new Location(fakeLocation)
   }
 
   locationDetailGetByLocationIdStub = LocationDetail.getByLocationId
   LocationDetail.getByLocationId = (authToken, locationId) => {
-    return fakeLocationDetail
+    return new LocationDetail(fakeLocationDetail)
   }
+
+  locationSaveStub = Location.prototype.save
+  Location.prototype.save = (authToken) => {}
+
+  locationDetailSaveStub = LocationDetail.prototype.save
+  LocationDetail.prototype.save = (authToken) => {}
 })
 
 lab.afterEach(() => {
@@ -68,41 +79,72 @@ lab.afterEach(() => {
   ApplicationLine.getById = applicationLineGetByIdStub
   Location.getByApplicationId = locationGetByApplicationIdStub
   LocationDetail.getByLocationId = locationDetailGetByLocationIdStub
+  Location.prototype.save = locationSaveStub
+  LocationDetail.prototype.save = locationDetailSaveStub
 })
 
 const testCompleteness = async (obj, expectedResult) => {
   fakeLocation.name = obj.name
   fakeLocationDetail.gridReference = obj.gridReference
-  let result = await SiteNameAndLocation._isComplete(obj.params.authToken, obj.params.applicationId, obj.params.applicationLineId)
+  const result = await SiteNameAndLocation._isComplete(obj.params.authToken, obj.params.applicationId, obj.params.applicationLineId)
   Code.expect(result).to.equal(expectedResult)
 }
 
 lab.experiment('Task List: Site Name and Location Model tests:', () => {
+  lab.test('getSiteName() method correctly retrieves undefined site name when there is no saved Location', async () => {
+    Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+      return undefined
+    }
+
+    const result = await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
+    Code.expect(result).to.be.equal(undefined)
+  })
+
+  lab.test('getSiteName() method correctly retrieves a site name when there is a saved Location', async () => {
+    const result = await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
+    Code.expect(result).to.be.equal(fakeLocation.name)
+  })
+
+  lab.test('saveSiteName() method correctly saves a site name', async () => {
+    const spy = sinon.spy(Location.prototype, 'save')
+    await SiteNameAndLocation.saveSiteName(request, fakeLocation.siteName, authToken, applicationId, applicationLineId)
+    Code.expect(spy.callCount).to.equal(1)
+  })
+
+  lab.test('getGridReference() method correctly retrieves undefined grid reference when there is no saved Location or LocationDetail', async () => {
+    Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+      return undefined
+    }
+    LocationDetail.getByLocationId = (authToken, locationId) => {
+      return undefined
+    }
+    const result = await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
+    Code.expect(result).to.be.equal(undefined)
+  })
+
+  lab.test('getGridReference() method correctly retrieves a site name when there is a saved Location and LocationDetail', async () => {
+    const result = await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
+    Code.expect(result).to.be.equal(fakeLocationDetail.gridReference)
+  })
+
+  lab.test('saveGridReference() method correctly saves a grid reference', async () => {
+    const spy = sinon.spy(LocationDetail.prototype, 'save')
+    await SiteNameAndLocation.saveGridReference(request, fakeLocationDetail.gridReference, authToken, applicationId, applicationLineId)
+    Code.expect(spy.callCount).to.equal(1)
+  })
+
   lab.test('updateCompleteness() method updates the task list item completeness', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-
-    const authToken = 'THE_AUTH_TOKEN'
-    const applicationId = fakeApplicationLine.applicationId
-    const applicationLineId = fakeApplicationLine.id
-
     await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
-    const authToken = 'THE_AUTH_TOKEN'
-    const applicationId = fakeApplicationLine.applicationId
-    const applicationLineId = fakeApplicationLine.id
-
     const result = await SiteNameAndLocation._isComplete(authToken, applicationId, applicationLineId)
     Code.expect(result).to.be.true()
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete', async () => {
-    const authToken = 'THE_AUTH_TOKEN'
-    const applicationId = fakeApplicationLine.applicationId
-    const applicationLineId = fakeApplicationLine.id
-
     const params = {
       authToken: 'THE_AUTH_TOKEN',
       applicationId: fakeApplicationLine.applicationId,

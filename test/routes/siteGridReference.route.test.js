@@ -221,7 +221,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
     }
 
     const spy = sinon.spy(SiteNameAndLocation, 'updateCompleteness')
-    const res = await server.inject(postRequest)
+    await server.inject(postRequest)
     Code.expect(spy.callCount).to.equal(1)
   })
 })

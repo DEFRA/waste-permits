@@ -5,8 +5,6 @@ const BaseController = require('./base.controller')
 const SiteGridReferenceValidator = require('../validators/siteGridReference.validator')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
-const Location = require('../models/location.model')
-const LocationDetail = require('../models/locationDetail.model')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
 module.exports = class SiteGridReferenceController extends BaseController {
@@ -21,27 +19,11 @@ module.exports = class SiteGridReferenceController extends BaseController {
         // If we have Site details in the payload then display them in the form
         pageContext.formValues = request.payload
       } else {
-        try {
-          // Get the Location for this application
-          let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
-
-          if (location) {
-            // Get the LocationDetail for this application (if there is one)
-            let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
-            if (locationDetail) {
-              pageContext.formValues = {
-                'site-grid-reference': locationDetail.gridReference
-              }
-            }
-          }
-        } catch (error) {
-          LoggingService.logError(error, request)
-          return reply.redirect(Constants.Routes.ERROR.path)
+        pageContext.formValues = {
+          'site-grid-reference': await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
         }
       }
-
-      return reply
-        .view('siteGridReference', pageContext)
+      return reply.view('siteGridReference', pageContext)
     } catch (error) {
       LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)
@@ -57,7 +39,7 @@ module.exports = class SiteGridReferenceController extends BaseController {
       const applicationLineId = CookieService.getApplicationLineId(request)
 
       try {
-        await SiteNameAndLocation.saveGridReference(request, reply, request.payload['site-grid-reference'],
+        await SiteNameAndLocation.saveGridReference(request, request.payload['site-grid-reference'],
           authToken, applicationId, applicationLineId)
 
         return reply.redirect(Constants.Routes.TASK_LIST.path)

@@ -5,7 +5,6 @@ const BaseController = require('./base.controller')
 const SiteSiteNameValidator = require('../validators/siteSiteName.validator')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
-const Location = require('../models/location.model')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
 module.exports = class SiteSiteNameController extends BaseController {
@@ -20,22 +19,12 @@ module.exports = class SiteSiteNameController extends BaseController {
         // If we have Location name in the payload then display them in the form
         pageContext.formValues = request.payload
       } else {
-        // Get the Location for this application (if we have one)
-        try {
-          const location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
-          if (location) {
-            pageContext.formValues = {
-              'site-name': location.name
-            }
-          }
-        } catch (error) {
-          LoggingService.logError(error, request)
-          return reply.redirect(Constants.Routes.ERROR.path)
+        pageContext.formValues = {
+          'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
         }
       }
 
-      return reply
-        .view('siteSiteName', pageContext)
+      return reply.view('siteSiteName', pageContext)
     } catch (error) {
       LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)
@@ -51,7 +40,7 @@ module.exports = class SiteSiteNameController extends BaseController {
       const applicationLineId = CookieService.getApplicationLineId(request)
 
       try {
-        await SiteNameAndLocation.saveSiteName(request, reply, request.payload['site-name'],
+        await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'],
           authToken, applicationId, applicationLineId)
 
         return reply.redirect(Constants.Routes.SITE_GRID_REFERENCE.path)

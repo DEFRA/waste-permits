@@ -10,11 +10,26 @@ const LocationDetail = require('../locationDetail.model')
 const LoggingService = require('../../services/logging.service')
 
 module.exports = class SiteNameAndLocation extends BaseModel {
-  static async saveSiteName (request, reply, siteName, authToken, applicationId, applicationLineId) {
+  static async getSiteName (request, authToken, applicationId, applicationLineId) {
+    let siteName
+    try {
+      // Get the Location for this application (if we have one)
+      const location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+      if (location) {
+        siteName = location.name
+      }
+    } catch (error) {
+      LoggingService.logError(error, request)
+      throw error
+      // return reply.redirect(Constants.Routes.ERROR.path)
+    }
+    return siteName
+  }
+
+  static async saveSiteName (request, siteName, authToken, applicationId, applicationLineId) {
     try {
       // Get the Location for this application
       let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
-
       if (!location) {
         // Create a Location in Dynamics
         location = new Location({
@@ -29,15 +44,36 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       await location.save(authToken)
     } catch (error) {
       LoggingService.logError(error, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
+      throw error
+      // return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
 
-  static async saveGridReference (request, reply, gridReference, authToken, applicationId, applicationLineId) {
+  static async getGridReference (request, authToken, applicationId, applicationLineId) {
+    let gridReference
     try {
       // Get the Location for this application
       let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
 
+      if (location) {
+        // Get the LocationDetail for this application (if there is one)
+        let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+        if (locationDetail) {
+          gridReference = locationDetail.gridReference
+        }
+      }
+    } catch (error) {
+      LoggingService.logError(error, request)
+      throw error
+      // return reply.redirect(Constants.Routes.ERROR.path)
+    }
+    return gridReference
+  }
+
+  static async saveGridReference (request, gridReference, authToken, applicationId, applicationLineId) {
+    try {
+      // Get the Location for this application
+      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
       if (!location) {
         // Create a Location in Dynamics
         location = new Location({
@@ -60,11 +96,13 @@ module.exports = class SiteNameAndLocation extends BaseModel {
         // Update existing LocationDetail
         locationDetail.gridReference = gridReference
       }
+
       await locationDetail.save(authToken)
       await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
     } catch (error) {
       LoggingService.logError(error, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
+      throw error
+      // return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
 
@@ -97,8 +135,8 @@ module.exports = class SiteNameAndLocation extends BaseModel {
 
       if (location && locationDetail) {
         isComplete =
-          location.name !== null && location.name.length > 0 &&
-          locationDetail.gridReference !== null && locationDetail.gridReference.length > 0
+          location.name !== undefined && location.name !== null && location.name.length > 0 &&
+          locationDetail.gridReference !== undefined && locationDetail.gridReference !== null && locationDetail.gridReference.length > 0
       }
     } catch (error) {
       LoggingService.logError(`Unable to calculate SiteNameAndLocation completeness: ${error}`)

@@ -15,8 +15,9 @@ let dynamicsUpdateStub
 let testLocation
 const fakeLocationData = {
   name: 'THE_SITE_NAME',
-  applicationId: '05486b21-a4ae-e711-8117-5065f38ac931'
+  applicationId: 'APPLICATION_ID'
 }
+const testLocationId = 'LOCATION_ID'
 
 lab.beforeEach(() => {
   testLocation = new Location(fakeLocationData)
@@ -35,12 +36,12 @@ lab.beforeEach(() => {
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
   DynamicsDalService.prototype.create = (dataObject, query) => {
-    return '7a8e4354-4f24-e711-80fd-5065f38a1b01'
+    return testLocationId
   }
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
   DynamicsDalService.prototype.update = (dataObject, query) => {
-    return dataObject.id
+    return testLocationId
   }
 })
 
@@ -71,14 +72,14 @@ lab.experiment('Location Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     await testLocation.save()
     Code.expect(spy.callCount).to.equal(1)
-    Code.expect(testLocation.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
+    Code.expect(testLocation.id).to.equal(testLocationId)
   })
 
   lab.test('save() method updates an existing Location object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-    testLocation.id = '123'
+    testLocation.id = testLocationId
     await testLocation.save()
     Code.expect(spy.callCount).to.equal(1)
-    Code.expect(testLocation.id).to.equal('123')
+    Code.expect(testLocation.id).to.equal(testLocationId)
   })
 })
