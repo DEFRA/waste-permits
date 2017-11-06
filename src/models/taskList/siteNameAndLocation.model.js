@@ -21,7 +21,6 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
-      // return reply.redirect(Constants.Routes.ERROR.path)
     }
     return siteName
   }
@@ -45,7 +44,6 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
-      // return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
 
@@ -65,12 +63,13 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
-      // return reply.redirect(Constants.Routes.ERROR.path)
     }
     return gridReference
   }
 
   static async saveGridReference (request, gridReference, authToken, applicationId, applicationLineId) {
+      // Strip out whitespace from the grid reference, convert to upper case and save it
+    gridReference = gridReference.replace(/\s/g, '').toUpperCase()
     try {
       // Get the Location for this application
       let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
@@ -102,7 +101,6 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
-      // return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
 
