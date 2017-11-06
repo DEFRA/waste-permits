@@ -187,8 +187,36 @@ lab.experiment('Site Grid Reference page tests:', () => {
   })
 
   lab.test('POST /site/grid-reference shows an error message when the location grid reference is in the wrong format', async () => {
+    const expectedErrorMessage = 'Make sure that the grid reference has 2 letters and 10 digits'
+
+    // Wrong format
     postRequest.payload['site-grid-reference'] = 'AB123456789X'
-    await checkValidationError('Make sure that the grid reference has 2 letters and 10 digits')
+    await checkValidationError(expectedErrorMessage)
+    postRequest.payload['site-grid-reference'] = 'ab123456789X'
+    await checkValidationError(expectedErrorMessage)
+    postRequest.payload['site-grid-reference'] = 'ABX123456789'
+    await checkValidationError(expectedErrorMessage)
+
+    // Not enough characters
+    postRequest.payload['site-grid-reference'] = 'AB123456789'
+    await checkValidationError(expectedErrorMessage)
+
+    // Too many characters
+    postRequest.payload['site-grid-reference'] = 'AB12345678900'
+    await checkValidationError(expectedErrorMessage)
+  })
+
+  lab.test('POST /site/grid-reference accepts a grid reference that contains whitespace', async () => {
+    postRequest.payload['site-grid-reference'] = '      A       B   123  4 5 6 789         0      '
+
+    // Empty location details response
+    LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
+      return undefined
+    }
+
+    const res = await server.inject(postRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/task-list')
   })
 
   lab.test('POST /site/grid-reference success (new grid reference) redirects to the Task List route', async () => {
