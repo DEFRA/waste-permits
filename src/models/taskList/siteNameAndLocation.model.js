@@ -104,6 +104,69 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     }
   }
 
+  static async getPostcode (request, authToken, applicationId, applicationLineId) {
+    let gridReference
+    try {
+      // Get the Location for this application
+      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+
+      if (location) {
+        // Get the LocationDetail for this application (if there is one)
+        let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+        if (locationDetail) {
+
+          // TODO: Get the Address
+
+          // postcode = locationDetail.gridReference
+        }
+      }
+    } catch (error) {
+      LoggingService.logError(error, request)
+      throw error
+    }
+    return gridReference
+  }
+
+  static async savePostcode (request, gridReference, authToken, applicationId, applicationLineId) {
+      // Strip out whitespace from the grid reference, convert to upper case and save it
+    gridReference = gridReference.replace(/\s/g, '').toUpperCase()
+    try {
+      // Get the Location for this application
+      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+      if (!location) {
+        // Create a Location in Dynamics
+        location = new Location({
+          name: undefined,
+          applicationId: applicationId,
+          applicationLineId: applicationLineId
+        })
+        await location.save(authToken)
+      }
+
+      // Get the LocationDetail for this application (if there is one)
+      let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+      if (!locationDetail) {
+
+        // TODO: Get the Address
+
+        // Create new LocationDetail
+        // locationDetail = new LocationDetail({
+        //   gridReference: gridReference,
+        //   locationId: location.id
+        // })
+      } else {
+        // Update existing LocationDetail
+        locationDetail.gridReference = gridReference
+      }
+
+      await locationDetail.save(authToken)
+      await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
+    } catch (error) {
+      LoggingService.logError(error, request)
+      throw error
+    }
+  }
+
   static async updateCompleteness (authToken, applicationId, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
 

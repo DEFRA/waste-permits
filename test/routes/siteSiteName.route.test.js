@@ -116,7 +116,17 @@ lab.experiment('Site Name page tests:', () => {
     Code.expect(element).to.exist()
   })
 
-  lab.test('POST /site/site-name redirects to error screen when the user token is invalid', async () => {
+  lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
+    CookieService.validateCookie = () => {
+      return undefined
+    }
+
+    const res = await server.inject(getRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/error')
+  })
+
+  lab.test('POST ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
     CookieService.validateCookie = () => {
       return undefined
     }
@@ -151,24 +161,24 @@ lab.experiment('Site Name page tests:', () => {
     Code.expect(res.headers['location']).to.equal('/site/grid-reference')
   })
 
-  lab.test('POST /site/site-name success (existing Site) redirects to the Site Grid Reference route', async () => {
+  lab.test('POST ' + routePath + ' success (existing Site) redirects to the Site Grid Reference route', async () => {
     postRequest.payload['site-name'] = 'My Site'
     const res = await server.inject(postRequest)
     Code.expect(res.statusCode).to.equal(302)
     Code.expect(res.headers['location']).to.equal('/site/grid-reference')
   })
 
-  lab.test('POST /site/site-name shows an error message when the site name is blank', async () => {
+  lab.test('POST ' + routePath + 'shows an error message when the site name is blank', async () => {
     postRequest.payload['site-name'] = ''
     await checkValidationError('Enter the site name')
   })
 
-  lab.test('POST /site/site-name shows an error message when the site name contains invalid characters', async () => {
+  lab.test('POST ' + routePath + ' shows an error message when the site name contains invalid characters', async () => {
     postRequest.payload['site-name'] = '___INVALID_SITE_NAME___'
     await checkValidationError('The site name cannot contain any of these characters: ^ | _ ~ ¬ `')
   })
 
-  lab.test('POST /site/site-name shows an error message when the site name is too long', async () => {
+  lab.test('POST ' + routePath + ' shows an error message when the site name is too long', async () => {
     postRequest.payload['site-name'] = '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
     await checkValidationError('Enter a shorter site name with no more than 170 characters')
   })

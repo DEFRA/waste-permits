@@ -149,7 +149,17 @@ lab.experiment('Site Grid Reference page tests:', () => {
     Code.expect(element).to.exist()
   })
 
-  lab.test('POST /site/grid-reference redirects to error screen when the user token is invalid', async () => {
+  lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
+    CookieService.validateCookie = () => {
+      return undefined
+    }
+
+    const res = await server.inject(getRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/error')
+  })
+
+  lab.test('POST ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
     CookieService.validateCookie = () => {
       return undefined
     }
@@ -159,7 +169,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
     Code.expect(res.headers['location']).to.equal('/error')
   })
 
-  lab.test('GET /site/grid-reference returns the Site grid reference page correctly when the grid reference has not been entered yet', async () => {
+  lab.test('GET ' + routePath + ' returns the Site grid reference page correctly when the grid reference has not been entered yet', async () => {
     LocationDetail.getByLocationId = (authToken, locationId) => {
       return undefined
     }
@@ -172,21 +182,21 @@ lab.experiment('Site Grid Reference page tests:', () => {
     await checkPageElements(getRequest, '')
   })
 
-  lab.test('GET /site/grid-reference returns the Site Grid Reference page correctly when there is an existing grid reference', async () => {
+  lab.test('GET ' + routePath + ' returns the Site Grid Reference page correctly when there is an existing grid reference', async () => {
     await checkPageElements(getRequest, fakeLocationDetail.gridReference)
   })
 
-  lab.test('POST /site/grid-reference shows an error message when the location grid reference is blank', async () => {
+  lab.test('POST ' + routePath + ' shows an error message when the location grid reference is blank', async () => {
     postRequest.payload['site-grid-reference'] = ''
     await checkValidationError('Enter a grid reference')
   })
 
-  lab.test('POST /site/grid-reference shows an error message when the location grid reference is whitespace', async () => {
+  lab.test('POST ' + routePath + ' shows an error message when the location grid reference is whitespace', async () => {
     postRequest.payload['site-grid-reference'] = '            '
     await checkValidationError('Enter a grid reference')
   })
 
-  lab.test('POST /site/grid-reference shows an error message when the location grid reference is in the wrong format', async () => {
+  lab.test('POST ' + routePath + ' shows an error message when the location grid reference is in the wrong format', async () => {
     const expectedErrorMessage = 'Make sure that the grid reference has 2 letters and 10 digits'
 
     // Wrong format
@@ -206,7 +216,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
     await checkValidationError(expectedErrorMessage)
   })
 
-  lab.test('POST /site/grid-reference accepts a grid reference that contains whitespace', async () => {
+  lab.test('POST ' + routePath + ' accepts a grid reference that contains whitespace', async () => {
     postRequest.payload['site-grid-reference'] = '      A       B   123  4 5 6 789         0      '
 
     // Empty location details response
@@ -216,10 +226,10 @@ lab.experiment('Site Grid Reference page tests:', () => {
 
     const res = await server.inject(postRequest)
     Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/task-list')
+    Code.expect(res.headers['location']).to.equal('/site/address/postcode')
   })
 
-  lab.test('POST /site/grid-reference success (new grid reference) redirects to the Site Postcode route', async () => {
+  lab.test('POST /' + routePath + ' success (new grid reference) redirects to the Site Postcode route', async () => {
     postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
 
     // Empty location details response
@@ -232,7 +242,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
     Code.expect(res.headers['location']).to.equal('/site/address/postcode')
   })
 
-  lab.test('POST /site/grid-reference success (existing grid reference) redirects to the Site Postcode route', async () => {
+  lab.test('POST ' + routePath + ' success (existing grid reference) redirects to the Site Postcode route', async () => {
     postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
 
     const res = await server.inject(postRequest)
