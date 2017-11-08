@@ -9,17 +9,21 @@
 
       <h1 id="confirm-rules-heading" class="heading-large">{{ pageHeading }}</h1>
 
-      <!-- <div id="confirm-result-message" class="panel panel-border-wide">
-        <p>You confirmed that your operation meets the rules.</p>
-      </div> -->
+      {{#if complete}}
+        <div id="confirm-result-message" class="panel panel-border-wide">
+          <p>You confirmed that your operation meets the rules.</p>
+        </div>
+      {{/if}}
 
       <p id="confirm-rules-paragraph-1">If it doesn't meet these rules, you may need a different standard rules permit or a bespoke permit instead.</p>
-
       <form method="POST" action="{{ formAction }}">
         <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
         <div class="form-group">
-          <button id="operation-meets-rules-button" type="submit" class="button" name="The operation meets these rules">The operation meets these rules</button>
-          <!-- <button id="return-to-task-list-button" type="submit" class="button" name="Return to task list">Return to task list</button> -->
+          {{#if complete}}
+            <button id="return-to-task-list-button" type="submit" class="button" name="Return to task list">Return to task list</button>
+          {{else}}
+            <button id="operation-meets-rules-button" type="submit" class="button" name="The operation meets these rules">The operation meets these rules</button>
+          {{/if}}
         </div>
       </form>
 

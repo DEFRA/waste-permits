@@ -6,10 +6,32 @@ const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
 const ApplicationLine = require('./applicationLine.model')
 
-module.exports = class Site extends BaseModel {
+module.exports = class ConfirmRules extends BaseModel {
   constructor (data) {
     super()
-    this.applicationLineId = data.applicationLineId
+    // Merge the data with this instance
+    Object.assign(this, data)
+  }
+
+  static async getByApplicationId (authToken, applicationId, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const query = encodeURI(`defra_applicationlines(${applicationLineId})?$expand=defra_parametersId($select=${Constants.Dynamics.CompletedParamters.CONFIRM_RULES})`)
+    try {
+      const result = await dynamicsDal.search(query)
+
+      let confirmRules
+      if (result) {
+        confirmRules = new ConfirmRules({
+          applicationId,
+          applicationLineId,
+          complete: result.defra_parametersId[Constants.Dynamics.CompletedParamters.CONFIRM_RULES]
+        })
+      }
+      return confirmRules
+    } catch (error) {
+      LoggingService.logError(`Unable to get confirmRules by application ID: ${error}`)
+      throw error
+    }
   }
 
   async save (authToken) {
@@ -26,7 +48,7 @@ module.exports = class Site extends BaseModel {
         await dynamicsDal.update(query, entity)
       }
     } catch (error) {
-      LoggingService.logError(`Unable to update Site completeness: ${error}`)
+      LoggingService.logError(`Unable to update Confirm Rules completeness: ${error}`)
       throw error
     }
   }
