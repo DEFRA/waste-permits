@@ -10,7 +10,8 @@ module.exports = class Application extends BaseModel {
     const dynamicsDal = new DynamicsDalService(authToken)
 
     const dataObject = {
-      defra_regime: Constants.Dynamics.WASTE_REGIME
+      defra_regime: Constants.Dynamics.WASTE_REGIME,
+      defra_source: Constants.Dynamics.DIGITAL_SOURCE
     }
 
     try {
