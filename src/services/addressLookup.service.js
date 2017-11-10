@@ -2,38 +2,33 @@
 
 const rp = require('request-promise')
 
+const config = require('../config/config')
+const LoggingService = require('../services/logging.service')
+
 module.exports = class AddressLookupService {
-  static async GetAddressesFromPostcode (postcode) {
-    const key = 'client1'
+  static async getAddressesFromPostcode (postcode) {
     const options = {
-      uri: 'http://ea-addressfacade1081.cloudapp.net/address-service/v1/addresses/postcode',
+      uri: config.ADDRESS_LOOKUP_SERVICE + '/addresses/postcode',
       qs: {
         'query-string': postcode,
-        key: key
+        key: config.ADDRESS_LOOKUP_SERVICE_KEY
       },
-      // headers: {
-      //   'User-Agent': 'Request-Promise'
-      // },
-      json: true // Automatically parses the JSON string in the response
+      json: true
     }
 
     let addresses
     await rp(options)
-      .then((result) => {
-        // Extract the address string from the address entry
-        addresses = result.results.map((addressEntry, index, array) => {
+      .then((data) => {
+        // Extract the concatenated address string from the address entries in the returned data
+        addresses = data.results.map((addressEntry, index, array) => {
           return addressEntry.address
         })
       })
-      .catch((err) => {
-        // TODO handle error
-        console.error(err)
-        // API call failed...
+      .catch((error) => {
+        LoggingService.logError(error)
+        throw error
       })
 
     return addresses
-
-    // TODO lookup addresses
-    // curl -X GET --header 'Accept: application/json' 'http://ea-addressfacade1081.cloudapp.net/address-service/v1/addresses/postcode?query-string=bs1%205ah&key=client1'
   }
 }

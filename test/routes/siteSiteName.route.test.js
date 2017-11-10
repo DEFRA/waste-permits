@@ -65,13 +65,13 @@ const checkPageElements = async (request, expectedValue) => {
   Code.expect(element.nodeValue).to.equal(`What's the site name?`)
 
   element = doc.getElementById('site-site-name-subheading').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  Code.expect(element).to.exist()
 
   element = doc.getElementById('site-name-label').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  Code.expect(element).to.exist()
 
   element = doc.getElementById('site-name-hint').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  Code.expect(element).to.exist()
 
 
   element = doc.getElementById('site-name')

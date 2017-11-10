@@ -70,10 +70,10 @@ const checkPageElements = async (request, expectedValue) => {
   Code.expect(element.nodeValue).to.equal(`What's the postcode for the site?`)
 
   element = doc.getElementById('postcode-label').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  Code.expect(element).to.exist()
 
   element = doc.getElementById('postcode-hint').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  Code.expect(element).to.exist()
 
   element = doc.getElementById('postcode')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)

@@ -25,7 +25,7 @@ module.exports = class AddressSelectController extends BaseController {
         if (address) {
           pageContext.formValues = {
             postcode: address.postcode,
-            addresses: await AddressLookupService.GetAddressesFromPostcode(address.postcode)
+            addresses: await AddressLookupService.getAddressesFromPostcode(address.postcode)
           }
         }
       }
@@ -43,27 +43,7 @@ module.exports = class AddressSelectController extends BaseController {
     if (errors && errors.data.details) {
       return AddressSelectController.doGet(request, reply, errors)
     } else {
-      // const authToken = CookieService.getAuthToken(request)
-      // const applicationId = CookieService.getApplicationId(request)
-      // const applicationLineId = CookieService.getApplicationLineId(request)
-
-      // Get the Site for this application (if we have one)
-      // let site = await Site.getByApplicationId(authToken, applicationId, applicationLineId)
-      //
-      // if (!site) {
-      //   // Create new Site
-      //   site = new Site({
-      //     name: request.payload['site-name'],
-      //     applicationId: applicationId,
-      //     applicationLineId: applicationLineId
-      //   })
-      // } else {
-      //   // Update existing Site
-      //   site.name = request.payload['site-name']
-      // }
-
       try {
-        // await site.save(authToken)
         return reply.redirect(Constants.Routes.TASK_LIST.path)
       } catch (error) {
         LoggingService.logError(error, request)

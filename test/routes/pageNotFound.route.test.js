@@ -60,13 +60,13 @@ lab.experiment('Page Not Found (404) page tests:', () => {
     Code.expect(element.nodeValue).to.equal(`We can't find that page`)
 
     element = doc.getElementById('page-not-found-paragraph').firstChild
-    Code.expect(element.nodeValue).to.exist()
+    Code.expect(element).to.exist()
 
     element = doc.getElementById('page-not-found-task-list-link').firstChild
-    Code.expect(element.nodeValue).to.exist()
+    Code.expect(element).to.exist()
 
     element = doc.getElementById('page-not-found-apply-link').firstChild
-    Code.expect(element.nodeValue).to.exist()
+    Code.expect(element).to.exist()
   })
 
   lab.test('GET /page-not-found redirects to the start page when the user does not have a valid cookie', async () => {

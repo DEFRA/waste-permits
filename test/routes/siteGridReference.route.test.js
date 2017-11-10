@@ -98,22 +98,22 @@ const checkPageElements = async (getRequest, expectedValue) => {
   Code.expect(element.nodeValue).to.equal(`What's the grid reference for the centre of the site?`)
 
   element = doc.getElementById('site-grid-reference-label').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  Code.expect(element).to.exist()
 
   element = doc.getElementById('site-grid-reference-hint').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  Code.expect(element).to.exist()
 
   element = doc.getElementById('site-grid-reference')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
   element = doc.getElementById('site-grid-reference-summary').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  Code.expect(element).to.exist()
 
   element = doc.getElementById('site-grid-reference-finder-link').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  Code.expect(element).to.exist()
 
   element = doc.getElementById('grid-reference-help-list').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  Code.expect(element).to.exist()
 
   element = doc.getElementById('site-grid-reference-submit').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
