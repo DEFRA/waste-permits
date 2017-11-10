@@ -7,11 +7,12 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
-// const Site = require('../../src/models/site.model')
+const Address = require('../../src/models/address.model')
+const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 
 let validateCookieStub
-// let siteSaveStub
-// let getByApplicationIdStub
+let siteNameAndLocationGetAddressStub
+let siteNameAndLocationSaveAddressStub
 
 const routePath = '/site/address/postcode'
 const getRequest = {
@@ -21,13 +22,9 @@ const getRequest = {
 }
 let postRequest
 
-// let fakeSite = {
-//   id: 'dff66fce-18b8-e711-8119-5065f38ac931',
-//   name: 'THE_SITE_NAME',
-//   applicationId: '403710b7-18b8-e711-810d-5065f38bb461',
-//   applicationLineId: '423710b7-18b8-e711-810d-5065f38bb461',
-//   save: (authToken) => {}
-// }
+let fakeAddress = {
+  postcode: 'BS1 5AH'
+}
 
 lab.beforeEach(() => {
   postRequest = {
@@ -43,21 +40,23 @@ lab.beforeEach(() => {
     return true
   }
 
-//   siteSaveStub = Site.prototype.save
-//   Site.prototype.save = (authToken) => {}
-//
-//   getByApplicationIdStub = Site.getByApplicationId
-//   Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-//     return fakeSite
-//   }
+  siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
+  SiteNameAndLocation.getAddress = (request, authToken, applicationId, applicationLineId) => {
+    return new Address({
+      id: 'ADDRESS_ID',
+      postcode: fakeAddress.postcode
+    })
+  }
+
+  siteNameAndLocationSaveAddressStub = SiteNameAndLocation.prototype.saveAddress
+  SiteNameAndLocation.saveAddress = (request, address, authToken, applicationId, applicationLineId) => {}
 })
 
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-
-//   Site.prototype.save = siteSaveStub
-//   Site.getByApplicationId = getByApplicationIdStub
+  SiteNameAndLocation.getAddress = siteNameAndLocationGetAddressStub
+  SiteNameAndLocation.prototype.saveAddress = siteNameAndLocationSaveAddressStub
 })
 
 const checkPageElements = async (request, expectedValue) => {
@@ -77,7 +76,7 @@ const checkPageElements = async (request, expectedValue) => {
   Code.expect(element.nodeValue).to.exist()
 
   element = doc.getElementById('postcode')
-  Code.expect(element.getAttribute('value')).to.equal('')
+  Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
   element = doc.getElementById('postcode-submit').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
@@ -101,7 +100,7 @@ const checkValidationError = async (expectedErrorMessage) => {
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
 
-lab.experiment('Site Name page tests:', () => {
+lab.experiment('Postcode page tests:', () => {
   lab.test('The page should have a back link', async () => {
     const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
@@ -133,14 +132,16 @@ lab.experiment('Site Name page tests:', () => {
     Code.expect(res.headers['location']).to.equal('/error')
   })
 
-  lab.test('GET ' + routePath + ' returns the site postcode correctly when it is a new application', async () => {
+  lab.test('GET ' + routePath + ' returns the site postcode screen correctly when there is no saved postcode', async () => {
+    SiteNameAndLocation.getAddress = (request, authToken, applicationId, applicationLineId) => {
+      return undefined
+    }
     checkPageElements(getRequest, '')
   })
 
-  // TODO
-  // lab.test('GET ' + routePath + ' returns the Site Postcode page correctly when there is an existing postcode', async () => {
-  //   await checkPageElements(getRequest, fakeLocationDetail.gridReference)
-  // })
+  lab.test('GET ' + routePath + ' returns the Site Postcode page correctly when there is an existing postcode', async () => {
+    await checkPageElements(getRequest, fakeAddress.postcode)
+  })
 
   lab.test('POST ' + routePath + ' shows an error message when the postcode is blank', async () => {
     postRequest.payload['postcode'] = ''
@@ -148,98 +149,37 @@ lab.experiment('Site Name page tests:', () => {
   })
 
   lab.test('POST ' + routePath + ' shows an error message when the postcode is whitespace', async () => {
-    postRequest.payload['postcode'] = '            '
+    postRequest.payload['postcode'] = '     \t       '
     await checkValidationError('Enter a postcode')
   })
 
-  lab.test('POST ' + routePath + ' shows an error message when the postcode is in the wrong format', async () => {
-    const expectedErrorMessage = 'Enter a valid UK postcode'
+  lab.test('POST ' + routePath + ' success (new Address) redirects to the Address Select route', async () => {
+    const request = {
+      method: 'POST',
+      url: routePath,
+      headers: {},
+      payload: {
+        'postcode': fakeAddress.postcode
+      }
+    }
 
-    // Wrong format
-    postRequest.payload['postcode'] = 'AB12 3CDDD'
-    await checkValidationError(expectedErrorMessage)
-
-    // Not enough characters
-    postRequest.payload['postcode'] = 'AB12'
-    await checkValidationError(expectedErrorMessage)
-
-    // Too many characters
-    postRequest.payload['postcode'] = 'AB12345678900'
-    await checkValidationError(expectedErrorMessage)
-  })
-
-  lab.test('POST ' + routePath + ' accepts a postcode that contains whitespace', async () => {
-    postRequest.payload['postcode'] = '      A          1 2 A  A      '
-
-    const res = await server.inject(postRequest)
+    const res = await server.inject(request)
     Code.expect(res.statusCode).to.equal(302)
     Code.expect(res.headers['location']).to.equal('/site/address/select-address')
   })
 
-//   lab.test('GET ' + routePath + ' returns the site page correctly when there is an existing Site name', async () => {
-//     const request = {
-//       method: 'GET',
-//       url: routePath,
-//       headers: {}
-//     }
-//
-//     const res = await server.inject(request)
-//     Code.expect(res.statusCode).to.equal(200)
-//
-//     const parser = new DOMParser()
-//     const doc = parser.parseFromString(res.payload, 'text/html')
-//
-//     let element = doc.getElementById('site-site-name-heading').firstChild
-//     Code.expect(element.nodeValue).to.equal(`What's the site name?`)
-//
-//     element = doc.getElementById('site-site-name-subheading').firstChild
-//     Code.expect(element.nodeValue).to.exist()
-//
-//     element = doc.getElementById('site-name-label').firstChild
-//     Code.expect(element.nodeValue).to.exist()
-//
-//     element = doc.getElementById('site-name-hint').firstChild
-//     Code.expect(element.nodeValue).to.exist()
-//
-//     element = doc.getElementById('site-name')
-//     Code.expect(element.getAttribute('value')).to.equal(fakeSite.name)
-//
-//     element = doc.getElementById('site-site-name-submit').firstChild
-//     Code.expect(element.nodeValue).to.equal('Continue')
-//   })
-//
-//   lab.test('POST ' + routePath + ' success (new Site) redirects to the Site Grid Reference route', async () => {
-//     const request = {
-//       method: 'POST',
-//       url: routePath,
-//       headers: {},
-//       payload: {
-//         'site-name': 'My Site'
-//       }
-//     }
-//
-//     // Empty site details response
-//     Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-//       return undefined
-//     }
-//
-//     const res = await server.inject(request)
-//     Code.expect(res.statusCode).to.equal(302)
-//     Code.expect(res.headers['location']).to.equal('/site/grid-reference')
-//   })
-//
-//   lab.test('POST ' + routePath + 'success (existing Site) redirects to the Site Grid Reference route', async () => {
-//     const request = {
-//       method: 'POST',
-//       url: routePath,
-//       headers: {},
-//       payload: {
-//         'site-name': 'My Site'
-//       }
-//     }
-//
-//     const res = await server.inject(request)
-//     Code.expect(res.statusCode).to.equal(302)
-//     Code.expect(res.headers['location']).to.equal('/site/grid-reference')
-//   })
+  lab.test('POST ' + routePath + 'success (existing Address) redirects to the Address Select route', async () => {
+    const request = {
+      method: 'POST',
+      url: routePath,
+      headers: {},
+      payload: {
+        'postcode': fakeAddress.postcode
+      }
+    }
+
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal('/site/address/select-address')
+  })
 })

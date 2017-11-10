@@ -3,43 +3,36 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const AddressSelectValidator = require('../validators/addressSelect.validator')
-// const CookieService = require('../services/cookie.service')
+const AddressLookupService = require('../services/addressLookup.service')
+const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
-// const Site = require('../models/location.model')
+const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
 module.exports = class AddressSelectController extends BaseController {
   static async doGet (request, reply, errors) {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.ADDRESS_SELECT, errors, AddressSelectValidator)
-      // const authToken = CookieService.getAuthToken(request)
-      // const applicationId = CookieService.getApplicationId(request)
-      // const applicationLineId = CookieService.getApplicationLineId(request)
-
-      console.log('PAYLOAD:', request.payload)
+      const authToken = CookieService.getAuthToken(request)
+      const applicationId = CookieService.getApplicationId(request)
+      const applicationLineId = CookieService.getApplicationLineId(request)
 
       if (request.payload) {
-        // If we have Site details in the payload then display them in the form
-        pageContext.formValues = request.payload
+        // TODO confirm if we need this
+        // If we have Address details in the payload then display them in the form
+        // pageContext.formValues = request.payload
       } else {
-        // TODO
-        // Look up the addresses for this postcode
-
-        // Get the Site for this application (if we have one)
-        try {
-          // const site = await Site.getByApplicationId(authToken, applicationId, applicationLineId)
-          // if (site) {
-          //   pageContext.formValues = {
-          //     'site-name': site.name
-          //   }
-          // }
-        } catch (error) {
-          LoggingService.logError(error, request)
-          return reply.redirect(Constants.Routes.ERROR.path)
+        const address = await SiteNameAndLocation.getAddress(request, authToken, applicationId, applicationLineId)
+        if (address) {
+          pageContext.formValues = {
+            postcode: address.postcode,
+            addresses: await AddressLookupService.GetAddressesFromPostcode(address.postcode)
+          }
         }
       }
+      pageContext.changePostcodeLink = Constants.Routes.POSTCODE.path
+      pageContext.manualAddressLink = Constants.Routes.ADDRESS_MANUAL.path
 
-      return reply
-        .view('addressSelect', pageContext)
+      return reply.view('addressSelect', pageContext)
     } catch (error) {
       LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)

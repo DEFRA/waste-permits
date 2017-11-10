@@ -7,7 +7,9 @@ const BaseModel = require('../base.model')
 const ApplicationLine = require('../applicationLine.model')
 const Location = require('../location.model')
 const LocationDetail = require('../locationDetail.model')
+const Address = require('../address.model')
 const LoggingService = require('../../services/logging.service')
+const Utilities = require('../../utilities/utilities')
 
 module.exports = class SiteNameAndLocation extends BaseModel {
   static async getSiteName (request, authToken, applicationId, applicationLineId) {
@@ -41,6 +43,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
         location.name = siteName
       }
       await location.save(authToken)
+      await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
@@ -69,7 +72,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
 
   static async saveGridReference (request, gridReference, authToken, applicationId, applicationLineId) {
       // Strip out whitespace from the grid reference, convert to upper case and save it
-    gridReference = gridReference.replace(/\s/g, '').toUpperCase()
+    gridReference = Utilities.stripWhitespace(gridReference).toUpperCase()
     try {
       // Get the Location for this application
       let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
@@ -104,32 +107,33 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     }
   }
 
-  static async getPostcode (request, authToken, applicationId, applicationLineId) {
-    let gridReference
+  static async getAddress (request, authToken, applicationId, applicationLineId) {
+    let address
     try {
       // Get the Location for this application
       let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
 
       if (location) {
-        // Get the LocationDetail for this application (if there is one)
+        // Get the LocationDetail for this application
         let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
-        if (locationDetail) {
 
-          // TODO: Get the Address
-
-          // postcode = locationDetail.gridReference
+        if (locationDetail && locationDetail.addressId !== undefined) {
+          // Get the Address for this Location Detail
+          address = await Address.getById(authToken, locationDetail.addressId)
         }
       }
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
     }
-    return gridReference
+    return address
   }
 
-  static async savePostcode (request, gridReference, authToken, applicationId, applicationLineId) {
-      // Strip out whitespace from the grid reference, convert to upper case and save it
-    gridReference = gridReference.replace(/\s/g, '').toUpperCase()
+  static async saveAddress (request, addressDto, authToken, applicationId, applicationLineId) {
+    if (addressDto.postcode) {
+      addressDto.postcode = addressDto.postcode.toUpperCase()
+    }
+
     try {
       // Get the Location for this application
       let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
@@ -146,20 +150,42 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       // Get the LocationDetail for this application (if there is one)
       let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
       if (!locationDetail) {
-
-        // TODO: Get the Address
-
         // Create new LocationDetail
-        // locationDetail = new LocationDetail({
-        //   gridReference: gridReference,
-        //   locationId: location.id
-        // })
-      } else {
-        // Update existing LocationDetail
-        locationDetail.gridReference = gridReference
+        locationDetail = new LocationDetail({
+          gridReference: undefined,
+          locationId: location.id
+        })
+        await locationDetail.save(authToken)
       }
 
-      await locationDetail.save(authToken)
+      // Get the Address for this Location Detail (if there is one)
+      let isNewAddress = false
+      let address
+
+      if (locationDetail.addressId !== undefined) {
+        address = await Address.getById(authToken, locationDetail.addressId)
+      }
+
+      if (!address) {
+        // Create new Address
+        address = new Address({
+          postcode: addressDto.postcode,
+          locationId: location.id
+        })
+        isNewAddress = true
+      } else {
+        // Update existing Address
+        address.postcode = addressDto.postcode
+      }
+
+      await address.save(authToken)
+
+      // If the Address was new then we need to associate it with the Location Detail in Dynamics
+      if (isNewAddress) {
+        locationDetail.setAddress(address.id)
+        locationDetail.save(authToken)
+      }
+
       await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
     } catch (error) {
       LoggingService.logError(error, request)
@@ -192,12 +218,22 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       const location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
 
       // Get the LocationDetail
-      const locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+      let locationDetail
+      if (location) {
+        locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+      }
 
-      if (location && locationDetail) {
+      // Get the Address
+      let address
+      if (locationDetail) {
+        address = await Address.getById(authToken, locationDetail.addressId)
+      }
+
+      if (location && locationDetail && address) {
         isComplete =
-          location.name !== undefined && location.name !== null && location.name.length > 0 &&
-          locationDetail.gridReference !== undefined && locationDetail.gridReference !== null && locationDetail.gridReference.length > 0
+          location.name !== undefined && location.name.length > 0 &&
+          locationDetail.gridReference !== undefined && locationDetail.gridReference.length > 0 &&
+          address.postcode !== undefined && address.postcode.length > 0
       }
     } catch (error) {
       LoggingService.logError(`Unable to calculate SiteNameAndLocation completeness: ${error}`)

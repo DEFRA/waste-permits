@@ -24,6 +24,10 @@ Constants.Routes = {
     path: '/',
     pageHeading: 'Waste Permits Home Page'
   },
+  ADDRESS_MANUAL: {
+    path: '/address/address-manual',
+    pageHeading: `Enter the site address`
+  },
   ADDRESS_SELECT: {
     path: '/site/address/select-address',
     pageHeading: `What's the site address?`
@@ -161,6 +165,7 @@ Constants.PermitTypes = {
 
 Constants.Dynamics = {
   WASTE_REGIME: 910400000,
+  DIGITAL_SOURCE: 910400000,
   PermitTypes: {
     STANDARD: 910400000,
     BESPOKE: 910400001

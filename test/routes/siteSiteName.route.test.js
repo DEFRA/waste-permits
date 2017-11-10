@@ -7,11 +7,12 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
-const Site = require('../../src/models/location.model')
+const Location = require('../../src/models/location.model')
+const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 
 let validateCookieStub
-let siteSaveStub
-let getByApplicationIdStub
+let getSiteNameStub
+let saveSiteNameStub
 
 const routePath = '/site/site-name'
 const getRequest = {
@@ -21,13 +22,7 @@ const getRequest = {
 }
 let postRequest
 
-const fakeSite = {
-  id: 'dff66fce-18b8-e711-8119-5065f38ac931',
-  name: 'THE_SITE_NAME',
-  applicationId: '403710b7-18b8-e711-810d-5065f38bb461',
-  applicationLineId: '423710b7-18b8-e711-810d-5065f38bb461',
-  save: (authToken) => {}
-}
+const siteName = 'THE_SITE_NAME'
 
 lab.beforeEach(() => {
   postRequest = {
@@ -43,21 +38,20 @@ lab.beforeEach(() => {
     return true
   }
 
-  siteSaveStub = Site.prototype.save
-  Site.prototype.save = (authToken) => {}
-
-  getByApplicationIdStub = Site.getByApplicationId
-  Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-    return fakeSite
+  getSiteNameStub = SiteNameAndLocation.getSiteName
+  SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
+    return siteName
   }
+
+  saveSiteNameStub = SiteNameAndLocation.saveSiteName
+  SiteNameAndLocation.saveSiteName = (request, siteName, authToken, applicationId, applicationLineId) => {}
 })
 
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-
-  Site.prototype.save = siteSaveStub
-  Site.getByApplicationId = getByApplicationIdStub
+  SiteNameAndLocation.getSiteName = getSiteNameStub
+  SiteNameAndLocation.saveSiteName = saveSiteNameStub
 })
 
 const checkPageElements = async (request, expectedValue) => {
@@ -79,9 +73,9 @@ const checkPageElements = async (request, expectedValue) => {
   element = doc.getElementById('site-name-hint').firstChild
   Code.expect(element.nodeValue).to.exist()
 
+
   element = doc.getElementById('site-name')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
-
   element = doc.getElementById('site-site-name-submit').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }
@@ -137,22 +131,22 @@ lab.experiment('Site Name page tests:', () => {
   })
 
   lab.test('GET /site/site-name returns the site page correctly when it is a new application', async () => {
-    // Empty site details response
-    Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-      return {}
+    // Empty site name response
+    SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
+      return undefined
     }
     checkPageElements(getRequest, '')
   })
 
   lab.test('GET /site/site-name returns the site page correctly when there is an existing Site name', async () => {
-    checkPageElements(getRequest, fakeSite.name)
+    checkPageElements(getRequest, siteName)
   })
 
   lab.test('POST /site/site-name success (new Site) redirects to the Site Grid Reference route', async () => {
     postRequest.payload['site-name'] = 'My Site'
 
-    // Empty site details response
-    Site.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+    // Empty site name response
+    SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
       return undefined
     }
 

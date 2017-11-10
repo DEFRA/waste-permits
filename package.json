@@ -69,6 +69,8 @@
     "joi": "^13.0.1",
     "moment": "^2.19.1",
     "path": "^0.12.7",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
     "vision": "^4.1.1"
   },
   "standard": {
