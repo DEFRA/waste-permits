@@ -65,7 +65,7 @@
     "hapi-router": "^3.5.0",
     "hapi-sanitize-payload": "^1.5.0",
     "https-proxy-agent": "^2.1.0",
-    "inert": "^4.2.1",
+    "inert": "^5.0.0",
     "joi": "^13.0.1",
     "moment": "^2.19.1",
     "path": "^0.12.7",
