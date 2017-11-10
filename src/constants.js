@@ -153,6 +153,7 @@ Constants.PermitTypes = {
 
 Constants.Dynamics = {
   WASTE_REGIME: 910400000,
+  DIGITAL_SOURCE: 910400000,
   PermitTypes: {
     STANDARD: 910400000,
     BESPOKE: 910400001
