@@ -1,0 +1,46 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      <h1 id="confirm-registration-number-heading" class="heading-large">{{title}}</h1>
+
+      <form action="{{formAction}}" method="post">
+
+        <div class="form-group">
+          <label class="form-label visuallyhidden" for="companyRegNum">
+            {{title}}
+          </label>
+          <input class="form-control" id="companyRegNum" name="companyRegNum" type="text" value="{{companyRegNum}}">
+        </div>
+
+        <div class="form-group">
+          <p>
+            We'll look up the details in the Companies House register.
+          </p>
+
+          <details id="overseas-help">
+            <summary>
+              <span class="summary">Overseas companies</span>
+            </summary>
+            <div class="panel panel-border-narrow">
+              If you're applying on behalf of a company outside of the UK you should <a href="https://www.gov.uk/register-as-an-overseas-company" target="_blank" rel="noopener noreferrer">register as an overseas company (opens new tab)</a> with Companies House before you apply for a permit.
+            </div>
+          </details>
+
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="button" name="Continue">Continue</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</main>
