@@ -53,9 +53,9 @@ lab.experiment('Health page tests:', () => {
     Code.expect(element.nodeValue).to.equal('Waste Permits')
 
     element = doc.getElementById('health-application-version').firstChild
-    Code.expect(element.nodeValue).to.exist()
+    Code.expect(element).to.exist()
 
     element = doc.getElementById('health-application-commit-ref').firstChild
-    Code.expect(element.nodeValue).to.exist()
+    Code.expect(element).to.exist()
   })
 })
