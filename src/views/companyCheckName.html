@@ -23,7 +23,8 @@
 
           <h2 id="company-name" class="heading-medium">{{ formValues.company-name }}</h2>
 
-          <div class="form-group">
+          <div class="form-group {{#getFormErrorGroupClass errors.business-trading-name}}{{/getFormErrorGroupClass}}">
+
             <fieldset>
 
               <legend id="trading-name-visually-hidden" class="visually-hidden">

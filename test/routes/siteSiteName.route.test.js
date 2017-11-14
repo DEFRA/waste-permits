@@ -93,7 +93,7 @@ const checkValidationError = async (expectedErrorMessage) => {
   element = doc.getElementById('error-summary-list-item-0').firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
-  // Location grid reference field error
+  // Location site name field error
   element = doc.getElementById('site-name-error').firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }

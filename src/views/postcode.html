@@ -15,7 +15,7 @@
         <fieldset>
           <legend class="visuallyhidden">Postcode</legend>
 
-          <div class="form-group">
+          <div class="form-group {{#getFormErrorGroupClass errors.postcode}}{{/getFormErrorGroupClass}}">
             <label id="postcode-label" class="form-label" for="postcode">UK postcode for the site
               <span id="postcode-hint" class="form-hint">For example, BS1 5AH</span>
             </label>

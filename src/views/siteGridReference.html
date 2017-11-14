@@ -14,7 +14,7 @@
       <form method="POST" action="{{ formAction }}">
         <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
-        <div class="form-group">
+        <div class="form-group {{#getFormErrorGroupClass errors.site-grid-reference}}{{/getFormErrorGroupClass}}">
           <label id="site-grid-reference-label" class="form-label" for="site-grid-reference">National Grid reference for the centre of the site
             <span id="site-grid-reference-hint" class="form-hint text">Enter 2 letters and 10 digits. For example, ST 58132 72695.</span>
           </label>

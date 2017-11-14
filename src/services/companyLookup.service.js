@@ -3,10 +3,9 @@
 const rp = require('request-promise')
 
 const config = require('../config/config')
-const LoggingService = require('../services/logging.service')
 
 module.exports = class CompanyLookupService {
-  static async getCompanyName(companyNumber) {
+  static async getCompanyName (companyNumber) {
     const options = {
       uri: `${config.COMPANIES_HOUSE_SERVICE}/company/${companyNumber}`,
       auth: {

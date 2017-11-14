@@ -28,9 +28,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         pageContext.formValues['company-number'] = companyNumber
         pageContext.formValues['company-name'] = companyName
-
       } else {
-
         pageContext.formValues = {
           // TODO look up values
           // 'site-grid-reference': await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)

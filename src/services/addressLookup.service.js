@@ -25,8 +25,14 @@ module.exports = class AddressLookupService {
         })
       })
       .catch((error) => {
-        LoggingService.logError(error)
-        throw error
+        if (error.statusCode === 400) {
+          console.log('400 error')
+        } else if (error.statusCode === 404) {
+          console.log('404 error')
+        } else {
+          console.log(error)
+          throw error
+        }
       })
 
     return addresses
