@@ -6,10 +6,6 @@ const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const ConfirmRules = require('../models/confirmRules.model')
 
-function timeout (ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
 module.exports = class ConfirmRulesController extends BaseController {
   static async isComplete (request) {
     const authToken = CookieService.getAuthToken(request)
@@ -17,15 +13,6 @@ module.exports = class ConfirmRulesController extends BaseController {
     const applicationLineId = CookieService.getApplicationLineId(request)
     const {complete} = (await ConfirmRules.getByApplicationId(authToken, applicationId, applicationLineId))
     return complete
-  }
-
-  static async untilComplete (request) {
-    for (let retries = 4; retries && !(await this.isComplete(request)); retries--) {
-      if (!retries) {
-        throw new Error('Failed to complete')
-      }
-      await timeout(250)
-    }
   }
 
   static async doGet (request, reply, errors) {
@@ -59,9 +46,6 @@ module.exports = class ConfirmRulesController extends BaseController {
         })
 
         await confirmRules.save(authToken)
-        // It appears that the completeness isn't updated straight away when the save is successful
-        // so wait until it has before redirecting
-        await this.untilComplete(request)
         return reply.redirect(Constants.Routes.CONFIRM_RULES.path)
       } catch (error) {
         LoggingService.logError(error, request)

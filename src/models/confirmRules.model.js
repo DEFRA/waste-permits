@@ -7,10 +7,11 @@ const LoggingService = require('../services/logging.service')
 const ApplicationLine = require('./applicationLine.model')
 
 module.exports = class ConfirmRules extends BaseModel {
-  constructor (data) {
+  constructor (confirmRules) {
     super()
-    // Merge the data with this instance
-    Object.assign(this, data)
+    this.applicationId = confirmRules.applicationId
+    this.applicationLineId = confirmRules.applicationLineId
+    this.complete = confirmRules.complete
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {
@@ -22,8 +23,8 @@ module.exports = class ConfirmRules extends BaseModel {
       let confirmRules
       if (result) {
         confirmRules = new ConfirmRules({
-          applicationId,
-          applicationLineId,
+          applicationId: applicationId,
+          applicationLineId: applicationLineId,
           complete: result.defra_parametersId[Constants.Dynamics.CompletedParamters.CONFIRM_RULES]
         })
       }
@@ -31,6 +32,18 @@ module.exports = class ConfirmRules extends BaseModel {
     } catch (error) {
       LoggingService.logError(`Unable to get confirmRules by application ID: ${error}`)
       throw error
+    }
+  }
+
+  // A bug currently exists where the completeness isn't updated straight away in dynamics even when the save is successful.
+  // This function is a temporary fix to wait until we are sure we can get the completeness value.
+  // This can be removed when the update is successful only when the update in dynamics has fully completed.
+  async untilComplete (authToken) {
+    for (let retries = 10; retries && !(await ConfirmRules.getByApplicationId(authToken, this.applicationId, this.applicationLineId)).complete; retries--) {
+      if (!retries) {
+        throw new Error('Failed to complete')
+      }
+      await new Promise(resolve => setTimeout(resolve, 250))
     }
   }
 
@@ -46,6 +59,8 @@ module.exports = class ConfirmRules extends BaseModel {
 
         const query = `defra_wasteparamses(${applicationLine.parametersId})`
         await dynamicsDal.update(query, entity)
+        // The following "untilComplete" can be removed when the update is successful only when the update in dynamics has fully completed.
+        await this.untilComplete(authToken)
       }
     } catch (error) {
       LoggingService.logError(`Unable to update Confirm Rules completeness: ${error}`)
