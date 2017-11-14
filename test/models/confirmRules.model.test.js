@@ -28,6 +28,7 @@ let savedConfirmRulesData = {}
 
 lab.beforeEach(() => {
   testConfirmRules = new ConfirmRules(fakeConfirmRulesData)
+  testConfirmRules.delay = 0
 
   dynamicsSearchStub = DynamicsDalService.prototype.search
   DynamicsDalService.prototype.search = () => {
@@ -37,8 +38,9 @@ lab.beforeEach(() => {
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
   DynamicsDalService.prototype.update = (query, entity) => {
-    const defra_parametersId = Object.assign({}, fakeConfirmRulesDynamicsData.defra_parametersId, entity)
-    savedConfirmRulesData = {defra_parametersId}
+    savedConfirmRulesData = {
+      defra_parametersId: Object.assign({}, fakeConfirmRulesDynamicsData.defra_parametersId, entity)
+    }
   }
 })
 

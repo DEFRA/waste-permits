@@ -12,6 +12,8 @@ module.exports = class ConfirmRules extends BaseModel {
     this.applicationId = confirmRules.applicationId
     this.applicationLineId = confirmRules.applicationLineId
     this.complete = confirmRules.complete
+    // The following delay is required by the untilComplete method
+    this.delay = 250
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {
@@ -37,13 +39,13 @@ module.exports = class ConfirmRules extends BaseModel {
 
   // A bug currently exists where the completeness isn't updated straight away in dynamics even when the save is successful.
   // This function is a temporary fix to wait until we are sure we can get the completeness value.
-  // This can be removed when the update is successful only when the update in dynamics has fully completed.
+  // This and the code overriding the delay property in the test, can be removed when the update is successful only when the update in dynamics has fully completed.
   async untilComplete (authToken) {
     for (let retries = 10; retries && !(await ConfirmRules.getByApplicationId(authToken, this.applicationId, this.applicationLineId)).complete; retries--) {
       if (!retries) {
         throw new Error('Failed to complete')
       }
-      await new Promise(resolve => setTimeout(resolve, 250))
+      await new Promise(resolve => setTimeout(resolve, this.delay))
     }
   }
 
