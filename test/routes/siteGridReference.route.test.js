@@ -94,7 +94,7 @@ const checkPageElements = async (getRequest, expectedValue) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  let element = doc.getElementById('site-grid-reference-heading').firstChild
+  let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the grid reference for the centre of the site?`)
 
   element = doc.getElementById('site-grid-reference-label').firstChild
@@ -115,7 +115,7 @@ const checkPageElements = async (getRequest, expectedValue) => {
   element = doc.getElementById('grid-reference-help-list').firstChild
   Code.expect(element).to.exist()
 
-  element = doc.getElementById('site-grid-reference-submit').firstChild
+  element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 

@@ -256,7 +256,7 @@ lab.experiment('Task List page tests:', () => {
     let element
 
     // Check the existence of the page title and Standard Rule infos
-    element = doc.getElementById('task-list-heading')
+    element = doc.getElementById('page-heading')
     Code.expect(element).to.exist()
 
     element = doc.getElementById('task-list-heading-visually-hidden')

@@ -66,7 +66,7 @@ const checkPageElements = async (request, expectedValue) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  let element = doc.getElementById('postcode-heading').firstChild
+  let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the postcode for the site?`)
 
   element = doc.getElementById('postcode-label').firstChild
@@ -78,7 +78,7 @@ const checkPageElements = async (request, expectedValue) => {
   element = doc.getElementById('postcode')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
-  element = doc.getElementById('postcode-submit').firstChild
+  element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 

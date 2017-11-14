@@ -42,6 +42,10 @@ Constants.Routes = {
     pageHeading: `Search for 'standard rules permit application' in your email`,
     taskListHeading: `Search for 'standard rules permit application' in your email`
   },
+  COMPANY_CHECK_NAME: {
+    path: '/permit-holder/company/check-name',
+    pageHeading: `Is this the right company?`
+  },
   CONFIDENTIALITY: {
     path: '/confidentiality',
     pageHeading: 'Is part of your application commercially confidential?',

@@ -99,7 +99,7 @@ lab.experiment('Contact search page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('contacts-heading').firstChild
+    let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Contact search')
   })
 

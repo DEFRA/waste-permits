@@ -74,7 +74,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('start-or-open-saved-heading').firstChild
+    let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Apply for a standard rules waste permit')
 
     element = doc.getElementById('start-application')
@@ -83,7 +83,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
     element = doc.getElementById('open-application')
     Code.expect(element).to.exist()
 
-    element = doc.getElementById('start-or-open-saved-submit').firstChild
+    element = doc.getElementById('submit-button').firstChild
     Code.expect(element.nodeValue).to.equal('Continue')
   })
 

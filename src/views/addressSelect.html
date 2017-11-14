@@ -9,7 +9,7 @@
 
       {{> common/errorSummary }}
 
-      <h1 id="address-select-heading" class="heading-large">{{ pageHeading }}</h1>
+      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
 
       <form method="post" action="{{formAction}}">
         <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
@@ -43,7 +43,7 @@
         </fieldset>
 
         <div class="form-group">
-          <button id="select-address-submit" type="submit" class="button" name="Continue">Continue</button>
+          <button id="submit-button" type="submit" class="button" name="Continue">Continue</button>
         </div>
 
       </form>

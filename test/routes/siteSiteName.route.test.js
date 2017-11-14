@@ -61,7 +61,7 @@ const checkPageElements = async (request, expectedValue) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  let element = doc.getElementById('site-site-name-heading').firstChild
+  let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the site name?`)
 
   element = doc.getElementById('site-site-name-subheading').firstChild
@@ -76,7 +76,7 @@ const checkPageElements = async (request, expectedValue) => {
 
   element = doc.getElementById('site-name')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
-  element = doc.getElementById('site-site-name-submit').firstChild
+  element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 

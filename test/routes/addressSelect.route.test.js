@@ -45,7 +45,7 @@ const checkPageElements = async (getRequest, expectedValue) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  let element = doc.getElementById('address-select-heading').firstChild
+  let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the site address?`)
 
   element = doc.getElementById('postcode-label').firstChild
@@ -72,7 +72,7 @@ const checkPageElements = async (getRequest, expectedValue) => {
   element = doc.getElementById('manual-address-link').firstChild
   Code.expect(element).to.exist()
 
-  element = doc.getElementById('select-address-submit').firstChild
+  element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 

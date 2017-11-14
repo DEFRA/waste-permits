@@ -91,7 +91,7 @@ lab.experiment('Select a permit page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('permit-select-heading').firstChild
+    let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Select a permit')
 
     element = doc.getElementById('chosen-permit-sr2015-no-18-name').firstChild
@@ -103,7 +103,7 @@ lab.experiment('Select a permit page tests:', () => {
     element = doc.getElementById('chosen-permit-sr2015-no-18-code').firstChild
     Code.expect(element.nodeValue).to.equal('SR2015 No 18')
 
-    element = doc.getElementById('permit-select-submit').firstChild
+    element = doc.getElementById('submit-button').firstChild
     Code.expect(element.nodeValue).to.equal('Continue')
   })
 

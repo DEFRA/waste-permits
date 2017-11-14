@@ -7,7 +7,7 @@
 
       {{> common/errorSummary }}
 
-      <h1 id="start-or-open-saved-heading" class="heading-large">{{ pageHeading }}</h1>
+      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
 
       <form action="{{ formAction }}" method="post">
         <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
@@ -39,7 +39,7 @@
         </fieldset>
 
         <div class="form-group">
-          <button id="start-or-open-saved-submit" type="submit" class="button">Continue</button>
+          <button id="submit-button" type="submit" class="button">Continue</button>
         </div>
 
       </form>
