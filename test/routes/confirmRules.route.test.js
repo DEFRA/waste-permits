@@ -52,7 +52,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('confirm-rules-heading')).to.exist()
+      Code.expect(doc.getElementById('page-heading')).to.exist()
       Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.exist()
       return doc
     }
@@ -68,6 +68,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
       confirmRulesSaveStub = ConfirmRules.prototype.save
       ConfirmRules.prototype.save = (authToken) => {}
     })
+
     lab.test('should have a back link', async () => {
       const doc = await getDoc()
       const element = doc.getElementById('back-link')
