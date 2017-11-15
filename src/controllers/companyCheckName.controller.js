@@ -34,7 +34,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
           // 'site-grid-reference': await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
           'company-number': companyNumber,
           'company-name': companyName,
-          'use-business-trading-name': true,
+          'use-business-trading-name': false,
           'business-trading-name': 'All the Things!'
         }
       }

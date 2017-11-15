@@ -23,7 +23,9 @@ module.exports = class CompanyCheckNameValidator extends BaseValidator {
       'business-trading-name': Joi
         .string()
         .max(COMPANY_NAME_MAX_LENGTH)
-        .required()
+        .when('use-business-trading-name', {
+          is: 'on',
+          then: Joi.required() })
     }
   }
 }

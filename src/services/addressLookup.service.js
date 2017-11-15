@@ -3,7 +3,6 @@
 const rp = require('request-promise')
 
 const config = require('../config/config')
-const LoggingService = require('../services/logging.service')
 
 module.exports = class AddressLookupService {
   static async getAddressesFromPostcode (postcode) {
