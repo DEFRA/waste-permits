@@ -64,18 +64,21 @@ const checkPageElements = async (request, expectedValue) => {
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the site name?`)
 
-  element = doc.getElementById('site-site-name-subheading').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('site-name-label').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('site-name-hint').firstChild
-  Code.expect(element).to.exist()
-
+  const elementIds = [
+    'back-link',
+    'defra-csrf-token',
+    'site-site-name-subheading',
+    'site-name-label',
+    'site-name-hint'
+  ]
+  for (let id of elementIds) {
+    element = doc.getElementById(id)
+    Code.expect(doc.getElementById(id)).to.exist()
+  }
 
   element = doc.getElementById('site-name')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
+
   element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }

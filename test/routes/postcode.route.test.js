@@ -69,11 +69,16 @@ const checkPageElements = async (request, expectedValue) => {
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the postcode for the site?`)
 
-  element = doc.getElementById('postcode-label').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('postcode-hint').firstChild
-  Code.expect(element).to.exist()
+  const elementIds = [
+    'back-link',
+    'defra-csrf-token',
+    'postcode-label',
+    'postcode-hint'
+  ]
+  for (let id of elementIds) {
+    element = doc.getElementById(id)
+    Code.expect(doc.getElementById(id)).to.exist()
+  }
 
   element = doc.getElementById('postcode')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)

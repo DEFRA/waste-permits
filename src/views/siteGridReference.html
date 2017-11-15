@@ -12,7 +12,7 @@
       <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
 
       <form method="POST" action="{{ formAction }}">
-        <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
         <div class="form-group {{#getFormErrorGroupClass errors.site-grid-reference}}{{/getFormErrorGroupClass}}">
           <label id="site-grid-reference-label" class="form-label" for="site-grid-reference">National Grid reference for the centre of the site

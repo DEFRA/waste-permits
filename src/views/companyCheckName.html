@@ -11,14 +11,14 @@
 
       {{#if companyFound }}
 
-      <h1 class="heading-large">{{pageHeading}}</h1>
+      <h1 id="page-heading" class="heading-large">{{pageHeading}}</h1>
 
       <form action="{{formAction}}" method="post">
         <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
         <div class="panel panel-border-wide form-group">
           <p><span id="company-number-label">Company number</span> <span id="company-number-value">{{ formValues.company-number }}</span>.
-            <a id="enter-different-number-exists-link" href="{{ enterCompanyNumberRoute }}">Enter a different number</a></p>
+            <a id="enter-different-number-company-exists-link" href="{{ enterCompanyNumberRoute }}">Enter a different number</a></p>
           </div>
 
           <h2 id="company-name" class="heading-medium">{{ formValues.company-name }}</h2>
@@ -34,7 +34,7 @@
               <div class="multiple-choice" data-target="give-business-trading-name">
                 <input id="use-business-trading-name" name="use-business-trading-name" type="checkbox"
                 {{#if formValues.use-business-trading-name}}checked{{/if}}>
-                <label for="use-business-trading-name-label">We use a different trading name</label>
+                <label id="use-business-trading-name-label" for="use-business-trading-name">We use a different trading name</label>
               </div>
 
               <!-- js-hidden ???? -->
@@ -56,7 +56,7 @@
 
       {{else}}
 
-      <h1 id="page-heading-not-found" class="heading-large">We couldn't find that company</h1>
+      <h1 id="page-heading-company-not-found" class="heading-large">We couldn't find that company</h1>
       <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
       <p id="search-term-text">We couldn't find a company with the number <b>{{ formValues.company-number }}</b> at Companies House</p>

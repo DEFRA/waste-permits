@@ -19,10 +19,10 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
       // TODO get this from Dynamics?
       const companyNumber = '07395892'
+
       const companyName = await CompanyLookupService.getCompanyName(companyNumber)
 
       if (request.payload) {
-        console.log('we have req pay')
         // If we have Company details in the payload then display them in the form
         pageContext.formValues = request.payload
 

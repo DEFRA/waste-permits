@@ -97,23 +97,22 @@ const checkPageElements = async (getRequest, expectedValue) => {
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the grid reference for the centre of the site?`)
 
-  element = doc.getElementById('site-grid-reference-label').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('site-grid-reference-hint').firstChild
-  Code.expect(element).to.exist()
+  const elementIds = [
+    'back-link',
+    'defra-csrf-token',
+    'site-grid-reference-label',
+    'site-grid-reference-hint',
+    'site-grid-reference-summary',
+    'site-grid-reference-finder-link',
+    'grid-reference-help-list'
+  ]
+  for (let id of elementIds) {
+    element = doc.getElementById(id)
+    Code.expect(doc.getElementById(id)).to.exist()
+  }
 
   element = doc.getElementById('site-grid-reference')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
-
-  element = doc.getElementById('site-grid-reference-summary').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('site-grid-reference-finder-link').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('grid-reference-help-list').firstChild
-  Code.expect(element).to.exist()
 
   element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
@@ -138,17 +137,6 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Site Grid Reference page tests:', () => {
-  lab.test('The page should have a back link', async () => {
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    const element = doc.getElementById('back-link')
-    Code.expect(element).to.exist()
-  })
-
   lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
     CookieService.validateCookie = () => {
       return undefined
