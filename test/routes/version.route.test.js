@@ -34,14 +34,10 @@ const fakeCookie = {
 lab.beforeEach(() => {
   // Stub methods
   generateCookieStub = CookieService.generateCookie
-  CookieService.generateCookie = (reply) => {
-    return fakeCookie
-  }
+  CookieService.generateCookie = (reply) => fakeCookie
 
   dynamicSolutionGetStub = DynamicsSolution.get
-  DynamicsSolution.get = (authToken) => {
-    return dynamicsVersionInfo
-  }
+  DynamicsSolution.get = (authToken) => dynamicsVersionInfo
 })
 
 lab.afterEach(() => {

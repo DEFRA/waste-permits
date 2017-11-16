@@ -15,9 +15,7 @@ const routePath = '/save-and-return/check-your-email'
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 })
 
 lab.afterEach(() => {

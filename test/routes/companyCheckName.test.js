@@ -8,11 +8,14 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
-// const Location = require('../../src/models/location.model')
 
+const Application = require('../../src/models/application.model')
+const Account = require('../../src/models/account.model')
 
 let validateCookieStub
 let companyLookupGetCompanyNameStub
+let applicationGetByIdStub
+let accountGetByApplicationIdStub
 
 const routePath = '/permit-holder/company/check-name'
 const getRequest = {
@@ -22,7 +25,11 @@ const getRequest = {
 }
 let postRequest
 
-const fakeCompanyDetails = {
+const fakeApplicationData = {
+  accountId: 'ACCOUNT_ID'
+}
+
+const fakeAccountData = {
   companyNumber: '012345678',
   companyName: 'THE COMPANY NAME',
   tradingName: 'THE TRADING NAME'
@@ -38,20 +45,23 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   companyLookupGetCompanyNameStub = CompanyLookupService.getCompanyName
-  CompanyLookupService.getCompanyName = (companyNumber) => {
-    return fakeCompanyDetails.companyName
-  }
+  CompanyLookupService.getCompanyName = (companyNumber) => fakeAccountData.companyName
+
+  applicationGetByIdStub = Application.getById
+  Application.getById = (authToken, applicationId) => fakeApplicationData
+
+  applicationGetByIdStub = Account.getByApplicationId
+  Account.getByApplicationId = (authToken, applicationId) => fakeAccountData
 })
 
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
   CompanyLookupService.getCompanyName = companyLookupGetCompanyNameStub
+  Application.getById = applicationGetByIdStub  
 })
 
 const checkPageElements = async (request, companyFound) => {
@@ -86,7 +96,7 @@ const checkPageElements = async (request, companyFound) => {
     }
 
     element = doc.getElementById('company-name').firstChild
-    Code.expect(element.nodeValue).to.equal(fakeCompanyDetails.companyName)
+    Code.expect(element.nodeValue).to.equal(fakeAccountData.companyName)
 
     // TODO test trading name value?
     // element = doc.getElementById('business-trading-name')
@@ -100,7 +110,7 @@ const checkPageElements = async (request, companyFound) => {
 
     const elementIds = [
       'search-term-text',
-      'enter-different-number-link',
+      'enter-different-number-link'
     ]
 
     for (let id of elementIds) {
@@ -110,26 +120,25 @@ const checkPageElements = async (request, companyFound) => {
   }
 }
 
-const checkValidationError = async (expectedErrorMessage) => {
-  const res = await server.inject(postRequest)
-  Code.expect(res.statusCode).to.equal(200)
+// const checkValidationError = async (expectedErrorMessage) => {
+//   const res = await server.inject(postRequest)
+//   Code.expect(res.statusCode).to.equal(200)
 
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
+//   const parser = new DOMParser()
+//   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  let element
+//   let element
 
-  // Panel summary error item
-  element = doc.getElementById('error-summary-list-item-0').firstChild
-  Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
+//   // Panel summary error item
+//   element = doc.getElementById('error-summary-list-item-0').firstChild
+//   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
-  // Location site name field error
-  element = doc.getElementById('site-name-error').firstChild
-  Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
-}
+//   // Location site name field error
+//   element = doc.getElementById('site-name-error').firstChild
+//   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
+// }
 
 lab.experiment('Check Company Details page tests:', () => {
-
   lab.experiment('General page tests:', () => {
     lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
       CookieService.validateCookie = () => {
@@ -153,7 +162,6 @@ lab.experiment('Check Company Details page tests:', () => {
   })
 
   lab.experiment(`GET ${routePath} Company Details found at Companies House`, () => {
-
     // TODO
     // lab.test('Check page elements - existing company details', async () => {
     //   // Empty site name response
@@ -217,5 +225,4 @@ lab.experiment('Check Company Details page tests:', () => {
     //   await checkValidationError('Enter a shorter site name with no more than 170 characters')
     // })
   })
-
 })

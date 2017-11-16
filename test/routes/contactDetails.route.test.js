@@ -19,9 +19,7 @@ const routePath = '/contact-details'
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   contactGetByIdStub = Contact.getById
   Contact.getById = (authToken, id) => {

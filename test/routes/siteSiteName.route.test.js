@@ -7,7 +7,6 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
-const Location = require('../../src/models/location.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 
 let validateCookieStub
@@ -34,14 +33,10 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   getSiteNameStub = SiteNameAndLocation.getSiteName
-  SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
-    return siteName
-  }
+  SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => siteName
 
   saveSiteNameStub = SiteNameAndLocation.saveSiteName
   SiteNameAndLocation.saveSiteName = (request, siteName, authToken, applicationId, applicationLineId) => {}
@@ -102,7 +97,6 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Site Name page tests:', () => {
-
   lab.experiment('General tests:', () => {
     lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
       CookieService.validateCookie = () => {

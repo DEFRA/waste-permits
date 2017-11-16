@@ -23,13 +23,10 @@ const fakeCookie = {
 lab.beforeEach(() => {
   // Stub methods
   generateCookieStub = CookieService.generateCookie
-  CookieService.generateCookie = (reply) => {
-    return fakeCookie
-  }
+  CookieService.generateCookie = (reply) => fakeCookie
+
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   applicationSaveStub = Application.prototype.save
   Application.prototype.save = (authToken) => {}

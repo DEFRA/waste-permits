@@ -32,14 +32,10 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = () => {
-    return testApplicationId
-  }
+  DynamicsDalService.prototype.create = () => testApplicationId
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = () => {
-    return testApplicationId
-  }
+  DynamicsDalService.prototype.update = () => testApplicationId
 })
 
 lab.afterEach(() => {

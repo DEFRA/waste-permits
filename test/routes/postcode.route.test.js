@@ -36,9 +36,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
   SiteNameAndLocation.getAddress = (request, authToken, applicationId, applicationLineId) => {
@@ -106,7 +104,6 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Postcode page tests:', () => {
-
   lab.experiment('General tests:', () => {
     lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
       CookieService.validateCookie = () => {

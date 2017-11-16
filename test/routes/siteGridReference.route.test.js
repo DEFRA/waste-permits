@@ -52,9 +52,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   locationSaveStub = Location.prototype.save
   Location.prototype.save = (authToken) => {}
@@ -63,14 +61,10 @@ lab.beforeEach(() => {
   LocationDetail.prototype.save = (authToken) => {}
 
   locationGetByApplicationIdStub = Location.getByApplicationId
-  Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-    return fakeLocation
-  }
+  Location.getByApplicationId = (authToken, applicationId, applicationLineId) => fakeLocation
 
   getByLocationIdStub = LocationDetail.getByLocationId
-  LocationDetail.getByLocationId = (authToken, locationId) => {
-    return fakeLocationDetail
-  }
+  LocationDetail.getByLocationId = (authToken, locationId) => fakeLocationDetail
 
   siteNameAndLocationUpdateCompletenessStub = SiteNameAndLocation.updateCompleteness
   SiteNameAndLocation.updateCompleteness = (authToken, applicationId, applicationLineId) => {}
@@ -137,7 +131,6 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Site Grid Reference page tests:', () => {
-
   lab.experiment('General tests:', () => {
     lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
       CookieService.validateCookie = () => {

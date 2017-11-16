@@ -82,7 +82,7 @@ gulp.task('copy-scripts', () => {
     .pipe(gulp.dest(paths.assets + 'javascripts'))
 })
 
-gulp.task('scripts', ['copy-scripts'], (done) => { 
+gulp.task('scripts', ['copy-scripts'], (done) => {
   return gulp.src(paths.assets + 'javascripts/*.js')
     .pipe(concat('application.min.js'))
     .pipe(uglify())
