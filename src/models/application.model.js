@@ -34,8 +34,7 @@ module.exports = class Application extends BaseModel {
 
     const dataObject = {
       defra_regime: Constants.Dynamics.WASTE_REGIME,
-      defra_source: Constants.Dynamics.DIGITAL_SOURCE,
-      'defra_customerid@odata.bind': `defra_accounts(${this.accountId})`
+      defra_source: Constants.Dynamics.DIGITAL_SOURCE
     }
 
     try {
