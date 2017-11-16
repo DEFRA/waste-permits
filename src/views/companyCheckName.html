@@ -37,8 +37,7 @@
                 <label id="use-business-trading-name-label" for="use-business-trading-name">We use a different trading name</label>
               </div>
 
-              <!-- js-hidden ???? -->
-              <div class="panel panel-border-narrow" id="give-business-trading-name">
+              <div class="panel panel-border-narrow js-hidden" id="give-business-trading-name">
                 <label id="business-trading-name-label" class="form-label" for="business-trading-name">Business trading name</label>
                 {{> common/fieldError fieldId='business-trading-name-error' message=errors.business-trading-name }}
                 <input id="business-trading-name" class="form-control form-control-char-40" type="text" name="business-trading-name"
