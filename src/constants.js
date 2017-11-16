@@ -49,7 +49,7 @@ Constants.Routes = {
   },
   CONFIRM_RULES: {
     path: '/confirm-rules',
-    pageHeading: 'Confirm that your operation meets the rules',
+    pageHeading: 'Confirm your operation meets the rules',
     taskListHeading: 'Confirm that your operation meets the rules'
   },
   CONTACT_DETAILS: {
