@@ -1,4 +1,4 @@
-/* global $ */
+/* global $, GOVUK */
 
 $(window).on('load', function () {
   // If there is an error summary, set the focus to the summary
