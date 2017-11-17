@@ -16,7 +16,10 @@ let applicationGetByIdStub
 
 let testAccount
 const fakeAccountData = {
-  companyNumber: 'COMPANY_NUMBER'
+  id: undefined,
+  companyNumber: 'COMPANY_NUMBER',
+  companyName: undefined,
+  tradingName: undefined
 }
 const fakeApplicationData = {
   accountId: 'ACCOUNT_ID'
@@ -38,14 +41,10 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => {
-    return fakeApplicationData.accountId
-  }
+  DynamicsDalService.prototype.create = (dataObject, query) => fakeApplicationData.accountId
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => {
-    return fakeApplicationData.accountId
-  }
+  DynamicsDalService.prototype.update = (dataObject, query) => fakeApplicationData.accountId
 
   applicationGetByIdStub = Application.getById
   Application.getById = (authToken, applicationId) => fakeApplicationData

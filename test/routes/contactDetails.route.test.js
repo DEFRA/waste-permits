@@ -19,9 +19,7 @@ const routePath = '/contact-details'
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   contactGetByIdStub = Contact.getById
   Contact.getById = (authToken, id) => {
@@ -77,7 +75,7 @@ lab.experiment('Contact details page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('contact-details-heading').firstChild
+    let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
 
     element = doc.getElementById('contact-details-continue').firstChild
@@ -123,7 +121,7 @@ lab.experiment('Contact details page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('contact-details-heading').firstChild
+    let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
   })
 

@@ -55,14 +55,10 @@ lab.beforeEach(() => {
   // Stub methods
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => {
-    return dataObject.id
-  }
+  DynamicsDalService.prototype.update = (dataObject, query) => dataObject.id
 
   applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = (authToken, applicationLineId) => {
-    return fakeApplicationLine
-  }
+  ApplicationLine.getById = (authToken, applicationLineId) => fakeApplicationLine
 
   locationGetByApplicationIdStub = Location.getByApplicationId
   Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {

@@ -12,6 +12,8 @@ module.exports = class Account extends BaseModel {
     if (account) {
       this.id = account.id
       this.companyNumber = account.companyNumber
+      this.companyName = account.companyName
+      this.tradingName = account.tradingName
     }
   }
 
@@ -22,12 +24,14 @@ module.exports = class Account extends BaseModel {
     if (application.accountId) {
       try {
         const filter = `accountid eq ${application.accountId}`
-        const query = encodeURI(`accounts?$select=defra_companyhouseid&$filter=${filter}`)
+        const query = encodeURI(`accounts?$select=defra_companyhouseid,name,defra_tradingname&$filter=${filter}`)
         const result = await dynamicsDal.search(query)
         if (result) {
           account = new Account({
             id: application.accountId,
-            companyNumber: Utilities.replaceNull(result.defra_companyhouseid)
+            companyNumber: Utilities.replaceNull(result.defra_companyhouseid),
+            companyName: Utilities.replaceNull(result.name),
+            tradingName: Utilities.replaceNull(result.defra_tradingname)
           })
         }
       } catch (error) {
@@ -45,17 +49,21 @@ module.exports = class Account extends BaseModel {
     try {
       // Map the Account to the corresponding Dynamics schema Account object
       const dataObject = {
-        defra_companyhouseid: this.companyNumber
+        defra_companyhouseid: this.companyNumber,
+        name: this.companyName,
+        defra_tradingname: this.tradingName
       }
       let query
       if (this.isNew()) {
-        // New Account,
+        // New Account
         dataObject.defra_draft = true
         dataObject.defra_validatedwithcompanyhouse = false
         query = 'defra_accounts'
         this.id = await dynamicsDal.create(query, dataObject)
       } else {
         // Update Account
+        dataObject.defra_draft = false
+        dataObject.defra_validatedwithcompanyhouse = true
         query = `defra_accounts(${this.id})`
         await dynamicsDal.update(query, dataObject)
       }

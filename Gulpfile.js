@@ -76,7 +76,13 @@ gulp.task('install-govuk-files', [], (done) => {
 })
 
 // Copy and unglify the javascript
-gulp.task('scripts', () => {
+gulp.task('copy-scripts', () => {
+  return gulp
+    .src([paths.govukModules + 'govuk_frontend_toolkit/javascripts/govuk/show-hide-content.js'])
+    .pipe(gulp.dest(paths.assets + 'javascripts'))
+})
+
+gulp.task('scripts', ['copy-scripts'], (done) => {
   return gulp.src(paths.assets + 'javascripts/*.js')
     .pipe(concat('application.min.js'))
     .pipe(uglify())

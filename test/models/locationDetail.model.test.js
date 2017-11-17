@@ -38,14 +38,10 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => {
-    return testLocationDetailId
-  }
+  DynamicsDalService.prototype.create = (dataObject, query) => testLocationDetailId
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => {
-    return dataObject.id
-  }
+  DynamicsDalService.prototype.update = (dataObject, query) => dataObject.id
 })
 
 lab.afterEach(() => {
