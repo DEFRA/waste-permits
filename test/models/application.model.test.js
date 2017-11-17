@@ -64,4 +64,12 @@ lab.experiment('Application Model tests:', () => {
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
   })
+
+  lab.test('save() method updates an existing Application object', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    testApplication.id = testApplicationId
+    await testApplication.save()
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(testApplication.id).to.equal(testApplicationId)
+  })
 })

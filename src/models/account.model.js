@@ -21,8 +21,7 @@ module.exports = class Account extends BaseModel {
     const application = await Application.getById(authToken, applicationId)
     if (application.accountId) {
       try {
-        const filter = `accountid eq ${application.accountId}`
-        const query = encodeURI(`accounts?$select=defra_companyhouseid&$filter=${filter}`)
+        const query = encodeURI(`accounts(${application.accountId})?$select=defra_companyhouseid`)
         const result = await dynamicsDal.search(query)
         if (result) {
           account = new Account({
@@ -52,11 +51,11 @@ module.exports = class Account extends BaseModel {
         // New Account,
         dataObject.defra_draft = true
         dataObject.defra_validatedwithcompanyhouse = false
-        query = 'defra_accounts'
+        query = 'accounts'
         this.id = await dynamicsDal.create(query, dataObject)
       } else {
         // Update Account
-        query = `defra_accounts(${this.id})`
+        query = `accounts(${this.id})`
         await dynamicsDal.update(query, dataObject)
       }
     } catch (error) {
