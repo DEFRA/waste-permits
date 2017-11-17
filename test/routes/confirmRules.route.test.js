@@ -10,6 +10,7 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const ConfirmRules = require('../../src/models/confirmRules.model')
 const LoggingService = require('../../src/services/logging.service')
+const Constants = require('../../src/constants')
 
 let validateCookieStub
 let confirmRulesSaveStub
@@ -52,7 +53,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading')).to.exist()
+      Code.expect(doc.getElementById('confirm-rules-heading').firstChild.nodeValue).to.equal('Confirm your operation meets the rules')
       Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.exist()
       return doc
     }
@@ -81,7 +82,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
         Code.expect(doc.getElementById('confirm-result-message')).to.not.exist()
         Code.expect(doc.getElementById('return-to-task-list-button')).to.not.exist()
-        Code.expect(doc.getElementById('operation-meets-rules-button')).to.exist()
+        Code.expect(doc.getElementById('operation-meets-rules-button').firstChild.nodeValue).to.equal('Our operation meets these rules')
       })
 
       lab.test('when complete', async () => {
@@ -89,7 +90,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
         doc = await getDoc()
 
         Code.expect(doc.getElementById('confirm-result-message')).to.exist()
-        Code.expect(doc.getElementById('return-to-task-list-button')).to.exist()
+        Code.expect(doc.getElementById('return-to-task-list-button').firstChild.nodeValue).to.equal('Return to task list')
         Code.expect(doc.getElementById('operation-meets-rules-button')).to.not.exist()
       })
     })
