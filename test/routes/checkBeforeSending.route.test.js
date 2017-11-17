@@ -15,9 +15,7 @@ const routePath = '/check-before-sending'
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 })
 
 lab.afterEach(() => {

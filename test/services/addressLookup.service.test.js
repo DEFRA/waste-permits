@@ -1,13 +1,11 @@
 'use strict'
 
-const config = require('../../src/config/config')
-
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
-const Code = require('code')
-const nock = require('nock')
+// const Code = require('code')
+// const nock = require('nock')
 
-const AddressLookupService = require('../../src/services/addressLookup.service')
+// const AddressLookupService = require('../../src/services/addressLookup.service')
 
 lab.beforeEach(() => {})
 

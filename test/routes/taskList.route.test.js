@@ -180,24 +180,16 @@ const fakeTaskList = {
 lab.beforeEach(() => {
   // Stub methods
   generateCookieStub = CookieService.generateCookie
-  CookieService.generateCookie = (reply) => {
-    return fakeCookie
-  }
+  CookieService.generateCookie = (reply) => fakeCookie
 
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   standardRuleGetByCodeStub = StandardRule.getByCode
-  StandardRule.getByCode = async (authToken, code) => {
-    return fakeStandardRule
-  }
+  StandardRule.getByCode = async (authToken, code) => fakeStandardRule
 
   taskListGetByApplicationLineIdStub = TaskList.getByApplicationLineId
-  TaskList.getByApplicationLineId = (authToken, applicationLineId) => {
-    return fakeTaskList
-  }
+  TaskList.getByApplicationLineId = (authToken, applicationLineId) => fakeTaskList
 })
 
 lab.afterEach(() => {
@@ -256,7 +248,7 @@ lab.experiment('Task List page tests:', () => {
     let element
 
     // Check the existence of the page title and Standard Rule infos
-    element = doc.getElementById('task-list-heading')
+    element = doc.getElementById('page-heading')
     Code.expect(element).to.exist()
 
     element = doc.getElementById('task-list-heading-visually-hidden')

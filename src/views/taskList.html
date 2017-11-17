@@ -7,7 +7,7 @@
 
       {{> common/errorSummary panelHeader='You need to complete these tasks'}}
 
-      <h1 id="task-list-heading" class="heading-large">
+      <h1 id="page-heading" class="heading-large">
         <span id="task-list-heading-visually-hidden" class="visually-hidden">Task list:</span>
         {{ pageHeading }}
       </h1>
@@ -18,7 +18,7 @@
       </p>
 
       <form method="post" action="{{ formAction }}" name="tasklist">
-        <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
         <ol class="task-list">
 

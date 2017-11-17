@@ -73,9 +73,7 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => {
-    return applicationLineId
-  }
+  DynamicsDalService.prototype.create = (dataObject, query) => applicationLineId
 })
 
 lab.afterEach(() => {

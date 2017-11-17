@@ -32,14 +32,10 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = () => {
-    return testApplicationId
-  }
+  DynamicsDalService.prototype.create = () => testApplicationId
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = () => {
-    return testApplicationId
-  }
+  DynamicsDalService.prototype.update = () => testApplicationId
 })
 
 lab.afterEach(() => {
@@ -60,6 +56,14 @@ lab.experiment('Application Model tests:', () => {
 
   lab.test('save() method saves a new Application object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    await testApplication.save()
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(testApplication.id).to.equal(testApplicationId)
+  })
+
+  lab.test('save() method updates an existing Application object', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    testApplication.id = testApplicationId
     await testApplication.save()
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)

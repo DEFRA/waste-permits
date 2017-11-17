@@ -12,6 +12,8 @@ module.exports = class Account extends BaseModel {
     if (account) {
       this.id = account.id
       this.companyNumber = account.companyNumber
+      this.companyName = account.companyName
+      this.tradingName = account.tradingName
     }
   }
 
@@ -21,13 +23,14 @@ module.exports = class Account extends BaseModel {
     const application = await Application.getById(authToken, applicationId)
     if (application.accountId) {
       try {
-        const filter = `accountid eq ${application.accountId}`
-        const query = encodeURI(`accounts?$select=defra_companyhouseid&$filter=${filter}`)
+        const query = encodeURI(`accounts(${application.accountId})?$select=defra_companyhouseid,name,defra_tradingname`)
         const result = await dynamicsDal.search(query)
         if (result) {
           account = new Account({
             id: application.accountId,
-            companyNumber: Utilities.replaceNull(result.defra_companyhouseid)
+            companyNumber: Utilities.replaceNull(result.defra_companyhouseid),
+            companyName: Utilities.replaceNull(result.name),
+            tradingName: Utilities.replaceNull(result.defra_tradingname)
           })
         }
       } catch (error) {
@@ -45,18 +48,24 @@ module.exports = class Account extends BaseModel {
     try {
       // Map the Account to the corresponding Dynamics schema Account object
       const dataObject = {
-        defra_companyhouseid: this.companyNumber
+        defra_companyhouseid: this.companyNumber,
+        name: this.companyName,
+        defra_tradingname: this.tradingName
       }
       let query
       if (this.isNew()) {
-        // New Account,
+        // New Account
         dataObject.defra_draft = true
         dataObject.defra_validatedwithcompanyhouse = false
-        query = 'defra_accounts'
+        query = 'accounts'
         this.id = await dynamicsDal.create(query, dataObject)
       } else {
         // Update Account
-        query = `defra_accounts(${this.id})`
+        dataObject.defra_draft = false
+        // TODO: this will need to be set properly after the company details have been
+        // validated with companies house
+        dataObject.defra_validatedwithcompanyhouse = true
+        query = `accounts(${this.id})`
         await dynamicsDal.update(query, dataObject)
       }
     } catch (error) {
