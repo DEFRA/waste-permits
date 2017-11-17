@@ -19,11 +19,11 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
       let account = await Account.getByApplicationId(authToken, applicationId)
       if (!account) {
-        // TODO apply this
+        // TODO apply this when the account has been created in Dynamics by the previous screen
         // LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
         // return reply.redirect(Constants.Routes.ERROR.path)
 
-        // TODO remove this
+        // TODO remove this when the account has been created in Dynamics by the previous screen
         account = new Account({
           id: undefined,
           companyNumber: '07395892',
@@ -40,27 +40,11 @@ module.exports = class CompanyCheckNameController extends BaseController {
       } else {
         pageContext.formValues = {
           'company-number': account.companyNumber,
-          'company-name': account.companyName
-          // 'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
+          'company-name': account.companyName,
+          'use-business-trading-name': (account.tradingName !== undefined),
+          'business-trading-name': account.tradingName
         }
       }
-
-      // if (request.payload) {
-        // If we have Company details in the payload then display them in the form
-      // pageContext.formValues = request.payload
-
-      // pageContext.formValues['company-number'] = account.companyNumber
-      // pageContext.formValues['company-name'] = account.companyName
-      // } else {
-      //   pageContext.formValues = {
-      //     // TODO look up values
-      //     // 'site-grid-reference': await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
-      //     'company-number': account.companyNumber,
-      //     'company-name': account.companyName,
-      //     'use-business-trading-name': false,
-      //     'business-trading-name': 'All the Things!'
-      //   }
-      // }
 
       pageContext.companyFound = account.companyName !== undefined
 
@@ -85,11 +69,11 @@ module.exports = class CompanyCheckNameController extends BaseController {
         let account = await Account.getByApplicationId(authToken, applicationId)
 
         if (!account) {
-          // TODO apply this
+          // TODO apply this when the account has been created in Dynamics by the previous screen
           // LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
           // return reply.redirect(Constants.Routes.ERROR.path)
 
-          // TODO remove this
+          // TODO remove this when the account has been created in Dynamics by the previous screen
           account = new Account({
             id: undefined,
             companyNumber: '07395892',

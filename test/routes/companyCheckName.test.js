@@ -15,7 +15,6 @@ const Account = require('../../src/models/account.model')
 let validateCookieStub
 let companyLookupGetCompanyNameStub
 let applicationGetByIdStub
-let accountGetByApplicationIdStub
 
 const routePath = '/permit-holder/company/check-name'
 const getRequest = {
@@ -61,7 +60,7 @@ lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
   CompanyLookupService.getCompanyName = companyLookupGetCompanyNameStub
-  Application.getById = applicationGetByIdStub  
+  Application.getById = applicationGetByIdStub
 })
 
 const checkPageElements = async (request, companyFound) => {
