@@ -67,6 +67,10 @@ Constants.Routes = {
     pageHeading: 'Costs and processing time',
     taskListHeading: 'Check costs and processing time'
   },
+  DIRECTOR_DATE_OF_BIRTH: {
+    path: '/permit-holder/company/director-date-of-birth',
+    pageHeading: `What are the directors' dates of birth?`,
+  },
   DRAINAGE_TYPE_DRAIN: {
     path: '/drainage-type/drain',
     pageHeading: 'Declaration for vehicle storage, depolution and dismantling facilities',
