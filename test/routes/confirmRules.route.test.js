@@ -81,7 +81,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
         Code.expect(doc.getElementById('confirm-result-message')).to.not.exist()
         Code.expect(doc.getElementById('return-to-task-list-button')).to.not.exist()
-        Code.expect(doc.getElementById('operation-meets-rules-button')).to.exist()
+        Code.expect(doc.getElementById('operation-meets-rules-button').firstChild.nodeValue).to.equal('Our operation meets these rules')
       })
 
       lab.test('when complete', async () => {
@@ -89,7 +89,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
         doc = await getDoc()
 
         Code.expect(doc.getElementById('confirm-result-message')).to.exist()
-        Code.expect(doc.getElementById('return-to-task-list-button')).to.exist()
+        Code.expect(doc.getElementById('return-to-task-list-button').firstChild.nodeValue).to.equal('Return to task list')
         Code.expect(doc.getElementById('operation-meets-rules-button')).to.not.exist()
       })
     })
