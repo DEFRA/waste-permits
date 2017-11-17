@@ -23,6 +23,9 @@ module.exports = class CompanyCheckNameController extends BaseController {
         // LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
         // return reply.redirect(Constants.Routes.ERROR.path)
 
+        // TODO use this instead of error page?
+        // return reply.redirect(Constants.Routes.COMPANY_NUMBER.path)
+
         // TODO remove this when the account has been created in Dynamics by the previous screen
         account = new Account({
           id: undefined,

@@ -78,7 +78,8 @@ Constants.Routes = {
   },
   DIRECTOR_DATE_OF_BIRTH: {
     path: '/permit-holder/company/director-date-of-birth',
-    pageHeading: `What are the directors' dates of birth?`,
+    pageHeading: `What is the director's date of birth?`,
+    pageHeadingAlternate: `What are the directors' dates of birth?`
   },
   DRAINAGE_TYPE_DRAIN: {
     path: '/drainage-type/drain',

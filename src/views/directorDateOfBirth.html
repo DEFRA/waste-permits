@@ -19,35 +19,32 @@
         <fieldset>
           <legend class="visuallyhidden">Date of birth for director - we only need the date in the month</legend>
 
-          <!-- {% set months = { "1" : "January", "2" : "February", "3" : "March", "4" : "April", "5" : "May", "6" : "June", "7" : "July",
-          "8" : "August", "9" : "September", "10" : "October", "11" : "November", "12" : "December" } -%} -->
-
           <dl class="dates-of-birth">
+            {{#if hasDirectors }}
 
-            <!-- {% set loopnum=1 %} {% for o in officers %} {% if o.resigned_on==null %} {% if o.officer_role=="director" %} {% set dirName
-            = o.name | reverseName | title %} -->
+              {{#each directors}}
+              <div>
+                <dt class="director-name">
+                  {{this.name}}
+                </dt>
+                <dd class="director-dob">
+                  <div class="form-group-day">
+                    <label class="form-label visually-hidden" for="dob-day-{loopnum}">Birth day date for {{this.name}}</label>
+                    <input class="form-control sr-company-dob" id="dob-day-{loopnum}" name="directorDobDay{{this.name}}" type="number" pattern="[0-9]*"
+                      min="0" max="31" aria-describedby="sr-dob-month-year">
+                    <span class="sr-dob-month-year">
+                      {{this.monthAndYear}}                      
+                    </span>
+                  </div>
+                </dd>
+              </div>
 
-            <div>
-              <dt class="director-name">
-                <!-- { dirName } -->
-                <input name="director[]" type="hidden" value="{{ dirName }}">
-              </dt>
-              <dd class="director-dob">
-                <div class="form-group-day">
-                  <label class="form-label visually-hidden" for="dob-day-{loopnum}">Birth day date for [dirName]</label>
-                  <input class="form-control sr-company-dob" id="dob-day-{loopnum}" name="directorDobDay[{ dirName }]" type="number" pattern="[0-9]*"
-                    min="0" max="31" aria-describedby="sr-dob-month-year">
-                  <span class="sr-dob-month-year">
-                    <!-- { months[o.date_of_birth.month] } { o.date_of_birth.year } -->
-                  </span>
-                </div>
-              </dd>
-            </div>
+              {{/each}}
 
-            {% set loopnum=loopnum+1 %} {% endif %} {% endif %} {% else %}
-            <p>No data</p>
-            {% endfor %}
-
+            {{else}}
+              <p id="no-data">No data</p>
+            {{/if}}
+            
           </dl>
         </fieldset>
 
@@ -55,35 +52,6 @@
           <button id="submit-button" type="submit" class="button">Continue</button>            
         </div>
       </form>
-
-
-
-
-
-
-      <!-- <h1 id="page-heading" class="heading-large">{ pageHeading }</h1>
-
-      <p id="site-site-name-subheading">The site is the area you want the permit to cover.</p>
-
-      <form method="POST" action="{{ formAction }}">
-        <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
-
-        <div class="form-group {{#getFormErrorGroupClass errors.site-name}}{{/getFormErrorGroupClass}}">
-          <label class="form-label" for="site-name">
-            <span id="site-name-label">Site name</span>
-            <span id="site-name-hint" class="form-hint">If it doesn’t already have a name, enter the name you’ll use</span>
-          </label>
-
-          {{> common/fieldError fieldId='site-name-error' message=errors.site-name }}
-
-          <input class="form-control form-control-char-60" id="site-name" name="site-name" type="text" value="{{formValues.site-name}}">
-        </div>
-
-        <div class="form-group">
-          <button id="site-site-name-submit" type="submit" class="button">Continue</button>
-        </div>
-
-      </form> -->
 
     </div>
   </div>
