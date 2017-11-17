@@ -45,6 +45,12 @@ module.exports = class Application extends BaseModel {
         query = 'defra_applications'
         this.id = await dynamicsDal.create(query, dataObject)
         LoggingService.logInfo(`Created application with ID: ${this.id}`)
+      } else {
+        // Update Account
+        query = `defra_applications(${this.id})`
+        await dynamicsDal.update(query, {
+          'defra_customerid_account@odata.bind': `accounts(${this.accountId})`
+        })
       }
     } catch (error) {
       LoggingService.logError(`Unable to save Application: ${error}`)
