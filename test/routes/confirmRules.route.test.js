@@ -10,6 +10,7 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const ConfirmRules = require('../../src/models/confirmRules.model')
 const LoggingService = require('../../src/services/logging.service')
+const Constants = require('../../src/constants')
 
 let validateCookieStub
 let confirmRulesSaveStub
@@ -52,7 +53,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('confirm-rules-heading')).to.exist()
+      Code.expect(doc.getElementById('confirm-rules-heading').firstChild.nodeValue).to.equal(Constants.Routes.CONFIRM_RULES.pageHeading)
       Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.exist()
       return doc
     }
