@@ -36,9 +36,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
   SiteNameAndLocation.getAddress = (request, authToken, applicationId, applicationLineId) => {
@@ -66,19 +64,24 @@ const checkPageElements = async (request, expectedValue) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  let element = doc.getElementById('postcode-heading').firstChild
+  let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the postcode for the site?`)
 
-  element = doc.getElementById('postcode-label').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('postcode-hint').firstChild
-  Code.expect(element).to.exist()
+  const elementIds = [
+    'back-link',
+    'defra-csrf-token',
+    'postcode-label',
+    'postcode-hint'
+  ]
+  for (let id of elementIds) {
+    element = doc.getElementById(id)
+    Code.expect(doc.getElementById(id)).to.exist()
+  }
 
   element = doc.getElementById('postcode')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
-  element = doc.getElementById('postcode-submit').firstChild
+  element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 
@@ -101,85 +104,80 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Postcode page tests:', () => {
-  lab.test('The page should have a back link', async () => {
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    const element = doc.getElementById('back-link')
-    Code.expect(element).to.exist()
-  })
-
-  lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
-    CookieService.validateCookie = () => {
-      return undefined
-    }
-
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/error')
-  })
-
-  lab.test('POST ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
-    CookieService.validateCookie = () => {
-      return undefined
-    }
-
-    const res = await server.inject(postRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/error')
-  })
-
-  lab.test('GET ' + routePath + ' returns the site postcode screen correctly when there is no saved postcode', async () => {
-    SiteNameAndLocation.getAddress = (request, authToken, applicationId, applicationLineId) => {
-      return undefined
-    }
-    checkPageElements(getRequest, '')
-  })
-
-  lab.test('GET ' + routePath + ' returns the Site Postcode page correctly when there is an existing postcode', async () => {
-    await checkPageElements(getRequest, fakeAddress.postcode)
-  })
-
-  lab.test('POST ' + routePath + ' shows an error message when the postcode is blank', async () => {
-    postRequest.payload['postcode'] = ''
-    await checkValidationError('Enter a postcode')
-  })
-
-  lab.test('POST ' + routePath + ' shows an error message when the postcode is whitespace', async () => {
-    postRequest.payload['postcode'] = '     \t       '
-    await checkValidationError('Enter a postcode')
-  })
-
-  lab.test('POST ' + routePath + ' success (new Address) redirects to the Address Select route', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        'postcode': fakeAddress.postcode
+  lab.experiment('General tests:', () => {
+    lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
+      CookieService.validateCookie = () => {
+        return undefined
       }
-    }
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/site/address/select-address')
+      const res = await server.inject(getRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/error')
+    })
+
+    lab.test('POST ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
+      CookieService.validateCookie = () => {
+        return undefined
+      }
+
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/error')
+    })
   })
 
-  lab.test('POST ' + routePath + 'success (existing Address) redirects to the Address Select route', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        'postcode': fakeAddress.postcode
+  lab.experiment('GET:', () => {
+    lab.test('GET ' + routePath + ' returns the site postcode screen correctly when there is no saved postcode', async () => {
+      SiteNameAndLocation.getAddress = (request, authToken, applicationId, applicationLineId) => {
+        return undefined
       }
-    }
+      checkPageElements(getRequest, '')
+    })
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/site/address/select-address')
+    lab.test('GET ' + routePath + ' returns the Site Postcode page correctly when there is an existing postcode', async () => {
+      await checkPageElements(getRequest, fakeAddress.postcode)
+    })
+  })
+
+  lab.experiment('POST:', () => {
+    lab.test('POST ' + routePath + ' shows an error message when the postcode is blank', async () => {
+      postRequest.payload['postcode'] = ''
+      await checkValidationError('Enter a postcode')
+    })
+
+    lab.test('POST ' + routePath + ' shows an error message when the postcode is whitespace', async () => {
+      postRequest.payload['postcode'] = '     \t       '
+      await checkValidationError('Enter a postcode')
+    })
+
+    lab.test('POST ' + routePath + ' success (new Address) redirects to the Address Select route', async () => {
+      const request = {
+        method: 'POST',
+        url: routePath,
+        headers: {},
+        payload: {
+          'postcode': fakeAddress.postcode
+        }
+      }
+
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/site/address/select-address')
+    })
+
+    lab.test('POST ' + routePath + 'success (existing Address) redirects to the Address Select route', async () => {
+      const request = {
+        method: 'POST',
+        url: routePath,
+        headers: {},
+        payload: {
+          'postcode': fakeAddress.postcode
+        }
+      }
+
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/site/address/select-address')
+    })
   })
 })

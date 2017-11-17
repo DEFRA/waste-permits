@@ -7,7 +7,6 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
-const Location = require('../../src/models/location.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 
 let validateCookieStub
@@ -34,14 +33,10 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   getSiteNameStub = SiteNameAndLocation.getSiteName
-  SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
-    return siteName
-  }
+  SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => siteName
 
   saveSiteNameStub = SiteNameAndLocation.saveSiteName
   SiteNameAndLocation.saveSiteName = (request, siteName, authToken, applicationId, applicationLineId) => {}
@@ -61,22 +56,25 @@ const checkPageElements = async (request, expectedValue) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  let element = doc.getElementById('site-site-name-heading').firstChild
+  let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the site name?`)
 
-  element = doc.getElementById('site-site-name-subheading').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('site-name-label').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('site-name-hint').firstChild
-  Code.expect(element).to.exist()
-
+  const elementIds = [
+    'back-link',
+    'defra-csrf-token',
+    'site-site-name-subheading',
+    'site-name-label',
+    'site-name-hint'
+  ]
+  for (let id of elementIds) {
+    element = doc.getElementById(id)
+    Code.expect(doc.getElementById(id)).to.exist()
+  }
 
   element = doc.getElementById('site-name')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
-  element = doc.getElementById('site-site-name-submit').firstChild
+
+  element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 
@@ -93,87 +91,82 @@ const checkValidationError = async (expectedErrorMessage) => {
   element = doc.getElementById('error-summary-list-item-0').firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
-  // Location grid reference field error
+  // Location site name field error
   element = doc.getElementById('site-name-error').firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
 
 lab.experiment('Site Name page tests:', () => {
-  lab.test('The page should have a back link', async () => {
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(200)
+  lab.experiment('General tests:', () => {
+    lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
+      CookieService.validateCookie = () => {
+        return undefined
+      }
 
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+      const res = await server.inject(getRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/error')
+    })
 
-    const element = doc.getElementById('back-link')
-    Code.expect(element).to.exist()
+    lab.test('POST ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
+      CookieService.validateCookie = () => {
+        return undefined
+      }
+
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/error')
+    })
   })
 
-  lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
-    CookieService.validateCookie = () => {
-      return undefined
-    }
+  lab.experiment('GET:', () => {
+    lab.test('GET /site/site-name returns the site page correctly when it is a new application', async () => {
+      // Empty site name response
+      SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
+        return undefined
+      }
+      checkPageElements(getRequest, '')
+    })
 
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/error')
+    lab.test('GET /site/site-name returns the site page correctly when there is an existing Site name', async () => {
+      checkPageElements(getRequest, siteName)
+    })
   })
 
-  lab.test('POST ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
-    CookieService.validateCookie = () => {
-      return undefined
-    }
+  lab.experiment('POST:', () => {
+    lab.test('POST /site/site-name success (new Site) redirects to the Site Grid Reference route', async () => {
+      postRequest.payload['site-name'] = 'My Site'
 
-    const res = await server.inject(postRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/error')
-  })
+      // Empty site name response
+      SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
+        return undefined
+      }
 
-  lab.test('GET /site/site-name returns the site page correctly when it is a new application', async () => {
-    // Empty site name response
-    SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
-      return undefined
-    }
-    checkPageElements(getRequest, '')
-  })
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/site/grid-reference')
+    })
 
-  lab.test('GET /site/site-name returns the site page correctly when there is an existing Site name', async () => {
-    checkPageElements(getRequest, siteName)
-  })
+    lab.test('POST ' + routePath + ' success (existing Site) redirects to the Site Grid Reference route', async () => {
+      postRequest.payload['site-name'] = 'My Site'
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/site/grid-reference')
+    })
 
-  lab.test('POST /site/site-name success (new Site) redirects to the Site Grid Reference route', async () => {
-    postRequest.payload['site-name'] = 'My Site'
+    lab.test('POST ' + routePath + 'shows an error message when the site name is blank', async () => {
+      postRequest.payload['site-name'] = ''
+      await checkValidationError('Enter the site name')
+    })
 
-    // Empty site name response
-    SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
-      return undefined
-    }
+    lab.test('POST ' + routePath + ' shows an error message when the site name contains invalid characters', async () => {
+      postRequest.payload['site-name'] = '___INVALID_SITE_NAME___'
+      await checkValidationError('The site name cannot contain any of these characters: ^ | _ ~ ¬ `')
+    })
 
-    const res = await server.inject(postRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/site/grid-reference')
-  })
-
-  lab.test('POST ' + routePath + ' success (existing Site) redirects to the Site Grid Reference route', async () => {
-    postRequest.payload['site-name'] = 'My Site'
-    const res = await server.inject(postRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/site/grid-reference')
-  })
-
-  lab.test('POST ' + routePath + 'shows an error message when the site name is blank', async () => {
-    postRequest.payload['site-name'] = ''
-    await checkValidationError('Enter the site name')
-  })
-
-  lab.test('POST ' + routePath + ' shows an error message when the site name contains invalid characters', async () => {
-    postRequest.payload['site-name'] = '___INVALID_SITE_NAME___'
-    await checkValidationError('The site name cannot contain any of these characters: ^ | _ ~ ¬ `')
-  })
-
-  lab.test('POST ' + routePath + ' shows an error message when the site name is too long', async () => {
-    postRequest.payload['site-name'] = '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
-    await checkValidationError('Enter a shorter site name with no more than 170 characters')
+    lab.test('POST ' + routePath + ' shows an error message when the site name is too long', async () => {
+      postRequest.payload['site-name'] = '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
+      await checkValidationError('Enter a shorter site name with no more than 170 characters')
+    })
   })
 })

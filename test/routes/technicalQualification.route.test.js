@@ -15,9 +15,7 @@ const routePath = '/technical-qualification'
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => {
-    return true
-  }
+  CookieService.validateCookie = () => true
 })
 
 lab.afterEach(() => {

@@ -7,15 +7,15 @@
 
       {{> common/errorSummary }}
 
-      <h1 id="postcode-heading" class="heading-large">{{ pageHeading }}</h1>
+      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
 
       <form method="post" action="{{formAction}}">
-        <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
         <fieldset>
           <legend class="visuallyhidden">Postcode</legend>
 
-          <div class="form-group">
+          <div class="form-group {{#getFormErrorGroupClass errors.postcode}}{{/getFormErrorGroupClass}}">
             <label id="postcode-label" class="form-label" for="postcode">UK postcode for the site
               <span id="postcode-hint" class="form-hint">For example, BS1 5AH</span>
             </label>
@@ -25,7 +25,7 @@
         </fieldset>
 
         <div class="form-group">
-            <button id="postcode-submit" type="submit" class="button" name="Continue">Continue</button>
+            <button id="submit-button" type="submit" class="button" name="Continue">Continue</button>
         </div>
 
         <div class="form-group">

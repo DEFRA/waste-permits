@@ -28,9 +28,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 })
 
 lab.afterEach(() => {
@@ -45,7 +43,7 @@ const checkPageElements = async (getRequest, expectedValue) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  let element = doc.getElementById('address-select-heading').firstChild
+  let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the site address?`)
 
   element = doc.getElementById('postcode-label').firstChild
@@ -72,28 +70,28 @@ const checkPageElements = async (getRequest, expectedValue) => {
   element = doc.getElementById('manual-address-link').firstChild
   Code.expect(element).to.exist()
 
-  element = doc.getElementById('select-address-submit').firstChild
+  element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 
 // TODO test validation
-const checkValidationError = async (expectedErrorMessage) => {
-  // const res = await server.inject(postRequest)
-  // Code.expect(res.statusCode).to.equal(200)
+// const checkValidationError = async (expectedErrorMessage) => {
+//   const res = await server.inject(postRequest)
+//   Code.expect(res.statusCode).to.equal(200)
 
-  // const parser = new DOMParser()
-  // const doc = parser.parseFromString(res.payload, 'text/html')
+//   const parser = new DOMParser()
+//   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  // let element
+//   let element
 
-  // // Panel summary error item
-  // element = doc.getElementById('error-summary-list-item-0').firstChild
-  // Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
+//   // Panel summary error item
+//   element = doc.getElementById('error-summary-list-item-0').firstChild
+//   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
-  // // Location grid reference field error
-  // element = doc.getElementById('site-address-error').firstChild
-  // Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
-}
+//   // Location grid reference field error
+//   element = doc.getElementById('site-address-error').firstChild
+//   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
+// }
 
 lab.experiment('Address select page tests:', () => {
   lab.test('The page should have a back link', async () => {

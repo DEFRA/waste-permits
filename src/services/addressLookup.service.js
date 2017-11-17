@@ -3,7 +3,6 @@
 const rp = require('request-promise')
 
 const config = require('../config/config')
-const LoggingService = require('../services/logging.service')
 
 module.exports = class AddressLookupService {
   static async getAddressesFromPostcode (postcode) {
@@ -25,8 +24,14 @@ module.exports = class AddressLookupService {
         })
       })
       .catch((error) => {
-        LoggingService.logError(error)
-        throw error
+        if (error.statusCode === 400) {
+          console.log('400 error')
+        } else if (error.statusCode === 404) {
+          console.log('404 error')
+        } else {
+          console.log(error)
+          throw error
+        }
       })
 
     return addresses

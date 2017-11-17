@@ -19,9 +19,7 @@ const routePath = '/contact-search'
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   contactListStub = Contact.list
   Contact.list = (authToken) => {
@@ -99,7 +97,7 @@ lab.experiment('Contact search page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('contacts-heading').firstChild
+    let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Contact search')
   })
 

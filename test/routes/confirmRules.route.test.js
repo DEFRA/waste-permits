@@ -69,6 +69,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
       confirmRulesSaveStub = ConfirmRules.prototype.save
       ConfirmRules.prototype.save = (authToken) => {}
     })
+
     lab.test('should have a back link', async () => {
       const doc = await getDoc()
       const element = doc.getElementById('back-link')

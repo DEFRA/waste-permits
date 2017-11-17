@@ -68,3 +68,6 @@ config.dynamicsWebApiPath = process.env.DYNAMICS_WEB_API_PATH || '/api/data/v8.2
 // The address lookup service used to perform address lookups based on postcode
 config.ADDRESS_LOOKUP_SERVICE = process.env.ADDRESS_LOOKUP_SERVICE
 config.ADDRESS_LOOKUP_SERVICE_KEY = process.env.ADDRESS_LOOKUP_SERVICE_KEY
+
+config.COMPANIES_HOUSE_SERVICE = process.env.COMPANIES_HOUSE_SERVICE
+config.COMPANIES_HOUSE_API_KEY = process.env.COMPANIES_HOUSE_API_KEY
