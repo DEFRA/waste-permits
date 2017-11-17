@@ -48,8 +48,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
       pageContext.companyFound = account.companyName !== undefined
 
-      // TODO make this a constant
-      pageContext.enterCompanyNumberRoute = '/permit-holder/company/number'
+      pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
       return reply.view('companyCheckName', pageContext)
     } catch (error) {

@@ -46,6 +46,11 @@ Constants.Routes = {
     path: '/permit-holder/company/check-name',
     pageHeading: `Is this the right company?`
   },
+  COMPANY_NUMBER: {
+    path: '/permit-holder/company/number',
+    pageHeading: `What's the UK company registration number?`,
+    taskListHeading: `What's the company name or registration number?`
+  },
   CONFIDENTIALITY: {
     path: '/confidentiality',
     pageHeading: 'Is part of your application commercially confidential?',
