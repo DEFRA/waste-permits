@@ -62,7 +62,7 @@ module.exports = class Account extends BaseModel {
       } else {
         // Update Account
         dataObject.defra_draft = false
-        // TODO: this will need to be set properly after the company details have been 
+        // TODO: this will need to be set properly after the company details have been
         // validated with companies house
         dataObject.defra_validatedwithcompanyhouse = true
         query = `accounts(${this.id})`

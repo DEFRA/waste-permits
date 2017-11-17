@@ -53,7 +53,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('confirm-rules-heading').firstChild.nodeValue).to.equal('Confirm your operation meets the rules')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Confirm your operation meets the rules')
       Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.exist()
       return doc
     }
