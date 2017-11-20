@@ -80,7 +80,10 @@ module.exports = class TaskList extends BaseModel {
       }, {
         id: 'give-permit-holder-details',
         label: Constants.Routes.PERMIT_HOLDER_TYPE.taskListHeading,
-        href: Constants.Routes.PERMIT_HOLDER_TYPE.path,
+        // For MVP the route for this task list item is different,
+        // we will go straight to the Company Details pathway instead.
+        href: Constants.Routes.COMPANY_NUMBER.path,
+        // href: Constants.Routes.PERMIT_HOLDER_TYPE.path,
         completedLabelId: 'site-operator-completed',
         rulesetId: Constants.Dynamics.RulesetIds.PERMIT_HOLDER_DETAILS,
         available: false
