@@ -5,7 +5,7 @@ const crumbOptions = {
   // Ideally we would get this value from constants.js in the same way we have
   // set other values. However whatever we name the cookie we also have to
   // specify within the hidden input field of our forms e.g.
-  // <input type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+  // <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
   // If the two are not the same then no value is inserted into html response.
   //
   // The problem is we currently cannot see a solution whereby we can somehow

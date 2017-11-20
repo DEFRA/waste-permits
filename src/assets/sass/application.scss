@@ -21,6 +21,11 @@ details {
   margin-bottom: 30px;
 }
 
+// Address-manual. Spacing bewteen postcode and change link. 
+span.postcode {
+  margin-right: 10px;
+}
+
 // EA footer links
 @include media(mobile) {
   .ea-footer, .ea-footer li  {

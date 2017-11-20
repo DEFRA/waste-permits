@@ -3,6 +3,7 @@
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
+const Utilities = require('../utilities/utilities')
 
 module.exports = class Location extends BaseModel {
   constructor (location) {
@@ -14,27 +15,28 @@ module.exports = class Location extends BaseModel {
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const filter = `_defra_applicationid_value eq ${applicationId}`
-    const query = encodeURI(`defra_locations?$select=defra_name&$filter=${filter}`)
-    try {
-      const response = await dynamicsDal.search(query)
-      const result = response.value[0]
-
-      let location
-      if (result) {
-        location = new Location({
-          id: result.defra_locationid,
-          applicationId: applicationId,
-          applicationLineId: applicationLineId,
-          name: result.defra_name
-        })
+    let location
+    if (applicationId !== undefined) {
+      const dynamicsDal = new DynamicsDalService(authToken)
+      const filter = `_defra_applicationid_value eq ${applicationId}`
+      const query = encodeURI(`defra_locations?$select=defra_name&$filter=${filter}`)
+      try {
+        const response = await dynamicsDal.search(query)
+        const result = response.value[0]
+        if (result) {
+          location = new Location({
+            id: Utilities.replaceNull(result.defra_locationid),
+            applicationId: applicationId,
+            applicationLineId: applicationLineId,
+            name: Utilities.replaceNull(result.defra_name)
+          })
+        }
+      } catch (error) {
+        LoggingService.logError(`Unable to get Location by application ID: ${error}`)
+        throw error
       }
-      return location
-    } catch (error) {
-      LoggingService.logError(`Unable to get Location by application ID: ${error}`)
-      throw error
     }
+    return location
   }
 
   async save (authToken) {

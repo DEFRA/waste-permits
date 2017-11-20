@@ -52,9 +52,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 
   locationSaveStub = Location.prototype.save
   Location.prototype.save = (authToken) => {}
@@ -63,14 +61,10 @@ lab.beforeEach(() => {
   LocationDetail.prototype.save = (authToken) => {}
 
   locationGetByApplicationIdStub = Location.getByApplicationId
-  Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-    return fakeLocation
-  }
+  Location.getByApplicationId = (authToken, applicationId, applicationLineId) => fakeLocation
 
   getByLocationIdStub = LocationDetail.getByLocationId
-  LocationDetail.getByLocationId = (authToken, locationId) => {
-    return fakeLocationDetail
-  }
+  LocationDetail.getByLocationId = (authToken, locationId) => fakeLocationDetail
 
   siteNameAndLocationUpdateCompletenessStub = SiteNameAndLocation.updateCompleteness
   SiteNameAndLocation.updateCompleteness = (authToken, applicationId, applicationLineId) => {}
@@ -94,28 +88,27 @@ const checkPageElements = async (getRequest, expectedValue) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  let element = doc.getElementById('site-grid-reference-heading').firstChild
+  let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the grid reference for the centre of the site?`)
 
-  element = doc.getElementById('site-grid-reference-label').firstChild
-  Code.expect(element.nodeValue).to.exist()
-
-  element = doc.getElementById('site-grid-reference-hint').firstChild
-  Code.expect(element.nodeValue).to.exist()
+  const elementIds = [
+    'back-link',
+    'defra-csrf-token',
+    'site-grid-reference-label',
+    'site-grid-reference-hint',
+    'site-grid-reference-summary',
+    'site-grid-reference-finder-link',
+    'grid-reference-help-list'
+  ]
+  for (let id of elementIds) {
+    element = doc.getElementById(id)
+    Code.expect(doc.getElementById(id)).to.exist()
+  }
 
   element = doc.getElementById('site-grid-reference')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
-  element = doc.getElementById('site-grid-reference-summary').firstChild
-  Code.expect(element.nodeValue).to.exist()
-
-  element = doc.getElementById('site-grid-reference-finder-link').firstChild
-  Code.expect(element.nodeValue).to.exist()
-
-  element = doc.getElementById('grid-reference-help-list').firstChild
-  Code.expect(element.nodeValue).to.exist()
-
-  element = doc.getElementById('site-grid-reference-submit').firstChild
+  element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 
@@ -138,118 +131,123 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Site Grid Reference page tests:', () => {
-  lab.test('The page should have a back link', async () => {
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(200)
+  lab.experiment('General tests:', () => {
+    lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
+      CookieService.validateCookie = () => {
+        return undefined
+      }
 
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+      const res = await server.inject(getRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/error')
+    })
 
-    const element = doc.getElementById('back-link')
-    Code.expect(element).to.exist()
+    lab.test('POST ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
+      CookieService.validateCookie = () => {
+        return undefined
+      }
+
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/error')
+    })
   })
 
-  lab.test('POST /site/grid-reference redirects to error screen when the user token is invalid', async () => {
-    CookieService.validateCookie = () => {
-      return undefined
-    }
+  lab.experiment('GET:', () => {
+    lab.test('GET ' + routePath + ' returns the Site grid reference page correctly when the grid reference has not been entered yet', async () => {
+      LocationDetail.getByLocationId = (authToken, locationId) => {
+        return undefined
+      }
 
-    const res = await server.inject(postRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/error')
+      // Empty location details response
+      Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+        return {}
+      }
+
+      await checkPageElements(getRequest, '')
+    })
+
+    lab.test('GET ' + routePath + ' returns the Site Grid Reference page correctly when there is an existing grid reference', async () => {
+      await checkPageElements(getRequest, fakeLocationDetail.gridReference)
+    })
   })
 
-  lab.test('GET /site/grid-reference returns the Site grid reference page correctly when the grid reference has not been entered yet', async () => {
-    LocationDetail.getByLocationId = (authToken, locationId) => {
-      return undefined
-    }
+  lab.experiment('POST:', () => {
+    lab.test('POST ' + routePath + ' shows an error message when the location grid reference is blank', async () => {
+      postRequest.payload['site-grid-reference'] = ''
+      await checkValidationError('Enter a grid reference')
+    })
 
-    // Empty location details response
-    Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
-      return {}
-    }
+    lab.test('POST ' + routePath + ' shows an error message when the location grid reference is whitespace', async () => {
+      postRequest.payload['site-grid-reference'] = '            '
+      await checkValidationError('Enter a grid reference')
+    })
 
-    await checkPageElements(getRequest, '')
-  })
+    lab.test('POST ' + routePath + ' shows an error message when the location grid reference is in the wrong format', async () => {
+      const expectedErrorMessage = 'Make sure that the grid reference has 2 letters and 10 digits'
 
-  lab.test('GET /site/grid-reference returns the Site Grid Reference page correctly when there is an existing grid reference', async () => {
-    await checkPageElements(getRequest, fakeLocationDetail.gridReference)
-  })
+      // Wrong format
+      postRequest.payload['site-grid-reference'] = 'AB123456789X'
+      await checkValidationError(expectedErrorMessage)
+      postRequest.payload['site-grid-reference'] = 'ab123456789X'
+      await checkValidationError(expectedErrorMessage)
+      postRequest.payload['site-grid-reference'] = 'ABX123456789'
+      await checkValidationError(expectedErrorMessage)
 
-  lab.test('POST /site/grid-reference shows an error message when the location grid reference is blank', async () => {
-    postRequest.payload['site-grid-reference'] = ''
-    await checkValidationError('Enter a grid reference')
-  })
+      // Not enough characters
+      postRequest.payload['site-grid-reference'] = 'AB123456789'
+      await checkValidationError(expectedErrorMessage)
 
-  lab.test('POST /site/grid-reference shows an error message when the location grid reference is whitespace', async () => {
-    postRequest.payload['site-grid-reference'] = '            '
-    await checkValidationError('Enter a grid reference')
-  })
+      // Too many characters
+      postRequest.payload['site-grid-reference'] = 'AB12345678900'
+      await checkValidationError(expectedErrorMessage)
+    })
 
-  lab.test('POST /site/grid-reference shows an error message when the location grid reference is in the wrong format', async () => {
-    const expectedErrorMessage = 'Make sure that the grid reference has 2 letters and 10 digits'
+    lab.test('POST ' + routePath + ' accepts a grid reference that contains whitespace', async () => {
+      postRequest.payload['site-grid-reference'] = '      A       B   123  4 5 6 789         0      '
 
-    // Wrong format
-    postRequest.payload['site-grid-reference'] = 'AB123456789X'
-    await checkValidationError(expectedErrorMessage)
-    postRequest.payload['site-grid-reference'] = 'ab123456789X'
-    await checkValidationError(expectedErrorMessage)
-    postRequest.payload['site-grid-reference'] = 'ABX123456789'
-    await checkValidationError(expectedErrorMessage)
+      // Empty location details response
+      LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
+        return undefined
+      }
 
-    // Not enough characters
-    postRequest.payload['site-grid-reference'] = 'AB123456789'
-    await checkValidationError(expectedErrorMessage)
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/site/address/postcode')
+    })
 
-    // Too many characters
-    postRequest.payload['site-grid-reference'] = 'AB12345678900'
-    await checkValidationError(expectedErrorMessage)
-  })
+    lab.test('POST /' + routePath + ' success (new grid reference) redirects to the Site Postcode route', async () => {
+      postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
 
-  lab.test('POST /site/grid-reference accepts a grid reference that contains whitespace', async () => {
-    postRequest.payload['site-grid-reference'] = '      A       B   123  4 5 6 789         0      '
+      // Empty location details response
+      LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
+        return undefined
+      }
 
-    // Empty location details response
-    LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
-      return undefined
-    }
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/site/address/postcode')
+    })
 
-    const res = await server.inject(postRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/task-list')
-  })
+    lab.test('POST ' + routePath + ' success (existing grid reference) redirects to the Site Postcode route', async () => {
+      postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
 
-  lab.test('POST /site/grid-reference success (new grid reference) redirects to the Task List route', async () => {
-    postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/site/address/postcode')
+    })
 
-    // Empty location details response
-    LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
-      return undefined
-    }
+    lab.test('The completeness is recalculated when the grid reference is updated', async () => {
+      postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
 
-    const res = await server.inject(postRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/task-list')
-  })
+      // Empty location details response
+      LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
+        return undefined
+      }
 
-  lab.test('POST /site/grid-reference success (existing grid reference) redirects to the Task List route', async () => {
-    postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
-
-    const res = await server.inject(postRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/task-list')
-  })
-
-  lab.test('The completeness is recalculated when the grid reference is updated', async () => {
-    postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
-
-    // Empty location details response
-    LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
-      return undefined
-    }
-
-    const spy = sinon.spy(SiteNameAndLocation, 'updateCompleteness')
-    await server.inject(postRequest)
-    Code.expect(spy.callCount).to.equal(1)
+      const spy = sinon.spy(SiteNameAndLocation, 'updateCompleteness')
+      await server.inject(postRequest)
+      Code.expect(spy.callCount).to.equal(1)
+    })
   })
 })

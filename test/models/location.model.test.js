@@ -19,6 +19,10 @@ const fakeLocationData = {
 }
 const testLocationId = 'LOCATION_ID'
 
+const authToken = 'THE_AUTH_TOKEN'
+const applicationId = fakeLocationData.applicationId
+const applicationLineId = 'APPLICATION_LINE_ID'
+
 lab.beforeEach(() => {
   testLocation = new Location(fakeLocationData)
   dynamicsSearchStub = DynamicsDalService.prototype.search
@@ -35,14 +39,10 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => {
-    return testLocationId
-  }
+  DynamicsDalService.prototype.create = (dataObject, query) => testLocationId
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => {
-    return testLocationId
-  }
+  DynamicsDalService.prototype.update = (dataObject, query) => testLocationId
 })
 
 lab.afterEach(() => {
@@ -63,7 +63,7 @@ lab.experiment('Location Model tests:', () => {
 
   lab.test('getByApplicationId() method returns a single Location object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const site = await Location.getByApplicationId()
+    const site = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(site.name).to.equal(fakeLocationData.name)
   })

@@ -34,14 +34,10 @@ const fakeCookie = {
 lab.beforeEach(() => {
   // Stub methods
   generateCookieStub = CookieService.generateCookie
-  CookieService.generateCookie = (reply) => {
-    return fakeCookie
-  }
+  CookieService.generateCookie = (reply) => fakeCookie
 
   dynamicSolutionGetStub = DynamicsSolution.get
-  DynamicsSolution.get = (authToken) => {
-    return dynamicsVersionInfo
-  }
+  DynamicsSolution.get = (authToken) => dynamicsVersionInfo
 })
 
 lab.afterEach(() => {
@@ -82,7 +78,7 @@ lab.experiment('Version page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('version-heading').firstChild
+    let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Waste Permits')
 
     for (let i = 0; i < dynamicsVersionInfo.length; i++) {

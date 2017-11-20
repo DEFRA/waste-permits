@@ -24,6 +24,14 @@ Constants.Routes = {
     path: '/',
     pageHeading: 'Waste Permits Home Page'
   },
+  ADDRESS_MANUAL: {
+    path: '/address/address-manual',
+    pageHeading: `Enter the site address`
+  },
+  ADDRESS_SELECT: {
+    path: '/site/address/select-address',
+    pageHeading: `What's the site address?`
+  },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',
     pageHeading: 'Check your answers before sending your application',
@@ -33,6 +41,10 @@ Constants.Routes = {
     path: '/save-and-return/check-your-email',
     pageHeading: `Search for 'standard rules permit application' in your email`,
     taskListHeading: `Search for 'standard rules permit application' in your email`
+  },
+  COMPANY_CHECK_NAME: {
+    path: '/permit-holder/company/check-name',
+    pageHeading: `Is this the right company?`
   },
   COMPANY_NUMBER: {
     path: '/permit-holder/company/number',
@@ -46,7 +58,7 @@ Constants.Routes = {
   },
   CONFIRM_RULES: {
     path: '/confirm-rules',
-    pageHeading: 'Confirm that your operation meets the rules',
+    pageHeading: 'Confirm your operation meets the rules',
     taskListHeading: 'Confirm that your operation meets the rules'
   },
   CONTACT_DETAILS: {
@@ -104,6 +116,10 @@ Constants.Routes = {
     path: '/permit/select',
     pageHeading: 'Select a permit'
   },
+  POSTCODE: {
+    path: '/site/address/postcode',
+    pageHeading: `What's the postcode for the site?`
+  },
   PRE_APPLICATION: {
     path: '/pre-application',
     pageHeading: 'Have you discussed this application with us?',
@@ -158,6 +174,7 @@ Constants.PermitTypes = {
 
 Constants.Dynamics = {
   WASTE_REGIME: 910400000,
+  DIGITAL_SOURCE: 910400000,
   PermitTypes: {
     STANDARD: 910400000,
     BESPOKE: 910400001

@@ -49,13 +49,13 @@ lab.experiment('Health page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('health-heading').firstChild
+    let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Waste Permits')
 
     element = doc.getElementById('health-application-version').firstChild
-    Code.expect(element.nodeValue).to.exist()
+    Code.expect(element).to.exist()
 
     element = doc.getElementById('health-application-commit-ref').firstChild
-    Code.expect(element.nodeValue).to.exist()
+    Code.expect(element).to.exist()
   })
 })

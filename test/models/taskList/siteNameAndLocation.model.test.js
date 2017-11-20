@@ -9,6 +9,7 @@ const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const Location = require('../../../src/models/location.model')
 const LocationDetail = require('../../../src/models/locationDetail.model')
+const Address = require('../../../src/models/address.model')
 const SiteNameAndLocation = require('../../../src/models/taskList/siteNameAndLocation.model')
 
 let dynamicsUpdateStub
@@ -17,12 +18,18 @@ let locationGetByApplicationIdStub
 let locationDetailGetByLocationIdStub
 let locationSaveStub
 let locationDetailSaveStub
+let addressGetByIdStub
 
 const fakeApplicationLine = {
   id: 'ca6b60f0-c1bf-e711-8111-5065f38adb81',
   applicationId: 'c1ae11ee-c1bf-e711-810e-5065f38bb461',
   standardRuleId: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
   parametersId: 'cb6b60f0-c1bf-e711-8111-5065f38adb81'
+}
+
+const fakeAddress = {
+  id: 'ADDRESS_DETAIL_ID',
+  postcode: 'BS1 5AH'
 }
 
 const fakeLocation = {
@@ -35,7 +42,8 @@ const fakeLocation = {
 const fakeLocationDetail = {
   id: 'LOCATION_DETAIL_ID',
   gridReference: 'AB1234567890',
-  locationId: fakeLocation.id
+  locationId: fakeLocation.id,
+  addressId: fakeAddress.id
 }
 
 const request = undefined
@@ -47,14 +55,10 @@ lab.beforeEach(() => {
   // Stub methods
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => {
-    return dataObject.id
-  }
+  DynamicsDalService.prototype.update = (dataObject, query) => dataObject.id
 
   applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = (authToken, applicationLineId) => {
-    return fakeApplicationLine
-  }
+  ApplicationLine.getById = (authToken, applicationLineId) => fakeApplicationLine
 
   locationGetByApplicationIdStub = Location.getByApplicationId
   Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
@@ -71,6 +75,11 @@ lab.beforeEach(() => {
 
   locationDetailSaveStub = LocationDetail.prototype.save
   LocationDetail.prototype.save = (authToken) => {}
+
+  addressGetByIdStub = Address.getById
+  Address.getById = (authToken, id) => {
+    return new Address(fakeAddress)
+  }
 })
 
 lab.afterEach(() => {
@@ -81,12 +90,14 @@ lab.afterEach(() => {
   LocationDetail.getByLocationId = locationDetailGetByLocationIdStub
   Location.prototype.save = locationSaveStub
   LocationDetail.prototype.save = locationDetailSaveStub
+  Address.getById = addressGetByIdStub
 })
 
 const testCompleteness = async (obj, expectedResult) => {
   fakeLocation.name = obj.name
   fakeLocationDetail.gridReference = obj.gridReference
-  const result = await SiteNameAndLocation._isComplete(obj.params.authToken, obj.params.applicationId, obj.params.applicationLineId)
+  fakeAddress.postcode = obj.postcode
+  const result = await SiteNameAndLocation._isComplete(authToken, applicationId, applicationLineId)
   Code.expect(result).to.equal(expectedResult)
 }
 
@@ -145,32 +156,22 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete', async () => {
-    const params = {
-      authToken: 'THE_AUTH_TOKEN',
-      applicationId: fakeApplicationLine.applicationId,
-      applicationLineId: fakeApplicationLine.id
-    }
-
     await testCompleteness({
-      params: params,
-      name: null,
+      name: undefined,
       gridReference: 'AB1234567890'
     }, false)
 
     await testCompleteness({
-      params: params,
       name: '',
       gridReference: 'AB1234567890'
     }, false)
 
     await testCompleteness({
-      params: params,
       name: 'THE SITE NAME',
-      gridReference: null
+      gridReference: undefined
     }, false)
 
     await testCompleteness({
-      params: params,
       name: 'THE SITE NAME',
       gridReference: ''
     }, false)

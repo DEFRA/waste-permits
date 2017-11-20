@@ -1,0 +1,43 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }} {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+
+      <form method="post" action="{{formAction}}">
+        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+
+        <fieldset>
+          <legend class="visuallyhidden">Postcode</legend>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.postcode}}{{/getFormErrorGroupClass}}">
+            <label id="postcode-label" class="form-label" for="postcode">UK postcode for the site
+              <span id="postcode-hint" class="form-hint">For example, BS1 5AH</span>
+            </label>
+            {{> common/fieldError fieldId='postcode-error' message=errors.postcode }}
+            <input type="text" class="form-control form-control-char-10" id="postcode" name="postcode" value="{{formValues.postcode}}" />
+          </div>
+        </fieldset>
+
+        <div class="form-group">
+            <button id="submit-button" type="submit" class="button" name="Continue">Continue</button>
+        </div>
+
+        <div class="form-group">
+          <hr>
+          <p class="text font-xsmall" id="os-notice">
+          &copy; Crown copyright and database rights 2017 Ordnance Survey 100024198. Use of this addressing data is subject to the <a target="_blank" rel="noopener noreferrer" href="/views/os_place_terms">terms and conditions (opens new window)</a>.
+          </p>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</main>

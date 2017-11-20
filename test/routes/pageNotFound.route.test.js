@@ -14,9 +14,7 @@ lab.beforeEach(() => {
   // Stub methods
 
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => {
-    return true
-  }
+  CookieService.validateCookie = (request) => true
 })
 
 lab.afterEach(() => {
@@ -56,17 +54,17 @@ lab.experiment('Page Not Found (404) page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('page-not-found-heading').firstChild
+    let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(`We can't find that page`)
 
     element = doc.getElementById('page-not-found-paragraph').firstChild
-    Code.expect(element.nodeValue).to.exist()
+    Code.expect(element).to.exist()
 
     element = doc.getElementById('page-not-found-task-list-link').firstChild
-    Code.expect(element.nodeValue).to.exist()
+    Code.expect(element).to.exist()
 
     element = doc.getElementById('page-not-found-apply-link').firstChild
-    Code.expect(element.nodeValue).to.exist()
+    Code.expect(element).to.exist()
   })
 
   lab.test('GET /page-not-found redirects to the start page when the user does not have a valid cookie', async () => {

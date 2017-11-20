@@ -7,10 +7,19 @@ const LoggingService = require('../services/logging.service')
 const ConfirmRules = require('../models/confirmRules.model')
 
 module.exports = class ConfirmRulesController extends BaseController {
+  static async isComplete (request) {
+    const authToken = CookieService.getAuthToken(request)
+    const applicationId = CookieService.getApplicationId(request)
+    const applicationLineId = CookieService.getApplicationLineId(request)
+    const {complete} = (await ConfirmRules.getByApplicationId(authToken, applicationId, applicationLineId))
+    return complete
+  }
+
   static async doGet (request, reply, errors) {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.CONFIRM_RULES, errors)
 
+      pageContext.complete = await this.isComplete(request)
       return reply
         .view('confirmRules', pageContext)
     } catch (error) {
@@ -24,19 +33,20 @@ module.exports = class ConfirmRulesController extends BaseController {
       return ConfirmRulesController.doGet(request, reply, errors)
     } else {
       const authToken = CookieService.getAuthToken(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
-
-      // Get the Site for this application (if we have one)
-      const confirmRules = new ConfirmRules({
-        applicationLineId: applicationLineId
-      })
-
       try {
-        await confirmRules.save(authToken)
-        return reply.redirect(Constants.Routes.TASK_LIST.path)
+        const applicationLineId = CookieService.getApplicationLineId(request)
 
-        // TODO go back to Task list on 2nd post
-        // return reply.redirect(Constants.Routes.CONFIRM_RULES.path)
+        const complete = await this.isComplete(request)
+        if (complete) {
+          return reply.redirect(Constants.Routes.TASK_LIST.path)
+        }
+
+        const confirmRules = new ConfirmRules({
+          applicationLineId: applicationLineId
+        })
+
+        await confirmRules.save(authToken)
+        return reply.redirect(Constants.Routes.CONFIRM_RULES.path)
       } catch (error) {
         LoggingService.logError(error, request)
         return reply.redirect(Constants.Routes.ERROR.path)
