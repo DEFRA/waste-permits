@@ -79,6 +79,6 @@ module.exports = class CompanyLookupService {
         }
       })
 
-      return directors
+    return directors
   }
 }
