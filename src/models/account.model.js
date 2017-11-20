@@ -14,6 +14,7 @@ module.exports = class Account extends BaseModel {
       this.companyNumber = account.companyNumber
       this.companyName = account.companyName
       this.tradingName = account.tradingName
+      this.IsValidatedWithCompaniesHouse = account.IsValidatedWithCompaniesHouse
     }
   }
 
@@ -47,33 +48,21 @@ module.exports = class Account extends BaseModel {
     // Update the Account
     try {
       // Map the Account to the corresponding Dynamics schema Account object
-
-      let dataObject
-      if (isDraft) {
-        dataObject = {
-          defra_companyhouseid: this.companyNumber.toUpperCase(),
-          defra_draft: true,
-          defra_validatedwithcompanyhouse: false
-        }
-      } else {
-        dataObject = {
-          name: this.companyName,
-          defra_tradingname: this.tradingName,
-          defra_draft: false,
-          defra_validatedwithcompanyhouse: true
-        }
+      const dataObject = {
+        defra_companyhouseid: this.companyNumber.toUpperCase(),
+        name: this.companyName,
+        defra_tradingname: this.tradingName,
+        defra_draft: isDraft,
+        defra_validatedwithcompanyhouse: this.IsValidatedWithCompaniesHouse
       }
+
       let query
       if (this.isNew()) {
         // New Account
-        dataObject.defra_draft = true
-        dataObject.defra_validatedwithcompanyhouse = false
         query = 'accounts'
         this.id = await dynamicsDal.create(query, dataObject)
       } else {
         // Update Account
-        dataObject.defra_draft = false
-        dataObject.defra_validatedwithcompanyhouse = true
         query = `accounts(${this.id})`
         await dynamicsDal.update(query, dataObject)
       }

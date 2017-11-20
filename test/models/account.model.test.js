@@ -75,7 +75,7 @@ lab.experiment('Account Model tests:', () => {
 
   lab.test('save() method saves a new Account object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testAccount.save()
+    await testAccount.save(authToken, false)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAccount.id).to.equal(fakeApplicationData.accountId)
   })
@@ -83,7 +83,7 @@ lab.experiment('Account Model tests:', () => {
   lab.test('save() method updates an existing Account object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testAccount.id = fakeApplicationData.accountId
-    await testAccount.save()
+    await testAccount.save(authToken, false)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAccount.id).to.equal(fakeApplicationData.accountId)
   })

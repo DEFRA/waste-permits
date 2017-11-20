@@ -19,17 +19,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
       let account = await Account.getByApplicationId(authToken, applicationId)
       if (!account) {
-        // TODO apply this when the account has been created in Dynamics by the previous screen
-        // LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-        // return reply.redirect(Constants.Routes.ERROR.path)
-
-        // TODO remove this when the account has been created in Dynamics by the previous screen
-        account = new Account({
-          id: undefined,
-          companyNumber: '07395892',
-          companyName: undefined,
-          tradingName: undefined
-        })
+        return reply.redirect(Constants.Routes.TASK_LIST.path)
       }
 
       account.companyName = await CompanyLookupService.getCompanyName(account.companyNumber)
@@ -66,25 +56,16 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
       try {
         let account = await Account.getByApplicationId(authToken, applicationId)
-
         if (!account) {
-          // TODO apply this when the account has been created in Dynamics by the previous screen
-          // LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-          // return reply.redirect(Constants.Routes.ERROR.path)
-
-          // TODO remove this when the account has been created in Dynamics by the previous screen
-          account = new Account({
-            id: undefined,
-            companyNumber: '07395892',
-            companyName: undefined,
-            tradingName: undefined
-          })
+          return reply.redirect(Constants.Routes.TASK_LIST.path)
         }
 
         account.companyName = await CompanyLookupService.getCompanyName(account.companyNumber)
-        account.tradingName = request.payload['business-trading-name']
-
-        await account.save(authToken)
+        if (account.companyName !== undefined) {
+          account.tradingName = request.payload['business-trading-name']
+          account.IsValidatedWithCompaniesHouse = true
+          await account.save(authToken, false)
+        }
 
         return reply.redirect(Constants.Routes.TASK_LIST.path)
       } catch (error) {
