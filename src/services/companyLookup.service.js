@@ -59,7 +59,13 @@ module.exports = class CompanyLookupService {
                 const nameParts = item.name.split(',')
                 director.surname = nameParts[0].trim()
                 director.forenames = nameParts[1].trim()
-                director.dateOfBirth = moment(`${item.date_of_birth.year} ${item.date_of_birth.month}`).format('MMMM YYYY')
+
+                // Pad with leading zero if required
+                let month = item.date_of_birth.month.toString()
+                if (month && month.length === 1) {
+                  month = '0' + month
+                }
+                director.dateOfBirth = moment(`${item.date_of_birth.year}-${month}-01`).format('MMMM YYYY')
 
                 directors.push(director)
               }

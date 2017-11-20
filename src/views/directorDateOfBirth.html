@@ -1,6 +1,8 @@
 <main id="content" role="main">
 
-  {{> common/betaBanner }} {{> common/backLink }}
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
 
   <div class="grid-row">
     <div class="column-two-thirds">
@@ -10,7 +12,7 @@
       <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
 
       <form method="POST" action="{{ formAction }}">
-        <input id="defr-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
         <p>
           We use the date of birth to do security checks. We won't include it in the public permit register.
@@ -23,16 +25,16 @@
             {{#if hasDirectors }}
 
               {{#each directors}}
-              <div>
-                <dt class="director-name">
+              <div id="director-list">
+                <dt id="director-name-{{@index}}" class="director-name">
                   {{this.forenames}} {{this.surname}}
                 </dt>
                 <dd class="director-dob">
                   <div class="form-group-day">
-                    <label class="form-label visually-hidden" for="dob-day-{loopnum}">Birth day date for {{this.name}}</label>
-                    <input class="form-control sr-company-dob" id="dob-day-{loopnum}" name="directorDobDay{{this.name}}" type="number" pattern="[0-9]*"
+                    <label class="form-label visually-hidden" for="dob-day-{{@index}}">Birth day date for {{this.name}}</label>
+                    <input class="form-control sr-company-dob" id="dob-day-{{@index}}" name="director-dob-day-{{@index}}" type="number" pattern="[0-9]*"
                       min="0" max="31" aria-describedby="sr-dob-month-year">
-                    <span class="sr-dob-month-year">
+                    <span id="dob-{{@index}}" class="sr-dob-month-year">
                       {{this.dateOfBirth}}
                     </span>
                   </div>
@@ -42,7 +44,7 @@
               {{/each}}
 
             {{else}}
-              <p id="no-data">No data</p>
+              <p id="no-directors">No data</p>
             {{/if}}
 
           </dl>
