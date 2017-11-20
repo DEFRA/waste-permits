@@ -50,7 +50,7 @@ module.exports = class Account extends BaseModel {
       let dataObject
       if (isDraft) {
         dataObject = {
-          defra_companyhouseid: this.companyNumber,
+          defra_companyhouseid: this.companyNumber.toUpperCase(),
           defra_draft: true,
           defra_validatedwithcompanyhouse: false
         }
