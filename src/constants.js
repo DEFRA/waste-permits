@@ -206,6 +206,7 @@ Constants.Dynamics = {
     CONFIRM_CONFIDENTIALLY: 'defra_cnfconfidentialityreq_completed',
     CONFIRM_RULES: 'defra_confirmreadrules_completed',
     CONTACT_DETAILS: 'defra_contactdetailsrequired_completed',
+    COMPANY_DETAILS: 'defra_companydetails_completed',
     DEFRA_WASTE_WEIGHT: 'defra_extwasteweightreq_completed',
     FIRE_PREVENTION_PLAN: 'defra_fireplanrequired_completed',
     MANAGEMENT_SYSTEM: 'defra_mansystemrequired_completed',

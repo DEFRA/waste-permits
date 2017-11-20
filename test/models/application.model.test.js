@@ -20,6 +20,7 @@ let testApplicationId = 'APPLICATION_ID'
 
 lab.beforeEach(() => {
   testApplication = new Application(fakeApplicationData)
+  testApplication.delay = 0
 
   // Stub methods
   dynamicsSearchStub = DynamicsDalService.prototype.search
