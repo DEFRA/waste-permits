@@ -44,13 +44,13 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => true
+  CookieService.validateCookie = () => true
 
   companyLookupGetCompanyNameStub = CompanyLookupService.getCompanyName
   CompanyLookupService.getCompanyName = (companyNumber) => fakeAccountData.companyName
 
   applicationGetByIdStub = Application.getById
-  Application.getById = (authToken, applicationId) => fakeApplicationData
+  Application.getById = () => fakeApplicationData
 
   applicationGetByIdStub = Account.getByApplicationId
   Account.getByApplicationId = (authToken, applicationId) => fakeAccountData

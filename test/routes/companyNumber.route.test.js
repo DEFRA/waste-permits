@@ -78,7 +78,7 @@ lab.experiment('Get company number page tests:', () => {
       }
 
       accountSaveStub = Account.prototype.save
-      Account.prototype.save = (authToken) => new Account(fakeAccount)
+      Account.prototype.save = () => new Account(fakeAccount)
     })
 
     lab.test('should have a back link', async () => {
@@ -128,7 +128,7 @@ lab.experiment('Get company number page tests:', () => {
       }
 
       accountSaveStub = Account.prototype.save
-      Account.prototype.save = (authToken) => {
+      Account.prototype.save = () => {
         return fakeAccount.id
       }
     })

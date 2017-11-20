@@ -23,7 +23,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = (query) => {
+  DynamicsDalService.prototype.search = () => {
     // Dynamics Contact objects
     return {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
@@ -52,12 +52,12 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => {
+  DynamicsDalService.prototype.create = () => {
     return '7a8e4354-4f24-e711-80fd-5065f38a1b01'
   }
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => {
+  DynamicsDalService.prototype.update = (dataObject) => {
     return dataObject.id
   }
 })
@@ -71,7 +71,7 @@ lab.afterEach(() => {
 
 lab.experiment('Contact Model tests:', () => {
   lab.test('getById() method returns a single Contact object', async () => {
-    DynamicsDalService.prototype.search = (query) => {
+    DynamicsDalService.prototype.search = () => {
       // Dynamics Contact objects
       return {
         '@odata.etag': 'W/"1155486"',

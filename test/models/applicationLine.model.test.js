@@ -25,7 +25,7 @@ lab.beforeEach(() => {
   // Stub methods
 
   dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = (query) => {
+  DynamicsDalService.prototype.search = () => {
     // Dynamics Contact objects
     return {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
@@ -73,7 +73,7 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => applicationLineId
+  DynamicsDalService.prototype.create = () => applicationLineId
 })
 
 lab.afterEach(() => {
