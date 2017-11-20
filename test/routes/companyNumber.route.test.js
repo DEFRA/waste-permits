@@ -25,7 +25,7 @@ const nextRoutePath = '/permit-holder/company/check-name'
 
 lab.beforeEach(() => {
   fakeAccount = {
-    id: '403710b7-18b8-e711-810d-5065f38bb461',
+    id: 'ACCOUNT_ID',
     companyNumber: '01234567'
   }
   fakeApplication = {

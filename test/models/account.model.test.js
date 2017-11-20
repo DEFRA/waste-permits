@@ -22,7 +22,7 @@ const fakeAccountData = {
   tradingName: undefined
 }
 const fakeApplicationData = {
-  id: '403710b7-18b8-e711-810d-5065f38bb461',
+  id: 'APPLICATION_ID',
   accountId: 'ACCOUNT_ID'
 }
 
