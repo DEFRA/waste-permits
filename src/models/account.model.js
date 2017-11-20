@@ -23,8 +23,7 @@ module.exports = class Account extends BaseModel {
     const application = await Application.getById(authToken, applicationId)
     if (application.accountId) {
       try {
-        const filter = `accountid eq ${application.accountId}`
-        const query = encodeURI(`accounts?$select=defra_companyhouseid,name,defra_tradingname&$filter=${filter}`)
+        const query = encodeURI(`accounts(${application.accountId})?$select=defra_companyhouseid,name,defra_tradingname`)
         const result = await dynamicsDal.search(query)
         if (result) {
           account = new Account({
@@ -42,29 +41,40 @@ module.exports = class Account extends BaseModel {
     return account
   }
 
-  async save (authToken) {
+  async save (authToken, isDraft) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
     // Update the Account
     try {
       // Map the Account to the corresponding Dynamics schema Account object
-      const dataObject = {
-        defra_companyhouseid: this.companyNumber,
-        name: this.companyName,
-        defra_tradingname: this.tradingName
+
+      let dataObject
+      if (isDraft) {
+        dataObject = {
+          defra_companyhouseid: this.companyNumber.toUpperCase(),
+          defra_draft: true,
+          defra_validatedwithcompanyhouse: false
+        }
+      } else {
+        dataObject = {
+          name: this.companyName,
+          defra_tradingname: this.tradingName,
+          defra_draft: false,
+          defra_validatedwithcompanyhouse: true
+        }
       }
       let query
       if (this.isNew()) {
         // New Account
         dataObject.defra_draft = true
         dataObject.defra_validatedwithcompanyhouse = false
-        query = 'defra_accounts'
+        query = 'accounts'
         this.id = await dynamicsDal.create(query, dataObject)
       } else {
         // Update Account
         dataObject.defra_draft = false
         dataObject.defra_validatedwithcompanyhouse = true
-        query = `defra_accounts(${this.id})`
+        query = `accounts(${this.id})`
         await dynamicsDal.update(query, dataObject)
       }
     } catch (error) {

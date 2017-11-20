@@ -8,22 +8,28 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
-const ConfirmRules = require('../../src/models/confirmRules.model')
+const Application = require('../../src/models/application.model')
+const Account = require('../../src/models/account.model')
 const LoggingService = require('../../src/services/logging.service')
-const Constants = require('../../src/constants')
 
 let validateCookieStub
-let confirmRulesSaveStub
+let accountSaveStub
 let getByApplicationIdStub
+let applicationGetByIdStub
 let logErrorStub
-let fakeConfirmRules
+let fakeAccount
+let fakeApplication
 
-const routePath = '/confirm-rules'
+const routePath = '/permit-holder/company/number'
+const nextRoutePath = '/permit-holder/company/check-name'
 
 lab.beforeEach(() => {
-  fakeConfirmRules = {
-    applicationId: '403710b7-18b8-e711-810d-5065f38bb461',
-    applicationLineId: '423710b7-18b8-e711-810d-5065f38bb461'
+  fakeAccount = {
+    id: '403710b7-18b8-e711-810d-5065f38bb461',
+    companyNumber: '01234567'
+  }
+  fakeApplication = {
+    accountId: '403710b7-18b8-e711-810d-5065f38bb461'
   }
   // Stub methods
   validateCookieStub = CookieService.validateCookie
@@ -32,18 +38,23 @@ lab.beforeEach(() => {
   logErrorStub = LoggingService.logError
   LoggingService.logError = () => {}
 
-  getByApplicationIdStub = ConfirmRules.getByApplicationId
-  ConfirmRules.getByApplicationId = (authToken, applicationId, applicationLineId) => fakeConfirmRules
+  getByApplicationIdStub = Account.getByApplicationId
+  Account.getByApplicationId = () => undefined
+
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
 })
 
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
   LoggingService.logError = logErrorStub
+  Account.getByApplicationId = getByApplicationIdStub
+  Application.getById = applicationGetByIdStub
 })
 
-lab.experiment('Confirm that your operation meets the rules page tests:', () => {
-  lab.experiment('GET /confirm-rules', () => {
+lab.experiment('Get company number page tests:', () => {
+  lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
 
@@ -52,9 +63,9 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
       Code.expect(res.statusCode).to.equal(200)
 
       const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Confirm your operation meets the rules')
-      Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.exist()
+      doc = parser.parseFromString(res.payload, 'text/html')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`What's the UK company registration number?`)
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
       return doc
     }
 
@@ -66,8 +77,8 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
         payload: {}
       }
 
-      confirmRulesSaveStub = ConfirmRules.prototype.save
-      ConfirmRules.prototype.save = (authToken) => {}
+      accountSaveStub = Account.prototype.save
+      Account.prototype.save = (authToken) => new Account(fakeAccount)
     })
 
     lab.test('should have a back link', async () => {
@@ -76,23 +87,12 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
       Code.expect(element).to.exist()
     })
 
-    lab.experiment('success', () => {
-      lab.test('when incomplete', async () => {
-        doc = await getDoc()
+    lab.test('success', async () => {
+      doc = await getDoc()
 
-        Code.expect(doc.getElementById('confirm-result-message')).to.not.exist()
-        Code.expect(doc.getElementById('return-to-task-list-button')).to.not.exist()
-        Code.expect(doc.getElementById('operation-meets-rules-button').firstChild.nodeValue).to.equal('Our operation meets these rules')
-      })
-
-      lab.test('when complete', async () => {
-        fakeConfirmRules.complete = true
-        doc = await getDoc()
-
-        Code.expect(doc.getElementById('confirm-result-message')).to.exist()
-        Code.expect(doc.getElementById('return-to-task-list-button').firstChild.nodeValue).to.equal('Return to task list')
-        Code.expect(doc.getElementById('operation-meets-rules-button')).to.not.exist()
-      })
+      Code.expect(doc.getElementById('company-number-label')).to.exist()
+      Code.expect(doc.getElementById('company-number')).to.exist()
+      Code.expect(doc.getElementById('overseas-help')).to.exist()
     })
 
     lab.experiment('failure', () => {
@@ -106,7 +106,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.getByApplicationId = () => undefined
+        Account.getByApplicationId = () => Promise.reject(new Error('read failed'))
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
@@ -116,7 +116,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
     })
   })
 
-  lab.experiment('POST /confirm-rules', () => {
+  lab.experiment(`POST ${routePath}`, () => {
     let postRequest
 
     lab.beforeEach(() => {
@@ -124,34 +124,34 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
         method: 'POST',
         url: routePath,
         headers: {},
-        payload: {}
+        payload: {'company-number': fakeAccount.companyNumber}
       }
 
-      confirmRulesSaveStub = ConfirmRules.prototype.save
-      ConfirmRules.prototype.save = (authToken) => {}
+      accountSaveStub = Account.prototype.save
+      Account.prototype.save = (authToken) => {
+        return fakeAccount.id
+      }
     })
 
     lab.afterEach(() => {
       // Restore stubbed methods
-      ConfirmRules.prototype.save = confirmRulesSaveStub
-      ConfirmRules.getByApplicationId = getByApplicationIdStub
+      Account.prototype.save = accountSaveStub
     })
 
     lab.experiment('success', () => {
-      lab.test('when incomplete', async () => {
-        ConfirmRules.getByApplicationId = () => ({complete: false})
+      lab.test('when account is saved', async () => {
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/confirm-rules')
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
-      lab.test('when complete', async () => {
-        ConfirmRules.getByApplicationId = () => ({complete: true})
+      lab.test('when account is updated', async () => {
+        Account.getByApplicationId = (authToken, applicationId) => Promise.resolve(new Account(fakeAccount))
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/task-list')
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
     })
 
@@ -166,7 +166,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.getByApplicationId = () => Promise.reject(new Error('read failed'))
+        Account.getByApplicationId = () => Promise.reject(new Error('read failed'))
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
@@ -176,7 +176,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.prototype.save = () => Promise.reject(new Error('save failed'))
+        Account.prototype.save = () => Promise.reject(new Error('save failed'))
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
