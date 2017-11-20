@@ -1,5 +1,6 @@
 'use strict'
 
+const moment = require('moment')
 const rp = require('request-promise')
 
 const config = require('../config/config')
@@ -38,8 +39,7 @@ module.exports = class CompanyLookupService {
 
   static async getDirectors (companyNumber) {
     const options = {
-      // TODO work out correct URL
-      uri: `${config.COMPANIES_HOUSE_SERVICE}/company/${companyNumber}/directors`,
+      uri: `${config.COMPANIES_HOUSE_SERVICE}/company/${companyNumber}/officers`,
       auth: {
         'username': config.COMPANIES_HOUSE_API_KEY,
         'password': ''
@@ -47,46 +47,32 @@ module.exports = class CompanyLookupService {
       json: true
     }
 
-    let directors
+    let directors = []
     await rp(options)
       .then((data) => {
-        console.log('DATA:', data)                    
         if (data) {
-          console.log('has DATA:', data)            
-      
-          // companyName = data['company_name']
+          for (let item of data.items) {
+            const director = {}
+            if (item.resigned_on !== undefined) {
+              if (item.officer_role === 'director') {
+                // Parse and split out the director details so they can be reformatted
+                const nameParts = item.name.split(',')
+                director.surname = nameParts[0].trim()
+                director.forenames = nameParts[1].trim()
+                director.dateOfBirth = moment(item.date_of_birth.year + '-' + item.date_of_birth.month + '-1').format('MMMM YYYY')
 
-          // Convert the company name to upper case (in case it isn't already)
-          // if (companyName) {
-          //   companyName = companyName.toUpperCase()
-          // }
+                directors.push(director)
+              }
+            }
+          }
         }
       })
       .catch((error) => {
-        console.log('error:', error)                    
-        
         if (error.statusCode !== 404) {
           throw error
         }
       })
 
-      // TODO remove this once the service call is working
-      directors = [
-        {
-          name: 'Bob Bobbins1',
-          monthAndYear: 'May 1962'
-        }, {
-          name: 'Bob Bobbins2',
-          monthAndYear: 'May 1962'
-        }, {
-          name: 'Bob Bobbins3',
-          monthAndYear: 'May 1962'
-        }, {
-          name: 'Bob Bobbins4',
-          monthAndYear: 'May 1962'
-        }
-      ]
-
-    return directors
+      return directors
   }
 }

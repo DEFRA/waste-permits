@@ -9,7 +9,7 @@ const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
-  static async doGet(request, reply, errors) {
+  static async doGet (request, reply, errors) {
     try {
       const pageContext = BaseController.createPageContext(Constants.Routes.DIRECTOR_DATE_OF_BIRTH, errors, DirectorDateOfBirthValidator)
       const authToken = CookieService.getAuthToken(request)
@@ -22,25 +22,25 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         // return reply.redirect(Constants.Routes.ERROR.path)
 
         // TODO use this:
-        // return reply.redirect(Constants.Routes.COMPANY_NUMBER.path)    
+        // return reply.redirect(Constants.Routes.COMPANY_NUMBER.path)
         // return reply.redirect(Constants.Routes.TASK_LIST.path)
 
         // TODO remove this when the account has been created in Dynamics by the previous screen
         account = new Account({
           id: undefined,
-          companyNumber: '07395892',
+          companyNumber: '02456473',
           companyName: undefined,
           tradingName: undefined
         })
       }
 
-      pageContext.directors = await CompanyLookupService.getDirectors(account.companyName)
-      
+      pageContext.directors = await CompanyLookupService.getDirectors(account.companyNumber)
+
       if (pageContext.directors.length > 1) {
         pageContext.pageHeading = Constants.Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate
         pageContext.pageTitle = Constants.buildPageTitle(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate)
         // TODO change page title if there is an error using the following
-        // if (errors && errors.data.details) {          
+        // if (errors && errors.data.details) {
         //   pageContext.pageTitle = `${Constants.PAGE_TITLE_ERROR_PREFIX} ${pageContext.pageTitle}`
         // }
       }
@@ -54,7 +54,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     }
   }
 
-  static async doPost(request, reply, errors) {
+  static async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
       return DirectorDateOfBirthController.doGet(request, reply, errors)
     } else {
@@ -74,7 +74,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     }
   }
 
-  static handler(request, reply, source, errors) {
+  static handler (request, reply, source, errors) {
     return BaseController.handler(request, reply, errors, DirectorDateOfBirthController)
   }
 }
