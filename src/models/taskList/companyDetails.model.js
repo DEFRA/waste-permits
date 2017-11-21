@@ -21,7 +21,7 @@ module.exports = class CompanyDetails extends BaseModel {
       const isComplete = await CompanyDetails._isComplete(authToken, applicationId)
 
       const entity = {
-        [Constants.Dynamics.CompletedParamters.COMPANY_DETAILS]: isComplete
+        [Constants.Dynamics.CompletedParamters.PERMIT_HOLDER_DETAILS]: isComplete
       }
       const query = `defra_wasteparamses(${applicationLine.parametersId})`
       await dynamicsDal.update(query, entity)

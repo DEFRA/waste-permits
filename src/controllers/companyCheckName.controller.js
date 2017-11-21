@@ -7,8 +7,7 @@ const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
-
-// const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
+const CompanyDetails = require('../models/taskList/companyDetails.model')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -53,6 +52,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
+      const applicationLineId = CookieService.getApplicationLineId(request)
 
       try {
         let account = await Account.getByApplicationId(authToken, applicationId)
@@ -65,8 +65,11 @@ module.exports = class CompanyCheckNameController extends BaseController {
           account.tradingName = request.payload['business-trading-name']
           account.IsValidatedWithCompaniesHouse = true
           await account.save(authToken, false)
-        }
 
+          // This will need to move to later pages in the flow when they are developed,
+          // but it lives here for now
+          await CompanyDetails.updateCompleteness(authToken, applicationId, applicationLineId)
+        }
         return reply.redirect(Constants.Routes.TASK_LIST.path)
       } catch (error) {
         LoggingService.logError(error, request)
