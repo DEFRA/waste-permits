@@ -25,7 +25,7 @@ lab.beforeEach(() => {
   testAddress = new Address(fakeAddressData)
 
   dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = (query) => {
+  DynamicsDalService.prototype.search = () => {
     // Dynamics Address object
     return {
       '@odata.context': 'https://ea-lp-crm-devmaster.crm4.dynamics.com/api/data/v8.2/$metadata#defra_addresses/$entity',
@@ -75,10 +75,10 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => testAddressId
+  DynamicsDalService.prototype.create = () => testAddressId
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => dataObject.id
+  DynamicsDalService.prototype.update = (dataObject) => dataObject.id
 })
 
 lab.afterEach(() => {

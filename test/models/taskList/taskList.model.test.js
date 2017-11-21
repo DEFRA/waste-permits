@@ -13,7 +13,7 @@ let dynamicsSearchStub
 lab.beforeEach(() => {
   // Stub methods
   dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = (query) => {
+  DynamicsDalService.prototype.search = () => {
     return {
       '@odata.context': 'https://ea-lp-crm-devmaster.crm4.dynamics.com/api/data/v8.2/$metadata#defra_applicationlines(defra_parametersId(defra_showcostandtime,defra_showcostandtime_completed,defra_confirmreadrules,defra_confirmreadrules_completed,defra_wasterecoveryplanreq,defra_wasterecoveryplanreq_completed,defra_preapprequired,defra_preapprequired_completed,defra_contactdetailsrequired,defra_contactdetailsrequired_completed,defra_pholderdetailsrequired,defra_pholderdetailsrequired_completed,defra_locationrequired,defra_locationrequired_completed,defra_siteplanrequired,defra_siteplanrequired_completed,defra_techcompetenceevreq,defra_techcompetenceevreq_completed,defra_mansystemrequired,defra_mansystemrequired_completed,defra_fireplanrequired,defra_fireplanrequired_completed,defra_surfacedrainagereq,defra_surfacedrainagereq_completed,defra_cnfconfidentialityreq,defra_cnfconfidentialityreq_completed))/$entity',
       '@odata.etag': 'W/"725645"',

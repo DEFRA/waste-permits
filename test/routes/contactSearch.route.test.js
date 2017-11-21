@@ -19,7 +19,7 @@ const routePath = '/contact-search'
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => true
+  CookieService.validateCookie = () => true
 
   contactListStub = Contact.list
   Contact.list = (authToken) => {

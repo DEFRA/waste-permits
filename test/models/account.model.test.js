@@ -42,13 +42,13 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => fakeApplicationData.accountId
+  DynamicsDalService.prototype.create = () => fakeApplicationData.accountId
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => fakeApplicationData.accountId
+  DynamicsDalService.prototype.update = () => fakeApplicationData.accountId
 
   applicationGetByIdStub = Application.getById
-  Application.getById = (authToken, applicationId) => fakeApplicationData
+  Application.getById = () => fakeApplicationData
 })
 
 lab.afterEach(() => {

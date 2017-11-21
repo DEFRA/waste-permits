@@ -36,10 +36,10 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => true
+  CookieService.validateCookie = () => true
 
   siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
-  SiteNameAndLocation.getAddress = (request, authToken, applicationId, applicationLineId) => {
+  SiteNameAndLocation.getAddress = () => {
     return new Address({
       id: 'ADDRESS_ID',
       postcode: fakeAddress.postcode
