@@ -10,6 +10,7 @@ module.exports = class Address extends BaseModel {
     super()
     this.id = address.id
     this.postcode = address.postcode
+    Utilities.convertFromDynamics(this)
   }
 
   static async getById (authToken, id) {
@@ -21,8 +22,8 @@ module.exports = class Address extends BaseModel {
         const result = await dynamicsDal.search(query)
         if (result) {
           address = new Address({
-            id: Utilities.replaceNull(result.defra_addressid),
-            postcode: Utilities.replaceNull(result.defra_postcode)
+            id: result.defra_addressid,
+            postcode: result.defra_postcode
           })
         }
       } catch (error) {

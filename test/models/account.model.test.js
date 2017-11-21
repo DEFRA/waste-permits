@@ -19,7 +19,7 @@ const fakeAccountData = {
   id: undefined,
   companyNumber: 'COMPANY_NUMBER',
   companyName: undefined,
-  tradingName: undefined
+  tradingName: null
 }
 const fakeApplicationData = {
   id: 'APPLICATION_ID',
@@ -65,6 +65,10 @@ lab.experiment('Account Model tests:', () => {
     Code.expect(emptyAccount).to.be.empty()
 
     Code.expect(testAccount.companyNumber).to.equal(fakeAccountData.companyNumber)
+    Code.expect(testAccount.companyName).to.equal(fakeAccountData.companyName)
+
+    // Should have been converted from null to undefined
+    Code.expect(testAccount.tradingName).to.equal(undefined)
   })
 
   lab.test('getByApplicationId() method returns a single Account object', async () => {
