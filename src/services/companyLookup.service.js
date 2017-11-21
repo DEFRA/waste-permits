@@ -21,11 +21,6 @@ module.exports = class CompanyLookupService {
       .then((data) => {
         if (data) {
           companyName = data['company_name']
-
-          // Convert the company name to upper case (in case it isn't already)
-          if (companyName) {
-            companyName = companyName.toUpperCase()
-          }
         }
       })
       .catch((error) => {

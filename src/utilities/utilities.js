@@ -8,6 +8,13 @@ module.exports = class Utilities {
     return value
   }
 
+  static UndefinedToNull (value) {
+    if (value === undefined) {
+      value = null
+    }
+    return value
+  }
+
   static stripWhitespace (value) {
     if (value) {
       value = value.replace(/\s/g, '')

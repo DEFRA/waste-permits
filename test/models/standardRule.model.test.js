@@ -30,7 +30,7 @@ lab.afterEach(() => {
 
 lab.experiment('StandardRule Model tests:', () => {
   lab.test('list() method returns a list of StandardRule objects', async () => {
-    DynamicsDalService.prototype.search = (query) => {
+    DynamicsDalService.prototype.search = () => {
       return {
         '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
         value: [{
@@ -67,7 +67,7 @@ lab.experiment('StandardRule Model tests:', () => {
   })
 
   lab.test('getByCode() method returns a StandardRule object', async () => {
-    DynamicsDalService.prototype.search = (query) => {
+    DynamicsDalService.prototype.search = () => {
       return {
         '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
         value: [{

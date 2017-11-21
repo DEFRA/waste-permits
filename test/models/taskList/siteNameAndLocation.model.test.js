@@ -55,13 +55,13 @@ lab.beforeEach(() => {
   // Stub methods
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => dataObject.id
+  DynamicsDalService.prototype.update = (dataObject) => dataObject.id
 
   applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = (authToken, applicationLineId) => fakeApplicationLine
+  ApplicationLine.getById = () => fakeApplicationLine
 
   locationGetByApplicationIdStub = Location.getByApplicationId
-  Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+  Location.getByApplicationId = () => {
     return new Location(fakeLocation)
   }
 
@@ -71,10 +71,10 @@ lab.beforeEach(() => {
   }
 
   locationSaveStub = Location.prototype.save
-  Location.prototype.save = (authToken) => {}
+  Location.prototype.save = () => {}
 
   locationDetailSaveStub = LocationDetail.prototype.save
-  LocationDetail.prototype.save = (authToken) => {}
+  LocationDetail.prototype.save = () => {}
 
   addressGetByIdStub = Address.getById
   Address.getById = (authToken, id) => {
@@ -103,7 +103,7 @@ const testCompleteness = async (obj, expectedResult) => {
 
 lab.experiment('Task List: Site Name and Location Model tests:', () => {
   lab.test('getSiteName() method correctly retrieves undefined site name when there is no saved Location', async () => {
-    Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+    Location.getByApplicationId = () => {
       return undefined
     }
 
@@ -123,7 +123,7 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
   })
 
   lab.test('getGridReference() method correctly retrieves undefined grid reference when there is no saved Location or LocationDetail', async () => {
-    Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+    Location.getByApplicationId = () => {
       return undefined
     }
     LocationDetail.getByLocationId = (authToken, locationId) => {

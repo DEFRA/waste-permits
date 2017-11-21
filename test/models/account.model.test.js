@@ -22,16 +22,17 @@ const fakeAccountData = {
   tradingName: undefined
 }
 const fakeApplicationData = {
+  id: 'APPLICATION_ID',
   accountId: 'ACCOUNT_ID'
 }
 
 const authToken = 'THE_AUTH_TOKEN'
-const applicationId = fakeAccountData.companyNumber
+const applicationId = fakeApplicationData.id
 
 lab.beforeEach(() => {
   testAccount = new Account(fakeAccountData)
   dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = (query) => {
+  DynamicsDalService.prototype.search = () => {
     // Dynamics Account object
     return {
       '@odata.etag': 'W/"1039178"',
@@ -41,13 +42,13 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => fakeApplicationData.accountId
+  DynamicsDalService.prototype.create = () => fakeApplicationData.accountId
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => fakeApplicationData.accountId
+  DynamicsDalService.prototype.update = () => fakeApplicationData.accountId
 
   applicationGetByIdStub = Application.getById
-  Application.getById = (authToken, applicationId) => fakeApplicationData
+  Application.getById = () => fakeApplicationData
 })
 
 lab.afterEach(() => {
@@ -75,7 +76,7 @@ lab.experiment('Account Model tests:', () => {
 
   lab.test('save() method saves a new Account object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testAccount.save()
+    await testAccount.save(authToken, false)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAccount.id).to.equal(fakeApplicationData.accountId)
   })
@@ -83,7 +84,7 @@ lab.experiment('Account Model tests:', () => {
   lab.test('save() method updates an existing Account object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testAccount.id = fakeApplicationData.accountId
-    await testAccount.save()
+    await testAccount.save(authToken, false)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAccount.id).to.equal(fakeApplicationData.accountId)
   })

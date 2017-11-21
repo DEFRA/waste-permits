@@ -7,8 +7,7 @@ const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
-
-// const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
+const CompanyDetails = require('../models/taskList/companyDetails.model')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -19,20 +18,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
       let account = await Account.getByApplicationId(authToken, applicationId)
       if (!account) {
-        // TODO apply this when the account has been created in Dynamics by the previous screen
-        // LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-        // return reply.redirect(Constants.Routes.ERROR.path)
-
-        // TODO use this instead of error page?
-        // return reply.redirect(Constants.Routes.COMPANY_NUMBER.path)
-
-        // TODO remove this when the account has been created in Dynamics by the previous screen
-        account = new Account({
-          id: undefined,
-          companyNumber: '07395892',
-          companyName: undefined,
-          tradingName: undefined
-        })
+        return reply.redirect(Constants.Routes.TASK_LIST.path)
       }
 
       account.companyName = await CompanyLookupService.getCompanyName(account.companyNumber)
@@ -66,29 +52,31 @@ module.exports = class CompanyCheckNameController extends BaseController {
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
+      const applicationLineId = CookieService.getApplicationLineId(request)
 
       try {
         let account = await Account.getByApplicationId(authToken, applicationId)
-
         if (!account) {
-          // TODO apply this when the account has been created in Dynamics by the previous screen
-          // LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-          // return reply.redirect(Constants.Routes.ERROR.path)
-
-          // TODO remove this when the account has been created in Dynamics by the previous screen
-          account = new Account({
-            id: undefined,
-            companyNumber: '07395892',
-            companyName: undefined,
-            tradingName: undefined
-          })
+          return reply.redirect(Constants.Routes.TASK_LIST.path)
         }
 
+        // Look up the company number at Companies House
         account.companyName = await CompanyLookupService.getCompanyName(account.companyNumber)
-        account.tradingName = request.payload['business-trading-name']
+        if (account.companyName !== undefined) {
+          // The company trading name is only set if the corresponding checkbox is ticked
+          if (request.payload['use-business-trading-name'] === 'on') {
+            account.tradingName = request.payload['business-trading-name']
+          } else {
+            account.tradingName = undefined
+          }
 
-        await account.save(authToken)
+          account.IsValidatedWithCompaniesHouse = true
+          await account.save(authToken, false)
 
+          // This will need to move to later pages in the flow when they are developed,
+          // but it lives here for now
+          await CompanyDetails.updateCompleteness(authToken, applicationId, applicationLineId)
+        }
         return reply.redirect(Constants.Routes.TASK_LIST.path)
       } catch (error) {
         LoggingService.logError(error, request)

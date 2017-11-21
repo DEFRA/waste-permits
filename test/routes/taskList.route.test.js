@@ -180,16 +180,16 @@ const fakeTaskList = {
 lab.beforeEach(() => {
   // Stub methods
   generateCookieStub = CookieService.generateCookie
-  CookieService.generateCookie = (reply) => fakeCookie
+  CookieService.generateCookie = () => fakeCookie
 
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => true
+  CookieService.validateCookie = () => true
 
   standardRuleGetByCodeStub = StandardRule.getByCode
-  StandardRule.getByCode = async (authToken, code) => fakeStandardRule
+  StandardRule.getByCode = async () => fakeStandardRule
 
   taskListGetByApplicationLineIdStub = TaskList.getByApplicationLineId
-  TaskList.getByApplicationLineId = (authToken, applicationLineId) => fakeTaskList
+  TaskList.getByApplicationLineId = () => fakeTaskList
 })
 
 lab.afterEach(() => {

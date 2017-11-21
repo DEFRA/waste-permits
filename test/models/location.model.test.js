@@ -26,7 +26,7 @@ const applicationLineId = 'APPLICATION_LINE_ID'
 lab.beforeEach(() => {
   testLocation = new Location(fakeLocationData)
   dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = (query) => {
+  DynamicsDalService.prototype.search = () => {
     // Dynamics Location object
     return {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
@@ -39,10 +39,10 @@ lab.beforeEach(() => {
   }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = (dataObject, query) => testLocationId
+  DynamicsDalService.prototype.create = () => testLocationId
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => testLocationId
+  DynamicsDalService.prototype.update = () => testLocationId
 })
 
 lab.afterEach(() => {

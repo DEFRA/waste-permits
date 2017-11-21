@@ -15,7 +15,7 @@ const routePath = '/permit-holder/type'
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => true
+  CookieService.validateCookie = () => true
 })
 
 lab.afterEach(() => {
