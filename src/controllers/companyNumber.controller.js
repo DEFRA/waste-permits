@@ -44,7 +44,7 @@ module.exports = class CompanyNumberController extends BaseController {
         const account = (await Account.getByApplicationId(authToken, applicationId)) || new Account()
         const application = await Application.getById(authToken, applicationId)
         const companyNumber = Utilities.stripWhitespace(request.payload['company-number'])
-        const isDraft = (companyNumber !== account.companyNumber)
+        const isDraft = account.isDraft || companyNumber !== account.companyNumber
 
         account.companyNumber = companyNumber
         await account.save(authToken, isDraft)
