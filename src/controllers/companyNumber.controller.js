@@ -7,6 +7,7 @@ const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const Application = require('../models/application.model')
 const Account = require('../models/account.model')
+const Utilities = require('../utilities/utilities')
 
 module.exports = class CompanyNumberController extends BaseController {
   static async doGet (request, reply, errors) {
@@ -42,9 +43,11 @@ module.exports = class CompanyNumberController extends BaseController {
       try {
         const account = (await Account.getByApplicationId(authToken, applicationId)) || new Account()
         const application = await Application.getById(authToken, applicationId)
+        const companyNumber = Utilities.stripWhitespace(request.payload['company-number'])
+        const isDraft = (companyNumber !== account.companyNumber)
 
-        account.companyNumber = request.payload['company-number']
-        await account.save(authToken, true)
+        account.companyNumber = companyNumber
+        await account.save(authToken, isDraft)
         if (!application.accountId) {
           application.accountId = account.id
           await application.save(authToken)
