@@ -33,7 +33,7 @@ lab.beforeEach(() => {
   LoggingService.logError = () => {}
 
   getByApplicationIdStub = ConfirmRules.getByApplicationId
-  ConfirmRules.getByApplicationId = (authToken, applicationId, applicationLineId) => fakeConfirmRules
+  ConfirmRules.getByApplicationId = () => fakeConfirmRules
 })
 
 lab.afterEach(() => {
@@ -67,7 +67,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
       }
 
       confirmRulesSaveStub = ConfirmRules.prototype.save
-      ConfirmRules.prototype.save = (authToken) => {}
+      ConfirmRules.prototype.save = () => {}
     })
 
     lab.test('should have a back link', async () => {
@@ -128,7 +128,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
       }
 
       confirmRulesSaveStub = ConfirmRules.prototype.save
-      ConfirmRules.prototype.save = (authToken) => {}
+      ConfirmRules.prototype.save = () => {}
     })
 
     lab.afterEach(() => {

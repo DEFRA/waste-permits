@@ -52,22 +52,22 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => true
+  CookieService.validateCookie = () => true
 
   locationSaveStub = Location.prototype.save
-  Location.prototype.save = (authToken) => {}
+  Location.prototype.save = () => {}
 
   locationDetailSaveStub = LocationDetail.prototype.save
-  LocationDetail.prototype.save = (authToken) => {}
+  LocationDetail.prototype.save = () => {}
 
   locationGetByApplicationIdStub = Location.getByApplicationId
-  Location.getByApplicationId = (authToken, applicationId, applicationLineId) => fakeLocation
+  Location.getByApplicationId = () => fakeLocation
 
   getByLocationIdStub = LocationDetail.getByLocationId
-  LocationDetail.getByLocationId = (authToken, locationId) => fakeLocationDetail
+  LocationDetail.getByLocationId = () => fakeLocationDetail
 
   siteNameAndLocationUpdateCompletenessStub = SiteNameAndLocation.updateCompleteness
-  SiteNameAndLocation.updateCompleteness = (authToken, applicationId, applicationLineId) => {}
+  SiteNameAndLocation.updateCompleteness = () => {}
 })
 
 lab.afterEach(() => {
@@ -160,7 +160,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
       }
 
       // Empty location details response
-      Location.getByApplicationId = (authToken, applicationId, applicationLineId) => {
+      Location.getByApplicationId = () => {
         return {}
       }
 

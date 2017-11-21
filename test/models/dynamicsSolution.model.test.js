@@ -12,7 +12,7 @@ let dynamicsSearchStub
 
 lab.beforeEach(() => {
   dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = (query) => {
+  DynamicsDalService.prototype.search = () => {
     // Dynamics DynamicsSolution objects
     return {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',

@@ -33,13 +33,13 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => true
+  CookieService.validateCookie = () => true
 
   getSiteNameStub = SiteNameAndLocation.getSiteName
-  SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => siteName
+  SiteNameAndLocation.getSiteName = () => siteName
 
   saveSiteNameStub = SiteNameAndLocation.saveSiteName
-  SiteNameAndLocation.saveSiteName = (request, siteName, authToken, applicationId, applicationLineId) => {}
+  SiteNameAndLocation.saveSiteName = () => {}
 })
 
 lab.afterEach(() => {

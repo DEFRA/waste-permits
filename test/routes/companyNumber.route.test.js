@@ -81,7 +81,7 @@ lab.experiment('Get company number page tests:', () => {
       Account.getByApplicationId = (authToken, applicationId) => Promise.resolve(new Account(fakeAccount))
 
       accountSaveStub = Account.prototype.save
-      Account.prototype.save = (authToken) => new Account(fakeAccount)
+      Account.prototype.save = () => new Account(fakeAccount)
     })
 
     lab.test('should have a back link', async () => {

@@ -33,10 +33,10 @@ lab.beforeEach(() => {
   // Stub methods
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject, query) => dataObject.id
+  DynamicsDalService.prototype.update = (dataObject) => dataObject.id
 
   applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = (authToken, applicationLineId) => fakeApplicationLine
+  ApplicationLine.getById = () => fakeApplicationLine
 
   accountGetByApplicationIdStub = Account.getByApplicationId
   Account.getByApplicationId = () => {
@@ -44,7 +44,7 @@ lab.beforeEach(() => {
   }
 
   accountSaveStub = Account.prototype.save
-  Account.prototype.save = (authToken) => {}
+  Account.prototype.save = () => {}
 })
 
 lab.afterEach(() => {

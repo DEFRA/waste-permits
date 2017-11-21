@@ -19,7 +19,7 @@ const routePath = '/contact-details'
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => true
+  CookieService.validateCookie = () => true
 
   contactGetByIdStub = Contact.getById
   Contact.getById = (authToken, id) => {
@@ -33,7 +33,7 @@ lab.beforeEach(() => {
   }
 
   contactSaveStub = Contact.prototype.save
-  Contact.prototype.save = (authToken) => {}
+  Contact.prototype.save = () => {}
 })
 
 lab.afterEach(() => {

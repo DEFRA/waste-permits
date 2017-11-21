@@ -29,9 +29,9 @@ const fakeStandardRule = {
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = (request) => true
+  CookieService.validateCookie = () => true
   standardRuleListStub = StandardRule.list
-  StandardRule.list = (authToken) => {
+  StandardRule.list = () => {
     return {
       count: 1,
       results: [fakeStandardRule]
@@ -42,7 +42,7 @@ lab.beforeEach(() => {
   StandardRule.getByCode = (authToken, code) => fakeStandardRule
 
   applicationLineSaveStub = ApplicationLine.save
-  ApplicationLine.prototype.save = (authToken) => {}
+  ApplicationLine.prototype.save = () => {}
 })
 
 lab.afterEach(() => {
