@@ -60,9 +60,16 @@ module.exports = class CompanyCheckNameController extends BaseController {
           return reply.redirect(Constants.Routes.TASK_LIST.path)
         }
 
+        // Look up the company number at Companies House
         account.companyName = await CompanyLookupService.getCompanyName(account.companyNumber)
         if (account.companyName !== undefined) {
-          account.tradingName = request.payload['business-trading-name']
+          // The company trading name is only set if the corresponding checkbox is ticked
+          if (request.payload['use-business-trading-name'] === 'on') {
+            account.tradingName = request.payload['business-trading-name']
+          } else {
+            account.tradingName = undefined
+          }
+
           account.IsValidatedWithCompaniesHouse = true
           await account.save(authToken, false)
 

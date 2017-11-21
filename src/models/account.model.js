@@ -51,7 +51,7 @@ module.exports = class Account extends BaseModel {
       const dataObject = {
         defra_companyhouseid: this.companyNumber.toUpperCase(),
         name: this.companyName,
-        defra_tradingname: this.tradingName,
+        defra_tradingname: Utilities.UndefinedToNull(this.tradingName),
         defra_draft: isDraft,
         defra_validatedwithcompanyhouse: this.IsValidatedWithCompaniesHouse
       }
