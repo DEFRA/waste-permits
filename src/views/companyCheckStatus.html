@@ -1,0 +1,32 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+
+      <form>
+        <div class="form-group">
+          <div id="confirm-result-message" class="panel panel-border-wide">
+            <p>
+              {{#if companyName }}
+                {{ companyName }} (company number {{ companyNumber }})
+              {{else}}
+                Company number {{ companyNumber }}
+              {{/if}}
+              can’t be a permit holder because it {{ companyStatus }}.
+            </p>
+          </div>
+
+          <p><a id="enter-different-number-link" href="{{ enterCompanyNumberRoute }}">Enter a different number</a></p>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+</main>
