@@ -14,7 +14,7 @@ module.exports = class Account extends BaseModel {
       this.companyNumber = account.companyNumber
       this.companyName = account.companyName
       this.tradingName = account.tradingName
-      this.isDraft = !!account.isDraft
+      this.isDraft = account.isDraft
       this.IsValidatedWithCompaniesHouse = account.IsValidatedWithCompaniesHouse
     }
   }
