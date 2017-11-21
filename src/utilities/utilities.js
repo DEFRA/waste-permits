@@ -8,7 +8,7 @@ module.exports = class Utilities {
     return value
   }
 
-  static UndefinedToNull(value) {
+  static UndefinedToNull (value) {
     if (value === undefined) {
       value = null
     }
