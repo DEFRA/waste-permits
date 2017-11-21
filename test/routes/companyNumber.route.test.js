@@ -25,12 +25,13 @@ const nextRoutePath = '/permit-holder/company/check-name'
 
 lab.beforeEach(() => {
   fakeAccount = {
-    id: '403710b7-18b8-e711-810d-5065f38bb461',
+    id: 'ACCOUNT_ID',
     companyNumber: '01234567'
   }
   fakeApplication = {
-    accountId: '403710b7-18b8-e711-810d-5065f38bb461'
+    accountId: fakeAccount.id
   }
+
   // Stub methods
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => true
@@ -77,6 +78,8 @@ lab.experiment('Get company number page tests:', () => {
         payload: {}
       }
 
+      Account.getByApplicationId = (authToken, applicationId) => Promise.resolve(new Account(fakeAccount))
+
       accountSaveStub = Account.prototype.save
       Account.prototype.save = () => new Account(fakeAccount)
     })
@@ -91,7 +94,7 @@ lab.experiment('Get company number page tests:', () => {
       doc = await getDoc()
 
       Code.expect(doc.getElementById('company-number-label')).to.exist()
-      Code.expect(doc.getElementById('company-number')).to.exist()
+      Code.expect(doc.getElementById('company-number').getAttribute('value')).to.equal(fakeAccount.companyNumber)
       Code.expect(doc.getElementById('overseas-help')).to.exist()
     })
 
@@ -140,7 +143,6 @@ lab.experiment('Get company number page tests:', () => {
 
     lab.experiment('success', () => {
       lab.test('when account is saved', async () => {
-
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
@@ -148,10 +150,41 @@ lab.experiment('Get company number page tests:', () => {
 
       lab.test('when account is updated', async () => {
         Account.getByApplicationId = (authToken, applicationId) => Promise.resolve(new Account(fakeAccount))
-
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      })
+    })
+
+    lab.experiment('invalid', () => {
+      const checkValidationError = async (companyNumber, expectedErrorMessage) => {
+        postRequest.payload['company-number'] = companyNumber
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(200)
+
+        const parser = new DOMParser()
+        const doc = parser.parseFromString(res.payload, 'text/html')
+
+        // Panel summary error item
+        Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
+
+        // Company number field error
+        Code.expect(doc.getElementById('company-number-error').firstChild.nodeValue).to.equal(expectedErrorMessage)
+
+        // Company number field contains payload
+        Code.expect(doc.getElementById('company-number').getAttribute('value')).to.equal(companyNumber)
+      }
+
+      lab.test('when company number is empty', async () => {
+        checkValidationError('', 'Enter a company registration number')
+      })
+
+      lab.test('when company number is not the right length', async () => {
+        checkValidationError('01234', 'Enter a valid company registration number with either 8 digits or 2 letters and 6 digits')
+      })
+
+      lab.test('when company number contains invalid characters', async () => {
+        checkValidationError('########', 'Enter a valid company registration number with either 8 digits or 2 letters and 6 digits')
       })
     })
 

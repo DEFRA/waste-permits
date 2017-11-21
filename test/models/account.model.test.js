@@ -22,11 +22,12 @@ const fakeAccountData = {
   tradingName: undefined
 }
 const fakeApplicationData = {
+  id: 'APPLICATION_ID',
   accountId: 'ACCOUNT_ID'
 }
 
 const authToken = 'THE_AUTH_TOKEN'
-const applicationId = fakeAccountData.companyNumber
+const applicationId = fakeApplicationData.id
 
 lab.beforeEach(() => {
   testAccount = new Account(fakeAccountData)

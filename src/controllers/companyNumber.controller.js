@@ -40,7 +40,7 @@ module.exports = class CompanyNumberController extends BaseController {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
       try {
-        let account = (await Account.getByApplicationId(authToken, applicationId)) || new Account()
+        const account = (await Account.getByApplicationId(authToken, applicationId)) || new Account()
         const application = await Application.getById(authToken, applicationId)
 
         account.companyNumber = request.payload['company-number']
