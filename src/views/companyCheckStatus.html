@@ -13,12 +13,8 @@
         <div class="form-group">
           <div id="confirm-result-message" class="panel panel-border-wide">
             <p>
-              {{#if companyName }}
-                {{ companyName }} (company number {{ companyNumber }})
-              {{else}}
-                Company number {{ companyNumber }}
-              {{/if}}
-              can’t be a permit holder because it {{ companyStatus }}.
+              <span id="company-name">{{ companyName }}</span> (company number <span id="company-number">{{ companyNumber }}</span>)
+              can’t be a permit holder because it <span id="company-status">{{ companyStatus }}</span>.
             </p>
           </div>
 
