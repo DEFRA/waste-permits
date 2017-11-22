@@ -6,9 +6,9 @@ const BaseController = require('./base.controller')
 const CheckYourEmailValidator = require('../validators/checkYourEmail.validator')
 
 module.exports = class CheckYourEmailController extends BaseController {
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.CHECK_YOUR_EMAIL, errors, CheckYourEmailValidator)
+      const pageContext = this.createPageContext(errors, CheckYourEmailValidator)
 
       pageContext.formValues = request.payload
       return reply.view('checkYourEmail', pageContext)
@@ -18,9 +18,9 @@ module.exports = class CheckYourEmailController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return CheckYourEmailController.doGet(request, reply, errors)
+      return this.doGet(request, reply, errors)
     } else {
       // TODO persist the data here if required using the applicationId from the cookie
 
@@ -28,7 +28,7 @@ module.exports = class CheckYourEmailController extends BaseController {
     }
   }
 
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, CheckYourEmailController, false)
+  handler (request, reply, source, errors) {
+    return super.handler(request, reply, source, errors, false)
   }
 }

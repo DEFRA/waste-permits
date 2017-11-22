@@ -2,13 +2,15 @@
 
 const Constants = require('../constants')
 const TaskListController = require('../controllers/taskList.controller')
+const controller = new TaskListController(Constants.Routes.TASK_LIST)
 
 module.exports = [{
   method: ['GET'],
-  path: Constants.Routes.TASK_LIST.path,
+  path: controller.path,
   config: {
     description: 'The task list page',
-    handler: TaskListController.handler,
+    handler: controller.handler,
+    bind: controller,
     state: {
       parse: true,
       failAction: 'error'

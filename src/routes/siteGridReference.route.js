@@ -3,26 +3,29 @@
 const Constants = require('../constants')
 const SiteGridReferenceController = require('../controllers/siteGridReference.controller')
 const SiteGridReferenceValidator = require('../validators/siteGridReference.validator')
+const controller = new SiteGridReferenceController(Constants.Routes.SITE_GRID_REFERENCE)
 
 module.exports = [{
   method: ['GET'],
-  path: Constants.Routes.SITE_GRID_REFERENCE.path,
+  path: controller.path,
   config: {
     description: 'The GET Site Grid Reference page',
-    handler: SiteGridReferenceController.handler
+    handler: controller.handler,
+    bind: controller
   }
 }, {
   method: ['POST'],
-  path: Constants.Routes.SITE_GRID_REFERENCE.path,
+  path: controller.path,
   config: {
     description: 'The POST Site Grid Reference page',
-    handler: SiteGridReferenceController.handler,
+    handler: controller.handler,
+    bind: controller,
     validate: {
       options: {
         allowUnknown: true
       },
       payload: SiteGridReferenceValidator.getFormValidators(),
-      failAction: SiteGridReferenceController.handler
+      failAction: controller.failAction
     }
   }
 }]

@@ -5,9 +5,9 @@ const BaseController = require('./base.controller')
 const LoggingService = require('../services/logging.service')
 
 module.exports = class CostTimeController extends BaseController {
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.COST_TIME)
+      const pageContext = this.createPageContext()
       return reply
         .view('costTime', pageContext)
     } catch (error) {
@@ -16,11 +16,7 @@ module.exports = class CostTimeController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     // Not implemented yet
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, CostTimeController)
   }
 }

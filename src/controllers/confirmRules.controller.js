@@ -7,7 +7,7 @@ const LoggingService = require('../services/logging.service')
 const ConfirmRules = require('../models/confirmRules.model')
 
 module.exports = class ConfirmRulesController extends BaseController {
-  static async isComplete (request) {
+  async isComplete (request) {
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     const applicationLineId = CookieService.getApplicationLineId(request)
@@ -15,9 +15,9 @@ module.exports = class ConfirmRulesController extends BaseController {
     return complete
   }
 
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.CONFIRM_RULES, errors)
+      const pageContext = this.createPageContext(errors)
 
       pageContext.complete = await this.isComplete(request)
       return reply
@@ -28,9 +28,9 @@ module.exports = class ConfirmRulesController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return ConfirmRulesController.doGet(request, reply, errors)
+      return this.doGet(request, reply, errors)
     } else {
       const authToken = CookieService.getAuthToken(request)
       try {
@@ -52,9 +52,5 @@ module.exports = class ConfirmRulesController extends BaseController {
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, ConfirmRulesController)
   }
 }

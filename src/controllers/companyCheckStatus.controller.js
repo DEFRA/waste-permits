@@ -9,7 +9,12 @@ const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
 
 module.exports = class CompanyStatusController extends BaseController {
-  static async doGet (request, reply, errors) {
+  constructor (route) {
+    super(route)
+    this.orginalPageHeading = route.pageHeading
+  }
+
+  async doGet (request, reply, errors) {
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     try {
@@ -20,11 +25,10 @@ module.exports = class CompanyStatusController extends BaseController {
         return reply.redirect(Constants.Routes.COMPANY_CHECK_NAME.path)
       }
 
-      const route = Object.assign({}, Constants.Routes.COMPANY_CHECK_STATUS)
       const companyStatus = Constants.CompanyStatus[company.companyStatus]
 
-      route.pageHeading = Handlebars.compile(route.pageHeading)({companyStatus: companyStatus})
-      const pageContext = BaseController.createPageContext(route, errors)
+      this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({companyStatus: companyStatus})
+      const pageContext = this.createPageContext(errors)
 
       pageContext.companyNumber = account.companyNumber
       pageContext.companyName = company.companyName
@@ -37,9 +41,5 @@ module.exports = class CompanyStatusController extends BaseController {
       LoggingService.logError(error, request)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, CompanyStatusController)
   }
 }

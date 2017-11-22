@@ -2,13 +2,15 @@
 
 const Constants = require('../constants')
 const CostTimeController = require('../controllers/costTime.controller')
+const controller = new CostTimeController(Constants.Routes.COST_TIME)
 
 module.exports = [{
   method: ['GET'],
-  path: Constants.Routes.COST_TIME.path,
+  path: controller.path,
   config: {
     description: 'The Cost and time for this permit page',
-    handler: CostTimeController.handler,
+    handler: controller.handler,
+    bind: controller,
     state: {
       parse: true,
       failAction: 'error'
