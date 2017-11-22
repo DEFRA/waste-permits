@@ -52,7 +52,7 @@ module.exports = class Account extends BaseModel {
     try {
       // Map the Account to the corresponding Dynamics schema Account object
       const dataObject = {
-        defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber.toUpperCase()),
+        defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber).toUpperCase(),
         name: this.companyName,
         defra_tradingname: this.tradingName,
         defra_draft: isDraft,
