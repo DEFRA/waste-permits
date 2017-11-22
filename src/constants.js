@@ -51,6 +51,10 @@ Constants.Routes = {
     pageHeading: `What's the UK company registration number?`,
     taskListHeading: `What's the company name or registration number?`
   },
+  COMPANY_CHECK_STATUS: {
+    path: '/permit-holder/company/status-not-active',
+    pageHeading: `We can't issue a permit to that company because it {{{companyStatus}}}`
+  },
   CONFIDENTIALITY: {
     path: '/confidentiality',
     pageHeading: 'Is part of your application commercially confidential?',
@@ -230,6 +234,18 @@ Constants.TaskList = {
     COMPLETE_APPLICATION: 'Complete application',
     SEND_AND_PAY: 'Send and pay'
   }
+}
+
+Constants.CompanyStatus = {
+  ACTIVE: 'is active',
+  DISSOLVED: 'has been dissolved',
+  LIQUIDATION: 'has gone into liquidation',
+  RECEIVERSHIP: 'is in receivership',
+  ADMINISTRATION: 'is in administration',
+  VOLUNTARY_ARRANGEMENT: 'is insolvent and has a Company Voluntary Arrangement',
+  CONVERTED_CLOSED: 'has been closed or converted',
+  INSOLVENCY_PROCEEDINGS: 'is insolvent',
+  NOT_ACTIVE: `isn't active`
 }
 
 Constants.buildPageTitle = (pageHeading) => {

@@ -21,7 +21,7 @@ let fakeAccount
 let fakeApplication
 
 const routePath = '/permit-holder/company/number'
-const nextRoutePath = '/permit-holder/company/check-name'
+const nextRoutePath = '/permit-holder/company/status-not-active'
 
 lab.beforeEach(() => {
   fakeAccount = {

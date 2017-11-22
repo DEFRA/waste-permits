@@ -21,7 +21,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
         return reply.redirect(Constants.Routes.TASK_LIST.path)
       }
 
-      account.companyName = await CompanyLookupService.getCompanyName(account.companyNumber)
+      account.companyName = (await CompanyLookupService.getCompany(account.companyNumber) || {}).companyName
 
       if (request.payload) {
         // If we have Location name in the payload then display them in the form
@@ -61,7 +61,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
         }
 
         // Look up the company number at Companies House
-        account.companyName = await CompanyLookupService.getCompanyName(account.companyNumber)
+        account.companyName = (await CompanyLookupService.getCompany(account.companyNumber) || {}).companyName
         if (account.companyName !== undefined) {
           // The company trading name is only set if the corresponding checkbox is ticked
           if (request.payload['use-business-trading-name'] === 'on') {

@@ -13,7 +13,7 @@ const Application = require('../../src/models/application.model')
 const Account = require('../../src/models/account.model')
 
 let validateCookieStub
-let companyLookupGetCompanyNameStub
+let companyLookupGetCompanyStub
 let applicationGetByIdStub
 
 const routePath = '/permit-holder/company/check-name'
@@ -46,8 +46,8 @@ lab.beforeEach(() => {
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => true
 
-  companyLookupGetCompanyNameStub = CompanyLookupService.getCompanyName
-  CompanyLookupService.getCompanyName = (companyNumber) => fakeAccountData.companyName
+  companyLookupGetCompanyStub = CompanyLookupService.getCompany
+  CompanyLookupService.getCompany = (companyNumber) => fakeAccountData
 
   applicationGetByIdStub = Application.getById
   Application.getById = () => fakeApplicationData
@@ -59,7 +59,7 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-  CompanyLookupService.getCompanyName = companyLookupGetCompanyNameStub
+  CompanyLookupService.getCompany = companyLookupGetCompanyStub
   Application.getById = applicationGetByIdStub
 })
 
@@ -179,7 +179,7 @@ lab.experiment('Check Company Details page tests:', () => {
   // lab.experiment(`GET ${routePath} Company Details not found at Companies House`, () => {
   //   lab.test('Check page elements', async () => {
   //     // Stub the company name not found response
-  //     CompanyLookupService.getCompanyName = (companyNumber) => {
+  //     CompanyLookupService.getCompany = (companyNumber) => {
   //       return undefined
   //     }
   //     checkPageElements(getRequest, false)
