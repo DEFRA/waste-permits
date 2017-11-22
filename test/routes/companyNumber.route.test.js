@@ -93,7 +93,6 @@ lab.experiment('Get company number page tests:', () => {
     lab.test('success', async () => {
       doc = await getDoc()
 
-      Code.expect(doc.getElementById('company-number-label')).to.exist()
       Code.expect(doc.getElementById('company-number').getAttribute('value')).to.equal(fakeAccount.companyNumber)
       Code.expect(doc.getElementById('overseas-help')).to.exist()
     })

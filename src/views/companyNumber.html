@@ -15,9 +15,6 @@
         <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
         <div class="form-group {{#getFormErrorGroupClass errors.company-number}}{{/getFormErrorGroupClass}}">
-          <label id="company-number-label" class="form-label" for="company-number">
-            {{title}}
-          </label>
 
           {{> common/fieldError fieldId='company-number-error' message=errors.company-number }}
 

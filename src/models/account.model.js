@@ -14,6 +14,7 @@ module.exports = class Account extends BaseModel {
       this.companyNumber = account.companyNumber
       this.companyName = account.companyName
       this.tradingName = account.tradingName
+      this.isDraft = account.isDraft
       this.IsValidatedWithCompaniesHouse = account.IsValidatedWithCompaniesHouse
     }
     Utilities.convertFromDynamics(this)
@@ -25,14 +26,15 @@ module.exports = class Account extends BaseModel {
     const application = await Application.getById(authToken, applicationId)
     if (application.accountId) {
       try {
-        const query = encodeURI(`accounts(${application.accountId})?$select=defra_companyhouseid,name,defra_tradingname`)
+        const query = encodeURI(`accounts(${application.accountId})?$select=defra_companyhouseid,name,defra_tradingname,defra_draft`)
         const result = await dynamicsDal.search(query)
         if (result) {
           account = new Account({
             id: application.accountId,
             companyNumber: result.defra_companyhouseid,
             companyName: result.name,
-            tradingName: result.defra_tradingname
+            tradingName: result.defra_tradingname,
+            isDraft: result.defra_draft
           })
         }
       } catch (error) {
@@ -50,7 +52,7 @@ module.exports = class Account extends BaseModel {
     try {
       // Map the Account to the corresponding Dynamics schema Account object
       const dataObject = {
-        defra_companyhouseid: this.companyNumber.toUpperCase(),
+        defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber).toUpperCase(),
         name: this.companyName,
         defra_tradingname: this.tradingName,
         defra_draft: isDraft,
