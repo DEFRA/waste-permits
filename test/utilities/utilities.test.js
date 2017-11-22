@@ -28,24 +28,87 @@ lab.experiment('Utilities tests:', () => {
     Code.expect(result).to.equal(expectedResult)
   })
 
-  lab.test('replaceNull() correctly returns the input string having replaced null with undefined', () => {
+  lab.test('convertFromDynamics() should correctly convert all object property values from null to undefined', () => {
+    let inputValue = {}
+    let expectedResult = {}
+    let result
+
+    result = Utilities.convertFromDynamics(inputValue)
+    Code.expect(result).to.equal(expectedResult)
+
+    inputValue = {
+      someProp: null,
+      anotherProp: 'SOME VALUE'
+    }
+    expectedResult = {
+      someProp: undefined,
+      anotherProp: 'SOME VALUE'
+    }
+    result = Utilities.convertFromDynamics(inputValue)
+    Code.expect(result.someProp).to.equal(expectedResult.someProp)
+    Code.expect(result.anotherProp).to.equal(expectedResult.anotherProp)
+  })
+
+  lab.test('convertToDynamics() should correctly convert all object property values from undefined to null', () => {
+    let inputValue = {}
+    let expectedResult = {}
+    let result
+
+    result = Utilities.convertToDynamics(inputValue)
+    Code.expect(result).to.equal(expectedResult)
+
+    inputValue = {
+      someProp: undefined,
+      anotherProp: 'SOME VALUE'
+    }
+    expectedResult = {
+      someProp: null,
+      anotherProp: 'SOME VALUE'
+    }
+    result = Utilities.convertToDynamics(inputValue)
+    Code.expect(result.someProp).to.equal(expectedResult.someProp)
+    Code.expect(result.anotherProp).to.equal(expectedResult.anotherProp)
+  })
+
+  lab.test('_replaceNull() correctly returns the input string having replaced null with undefined', () => {
     let inputValue, expectedResult, result
 
     inputValue = expectedResult = undefined
-    result = Utilities.replaceNull(inputValue)
+    result = Utilities._replaceNull(inputValue)
     Code.expect(result).to.equal(expectedResult)
 
     inputValue = expectedResult = ''
-    result = Utilities.replaceNull(inputValue)
+    result = Utilities._replaceNull(inputValue)
     Code.expect(result).to.equal(expectedResult)
 
     inputValue = expectedResult = '  THE INPUT STRING  '
-    result = Utilities.replaceNull(inputValue)
+    result = Utilities._replaceNull(inputValue)
     Code.expect(result).to.equal(expectedResult)
 
     inputValue = null
     expectedResult = undefined
-    result = Utilities.replaceNull(inputValue)
+    result = Utilities._replaceNull(inputValue)
+    Code.expect(result).to.equal(expectedResult)
+  })
+
+  lab.test('_replaceUndefined() correctly returns the input string having replaced undefined with null', () => {
+    let inputValue, expectedResult, result
+
+    inputValue = expectedResult = null
+    result = Utilities._replaceUndefined(inputValue)
+    Code.expect(result).to.equal(expectedResult)
+
+    inputValue = expectedResult = ''
+    result = Utilities._replaceUndefined(inputValue)
+    Code.expect(result).to.equal(expectedResult)
+
+    inputValue = expectedResult = '  THE INPUT STRING  '
+    result = Utilities._replaceUndefined(inputValue)
+    Code.expect(result).to.equal(expectedResult)
+
+    inputValue = undefined
+    expectedResult = null
+    result = Utilities._replaceUndefined(inputValue)
     Code.expect(result).to.equal(expectedResult)
   })
 })

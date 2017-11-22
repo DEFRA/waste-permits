@@ -12,6 +12,7 @@ module.exports = class LocationDetail extends BaseModel {
     this.gridReference = locationDetail.gridReference
     this.locationId = locationDetail.locationId
     this.addressId = locationDetail.addressId
+    Utilities.convertFromDynamics(this)
   }
 
   static async getByLocationId (authToken, locationId) {
@@ -26,10 +27,10 @@ module.exports = class LocationDetail extends BaseModel {
 
         if (result) {
           locationDetail = new LocationDetail({
-            id: Utilities.replaceNull(result.defra_locationdetailsid),
+            id: result.defra_locationdetailsid,
             locationId: locationId,
-            gridReference: Utilities.replaceNull(result.defra_gridreferenceid),
-            addressId: Utilities.replaceNull(result._defra_addressid_value)
+            gridReference: result.defra_gridreferenceid,
+            addressId: result._defra_addressid_value
           })
         }
       } catch (error) {

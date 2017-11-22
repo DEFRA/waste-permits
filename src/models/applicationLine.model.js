@@ -4,6 +4,7 @@ const Constants = require('../constants')
 const LoggingService = require('../services/logging.service')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
+const Utilities = require('../utilities/utilities')
 
 module.exports = class ApplicationLine extends BaseModel {
   constructor (applicationLine) {
@@ -11,6 +12,7 @@ module.exports = class ApplicationLine extends BaseModel {
     this.applicationId = applicationLine.applicationId
     this.standardRuleId = applicationLine.standardRuleId
     this.parametersId = applicationLine.parametersId
+    Utilities.convertFromDynamics(this)
   }
 
   static async getById (authToken, applicationLineId) {
