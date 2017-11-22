@@ -21,9 +21,9 @@
             <a id="enter-different-number-company-exists-link" href="{{ enterCompanyNumberRoute }}">Enter a different number</a></p>
           </div>
 
-          <h2 id="company-name" class="heading-medium">{{ formValues.company-name }}</h2>
+          <h2 id="company-name" class="heading-medium">{{ companyName }}</h2>
 
-          <p id="company-address">The company address goes here....</p>
+          <p id="company-address">{{ companyAddress }}</p>
 
           <div class="form-group {{#getFormErrorGroupClass errors.business-trading-name}}{{/getFormErrorGroupClass}}">
 

@@ -13,7 +13,10 @@ module.exports = class Account extends BaseModel {
       this.id = account.id
       this.companyNumber = account.companyNumber
       this.companyName = account.companyName
+
+      // TODO remove this once Dynamics is updated
       this.tradingName = account.tradingName
+
       this.isDraft = account.isDraft
       this.IsValidatedWithCompaniesHouse = account.IsValidatedWithCompaniesHouse
     }
@@ -33,7 +36,10 @@ module.exports = class Account extends BaseModel {
             id: application.accountId,
             companyNumber: result.defra_companyhouseid,
             companyName: result.name,
+
+            // TODO remove this once Dynamics is updated
             tradingName: result.defra_tradingname,
+
             isDraft: result.defra_draft
           })
         }
@@ -54,7 +60,10 @@ module.exports = class Account extends BaseModel {
       const dataObject = {
         defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber).toUpperCase(),
         name: this.companyName,
+
+        // TODO remove this once Dynamics is updated
         defra_tradingname: this.tradingName,
+
         defra_draft: isDraft,
         defra_validatedwithcompanyhouse: this.IsValidatedWithCompaniesHouse
       }

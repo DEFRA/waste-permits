@@ -107,7 +107,7 @@ lab.experiment('Company Lookup Service tests:', () => {
       })
       mockResponse(serviceResponse)
       const company = await CompanyLookupService.getCompany('07421224')
-      Code.expect(company.companyName).to.equal(serviceResponse.company_name)
+      Code.expect(company.name).to.equal(serviceResponse.company_name)
       Code.expect(company.companyStatus).to.equal(COMPANY_STATUSES[serviceResponse.company_status])
       Code.expect(company.isActive).to.equal(true)
     })

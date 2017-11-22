@@ -11,6 +11,9 @@ module.exports = class Application extends BaseModel {
     super()
     if (application) {
       this.accountId = application.accountId
+      // TODO use this once Dynamics is updated
+      // this.tradingName = account.tradingName
+
       // The following delay is required by the untilComplete method
       this.delay = 250
     }
@@ -24,6 +27,8 @@ module.exports = class Application extends BaseModel {
       const result = await dynamicsDal.search(query)
       const application = new Application({
         accountId: result._defra_customerid_value
+        // TODO use this once Dynamics is updated
+        // tradingName: result.defra_tradingname,
       })
       application.id = applicationId
       return application
@@ -51,17 +56,19 @@ module.exports = class Application extends BaseModel {
     const dataObject = {
       defra_regime: Constants.Dynamics.WASTE_REGIME,
       defra_source: Constants.Dynamics.DIGITAL_SOURCE
+      // TODO use this once Dynamics is updated
+      // defra_tradingname: this.tradingName
     }
 
     try {
       let query
       if (this.isNew()) {
-        // New application
+        // New Application
         query = 'defra_applications'
         this.id = await dynamicsDal.create(query, dataObject)
         LoggingService.logInfo(`Created application with ID: ${this.id}`)
       } else {
-        // Update Account
+        // Update Application
         query = `defra_applications(${this.id})`
         await dynamicsDal.update(query, {
           'defra_customerid_account@odata.bind': `accounts(${this.accountId})`

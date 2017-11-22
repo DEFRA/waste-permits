@@ -23,11 +23,12 @@ module.exports = class CompanyLookupService {
     await rp(options)
       .then((data) => {
         if (data) {
-          // Retrieve the company status and convert to upper case and replace the hyphens with underscores
-          const companyStatus = (data['company_status'] || '').toUpperCase().replace(/-/g, '_')
-          company.companyStatus = COMPANY_STATUS_LIST.indexOf(companyStatus) !== -1 ? companyStatus : DEFAULT_COMPANY_STATUS
-          company.isActive = (companyStatus === ACTIVE_COMPANY_STATUS)
-          company.companyName = data['company_name']
+          const formattedCompanyStatus = CompanyLookupService._formatCompanyStatus(data.company_status)
+
+          company.companyStatus = COMPANY_STATUS_LIST.includes(formattedCompanyStatus) ? formattedCompanyStatus : DEFAULT_COMPANY_STATUS
+          company.isActive = (formattedCompanyStatus === ACTIVE_COMPANY_STATUS)
+          company.name = data.company_name
+          company.address = CompanyLookupService._formatAddress(data.registered_office_address)
         }
       })
       .catch((error) => {
@@ -37,5 +38,17 @@ module.exports = class CompanyLookupService {
       })
 
     return company
+  }
+
+  // Convert to upper case and replaces the hyphens with underscores
+  static _formatCompanyStatus (companyStatus) {
+    return (companyStatus || '').toUpperCase().replace(/-/g, '_')
+  }
+  static _formatAddress (registeredOffice) {
+    let formattedAddress
+    if (registeredOffice) {
+      formattedAddress = `${registeredOffice.address_line_1}, ${registeredOffice.locality}, ${registeredOffice.region}, ${registeredOffice.postal_code}`
+    }
+    return formattedAddress
   }
 }

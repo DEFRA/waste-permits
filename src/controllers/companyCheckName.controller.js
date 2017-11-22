@@ -6,6 +6,7 @@ const CompanyCheckNameValidator = require('../validators/companyCheckName.valida
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const CompanyLookupService = require('../services/companyLookup.service')
+const Application = require('../models/application.model')
 const Account = require('../models/account.model')
 const CompanyDetails = require('../models/taskList/companyDetails.model')
 
@@ -21,7 +22,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
         return reply.redirect(Constants.Routes.TASK_LIST.path)
       }
 
-      account.companyName = (await CompanyLookupService.getCompany(account.companyNumber) || {}).companyName
+      const company = await CompanyLookupService.getCompany(account.companyNumber)
 
       if (request.payload) {
         // If we have Location name in the payload then display them in the form
@@ -29,13 +30,14 @@ module.exports = class CompanyCheckNameController extends BaseController {
       } else {
         pageContext.formValues = {
           'company-number': account.companyNumber,
-          'company-name': account.companyName,
           'use-business-trading-name': (account.tradingName !== undefined),
           'business-trading-name': account.tradingName
         }
       }
 
-      pageContext.companyFound = account.companyName !== undefined
+      pageContext.companyName = company.name
+      pageContext.companyAddress = company.address
+      pageContext.companyFound = company !== undefined
 
       pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
@@ -55,23 +57,27 @@ module.exports = class CompanyCheckNameController extends BaseController {
       const applicationLineId = CookieService.getApplicationLineId(request)
 
       try {
-        let account = await Account.getByApplicationId(authToken, applicationId)
-        if (!account) {
-          return reply.redirect(Constants.Routes.TASK_LIST.path)
-        }
+        const [application, account] = await Promise.all([
+          Application.getById(authToken, applicationId),
+          Account.getByApplicationId(authToken, applicationId)
+        ])
 
-        // Look up the company number at Companies House
-        account.companyName = (await CompanyLookupService.getCompany(account.companyNumber) || {}).companyName
-        if (account.companyName !== undefined) {
-          // The company trading name is only set if the corresponding checkbox is ticked
-          if (request.payload['use-business-trading-name'] === 'on') {
-            account.tradingName = request.payload['business-trading-name']
-          } else {
-            account.tradingName = undefined
-          }
+        if (application && account) {
+          const company = await CompanyLookupService.getCompany(account.companyNumber)
 
+          account.name = company.name
+          // TODO
+          // account.address = company.address
           account.IsValidatedWithCompaniesHouse = true
           await account.save(authToken, false)
+
+          // The company trading name is only set if the corresponding checkbox is ticked
+          if (request.payload['use-business-trading-name'] === 'on') {
+            application.tradingName = request.payload['business-trading-name']
+          } else {
+            application.tradingName = undefined
+          }
+          await application.save(authToken)
 
           // This will need to move to later pages in the flow when they are developed,
           // but it lives here for now
