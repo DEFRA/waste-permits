@@ -52,7 +52,7 @@ module.exports = class CompanyNumberController extends BaseController {
           application.accountId = account.id
           await application.save(authToken)
         }
-        return reply.redirect(Constants.Routes.COMPANY_CHECK_NAME.path)
+        return reply.redirect(Constants.Routes.COMPANY_CHECK_STATUS.path)
       } catch (error) {
         LoggingService.logError(error, request)
         return reply.redirect(Constants.Routes.ERROR.path)
