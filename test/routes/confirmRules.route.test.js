@@ -10,7 +10,6 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const ConfirmRules = require('../../src/models/confirmRules.model')
 const LoggingService = require('../../src/services/logging.service')
-const Constants = require('../../src/constants')
 
 let validateCookieStub
 let confirmRulesSaveStub
@@ -22,8 +21,8 @@ const routePath = '/confirm-rules'
 
 lab.beforeEach(() => {
   fakeConfirmRules = {
-    applicationId: '403710b7-18b8-e711-810d-5065f38bb461',
-    applicationLineId: '423710b7-18b8-e711-810d-5065f38bb461'
+    applicationId: 'APPLICATION_ID',
+    applicationLineId: 'APPLICATION_LINE_ID'
   }
   // Stub methods
   validateCookieStub = CookieService.validateCookie
@@ -143,7 +142,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/confirm-rules')
+        Code.expect(res.headers['location']).to.equal('/task-list')
       })
 
       lab.test('when complete', async () => {

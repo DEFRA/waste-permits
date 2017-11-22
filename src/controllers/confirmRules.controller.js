@@ -46,7 +46,7 @@ module.exports = class ConfirmRulesController extends BaseController {
         })
 
         await confirmRules.save(authToken)
-        return reply.redirect(Constants.Routes.CONFIRM_RULES.path)
+        return reply.redirect(Constants.Routes.TASK_LIST.path)
       } catch (error) {
         LoggingService.logError(error, request)
         return reply.redirect(Constants.Routes.ERROR.path)
