@@ -5,6 +5,7 @@ const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
 const ApplicationLine = require('./applicationLine.model')
+const Utilities = require('../utilities/utilities')
 
 module.exports = class ConfirmRules extends BaseModel {
   constructor (confirmRules) {
@@ -14,6 +15,7 @@ module.exports = class ConfirmRules extends BaseModel {
     this.complete = confirmRules.complete
     // The following delay is required by the untilComplete method
     this.delay = 250
+    Utilities.convertFromDynamics(this)
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {

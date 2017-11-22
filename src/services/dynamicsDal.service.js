@@ -5,6 +5,7 @@ const https = require('https')
 const HttpsProxyAgent = require('https-proxy-agent')
 const config = require('../config/config')
 const LoggingService = require('../services/logging.service')
+const Utilities = require('../utilities/utilities')
 
 module.exports = class DynamicsDalService {
   constructor (authToken) {
@@ -12,6 +13,7 @@ module.exports = class DynamicsDalService {
   }
 
   async create (query, dataObject) {
+    Utilities.convertToDynamics(dataObject)
     const options = this._requestOptions(this.authToken, query, 'POST', dataObject)
     LoggingService.logDebug('Dynamics POST options', options)
     const result = await this._call(options, dataObject)
@@ -20,6 +22,7 @@ module.exports = class DynamicsDalService {
   }
 
   async update (query, dataObject) {
+    Utilities.convertToDynamics(dataObject)
     const options = this._requestOptions(this.authToken, query, 'PATCH', dataObject)
     LoggingService.logDebug('Dynamics PATCH options', options)
     this._call(options, dataObject)

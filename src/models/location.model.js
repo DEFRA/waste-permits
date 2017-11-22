@@ -12,6 +12,7 @@ module.exports = class Location extends BaseModel {
     this.name = location.name
     this.applicationId = location.applicationId
     this.applicationLineId = location.applicationLineId
+    Utilities.convertFromDynamics(this)
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {
@@ -25,10 +26,10 @@ module.exports = class Location extends BaseModel {
         const result = response.value[0]
         if (result) {
           location = new Location({
-            id: Utilities.replaceNull(result.defra_locationid),
+            id: result.defra_locationid,
             applicationId: applicationId,
             applicationLineId: applicationLineId,
-            name: Utilities.replaceNull(result.defra_name)
+            name: result.defra_name
           })
         }
       } catch (error) {

@@ -17,6 +17,7 @@ module.exports = class Account extends BaseModel {
       this.isDraft = account.isDraft
       this.IsValidatedWithCompaniesHouse = account.IsValidatedWithCompaniesHouse
     }
+    Utilities.convertFromDynamics(this)
   }
 
   static async getByApplicationId (authToken, applicationId) {
@@ -30,10 +31,10 @@ module.exports = class Account extends BaseModel {
         if (result) {
           account = new Account({
             id: application.accountId,
-            companyNumber: Utilities.replaceNull(result.defra_companyhouseid),
-            companyName: Utilities.replaceNull(result.name),
-            tradingName: Utilities.replaceNull(result.defra_tradingname),
-            isDraft: Utilities.replaceNull(result.defra_draft)
+            companyNumber: result.defra_companyhouseid,
+            companyName: result.name,
+            tradingName: result.defra_tradingname,
+            isDraft: result.defra_draft
           })
         }
       } catch (error) {
@@ -53,7 +54,7 @@ module.exports = class Account extends BaseModel {
       const dataObject = {
         defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber.toUpperCase()),
         name: this.companyName,
-        defra_tradingname: Utilities.UndefinedToNull(this.tradingName),
+        defra_tradingname: this.tradingName,
         defra_draft: isDraft,
         defra_validatedwithcompanyhouse: this.IsValidatedWithCompaniesHouse
       }
