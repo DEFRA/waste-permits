@@ -141,11 +141,4 @@ lab.experiment('Company Lookup Service tests:', () => {
       })
     })
   })
-
-  lab.test('getCompanyName() should return the correct company name', async () => {
-    const serviceResponse = new ServiceResponse()
-    mockResponse(serviceResponse)
-    const companyName = await CompanyLookupService.getCompanyName('07421224')
-    Code.expect(companyName).to.equal(serviceResponse.company_name)
-  })
 })

@@ -38,8 +38,4 @@ module.exports = class CompanyLookupService {
 
     return company
   }
-
-  static async getCompanyName (companyNumber) {
-    return (await this.getCompany(companyNumber)).companyName
-  }
 }
