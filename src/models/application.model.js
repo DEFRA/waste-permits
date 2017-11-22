@@ -14,6 +14,7 @@ module.exports = class Application extends BaseModel {
       // The following delay is required by the untilComplete method
       this.delay = 250
     }
+    Utilities.convertFromDynamics(this)
   }
 
   static async getById (authToken, applicationId) {
@@ -22,7 +23,7 @@ module.exports = class Application extends BaseModel {
     try {
       const result = await dynamicsDal.search(query)
       const application = new Application({
-        accountId: Utilities.replaceNull(result._defra_customerid_value)
+        accountId: result._defra_customerid_value
       })
       application.id = applicationId
       return application
