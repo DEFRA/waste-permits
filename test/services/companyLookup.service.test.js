@@ -95,6 +95,12 @@ lab.afterEach(() => {
 
 lab.experiment('Company Lookup Service tests:', () => {
   lab.experiment('getCompany() should', async () => {
+    lab.test('handle a company that does not exist', async () => {
+      mockResponse()
+      const company = await CompanyLookupService.getCompany('07421224')
+      Code.expect(company).to.be.empty()
+    })
+
     lab.test('return the correct company when it exists', async () => {
       const serviceResponse = new ServiceResponse({
         companyStatus: COMPANY_STATUSES.active
@@ -106,17 +112,33 @@ lab.experiment('Company Lookup Service tests:', () => {
       Code.expect(company.isActive).to.equal(true)
     })
 
-    lab.test('handle a company that has an unknown status', async () => {
-      mockResponse({})
-      const company = await CompanyLookupService.getCompany('07421224')
-      Code.expect(company.companyStatus).to.equal(DEFAULT_COMPANY_STATUS)
-      Code.expect(company.isActive).to.equal(false)
+    lab.experiment('return the correct company status', () => {
+      Object.keys(COMPANY_STATUSES).forEach((status) => {
+        lab.test(`for ${status}`, async () => {
+          const serviceResponse = new ServiceResponse({company_status: status})
+          mockResponse(serviceResponse)
+          const company = await CompanyLookupService.getCompany('07421224')
+          Code.expect(company.companyStatus).to.equal(COMPANY_STATUSES[status])
+        })
+      })
+
+      lab.test(`for unknown status`, async () => {
+        const serviceResponse = new ServiceResponse({company_status: 'unknown status'})
+        mockResponse(serviceResponse)
+        const company = await CompanyLookupService.getCompany('07421224')
+        Code.expect(company.companyStatus).to.equal(DEFAULT_COMPANY_STATUS)
+      })
     })
 
-    lab.test('handle a company that does not exist', async () => {
-      mockResponse()
-      const company = await CompanyLookupService.getCompany('07421224')
-      Code.expect(company).to.be.empty()
+    lab.experiment('return correct isActive value', () => {
+      Object.keys(COMPANY_STATUSES).forEach((status) => {
+        lab.test(`for ${status}`, async () => {
+          const serviceResponse = new ServiceResponse({company_status: status})
+          mockResponse(serviceResponse)
+          const company = await CompanyLookupService.getCompany('07421224')
+          Code.expect(company.isActive).to.equal(status === 'active')
+        })
+      })
     })
   })
 
@@ -125,34 +147,5 @@ lab.experiment('Company Lookup Service tests:', () => {
     mockResponse(serviceResponse)
     const companyName = await CompanyLookupService.getCompanyName('07421224')
     Code.expect(companyName).to.equal(serviceResponse.company_name)
-  })
-
-  lab.experiment('getCompanyStatus() should return the correct company status', () => {
-    Object.keys(COMPANY_STATUSES).forEach((status) => {
-      lab.test(`for ${status}`, async () => {
-        const serviceResponse = new ServiceResponse({company_status: status})
-        mockResponse(serviceResponse)
-        const companyStatus = await CompanyLookupService.getCompanyStatus('07421224')
-        Code.expect(companyStatus).to.equal(COMPANY_STATUSES[status])
-      })
-    })
-
-    lab.test(`for unknown status`, async () => {
-      const serviceResponse = new ServiceResponse({company_status: 'unknown status'})
-      mockResponse(serviceResponse)
-      const companyStatus = await CompanyLookupService.getCompanyStatus('07421224')
-      Code.expect(companyStatus).to.equal('NOT_ACTIVE')
-    })
-  })
-
-  lab.experiment('isActive() should return correct value', () => {
-    Object.keys(COMPANY_STATUSES).forEach((status) => {
-      lab.test(`for ${status}`, async () => {
-        const serviceResponse = new ServiceResponse({company_status: status})
-        mockResponse(serviceResponse)
-        const isActive = await CompanyLookupService.isActive('07421224')
-        Code.expect(isActive).to.equal(status === 'active')
-      })
-    })
   })
 })
