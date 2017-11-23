@@ -16,18 +16,18 @@ module.exports = class CompanyStatusController extends BaseController {
       const account = await Account.getByApplicationId(authToken, applicationId)
 
       const company = await CompanyLookupService.getCompany(account.companyNumber)
-      if (!company.companyStatus || company.isActive) {
+      if (!company || !company.status || company.isActive) {
         return reply.redirect(Constants.Routes.COMPANY_CHECK_NAME.path)
       }
 
       const route = Object.assign({}, Constants.Routes.COMPANY_CHECK_STATUS)
-      const companyStatus = Constants.CompanyStatus[company.companyStatus]
+      const companyStatus = Constants.CompanyStatus[company.status]
 
       route.pageHeading = Handlebars.compile(route.pageHeading)({companyStatus: companyStatus})
       const pageContext = BaseController.createPageContext(route, errors)
 
       pageContext.companyNumber = account.companyNumber
-      pageContext.companyName = company.companyName
+      pageContext.companyName = company.name
       pageContext.companyStatus = companyStatus
       pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 

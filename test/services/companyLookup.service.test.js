@@ -98,7 +98,7 @@ lab.experiment('Company Lookup Service tests:', () => {
     lab.test('handle a company that does not exist', async () => {
       mockResponse()
       const company = await CompanyLookupService.getCompany('07421224')
-      Code.expect(company).to.be.empty()
+      Code.expect(company).to.be.undefined()
     })
 
     lab.test('return the correct company when it exists', async () => {
@@ -108,7 +108,7 @@ lab.experiment('Company Lookup Service tests:', () => {
       mockResponse(serviceResponse)
       const company = await CompanyLookupService.getCompany('07421224')
       Code.expect(company.name).to.equal(serviceResponse.company_name)
-      Code.expect(company.companyStatus).to.equal(COMPANY_STATUSES[serviceResponse.company_status])
+      Code.expect(company.status).to.equal(COMPANY_STATUSES[serviceResponse.company_status])
       Code.expect(company.isActive).to.equal(true)
     })
 
@@ -118,7 +118,7 @@ lab.experiment('Company Lookup Service tests:', () => {
           const serviceResponse = new ServiceResponse({company_status: status})
           mockResponse(serviceResponse)
           const company = await CompanyLookupService.getCompany('07421224')
-          Code.expect(company.companyStatus).to.equal(COMPANY_STATUSES[status])
+          Code.expect(company.status).to.equal(COMPANY_STATUSES[status])
         })
       })
 
@@ -126,7 +126,7 @@ lab.experiment('Company Lookup Service tests:', () => {
         const serviceResponse = new ServiceResponse({company_status: 'unknown status'})
         mockResponse(serviceResponse)
         const company = await CompanyLookupService.getCompany('07421224')
-        Code.expect(company.companyStatus).to.equal(DEFAULT_COMPANY_STATUS)
+        Code.expect(company.status).to.equal(DEFAULT_COMPANY_STATUS)
       })
     })
 

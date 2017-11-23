@@ -28,10 +28,20 @@ const fakeApplicationData = {
   accountId: 'ACCOUNT_ID'
 }
 
-const fakeAccountData = {
+const fakeCompanyData = {
   companyNumber: '012345678',
-  companyName: 'THE COMPANY NAME',
-  tradingName: 'THE TRADING NAME'
+  name: 'THE COMPANY NAME',
+  status: 'ACTIVE',
+  IsActive: true
+  // TODO remove this
+  // tradingName: 'THE TRADING NAME'
+}
+
+const fakeAccountData = {
+  companyNumber: fakeCompanyData.companyNumber,
+  companyName: fakeCompanyData.name
+  // TODO remove this
+  // tradingName: 'THE TRADING NAME'
 }
 
 lab.beforeEach(() => {
@@ -47,7 +57,7 @@ lab.beforeEach(() => {
   CookieService.validateCookie = () => true
 
   companyLookupGetCompanyStub = CompanyLookupService.getCompany
-  CompanyLookupService.getCompany = (companyNumber) => fakeAccountData
+  CompanyLookupService.getCompany = (companyNumber) => fakeCompanyData
 
   applicationGetByIdStub = Application.getById
   Application.getById = () => fakeApplicationData
@@ -82,6 +92,7 @@ const checkPageElements = async (request, companyFound) => {
       'company-number-label',
       'enter-different-number-company-exists-link',
       'company-name',
+      'company-address',
       'trading-name-visually-hidden',
       'use-business-trading-name',
       'use-business-trading-name-label',

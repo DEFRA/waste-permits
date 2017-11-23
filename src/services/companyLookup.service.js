@@ -19,16 +19,19 @@ module.exports = class CompanyLookupService {
       json: true
     }
 
-    let company = {}
+    let company
     await rp(options)
       .then((data) => {
         if (data) {
           const formattedCompanyStatus = CompanyLookupService._formatCompanyStatus(data.company_status)
 
-          company.companyStatus = COMPANY_STATUS_LIST.includes(formattedCompanyStatus) ? formattedCompanyStatus : DEFAULT_COMPANY_STATUS
-          company.isActive = (formattedCompanyStatus === ACTIVE_COMPANY_STATUS)
-          company.name = data.company_name
-          company.address = CompanyLookupService._formatAddress(data.registered_office_address)
+          company = {
+            number: companyNumber,
+            name: data.company_name,
+            address: CompanyLookupService._formatAddress(data.registered_office_address),
+            status: (COMPANY_STATUS_LIST.includes(formattedCompanyStatus) ? formattedCompanyStatus : DEFAULT_COMPANY_STATUS),
+            isActive: (formattedCompanyStatus === ACTIVE_COMPANY_STATUS)
+          }
         }
       })
       .catch((error) => {
@@ -44,11 +47,33 @@ module.exports = class CompanyLookupService {
   static _formatCompanyStatus (companyStatus) {
     return (companyStatus || '').toUpperCase().replace(/-/g, '_')
   }
+
+  // Format the address that has come back from Companies House
   static _formatAddress (registeredOffice) {
-    let formattedAddress
+    let formattedAddress = ''
     if (registeredOffice) {
-      formattedAddress = `${registeredOffice.address_line_1}, ${registeredOffice.locality}, ${registeredOffice.region}, ${registeredOffice.postal_code}`
+      const addressFields = [
+        'po_box',
+        'premises',
+        'address_line_1',
+        'address_line_2',
+        'locality',
+        'region',
+        'postal_code'
+      ]
+
+      for (let field of addressFields) {
+        if (registeredOffice[field] && registeredOffice[field].length > 0) {
+          formattedAddress += `${registeredOffice[field]}, `
+        }
+      }
+
+      // Strip the trailing comma and space
+      if (formattedAddress.length > 2) {
+        formattedAddress = formattedAddress.slice(0, -2)
+      }
     }
+
     return formattedAddress
   }
 }

@@ -17,8 +17,12 @@ module.exports = class CompanyCheckNameController extends BaseController {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
 
-      let account = await Account.getByApplicationId(authToken, applicationId)
-      if (!account) {
+      const [application, account] = await Promise.all([
+        Application.getById(authToken, applicationId),
+        Account.getByApplicationId(authToken, applicationId)
+      ])
+
+      if (!application || !account) {
         return reply.redirect(Constants.Routes.TASK_LIST.path)
       }
 
@@ -30,13 +34,15 @@ module.exports = class CompanyCheckNameController extends BaseController {
       } else {
         pageContext.formValues = {
           'company-number': account.companyNumber,
-          'use-business-trading-name': (account.tradingName !== undefined),
-          'business-trading-name': account.tradingName
+          'use-business-trading-name': (application.tradingName !== undefined),
+          'business-trading-name': application.tradingName
         }
       }
 
-      pageContext.companyName = company.name
-      pageContext.companyAddress = company.address
+      if (company) {
+        pageContext.companyName = company.name
+        pageContext.companyAddress = company.address
+      }
       pageContext.companyFound = company !== undefined
 
       pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
@@ -66,7 +72,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
           const company = await CompanyLookupService.getCompany(account.companyNumber)
 
           account.name = company.name
-          // TODO
+          // TODO save the company address to Dynamics
           // account.address = company.address
           account.IsValidatedWithCompaniesHouse = true
           await account.save(authToken, false)
