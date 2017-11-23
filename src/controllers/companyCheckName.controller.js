@@ -72,8 +72,6 @@ module.exports = class CompanyCheckNameController extends BaseController {
           const company = await CompanyLookupService.getCompany(account.companyNumber)
 
           account.name = company.name
-          // TODO save the company address to Dynamics
-          // account.address = company.address
           account.isValidatedWithCompaniesHouse = true
 
           await account.save(authToken, false)
