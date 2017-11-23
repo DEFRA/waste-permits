@@ -73,17 +73,17 @@ lab.experiment('Task List: Company Details Model tests:', () => {
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
     await testCompleteness({
-      companyName: 'THE COMPANY NAME'
+      name: 'THE COMPANY NAME'
     }, true)
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete', async () => {
     await testCompleteness({
-      companyName: undefined
+      name: undefined
     }, false)
 
     await testCompleteness({
-      companyName: ''
+      name: ''
     }, false)
   })
 })
