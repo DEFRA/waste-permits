@@ -28,20 +28,19 @@ const fakeApplicationData = {
   accountId: 'ACCOUNT_ID'
 }
 
+// companyNumber: '012345678',
+
 const fakeCompanyData = {
-  companyNumber: '012345678',
   name: 'THE COMPANY NAME',
+  address: 'TODO',
   status: 'ACTIVE',
   IsActive: true
-  // TODO remove this
-  // tradingName: 'THE TRADING NAME'
 }
 
 const fakeAccountData = {
   companyNumber: fakeCompanyData.companyNumber,
-  name: fakeCompanyData.name
-  // TODO remove this
-  // tradingName: 'THE TRADING NAME'
+  name: fakeCompanyData.name,
+  tradingName: 'THE TRADING NAME'
 }
 
 lab.beforeEach(() => {
@@ -171,15 +170,19 @@ lab.experiment('Check Company Details page tests:', () => {
     })
   })
 
-  lab.experiment(`GET ${routePath} Company Details found at Companies House`, () => {
-    // TODO
-    // lab.test('Check page elements - existing company details', async () => {
-    //   // Empty site name response
-    //   // SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
-    //   //   return undefined
-    //   // }
-    //   checkPageElements(getRequest, true)
-    // })
+  lab.experiment(`GET ${routePath} page tests`, () => {
+    lab.test('Check page elements - existing company details', async () => {
+      // Empty site name response
+      // SiteNameAndLocation.getSiteName = () => {
+      //   return undefined
+      // }
+
+      // Application.getById(authToken, applicationId),
+      // Account.getByApplicationId(authToken, applicationId)
+      // CompanyLookupService.getCompany(account.companyNumber)
+
+      checkPageElements(getRequest, true)
+    })
 
     lab.test('Check page elements - new company details', async () => {
       checkPageElements(getRequest, true)
@@ -197,7 +200,7 @@ lab.experiment('Check Company Details page tests:', () => {
   //   })
   // })
 
-  lab.experiment(`POST ${routePath}`, () => {
+  lab.experiment(`POST ${routePath} page tests`, () => {
     // TODO
 
     // lab.test('POST /site/site-name success (new Site) redirects to the Site Grid Reference route', async () => {
