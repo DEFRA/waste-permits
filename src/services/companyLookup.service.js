@@ -26,7 +26,6 @@ module.exports = class CompanyLookupService {
           const formattedCompanyStatus = CompanyLookupService._formatCompanyStatus(data.company_status)
 
           company = {
-            number: companyNumber,
             name: data.company_name,
             address: CompanyLookupService._formatAddress(data.registered_office_address),
             status: (COMPANY_STATUS_LIST.includes(formattedCompanyStatus) ? formattedCompanyStatus : DEFAULT_COMPANY_STATUS),
