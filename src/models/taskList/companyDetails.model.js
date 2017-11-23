@@ -37,9 +37,9 @@ module.exports = class CompanyDetails extends BaseModel {
       // Get the Account for this application
       const account = await Account.getByApplicationId(authToken, applicationId)
 
-      if (account.companyName) {
+      if (account.name) {
         isComplete =
-          account.companyName !== undefined && account.companyName.length > 0
+          account.name !== undefined && account.name.length > 0
       }
     } catch (error) {
       LoggingService.logError(`Unable to calculate CompanyDetails completeness: ${error}`)

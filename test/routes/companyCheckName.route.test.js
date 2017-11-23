@@ -39,7 +39,7 @@ const fakeCompanyData = {
 
 const fakeAccountData = {
   companyNumber: fakeCompanyData.companyNumber,
-  companyName: fakeCompanyData.name
+  name: fakeCompanyData.name
   // TODO remove this
   // tradingName: 'THE TRADING NAME'
 }
@@ -106,7 +106,7 @@ const checkPageElements = async (request, companyFound) => {
     }
 
     element = doc.getElementById('company-name').firstChild
-    Code.expect(element.nodeValue).to.equal(fakeAccountData.companyName)
+    Code.expect(element.nodeValue).to.equal(fakeAccountData.name)
 
     // TODO test trading name value?
     // element = doc.getElementById('business-trading-name')

@@ -74,7 +74,8 @@ module.exports = class CompanyCheckNameController extends BaseController {
           account.name = company.name
           // TODO save the company address to Dynamics
           // account.address = company.address
-          account.IsValidatedWithCompaniesHouse = true
+          account.isValidatedWithCompaniesHouse = true
+
           await account.save(authToken, false)
 
           // The company trading name is only set if the corresponding checkbox is ticked

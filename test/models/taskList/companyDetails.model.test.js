@@ -22,7 +22,10 @@ const fakeApplicationLine = {
 
 const fakeAccount = {
   id: 'ACCOUNT_ID',
-  companyName: 'THE COMPANY NAME'
+  companyNumber: '01234567',
+  name: 'THE COMPANY NAME',
+  isDraft: true,
+  isValidatedWithCompaniesHouse: false
 }
 
 const authToken = 'THE_AUTH_TOKEN'
@@ -56,7 +59,7 @@ lab.afterEach(() => {
 })
 
 const testCompleteness = async (obj, expectedResult) => {
-  fakeAccount.companyName = obj.companyName
+  fakeAccount.name = obj.name
   const result = await CompanyDetails._isComplete(authToken, applicationId)
   Code.expect(result).to.equal(expectedResult)
 }
