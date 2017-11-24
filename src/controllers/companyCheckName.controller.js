@@ -77,7 +77,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
           // but it lives here for now
           await CompanyDetails.updateCompleteness(authToken, applicationId, applicationLineId)
         }
-        return reply.redirect(Constants.Routes.TASK_LIST.path)
+        return reply.redirect(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
       } catch (error) {
         LoggingService.logError(error, request)
         return reply.redirect(Constants.Routes.ERROR.path)
