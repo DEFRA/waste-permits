@@ -140,7 +140,7 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
   } else {
     // Company not found page elements
     element = doc.getElementById('page-heading-company-not-found').firstChild
-    Code.expect(element.nodeValue).to.equal(`We couldn't find that company`)
+    Code.expect(element.nodeValue).to.equal(`We can't find that company`)
 
     const elementIds = [
       'search-term-text',
