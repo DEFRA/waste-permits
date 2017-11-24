@@ -8,9 +8,9 @@ const StartOrOpenSavedValidator = require('../validators/startOrOpenSaved.valida
 const Application = require('../models/application.model')
 
 module.exports = class StartOrOpenSavedController extends BaseController {
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.START_OR_OPEN_SAVED, errors, StartOrOpenSavedValidator)
+      const pageContext = this.createPageContext(errors, StartOrOpenSavedValidator)
 
       pageContext.cost = {
         lower: (Constants.PermitTypes.STANDARD_RULES.cost.lower).toLocaleString(),
@@ -27,9 +27,9 @@ module.exports = class StartOrOpenSavedController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return StartOrOpenSavedController.doGet(request, reply, errors)
+      return this.doGet(request, reply, errors)
     }
 
     const cookie = await CookieService.generateCookie(reply)
@@ -63,7 +63,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       .state(Constants.COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, StartOrOpenSavedController, false)
+  handler (request, reply, source, errors) {
+    return super.handler(request, reply, source, errors, false)
   }
 }

@@ -6,9 +6,9 @@ const BaseController = require('./base.controller')
 const PermitCategoryValidator = require('../validators/permitCategory.validator')
 
 module.exports = class PermitCategoryController extends BaseController {
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.PERMIT_CATEGORY, errors, PermitCategoryValidator)
+      const pageContext = this.createPageContext(errors, PermitCategoryValidator)
 
       pageContext.formValues = request.payload
       return reply.view('permitCategory', pageContext)
@@ -18,16 +18,12 @@ module.exports = class PermitCategoryController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return PermitCategoryController.doGet(request, reply, errors)
+      return this.doGet(request, reply, errors)
     } else {
       // TODO persist the data here if required using the applicationId from the cookie
       return reply.redirect(Constants.Routes.PERMIT_SELECT.path)
     }
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, PermitCategoryController)
   }
 }

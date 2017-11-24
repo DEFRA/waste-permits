@@ -7,9 +7,9 @@ const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 
 module.exports = class ContactSearchController extends BaseController {
-  static async doGet (request, reply, errors = undefined) {
+  async doGet (request, reply, errors = undefined) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.CONTACT_SEARCH, errors, ContactSearchController)
+      const pageContext = this.createPageContext(errors, ContactSearchController)
 
       const authToken = CookieService.getAuthToken(request)
 
@@ -24,7 +24,7 @@ module.exports = class ContactSearchController extends BaseController {
     }
   }
 
-  static async doPost (request, reply) {
+  async doPost (request, reply) {
     const authToken = CookieService.getAuthToken(request)
 
     if (request.payload.id) {
@@ -39,9 +39,5 @@ module.exports = class ContactSearchController extends BaseController {
 
     return reply
       .redirect(Constants.Routes.CONTACT_SEARCH.path)
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, ContactSearchController)
   }
 }

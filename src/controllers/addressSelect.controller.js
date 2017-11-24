@@ -9,9 +9,9 @@ const LoggingService = require('../services/logging.service')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
 module.exports = class AddressSelectController extends BaseController {
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.ADDRESS_SELECT, errors, AddressSelectValidator)
+      const pageContext = this.createPageContext(errors, AddressSelectValidator)
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
       const applicationLineId = CookieService.getApplicationLineId(request)
@@ -39,9 +39,9 @@ module.exports = class AddressSelectController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return AddressSelectController.doGet(request, reply, errors)
+      return this.doGet(request, reply, errors)
     } else {
       try {
         return reply.redirect(Constants.Routes.TASK_LIST.path)
@@ -50,9 +50,5 @@ module.exports = class AddressSelectController extends BaseController {
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, AddressSelectController)
   }
 }

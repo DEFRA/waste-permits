@@ -8,9 +8,9 @@ const LoggingService = require('../services/logging.service')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
 module.exports = class PostcodeController extends BaseController {
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.POSTCODE, errors, PostcodeValidator)
+      const pageContext = this.createPageContext(errors, PostcodeValidator)
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
       const applicationLineId = CookieService.getApplicationLineId(request)
@@ -33,9 +33,9 @@ module.exports = class PostcodeController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return PostcodeController.doGet(request, reply, errors)
+      return this.doGet(request, reply, errors)
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
@@ -54,9 +54,5 @@ module.exports = class PostcodeController extends BaseController {
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, PostcodeController)
   }
 }

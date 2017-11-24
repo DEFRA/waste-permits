@@ -2,12 +2,14 @@
 
 const Constants = require('../constants')
 const VersionController = require('../controllers/version.controller')
+const controller = new VersionController(Constants.Routes.VERSION)
 
 module.exports = [{
   method: ['GET'],
-  path: Constants.Routes.VERSION.path,
+  path: controller.path,
   config: {
     description: 'The version page',
-    handler: VersionController.handler
+    handler: controller.handler,
+    bind: controller
   }
 }]

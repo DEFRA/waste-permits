@@ -9,12 +9,12 @@ const StandardRule = require('../models/standardRule.model')
 const TaskList = require('../models/taskList/taskList.model')
 
 module.exports = class TaskListController extends BaseController {
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply, errors) {
     try {
       // For now we are only getting the SR2015 No 18 permit
       const chosenPermit = 'SR2015 No 18'
 
-      const pageContext = BaseController.createPageContext(Constants.Routes.TASK_LIST, errors, TaskListValidator)
+      const pageContext = this.createPageContext(errors, TaskListValidator)
       const authToken = CookieService.getAuthToken(request)
 
       pageContext.formValues = request.payload
@@ -35,11 +35,7 @@ module.exports = class TaskListController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     // Not implemented yet
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, TaskListController)
   }
 }

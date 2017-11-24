@@ -7,11 +7,7 @@ const config = require('../config/config')
 module.exports = class AddressLookupService {
   static async getAddressesFromPostcode (postcode) {
     const options = {
-      uri: config.ADDRESS_LOOKUP_SERVICE + '/addresses/postcode',
-      qs: {
-        'query-string': postcode,
-        key: config.ADDRESS_LOOKUP_SERVICE_KEY
-      },
+      uri: `${config.ADDRESS_LOOKUP_SERVICE}/addresses/postcode?key=${config.ADDRESS_LOOKUP_SERVICE_KEY}&postcode=${postcode}`,
       json: true
     }
 

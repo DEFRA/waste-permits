@@ -2,13 +2,15 @@
 
 const Constants = require('../constants')
 const SitePlanController = require('../controllers/sitePlan.controller')
+const controller = new SitePlanController(Constants.Routes.SITE_PLAN)
 
 module.exports = [{
   method: ['GET'],
-  path: Constants.Routes.SITE_PLAN.path,
+  path: controller.path,
   config: {
     description: 'The Upload the site plan page',
-    handler: SitePlanController.handler,
+    handler: controller.handler,
+    bind: controller,
     state: {
       parse: true,
       failAction: 'error'

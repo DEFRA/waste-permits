@@ -10,9 +10,9 @@ const LoggingService = require('../services/logging.service')
 const DynamicsSolution = require('../models/dynamicsSolution.model')
 
 module.exports = class VersionController extends BaseController {
-  static async doGet (request, reply, errors = undefined) {
+  async doGet (request, reply) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.VERSION)
+      const pageContext = this.createPageContext()
 
       let authToken = CookieService.getAuthToken(request)
 
@@ -37,7 +37,7 @@ module.exports = class VersionController extends BaseController {
     }
   }
 
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, VersionController, false)
+  handler (request, reply, source, errors) {
+    return super.handler(request, reply, source, errors, false)
   }
 }

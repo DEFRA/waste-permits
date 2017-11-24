@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 
 const BaseController = require('../../src/controllers/base.controller')
+let controller
 
 lab.beforeEach(() => {
 
@@ -22,7 +23,9 @@ lab.experiment('Base Controller tests:', () => {
       path: 'THE_ROUTE_PATH'
     }
 
-    const pageContext = BaseController.createPageContext(route)
+    controller = new BaseController(route)
+
+    const pageContext = controller.createPageContext(route)
 
     Code.expect(pageContext.pageHeading).to.equal(route.pageHeading)
     Code.expect(pageContext.pageTitle).to.equal(route.pageTitle)
