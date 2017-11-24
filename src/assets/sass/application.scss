@@ -125,4 +125,8 @@ span.postcode {
     width: 100%;
   }
 }
+
+textarea+ .form-hint {
+  margin-top: 0.25em;
+}
 // end Form control widths

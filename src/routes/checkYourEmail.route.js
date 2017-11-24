@@ -3,7 +3,7 @@
 const Constants = require('../constants')
 const CheckYourEmailController = require('../controllers/checkYourEmail.controller')
 const CheckYourEmailValidator = require('../validators/checkYourEmail.validator')
-const controller = new CheckYourEmailController(Constants.Routes.CHECK_YOUR_EMAIL)
+const controller = new CheckYourEmailController(Constants.Routes.CHECK_YOUR_EMAIL, false)
 
 module.exports = [{
   method: ['GET'],
