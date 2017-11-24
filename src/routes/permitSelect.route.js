@@ -3,13 +3,15 @@
 const Constants = require('../constants')
 const PermitSelectController = require('../controllers/permitSelect.controller')
 const PermitSelectValidator = require('../validators/permitSelect.validator')
+const controller = new PermitSelectController(Constants.Routes.PERMIT_SELECT)
 
 module.exports = [{
   method: ['GET'],
-  path: Constants.Routes.PERMIT_SELECT.path,
+  path: controller.path,
   config: {
     description: 'The Select a permit page',
-    handler: PermitSelectController.handler,
+    handler: controller.handler,
+    bind: controller,
     state: {
       parse: true,
       failAction: 'error'
@@ -17,16 +19,17 @@ module.exports = [{
   }
 }, {
   method: ['POST'],
-  path: Constants.Routes.PERMIT_SELECT.path,
+  path: controller.path,
   config: {
     description: 'The POST Permit Select page',
-    handler: PermitSelectController.handler,
+    handler: controller.handler,
+    bind: controller,
     validate: {
       options: {
         allowUnknown: true
       },
       payload: PermitSelectValidator.getFormValidators(),
-      failAction: PermitSelectController.handler
+      failAction: controller.failAction
     }
   }
 }]

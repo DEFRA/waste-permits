@@ -10,9 +10,9 @@ const Account = require('../models/account.model')
 const Utilities = require('../utilities/utilities')
 
 module.exports = class CompanyNumberController extends BaseController {
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.COMPANY_NUMBER, errors, CompanyNumberValidator)
+      const pageContext = this.createPageContext(errors, CompanyNumberValidator)
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
 
@@ -34,9 +34,9 @@ module.exports = class CompanyNumberController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return CompanyNumberController.doGet(request, reply, errors)
+      return this.doGet(request, reply, errors)
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
@@ -58,9 +58,5 @@ module.exports = class CompanyNumberController extends BaseController {
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, CompanyNumberController)
   }
 }

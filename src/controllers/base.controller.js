@@ -4,15 +4,21 @@ const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 
 module.exports = class BaseController {
-  static createPageContext (route, errors, ValidatorSubClass) {
+  constructor (route) {
+    this.route = route
+    this.path = route.path
+    this.failAction = (...args) => this.handler.apply(this, args)
+  }
+
+  createPageContext (errors, ValidatorSubClass) {
     const pageContext = {
       skipLinkMessage: Constants.SKIP_LINK_MESSAGE,
-      pageTitle: Constants.buildPageTitle(route.pageHeading),
-      pageHeading: route.pageHeading,
-      formAction: route.path
+      pageTitle: Constants.buildPageTitle(this.route.pageHeading),
+      pageHeading: this.route.pageHeading,
+      formAction: this.route.path
     }
 
-    if (errors && errors.data.details) {
+    if (errors && errors.data && errors.data.details) {
       new ValidatorSubClass().addErrorsToPageContext(errors, pageContext)
 
       // Add the error prefix to the page title
@@ -22,17 +28,16 @@ module.exports = class BaseController {
     return pageContext
   }
 
-  static handler (request, reply, errors, controllerSubclass, cookieValidationRequired = true) {
+  handler (request, reply, source, errors, cookieValidationRequired = true) {
     if (cookieValidationRequired) {
       // Validate the cookie
       if (!CookieService.validateCookie(request)) {
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }
-    if (request.method.toUpperCase() === 'GET') {
-      return controllerSubclass.doGet(request, reply, errors)
-    } else if (request.method.toUpperCase() === 'POST') {
-      return controllerSubclass.doPost(request, reply, errors)
+    switch (request.method.toUpperCase()) {
+      case 'GET': return this.doGet(request, reply, errors)
+      case 'POST': return this.doPost(request, reply, errors)
     }
   }
 }
