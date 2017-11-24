@@ -2,12 +2,14 @@
 
 const Constants = require('../constants')
 const ErrorController = require('../controllers/error.controller')
+const controller = new ErrorController(Constants.Routes.ERROR)
 
 module.exports = [{
   method: 'GET',
-  path: Constants.Routes.ERROR.path,
+  path: controller.path,
   config: {
     description: 'The error page',
-    handler: ErrorController.handler
+    handler: controller.handler,
+    bind: controller
   }
 }]

@@ -7,9 +7,9 @@ const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 
 module.exports = class ContactDetailsController extends BaseController {
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.CONTACT_DETAILS, errors, ContactDetailsController)
+      const pageContext = this.createPageContext(errors, ContactDetailsController)
 
       return reply
         .view('contactDetails', pageContext)
@@ -19,7 +19,7 @@ module.exports = class ContactDetailsController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     const authToken = CookieService.getAuthToken(request)
 
     // TODO: Our first step after confirming the user session is valid and we
@@ -63,15 +63,11 @@ module.exports = class ContactDetailsController extends BaseController {
 
         await contact.save(authToken)
 
-        return ContactDetailsController.doGet(request, reply, errors)
+        return this.doGet(request, reply, errors)
       } catch (error) {
         LoggingService.logError(error, request)
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, ContactDetailsController)
   }
 }

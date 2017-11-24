@@ -3,26 +3,29 @@
 const Constants = require('../constants')
 const AddressSelectController = require('../controllers/addressSelect.controller')
 const AddressSelectValidator = require('../validators/addressSelect.validator')
+const controller = new AddressSelectController(Constants.Routes.ADDRESS_SELECT)
 
 module.exports = [{
   method: ['GET'],
-  path: Constants.Routes.ADDRESS_SELECT.path,
+  path: controller.path,
   config: {
     description: 'The GET Address Select page',
-    handler: AddressSelectController.handler
+    handler: controller.handler,
+    bind: controller
   }
 }, {
   method: ['POST'],
-  path: Constants.Routes.ADDRESS_SELECT.path,
+  path: controller.path,
   config: {
     description: 'The POST Address Select page',
-    handler: AddressSelectController.handler,
+    handler: controller.handler,
+    bind: controller,
     validate: {
       options: {
         allowUnknown: true
       },
       payload: AddressSelectValidator.getFormValidators(),
-      failAction: AddressSelectController.handler
+      failAction: controller.failAction
     }
   }
 }]

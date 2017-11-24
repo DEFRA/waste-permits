@@ -10,9 +10,9 @@ const Account = require('../models/account.model')
 const CompanyDetails = require('../models/taskList/companyDetails.model')
 
 module.exports = class CompanyCheckNameController extends BaseController {
-  static async doGet (request, reply, errors) {
+  async doGet (request, reply, errors) {
     try {
-      const pageContext = BaseController.createPageContext(Constants.Routes.COMPANY_CHECK_NAME, errors, CompanyCheckNameValidator)
+      const pageContext = this.createPageContext(errors, CompanyCheckNameValidator)
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
 
@@ -46,9 +46,9 @@ module.exports = class CompanyCheckNameController extends BaseController {
     }
   }
 
-  static async doPost (request, reply, errors) {
+  async doPost (request, reply, errors) {
     if (errors && errors.data.details) {
-      return CompanyCheckNameController.doGet(request, reply, errors)
+      return this.doGet(request, reply, errors)
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
@@ -83,9 +83,5 @@ module.exports = class CompanyCheckNameController extends BaseController {
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }
-  }
-
-  static handler (request, reply, source, errors) {
-    return BaseController.handler(request, reply, errors, CompanyCheckNameController)
   }
 }
