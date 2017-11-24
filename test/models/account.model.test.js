@@ -48,7 +48,7 @@ lab.beforeEach(() => {
   DynamicsDalService.prototype.update = () => fakeApplicationData.accountId
 
   applicationGetByIdStub = Application.getById
-  Application.getById = () => fakeApplicationData
+  Application.getById = () => new Application(fakeApplicationData)
 })
 
 lab.afterEach(() => {
