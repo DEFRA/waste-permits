@@ -9,21 +9,21 @@
 
       {{> common/errorSummary }}
 
-      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
-
       <form method="POST" action="{{ formAction }}">
         <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+
+        <h1 id="page-heading" class="heading-large"><label for="company-number">{{ pageHeading }}</label></h1>
 
         <div class="form-group {{#getFormErrorGroupClass errors.company-number}}{{/getFormErrorGroupClass}}">
 
           {{> common/fieldError fieldId='company-number-error' message=errors.company-number }}
 
-          <input class="form-control form-control-char-10" id="company-number" name="company-number"
+          <input class="form-control form-control-char-10" aria-describedby="company-lookup" id="company-number" name="company-number"
                  type="text" value="{{formValues.company-number}}">
         </div>
 
         <div class="form-group">
-          <p>
+          <p id="company-lookup">
             We'll look up the details in the Companies House register.
           </p>
 
