@@ -12,7 +12,7 @@
       <form method="POST" action="{{ formAction }}">
         <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
-        <h1 id="page-heading" class="heading-large"><label for="company-number">{{ pageHeading }}</label></h1>
+        <label for="company-number"><h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1></label>
 
         <div class="form-group {{#getFormErrorGroupClass errors.company-number}}{{/getFormErrorGroupClass}}">
 
