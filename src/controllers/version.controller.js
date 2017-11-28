@@ -36,8 +36,4 @@ module.exports = class VersionController extends BaseController {
       return reply.redirect(Constants.Routes.ERROR.path)
     }
   }
-
-  handler (request, reply, source, errors) {
-    return super.handler(request, reply, source, errors, false)
-  }
 }

@@ -2,7 +2,7 @@
 
 const Constants = require('../constants')
 const RootController = require('../controllers/root.controller')
-const controller = new RootController(Constants.Routes.ROOT)
+const controller = new RootController(Constants.Routes.ROOT, false)
 
 module.exports = [{
   method: ['GET', 'POST'],
