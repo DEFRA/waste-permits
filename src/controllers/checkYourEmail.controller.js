@@ -27,8 +27,4 @@ module.exports = class CheckYourEmailController extends BaseController {
       return reply.redirect(Constants.Routes.CONTACT.path)
     }
   }
-
-  handler (request, reply, source, errors) {
-    return super.handler(request, reply, source, errors, false)
-  }
 }

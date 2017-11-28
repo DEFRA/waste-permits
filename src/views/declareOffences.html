@@ -1,0 +1,98 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }} {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+
+      <div>
+
+        <p>You must tell us about:</p>
+
+        <!-- MVP = limited company only -->
+        <!-- {% if permit.operatorType=="Limited company" %} -->
+        {{#if operatorTypeIsLimitedCompany}}
+        <ul id="operator-type-is-limited-company" class="list list-bullet">
+          <li>the company itself</li>
+          <li>the officers of the company, for example directors or company secretaries</li>
+          <li>other companies, if the officers of the company were officers of that other company when they were convicted</li>
+        </ul>
+        {{/if}}
+
+        <!-- {% elseif permit.operatorType=="Individual" %} -->
+        {{#if operatorTypeIsIndividual}}
+        <ul id="operator-type-is-individual" class="list list-bullet">
+          <li>the individual</li>
+          <li>companies for which the individual is a director, manager or company secretary</li>
+        </ul>
+        {{/if}}
+
+        <!-- {% elseif permit.operatorType=="Partnership" %} -->
+        {{#if operatorTypeIsPartnership}}
+        <ul id="operator-type-is-partnership" class="list list-bullet">
+          <li>the individual partners</li>
+          <li>business partners, where the offence was committed in the course of their business</li>
+        </ul>
+        {{/if}}
+
+        <p>
+          The <a target="_blank" rel="noopener noreferrer"
+                 href="https://www.gov.uk/government/publications/relevant-conviction-guidance-for-permit-applications-for-waste-activities-and-installations-only">relevant
+          conviction guidance on GOV.UK (opens new tab)</a> gives a full list of people and offences.
+        </p>
+
+      </div>
+
+      <form method="post" action="{{formAction}}">
+        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+
+        <div class="form-group {{#getFormErrorGroupClass errors.relevant-offences-details}}{{/getFormErrorGroupClass}}">
+          <fieldset>
+
+            <legend class="visually-hidden">Have you or any relevant person been convicted of a relevant offence?
+            </legend>
+
+            {{> common/fieldError fieldId='offences-error' message=errors.offences }}
+
+            <div class="multiple-choice" data-target="relevantOffencesD">
+              <input id="offences-declared" type="radio" name="offences" value="yes" {{#if offencesDeclared}}checked{{/if}}>
+              <label for="offences-declared">
+                Yes, there are convictions to declare
+              </label>
+            </div>
+            <div class="panel panel-border-narrow js-hidden" id="relevantOffencesD">
+              <label class="form-label" for="relevant-offences-details">Give details of the convictions
+                <p class="form-hint">Include the names of the people or companies, the offences and penalties given</p></label>
+
+              {{> common/fieldError fieldId='relevant-offences-details-error' message=errors.relevant-offences-details}}
+
+              <textarea class="form-control form-control-full" name="relevant-offences-details" rows="10" type="text"
+                        id="relevant-offences-details" aria-describedby="relevant-offences-details-max-length">{{formValues.relevant-offences-details}}</textarea>
+              <p id="relevant-offences-details-max-length" class="form-hint">No more than {{relevantOffencesDetailsMaxLength}} characters</p>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="no-offences-declared" type="radio" name="offences" value="no" {{#if
+                     noOffencesDeclared}}checked{{/if}}>
+              <label for="no-offences-declared">
+                No
+              </label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        <div class="form-group">
+          <button id="submit-button" type="submit" class="button" name="Continue">Save and continue</button>
+          <span id="complete-link" class="skiplink"><a href="{{completeLaterRoute}}"
+                                                       id="complete-later">Complete later</a></span>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</main>

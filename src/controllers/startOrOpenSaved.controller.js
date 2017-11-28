@@ -62,8 +62,4 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       // Add the new cookie
       .state(Constants.COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
-
-  handler (request, reply, source, errors) {
-    return super.handler(request, reply, source, errors, false)
-  }
 }
