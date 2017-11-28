@@ -3,7 +3,6 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
-const LoggingService = require('../services/logging.service')
 const ConfirmRules = require('../models/confirmRules.model')
 
 module.exports = class ConfirmRulesController extends BaseController {
@@ -16,16 +15,11 @@ module.exports = class ConfirmRulesController extends BaseController {
   }
 
   async doGet (request, reply, errors) {
-    try {
-      const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(errors)
 
-      pageContext.complete = await this.isComplete(request)
-      return reply
-        .view('confirmRules', pageContext)
-    } catch (error) {
-      LoggingService.logError(error, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
-    }
+    pageContext.complete = await this.isComplete(request)
+    return reply
+      .view('confirmRules', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -33,24 +27,19 @@ module.exports = class ConfirmRulesController extends BaseController {
       return this.doGet(request, reply, errors)
     } else {
       const authToken = CookieService.getAuthToken(request)
-      try {
-        const applicationLineId = CookieService.getApplicationLineId(request)
+      const applicationLineId = CookieService.getApplicationLineId(request)
 
-        const complete = await this.isComplete(request)
-        if (complete) {
-          return reply.redirect(Constants.Routes.TASK_LIST.path)
-        }
-
-        const confirmRules = new ConfirmRules({
-          applicationLineId: applicationLineId
-        })
-
-        await confirmRules.save(authToken)
+      const complete = await this.isComplete(request)
+      if (complete) {
         return reply.redirect(Constants.Routes.TASK_LIST.path)
-      } catch (error) {
-        LoggingService.logError(error, request)
-        return reply.redirect(Constants.Routes.ERROR.path)
       }
+
+      const confirmRules = new ConfirmRules({
+        applicationLineId: applicationLineId
+      })
+
+      await confirmRules.save(authToken)
+      return reply.redirect(Constants.Routes.TASK_LIST.path)
     }
   }
 }

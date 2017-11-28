@@ -5,35 +5,29 @@ const config = require('../config/config')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
-const LoggingService = require('../services/logging.service')
 
 const DynamicsSolution = require('../models/dynamicsSolution.model')
 
 module.exports = class VersionController extends BaseController {
   async doGet (request, reply) {
-    try {
-      const pageContext = this.createPageContext()
+    const pageContext = this.createPageContext()
 
-      let authToken = CookieService.getAuthToken(request)
+    let authToken = CookieService.getAuthToken(request)
 
-      // If we didn't get an Auth token from the cookie then create a new one
-      if (!authToken) {
-        const cookie = await CookieService.generateCookie(reply)
-        authToken = cookie.authToken
-      }
-
-      pageContext.dynamicsSolution = await DynamicsSolution.get(authToken)
-
-      pageContext.applicationVersion = Constants.getVersion()
-      pageContext.githubRef = config.gitSha
-      pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`
-      pageContext.renderTimestamp = moment().format(Constants.TIMESTAMP_FORMAT)
-
-      return reply
-        .view('version', pageContext)
-    } catch (error) {
-      LoggingService.logError(error, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
+    // If we didn't get an Auth token from the cookie then create a new one
+    if (!authToken) {
+      const cookie = await CookieService.generateCookie(reply)
+      authToken = cookie.authToken
     }
+
+    pageContext.dynamicsSolution = await DynamicsSolution.get(authToken)
+
+    pageContext.applicationVersion = Constants.getVersion()
+    pageContext.githubRef = config.gitSha
+    pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`
+    pageContext.renderTimestamp = moment().format(Constants.TIMESTAMP_FORMAT)
+
+    return reply
+      .view('version', pageContext)
   }
 }
