@@ -13,8 +13,6 @@
 
         <p>You must tell us about:</p>
 
-        <!-- MVP = limited company only -->
-        <!-- {% if permit.operatorType=="Limited company" %} -->
         {{#if operatorTypeIsLimitedCompany}}
         <ul id="operator-type-is-limited-company" class="list list-bullet">
           <li>the company itself</li>
@@ -25,7 +23,6 @@
         </ul>
         {{/if}}
 
-        <!-- {% elseif permit.operatorType=="Individual" %} -->
         {{#if operatorTypeIsIndividual}}
         <ul id="operator-type-is-individual" class="list list-bullet">
           <li>the individual</li>
@@ -33,7 +30,6 @@
         </ul>
         {{/if}}
 
-        <!-- {% elseif permit.operatorType=="Partnership" %} -->
         {{#if operatorTypeIsPartnership}}
         <ul id="operator-type-is-partnership" class="list list-bullet">
           <li>the individual partners</li>
