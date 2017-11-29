@@ -1,7 +1,6 @@
 'use strict'
 
 const Constants = require('../constants')
-const LoggingService = require('../services/logging.service')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const StandardRule = require('../models/standardRule.model')
@@ -10,21 +9,16 @@ const ApplicationLine = require('../models/applicationLine.model')
 
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, reply, errors) {
-    try {
-      const pageContext = this.createPageContext(errors, PermitSelectValidator)
-      const authToken = CookieService.getAuthToken(request)
+    const pageContext = this.createPageContext(errors, PermitSelectValidator)
+    const authToken = CookieService.getAuthToken(request)
 
-      pageContext.formValues = request.payload
+    pageContext.formValues = request.payload
 
-      pageContext.standardRules = await StandardRule.list(authToken)
-      pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
+    pageContext.standardRules = await StandardRule.list(authToken)
+    pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
-      return reply
-        .view('permitSelect', pageContext)
-    } catch (error) {
-      LoggingService.logError(error, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
-    }
+    return reply
+      .view('permitSelect', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -33,30 +27,25 @@ module.exports = class PermitSelectController extends BaseController {
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
-      try {
-        // Look up the Standard Rule based on the chosen permit type
-        const standardRule = await StandardRule.getByCode(authToken, request.payload['chosen-permit'])
+      // Look up the Standard Rule based on the chosen permit type
+      const standardRule = await StandardRule.getByCode(authToken, request.payload['chosen-permit'])
 
-        // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
-        const applicationLine = new ApplicationLine({
-          applicationId: applicationId,
-          standardRuleId: standardRule.id,
-          parametersId: undefined
-        })
+      // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
+      const applicationLine = new ApplicationLine({
+        applicationId: applicationId,
+        standardRuleId: standardRule.id,
+        parametersId: undefined
+      })
 
-        await applicationLine.save(authToken)
+      await applicationLine.save(authToken)
 
-        // Set the application ID in the cookie
-        CookieService.setApplicationLineId(request, applicationLine.id)
+      // Set the application ID in the cookie
+      CookieService.setApplicationLineId(request, applicationLine.id)
 
-        return reply.redirect(Constants.Routes.TASK_LIST.path)
+      return reply.redirect(Constants.Routes.TASK_LIST.path)
 
-          // Add the updated cookie
-          .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY], Constants.COOKIE_PATH)
-      } catch (error) {
-        LoggingService.logError(error)
-        return reply.redirect(Constants.Routes.ERROR.path)
-      }
+      // Add the updated cookie
+        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }

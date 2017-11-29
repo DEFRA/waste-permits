@@ -22,7 +22,10 @@ const fakeApplicationLine = {
 
 const fakeAccount = {
   id: 'ACCOUNT_ID',
-  companyName: 'THE COMPANY NAME'
+  companyNumber: '01234567',
+  name: 'THE COMPANY NAME',
+  isDraft: true,
+  isValidatedWithCompaniesHouse: false
 }
 
 const authToken = 'THE_AUTH_TOKEN'
@@ -56,7 +59,7 @@ lab.afterEach(() => {
 })
 
 const testCompleteness = async (obj, expectedResult) => {
-  fakeAccount.companyName = obj.companyName
+  fakeAccount.name = obj.name
   const result = await CompanyDetails._isComplete(authToken, applicationId)
   Code.expect(result).to.equal(expectedResult)
 }
@@ -70,17 +73,17 @@ lab.experiment('Task List: Company Details Model tests:', () => {
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
     await testCompleteness({
-      companyName: 'THE COMPANY NAME'
+      name: 'THE COMPANY NAME'
     }, true)
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete', async () => {
     await testCompleteness({
-      companyName: undefined
+      name: undefined
     }, false)
 
     await testCompleteness({
-      companyName: ''
+      name: ''
     }, false)
   })
 })

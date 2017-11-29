@@ -12,10 +12,9 @@ module.exports = class Account extends BaseModel {
     if (account) {
       this.id = account.id
       this.companyNumber = account.companyNumber
-      this.companyName = account.companyName
-      this.tradingName = account.tradingName
+      this.name = account.name
       this.isDraft = account.isDraft
-      this.IsValidatedWithCompaniesHouse = account.IsValidatedWithCompaniesHouse
+      this.isValidatedWithCompaniesHouse = account.isValidatedWithCompaniesHouse
     }
     Utilities.convertFromDynamics(this)
   }
@@ -32,8 +31,7 @@ module.exports = class Account extends BaseModel {
           account = new Account({
             id: application.accountId,
             companyNumber: result.defra_companyhouseid,
-            companyName: result.name,
-            tradingName: result.defra_tradingname,
+            name: result.name,
             isDraft: result.defra_draft
           })
         }
@@ -53,10 +51,9 @@ module.exports = class Account extends BaseModel {
       // Map the Account to the corresponding Dynamics schema Account object
       const dataObject = {
         defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber).toUpperCase(),
-        name: this.companyName,
-        defra_tradingname: this.tradingName,
+        name: this.name,
         defra_draft: isDraft,
-        defra_validatedwithcompanyhouse: this.IsValidatedWithCompaniesHouse
+        defra_validatedwithcompanyhouse: this.isValidatedWithCompaniesHouse
       }
 
       let query

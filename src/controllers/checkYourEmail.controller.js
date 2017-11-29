@@ -1,21 +1,15 @@
 'use strict'
 
 const Constants = require('../constants')
-const LoggingService = require('../services/logging.service')
 const BaseController = require('./base.controller')
 const CheckYourEmailValidator = require('../validators/checkYourEmail.validator')
 
 module.exports = class CheckYourEmailController extends BaseController {
   async doGet (request, reply, errors) {
-    try {
-      const pageContext = this.createPageContext(errors, CheckYourEmailValidator)
+    const pageContext = this.createPageContext(errors, CheckYourEmailValidator)
 
-      pageContext.formValues = request.payload
-      return reply.view('checkYourEmail', pageContext)
-    } catch (error) {
-      LoggingService.logError(error, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
-    }
+    pageContext.formValues = request.payload
+    return reply.view('checkYourEmail', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -26,9 +20,5 @@ module.exports = class CheckYourEmailController extends BaseController {
 
       return reply.redirect(Constants.Routes.CONTACT.path)
     }
-  }
-
-  handler (request, reply, source, errors) {
-    return super.handler(request, reply, source, errors, false)
   }
 }

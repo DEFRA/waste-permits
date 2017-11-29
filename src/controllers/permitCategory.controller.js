@@ -1,21 +1,15 @@
 'use strict'
 
 const Constants = require('../constants')
-const LoggingService = require('../services/logging.service')
 const BaseController = require('./base.controller')
 const PermitCategoryValidator = require('../validators/permitCategory.validator')
 
 module.exports = class PermitCategoryController extends BaseController {
   async doGet (request, reply, errors) {
-    try {
-      const pageContext = this.createPageContext(errors, PermitCategoryValidator)
+    const pageContext = this.createPageContext(errors, PermitCategoryValidator)
 
-      pageContext.formValues = request.payload
-      return reply.view('permitCategory', pageContext)
-    } catch (error) {
-      LoggingService.logError(error)
-      return reply.redirect(Constants.Routes.ERROR.path)
-    }
+    pageContext.formValues = request.payload
+    return reply.view('permitCategory', pageContext)
   }
 
   async doPost (request, reply, errors) {

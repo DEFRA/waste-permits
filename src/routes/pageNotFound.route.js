@@ -2,7 +2,7 @@
 
 const Constants = require('../constants')
 const PageNotFoundController = require('../controllers/pageNotFound.controller')
-const controller = new PageNotFoundController(Constants.Routes.PAGE_NOT_FOUND)
+const controller = new PageNotFoundController(Constants.Routes.PAGE_NOT_FOUND, false)
 
 module.exports = [{
   method: 'GET',
