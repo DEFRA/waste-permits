@@ -1,58 +1,25 @@
 'use strict'
 
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
-const DeclareOffencesValidator = require('../validators/declareOffences.validator')
-const CookieService = require('../services/cookie.service')
-const Application = require('../models/application.model')
+const BaseDeclarationsController = require('./baseDeclarations.controller')
 
-module.exports = class DeclareOffencesController extends BaseController {
-  async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, DeclareOffencesValidator)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
-
-    if (request.payload) {
-      pageContext.formValues = request.payload
-    } else {
-      const application = await Application.getById(authToken, applicationId)
-      if (application) {
-        pageContext.formValues = {
-          'relevant-offences-details': application.relevantOffencesDetails,
-          'offences': application.relevantOffences ? 'yes' : (application.relevantOffences === false ? 'no' : '')
-        }
-      } else {
-        pageContext.formValues = {}
-      }
-    }
-    pageContext.offencesDeclared = (pageContext.formValues.offences === 'yes')
-    pageContext.noOffencesDeclared = (pageContext.formValues.offences === 'no')
-
-    switch (this.route) {
-      case Constants.Routes.COMPANY_DECLARE_OFFENCES:
-        pageContext.operatorTypeIsLimitedCompany = true
-        break
-      default:
-        throw new Error(`Unexpected route (${this.route.path}) for declareOffences.controller`)
-    }
-
-    pageContext.relevantOffencesDetailsMaxLength = DeclareOffencesValidator.getOfficeDetailsMaxLength().toLocaleString()
-    pageContext.completeLaterRoute = Constants.Routes.TASK_LIST.path
-
-    return reply.view('declareOffences', pageContext)
+module.exports = class DeclareOffencesController extends BaseDeclarationsController {
+  getFormData (data) {
+    return super.getFormData(data, 'relevantOffences', 'relevantOffencesDetails')
   }
 
-  async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
-      return this.doGet(request, reply, errors)
-    } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const application = await Application.getById(authToken, applicationId)
-      application.relevantOffences = request.payload.offences === 'yes'
-      application.relevantOffencesDetails = application.relevantOffences ? request.payload['relevant-offences-details'] : undefined
-      await application.save(authToken)
-      return reply.redirect(Constants.Routes.COMPANY_DECLARE_BANKRUPTCY.path)
+  getRequestData (request) {
+    return super.getRequestData(request, 'relevantOffences', 'relevantOffencesDetails')
+  }
+
+  getSpecificPageContext () {
+    return {
+      declarationHint: `gives a full list of people and offences you should include.`,
+      declarationLink: `https://www.gov.uk/government/publications/relevant-conviction-guidance-for-permit-applications-for-waste-activities-and-installations-only`,
+      declarationLinkText: `relevant conviction guidance on GOV.UK (opens new tab)`,
+      declaredLabel: 'Yes, there are convictions to declare',
+      noneDeclaredLabel: 'No',
+      declarationDetailsLabel: 'Give details of the convictions',
+      declarationDetailsHint: 'Include the names of the people or companies, the offences and penalties given'
     }
   }
 }

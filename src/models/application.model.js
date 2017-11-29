@@ -14,6 +14,8 @@ module.exports = class Application extends BaseModel {
       this.tradingName = application.tradingName
       this.relevantOffences = application.relevantOffences
       this.relevantOffencesDetails = application.relevantOffencesDetails
+      this.bankruptcy = application.bankruptcy
+      this.bankruptcyDetails = application.bankruptcyDetails
 
       // The following delay is required by the untilComplete method
       this.delay = 250
@@ -27,7 +29,9 @@ module.exports = class Application extends BaseModel {
       '_defra_customerid_value',
       'defra_tradingname',
       'defra_convictionsdeclaration',
-      'defra_convictionsdeclarationdetails'
+      'defra_convictionsdeclarationdetails',
+      'defra_bankruptcydeclaration',
+      'defra_bankruptcydeclarationdetails'
     ].join(',')
     const query = encodeURI(`defra_applications(${applicationId})?$select=${selectedFields}`)
     try {
@@ -36,7 +40,9 @@ module.exports = class Application extends BaseModel {
         accountId: result._defra_customerid_value,
         tradingName: result.defra_tradingname,
         relevantOffences: result.defra_convictionsdeclaration,
-        relevantOffencesDetails: result.defra_convictionsdeclarationdetails
+        relevantOffencesDetails: result.defra_convictionsdeclarationdetails,
+        bankruptcy: result.defra_bankruptcydeclaration,
+        bankruptcyDetails: result.defra_bankruptcydeclarationdetails
       })
       application.id = applicationId
       return application
@@ -66,7 +72,9 @@ module.exports = class Application extends BaseModel {
       defra_source: Constants.Dynamics.DIGITAL_SOURCE,
       defra_tradingname: this.tradingName,
       defra_convictionsdeclaration: this.relevantOffences,
-      defra_convictionsdeclarationdetails: this.relevantOffencesDetails
+      defra_convictionsdeclarationdetails: this.relevantOffencesDetails,
+      defra_bankruptcydeclaration: this.bankruptcy,
+      defra_bankruptcydeclarationdetails: this.bankruptcyDetails
     }
 
     try {

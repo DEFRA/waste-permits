@@ -1,9 +1,10 @@
 'use strict'
 
 const Constants = require('../constants')
+const {COMPANY_DECLARE_OFFENCES, COMPANY_DECLARE_BANKRUPTCY} = Constants.Routes
 const CompanyDeclareOffencesController = require('../controllers/declareOffences.controller')
 const CompanyDeclareOffencesValidator = require('../validators/declareOffences.validator')
-const controller = new CompanyDeclareOffencesController(Constants.Routes.COMPANY_DECLARE_OFFENCES)
+const controller = new CompanyDeclareOffencesController(COMPANY_DECLARE_OFFENCES, true, COMPANY_DECLARE_BANKRUPTCY, CompanyDeclareOffencesValidator)
 
 module.exports = [{
   method: ['GET'],
@@ -24,7 +25,7 @@ module.exports = [{
       options: {
         allowUnknown: true
       },
-      payload: CompanyDeclareOffencesValidator.getFormValidators(),
+      payload: controller.validator.getFormValidators(),
       failAction: controller.failAction
     }
   }
