@@ -81,6 +81,8 @@ lab.experiment('Company Declare Offences tests:', () => {
 
       Code.expect(doc.getElementById('declaration-details').firstChild.nodeValue).to.equal(fakeApplication.relevantOffencesDetails)
       Code.expect(doc.getElementById('declaration-hint')).to.exist()
+      Code.expect(doc.getElementById('declaration-hint-link')).to.exist()
+      Code.expect(doc.getElementById('declaration-hint-link-text')).to.exist()
       Code.expect(doc.getElementById('declaration-notice')).to.not.exist()
       Code.expect(doc.getElementById('operator-type-is-limited-company')).to.exist()
       Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()

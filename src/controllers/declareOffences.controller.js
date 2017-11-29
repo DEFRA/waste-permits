@@ -29,7 +29,9 @@ module.exports = class DeclareOffencesController extends BaseDeclarationsControl
 
   getSpecificPageContext () {
     return {
-      declarationHint: `The <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/publications/relevant-conviction-guidance-for-permit-applications-for-waste-activities-and-installations-only">relevant conviction guidance on GOV.UK (opens new tab)</a> gives a full list of people and offences you should include.`,
+      declarationHint: `gives a full list of people and offences you should include.`,
+      declarationLink: `https://www.gov.uk/government/publications/relevant-conviction-guidance-for-permit-applications-for-waste-activities-and-installations-only`,
+      declarationLinkText: `relevant conviction guidance on GOV.UK (opens new tab)`,
       declaredLabel: 'Yes, there are convictions to declare',
       noneDeclaredLabel: 'No',
       declarationDetailsLabel: 'Give details of the convictions',
