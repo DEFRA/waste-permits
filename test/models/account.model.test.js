@@ -62,7 +62,7 @@ lab.afterEach(() => {
 lab.experiment('Account Model tests:', () => {
   lab.test('Constructor creates a Account object correctly', () => {
     const emptyAccount = new Account()
-    Code.expect(emptyAccount).to.be.empty()
+    Code.expect(emptyAccount.id).to.be.equal(undefined)
 
     Code.expect(testAccount.companyNumber).to.equal(fakeAccountData.companyNumber)
     Code.expect(testAccount.name).to.equal(fakeAccountData.name)

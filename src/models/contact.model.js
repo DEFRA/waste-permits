@@ -8,6 +8,7 @@ module.exports = class Contact extends BaseModel {
   constructor (dataObject = undefined) {
     super()
     if (dataObject) {
+      this.entity = 'contacts'
       this.id = dataObject.id
       this.firstName = dataObject.firstName
       this.lastName = dataObject.lastName
@@ -19,7 +20,7 @@ module.exports = class Contact extends BaseModel {
   static async getById (authToken, id) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const query = `contacts(${id})?$select=contactid,firstname,lastname,telephone1,emailaddress1`
-    var contact
+    let contact
 
     try {
       const response = await dynamicsDal.search(query)
@@ -73,8 +74,6 @@ module.exports = class Contact extends BaseModel {
   }
 
   async save (authToken) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-
     // Map the Contact to the corresponding Dynamics schema Contact object
     const dataObject = {
       firstname: this.firstName,
@@ -82,21 +81,6 @@ module.exports = class Contact extends BaseModel {
       telephone1: this.telephone,
       emailaddress1: this.email
     }
-
-    try {
-      let query
-      if (this.isNew()) {
-        // New contact
-        query = 'contacts'
-        this.id = await dynamicsDal.create(query, dataObject)
-      } else {
-        // Update contact
-        query = `contacts(${this.id})`
-        await dynamicsDal.update(query, dataObject)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to save Contact: ${error}`)
-      throw error
-    }
+    await super.save(authToken, dataObject)
   }
 }

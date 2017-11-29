@@ -9,6 +9,7 @@ const Utilities = require('../utilities/utilities')
 module.exports = class Account extends BaseModel {
   constructor (account) {
     super()
+    this.entity = 'accounts'
     if (account) {
       this.id = account.id
       this.companyNumber = account.companyNumber
@@ -44,31 +45,12 @@ module.exports = class Account extends BaseModel {
   }
 
   async save (authToken, isDraft) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-
-    // Update the Account
-    try {
-      // Map the Account to the corresponding Dynamics schema Account object
-      const dataObject = {
-        defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber).toUpperCase(),
-        name: this.name,
-        defra_draft: isDraft,
-        defra_validatedwithcompanyhouse: this.isValidatedWithCompaniesHouse
-      }
-
-      let query
-      if (this.isNew()) {
-        // New Account
-        query = 'accounts'
-        this.id = await dynamicsDal.create(query, dataObject)
-      } else {
-        // Update Account
-        query = `accounts(${this.id})`
-        await dynamicsDal.update(query, dataObject)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to save Account: ${error}`)
-      throw error
+    const dataObject = {
+      defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber).toUpperCase(),
+      name: this.name,
+      defra_draft: isDraft,
+      defra_validatedwithcompanyhouse: this.isValidatedWithCompaniesHouse
     }
+    await super.save(authToken, dataObject)
   }
 }

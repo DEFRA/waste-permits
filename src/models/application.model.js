@@ -9,6 +9,7 @@ const Utilities = require('../utilities/utilities')
 module.exports = class Application extends BaseModel {
   constructor (application) {
     super()
+    this.entity = 'defra_applications'
     if (application) {
       this.accountId = application.accountId
       this.tradingName = application.tradingName
@@ -65,8 +66,6 @@ module.exports = class Application extends BaseModel {
   }
 
   async save (authToken) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-
     const dataObject = {
       defra_regime: Constants.Dynamics.WASTE_REGIME,
       defra_source: Constants.Dynamics.DIGITAL_SOURCE,
@@ -76,28 +75,13 @@ module.exports = class Application extends BaseModel {
       defra_bankruptcydeclaration: this.bankruptcy,
       defra_bankruptcydeclarationdetails: this.bankruptcyDetails
     }
-
-    try {
-      let query
-      if (this.isNew()) {
-        // New Application
-        query = 'defra_applications'
-        this.id = await dynamicsDal.create(query, dataObject)
-        LoggingService.logInfo(`Created application with ID: ${this.id}`)
-      } else {
-        // Update Application
-        query = `defra_applications(${this.id})`
-        if (this.accountId) {
-          dataObject['defra_customerid_account@odata.bind'] = `accounts(${this.accountId})`
-        }
-        await dynamicsDal.update(query, dataObject)
-
-        // The following "untilComplete" can be removed when the update is successful only when the update in dynamics has fully completed.
-        await this.untilComplete(authToken)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to save Application: ${error}`)
-      throw error
+    const isNew = this.isNew()
+    if (!isNew && this.accountId) {
+      dataObject['defra_customerid_account@odata.bind'] = `accounts(${this.accountId})`
+    }
+    await super.save(authToken, dataObject)
+    if (isNew) {
+      LoggingService.logInfo(`Created application with ID: ${this.id}`)
     }
   }
 }
