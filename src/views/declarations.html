@@ -11,36 +11,57 @@
 
       <div>
 
-        <p>You must tell us about:</p>
+        {{#if isConfidentiality}}
+          <p>We put all applications into a public register. If you can prove that some information is commercially or
+            industrially confidential, we’ll consider removing that information from the register.</p>
 
-        {{#if operatorTypeIsLimitedCompany}}
-        <ul id="operator-type-is-limited-company" class="list list-bullet">
-          <li>the company itself</li>
-          <li>the officers of the company, for example directors or company secretaries</li>
-          <li>other companies, if the officers of the company were officers of that other company when they were
-            convicted
-          </li>
-        </ul>
-        {{/if}}
+          <div id="confidentiality-hint" class="form-group">
+            <p>Guidance about confidentiality is in the
+              <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/publications/environmental-permitting-guidance-core-guidance-2">
+                <span>environmental permitting guidance core guidance on GOV.UK (opens new tab).</span>
+              </a>
+            </p>
+          </div>
 
-        {{#if operatorTypeIsIndividual}}
-        <ul id="operator-type-is-individual" class="list list-bullet">
-          <li>the individual</li>
-          <li>companies for which the individual is a director, manager or company secretary</li>
-        </ul>
-        {{/if}}
+        {{else}}
 
-        {{#if operatorTypeIsPartnership}}
-        <ul id="operator-type-is-partnership" class="list list-bullet">
-          <li>the individual partners</li>
-          <li>business partners, where the offence was committed in the course of their business</li>
-        </ul>
+          <p>You must tell us about:</p>
+
+          {{#if operatorTypeIsLimitedCompany}}
+          <ul id="operator-type-is-limited-company" class="list list-bullet">
+            <li>the company itself</li>
+            <li>the officers of the company, for example directors or company secretaries</li>
+            <li>other companies, if the officers of the company were officers of that other company when they were
+              convicted
+            </li>
+          </ul>
+          {{/if}}
+
+          {{#if operatorTypeIsIndividual}}
+          <ul id="operator-type-is-individual" class="list list-bullet">
+            <li>the individual</li>
+            <li>companies for which the individual is a director, manager or company secretary</li>
+          </ul>
+          {{/if}}
+
+          {{#if operatorTypeIsPartnership}}
+          <ul id="operator-type-is-partnership" class="list list-bullet">
+            <li>the individual partners</li>
+            <li>business partners, where the offence was committed in the course of their business</li>
+          </ul>
+          {{/if}}
+
         {{/if}}
       </div>
 
-      {{#if declarationHint}}
-      <div class="form-group">
-        <p id="declaration-hint">The <a id="declaration-hint-link" target="_blank" rel="noopener noreferrer" href="{{declarationHintLink}}"><span id="declaration-hint-link-text">{{declarationLinkText}}</span></a> {{declarationHint}}</p>
+      {{#if isDeclareOffences}}
+      <div id="declare-offences-hint" class="form-group">
+        <p>The
+          <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/publications/relevant-conviction-guidance-for-permit-applications-for-waste-activities-and-installations-only">
+            <span>relevant conviction guidance on GOV.UK (opens new tab)</span>
+          </a>
+          gives a full list of people and offences you should include.
+        </p>
       </div>
       {{/if}}
 
@@ -50,7 +71,8 @@
         <fieldset>
           <legend class="visually-hidden">{{ pageHeading }}</legend>
 
-          <div class="form-group {{#getFormErrorGroupClass errors.declared}}{{/getFormErrorGroupClass}} {{#getFormErrorGroupClass errors.declaration-details}}{{/getFormErrorGroupClass}}">
+          <div
+              class="form-group {{#getFormErrorGroupClass errors.declared}}{{/getFormErrorGroupClass}} {{#getFormErrorGroupClass errors.declaration-details}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='declared-error' message=errors.declared }}
 
             <div class="multiple-choice" data-target="declaredD">

@@ -17,6 +17,8 @@ module.exports = class Application extends BaseModel {
       this.relevantOffencesDetails = application.relevantOffencesDetails
       this.bankruptcy = application.bankruptcy
       this.bankruptcyDetails = application.bankruptcyDetails
+      this.confidentiality = application.confidentiality
+      this.confidentialityDetails = application.confidentialityDetails
     }
     Utilities.convertFromDynamics(this)
   }
@@ -29,7 +31,9 @@ module.exports = class Application extends BaseModel {
       'defra_convictionsdeclaration',
       'defra_convictionsdeclarationdetails',
       'defra_bankruptcydeclaration',
-      'defra_bankruptcydeclarationdetails'
+      'defra_bankruptcydeclarationdetails',
+      'defra_confidentialitydeclaration',
+      'defra_confidentialitydeclarationdetails'
     ].join(',')
     const query = encodeURI(`defra_applications(${applicationId})?$select=${selectedFields}`)
     try {
@@ -40,7 +44,9 @@ module.exports = class Application extends BaseModel {
         relevantOffences: result.defra_convictionsdeclaration,
         relevantOffencesDetails: result.defra_convictionsdeclarationdetails,
         bankruptcy: result.defra_bankruptcydeclaration,
-        bankruptcyDetails: result.defra_bankruptcydeclarationdetails
+        bankruptcyDetails: result.defra_bankruptcydeclarationdetails,
+        confidentiality: result.defra_confidentialitydeclaration,
+        confidentialityDetails: result.defra_confidentialitydeclarationdetails
       })
       application.id = applicationId
       return application
@@ -58,7 +64,9 @@ module.exports = class Application extends BaseModel {
       defra_convictionsdeclaration: this.relevantOffences,
       defra_convictionsdeclarationdetails: this.relevantOffencesDetails,
       defra_bankruptcydeclaration: this.bankruptcy,
-      defra_bankruptcydeclarationdetails: this.bankruptcyDetails
+      defra_bankruptcydeclarationdetails: this.bankruptcyDetails,
+      defra_confidentialitydeclaration: this.confidentiality,
+      defra_confidentialitydeclarationdetails: this.confidentialityDetails
     }
     const isNew = this.isNew()
     if (!isNew && this.accountId) {
