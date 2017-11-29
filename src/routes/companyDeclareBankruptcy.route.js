@@ -1,9 +1,10 @@
 'use strict'
 
 const Constants = require('../constants')
+const {COMPANY_DECLARE_BANKRUPTCY, TASK_LIST} = Constants.Routes
 const CompanyDeclareBankruptcyController = require('../controllers/declareBankruptcy.controller')
 const CompanyDeclareBankruptcyValidator = require('../validators/declareBankruptcy.validator')
-const controller = new CompanyDeclareBankruptcyController(Constants.Routes.COMPANY_DECLARE_BANKRUPTCY)
+const controller = new CompanyDeclareBankruptcyController(COMPANY_DECLARE_BANKRUPTCY, true, TASK_LIST, CompanyDeclareBankruptcyValidator)
 
 module.exports = [{
   method: ['GET'],
@@ -24,7 +25,7 @@ module.exports = [{
       options: {
         allowUnknown: true
       },
-      payload: CompanyDeclareBankruptcyValidator.getFormValidators(),
+      payload: controller.validator.getFormValidators(),
       failAction: controller.failAction
     }
   }

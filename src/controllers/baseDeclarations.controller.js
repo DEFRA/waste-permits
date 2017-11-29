@@ -6,6 +6,12 @@ const CookieService = require('../services/cookie.service')
 const Application = require('../models/application.model')
 
 module.exports = class DeclareOffencesController extends BaseController {
+  constructor (route, cookieValidationRequired, nextRoute, validator) {
+    super(route, cookieValidationRequired)
+    this.validator = validator
+    this.nextPath = nextRoute.path
+  }
+
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors, this.validator)
 
@@ -48,5 +54,22 @@ module.exports = class DeclareOffencesController extends BaseController {
       await application.save(authToken)
       return reply.redirect(this.nextPath)
     }
+  }
+
+  getFormData (data, declared, declarationDetails) {
+    if (!data) {
+      return {}
+    }
+    return {
+      'declaration-details': data[declarationDetails],
+      'declared': data[declared] ? 'yes' : (data[declared] === false ? 'no' : '')
+    }
+  }
+
+  getRequestData (request, declared, declarationDetails) {
+    const data = {}
+    data[declared] = request.payload.declared === 'yes'
+    data[declarationDetails] = data[declared] ? request.payload['declaration-details'] : undefined
+    return data
   }
 }

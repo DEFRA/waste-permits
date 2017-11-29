@@ -1,30 +1,14 @@
 'use strict'
 
-const Constants = require('../constants')
 const BaseDeclarationsController = require('./baseDeclarations.controller')
-const DeclareBankruptcyValidator = require('../validators/declareBankruptcy.validator')
 
 module.exports = class DeclareBankruptcyController extends BaseDeclarationsController {
-  constructor (...args) {
-    super(...args)
-    this.validator = DeclareBankruptcyValidator
-    this.nextPath = Constants.Routes.TASK_LIST.path
-  }
-
   getFormData (data) {
-    if (!data) {
-      return {}
-    }
-    return {
-      'declaration-details': data.bankruptcyDetails,
-      'declared': data.bankruptcy ? 'yes' : (data.bankruptcy === false ? 'no' : '')
-    }
+    return super.getFormData(data, 'bankruptcy', 'bankruptcyDetails')
   }
 
   getRequestData (request) {
-    const bankruptcy = request.payload.declared === 'yes'
-    const bankruptcyDetails = bankruptcy ? request.payload['declaration-details'] : undefined
-    return {bankruptcy, bankruptcyDetails}
+    return super.getRequestData(request, 'bankruptcy', 'bankruptcyDetails')
   }
 
   getSpecificPageContext () {
