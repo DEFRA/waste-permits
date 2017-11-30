@@ -25,7 +25,7 @@ module.exports = class DynamicsDalService {
     Utilities.convertToDynamics(dataObject)
     const options = this._requestOptions(this.authToken, query, 'PATCH', dataObject)
     LoggingService.logDebug('Dynamics PATCH options', options)
-    this._call(options, dataObject)
+    await this._call(options, dataObject)
   }
 
   async search (query) {
