@@ -17,9 +17,6 @@ module.exports = class Application extends BaseModel {
       this.relevantOffencesDetails = application.relevantOffencesDetails
       this.bankruptcy = application.bankruptcy
       this.bankruptcyDetails = application.bankruptcyDetails
-
-      // The following delay is required by the untilComplete method
-      this.delay = 250
     }
     Utilities.convertFromDynamics(this)
   }
@@ -53,18 +50,6 @@ module.exports = class Application extends BaseModel {
     }
   }
 
-  // A bug currently exists where the account id isn't updated straight away in dynamics even when the save is successful.
-  // This function is a temporary fix to wait until we are sure we can get the account id.
-  // This and the code overriding the delay property in the test, can be removed when the update is successful only when the update in dynamics has fully completed.
-  async untilComplete (authToken) {
-    for (let retries = 10; retries && !(await Application.getById(authToken, this.id)).accountId; retries--) {
-      if (!retries) {
-        throw new Error('Failed to complete')
-      }
-      await new Promise(resolve => setTimeout(resolve, this.delay))
-    }
-  }
-
   async save (authToken) {
     const dataObject = {
       defra_regime: Constants.Dynamics.WASTE_REGIME,
@@ -80,9 +65,6 @@ module.exports = class Application extends BaseModel {
       dataObject['defra_customerid_account@odata.bind'] = `accounts(${this.accountId})`
     }
     await super.save(authToken, dataObject)
-
-    // The following "untilComplete" can be removed when the update is successful only when the update in dynamics has fully completed.
-    await this.untilComplete(authToken)
     if (isNew) {
       LoggingService.logInfo(`Created application with ID: ${this.id}`)
     }
