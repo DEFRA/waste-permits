@@ -26,7 +26,7 @@ module.exports = class Account extends BaseModel {
     const application = await Application.getById(authToken, applicationId)
     if (application.accountId) {
       try {
-        const query = encodeURI(`accounts(${application.accountId})?$select=defra_companyhouseid,name,defra_tradingname,defra_draft`)
+        const query = encodeURI(`accounts(${application.accountId})?$select=defra_companyhouseid,name,defra_draft`)
         const result = await dynamicsDal.search(query)
         if (result) {
           account = new Account({

@@ -15,7 +15,18 @@
         </div>
       {{/if}}
 
-      <p id="confirm-rules-paragraph-1">If it doesn't meet these rules, you may need a different standard rules permit or a bespoke permit instead.</p>
+      <div id="rules-and-risk-hint" class="form-group">
+        <p>Read the
+          <a target="_blank" rel="noopener noreferrer" href="{{guidanceUrl}}">
+            <span>rules and risk assessment for permit {{code}} on GOV.UK  (opens new tab).</span>
+          </a>
+        </p>
+      </div>
+
+      {{#unless complete}}
+        <p id="confirm-rules-paragraph-1">If your operation doesn't meet these rules, you may need a different standard rules permit or a bespoke permit instead.</p>
+      {{/unless}}
+
       <form method="POST" action="{{ formAction }}">
         <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
         <div class="form-group">
