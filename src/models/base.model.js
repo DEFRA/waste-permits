@@ -37,11 +37,6 @@ module.exports = class BaseModel {
         // Update Entity
         query = `${this.entity}(${this.id})`
         await dynamicsDal.update(query, dataObject)
-
-        // The following "untilComplete" can be removed when the update is successful only when the update in dynamics has fully completed.
-        if (this.untilComplete) {
-          await this.untilComplete(authToken)
-        }
       }
     } catch (error) {
       LoggingService.logError(`Unable to save ${this.entity}: ${error}`)

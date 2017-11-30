@@ -80,6 +80,9 @@ module.exports = class Application extends BaseModel {
       dataObject['defra_customerid_account@odata.bind'] = `accounts(${this.accountId})`
     }
     await super.save(authToken, dataObject)
+
+    // The following "untilComplete" can be removed when the update is successful only when the update in dynamics has fully completed.
+    await this.untilComplete(authToken)
     if (isNew) {
       LoggingService.logInfo(`Created application with ID: ${this.id}`)
     }
