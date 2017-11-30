@@ -1,5 +1,8 @@
 'use strict'
 
+const LoggingService = require('../services/logging.service')
+const DynamicsDalService = require('../services/dynamicsDal.service')
+
 module.exports = class BaseModel {
   toString () {
     // Class name
@@ -19,12 +22,25 @@ module.exports = class BaseModel {
   }
 
   isNew () {
-    let result
-    if (this.id) {
-      result = false
-    } else {
-      result = true
+    return !this.id
+  }
+
+  async save (authToken, dataObject) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    try {
+      let query
+      if (this.isNew()) {
+        // New Entity
+        query = this.entity
+        this.id = await dynamicsDal.create(query, dataObject)
+      } else {
+        // Update Entity
+        query = `${this.entity}(${this.id})`
+        await dynamicsDal.update(query, dataObject)
+      }
+    } catch (error) {
+      LoggingService.logError(`Unable to save ${this.entity}: ${error}`)
+      throw error
     }
-    return result
   }
 }

@@ -8,6 +8,7 @@ const Utilities = require('../utilities/utilities')
 module.exports = class Location extends BaseModel {
   constructor (location) {
     super()
+    this.entity = 'defra_locations'
     this.id = location.id
     this.name = location.name
     this.applicationId = location.applicationId
@@ -41,28 +42,11 @@ module.exports = class Location extends BaseModel {
   }
 
   async save (authToken) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-
-    // Update the Location
-    try {
-      // Map the Location to the corresponding Dynamics schema Location object
-      const dataObject = {
-        defra_name: this.name,
-        'defra_applicationId@odata.bind': `defra_applications(${this.applicationId})`
-      }
-      let query
-      if (this.isNew()) {
-        // New Location
-        query = 'defra_locations'
-        this.id = await dynamicsDal.create(query, dataObject)
-      } else {
-        // Update Location
-        query = `defra_locations(${this.id})`
-        await dynamicsDal.update(query, dataObject)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to save Location: ${error}`)
-      throw error
+    // Map the Location to the corresponding Dynamics schema Location object
+    const dataObject = {
+      defra_name: this.name,
+      'defra_applicationId@odata.bind': `defra_applications(${this.applicationId})`
     }
+    await super.save(authToken, dataObject)
   }
 }
