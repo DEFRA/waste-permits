@@ -9,60 +9,16 @@
 
       <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
 
-      <div>
+      {{#if isConfidentiality}}
+      {{> confidentialityDescription }}
+      {{/if}}
 
-        {{#if isConfidentiality}}
-          <p>We put all applications into a public register. If you can prove that some information is commercially or
-            industrially confidential, we’ll consider removing that information from the register.</p>
-
-          <div id="confidentiality-hint" class="form-group">
-            <p>Guidance about confidentiality is in the
-              <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/publications/environmental-permitting-guidance-core-guidance-2">
-                <span>environmental permitting guidance core guidance on GOV.UK (opens new tab).</span>
-              </a>
-            </p>
-          </div>
-
-        {{else}}
-
-          <p>You must tell us about:</p>
-
-          {{#if operatorTypeIsLimitedCompany}}
-          <ul id="operator-type-is-limited-company" class="list list-bullet">
-            <li>the company itself</li>
-            <li>the officers of the company, for example directors or company secretaries</li>
-            <li>other companies, if the officers of the company were officers of that other company when they were
-              convicted
-            </li>
-          </ul>
-          {{/if}}
-
-          {{#if operatorTypeIsIndividual}}
-          <ul id="operator-type-is-individual" class="list list-bullet">
-            <li>the individual</li>
-            <li>companies for which the individual is a director, manager or company secretary</li>
-          </ul>
-          {{/if}}
-
-          {{#if operatorTypeIsPartnership}}
-          <ul id="operator-type-is-partnership" class="list list-bullet">
-            <li>the individual partners</li>
-            <li>business partners, where the offence was committed in the course of their business</li>
-          </ul>
-          {{/if}}
-
-        {{/if}}
-      </div>
+      {{#if isDeclareBankruptcy}}
+      {{> declareBankruptcyDescription }}
+      {{/if}}
 
       {{#if isDeclareOffences}}
-      <div id="declare-offences-hint" class="form-group">
-        <p>The
-          <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/publications/relevant-conviction-guidance-for-permit-applications-for-waste-activities-and-installations-only">
-            <span>relevant conviction guidance on GOV.UK (opens new tab)</span>
-          </a>
-          gives a full list of people and offences you should include.
-        </p>
-      </div>
+      {{> declareOffencesDescription }}
       {{/if}}
 
       <form method="post" action="{{formAction}}">

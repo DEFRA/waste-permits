@@ -1,0 +1,25 @@
+<div>
+  <p>You must tell us about:</p>
+
+  {{#if operatorTypeIsLimitedCompany}}
+  <ul id="operator-type-is-limited-company" class="list list-bullet">
+    <li>the company itself</li>
+    <li>the officers of the company, for example directors or company secretaries</li>
+    <li>other companies, if the officers of this company were officers of that other company when it became insolvent</li>
+  </ul>
+  {{/if}}
+
+  {{#if operatorTypeIsIndividual}}
+  <ul id="operator-type-is-individual" class="list list-bullet">
+    <li>the individual</li>
+    <li>companies for which the individual is a director, manager or company secretary</li>
+  </ul>
+  {{/if}}
+
+  {{#if operatorTypeIsPartnership}}
+  <ul id="operator-type-is-partnership" class="list list-bullet">
+    <li>the individual partners</li>
+    <li>business partners, where the offence was committed in the course of their business</li>
+  </ul>
+  {{/if}}
+</div>
