@@ -13,6 +13,7 @@ module.exports = class DeclareBankruptcyController extends BaseDeclarationsContr
 
   getSpecificPageContext () {
     return {
+      isDeclareBankruptcy: true,
       declaredLabel: 'Yes, there are bankruptcy or insolvency proceedings',
       noneDeclaredLabel: 'No',
       declarationDetailsLabel: 'Give details of the bankruptcy or insolvency',
