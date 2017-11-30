@@ -20,6 +20,8 @@ module.exports = class DeclareOffencesController extends BaseController {
       case Constants.Routes.COMPANY_DECLARE_BANKRUPTCY:
         pageContext.operatorTypeIsLimitedCompany = true
         break
+      case Constants.Routes.CONFIDENTIALITY:
+        break
       default:
         throw new Error(`Unexpected route (${this.route.path})`)
     }
@@ -49,9 +51,13 @@ module.exports = class DeclareOffencesController extends BaseController {
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
+      const applicationLineId = CookieService.getApplicationLineId(request)
       const application = await Application.getById(authToken, applicationId)
       Object.assign(application, this.getRequestData(request))
       await application.save(authToken)
+      if (this.updateCompleteness) {
+        await this.updateCompleteness(authToken, applicationId, applicationLineId)
+      }
       return reply.redirect(this.nextPath)
     }
   }

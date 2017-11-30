@@ -1,15 +1,28 @@
 'use strict'
 
-const BaseController = require('./base.controller')
+const BaseDeclarationsController = require('./baseDeclarations.controller')
+const Confidentiality = require('../models/taskList/confidentiality.model')
 
-module.exports = class ConfidentialityController extends BaseController {
-  async doGet (request, reply) {
-    const pageContext = this.createPageContext()
-    return reply
-      .view('confidentiality', pageContext)
+module.exports = class ConfidentialityController extends BaseDeclarationsController {
+  getFormData (data) {
+    return super.getFormData(data, 'confidentiality', 'confidentialityDetails')
   }
 
-  async doPost (request, reply, errors) {
-    // Not implemented yet
+  getRequestData (request) {
+    return super.getRequestData(request, 'confidentiality', 'confidentialityDetails')
+  }
+
+  getSpecificPageContext () {
+    return {
+      isConfidentiality: true,
+      declaredLabel: 'Yes, I want to claim confidentiality for part of my application',
+      noneDeclaredLabel: 'No',
+      declarationDetailsLabel: 'What information do you think is confidential, and why?',
+      declarationDetailsHint: 'Check the guidance first to check you qualify'
+    }
+  }
+
+  async updateCompleteness (...args) {
+    await Confidentiality.updateCompleteness(...args)
   }
 }
