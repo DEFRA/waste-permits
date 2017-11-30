@@ -80,9 +80,7 @@ lab.experiment('Company Declare Offences tests:', () => {
       doc = await getDoc()
 
       Code.expect(doc.getElementById('declaration-details').firstChild.nodeValue).to.equal(fakeApplication.relevantOffencesDetails)
-      Code.expect(doc.getElementById('declaration-hint')).to.exist()
-      Code.expect(doc.getElementById('declaration-hint-link')).to.exist()
-      Code.expect(doc.getElementById('declaration-hint-link-text')).to.exist()
+      Code.expect(doc.getElementById('declare-offences-hint')).to.exist()
       Code.expect(doc.getElementById('declaration-notice')).to.not.exist()
       Code.expect(doc.getElementById('operator-type-is-limited-company')).to.exist()
       Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()
@@ -169,7 +167,7 @@ lab.experiment('Company Declare Offences tests:', () => {
         await checkValidationMessage('declaration-details', 'Enter details of the convictions')
       })
 
-      lab.test('when offences set to yes and no details entered', async () => {
+      lab.test('when offences set to yes and details entered with 2001 characters', async () => {
         postRequest.payload = {'declared': 'yes', 'declaration-details': 'a'.repeat(2001)}
         await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you’ve written')
       })
