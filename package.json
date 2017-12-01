@@ -60,7 +60,7 @@
     "govuk_template_mustache": "^0.23.0",
     "handlebars": "^4.0.11",
     "hapi": "^16.6.2",
-    "hapi-alive": "^1.4.0",
+    "hapi-alive": "^2.0.0",
     "hapi-dev-errors": "^1.3.2",
     "hapi-router": "^3.5.0",
     "hapi-sanitize-payload": "^1.5.0",
