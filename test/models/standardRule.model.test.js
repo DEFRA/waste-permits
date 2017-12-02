@@ -60,10 +60,9 @@ lab.experiment('StandardRule Model tests:', () => {
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const standardRuleList = await StandardRule.list()
-    Code.expect(Array.isArray(standardRuleList.results)).to.be.true()
-    Code.expect(standardRuleList.results.length).to.equal(3)
-    Code.expect(standardRuleList.count).to.equal(3)
-    standardRuleList.results.forEach((standardRule, index) => {
+    Code.expect(Array.isArray(standardRuleList)).to.be.true()
+    Code.expect(standardRuleList.length).to.equal(3)
+    standardRuleList.forEach((standardRule, index) => {
       Code.expect(standardRule).to.equal(Object.assign(fakeStandardRule, {code: codes[index], codeForId: StandardRule.transformPermitCode(codes[index])}))
     })
     Code.expect(spy.callCount).to.equal(1)

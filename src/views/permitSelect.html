@@ -26,7 +26,7 @@
           <div id="chosen-permit" class="form-group {{#getFormErrorGroupClass errors.started-application}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='chosen-permit-error' message=errors.chosen-permit }}
 
-            {{#each standardRules.results}}
+            {{#each standardRules}}
             <div class="multiple-choice permit-selector">
               <input id="chosen-permit-{{this.codeForId}}-input" type="radio" name="chosen-permit" value="{{this.code}}">
               <label id="chosen-permit-{{this.codeForId}}-label" class="selection-button-radio permit-item" for="chosen-permit-{{this.codeForId}}-input">
