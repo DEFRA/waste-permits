@@ -256,6 +256,13 @@ Constants.CompanyStatus = {
   NOT_ACTIVE: `isn't active`
 }
 
+Constants.TechnicalQualification = {
+  WAMITAB_QUALIFICATION: 910400000,
+  REGISTERED_ON_A_COURSE: 910400001,
+  DEEMED_COMPETENCE: 910400002,
+  ESA_EU_SKILLS: 910400003
+}
+
 Constants.buildPageTitle = (pageHeading) => {
   return `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`
 }
