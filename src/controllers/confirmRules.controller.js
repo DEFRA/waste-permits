@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
+const StandardRule = require('../models/standardRule.model')
 const ConfirmRules = require('../models/confirmRules.model')
 
 module.exports = class ConfirmRulesController extends BaseController {
@@ -16,7 +17,11 @@ module.exports = class ConfirmRulesController extends BaseController {
 
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-
+    const authToken = CookieService.getAuthToken(request)
+    const applicationLineId = CookieService.getApplicationLineId(request)
+    const standardRule = await StandardRule.getByApplicationLineId(authToken, applicationLineId)
+    pageContext.guidanceUrl = standardRule.guidanceUrl
+    pageContext.code = standardRule.code
     pageContext.complete = await this.isComplete(request)
     return reply
       .view('confirmRules', pageContext)
