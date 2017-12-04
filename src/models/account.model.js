@@ -9,13 +9,13 @@ const Utilities = require('../utilities/utilities')
 module.exports = class Account extends BaseModel {
   constructor (account) {
     super()
+    this.entity = 'accounts'
     if (account) {
       this.id = account.id
       this.companyNumber = account.companyNumber
-      this.companyName = account.companyName
-      this.tradingName = account.tradingName
+      this.name = account.name
       this.isDraft = account.isDraft
-      this.IsValidatedWithCompaniesHouse = account.IsValidatedWithCompaniesHouse
+      this.isValidatedWithCompaniesHouse = account.isValidatedWithCompaniesHouse
     }
     Utilities.convertFromDynamics(this)
   }
@@ -26,14 +26,13 @@ module.exports = class Account extends BaseModel {
     const application = await Application.getById(authToken, applicationId)
     if (application.accountId) {
       try {
-        const query = encodeURI(`accounts(${application.accountId})?$select=defra_companyhouseid,name,defra_tradingname,defra_draft`)
+        const query = encodeURI(`accounts(${application.accountId})?$select=defra_companyhouseid,name,defra_draft`)
         const result = await dynamicsDal.search(query)
         if (result) {
           account = new Account({
             id: application.accountId,
             companyNumber: result.defra_companyhouseid,
-            companyName: result.name,
-            tradingName: result.defra_tradingname,
+            name: result.name,
             isDraft: result.defra_draft
           })
         }
@@ -46,32 +45,12 @@ module.exports = class Account extends BaseModel {
   }
 
   async save (authToken, isDraft) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-
-    // Update the Account
-    try {
-      // Map the Account to the corresponding Dynamics schema Account object
-      const dataObject = {
-        defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber).toUpperCase(),
-        name: this.companyName,
-        defra_tradingname: this.tradingName,
-        defra_draft: isDraft,
-        defra_validatedwithcompanyhouse: this.IsValidatedWithCompaniesHouse
-      }
-
-      let query
-      if (this.isNew()) {
-        // New Account
-        query = 'accounts'
-        this.id = await dynamicsDal.create(query, dataObject)
-      } else {
-        // Update Account
-        query = `accounts(${this.id})`
-        await dynamicsDal.update(query, dataObject)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to save Account: ${error}`)
-      throw error
+    const dataObject = {
+      defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber).toUpperCase(),
+      name: this.name,
+      defra_draft: isDraft,
+      defra_validatedwithcompanyhouse: this.isValidatedWithCompaniesHouse
     }
+    await super.save(authToken, dataObject)
   }
 }

@@ -46,6 +46,14 @@ Constants.Routes = {
     path: '/permit-holder/company/check-name',
     pageHeading: `Is this the right company?`
   },
+  COMPANY_DECLARE_OFFENCES: {
+    path: '/permit-holder/company/declare-offences',
+    pageHeading: 'Does anyone connected with your business have a conviction for a relevant offence?'
+  },
+  COMPANY_DECLARE_BANKRUPTCY: {
+    path: '/permit-holder/company/bankruptcy-insolvency',
+    pageHeading: 'Do you have current or past bankruptcy or insolvency proceedings to declare?'
+  },
   COMPANY_NUMBER: {
     path: '/permit-holder/company/number',
     pageHeading: `What's the UK company registration number?`,

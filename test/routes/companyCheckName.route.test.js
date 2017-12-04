@@ -10,13 +10,20 @@ const CookieService = require('../../src/services/cookie.service')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
 
 const Application = require('../../src/models/application.model')
+const ApplicationLine = require('../../src/models/applicationLine.model')
 const Account = require('../../src/models/account.model')
+const CompanyDetails = require('../../src/models/taskList/companyDetails.model')
 
 let validateCookieStub
 let companyLookupGetCompanyStub
 let applicationGetByIdStub
+let applicationLineGetByIdStub
+let accountSaveStub
+let applicationSaveStub
+let companyDetailsUpdateCompletenessStub
 
 const routePath = '/permit-holder/company/check-name'
+const nextRoutePath = '/permit-holder/company/director-date-of-birth'
 const getRequest = {
   method: 'GET',
   url: routePath,
@@ -25,13 +32,20 @@ const getRequest = {
 let postRequest
 
 const fakeApplicationData = {
-  accountId: 'ACCOUNT_ID'
+  accountId: 'ACCOUNT_ID',
+  tradingName: 'THE TRADING NAME'
+}
+
+const fakeCompanyData = {
+  name: 'THE COMPANY NAME',
+  address: 'THE COMPANY ADDRESS',
+  status: 'ACTIVE',
+  IsActive: true
 }
 
 const fakeAccountData = {
-  companyNumber: '012345678',
-  companyName: 'THE COMPANY NAME',
-  tradingName: 'THE TRADING NAME'
+  companyNumber: fakeCompanyData.companyNumber,
+  name: fakeCompanyData.name
 }
 
 lab.beforeEach(() => {
@@ -47,13 +61,25 @@ lab.beforeEach(() => {
   CookieService.validateCookie = () => true
 
   companyLookupGetCompanyStub = CompanyLookupService.getCompany
-  CompanyLookupService.getCompany = (companyNumber) => fakeAccountData
+  CompanyLookupService.getCompany = () => fakeCompanyData
 
   applicationGetByIdStub = Application.getById
-  Application.getById = () => fakeApplicationData
+  Application.getById = () => new Application(fakeApplicationData)
+
+  applicationLineGetByIdStub = ApplicationLine.getById
+  ApplicationLine.getById = () => new ApplicationLine()
 
   applicationGetByIdStub = Account.getByApplicationId
-  Account.getByApplicationId = (authToken, applicationId) => fakeAccountData
+  Account.getByApplicationId = () => new Account(fakeAccountData)
+
+  accountSaveStub = Account.prototype.save
+  Account.prototype.save = () => {}
+
+  applicationSaveStub = Application.prototype.save
+  Application.prototype.save = () => {}
+
+  companyDetailsUpdateCompletenessStub = CompanyDetails.updateCompleteness
+  CompanyDetails.updateCompleteness = () => {}
 })
 
 lab.afterEach(() => {
@@ -61,9 +87,14 @@ lab.afterEach(() => {
   CookieService.validateCookie = validateCookieStub
   CompanyLookupService.getCompany = companyLookupGetCompanyStub
   Application.getById = applicationGetByIdStub
+  ApplicationLine.getById = applicationLineGetByIdStub
+  Account.getByApplicationId = applicationGetByIdStub
+  Account.prototype.save = accountSaveStub
+  Application.prototype.save = applicationSaveStub
+  CompanyDetails.updateCompleteness = companyDetailsUpdateCompletenessStub
 })
 
-const checkPageElements = async (request, companyFound) => {
+const checkPageElements = async (request, companyFound, expectedValue) => {
   const res = await server.inject(request)
   Code.expect(res.statusCode).to.equal(200)
 
@@ -73,6 +104,7 @@ const checkPageElements = async (request, companyFound) => {
   let element
 
   if (companyFound) {
+    // Company found page elements
     element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(`Is this the right company?`)
 
@@ -82,6 +114,7 @@ const checkPageElements = async (request, companyFound) => {
       'company-number-label',
       'enter-different-number-company-exists-link',
       'company-name',
+      'company-address',
       'trading-name-visually-hidden',
       'use-business-trading-name',
       'use-business-trading-name-label',
@@ -95,17 +128,20 @@ const checkPageElements = async (request, companyFound) => {
     }
 
     element = doc.getElementById('company-name').firstChild
-    Code.expect(element.nodeValue).to.equal(fakeAccountData.companyName)
+    Code.expect(element.nodeValue).to.equal(fakeAccountData.name)
 
-    // TODO test trading name value?
-    // element = doc.getElementById('business-trading-name')
-    // Code.expect(element.getAttribute('value')).to.equal(expectedValue)
+    element = doc.getElementById('company-address').firstChild
+    Code.expect(element.nodeValue).to.equal(fakeCompanyData.address)
+
+    element = doc.getElementById('business-trading-name')
+    Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
     element = doc.getElementById('submit-button').firstChild
     Code.expect(element.nodeValue).to.equal('Continue')
   } else {
+    // Company not found page elements
     element = doc.getElementById('page-heading-company-not-found').firstChild
-    Code.expect(element.nodeValue).to.equal(`We couldn't find that company`)
+    Code.expect(element.nodeValue).to.equal(`We can't find that company`)
 
     const elementIds = [
       'search-term-text',
@@ -119,23 +155,23 @@ const checkPageElements = async (request, companyFound) => {
   }
 }
 
-// const checkValidationError = async (expectedErrorMessage) => {
-//   const res = await server.inject(postRequest)
-//   Code.expect(res.statusCode).to.equal(200)
+const checkValidationError = async (expectedErrorMessage) => {
+  const res = await server.inject(postRequest)
+  Code.expect(res.statusCode).to.equal(200)
 
-//   const parser = new DOMParser()
-//   const doc = parser.parseFromString(res.payload, 'text/html')
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(res.payload, 'text/html')
 
-//   let element
+  let element
 
-//   // Panel summary error item
-//   element = doc.getElementById('error-summary-list-item-0').firstChild
-//   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
+  // Panel summary error item
+  element = doc.getElementById('error-summary-list-item-0').firstChild
+  Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
-//   // Location site name field error
-//   element = doc.getElementById('site-name-error').firstChild
-//   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
-// }
+  // Location site name field error
+  element = doc.getElementById('business-trading-name-error').firstChild
+  Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
+}
 
 lab.experiment('Check Company Details page tests:', () => {
   lab.experiment('General page tests:', () => {
@@ -160,68 +196,59 @@ lab.experiment('Check Company Details page tests:', () => {
     })
   })
 
-  lab.experiment(`GET ${routePath} Company Details found at Companies House`, () => {
-    // TODO
-    // lab.test('Check page elements - existing company details', async () => {
-    //   // Empty site name response
-    //   // SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
-    //   //   return undefined
-    //   // }
-    //   checkPageElements(getRequest, true)
-    // })
+  lab.experiment(`GET ${routePath} page tests`, () => {
+    lab.test('Check page elements - no existing trading name saved', async () => {
+      Application.getById = () => new Application({
+        accountId: fakeAccountData.address,
+        tradingName: undefined
+      })
+      checkPageElements(getRequest, true, '')
+    })
 
-    lab.test('Check page elements - new company details', async () => {
-      checkPageElements(getRequest, true)
+    lab.test('Check page elements - Company Details not found at Companies House', async () => {
+      // Stub the company name not found response
+      CompanyLookupService.getCompany = () => undefined
+      checkPageElements(getRequest, false)
+    })
+
+    lab.test('Check page elements - existing trading name loaded', async () => {
+      checkPageElements(getRequest, true, fakeApplicationData.tradingName)
     })
   })
 
-  // TODO uncomment this once we are getting the company ID from Dynamics
-  // lab.experiment(`GET ${routePath} Company Details not found at Companies House`, () => {
-  //   lab.test('Check page elements', async () => {
-  //     // Stub the company name not found response
-  //     CompanyLookupService.getCompany = (companyNumber) => {
-  //       return undefined
-  //     }
-  //     checkPageElements(getRequest, false)
-  //   })
-  // })
+  lab.experiment(`POST ${routePath} page tests`, () => {
+    lab.experiment('Success', () => {
+      lab.test('Checkbox ticked and trading name entered - redirects to the next route', async () => {
+        postRequest.payload['use-business-trading-name'] = 'on'
+        postRequest.payload['business-trading-name'] = fakeApplicationData.tradingName
 
-  lab.experiment(`POST ${routePath}`, () => {
-    // TODO
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      })
 
-    // lab.test('POST /site/site-name success (new Site) redirects to the Site Grid Reference route', async () => {
-    //   postRequest.payload['site-name'] = 'My Site'
+      lab.test('Checkbox not ticked and no trading name entered - redirects to the next route', async () => {
+        postRequest.payload['use-business-trading-name'] = ''
+        postRequest.payload['business-trading-name'] = ''
 
-    //   // Empty site name response
-    //   SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
-    //     return undefined
-    //   }
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      })
+    })
 
-    //   const res = await server.inject(postRequest)
-    //   Code.expect(res.statusCode).to.equal(302)
-    //   Code.expect(res.headers['location']).to.equal('/site/grid-reference')
-    // })
+    lab.experiment('Failure', () => {
+      lab.test('Checkbox ticked and no trading name entered - shows an error', async () => {
+        postRequest.payload['use-business-trading-name'] = 'on'
+        postRequest.payload['business-trading-name'] = ''
+        await checkValidationError('Enter a business trading name')
+      })
 
-    // lab.test('POST ' + routePath + ' success (existing Site) redirects to the Site Grid Reference route', async () => {
-    //   postRequest.payload['site-name'] = 'My Site'
-    //   const res = await server.inject(postRequest)
-    //   Code.expect(res.statusCode).to.equal(302)
-    //   Code.expect(res.headers['location']).to.equal('/site/grid-reference')
-    // })
-
-    // lab.test('POST ' + routePath + 'shows an error message when the site name is blank', async () => {
-    //   postRequest.payload['site-name'] = ''
-    //   await checkValidationError('Enter the site name')
-    // })
-
-    // lab.test('POST ' + routePath + ' shows an error message when the site name contains invalid characters', async () => {
-    //   postRequest.payload['site-name'] = '___INVALID_SITE_NAME___'
-    //   await checkValidationError('The site name cannot contain any of these characters: ^ | _ ~ ¬ `')
-    // })
-
-    // lab.test('POST ' + routePath + ' shows an error message when the site name is too long', async () => {
-    //   postRequest.payload['site-name'] = '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
-    //   await checkValidationError('Enter a shorter site name with no more than 170 characters')
-    // })
+      lab.test('Trading name too long - shows an error', async () => {
+        postRequest.payload['use-business-trading-name'] = 'on'
+        postRequest.payload['business-trading-name'] = 'A very long trading name xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx'
+        await checkValidationError('Enter a shorter trading name with no more than 170 characters')
+      })
+    })
   })
 })

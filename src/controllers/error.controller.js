@@ -7,8 +7,4 @@ module.exports = class ErrorController extends BaseController {
     const pageContext = this.createPageContext(errors)
     return reply.view('error', pageContext)
   }
-
-  handler (request, reply, source, errors) {
-    return super.handler(request, reply, source, errors, false)
-  }
 }

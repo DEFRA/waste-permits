@@ -40,8 +40,9 @@ lab.beforeEach(() => {
   }
 
   fakeCompany = {
-    companyName: 'THE COMPANY NAME',
-    companyStatus: 'NOT_ACTIVE',
+    name: 'THE COMPANY NAME',
+    address: 'THE COMPANY ADDRESS',
+    status: 'NOT_ACTIVE',
     isActive: false
   }
 
@@ -53,7 +54,7 @@ lab.beforeEach(() => {
   LoggingService.logError = () => {}
 
   companyLookupGetCompanyStub = CompanyLookupService.getCompany
-  CompanyLookupService.getCompany = (companyNumber) => fakeCompany
+  CompanyLookupService.getCompany = () => fakeCompany
 
   getByApplicationIdStub = Account.getByApplicationId
   Account.getByApplicationId = () => undefined
@@ -89,7 +90,7 @@ lab.experiment('Check company status page tests:', () => {
         payload: {}
       }
 
-      Account.getByApplicationId = (authToken, applicationId) => Promise.resolve(new Account(fakeAccount))
+      Account.getByApplicationId = () => Promise.resolve(new Account(fakeAccount))
 
       Account.prototype.save = () => new Account(fakeAccount)
     })
@@ -104,19 +105,19 @@ lab.experiment('Check company status page tests:', () => {
       lab.experiment('for company with a status of', () => {
         Object.keys(COMPANY_STATUSES).forEach((status) => {
           lab.test(`${status}`, async () => {
-            fakeCompany.companyStatus = status
+            fakeCompany.status = status
             fakeCompany.isActive = (status === 'ACTIVE')
             const doc = await getDoc()
             Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We can't issue a permit to that company because it ${COMPANY_STATUSES[status]}`)
             Code.expect(doc.getElementById('company-status-message')).to.exist()
-            Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.companyName)
+            Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)
             Code.expect(doc.getElementById('company-number').firstChild.nodeValue).to.equal(fakeAccount.companyNumber)
           })
         })
       })
 
       lab.test('for company with a status of ACTIVE', async () => {
-        fakeCompany.companyStatus = 'ACTIVE'
+        fakeCompany.status = 'ACTIVE'
         fakeCompany.isActive = true
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)

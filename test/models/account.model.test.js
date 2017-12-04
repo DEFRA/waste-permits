@@ -18,12 +18,12 @@ let testAccount
 const fakeAccountData = {
   id: undefined,
   companyNumber: 'COMPANY_NUMBER',
-  companyName: undefined,
-  tradingName: null
+  name: undefined
 }
 const fakeApplicationData = {
   id: 'APPLICATION_ID',
-  accountId: 'ACCOUNT_ID'
+  accountId: 'ACCOUNT_ID',
+  tradingName: null
 }
 
 const authToken = 'THE_AUTH_TOKEN'
@@ -48,7 +48,7 @@ lab.beforeEach(() => {
   DynamicsDalService.prototype.update = () => fakeApplicationData.accountId
 
   applicationGetByIdStub = Application.getById
-  Application.getById = () => fakeApplicationData
+  Application.getById = () => new Application(fakeApplicationData)
 })
 
 lab.afterEach(() => {
@@ -62,10 +62,10 @@ lab.afterEach(() => {
 lab.experiment('Account Model tests:', () => {
   lab.test('Constructor creates a Account object correctly', () => {
     const emptyAccount = new Account()
-    Code.expect(emptyAccount).to.be.empty()
+    Code.expect(emptyAccount.id).to.be.equal(undefined)
 
     Code.expect(testAccount.companyNumber).to.equal(fakeAccountData.companyNumber)
-    Code.expect(testAccount.companyName).to.equal(fakeAccountData.companyName)
+    Code.expect(testAccount.name).to.equal(fakeAccountData.name)
 
     // Should have been converted from null to undefined
     Code.expect(testAccount.tradingName).to.equal(undefined)

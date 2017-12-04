@@ -21,7 +21,9 @@
             <a id="enter-different-number-company-exists-link" href="{{ enterCompanyNumberRoute }}">Enter a different number</a></p>
           </div>
 
-          <h2 id="company-name" class="heading-medium">{{ formValues.company-name }}</h2>
+          <h2 id="company-name" class="heading-medium">{{ companyName }}</h2>
+
+          <p id="company-address">{{ companyAddress }}</p>
 
           <div class="form-group {{#getFormErrorGroupClass errors.business-trading-name}}{{/getFormErrorGroupClass}}">
 
@@ -55,10 +57,10 @@
 
       {{else}}
 
-      <h1 id="page-heading-company-not-found" class="heading-large">We couldn't find that company</h1>
+      <h1 id="page-heading-company-not-found" class="heading-large">We can't find that company</h1>
       <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
-      <p id="search-term-text">We couldn't find a company with the number <b>{{ formValues.company-number }}</b> at Companies House</p>
+      <p id="search-term-text">We couldn't find a company with the number <b>{{ formValues.company-number }}</b> at Companies House.</p>
 
       <p><a id="enter-different-number-link" href="{{ enterCompanyNumberRoute }}">Enter a different number</a></p>
 

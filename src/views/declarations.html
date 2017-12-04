@@ -1,0 +1,71 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }} {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+
+      {{#if isConfidentiality}}
+      {{> confidentialityDescription }}
+      {{/if}}
+
+      {{#if isDeclareBankruptcy}}
+      {{> declareBankruptcyDescription }}
+      {{/if}}
+
+      {{#if isDeclareOffences}}
+      {{> declareOffencesDescription }}
+      {{/if}}
+
+      <form method="post" action="{{formAction}}">
+        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+
+        <fieldset>
+          <legend class="visually-hidden">{{ pageHeading }}</legend>
+
+          <div
+              class="form-group {{#getFormErrorGroupClass errors.declared}}{{/getFormErrorGroupClass}} {{#getFormErrorGroupClass errors.declaration-details}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='declared-error' message=errors.declared }}
+
+            <div class="multiple-choice" data-target="declaredD">
+              <input id="declared" type="radio" name="declared" value="yes" {{#if declared}}checked{{/if}}>
+              <label id="declared-label" for="declared">{{ declaredLabel }}</label>
+            </div>
+            <div class="panel panel-border-narrow js-hidden" id="declaredD">
+              <label class="form-label" for="declaration-details">{{ declarationDetailsLabel }}
+                <p id="declaration-details-hint" class="form-hint">{{ declarationDetailsHint }}</p></label>
+
+              {{> common/fieldError fieldId='declaration-details-error' message=errors.declaration-details}}
+
+              <textarea class="form-control form-control-full" name="declaration-details" rows="10" type="text"
+                        id="declaration-details" aria-describedby="declaration-details-max-length">{{formValues.declaration-details}}</textarea>
+              <p id="declaration-details-max-length" class="form-hint">No more than {{declaredDetailsMaxLength}}
+                characters</p>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="none-declared" type="radio" name="declared" value="no" {{#if noneDeclared}}checked{{/if}}>
+              <label id="none-declared-label" for="none-declared">{{ noneDeclaredLabel }}</label>
+            </div>
+
+          </div>
+        </fieldset>
+
+        {{#if declarationNotice}}
+        <div class="form-group">
+          <p id="declaration-notice">{{declarationNotice}}</p>
+        </div>
+        {{/if}}
+
+        <div class="form-group">
+          <button id="submit-button" type="submit" class="button" name="Continue">Continue</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</main>

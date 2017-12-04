@@ -19,7 +19,7 @@ module.exports = class PageNotFoundController extends BaseController {
       // Re-direct to the start page if they don't have a valid cookie
       reply.redirect(Constants.Routes.START_OR_OPEN_SAVED.path)
     } else {
-      return super.handler(request, reply, source, errors, false)
+      return super.handler(request, reply, source, errors)
     }
   }
 }

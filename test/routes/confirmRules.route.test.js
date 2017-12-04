@@ -9,19 +9,25 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const ConfirmRules = require('../../src/models/confirmRules.model')
+const StandardRule = require('../../src/models/standardRule.model')
 const LoggingService = require('../../src/services/logging.service')
 
 let validateCookieStub
 let confirmRulesSaveStub
 let getByApplicationIdStub
+let getByApplicationLineIdStub
 let logErrorStub
 let fakeConfirmRules
+let fakeStandardRule
 
 const routePath = '/confirm-rules'
 
 lab.beforeEach(() => {
   fakeConfirmRules = {
     applicationId: 'APPLICATION_ID',
+    applicationLineId: 'APPLICATION_LINE_ID'
+  }
+  fakeStandardRule = {
     applicationLineId: 'APPLICATION_LINE_ID'
   }
   // Stub methods
@@ -33,12 +39,17 @@ lab.beforeEach(() => {
 
   getByApplicationIdStub = ConfirmRules.getByApplicationId
   ConfirmRules.getByApplicationId = () => fakeConfirmRules
+
+  getByApplicationLineIdStub = StandardRule.getByApplicationLineId
+  StandardRule.getByApplicationLineId = () => fakeStandardRule
 })
 
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
   LoggingService.logError = logErrorStub
+  ConfirmRules.getByApplicationId = getByApplicationIdStub
+  StandardRule.getByApplicationLineId = getByApplicationLineIdStub
 })
 
 lab.experiment('Confirm that your operation meets the rules page tests:', () => {
@@ -53,7 +64,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Confirm your operation meets the rules')
-      Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.exist()
+      Code.expect(doc.getElementById('rules-and-risk-hint')).to.exist()
       return doc
     }
 
@@ -79,6 +90,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
       lab.test('when incomplete', async () => {
         doc = await getDoc()
 
+        Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.exist()
         Code.expect(doc.getElementById('confirm-result-message')).to.not.exist()
         Code.expect(doc.getElementById('return-to-task-list-button')).to.not.exist()
         Code.expect(doc.getElementById('operation-meets-rules-button').firstChild.nodeValue).to.equal('Our operation meets these rules')
@@ -88,6 +100,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
         fakeConfirmRules.complete = true
         doc = await getDoc()
 
+        Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.not.exist()
         Code.expect(doc.getElementById('confirm-result-message')).to.exist()
         Code.expect(doc.getElementById('return-to-task-list-button').firstChild.nodeValue).to.equal('Return to task list')
         Code.expect(doc.getElementById('operation-meets-rules-button')).to.not.exist()
@@ -133,7 +146,6 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
     lab.afterEach(() => {
       // Restore stubbed methods
       ConfirmRules.prototype.save = confirmRulesSaveStub
-      ConfirmRules.getByApplicationId = getByApplicationIdStub
     })
 
     lab.experiment('success', () => {

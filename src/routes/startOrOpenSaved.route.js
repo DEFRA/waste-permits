@@ -3,7 +3,7 @@
 const Constants = require('../constants')
 const StartOrOpenSavedController = require('../controllers/startOrOpenSaved.controller')
 const StartOrOpenSavedValidator = require('../validators/startOrOpenSaved.validator')
-const controller = new StartOrOpenSavedController(Constants.Routes.START_OR_OPEN_SAVED)
+const controller = new StartOrOpenSavedController(Constants.Routes.START_OR_OPEN_SAVED, false)
 
 module.exports = [{
   method: ['GET'],

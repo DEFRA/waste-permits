@@ -4,19 +4,13 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
 const CookieService = require('../services/cookie.service')
-const LoggingService = require('../services/logging.service')
 
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, reply, errors) {
-    try {
-      const pageContext = this.createPageContext(errors, ContactDetailsController)
+    const pageContext = this.createPageContext(errors, ContactDetailsController)
 
-      return reply
-        .view('contactDetails', pageContext)
-    } catch (error) {
-      LoggingService.logError(error, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
-    }
+    return reply
+      .view('contactDetails', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -42,32 +36,22 @@ module.exports = class ContactDetailsController extends BaseController {
         email: request.payload.email
       })
 
-      try {
-        await contact.save(authToken)
+      await contact.save(authToken)
 
-        return reply
-          .redirect(Constants.Routes.TASK_LIST.path)
-      } catch (error) {
-        LoggingService.logError(error, request)
-        return reply.redirect(Constants.Routes.ERROR.path)
-      }
+      return reply
+        .redirect(Constants.Routes.TASK_LIST.path)
     } else {
-      try {
-        // Update existing Contact
-        const contact = await Contact.getById(authToken, request.payload.id)
+      // Update existing Contact
+      const contact = await Contact.getById(authToken, request.payload.id)
 
-        contact.firstName = request.payload.firstName
-        contact.lastName = request.payload.lastName
-        contact.telephone = request.payload.telephone
-        contact.email = request.payload.email
+      contact.firstName = request.payload.firstName
+      contact.lastName = request.payload.lastName
+      contact.telephone = request.payload.telephone
+      contact.email = request.payload.email
 
-        await contact.save(authToken)
+      await contact.save(authToken)
 
-        return this.doGet(request, reply, errors)
-      } catch (error) {
-        LoggingService.logError(error, request)
-        return reply.redirect(Constants.Routes.ERROR.path)
-      }
+      return this.doGet(request, reply, errors)
     }
   }
 }

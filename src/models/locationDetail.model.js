@@ -8,6 +8,7 @@ const Utilities = require('../utilities/utilities')
 module.exports = class LocationDetail extends BaseModel {
   constructor (locationDetail) {
     super()
+    this.entity = 'defra_locationdetailses'
     this.id = locationDetail.id
     this.gridReference = locationDetail.gridReference
     this.locationId = locationDetail.locationId
@@ -46,32 +47,14 @@ module.exports = class LocationDetail extends BaseModel {
   }
 
   async save (authToken) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-
-    // Update the LocationDetail
-    try {
-      // Map the Location to the corresponding Dynamics schema LocationDetail object
-      const dataObject = {
-        defra_gridreferenceid: this.gridReference,
-        'defra_locationId@odata.bind': `defra_locations(${this.locationId})`
-      }
-      if (this.addressId) {
-        dataObject['defra_addressId@odata.bind'] = `defra_addresses(${this.addressId})`
-      }
-
-      let query
-      if (this.isNew()) {
-        // New LocationDetail
-        query = 'defra_locationdetailses'
-        this.id = await dynamicsDal.create(query, dataObject)
-      } else {
-        // Update LocationDetail
-        query = `defra_locationdetailses(${this.id})`
-        await dynamicsDal.update(query, dataObject)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to save LocationDetail: ${error}`)
-      throw error
+    // Map the Location to the corresponding Dynamics schema LocationDetail object
+    const dataObject = {
+      defra_gridreferenceid: this.gridReference,
+      'defra_locationId@odata.bind': `defra_locations(${this.locationId})`
     }
+    if (this.addressId) {
+      dataObject['defra_addressId@odata.bind'] = `defra_addresses(${this.addressId})`
+    }
+    await super.save(authToken, dataObject)
   }
 }
