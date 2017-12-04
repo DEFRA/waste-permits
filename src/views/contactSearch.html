@@ -54,7 +54,7 @@
     </div>
 
     <table>
-      <caption>Found {{contacts.count}} contacts</caption>
+      <caption>Found {{contacts.length}} contacts</caption>
       <thead>
         <tr>
           <th>ID</th>
@@ -65,7 +65,7 @@
         </tr>
       </thead>
       <tbody>
-      {{#each contacts.results}}
+      {{#each contacts}}
         <tr>
           <td>{{this.id}}</td>
           <td>{{this.firstName}}</td>
