@@ -82,13 +82,8 @@ module.exports = class StandardRule extends BaseModel {
     try {
       const response = await dynamicsDal.search(query)
 
-      // Parse response into Contact objects
-      const results = response.value.map((standardRule) => new StandardRule(StandardRule.getDynamicsData(standardRule)))
-
-      return {
-        count: results.length,
-        results: results
-      }
+      // Parse response into Standard Rule objects
+      return response.value.map((standardRule) => new StandardRule(StandardRule.getDynamicsData(standardRule)))
     } catch (error) {
       LoggingService.logError(`Unable to list StandardRules: ${error}`)
       throw error

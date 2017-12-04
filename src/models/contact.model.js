@@ -46,31 +46,22 @@ module.exports = class Contact extends BaseModel {
     // Define the query
     const query = 'contacts?$select=contactid,firstname,lastname,telephone1,emailaddress1'
 
-    const contacts = {
-      count: 0,
-      results: []
-    }
-
     try {
       const response = await dynamicsDal.search(query)
 
       // Parse response into Contact objects
-      response.value.forEach((contact) => {
-        contacts.results.push(new Contact({
-          id: contact.contactid,
-          firstName: contact.firstname,
-          lastName: contact.lastname,
-          telephone: contact.telephone1,
-          email: contact.emailaddress1
-        }))
-        contacts.count++
-      })
+      return response.value.map((contact) => new Contact({
+        id: contact.contactid,
+        firstName: contact.firstname,
+        lastName: contact.lastname,
+        telephone: contact.telephone1,
+        email: contact.emailaddress1
+      }))
     } catch (error) {
       // TODO: Error handling?
       LoggingService.logError(`Unable to list Contacts: ${error}`)
       throw error
     }
-    return contacts
   }
 
   async save (authToken) {

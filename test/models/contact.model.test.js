@@ -91,9 +91,8 @@ lab.experiment('Contact Model tests:', () => {
   lab.test('list() method returns a list of Contact objects', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const contactList = await Contact.list()
-    Code.expect(Array.isArray(contactList.results)).to.be.true()
-    Code.expect(contactList.results.length).to.equal(3)
-    Code.expect(contactList.count).to.equal(3)
+    Code.expect(Array.isArray(contactList)).to.be.true()
+    Code.expect(contactList.length).to.equal(3)
     Code.expect(spy.callCount).to.equal(1)
   })
 

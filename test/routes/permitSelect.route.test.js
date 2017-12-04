@@ -30,16 +30,12 @@ lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => true
+
   standardRuleListStub = StandardRule.list
-  StandardRule.list = () => {
-    return {
-      count: 1,
-      results: [fakeStandardRule]
-    }
-  }
+  StandardRule.list = () => [fakeStandardRule]
 
   standardRuleGetByCodeStub = StandardRule.getByCode
-  StandardRule.getByCode = (authToken, code) => fakeStandardRule
+  StandardRule.getByCode = () => fakeStandardRule
 
   applicationLineSaveStub = ApplicationLine.save
   ApplicationLine.prototype.save = () => {}
