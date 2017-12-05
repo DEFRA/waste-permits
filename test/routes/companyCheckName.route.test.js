@@ -23,6 +23,7 @@ let applicationSaveStub
 let companyDetailsUpdateCompletenessStub
 
 const routePath = '/permit-holder/company/check-name'
+const nextRoutePath = '/permit-holder/company/declare-offences'
 const getRequest = {
   method: 'GET',
   url: routePath,
@@ -217,22 +218,22 @@ lab.experiment('Check Company Details page tests:', () => {
 
   lab.experiment(`POST ${routePath} page tests`, () => {
     lab.experiment('Success', () => {
-      lab.test('Checkbox ticked and trading name entered - redirects to the Task List route', async () => {
+      lab.test('Checkbox ticked and trading name entered - redirects to the next page in the flow', async () => {
         postRequest.payload['use-business-trading-name'] = 'on'
         postRequest.payload['business-trading-name'] = fakeApplicationData.tradingName
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/task-list')
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
-      lab.test('Checkbox not ticked and no trading name entered - redirects to the Task List route', async () => {
+      lab.test('Checkbox not ticked and no trading name entered - redirects to the next page in the flow', async () => {
         postRequest.payload['use-business-trading-name'] = ''
         postRequest.payload['business-trading-name'] = ''
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/task-list')
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
     })
 
