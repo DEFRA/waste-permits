@@ -191,6 +191,9 @@ Constants.Dynamics = {
     STANDARD: 910400000,
     BESPOKE: 910400001
   },
+  StatusCode: {
+    DRAFT: 1
+  },
   TechnicalQualification: {
     WAMITAB_QUALIFICATION: 910400000,
     REGISTERED_ON_A_COURSE: 910400001,
