@@ -12,7 +12,6 @@ const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
 const Account = require('../../src/models/account.model')
-const CompanyDetails = require('../../src/models/taskList/companyDetails.model')
 
 let validateCookieStub
 let companyLookupGetCompanyStub
@@ -20,7 +19,6 @@ let applicationGetByIdStub
 let applicationLineGetByIdStub
 let accountSaveStub
 let applicationSaveStub
-let companyDetailsUpdateCompletenessStub
 
 const routePath = '/permit-holder/company/check-name'
 const nextRoutePath = '/permit-holder/company/director-date-of-birth'
@@ -77,9 +75,6 @@ lab.beforeEach(() => {
 
   applicationSaveStub = Application.prototype.save
   Application.prototype.save = () => {}
-
-  companyDetailsUpdateCompletenessStub = CompanyDetails.updateCompleteness
-  CompanyDetails.updateCompleteness = () => {}
 })
 
 lab.afterEach(() => {
@@ -91,7 +86,6 @@ lab.afterEach(() => {
   Account.getByApplicationId = applicationGetByIdStub
   Account.prototype.save = accountSaveStub
   Application.prototype.save = applicationSaveStub
-  CompanyDetails.updateCompleteness = companyDetailsUpdateCompletenessStub
 })
 
 const checkPageElements = async (request, companyFound, expectedValue) => {
@@ -115,6 +109,9 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
       'enter-different-number-company-exists-link',
       'company-name',
       'company-address',
+      'not-the-registered-office-details',
+      'not-the-registered-office-panel',
+      'not-the-registered-office-link',
       'trading-name-visually-hidden',
       'use-business-trading-name',
       'use-business-trading-name-label',
@@ -218,7 +215,7 @@ lab.experiment('Check Company Details page tests:', () => {
 
   lab.experiment(`POST ${routePath} page tests`, () => {
     lab.experiment('Success', () => {
-      lab.test('Checkbox ticked and trading name entered - redirects to the Task List route', async () => {
+      lab.test('Checkbox ticked and trading name entered - redirects to the next page in the flow', async () => {
         postRequest.payload['use-business-trading-name'] = 'on'
         postRequest.payload['business-trading-name'] = fakeApplicationData.tradingName
 
@@ -227,7 +224,7 @@ lab.experiment('Check Company Details page tests:', () => {
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
-      lab.test('Checkbox not ticked and no trading name entered - redirects to the Task List route', async () => {
+      lab.test('Checkbox not ticked and no trading name entered - redirects to the next page in the flow', async () => {
         postRequest.payload['use-business-trading-name'] = ''
         postRequest.payload['business-trading-name'] = ''
 

@@ -25,6 +25,15 @@
 
           <p id="company-address">{{ companyAddress }}</p>
 
+          <details id="not-the-registered-office-details">
+            <summary>
+              <span class="summary">That’s not our registered office address</span>
+            </summary>
+            <div id="not-the-registered-office-panel" class="panel panel-border-narrow">
+                We can only accept applications using the address that’s registered with Companies House. If your address has changed then you should <a id="not-the-registered-office-link" href="https://www.gov.uk/file-changes-to-a-company-with-companies-house" target="_blank">tell Companies House about the change (opens new tab)</a> before you complete this application.
+            </div>
+          </details>
+
           <div class="form-group {{#getFormErrorGroupClass errors.business-trading-name}}{{/getFormErrorGroupClass}}">
 
             <fieldset>

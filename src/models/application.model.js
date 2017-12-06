@@ -13,6 +13,7 @@ module.exports = class Application extends BaseModel {
     if (application) {
       this.accountId = application.accountId
       this.tradingName = application.tradingName
+      this.technicalQualification = application.technicalQualification
       this.relevantOffences = application.relevantOffences
       this.relevantOffencesDetails = application.relevantOffencesDetails
       this.bankruptcy = application.bankruptcy
@@ -28,6 +29,7 @@ module.exports = class Application extends BaseModel {
     const selectedFields = [
       '_defra_customerid_value',
       'defra_tradingname',
+      'defra_technicalability',
       'defra_convictionsdeclaration',
       'defra_convictionsdeclarationdetails',
       'defra_bankruptcydeclaration',
@@ -41,6 +43,7 @@ module.exports = class Application extends BaseModel {
       const application = new Application({
         accountId: result._defra_customerid_value,
         tradingName: result.defra_tradingname,
+        technicalQualification: result.defra_technicalability,
         relevantOffences: result.defra_convictionsdeclaration,
         relevantOffencesDetails: result.defra_convictionsdeclarationdetails,
         bankruptcy: result.defra_bankruptcydeclaration,
@@ -61,6 +64,7 @@ module.exports = class Application extends BaseModel {
       defra_regime: Constants.Dynamics.WASTE_REGIME,
       defra_source: Constants.Dynamics.DIGITAL_SOURCE,
       defra_tradingname: this.tradingName,
+      defra_technicalability: this.technicalQualification,
       defra_convictionsdeclaration: this.relevantOffences,
       defra_convictionsdeclarationdetails: this.relevantOffencesDetails,
       defra_bankruptcydeclaration: this.bankruptcy,
@@ -69,7 +73,9 @@ module.exports = class Application extends BaseModel {
       defra_confidentialitydeclarationdetails: this.confidentialityDetails
     }
     const isNew = this.isNew()
-    if (!isNew && this.accountId) {
+    if (isNew) {
+      dataObject.statuscode = Constants.Dynamics.StatusCode.DRAFT // Set the status of the new application to draft
+    } else if (this.accountId) {
       dataObject['defra_customerid_account@odata.bind'] = `accounts(${this.accountId})`
     }
     await super.save(authToken, dataObject)
