@@ -66,7 +66,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         // await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'],
         //   authToken, applicationId, applicationLineId)
 
-        return reply.redirect(Constants.Routes.TASK_LIST.path)
+        return reply.redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
       } catch (error) {
         LoggingService.logError(error, request)
         return reply.redirect(Constants.Routes.ERROR.path)

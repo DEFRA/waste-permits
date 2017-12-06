@@ -73,6 +73,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
         } else {
           application.tradingName = undefined
         }
+
         await application.save(authToken)
       }
       return reply.redirect(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
