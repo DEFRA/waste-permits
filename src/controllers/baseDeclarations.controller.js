@@ -5,7 +5,7 @@ const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const Application = require('../models/application.model')
 
-module.exports = class DeclareOffencesController extends BaseController {
+module.exports = class BaseDeclarationsController extends BaseController {
   constructor (route, cookieValidationRequired, nextRoute, validator) {
     super(route, cookieValidationRequired)
     this.validator = validator

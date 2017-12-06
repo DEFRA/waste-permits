@@ -9,11 +9,11 @@ module.exports = class BaseValidator {
     pageContext.errors = {}
     pageContext.errorList = []
 
-    // validationErrors.data.details.forEach((error) => {
-    for (let error of validationErrors.data.details) {
-      const fieldName = error.path
+    validationErrors.data.details.forEach((error) => {
+      const errorIndex = error.path.pop() || error.path
+      const fieldName = error.path.shift() || errorIndex
 
-      if (!this.errorMessages[fieldName]) {
+      if (!this.errorMessages[errorIndex]) {
         // Handle validation messages missing in the validator
         pageContext.errors[fieldName] = `Unable to find error messages for field: ${fieldName}`
         pageContext.errorList.push({
@@ -22,17 +22,19 @@ module.exports = class BaseValidator {
         })
       } else {
         // Look up the corresponding error message for the field that is in error and add to the page context
-        pageContext.errors[fieldName] = this.errorMessages[fieldName][error.type]
+        pageContext.errors[fieldName] = this.errorMessages[errorIndex][error.type]
 
         if (!pageContext.errors[fieldName]) {
           pageContext.errors[fieldName] = `Validation message not found... Field: [${fieldName}] Error Type: [${error.type}]`
         }
 
-        pageContext.errorList.push({
-          fieldName: fieldName,
-          message: pageContext.errors[fieldName]
-        })
+        if (pageContext.errors[fieldName].trim()) {
+          pageContext.errorList.push({
+            fieldName: fieldName,
+            message: pageContext.errors[fieldName]
+          })
+        }
       }
-    }
+    })
   }
 }

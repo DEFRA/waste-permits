@@ -43,4 +43,15 @@ module.exports = class BaseModel {
       throw error
     }
   }
+
+  async delete (authToken, id) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    try {
+      let query = `${this.entity}(${id})`
+      await dynamicsDal.delete(query)
+    } catch (error) {
+      LoggingService.logError(`Unable to delete ${this.entity} with id ${id}: ${error}`)
+      throw error
+    }
+  }
 }

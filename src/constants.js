@@ -12,6 +12,11 @@ Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
 Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
 Constants.SKIP_LINK_MESSAGE = `Skip to main content`
+Constants.MAX_FILE_SIZE = 31457280 // 30MB
+
+Constants.Errors = {
+  REQUEST_ENTITY_TOO_LARGE: 413
+}
 
 Constants.LogLevels = {
   ERROR: 'ERROR',
@@ -168,6 +173,10 @@ Constants.Routes = {
     path: '/technical-qualification',
     pageHeading: 'Which qualification does the person providing technical management have?',
     taskListHeading: 'Upload technical management qualifications'
+  },
+  UPLOAD_WAMITAB_QUALIFICATION: {
+    path: '/technical-qualification/upload-wamitab-qualification',
+    pageHeading: 'Upload the WAMITAB certificate'
   },
   VERSION: {
     path: '/version',

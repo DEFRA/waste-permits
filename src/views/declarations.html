@@ -10,15 +10,15 @@
       <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
 
       {{#if isConfidentiality}}
-      {{> confidentialityDescription }}
+      {{> declarations/confidentialityDescription }}
       {{/if}}
 
       {{#if isDeclareBankruptcy}}
-      {{> declareBankruptcyDescription }}
+      {{> declarations/declareBankruptcyDescription }}
       {{/if}}
 
       {{#if isDeclareOffences}}
-      {{> declareOffencesDescription }}
+      {{> declarations/declareOffencesDescription }}
       {{/if}}
 
       <form method="post" action="{{formAction}}">
