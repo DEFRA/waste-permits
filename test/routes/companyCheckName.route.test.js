@@ -12,7 +12,6 @@ const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
 const Account = require('../../src/models/account.model')
-const CompanyDetails = require('../../src/models/taskList/companyDetails.model')
 
 let validateCookieStub
 let companyLookupGetCompanyStub
@@ -20,7 +19,6 @@ let applicationGetByIdStub
 let applicationLineGetByIdStub
 let accountSaveStub
 let applicationSaveStub
-let companyDetailsUpdateCompletenessStub
 
 const routePath = '/permit-holder/company/check-name'
 const nextRoutePath = '/permit-holder/company/declare-offences'
@@ -77,9 +75,6 @@ lab.beforeEach(() => {
 
   applicationSaveStub = Application.prototype.save
   Application.prototype.save = () => {}
-
-  companyDetailsUpdateCompletenessStub = CompanyDetails.updateCompleteness
-  CompanyDetails.updateCompleteness = () => {}
 })
 
 lab.afterEach(() => {
@@ -91,7 +86,6 @@ lab.afterEach(() => {
   Account.getByApplicationId = applicationGetByIdStub
   Account.prototype.save = accountSaveStub
   Application.prototype.save = applicationSaveStub
-  CompanyDetails.updateCompleteness = companyDetailsUpdateCompletenessStub
 })
 
 const checkPageElements = async (request, companyFound, expectedValue) => {
