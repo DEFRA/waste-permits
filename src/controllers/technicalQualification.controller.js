@@ -10,7 +10,7 @@ const Application = require('../models/application.model')
 module.exports = class TechnicalQualificationController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors, TechnicalQualificationValidator)
-    const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.TechnicalQualification
+    const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.Dynamics.TechnicalQualification
 
     if (request.payload) {
       pageContext.formValues = request.payload
