@@ -7,7 +7,6 @@ const CookieService = require('../services/cookie.service')
 const CompanyLookupService = require('../services/companyLookup.service')
 const Application = require('../models/application.model')
 const Account = require('../models/account.model')
-const CompanyDetails = require('../models/taskList/companyDetails.model')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, reply, errors) {
@@ -76,10 +75,6 @@ module.exports = class CompanyCheckNameController extends BaseController {
           application.tradingName = undefined
         }
         await application.save(authToken)
-
-        // This will need to move to later pages in the flow when they are developed,
-        // but it lives here for now
-        await CompanyDetails.updateCompleteness(authToken, applicationId, applicationLineId)
       }
       return reply.redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
     }
