@@ -3,71 +3,227 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
+const Application = require('../../src/models/application.model')
+const TechnicalQualification = require('../../src/models/taskList/technicalQualification.model')
+const LoggingService = require('../../src/services/logging.service')
 
 let validateCookieStub
+let applicationSaveStub
+let getByIdStub
+let updateCompletenessStub
+let logErrorStub
+let fakeApplication
 
 const routePath = '/technical-qualification'
+const nextRoutePath = '/task-list'
+
+const WAMITAB_QUALIFICATION = 910400000
+const REGISTERED_ON_A_COURSE = 910400001
+const DEEMED_COMPETENCE = 910400002
+const ESA_EU_SKILLS = 910400003
 
 lab.beforeEach(() => {
+  fakeApplication = {
+    id: 'APPLICATION_ID',
+    applicationLineId: 'APPLICATION_LINE_ID'
+  }
+
   // Stub methods
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => true
+
+  logErrorStub = LoggingService.logError
+  LoggingService.logError = () => {}
+
+  getByIdStub = Application.getById
+  Application.getById = () => Promise.resolve(new Application(fakeApplication))
 })
 
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
+  LoggingService.logError = logErrorStub
+  Application.getById = getByIdStub
 })
 
-lab.experiment('Which qualification does the person providing technical management have? page tests:', () => {
-  lab.test('The page should have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
+lab.experiment('Technical Management Qualification tests:', () => {
+  lab.experiment(`GET ${routePath}`, () => {
+    let doc
+    let getRequest
+
+    const getDoc = async () => {
+      const res = await server.inject(getRequest)
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      doc = parser.parseFromString(res.payload, 'text/html')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Which qualification does the person providing technical management have?')
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+      return doc
     }
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
+    lab.beforeEach(() => {
+      getRequest = {
+        method: 'GET',
+        url: routePath,
+        headers: {},
+        payload: {}
+      }
+    })
 
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+    lab.test('should have a back link', async () => {
+      const doc = await getDoc()
+      const element = doc.getElementById('back-link')
+      Code.expect(element).to.exist()
+    })
 
-    let element = doc.getElementById('back-link')
-    Code.expect(element).to.exist()
+    lab.experiment('success', () => {
+      lab.test('when no qualification has been selected', async () => {
+        doc = await getDoc()
+        Code.expect(doc.getElementById('wamitab').getAttribute('checked')).to.not.equal('checked')
+        Code.expect(doc.getElementById('getting-qualification').getAttribute('checked')).to.not.equal('checked')
+        Code.expect(doc.getElementById('deemed').getAttribute('checked')).to.not.equal('checked')
+        Code.expect(doc.getElementById('esa-eu').getAttribute('checked')).to.not.equal('checked')
+      })
+
+      lab.test('when wamitab has been selected', async () => {
+        fakeApplication.technicalQualification = WAMITAB_QUALIFICATION
+        doc = await getDoc()
+        Code.expect(doc.getElementById('wamitab').getAttribute('checked')).to.equal('checked')
+      })
+
+      lab.test('when getting-qualification has been selected', async () => {
+        fakeApplication.technicalQualification = REGISTERED_ON_A_COURSE
+        doc = await getDoc()
+        Code.expect(doc.getElementById('getting-qualification').getAttribute('checked')).to.equal('checked')
+      })
+
+      lab.test('when deemed has been selected', async () => {
+        fakeApplication.technicalQualification = DEEMED_COMPETENCE
+        doc = await getDoc()
+        Code.expect(doc.getElementById('deemed').getAttribute('checked')).to.equal('checked')
+      })
+
+      lab.test('when esa-eu has been selected', async () => {
+        fakeApplication.technicalQualification = ESA_EU_SKILLS
+        doc = await getDoc()
+        Code.expect(doc.getElementById('esa-eu').getAttribute('checked')).to.equal('checked')
+      })
+    })
+
+    lab.experiment('failure', () => {
+      lab.test('redirects to error screen when the user token is invalid', async () => {
+        CookieService.validateCookie = () => undefined
+
+        const res = await server.inject(getRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal('/error')
+      })
+
+      lab.test('redirects to error screen when failing to get the application ID', async () => {
+        const spy = sinon.spy(LoggingService, 'logError')
+        Application.getById = () => Promise.reject(new Error('read failed'))
+
+        const res = await server.inject(getRequest)
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal('/error')
+      })
+    })
   })
 
-  lab.test('GET /technical-qualification success ', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
+  lab.experiment(`POST ${routePath}`, () => {
+    let postRequest
+
+    const getDoc = async () => {
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      return parser.parseFromString(res.payload, 'text/html')
     }
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-  })
+    lab.beforeEach(() => {
+      postRequest = {
+        method: 'POST',
+        url: routePath,
+        headers: {},
+        payload: {
+          'technical-qualification': WAMITAB_QUALIFICATION
+        }
+      }
 
-  lab.test('GET /technical-qualification redirects to error screen when the user token is invalid', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
+      // Stub methods
+      applicationSaveStub = Application.prototype.save
+      Application.prototype.save = () => {}
 
-    CookieService.validateCookie = () => {
-      return undefined
-    }
+      updateCompletenessStub = TechnicalQualification.updateCompleteness
+      TechnicalQualification.updateCompleteness = () => {}
+    })
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/error')
+    lab.afterEach(() => {
+      // Restore stubbed methods
+      Application.prototype.save = applicationSaveStub
+      TechnicalQualification.updateCompleteness = updateCompletenessStub
+    })
+
+    lab.experiment('success', () => {
+      lab.test('when application is saved', async () => {
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      })
+    })
+
+    lab.experiment('invalid', () => {
+      const checkValidationMessage = async (fieldId, expectedErrorMessage) => {
+        const doc = await getDoc()
+        // Panel summary error item
+        Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
+
+        // Relevant industry scheme field error
+        Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.nodeValue).to.equal(expectedErrorMessage)
+      }
+
+      lab.test('when qualification not selected', async () => {
+        postRequest.payload = {}
+        await checkValidationMessage('technical-qualification', 'Select a qualification')
+      })
+    })
+
+    lab.experiment('failure', () => {
+      lab.test('redirects to error screen when the user token is invalid', async () => {
+        CookieService.validateCookie = () => undefined
+
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal('/error')
+      })
+
+      lab.test('redirects to error screen when failing to get the application', async () => {
+        const spy = sinon.spy(LoggingService, 'logError')
+        Application.getById = () => Promise.reject(new Error('read failed'))
+
+        const res = await server.inject(postRequest)
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal('/error')
+      })
+
+      lab.test('redirects to error screen when save fails', async () => {
+        const spy = sinon.spy(LoggingService, 'logError')
+        Application.prototype.save = () => Promise.reject(new Error('save failed'))
+
+        const res = await server.inject(postRequest)
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal('/error')
+      })
+    })
   })
 })

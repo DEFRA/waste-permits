@@ -117,7 +117,7 @@ const fakeTaskList = {
       id: 'upload-technical-management-qualifications',
       label: 'Upload technical management qualifications',
       href: '/technical-qualification',
-      completedLabelId: 'industry-scheme-completed',
+      completedLabelId: 'technical-qualification-completed',
       rulesetId: 'defra_techcompetenceevreq',
       available: true,
       complete: false
@@ -388,7 +388,7 @@ lab.experiment('Task List page tests:', () => {
       'contact-details-completed',
       'site-operator-completed',
       'site-plan-completed',
-      'industry-scheme-completed',
+      'technical-qualification-completed',
       'management-system-completed',
       'firepp-completed',
       'confirm-drainage-completed',
