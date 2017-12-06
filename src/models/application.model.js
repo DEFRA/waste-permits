@@ -74,7 +74,7 @@ module.exports = class Application extends BaseModel {
     }
     const isNew = this.isNew()
     if (isNew) {
-      dataObject.statuscode = 1 // Set the status of the new application to draft
+      dataObject.statuscode = Constants.Dynamics.StatusCode.DRAFT // Set the status of the new application to draft
     } else if (this.accountId) {
       dataObject['defra_customerid_account@odata.bind'] = `accounts(${this.accountId})`
     }
