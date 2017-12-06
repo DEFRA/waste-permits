@@ -53,7 +53,6 @@ module.exports = class CompanyCheckNameController extends BaseController {
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
 
       const [application, account] = await Promise.all([
         Application.getById(authToken, applicationId),
