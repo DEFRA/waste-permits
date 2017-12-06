@@ -191,6 +191,12 @@ Constants.Dynamics = {
     STANDARD: 910400000,
     BESPOKE: 910400001
   },
+  TechnicalQualification: {
+    WAMITAB_QUALIFICATION: 910400000,
+    REGISTERED_ON_A_COURSE: 910400001,
+    DEEMED_COMPETENCE: 910400002,
+    ESA_EU_SKILLS: 910400003
+  },
   RulesetIds: {
     ALLOW_PERMIT_START_DATE: 'defra_allowpermitstartdate',
     BASELINE_REPORT: 'defra_baselinereportreq',

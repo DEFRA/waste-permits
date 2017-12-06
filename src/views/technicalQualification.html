@@ -4,6 +4,62 @@
 
   {{> common/backLink }}
 
-  <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+
+      <p>
+        Your site must be managed by a 'competent person'. To prove this, you must provide evidence of a technical
+        competence qualification, for example from <abbr title="Waste Management Industry Training and Advisory Board">WAMITAB</abbr>.
+      </p>
+
+      <form method="POST" action="{{formAction}}">
+        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+
+        <div class="form-group {{#getFormErrorGroupClass errors.technical-qualification}}{{/getFormErrorGroupClass}}">
+          <fieldset>
+
+            <legend class="visually-hidden">{{title}}</legend>
+
+            {{> common/fieldError fieldId='technical-qualification-error' message=errors.technical-qualification }}
+            <div class="multiple-choice" data-target="showWAMITAB">
+              <input id="wamitab" type="radio" name="technical-qualification" value="{{formValues.wamitab}}" {{#if wamitabChecked}}checked{{/if}}>
+              <label for="wamitab">
+                A <abbr title="Waste Management Industry Training and Advisory Board">WAMITAB</abbr> certificate and, if needed, a continuing competence certificate
+              </label>
+            </div>
+
+            <div class="multiple-choice" data-target="provideDetails">
+              <input id="getting-qualification" type="radio" name="technical-qualification" value="{{formValues.getting-qualification}}" {{#if gettingCourseChecked}}checked{{/if}}>
+              <label for="getting-qualification">
+                They are getting a <abbr title="Waste Management Industry Training and Advisory Board">WAMITAB</abbr> qualification and may have an <abbr title="Environmental Permitting Operator's Certificate"><abbr title="Environmental Permitting Operator's Certificate">EPOC</abbr></abbr> qualification
+              </label>
+            </div>
+
+            <div class="multiple-choice" data-target="provideDetails">
+              <input id="deemed" type="radio" name="technical-qualification" value="{{formValues.deemed}}" {{#if deemedChecked}}checked{{/if}}>
+              <label for="deemed">
+                Deemed competence or an assessment with continuing competence certification
+              </label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="esa-eu" type="radio" name="technical-qualification" value="{{formValues.esa-eu}}" {{#if esaEuChecked}}checked{{/if}}>
+              <label for="esa-eu">
+                Our site uses an <abbr title="Environmental Services Association">ESA</abbr> <abbr title="Energy and Utility">EU</abbr> Skills Competence Management System
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="form-group">
+          <button id="submit-button" type="submit" class="button">Continue</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
 </main>
