@@ -12,10 +12,6 @@ module.exports = class CompanyLookupService {
   static async getCompany (companyNumber) {
     const options = {
       uri: `${config.COMPANIES_HOUSE_SERVICE}/company/${companyNumber}`,
-      auth: {
-        'username': config.COMPANIES_HOUSE_API_KEY,
-        'password': ''
-      },
       json: true
     }
 
