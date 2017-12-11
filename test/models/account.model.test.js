@@ -9,6 +9,7 @@ const Account = require('../../src/models/account.model')
 const Application = require('../../src/models/application.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
+let dynamicsCallActionStub
 let dynamicsCreateStub
 let dynamicsSearchStub
 let dynamicsUpdateStub
@@ -41,6 +42,9 @@ lab.beforeEach(() => {
     }
   }
 
+  dynamicsCallActionStub = DynamicsDalService.prototype.callAction
+  DynamicsDalService.prototype.callAction = () => {}
+
   dynamicsCreateStub = DynamicsDalService.prototype.create
   DynamicsDalService.prototype.create = () => fakeApplicationData.accountId
 
@@ -53,6 +57,7 @@ lab.beforeEach(() => {
 
 lab.afterEach(() => {
   // Restore stubbed methods
+  DynamicsDalService.prototype.callAction = dynamicsCallActionStub
   DynamicsDalService.prototype.create = dynamicsCreateStub
   DynamicsDalService.prototype.search = dynamicsSearchStub
   DynamicsDalService.prototype.update = dynamicsUpdateStub
@@ -91,5 +96,11 @@ lab.experiment('Account Model tests:', () => {
     await testAccount.save(authToken, false)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAccount.id).to.equal(fakeApplicationData.accountId)
+  })
+
+  lab.test('confirm() method confirms an Account object', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
+    await testAccount.confirm(authToken)
+    Code.expect(spy.callCount).to.equal(1)
   })
 })

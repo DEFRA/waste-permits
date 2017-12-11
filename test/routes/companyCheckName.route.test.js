@@ -3,6 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
@@ -17,6 +18,7 @@ let validateCookieStub
 let companyLookupGetCompanyStub
 let applicationGetByIdStub
 let applicationLineGetByIdStub
+let accountConfirmStub
 let accountSaveStub
 let applicationSaveStub
 
@@ -70,6 +72,9 @@ lab.beforeEach(() => {
   applicationGetByIdStub = Account.getByApplicationId
   Account.getByApplicationId = () => new Account(fakeAccountData)
 
+  accountConfirmStub = Account.prototype.confirm
+  Account.prototype.confirm = () => {}
+
   accountSaveStub = Account.prototype.save
   Account.prototype.save = () => {}
 
@@ -84,6 +89,7 @@ lab.afterEach(() => {
   Application.getById = applicationGetByIdStub
   ApplicationLine.getById = applicationLineGetByIdStub
   Account.getByApplicationId = applicationGetByIdStub
+  Account.prototype.confirm = accountConfirmStub
   Account.prototype.save = accountSaveStub
   Application.prototype.save = applicationSaveStub
 })
@@ -231,6 +237,15 @@ lab.experiment('Check Company Details page tests:', () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      })
+
+      lab.test('Account is confirmed', async () => {
+        postRequest.payload['use-business-trading-name'] = ''
+        postRequest.payload['business-trading-name'] = ''
+
+        const spy = sinon.spy(Account.prototype, 'confirm')
+        await server.inject(postRequest)
+        Code.expect(spy.callCount).to.equal(1)
       })
     })
 
