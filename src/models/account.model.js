@@ -61,7 +61,7 @@ module.exports = class Account extends BaseModel {
     }
     try {
       // Call Dynamics Companies House action
-      let action = `accounts(${this.id})/Microsoft.Dynamics.CRM.defra_companieshouseaccount`
+      let action = `accounts(${this.id})/Microsoft.Dynamics.CRM.defra_companieshousevalidation`
       await dynamicsDal.callAction(action, actionDataObject)
     } catch (error) {
       LoggingService.logError(`Unable to call Dynamics Companies House action: ${error}`)
