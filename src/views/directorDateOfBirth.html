@@ -15,7 +15,7 @@
         <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
 
         <p>
-          We use the date of birth to do security checks. We won't include it in the public permit register.
+          We use the date of birth to identify the person when we do security checks. We won’t include it in the public permit register.
         </p>
 
         <fieldset>
@@ -31,9 +31,13 @@
                 </dt>
                 <dd class="director-dob">
                   <div class="form-group-day">
-                    <label class="form-label visually-hidden" for="dob-day-{{@index}}">Birth day date for {{this.name}}</label>
-                    <input class="form-control sr-company-dob" id="dob-day-{{@index}}" name="director-dob-day-{{@index}}" type="number" pattern="[0-9]*"
-                      min="0" max="31" aria-describedby="sr-dob-month-year">
+                    <label class="form-label visually-hidden" for="director-dob-day-{{@index}}">Birth day date for {{this.name}}</label>
+
+                    <!-- TODO {> common/fieldError fieldId='director-dob-day-@index-error' message=errors.director-dob-day-@index } -->
+
+                    <input class="form-control sr-company-dob" id="director-dob-day-{{@index}}" name="director-dob-day-{{@index}}" type="number" pattern="[0-9]{2}"
+                      min="1" max="31" aria-describedby="sr-dob-month-year">
+
                     <span id="dob-{{@index}}" class="sr-dob-month-year">
                       {{this.dateOfBirth}}
                     </span>

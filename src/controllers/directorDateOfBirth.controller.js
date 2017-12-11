@@ -9,7 +9,7 @@ const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet(request, reply, errors) {
     const pageContext = this.createPageContext(errors, DirectorDateOfBirthValidator)
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
@@ -48,7 +48,36 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     return reply.view('directorDateOfBirth', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost(request, reply, errors) {
+    console.log('########## errors: ', errors.data.details)
+
+    // TODO non-Joi validation
+
+    // All empty
+    // 'Enter a date of birth'
+
+    // One or more empty:
+    // Enter a date of birth for <directorname>
+
+    // TODO: confirm leading zeros required?
+    // one or more invalid [0-9]{2}
+    // Enter a valid date for <directorname>
+
+    // ??????
+    // [if invalid date output once only before other errors:]
+    // 'We only need the date in the month, for example 23.'
+    // ??????
+
+    // Example manual validation:
+
+    // errors.data.details = [
+    //   {
+    //     message: '"director-dob-day-3" is required',
+    //     path: ['director-dob-day-3'],
+    //     type: 'any.required',
+    //     context: { key: 'director-dob-day-3', label: 'director-dob-day-3' }
+    //   }]
+
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
