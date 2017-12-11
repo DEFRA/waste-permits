@@ -713,7 +713,7 @@
           "requires": {
             "hoek": "2.16.3",
             "isemail": "1.2.0",
-            "moment": "2.19.3",
+            "moment": "2.19.4",
             "topo": "1.1.0"
           }
         }
@@ -1738,7 +1738,7 @@
           "requires": {
             "hoek": "4.2.0",
             "isemail": "2.2.1",
-            "moment": "2.19.3",
+            "moment": "2.19.4",
             "topo": "2.0.2"
           }
         },
@@ -2547,7 +2547,7 @@
             "hoek": "4.0.2",
             "isemail": "2.2.1",
             "items": "2.1.1",
-            "moment": "2.19.3",
+            "moment": "2.19.4",
             "topo": "2.0.2"
           }
         },
@@ -5547,15 +5547,15 @@
       }
     },
     "good-console": {
-      "version": "6.4.0",
-      "resolved": "https://registry.npmjs.org/good-console/-/good-console-6.4.0.tgz",
-      "integrity": "sha1-cpTJ2QxMnwWaCC4YBiVJWWbSulk=",
+      "version": "6.4.1",
+      "resolved": "https://registry.npmjs.org/good-console/-/good-console-6.4.1.tgz",
+      "integrity": "sha1-WSKXSGi8872VlDcrozgY3A0BpGQ=",
       "dev": true,
       "requires": {
         "hoek": "4.2.0",
         "joi": "8.1.1",
         "json-stringify-safe": "5.0.1",
-        "moment": "2.15.2"
+        "moment": "2.19.4"
       },
       "dependencies": {
         "hoek": {
@@ -5578,15 +5578,9 @@
           "requires": {
             "hoek": "4.2.0",
             "isemail": "2.2.1",
-            "moment": "2.15.2",
+            "moment": "2.19.4",
             "topo": "2.0.2"
           }
-        },
-        "moment": {
-          "version": "2.15.2",
-          "resolved": "https://registry.npmjs.org/moment/-/moment-2.15.2.tgz",
-          "integrity": "sha1-G/3t9qbjRfMi/pVtXfW9CKjOhNw=",
-          "dev": true
         },
         "topo": {
           "version": "2.0.2",
@@ -6507,7 +6501,7 @@
           "requires": {
             "hoek": "4.2.0",
             "isemail": "2.2.1",
-            "moment": "2.19.3",
+            "moment": "2.19.4",
             "topo": "2.0.2"
           }
         },
@@ -6594,7 +6588,7 @@
             "hoek": "4.2.0",
             "isemail": "2.2.1",
             "items": "2.1.1",
-            "moment": "2.19.3",
+            "moment": "2.19.4",
             "topo": "2.0.2"
           }
         },
@@ -9308,9 +9302,9 @@
       "dev": true
     },
     "moment": {
-      "version": "2.19.3",
-      "resolved": "https://registry.npmjs.org/moment/-/moment-2.19.3.tgz",
-      "integrity": "sha1-vbmdJw1tf9p4zA+6zoVeJ/59pp8="
+      "version": "2.19.4",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.19.4.tgz",
+      "integrity": "sha512-1xFTAknSLfc47DIxHDUbnJWC+UwgWxATmymaxIPQpmMh7LBm7ZbwVEsuushqwL2GYZU0jie4xO+TK44hJPjNSQ=="
     },
     "ms": {
       "version": "2.0.0",
@@ -9417,9 +9411,9 @@
       "dev": true
     },
     "nock": {
-      "version": "9.1.3",
-      "resolved": "https://registry.npmjs.org/nock/-/nock-9.1.3.tgz",
-      "integrity": "sha512-uIU+rGPnC+OPzIpqMBgr6nubuGTxowYD+CsA1DyxF8DLeE+8d/7wxnuSWvMB78SjffRdGQCqwKSAwT1d/Fx34A==",
+      "version": "9.1.4",
+      "resolved": "https://registry.npmjs.org/nock/-/nock-9.1.4.tgz",
+      "integrity": "sha512-O0tkPO0VkiQ7mfCAg3QyL+6tt7srXHq0+m6BMy+SyzuKX+2Oz10ERXnqDL0nJxpVhKFx/E/K/6nT75U6RpvugQ==",
       "dev": true,
       "requires": {
         "chai": "3.5.0",
@@ -11778,9 +11772,9 @@
       "dev": true
     },
     "sinon": {
-      "version": "4.1.2",
-      "resolved": "https://registry.npmjs.org/sinon/-/sinon-4.1.2.tgz",
-      "integrity": "sha512-5uLBZPdCWl59Lpbf45ygKj7Z0LVol+ftBe7RDIXOQV/sF58pcFmbK8raA7bt6eljNuGnvBP+/ZxlicVn0emDjA==",
+      "version": "4.1.3",
+      "resolved": "https://registry.npmjs.org/sinon/-/sinon-4.1.3.tgz",
+      "integrity": "sha512-c7u0ZuvBRX1eXuB4jN3BRCAOGiUTlM8SE3TxbJHrNiHUKL7wonujMOB6Fi1gQc00U91IscFORQHDga/eccqpbw==",
       "dev": true,
       "requires": {
         "diff": "3.4.0",
