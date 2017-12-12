@@ -1,6 +1,7 @@
 'use strict'
 
-const Joi = require('joi')
+// TODO remove this?
+// const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class DirectorDateOfBirthValidator extends BaseValidator {

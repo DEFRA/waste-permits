@@ -11,7 +11,6 @@ module.exports = class BaseValidator {
 
     // validationErrors.data.details.forEach((error) => {
     for (let error of validationErrors.data.details) {
-
       const fieldName = error.path
 
       if (!this.errorMessages[fieldName]) {

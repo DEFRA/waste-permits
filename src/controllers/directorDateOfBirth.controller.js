@@ -9,7 +9,7 @@ const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
-  async doGet(request, reply, errors) {
+  async doGet (request, reply, errors) {
     const directorDateOfBirthValidator = new DirectorDateOfBirthValidator()
     directorDateOfBirthValidator.setErrorMessages()
     const pageContext = this.createPageContext(errors, directorDateOfBirthValidator)
@@ -51,21 +51,21 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     return reply.view('directorDateOfBirth', pageContext)
   }
 
-  async doPost(request, reply, errors) {
+  async doPost (request, reply, errors) {
     const directorDateOfBirthValidator = new DirectorDateOfBirthValidator()
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    // const authToken = CookieService.getAuthToken(request)
+    // const applicationId = CookieService.getApplicationId(request)
     // Manual (non-Joi) validation
     if (Object.keys(request.payload).length === 0) {
       errors = {
         data: {
           details: [
-          {
-            message: '"director-dobs-not-entered" is required',
-            path: ['director-dobs-not-entered'],
-            type: 'any.required',
-            context: { key: 'director-dobs-not-entered', label: 'director-dobs-not-entered' }
-          }]
+            {
+              message: '"director-dobs-not-entered" is required',
+              path: ['director-dobs-not-entered'],
+              type: 'any.required',
+              context: { key: 'director-dobs-not-entered', label: 'director-dobs-not-entered' }
+            }]
         }
       }
     } else {
@@ -94,7 +94,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       // const errorMessages = {}
       directorDateOfBirthValidator.setErrorMessages()
 
-      for (let i=0; i<directors.length; i++) {
+      for (let i = 0; i < directors.length; i++) {
         if (request.payload[`director-dob-day-${i}`] === undefined) {
           errors.data.details.push({
             message: `"director-dob-day-${i}" is required`,
@@ -108,7 +108,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       // DirectorDateOfBirthValidator.setErrorMessages()
     }
 
-    const pageContext = this.createPageContext(errors, directorDateOfBirthValidator)
+    // const pageContext = this.createPageContext(errors, directorDateOfBirthValidator)
 
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
