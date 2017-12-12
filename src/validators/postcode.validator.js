@@ -15,7 +15,7 @@ module.exports = class PostcodeValidator extends BaseValidator {
     }
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {
       'postcode': Joi
         .string()

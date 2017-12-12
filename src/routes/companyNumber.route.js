@@ -24,7 +24,7 @@ module.exports = [{
       options: {
         allowUnknown: true
       },
-      payload: CompanyNumberValidator.getFormValidators(),
+      payload: CompanyNumberValidator.prototype.getFormValidators(),
       failAction: controller.failAction
     }
   }

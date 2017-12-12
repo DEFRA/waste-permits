@@ -18,7 +18,7 @@ module.exports = class CompanyCheckNameValidator extends BaseValidator {
     }
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {
       'business-trading-name': Joi
         .string()

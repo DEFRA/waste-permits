@@ -21,7 +21,7 @@ module.exports = class SiteSiteNameValidator extends BaseValidator {
     }
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {
       'site-name': Joi
         .string()

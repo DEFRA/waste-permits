@@ -24,7 +24,7 @@ module.exports = [{
       options: {
         allowUnknown: true
       },
-      payload: DirectorDateOfBirthValidator.getFormValidators(),
+      payload: DirectorDateOfBirthValidator.prototype.getFormValidators(),
       failAction: controller.failAction
     }
   }

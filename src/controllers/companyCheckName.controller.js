@@ -10,7 +10,7 @@ const Account = require('../models/account.model')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, CompanyCheckNameValidator)
+    const pageContext = this.createPageContext(errors, new CompanyCheckNameValidator())
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
 

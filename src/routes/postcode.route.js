@@ -24,7 +24,7 @@ module.exports = [{
       options: {
         allowUnknown: true
       },
-      payload: PostcodeValidator.getFormValidators(),
+      payload: PostcodeValidator.prototype.getFormValidators(),
       failAction: controller.failAction
     }
   }

@@ -9,7 +9,9 @@ module.exports = class BaseValidator {
     pageContext.errors = {}
     pageContext.errorList = []
 
-    validationErrors.data.details.forEach((error) => {
+    // validationErrors.data.details.forEach((error) => {
+    for (let error of validationErrors.data.details) {
+
       const fieldName = error.path
 
       if (!this.errorMessages[fieldName]) {
@@ -32,6 +34,6 @@ module.exports = class BaseValidator {
           message: pageContext.errors[fieldName]
         })
       }
-    })
+    }
   }
 }

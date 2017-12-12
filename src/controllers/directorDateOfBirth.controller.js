@@ -10,7 +10,10 @@ const Account = require('../models/account.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
   async doGet(request, reply, errors) {
-    const pageContext = this.createPageContext(errors, DirectorDateOfBirthValidator)
+    const directorDateOfBirthValidator = new DirectorDateOfBirthValidator()
+    directorDateOfBirthValidator.setErrorMessages()
+    const pageContext = this.createPageContext(errors, directorDateOfBirthValidator)
+
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
 
@@ -49,34 +52,63 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   }
 
   async doPost(request, reply, errors) {
-    console.log('########## errors: ', errors.data.details)
+    const directorDateOfBirthValidator = new DirectorDateOfBirthValidator()
+    const authToken = CookieService.getAuthToken(request)
+    const applicationId = CookieService.getApplicationId(request)
+    // Manual (non-Joi) validation
+    if (Object.keys(request.payload).length === 0) {
+      errors = {
+        data: {
+          details: [
+          {
+            message: '"director-dobs-not-entered" is required',
+            path: ['director-dobs-not-entered'],
+            type: 'any.required',
+            context: { key: 'director-dobs-not-entered', label: 'director-dobs-not-entered' }
+          }]
+        }
+      }
+    } else {
+      // const pageContext = this.createPageContext(errors, DirectorDateOfBirthValidator)
+      const authToken = CookieService.getAuthToken(request)
+      const applicationId = CookieService.getApplicationId(request)
 
-    // TODO non-Joi validation
+      let account = await Account.getByApplicationId(authToken, applicationId)
+      if (!account) {
+        // TODO apply this when the account has been created in Dynamics by the previous screen
+        LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
+        return reply.redirect(Constants.Routes.ERROR.path)
+      }
+      // TODO get Directors from Dynamics instead
+      const directors = await CompanyLookupService.getDirectors(account.companyNumber)
+      console.log(directors.length)
 
-    // All empty
-    // 'Enter a date of birth'
+      console.log(Object.keys(request.payload).length)
 
-    // One or more empty:
-    // Enter a date of birth for <directorname>
+      errors = {
+        data: {
+          details: []
+        }
+      }
 
-    // TODO: confirm leading zeros required?
-    // one or more invalid [0-9]{2}
-    // Enter a valid date for <directorname>
+      // const errorMessages = {}
+      directorDateOfBirthValidator.setErrorMessages()
 
-    // ??????
-    // [if invalid date output once only before other errors:]
-    // 'We only need the date in the month, for example 23.'
-    // ??????
+      for (let i=0; i<directors.length; i++) {
+        if (request.payload[`director-dob-day-${i}`] === undefined) {
+          errors.data.details.push({
+            message: `"director-dob-day-${i}" is required`,
+            path: `director-dob-day-${i}`,
+            type: 'any.required',
+            context: { key: `director-dob-day-${i}`, label: `director-dob-day-${i}` }
+          })
+        }
+      }
 
-    // Example manual validation:
+      // DirectorDateOfBirthValidator.setErrorMessages()
+    }
 
-    errors.data.details = [
-      {
-        message: '"director-dob-day-3" is required',
-        path: ['director-dob-day-3'],
-        type: 'any.required',
-        context: { key: 'director-dob-day-3', label: 'director-dob-day-3' }
-      }]
+    const pageContext = this.createPageContext(errors, directorDateOfBirthValidator)
 
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)

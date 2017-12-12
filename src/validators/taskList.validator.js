@@ -9,7 +9,7 @@ module.exports = class TaskListValidator extends BaseValidator {
     this.errorMessages = {}
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {}
   }
 }

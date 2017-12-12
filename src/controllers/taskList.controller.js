@@ -12,7 +12,7 @@ module.exports = class TaskListController extends BaseController {
     // For now we are only getting the SR2015 No 18 permit
     const chosenPermit = 'SR2015 No 18'
 
-    const pageContext = this.createPageContext(errors, TaskListValidator)
+    const pageContext = this.createPageContext(errors, new TaskListValidator())
     const authToken = CookieService.getAuthToken(request)
 
     pageContext.formValues = request.payload

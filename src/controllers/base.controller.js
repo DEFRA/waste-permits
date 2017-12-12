@@ -12,7 +12,7 @@ module.exports = class BaseController {
     this.cookieValidationRequired = cookieValidationRequired
   }
 
-  createPageContext (errors, ValidatorSubClass) {
+  createPageContext (errors, validator) {
     const pageContext = {
       skipLinkMessage: Constants.SKIP_LINK_MESSAGE,
       pageTitle: Constants.buildPageTitle(this.route.pageHeading),
@@ -21,7 +21,7 @@ module.exports = class BaseController {
     }
 
     if (errors && errors.data && errors.data.details) {
-      new ValidatorSubClass().addErrorsToPageContext(errors, pageContext)
+      validator.addErrorsToPageContext(errors, pageContext)
 
       // Add the error prefix to the page title
       pageContext.pageTitle = `${Constants.PAGE_TITLE_ERROR_PREFIX} ${pageContext.pageTitle}`

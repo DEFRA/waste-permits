@@ -9,7 +9,7 @@ module.exports = class SiteSiteNameValidator extends BaseValidator {
     this.errorMessages = {}
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {}
   }
 }

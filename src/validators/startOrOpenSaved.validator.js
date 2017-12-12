@@ -14,7 +14,7 @@ module.exports = class StartOrOpenSavedValidator extends BaseValidator {
     }
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {
       'started-application': Joi.string().required()
     }

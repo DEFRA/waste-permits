@@ -7,7 +7,7 @@ const CookieService = require('../services/cookie.service')
 
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, ContactDetailsController)
+    const pageContext = this.createPageContext(errors, new ContactDetailsController())
 
     return reply
       .view('contactDetails', pageContext)

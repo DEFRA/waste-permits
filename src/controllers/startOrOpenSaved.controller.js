@@ -8,7 +8,7 @@ const Application = require('../models/application.model')
 
 module.exports = class StartOrOpenSavedController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, StartOrOpenSavedValidator)
+    const pageContext = this.createPageContext(errors, new StartOrOpenSavedValidator())
 
     pageContext.cost = {
       lower: (Constants.PermitTypes.STANDARD_RULES.cost.lower).toLocaleString(),

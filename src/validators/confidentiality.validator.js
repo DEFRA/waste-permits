@@ -26,7 +26,7 @@ module.exports = class ConfidentialityValidator extends BaseValidator {
     return DECLARED_DETAILS_MAX_LENGTH
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {
       'declared': Joi
         .required(),
