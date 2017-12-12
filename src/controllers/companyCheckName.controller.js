@@ -67,6 +67,8 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         await account.save(authToken, false)
 
+        await account.confirm(authToken)
+
         // The company trading name is only set if the corresponding checkbox is ticked
         if (request.payload['use-business-trading-name'] === 'on') {
           application.tradingName = request.payload['business-trading-name']

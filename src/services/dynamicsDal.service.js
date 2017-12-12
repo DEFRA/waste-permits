@@ -1,5 +1,7 @@
 'use strict'
 
+const rp = require('request-promise')
+
 const url = require('url')
 const https = require('https')
 const HttpsProxyAgent = require('https-proxy-agent')
@@ -10,6 +12,24 @@ const Utilities = require('../utilities/utilities')
 module.exports = class DynamicsDalService {
   constructor (authToken) {
     this.authToken = authToken
+  }
+
+  async callAction (action, dataObject) {
+    const options = {
+      method: 'POST',
+      uri: `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}${action}`,
+      json: true,
+      body: dataObject,
+      headers: {
+        'Authorization': `Bearer ${this.authToken}`
+      }
+    }
+    await rp(options)
+      .then((data) => {})
+      .catch((error) => {
+        LoggingService.logError('Error calling Dynamics action: ', error)
+        throw error
+      })
   }
 
   async create (query, dataObject) {
