@@ -70,13 +70,13 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     // Example manual validation:
 
-    // errors.data.details = [
-    //   {
-    //     message: '"director-dob-day-3" is required',
-    //     path: ['director-dob-day-3'],
-    //     type: 'any.required',
-    //     context: { key: 'director-dob-day-3', label: 'director-dob-day-3' }
-    //   }]
+    errors.data.details = [
+      {
+        message: '"director-dob-day-3" is required',
+        path: ['director-dob-day-3'],
+        type: 'any.required',
+        context: { key: 'director-dob-day-3', label: 'director-dob-day-3' }
+      }]
 
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)

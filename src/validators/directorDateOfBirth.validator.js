@@ -8,9 +8,13 @@ module.exports = class DirectorDateOfBirthValidator extends BaseValidator {
     super()
 
     this.errorMessages = {
-      'director-dob-day-0': {
-        'any.empty': `Enter a date of birth for <directorname>`,
-        'any.required': `Enter a date of birth for <directorname>`
+      // 'director-dob-day-0': {
+      //   'any.empty': `Enter a date of birth for <directorname>`,
+      //   'any.required': `Enter a date of birth for <directorname>`
+      // },
+      'director-dob-day': {
+        'any.empty': `Enter a date of birth for ##DIRECTOR_NAME##`,
+        'any.required': `Enter a date of birth for ##DIRECTOR_NAME##`
       }
     }
   }
