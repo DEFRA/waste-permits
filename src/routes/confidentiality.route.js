@@ -4,7 +4,7 @@ const Constants = require('../constants')
 const {CONFIDENTIALITY, TASK_LIST} = Constants.Routes
 const ConfidentialityController = require('../controllers/confidentiality.controller')
 const ConfidentialityValidator = require('../validators/confidentiality.validator')
-const controller = new ConfidentialityController(CONFIDENTIALITY, true, TASK_LIST, ConfidentialityValidator)
+const controller = new ConfidentialityController(CONFIDENTIALITY, true, TASK_LIST, new ConfidentialityValidator())
 
 module.exports = [{
   method: ['GET'],
@@ -29,7 +29,7 @@ module.exports = [{
       options: {
         allowUnknown: true
       },
-      payload: controller.validator.prototype.getFormValidators(),
+      payload: controller.validator.getFormValidators(),
       failAction: controller.failAction
     }
   }

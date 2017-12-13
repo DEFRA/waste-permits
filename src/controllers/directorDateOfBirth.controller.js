@@ -1,5 +1,6 @@
 'use strict'
 
+const moment = require('moment')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const DirectorDateOfBirthValidator = require('../validators/directorDateOfBirth.validator')
@@ -9,11 +10,8 @@ const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
-  async doGet (request, reply, errors) {
-    const directorDateOfBirthValidator = new DirectorDateOfBirthValidator()
-    directorDateOfBirthValidator.setErrorMessages()
-    const pageContext = this.createPageContext(errors, directorDateOfBirthValidator)
-
+  async doGet(request, reply, errors) {
+    // Refactor this common logic
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
 
@@ -24,10 +22,17 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       return reply.redirect(Constants.Routes.ERROR.path)
     }
 
-    // TODO get Directors from Dynamics instead
-    pageContext.directors = await CompanyLookupService.getDirectors(account.companyNumber)
+    const directors = await this._getDirectors(account.companyNumber)
 
-    if (pageContext.directors.length > 1) {
+    const directorDateOfBirthValidator = new DirectorDateOfBirthValidator()
+    directorDateOfBirthValidator.setErrorMessages(directors)
+
+
+    const pageContext = this.createPageContext(errors, directorDateOfBirthValidator)
+
+    pageContext.directors = directors
+
+    if (directors.length > 1) {
       pageContext.pageHeading = Constants.Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate
       pageContext.pageTitle = Constants.buildPageTitle(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate)
       // TODO change page title if there is an error using the following
@@ -38,24 +43,62 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     pageContext.hasDirectors = pageContext.directors.length > 0
 
-    // TOOD handle payload
-    // if (request.payload) {
-    //   // If we have Location name in the payload then display them in the form
-    //   pageContext.formValues = request.payload
-    // } else {
+    console.log(request.payload)
+
+    // e.g.
+    // { 'site-name': 'The Site Name `' }
+
+    if (request.payload) {
+      // If we have data payload then re-display in the form
+      pageContext.formValues = request.payload
+    } else {
     //   pageContext.formValues = {
     //     'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
     //   }
-    // }
+    }
 
     return reply.view('directorDateOfBirth', pageContext)
   }
 
-  async doPost (request, reply, errors) {
-    const directorDateOfBirthValidator = new DirectorDateOfBirthValidator()
-    // const authToken = CookieService.getAuthToken(request)
-    // const applicationId = CookieService.getApplicationId(request)
-    // Manual (non-Joi) validation
+  async doPost(request, reply, errors) {
+    // Refactor this common logic
+    const authToken = CookieService.getAuthToken(request)
+    const applicationId = CookieService.getApplicationId(request)
+
+    let account = await Account.getByApplicationId(authToken, applicationId)
+    if (!account) {
+      // TODO apply this when the account has been created in Dynamics by the previous screen
+      LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
+      return reply.redirect(Constants.Routes.ERROR.path)
+    }
+
+    const directors = await this._getDirectors(account.companyNumber)
+
+    // Perform manual (non-Joi) validation of dynamic form content
+    errors = await this._validateDynamicFormContent(request, directors)
+
+    if (errors && errors.data.details) {
+      return this.doGet(request, reply, errors)
+    } else {
+      // TODO save DOBs to Dynamics
+
+      // console.log(request.payload)
+
+      // await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'],
+      //   authToken, applicationId, applicationLineId)
+
+      return reply.redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
+    }
+  }
+
+  async _getDirectors(companyNumber) {
+    // TODO get this from Dynamics instead
+    return await CompanyLookupService.getDirectors(companyNumber)
+  }
+
+  async _validateDynamicFormContent(request, directors) {
+    let errors
+
     if (Object.keys(request.payload).length === 0) {
       errors = {
         data: {
@@ -69,21 +112,6 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         }
       }
     } else {
-      // const pageContext = this.createPageContext(errors, DirectorDateOfBirthValidator)
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-
-      let account = await Account.getByApplicationId(authToken, applicationId)
-      if (!account) {
-        // TODO apply this when the account has been created in Dynamics by the previous screen
-        LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-        return reply.redirect(Constants.Routes.ERROR.path)
-      }
-      // TODO get Directors from Dynamics instead
-      const directors = await CompanyLookupService.getDirectors(account.companyNumber)
-      console.log(directors.length)
-
-      console.log(Object.keys(request.payload).length)
 
       errors = {
         data: {
@@ -91,40 +119,39 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         }
       }
 
-      // const errorMessages = {}
-      directorDateOfBirthValidator.setErrorMessages()
-
       for (let i = 0; i < directors.length; i++) {
-        if (request.payload[`director-dob-day-${i}`] === undefined) {
+        let director = directors[i]
+        let dobDay = request.payload[`director-dob-day-${i}`]
+
+        // console.log(directors)
+
+        if (dobDay === undefined) {
           errors.data.details.push({
             message: `"director-dob-day-${i}" is required`,
             path: `director-dob-day-${i}`,
             type: 'any.required',
             context: { key: `director-dob-day-${i}`, label: `director-dob-day-${i}` }
           })
+        } else {
+          let daysInBirthMonth = moment(`${director.dob.year}-${director.dob.month}`, 'YYYY-MM').daysInMonth()
+
+          dobDay = parseInt(dobDay)
+          if (isNaN(dobDay) || dobDay < 1 || dobDay > daysInBirthMonth) {
+            errors.data.details.push({
+              message: `"director-dob-day-${i}" is invalid`,
+              path: `director-dob-day-${i}`,
+              type: 'invalid',
+              context: { key: `director-dob-day-${i}`, label: `director-dob-day-${i}` }
+            })
+          }
         }
       }
-
-      // DirectorDateOfBirthValidator.setErrorMessages()
     }
 
-    // const pageContext = this.createPageContext(errors, directorDateOfBirthValidator)
-
-    if (errors && errors.data.details) {
-      return this.doGet(request, reply, errors)
-    } else {
-      // console.log(request.payload)
-
-      // TODO save DOBs
-
-      // const authToken = CookieService.getAuthToken(request)
-      // const applicationId = CookieService.getApplicationId(request)
-      // const applicationLineId = CookieService.getApplicationLineId(request)
-
-      // await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'],
-      //   authToken, applicationId, applicationLineId)
-
-      return reply.redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
+    if (errors.data.details.length === 0) {
+      errors = undefined
     }
+
+    return errors
   }
 }

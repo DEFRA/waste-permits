@@ -58,6 +58,8 @@ module.exports = class CompanyLookupService {
                 director.surname = nameParts[0].trim()
                 director.forenames = nameParts[1].trim()
 
+                director.dob = item.date_of_birth
+
                 // Pad with leading zero if required
                 let month = item.date_of_birth.month.toString()
                 if (month && month.length === 1) {

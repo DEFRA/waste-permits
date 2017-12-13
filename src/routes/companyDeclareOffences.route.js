@@ -4,7 +4,7 @@ const Constants = require('../constants')
 const {COMPANY_DECLARE_OFFENCES, COMPANY_DECLARE_BANKRUPTCY} = Constants.Routes
 const CompanyDeclareOffencesController = require('../controllers/declareOffences.controller')
 const CompanyDeclareOffencesValidator = require('../validators/declareOffences.validator')
-const controller = new CompanyDeclareOffencesController(COMPANY_DECLARE_OFFENCES, true, COMPANY_DECLARE_BANKRUPTCY, CompanyDeclareOffencesValidator)
+const controller = new CompanyDeclareOffencesController(COMPANY_DECLARE_OFFENCES, true, COMPANY_DECLARE_BANKRUPTCY, new CompanyDeclareOffencesValidator())
 
 module.exports = [{
   method: ['GET'],
@@ -25,7 +25,7 @@ module.exports = [{
       options: {
         allowUnknown: true
       },
-      payload: controller.validator.prototype.getFormValidators(),
+      payload: controller.validator.getFormValidators(),
       failAction: controller.failAction
     }
   }

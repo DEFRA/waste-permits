@@ -22,7 +22,7 @@ module.exports = class DeclareBankruptcyValidator extends BaseValidator {
     }
   }
 
-  static getDeclaredDetailsMaxLength () {
+  getDeclaredDetailsMaxLength () {
     return DECLARED_DETAILS_MAX_LENGTH
   }
 
