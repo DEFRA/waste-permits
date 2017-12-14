@@ -15,21 +15,21 @@ module.exports = class DynamicsDalService {
   }
 
   async callAction (action, dataObject) {
-    const options = {
-      method: 'POST',
-      uri: `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}${action}`,
-      json: true,
-      body: dataObject,
-      headers: {
-        'Authorization': `Bearer ${this.authToken}`
-      }
-    }
-    await rp(options)
-      .then((data) => {})
-      .catch((error) => {
-        LoggingService.logError('Error calling Dynamics action: ', error)
-        throw error
-      })
+    // const options = {
+    //   method: 'POST',
+    //   uri: `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}${action}`,
+    //   json: true,
+    //   body: dataObject,
+    //   headers: {
+    //     'Authorization': `Bearer ${this.authToken}`
+    //   }
+    // }
+    // await rp(options)
+    //   .then((data) => {})
+    //   .catch((error) => {
+    //     LoggingService.logError('Error calling Dynamics action: ', error)
+    //     throw error
+    //   })
   }
 
   async create (query, dataObject) {

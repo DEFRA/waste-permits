@@ -43,15 +43,18 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     pageContext.hasDirectors = pageContext.directors.length > 0
 
-    console.log(request.payload)
-
-    // e.g.
-    // { 'site-name': 'The Site Name `' }
-
     if (request.payload) {
-      // If we have data payload then re-display in the form
-      pageContext.formValues = request.payload
+      // If we have data payload then re-display in the form by saving the data against each Director
+      for (let fieldName of Object.keys(request.payload)) {
+        // Get the direcor index
+        let fieldIndex = fieldName.substring(fieldName.lastIndexOf('-') + 1)
+
+        // Set the director date of birth day with the corresonding value in the payload
+        directors[fieldIndex].dob.day = request.payload[fieldName]
+      }
     } else {
+    // TODO
+    // Load existing directors into the page
     //   pageContext.formValues = {
     //     'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
     //   }
@@ -122,8 +125,6 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       for (let i = 0; i < directors.length; i++) {
         let director = directors[i]
         let dobDay = request.payload[`director-dob-day-${i}`]
-
-        // console.log(directors)
 
         if (dobDay === undefined) {
           errors.data.details.push({

@@ -1,0 +1,20 @@
+<div id="director-list">
+  <dt id="{{ concat 'director-name-' @index }}" class="director-name">
+    {{this.forenames}} {{this.surname}}
+  </dt>
+  <dd class="director-dob">
+    <div class="form-group-day {{#getFormErrorGroupClass errors.director-dob-day-11}}{{/getFormErrorGroupClass}}">
+
+      <label id="{{ concat 'visually-hidden-label-' @index }}" class="form-label visually-hidden" for="{{ concat 'director-dob-day-' @index }}">Birth day date for {{this.forenames}} {{this.surname}}</label>
+
+      {{> common/fieldError fieldId=(concat 'director-dob-day-' @index '-error') message=(getErrorMessage this.errors 'director-dob-day-' @index) }}
+
+      <input class="form-control sr-company-dob" id="{{ concat 'director-dob-day-' @index }}" name="{{ concat 'director-dob-day-' @index }}" type="number"
+        pattern="[0-9][0-9]" min="1" max="31" aria-describedby="sr-dob-month-year" value="{{this.dob.day}}">
+
+      <span id="{{ concat 'dob-' @index }}" class="sr-dob-month-year">
+        {{this.dateOfBirth}}
+      </span>
+    </div>
+  </dd>
+</div>
