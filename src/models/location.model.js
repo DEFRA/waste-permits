@@ -9,10 +9,12 @@ module.exports = class Location extends BaseModel {
   constructor (location) {
     super()
     this.entity = 'defra_locations'
-    this.id = location.id
-    this.name = location.name
-    this.applicationId = location.applicationId
-    this.applicationLineId = location.applicationLineId
+    if (location) {
+      this.id = location.id
+      this.name = location.name
+      this.applicationId = location.applicationId
+      this.applicationLineId = location.applicationLineId
+    }
     Utilities.convertFromDynamics(this)
   }
 
