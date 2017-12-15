@@ -190,7 +190,7 @@ Constants.PermitTypes = {
 }
 
 Constants.Dynamics = {
-  WASTE_REGIME: 910400000,
+  COMPANY_DIRECTOR: 910400000,
   DIGITAL_SOURCE: 910400000,
   PermitTypes: {
     STANDARD: 910400000,
@@ -205,6 +205,8 @@ Constants.Dynamics = {
     DEEMED_COMPETENCE: 910400002,
     ESA_EU_SKILLS: 910400003
   },
+  WASTE_REGIME: 910400000,
+
   RulesetIds: {
     ALLOW_PERMIT_START_DATE: 'defra_allowpermitstartdate',
     BASELINE_REPORT: 'defra_baselinereportreq',

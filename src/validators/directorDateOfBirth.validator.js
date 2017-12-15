@@ -20,8 +20,11 @@ module.exports = class DirectorDateOfBirthValidator extends BaseValidator {
     // Iterate the directors and build error messages for each one
     for (let i = 0; i < directors.length; i++) {
       let director = directors[i]
-      let daysInBirthMonth = moment(`${director.dob.year}-${director.dob.month}`, 'YYYY-MM').daysInMonth()
-      let directorName = `${director.forenames} ${directors[i].surname}`
+      let daysInBirthMonth = 31
+      if (director.dob && director.dob.month && director.dob.year) {
+        daysInBirthMonth = moment(`${director.dob.year}-${director.dob.month}`, 'YYYY-MM').daysInMonth()
+      }
+      let directorName = `${director.firstName} ${director.lastName}`
 
       this.errorMessages[`director-dob-day-${i}`] = {
         'any.required': `Enter a date of birth for ${directorName}`,
