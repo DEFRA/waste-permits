@@ -67,7 +67,7 @@
     "https-proxy-agent": "^2.1.1",
     "inert": "^4.2.1",
     "joi": "^13.0.1",
-    "moment": "^2.19.4",
+    "moment": "^2.20.0",
     "path": "^0.12.7",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
