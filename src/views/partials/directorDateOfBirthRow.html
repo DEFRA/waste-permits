@@ -1,4 +1,4 @@
-<div id="director-list">
+<div id="{{ concat 'director-list-item-' @index }}">
   <dt id="{{ concat 'director-name-' @index }}" class="director-name">
     {{this.firstName}} {{this.lastName}}
   </dt>
@@ -12,7 +12,7 @@
       <input class="form-control sr-company-dob" id="{{ concat 'director-dob-day-' @index }}" name="{{ concat 'director-dob-day-' @index }}" type="number"
         pattern="[0-9][0-9]" min="1" max="31" aria-describedby="sr-dob-month-year" value="{{this.dob.day}}">
 
-      <span id="{{ concat 'dob-' @index }}" class="sr-dob-month-year">
+      <span id="{{ concat 'dob-formatted-month-year-' @index }}" class="sr-dob-month-year">
         {{this.dateOfBirthFormatted}}
       </span>
     </div>

@@ -5,10 +5,5 @@
 // Returns the error message with key 'field-prefix-<@index> from the errors collection)
 module.exports = (...args) => {
   const errors = args[0]
-  if (errors) {
-    const errorKey = args[1] + args[2]
-    return errors[errorKey]
-  } else {
-    return ''
-  }
+  return (errors) ? errors[args[1] + args[2]] : ''
 }
