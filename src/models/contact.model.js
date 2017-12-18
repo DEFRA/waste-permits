@@ -57,7 +57,7 @@ module.exports = class Contact extends BaseModel {
     const dynamicsDal = new DynamicsDalService(authToken)
 
     let select = 'contactid,firstname,fullname,lastname,telephone1,emailaddress1,defra_dateofbirthdaycompanieshouse,defra_dobmonthcompanieshouse,defra_dobyearcompanieshouse'
-    let filter = `accountrolecode eq ${contactType} and parentcustomerid_account/accountid eq ${accountId}`
+    let filter = `accountrolecode eq ${contactType} and parentcustomerid_account/accountid eq ${accountId} and defra_resignedoncompanieshouse eq null`
     let orderBy = 'lastname asc,firstname asc'
     const query = `contacts?$select=${select}&$filter=${filter}&$orderby=${orderBy}`
 
@@ -92,7 +92,7 @@ module.exports = class Contact extends BaseModel {
       emailaddress1: this.email,
       defra_dateofbirthdaycompanieshouse: this.dob.day,
       defra_dobmonthcompanieshouse: this.dob.month,
-      defra_dobmonthcompanieshouse: this.dob.year
+      defra_dobyearcompanieshouse: this.dob.year
     }
     await super.save(authToken, dataObject)
   }

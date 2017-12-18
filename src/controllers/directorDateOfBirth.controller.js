@@ -41,22 +41,11 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     pageContext.hasDirectors = pageContext.directors.length > 0
 
     if (request.payload) {
-      // If we have data payload then re-display in the form by saving the data against each Director
-      for (let fieldName of Object.keys(request.payload)) {
-        // Get the direcor index
-        let fieldIndex = fieldName.substring(fieldName.lastIndexOf('-') + 1)
-
-        // Set the director date of birth day with the corresonding value in the payload
-        directors[fieldIndex].dob.day = request.payload[fieldName]
+      for (let i = 0; i < directors.length; i++) {
+        let field = request.payload[`director-dob-day-${i}`]
+        pageContext.directors[i].dob.day = field || ''
       }
-    } else {
-    // TODO
-    // Load existing directors into the page
-    //   pageContext.formValues = {
-    //     'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
-    //   }
     }
-
     return reply.view('directorDateOfBirth', pageContext)
   }
 
@@ -66,7 +55,6 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     let account = await Account.getByApplicationId(authToken, applicationId)
     if (!account) {
-      // TODO apply this when the account has been created in Dynamics by the previous screen
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
       return reply.redirect(Constants.Routes.ERROR.path)
     }
@@ -79,20 +67,12 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      // TODO save DOBs to Dynamics
-
-      // Iterate director-dob-day-x
-      //request.payload['site-name']
-
-      // Set director day of birth (contacts)
-      // director.dob.day
-
-      // console.log(request.payload)
-
-      // Save contacts
-
-      // await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'],
-      //   authToken, applicationId, applicationLineId)
+      // Save Director dates of birth
+      for (let i = 0; i < directors.length; i++) {
+        const director = directors[i]
+        director.dob.day = request.payload[`director-dob-day-${i}`]
+        await director.save(authToken)
+      }
 
       return reply.redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
     }
