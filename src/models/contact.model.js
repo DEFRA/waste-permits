@@ -53,11 +53,14 @@ module.exports = class Contact extends BaseModel {
     return contact
   }
 
-  static async list (authToken, accountId, contactType = Constants.Dynamics.COMPANY_DIRECTOR) {
+  static async list (authToken, accountId = undefined, contactType = Constants.Dynamics.COMPANY_DIRECTOR) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
     let select = 'contactid,firstname,fullname,lastname,telephone1,emailaddress1,defra_dateofbirthdaycompanieshouse,defra_dobmonthcompanieshouse,defra_dobyearcompanieshouse'
-    let filter = `accountrolecode eq ${contactType} and parentcustomerid_account/accountid eq ${accountId} and defra_resignedoncompanieshouse eq null`
+    let filter = `accountrolecode eq ${contactType} and defra_resignedoncompanieshouse eq null`
+    if (accountId) {
+      filter += `and parentcustomerid_account/accountid eq ${accountId}`
+    }
     let orderBy = 'lastname asc,firstname asc'
     const query = `contacts?$select=${select}&$filter=${filter}&$orderby=${orderBy}`
 

@@ -20,7 +20,7 @@ module.exports = class BaseController {
       formAction: this.path
     }
 
-    if (errors && errors.data && errors.data.details) {
+    if (validator && errors && errors.data && errors.data.details) {
       validator.addErrorsToPageContext(errors, pageContext)
 
       // Add the error prefix to the page title

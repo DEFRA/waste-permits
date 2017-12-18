@@ -2,12 +2,13 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
+const ContactDetailsValidator = require('../validators/contactDetails.validator')
 const Contact = require('../models/contact.model')
 const CookieService = require('../services/cookie.service')
 
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new ContactDetailsController())
+    const pageContext = this.createPageContext(errors, new ContactDetailsValidator())
 
     return reply
       .view('contactDetails', pageContext)
@@ -33,7 +34,12 @@ module.exports = class ContactDetailsController extends BaseController {
         firstName: request.payload['first-name'],
         lastName: request.payload['last-name'],
         telephone: request.payload.telephone,
-        email: request.payload.email
+        email: request.payload.email,
+        dob: {
+          day: undefined,
+          month: undefined,
+          year: undefined
+        }
       })
 
       await contact.save(authToken)

@@ -8,7 +8,7 @@ const LoggingService = require('../services/logging.service')
 
 module.exports = class ContactSearchController extends BaseController {
   async doGet (request, reply, errors = undefined) {
-    const pageContext = this.createPageContext(errors, new ContactSearchController())
+    const pageContext = this.createPageContext(errors)
 
     const authToken = CookieService.getAuthToken(request)
 

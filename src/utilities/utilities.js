@@ -37,7 +37,7 @@ module.exports = class Utilities {
       if (typeof (value) === 'object' && value !== undefined) {
         Utilities._deepReplaceUndefined(value)
       } else {
-        dataObject[key] = Utilities._replaceNull(value)
+        dataObject[key] = Utilities._replaceUndefined(value)
       }
     }
   }

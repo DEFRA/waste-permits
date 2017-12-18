@@ -15,10 +15,15 @@ let dynamicsUpdateStub
 
 lab.beforeEach(() => {
   testContact = new Contact({
-    firstname: 'John',
-    lastname: 'Smith,',
-    telephone1: '01234567890',
-    emailaddress1: 'john.smith@email.com'
+    firstName: 'John',
+    lastName: 'Smith,',
+    telephone: '01234567890',
+    email: 'john.smith@email.com',
+    dob: {
+      day: 1,
+      month: 2,
+      year: 1980
+    }
   })
 
   // Stub methods
