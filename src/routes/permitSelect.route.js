@@ -28,7 +28,7 @@ module.exports = [{
       options: {
         allowUnknown: true
       },
-      payload: PermitSelectValidator.getFormValidators(),
+      payload: PermitSelectValidator.prototype.getFormValidators(),
       failAction: controller.failAction
     }
   }

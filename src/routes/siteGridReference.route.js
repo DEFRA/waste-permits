@@ -24,7 +24,7 @@ module.exports = [{
       options: {
         allowUnknown: true
       },
-      payload: SiteGridReferenceValidator.getFormValidators(),
+      payload: SiteGridReferenceValidator.prototype.getFormValidators(),
       failAction: controller.failAction
     }
   }

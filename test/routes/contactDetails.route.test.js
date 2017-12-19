@@ -25,10 +25,15 @@ lab.beforeEach(() => {
   Contact.getById = (authToken, id) => {
     return new Contact({
       id: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
-      firstname: 'John',
-      lastname: 'Smith,',
-      telephone1: '01234567890',
-      emailaddress1: 'john.smith@email.com'
+      firstName: 'John',
+      lastName: 'Smith,',
+      telephone: '01234567890',
+      email: 'john.smith@email.com',
+      dob: {
+        day: 1,
+        month: 1,
+        year: 1970
+      }
     })
   }
 
@@ -92,7 +97,12 @@ lab.experiment('Contact details page tests:', () => {
         firstName: 'Marlon',
         lastName: 'Herzog',
         telephone: '055 8767 0835',
-        email: 'Amparo.Abbott49@example.com'
+        email: 'Amparo.Abbott49@example.com',
+        dob: {
+          day: 1,
+          month: 1,
+          year: 1970
+        }
       }
     }
 
@@ -111,7 +121,12 @@ lab.experiment('Contact details page tests:', () => {
         firstName: 'Marlon',
         lastName: 'Herzog',
         telephone: '055 8767 0835',
-        email: 'Amparo.Abbott49@example.com'
+        email: 'Amparo.Abbott49@example.com',
+        dob: {
+          day: 1,
+          month: 1,
+          year: 1970
+        }
       }
     }
 

@@ -88,6 +88,11 @@ Constants.Routes = {
     pageHeading: 'Costs and processing time',
     taskListHeading: 'Check costs and processing time'
   },
+  DIRECTOR_DATE_OF_BIRTH: {
+    path: '/permit-holder/company/director-date-of-birth',
+    pageHeading: `What is the director's date of birth?`,
+    pageHeadingAlternate: `What are the directors' dates of birth?`
+  },
   DRAINAGE_TYPE_DRAIN: {
     path: '/drainage-type/drain',
     pageHeading: 'Declaration for vehicle storage, depolution and dismantling facilities',
@@ -185,7 +190,7 @@ Constants.PermitTypes = {
 }
 
 Constants.Dynamics = {
-  WASTE_REGIME: 910400000,
+  COMPANY_DIRECTOR: 910400000,
   DIGITAL_SOURCE: 910400000,
   PermitTypes: {
     STANDARD: 910400000,
@@ -200,6 +205,8 @@ Constants.Dynamics = {
     DEEMED_COMPETENCE: 910400002,
     ESA_EU_SKILLS: 910400003
   },
+  WASTE_REGIME: 910400000,
+
   RulesetIds: {
     ALLOW_PERMIT_START_DATE: 'defra_allowpermitstartdate',
     BASELINE_REPORT: 'defra_baselinereportreq',

@@ -21,7 +21,7 @@ module.exports = class SiteGridReferenceValidator extends BaseValidator {
     }
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {
       'site-grid-reference': Joi
         .string()

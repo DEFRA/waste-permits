@@ -15,10 +15,15 @@ let dynamicsUpdateStub
 
 lab.beforeEach(() => {
   testContact = new Contact({
-    firstname: 'John',
-    lastname: 'Smith,',
-    telephone1: '01234567890',
-    emailaddress1: 'john.smith@email.com'
+    firstName: 'John',
+    lastName: 'Smith,',
+    telephone: '01234567890',
+    email: 'john.smith@email.com',
+    dob: {
+      day: 1,
+      month: 2,
+      year: 1970
+    }
   })
 
   // Stub methods
@@ -28,24 +33,38 @@ lab.beforeEach(() => {
     return {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
       value: [
-        { '@odata.etag': 'W/"1155486"',
+        {
+          '@odata.etag': 'W/"1155486"',
           contactid: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
           firstname: 'Marlon',
           lastname: 'Herzog',
           telephone1: '055 8767 0835',
-          emailaddress1: 'Amparo.Abbott49@example.com' },
-        { '@odata.etag': 'W/"1155506"',
+          emailaddress1: 'Amparo.Abbott49@example.com',
+          defra_dateofbirthdaycompanieshouse: 1,
+          defra_dobmonthcompanieshouse: 2,
+          defra_dobyearcompanieshouse: 1970
+        },
+        {
+          '@odata.etag': 'W/"1155506"',
           contactid: '8e8e4354-4f24-e711-80fd-5065f38a1b01',
           firstname: 'Kelvin',
           lastname: 'Rice',
           telephone1: '055 8301 2280',
-          emailaddress1: 'Mike9@example.com' },
-        { '@odata.etag': 'W/"1273787"',
+          emailaddress1: 'Mike9@example.com',
+          defra_dateofbirthdaycompanieshouse: 3,
+          defra_dobmonthcompanieshouse: 4,
+          defra_dobyearcompanieshouse: 1970
+        },
+        {
+          '@odata.etag': 'W/"1273787"',
           contactid: '9d8e4354-4f24-e711-80fd-5065f38a1b01',
           firstname: 'Maximo',
           lastname: 'Wisoky',
           telephone1: '01424 733336',
-          emailaddress1: 'Danielle.Howell@example.com'
+          emailaddress1: 'Danielle.Howell@example.com',
+          defra_dateofbirthdaycompanieshouse: 5,
+          defra_dobmonthcompanieshouse: 6,
+          defra_dobyearcompanieshouse: 1970
         }
       ]
     }
@@ -79,7 +98,10 @@ lab.experiment('Contact Model tests:', () => {
         firstname: 'Marlon',
         lastname: 'Herzog',
         telephone1: '055 8767 0835',
-        emailaddress1: 'Amparo.Abbott49@example.com'
+        emailaddress1: 'Amparo.Abbott49@example.com',
+        defra_dateofbirthdaycompanieshouse: 1,
+        defra_dobmonthcompanieshouse: 2,
+        defra_dobyearcompanieshouse: 1970
       }
     }
 

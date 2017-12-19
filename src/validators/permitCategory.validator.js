@@ -10,7 +10,7 @@ module.exports = class PermitCategoryValidator extends BaseValidator {
     this.errorMessages = {}
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {}
   }
 }

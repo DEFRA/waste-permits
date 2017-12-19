@@ -21,7 +21,7 @@ details {
   margin-bottom: 30px;
 }
 
-// Address-manual. Spacing bewteen postcode and change link. 
+// Address-manual. Spacing bewteen postcode and change link.
 span.postcode {
   margin-right: 10px;
 }
@@ -38,6 +38,69 @@ span.postcode {
 .ea-footer .inline {
     display: inline;
 }
+
+// Directors DOB definition lists - based on the check your answers CSS
+.dates-of-birth {
+
+    margin-bottom: 30px;
+
+    @include media(desktop) {
+      display: table;
+    }
+
+    > * {
+      position: relative;
+      border-bottom: 1px solid $border-colour;
+
+      @include media(desktop) {
+        display: table-row;
+        border-bottom-width: 0;
+      }
+
+      > * {
+        display: block;
+
+        @include media(desktop) {
+          display: table-cell;
+          border-bottom: 1px solid $border-colour;
+          padding: em(12, 19) em(20, 19) em(9, 19) 0; // copied from Elements' td padding
+          margin: 0;
+        }
+      }
+
+      @include media(desktop) {
+        &:first-child > * {
+          border-top: 1px solid $border-colour;
+        }
+      }
+    }
+
+    .director-name {
+      margin: em(12, 19) 4em em(4,19) 0;
+    }
+
+    > *:first-child .director-dob {
+      margin-top: 0;
+    }
+
+    @include media(desktop) {
+      .director-name {
+        width: 55%;
+      }
+    }
+
+    .director-dob {
+      padding-bottom: em(9, 19);
+    }
+  }
+
+  .sr-company-dob {
+    width: 3em;
+  }
+
+  .sr-dob-month-year{
+    margin-left:.25em;
+  }
 
 // Form control widths
 // ==========================================================================

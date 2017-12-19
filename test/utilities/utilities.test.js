@@ -38,11 +38,21 @@ lab.experiment('Utilities tests:', () => {
 
     inputValue = {
       someProp: null,
-      anotherProp: 'SOME VALUE'
+      anotherProp: 'SOME VALUE',
+      nestedProp: {
+        furtherNestedProp: {
+          nestedProperty: null
+        }
+      }
     }
     expectedResult = {
       someProp: undefined,
-      anotherProp: 'SOME VALUE'
+      anotherProp: 'SOME VALUE',
+      nestedProp: {
+        furtherNestedProp: {
+          nestedProperty: undefined
+        }
+      }
     }
     result = Utilities.convertFromDynamics(inputValue)
     Code.expect(result.someProp).to.equal(expectedResult.someProp)
@@ -59,11 +69,21 @@ lab.experiment('Utilities tests:', () => {
 
     inputValue = {
       someProp: undefined,
-      anotherProp: 'SOME VALUE'
+      anotherProp: 'SOME VALUE',
+      nestedProp: {
+        furtherNestedProp: {
+          nestedProperty: undefined
+        }
+      }
     }
     expectedResult = {
       someProp: null,
-      anotherProp: 'SOME VALUE'
+      anotherProp: 'SOME VALUE',
+      nestedProp: {
+        furtherNestedProp: {
+          nestedProperty: null
+        }
+      }
     }
     result = Utilities.convertToDynamics(inputValue)
     Code.expect(result.someProp).to.equal(expectedResult.someProp)

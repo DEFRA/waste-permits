@@ -23,7 +23,7 @@ let accountSaveStub
 let applicationSaveStub
 
 const routePath = '/permit-holder/company/check-name'
-const nextRoutePath = '/permit-holder/company/declare-offences'
+const nextRoutePath = '/permit-holder/company/director-date-of-birth'
 const getRequest = {
   method: 'GET',
   url: routePath,
@@ -221,7 +221,7 @@ lab.experiment('Check Company Details page tests:', () => {
 
   lab.experiment(`POST ${routePath} page tests`, () => {
     lab.experiment('Success', () => {
-      lab.test('Checkbox ticked and trading name entered - redirects to the next page in the flow', async () => {
+      lab.test('Checkbox ticked and trading name entered - redirects to the next route', async () => {
         postRequest.payload['use-business-trading-name'] = 'on'
         postRequest.payload['business-trading-name'] = fakeApplicationData.tradingName
 
@@ -230,7 +230,7 @@ lab.experiment('Check Company Details page tests:', () => {
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
-      lab.test('Checkbox not ticked and no trading name entered - redirects to the next page in the flow', async () => {
+      lab.test('Checkbox not ticked and no trading name entered - redirects to the next route', async () => {
         postRequest.payload['use-business-trading-name'] = ''
         postRequest.payload['business-trading-name'] = ''
 

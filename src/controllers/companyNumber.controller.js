@@ -10,7 +10,7 @@ const Utilities = require('../utilities/utilities')
 
 module.exports = class CompanyNumberController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, CompanyNumberValidator)
+    const pageContext = this.createPageContext(errors, new CompanyNumberValidator())
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
 

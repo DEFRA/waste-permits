@@ -6,7 +6,7 @@ const CheckYourEmailValidator = require('../validators/checkYourEmail.validator'
 
 module.exports = class CheckYourEmailController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, CheckYourEmailValidator)
+    const pageContext = this.createPageContext(errors, new CheckYourEmailValidator())
 
     pageContext.formValues = request.payload
     return reply.view('checkYourEmail', pageContext)

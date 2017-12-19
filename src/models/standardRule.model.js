@@ -4,18 +4,20 @@ const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const ApplicationLine = require('./applicationLine.model')
 const LoggingService = require('../services/logging.service')
+const Utilities = require('../utilities/utilities')
 
 module.exports = class StandardRule extends BaseModel {
-  constructor (dataObject = undefined) {
+  constructor (standardRule) {
     super()
-    if (dataObject) {
-      this.id = dataObject.id
-      this.name = dataObject.name
-      this.limits = dataObject.limits
-      this.code = dataObject.code
-      this.codeForId = StandardRule.transformPermitCode(dataObject.code)
-      this.guidanceUrl = dataObject.guidanceUrl
+    if (standardRule) {
+      this.id = standardRule.id
+      this.name = standardRule.name
+      this.limits = standardRule.limits
+      this.code = standardRule.code
+      this.codeForId = StandardRule.transformPermitCode(standardRule.code)
+      this.guidanceUrl = standardRule.guidanceUrl
     }
+    Utilities.convertFromDynamics(this)
   }
 
   static getDynamicsData (result) {

@@ -15,7 +15,7 @@ module.exports = class TechnicalQualificationValidator extends BaseValidator {
     }
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {
       'technical-qualification': Joi
         .required()

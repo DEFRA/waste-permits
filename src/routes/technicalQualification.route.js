@@ -25,7 +25,7 @@ module.exports = [{
     handler: controller.handler,
     bind: controller,
     validate: {
-      payload: TechnicalQualificationValidator.getFormValidators(),
+      payload: TechnicalQualificationValidator.prototype.getFormValidators(),
       failAction: controller.failAction
     }
   }

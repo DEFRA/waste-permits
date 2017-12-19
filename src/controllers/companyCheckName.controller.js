@@ -10,7 +10,7 @@ const Account = require('../models/account.model')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, CompanyCheckNameValidator)
+    const pageContext = this.createPageContext(errors, new CompanyCheckNameValidator())
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
 
@@ -75,9 +75,10 @@ module.exports = class CompanyCheckNameController extends BaseController {
         } else {
           application.tradingName = undefined
         }
+
         await application.save(authToken)
       }
-      return reply.redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
+      return reply.redirect(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
     }
   }
 }

@@ -10,9 +10,11 @@ module.exports = class ApplicationLine extends BaseModel {
   constructor (applicationLine) {
     super()
     this.entity = 'defra_applicationlines'
-    this.applicationId = applicationLine.applicationId
-    this.standardRuleId = applicationLine.standardRuleId
-    this.parametersId = applicationLine.parametersId
+    if (applicationLine) {
+      this.applicationId = applicationLine.applicationId
+      this.standardRuleId = applicationLine.standardRuleId
+      this.parametersId = applicationLine.parametersId
+    }
     Utilities.convertFromDynamics(this)
   }
 

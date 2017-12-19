@@ -9,8 +9,10 @@ module.exports = class Address extends BaseModel {
   constructor (address) {
     super()
     this.entity = 'defra_addresses'
-    this.id = address.id
-    this.postcode = address.postcode
+    if (address) {
+      this.id = address.id
+      this.postcode = address.postcode
+    }
     Utilities.convertFromDynamics(this)
   }
 

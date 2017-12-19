@@ -21,7 +21,7 @@ module.exports = class CompanyNumberValidator extends BaseValidator {
     }
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {
       'company-number': Joi
         .string()

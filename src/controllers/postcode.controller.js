@@ -8,7 +8,7 @@ const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.mode
 
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, PostcodeValidator)
+    const pageContext = this.createPageContext(errors, new PostcodeValidator())
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     const applicationLineId = CookieService.getApplicationLineId(request)

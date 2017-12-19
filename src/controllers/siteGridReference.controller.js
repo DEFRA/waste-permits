@@ -8,7 +8,7 @@ const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.mode
 
 module.exports = class SiteGridReferenceController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, SiteGridReferenceValidator)
+    const pageContext = this.createPageContext(errors, new SiteGridReferenceValidator())
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     const applicationLineId = CookieService.getApplicationLineId(request)

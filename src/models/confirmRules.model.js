@@ -10,9 +10,11 @@ const Utilities = require('../utilities/utilities')
 module.exports = class ConfirmRules extends BaseModel {
   constructor (confirmRules) {
     super()
-    this.applicationId = confirmRules.applicationId
-    this.applicationLineId = confirmRules.applicationLineId
-    this.complete = confirmRules.complete
+    if (confirmRules) {
+      this.applicationId = confirmRules.applicationId
+      this.applicationLineId = confirmRules.applicationLineId
+      this.complete = confirmRules.complete
+    }
     Utilities.convertFromDynamics(this)
   }
 

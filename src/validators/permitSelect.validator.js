@@ -17,7 +17,7 @@ module.exports = class PermitSelectValidator extends BaseValidator {
     }
   }
 
-  static getFormValidators () {
+  getFormValidators () {
     return {
       'chosen-permit': Joi
         .string()

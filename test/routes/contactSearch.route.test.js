@@ -26,21 +26,41 @@ lab.beforeEach(() => {
     return {
       count: 3,
       results: [
-        { id: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
+        {
+          id: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
           firstName: 'Marlon',
           lastName: 'Herzog',
           telephone: '055 8767 0835',
-          email: 'Amparo.Abbott49@example.com' },
-        { id: '8e8e4354-4f24-e711-80fd-5065f38a1b01',
+          email: 'Amparo.Abbott49@example.com',
+          dob: {
+            day: 1,
+            month: 2,
+            year: 1970
+          }
+        },
+        {
+          id: '8e8e4354-4f24-e711-80fd-5065f38a1b01',
           firstName: 'Kelvin',
           lastName: 'Rice',
           telephone: '055 8301 2280',
-          email: 'Mike9@example.com' },
-        { id: '9d8e4354-4f24-e711-80fd-5065f38a1b01',
+          email: 'Mike9@example.com',
+          dob: {
+            day: 2,
+            month: 2,
+            year: 1970
+          }
+        },
+        {
+          id: '9d8e4354-4f24-e711-80fd-5065f38a1b01',
           firstName: 'Maximo',
           lastName: 'Wisoky',
           telephone: '01424 733336',
-          email: 'Danielle.Howell@example.com'
+          email: 'Danielle.Howell@example.com',
+          dob: {
+            day: 3,
+            month: 2,
+            year: 1970
+          }
         }
       ]
     }
@@ -50,10 +70,15 @@ lab.beforeEach(() => {
   Contact.getById = (authToken, id) => {
     return new Contact({
       id: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
-      firstname: 'Marlon',
-      lastname: 'Herzog,',
-      telephone1: '01234567890',
-      emailaddress1: 'marlon.herzog@example.com'
+      firstName: 'Marlon',
+      lastName: 'Herzog,',
+      telephone: '01234567890',
+      email: 'marlon.herzog@example.com',
+      dob: {
+        day: 1,
+        month: 1,
+        year: 1970
+      }
     })
   }
 })

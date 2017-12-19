@@ -9,7 +9,7 @@ const ApplicationLine = require('../models/applicationLine.model')
 
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, PermitSelectValidator)
+    const pageContext = this.createPageContext(errors, new PermitSelectValidator())
     const authToken = CookieService.getAuthToken(request)
 
     pageContext.formValues = request.payload
