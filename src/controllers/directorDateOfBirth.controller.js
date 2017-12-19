@@ -38,8 +38,6 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       }
     }
 
-    pageContext.hasDirectors = pageContext.directors.length > 0
-
     if (request.payload) {
       for (let i = 0; i < directors.length; i++) {
         let field = request.payload[`director-dob-day-${i}`]
@@ -122,15 +120,16 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       // Validate the entered DOB for each director
       for (let i = 0; i < directors.length; i++) {
         let director = directors[i]
-        let dobDay = request.payload[`director-dob-day-${i}`]
+        const directorDobField = `director-dob-day-${i}`
+        let dobDay = request.payload[directorDobField]
 
         if (dobDay === undefined) {
           // DOB day has not been entered
           errors.data.details.push({
-            message: `"director-dob-day-${i}" is required`,
-            path: `director-dob-day-${i}`,
+            message: `"${directorDobField}" is required`,
+            path: directorDobField,
             type: 'any.required',
-            context: { key: `director-dob-day-${i}`, label: `director-dob-day-${i}` }
+            context: { key: directorDobField, label: directorDobField }
           })
         } else {
           let daysInBirthMonth = moment(`${director.dob.year}-${director.dob.month}`, 'YYYY-MM').daysInMonth()
@@ -140,10 +139,10 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
           if (isNaN(dobDay) || dobDay < 1 || dobDay > daysInBirthMonth) {
             // DOB day is invalid
             errors.data.details.push({
-              message: `"director-dob-day-${i}" is invalid`,
-              path: `director-dob-day-${i}`,
+              message: `"${directorDobField}" is invalid`,
+              path: directorDobField,
               type: 'invalid',
-              context: { key: `director-dob-day-${i}`, label: `director-dob-day-${i}` }
+              context: { key: directorDobField, label: directorDobField }
             })
           }
         }

@@ -22,7 +22,7 @@
           <legend id="dob-visually-hidden" class="visuallyhidden">Date of birth for director - we only need the date in the month</legend>
 
           <dl id="dates-of-birth" class="dates-of-birth">
-            {{#if hasDirectors }}
+            {{#if directors.length }}
               {{#each directors}}
                 {{> directorDateOfBirthRow this errors=@root.errors}}
               {{/each}}
