@@ -68,7 +68,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       // Save Director dates of birth
       for (let i = 0; i < directors.length; i++) {
         const director = directors[i]
-        director.dob.day = request.payload[`director-dob-day-${i}`]
+        director.dob.day = parseInt(request.payload[`director-dob-day-${i}`])
         await director.save(authToken)
       }
 
@@ -99,18 +99,20 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     // If there are are no DOBs entered
     if (Object.keys(request.payload).length === 0) {
+      const errorPath = 'director-dobs-not-entered'
       errors = {
         data: {
           details: [
             {
-              message: '"director-dobs-not-entered" is required',
-              path: ['director-dobs-not-entered'],
+              message: `"${errorPath}" is required`,
+              path: [errorPath],
               type: 'any.required',
-              context: { key: 'director-dobs-not-entered', label: 'director-dobs-not-entered' }
+              context: { key: errorPath, label: errorPath }
             }]
         }
       }
     } else {
+      // Clear errors
       errors = {
         data: {
           details: []
@@ -119,7 +121,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
       // Validate the entered DOB for each director
       for (let i = 0; i < directors.length; i++) {
-        let director = directors[i]
+        const director = directors[i]
         const directorDobField = `director-dob-day-${i}`
         let dobDay = request.payload[directorDobField]
 
@@ -140,7 +142,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
             // DOB day is invalid
             errors.data.details.push({
               message: `"${directorDobField}" is invalid`,
-              path: directorDobField,
+              path: [directorDobField],
               type: 'invalid',
               context: { key: directorDobField, label: directorDobField }
             })
