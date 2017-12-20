@@ -14,7 +14,7 @@
       <h1 id="page-heading" class="heading-large">{{pageHeading}}</h1>
 
       <form action="{{formAction}}" method="post">
-        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
 
         <div class="panel panel-border-wide form-group">
           <p><span id="company-number-label">Company number</span> <span id="company-number-value">{{ formValues.company-number }}</span>.
@@ -67,7 +67,7 @@
       {{else}}
 
       <h1 id="page-heading-company-not-found" class="heading-large">We can't find that company</h1>
-      <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+      {{> common/csrfToken token=DefraCsrfToken}}
 
       <p id="search-term-text">We couldn't find a company with the number <b>{{ formValues.company-number }}</b> at Companies House.</p>
 

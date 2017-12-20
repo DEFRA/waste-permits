@@ -12,7 +12,7 @@
       <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
 
       <form method="POST" action="{{ formAction }}">
-        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
 
         <p id="dob-explanation">
           We use the date of birth to identify the person when we do security checks. We won’t include it in the public permit register.
