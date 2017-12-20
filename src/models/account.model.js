@@ -30,7 +30,7 @@ module.exports = class Account extends BaseModel {
         const result = await dynamicsDal.search(query)
         if (result) {
           account = new Account({
-            id: application.accountId,
+            id: result.accountid,
             companyNumber: result.defra_companyhouseid,
             name: result.name,
             isDraft: result.defra_draft
@@ -40,6 +40,30 @@ module.exports = class Account extends BaseModel {
         LoggingService.logError(`Unable to get Account by application ID: ${error}`)
         throw error
       }
+    }
+    return account
+  }
+
+  static async getByCompanyNumber (authToken, companyNumber) {
+    let account
+    const dynamicsDal = new DynamicsDalService(authToken)
+    try {
+      const filter = `defra_companyhouseid eq '${companyNumber}'`
+      const query = encodeURI(`accounts?$select=defra_companyhouseid,name,defra_draft&$filter=${filter}`)
+      let result = await dynamicsDal.search(query)
+
+      if (result && result.value && result.value.length > 0) {
+        result = result.value[0]
+        account = new Account({
+          id: result.accountid,
+          companyNumber: result.defra_companyhouseid,
+          name: result.name,
+          isDraft: result.defra_draft
+        })
+      }
+    } catch (error) {
+      LoggingService.logError(`Unable to get Account by application ID: ${error}`)
+      throw error
     }
     return account
   }

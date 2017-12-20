@@ -17,10 +17,12 @@ let applicationGetByIdStub
 
 let testAccount
 const fakeAccountData = {
-  id: undefined,
+  id: 'ACCOUNT_ID',
   companyNumber: 'COMPANY_NUMBER',
-  name: undefined
+  name: 'COMPANY_NAME',
+  isDraft: true
 }
+
 const fakeApplicationData = {
   id: 'APPLICATION_ID',
   accountId: 'ACCOUNT_ID',
@@ -37,13 +39,15 @@ lab.beforeEach(() => {
     // Dynamics Account object
     return {
       '@odata.etag': 'W/"1039178"',
+      accountid: fakeAccountData.id,
+      name: fakeAccountData.name,
       defra_companyhouseid: fakeAccountData.companyNumber,
       defra_draft: true
     }
   }
 
   dynamicsCallActionStub = DynamicsDalService.prototype.callAction
-  DynamicsDalService.prototype.callAction = () => {}
+  DynamicsDalService.prototype.callAction = () => { }
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
   DynamicsDalService.prototype.create = () => fakeApplicationData.accountId
@@ -79,6 +83,13 @@ lab.experiment('Account Model tests:', () => {
   lab.test('getByApplicationId() method returns a single Account object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const account = await Account.getByApplicationId(authToken, applicationId)
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
+  })
+
+  lab.test('getByCompanyNumber() method returns a single Account object', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const account = await Account.getByCompanyNumber(authToken, fakeAccountData.companyNumber)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
   })
