@@ -18,7 +18,7 @@
       </p>
 
       <form method="post" action="{{ formAction }}" name="tasklist">
-        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
 
         <ol class="task-list">
 

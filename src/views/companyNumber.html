@@ -10,7 +10,7 @@
       {{> common/errorSummary }}
 
       <form method="POST" action="{{ formAction }}">
-        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
 
         <h1 class="heading-large"><label id="page-heading" for="company-number">{{ pageHeading }}</label></h1>
 
