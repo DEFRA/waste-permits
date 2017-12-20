@@ -6,7 +6,7 @@
 
   <div class="grid-row">
     <div class="column-two-thirds">
-      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+      {{> common/pageHeading pageHeading }}
       <form method="post" action="{{ formAction }}">
         {{> common/csrfToken token=DefraCsrfToken}}
 
