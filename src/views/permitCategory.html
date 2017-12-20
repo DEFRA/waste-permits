@@ -10,7 +10,7 @@
       <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
 
       <form method="POST" action="{{ formAction }}">
-        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
 
         <div class="form-group">
           <button id="permit-category-submit" type="submit" class="button">Continue</button>
