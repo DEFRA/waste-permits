@@ -7,7 +7,7 @@
   <div class="grid-row">
     <div class="column-two-thirds">
 
-      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+      {{> common/pageHeading pageHeading=pageHeading }}
 
       {{#if complete}}
         <div id="confirm-result-message" class="panel panel-border-wide">

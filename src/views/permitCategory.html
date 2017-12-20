@@ -7,7 +7,7 @@
 
       {{> common/errorSummary }}
 
-      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+      {{> common/pageHeading pageHeading=pageHeading }}
 
       <form method="POST" action="{{ formAction }}">
         <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
