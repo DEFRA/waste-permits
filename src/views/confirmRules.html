@@ -28,7 +28,7 @@
       {{/unless}}
 
       <form method="POST" action="{{ formAction }}">
-        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
         <div class="form-group">
           {{#if complete}}
             <button id="return-to-task-list-button" type="submit" class="button" name="Return to task list">Return to task list</button>
