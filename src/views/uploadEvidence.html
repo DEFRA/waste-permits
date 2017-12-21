@@ -9,37 +9,41 @@
 
       {{> common/errorSummary }}
 
-      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+      {{> common/pageHeading pageHeading }}
 
       {{#if annotations.length}}
-      <h2 class="heading-small">
-        Uploaded files
-      </h2>
-      <dl class="govuk-check-your-answers cya-questions-short cya-questions-fileupload">
-        {{#each annotations}}
-        <div>
-          <dt class="cya-answer">
-            {{this.filename}}
-          </dt>
-          <dd class="cya-change">
-            <a href="{{this.removeAction}}">
-              Remove file <span class="visuallyhidden">{{this.filename}}</span>
-            </a>
-          </dd>
-        </div>
-        {{/each}}
-      </dl>
+      <div id="has-annotations">
+        <h2 class="heading-small">
+          Uploaded files
+        </h2>
+        <dl class="govuk-check-your-answers cya-questions-short cya-questions-fileupload">
+          {{#each annotations}}
+          <div>
+            <dt class="cya-answer">
+              {{this.filename}}
+            </dt>
+            <dd class="cya-change">
+              <a href="{{this.removeAction}}">
+                Remove file <span class="visuallyhidden">{{this.filename}}</span>
+              </a>
+            </dd>
+          </div>
+          {{/each}}
+        </dl>
+      </div>
 
       {{else}}
 
-      {{#if isWamitabQualification}}
-      {{> upload_evidence/uploadWamitabQualificationDescription }}
-      {{/if}}
+      <div id="has-no-annotations">
+        {{#if isWamitabQualification}}
+        {{> upload_evidence/uploadWamitabQualificationDescription }}
+        {{/if}}
+      </div>
 
       {{/if}}
 
       <form id="uploadForm" enctype="multipart/form-data" method="POST" action="{{uploadFormAction}}">
-        <input id="defra-csrf-token-for-upload" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
         <div>
           <label class="form-label" for="file">
             <span class="bold-small">Choose the certificate file</span>
@@ -61,7 +65,7 @@
       </form>
 
       <form method="POST" action="{{formAction}}">
-        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
         <div class="form-group">
           {{#if canContinue}}
           <button id="submit-button" type="submit" class="button" name="Continue">Continue</button>

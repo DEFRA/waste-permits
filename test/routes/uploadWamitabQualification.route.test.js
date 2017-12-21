@@ -41,7 +41,7 @@ lab.beforeEach(() => {
   LoggingService.logError = () => {}
 
   listByApplicationIdStub = Annotation.listByApplicationId
-  Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
+  Annotation.listByApplicationId = () => Promise.resolve([])
 })
 
 lab.afterEach(() => {
@@ -83,8 +83,23 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
       Code.expect(element).to.exist()
     })
 
-    lab.test('success', async () => {
-      doc = await getDoc()
+    lab.experiment('success', () => {
+      lab.test('when there are no annotations', async () => {
+        doc = await getDoc()
+        Code.expect(doc.getElementById('has-annotations')).to.not.exist()
+        Code.expect(doc.getElementById('has-no-annotations')).to.exist()
+        Code.expect(doc.getElementById('wamitab-qualification-description')).to.exist()
+        Code.expect(doc.getElementById('submit-button').getAttribute('disabled')).to.equal('disabled')
+      })
+
+      lab.test('when there are annotations', async () => {
+        Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
+        doc = await getDoc()
+        Code.expect(doc.getElementById('has-annotations')).to.exist()
+        Code.expect(doc.getElementById('has-no-annotations')).to.not.exist()
+        Code.expect(doc.getElementById('wamitab-qualification-description')).to.not.exist()
+        Code.expect(doc.getElementById('submit-button').getAttribute('disabled')).to.equal('')
+      })
     })
 
     lab.experiment('failure', () => {
@@ -201,6 +216,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
       })
 
       lab.test('when duplicate file', async () => {
+        Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const expectedErrorMessage = 'You cannot upload files with the same name as a file you have previously uploaded.'
         const req = postRequest({filename: fakeAnnotation.filename})
         const res = await server.inject(req)
