@@ -9,12 +9,14 @@ module.exports = class Annotation extends BaseModel {
   constructor (annotation) {
     super()
     this.entity = 'annotations'
-    this.id = annotation.id
-    this.subject = annotation.subject
-    this.filename = annotation.filename
-    this.documentBody = annotation.documentBody
-    this.applicationId = annotation.applicationId
-    Utilities.convertFromDynamics(this)
+    if (annotation) {
+      this.id = annotation.id
+      this.subject = annotation.subject
+      this.filename = annotation.filename
+      this.documentBody = annotation.documentBody
+      this.applicationId = annotation.applicationId
+      Utilities.convertFromDynamics(this)
+    }
   }
 
   static selectedDynamicsFields () {
