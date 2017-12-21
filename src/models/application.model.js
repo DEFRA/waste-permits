@@ -24,9 +24,8 @@ module.exports = class Application extends BaseModel {
     Utilities.convertFromDynamics(this)
   }
 
-  static async getById (authToken, applicationId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const selectedFields = [
+  static selectedDynamicsFields () {
+    return [
       '_defra_customerid_value',
       'defra_tradingname',
       'defra_technicalability',
@@ -36,8 +35,12 @@ module.exports = class Application extends BaseModel {
       'defra_bankruptcydeclarationdetails',
       'defra_confidentialitydeclaration',
       'defra_confidentialitydeclarationdetails'
-    ].join(',')
-    const query = encodeURI(`defra_applications(${applicationId})?$select=${selectedFields}`)
+    ]
+  }
+
+  static async getById (authToken, applicationId) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const query = encodeURI(`defra_applications(${applicationId})?$select=${Application.selectedDynamicsFields()}`)
     try {
       const result = await dynamicsDal.search(query)
       const application = new Application({

@@ -26,9 +26,23 @@ module.exports = class Contact extends BaseModel {
     Utilities.convertFromDynamics(this)
   }
 
+  static selectedDynamicsFields () {
+    return [
+      'contactid',
+      'firstname',
+      'fullname',
+      'lastname',
+      'telephone1',
+      'emailaddress1',
+      'defra_dateofbirthdaycompanieshouse',
+      'defra_dobmonthcompanieshouse',
+      'defra_dobyearcompanieshouse'
+    ]
+  }
+
   static async getById (authToken, id) {
     const dynamicsDal = new DynamicsDalService(authToken)
-    const query = `contacts(${id})?$select=contactid,firstname,lastname,telephone1,emailaddress1`
+    const query = `contacts(${id})?$select=${Contact.selectedDynamicsFields()}`
     let contact
 
     try {
@@ -56,13 +70,12 @@ module.exports = class Contact extends BaseModel {
   static async list (authToken, accountId = undefined, contactType = Constants.Dynamics.COMPANY_DIRECTOR) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
-    let select = 'contactid,firstname,fullname,lastname,telephone1,emailaddress1,defra_dateofbirthdaycompanieshouse,defra_dobmonthcompanieshouse,defra_dobyearcompanieshouse'
     let filter = `accountrolecode eq ${contactType} and defra_resignedoncompanieshouse eq null`
     if (accountId) {
       filter += ` and parentcustomerid_account/accountid eq ${accountId}`
     }
     let orderBy = 'lastname asc,firstname asc'
-    const query = `contacts?$select=${select}&$filter=${filter}&$orderby=${orderBy}`
+    const query = `contacts?$select=${Contact.selectedDynamicsFields()}&$filter=${filter}&$orderby=${orderBy}`
 
     try {
       const response = await dynamicsDal.search(query)
