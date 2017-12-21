@@ -5,7 +5,11 @@
 /govuk_modules/
 /log/
 /public/
+/uploads/
 
 # Test coverage output files
 coverage.html
 lcov.info
+
+# IDE
+.idea

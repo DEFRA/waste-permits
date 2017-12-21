@@ -63,7 +63,7 @@ lab.experiment('StandardRule Model tests:', () => {
     Code.expect(Array.isArray(standardRuleList)).to.be.true()
     Code.expect(standardRuleList.length).to.equal(3)
     standardRuleList.forEach((standardRule, index) => {
-      Code.expect(standardRule).to.equal(Object.assign(fakeStandardRule, {code: codes[index], codeForId: StandardRule.transformPermitCode(codes[index])}))
+      Code.expect(standardRule).to.equal(Object.assign({}, fakeStandardRule, {code: codes[index], codeForId: StandardRule.transformPermitCode(codes[index])}))
     })
     Code.expect(spy.callCount).to.equal(1)
   })

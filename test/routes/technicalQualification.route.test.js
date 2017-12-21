@@ -20,12 +20,18 @@ let logErrorStub
 let fakeApplication
 
 const routePath = '/technical-qualification'
-const nextRoutePath = '/task-list'
-
-const WAMITAB_QUALIFICATION = 910400000
-const REGISTERED_ON_A_COURSE = 910400001
-const DEEMED_COMPETENCE = 910400002
-const ESA_EU_SKILLS = 910400003
+const nextRoutePath = {
+  WAMITAB_QUALIFICATION: '/technical-qualification/upload-wamitab-qualification',
+  REGISTERED_ON_A_COURSE: '/task-list',
+  DEEMED_COMPETENCE: '/task-list',
+  ESA_EU_SKILLS: '/task-list'
+}
+const Qualification = {
+  WAMITAB_QUALIFICATION: 910400000,
+  REGISTERED_ON_A_COURSE: 910400001,
+  DEEMED_COMPETENCE: 910400002,
+  ESA_EU_SKILLS: 910400003
+}
 
 lab.beforeEach(() => {
   fakeApplication = {
@@ -71,8 +77,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
       getRequest = {
         method: 'GET',
         url: routePath,
-        headers: {},
-        payload: {}
+        headers: {}
       }
     })
 
@@ -92,25 +97,25 @@ lab.experiment('Technical Management Qualification tests:', () => {
       })
 
       lab.test('when wamitab has been selected', async () => {
-        fakeApplication.technicalQualification = WAMITAB_QUALIFICATION
+        fakeApplication.technicalQualification = Qualification.WAMITAB_QUALIFICATION
         doc = await getDoc()
         Code.expect(doc.getElementById('wamitab').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when getting-qualification has been selected', async () => {
-        fakeApplication.technicalQualification = REGISTERED_ON_A_COURSE
+        fakeApplication.technicalQualification = Qualification.REGISTERED_ON_A_COURSE
         doc = await getDoc()
         Code.expect(doc.getElementById('getting-qualification').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when deemed has been selected', async () => {
-        fakeApplication.technicalQualification = DEEMED_COMPETENCE
+        fakeApplication.technicalQualification = Qualification.DEEMED_COMPETENCE
         doc = await getDoc()
         Code.expect(doc.getElementById('deemed').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when esa-eu has been selected', async () => {
-        fakeApplication.technicalQualification = ESA_EU_SKILLS
+        fakeApplication.technicalQualification = Qualification.ESA_EU_SKILLS
         doc = await getDoc()
         Code.expect(doc.getElementById('esa-eu').getAttribute('checked')).to.equal('checked')
       })
@@ -154,7 +159,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
         url: routePath,
         headers: {},
         payload: {
-          'technical-qualification': WAMITAB_QUALIFICATION
+          'technical-qualification': Qualification.WAMITAB_QUALIFICATION
         }
       }
 
@@ -173,11 +178,12 @@ lab.experiment('Technical Management Qualification tests:', () => {
     })
 
     lab.experiment('success', () => {
-      lab.test('when application is saved', async () => {
+      Object.keys(Qualification).forEach((type) => lab.test(`when application is saved with a "${type}" qualification`, async () => {
+        postRequest.payload['technical-qualification'] = Qualification[type]
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-      })
+        Code.expect(res.headers['location']).to.equal(nextRoutePath[type])
+      }))
     })
 
     lab.experiment('invalid', () => {
@@ -218,6 +224,16 @@ lab.experiment('Technical Management Qualification tests:', () => {
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Application.prototype.save = () => Promise.reject(new Error('save failed'))
+
+        const res = await server.inject(postRequest)
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal('/error')
+      })
+
+      lab.test('redirects to error screen when an unexpected qualification is selected', async () => {
+        const spy = sinon.spy(LoggingService, 'logError')
+        postRequest.payload['technical-qualification'] = '99999999'
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)

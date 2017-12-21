@@ -62,6 +62,12 @@ lab.beforeEach(() => {
     })
 
   nock(`https://${config.dynamicsWebApiHost}`)
+    .delete(`${config.dynamicsWebApiPath}__DYNAMICS_DELETE_QUERY__`)
+    .reply(204, '', {
+      'odata-entityid': `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}contacts(7a8e4354-4f24-e711-80fd-5065f38a1b01)`
+    })
+
+  nock(`https://${config.dynamicsWebApiHost}`)
     .patch(`${config.dynamicsWebApiPath}__DYNAMICS_UPDATE_QUERY__`)
     .reply(204, '', {
       'odata-entityid': `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}/contacts(7a8e4354-4f24-e711-80fd-5065f38a1b01)`
@@ -93,6 +99,13 @@ lab.experiment('Dynamics Service tests:', () => {
   lab.test('update() can update a record in Dynamics', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     await dynamicsDal.update('__DYNAMICS_UPDATE_QUERY__', {})
+    Code.expect(spy.callCount).to.equal(1)
+    DynamicsDalService.prototype._call.restore()
+  })
+
+  lab.test('delete() can delete a record in Dynamics', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
+    await dynamicsDal.delete('__DYNAMICS_DELETE_QUERY__')
     Code.expect(spy.callCount).to.equal(1)
     DynamicsDalService.prototype._call.restore()
   })

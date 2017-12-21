@@ -2,15 +2,14 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const TechnicalQualification = require('../models/taskList/technicalQualification.model')
 const TechnicalQualificationValidator = require('../validators/technicalQualification.validator')
 const CookieService = require('../services/cookie.service')
 const Application = require('../models/application.model')
+const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.Dynamics.TechnicalQualification
 
 module.exports = class TechnicalQualificationController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors, new TechnicalQualificationValidator())
-    const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.Dynamics.TechnicalQualification
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -52,12 +51,23 @@ module.exports = class TechnicalQualificationController extends BaseController {
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
       const application = await Application.getById(authToken, applicationId)
       application.technicalQualification = request.payload['technical-qualification']
       await application.save(authToken)
-      await TechnicalQualification.updateCompleteness(authToken, applicationId, applicationLineId)
-      return reply.redirect(Constants.Routes.TASK_LIST.path)
+      return reply.redirect(await TechnicalQualificationController._getPath(application.technicalQualification))
+    }
+  }
+
+  static async _getPath (technicalQualification) {
+    switch (parseInt(technicalQualification)) {
+      case WAMITAB_QUALIFICATION:
+        return Constants.Routes.UPLOAD_WAMITAB_QUALIFICATION.path
+      case REGISTERED_ON_A_COURSE:
+      case DEEMED_COMPETENCE:
+      case ESA_EU_SKILLS:
+        return Constants.Routes.TASK_LIST.path
+      default:
+        throw new Error(`Unexpected technical qualification (${technicalQualification})`)
     }
   }
 }

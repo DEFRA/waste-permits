@@ -48,6 +48,13 @@ module.exports = class DynamicsDalService {
     await this._call(options, dataObject)
   }
 
+  async delete (query) {
+    const options = this._requestOptions(this.authToken, query, 'DELETE')
+    LoggingService.logDebug('Dynamics DELETE options', options)
+    const result = await this._call(options)
+    return result
+  }
+
   async search (query) {
     const options = this._requestOptions(this.authToken, query, 'GET')
     LoggingService.logDebug('Dynamics GET options', options)
@@ -109,10 +116,17 @@ module.exports = class DynamicsDalService {
         reject(error)
       })
 
-      crmRequest.setTimeout(config.requestTimeout, () => {
-        LoggingService.logError('Dynamics request timed out')
-        crmRequest.abort()
-      })
+      if (dataObject && dataObject.documentbody) {
+        crmRequest.setTimeout(config.uploadRequestTimeout, () => {
+          LoggingService.logError('Dynamics upload request timed out')
+          crmRequest.abort()
+        })
+      } else {
+        crmRequest.setTimeout(config.requestTimeout, () => {
+          LoggingService.logError('Dynamics request timed out')
+          crmRequest.abort()
+        })
+      }
 
       // Write the data
       if (dataObject) {
