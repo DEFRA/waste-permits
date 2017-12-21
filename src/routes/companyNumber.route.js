@@ -1,31 +1,16 @@
 'use strict'
 
 const Constants = require('../constants')
+const BaseRoute = require('./baseRoute')
 const CompanyNumberController = require('../controllers/companyNumber.controller')
 const CompanyNumberValidator = require('../validators/companyNumber.validator')
 const controller = new CompanyNumberController(Constants.Routes.COMPANY_NUMBER)
 
-module.exports = [{
-  method: ['GET'],
-  path: controller.path,
-  config: {
-    description: `The GET What's the company name or registration number?`,
-    handler: controller.handler,
-    bind: controller
-  }
+const routes = [{
+  method: 'GET'
 }, {
-  method: ['POST'],
-  path: controller.path,
-  config: {
-    description: `The POST What's the company name or registration number?`,
-    handler: controller.handler,
-    bind: controller,
-    validate: {
-      options: {
-        allowUnknown: true
-      },
-      payload: CompanyNumberValidator.prototype.getFormValidators(),
-      failAction: controller.failAction
-    }
-  }
+  method: 'POST'
 }]
+
+const route = new BaseRoute(routes, controller, new CompanyNumberValidator())
+module.exports = route.register()

@@ -1,19 +1,13 @@
 'use strict'
 
 const Constants = require('../constants')
+const BaseRoute = require('./baseRoute')
 const SitePlanController = require('../controllers/sitePlan.controller')
 const controller = new SitePlanController(Constants.Routes.SITE_PLAN)
 
-module.exports = [{
-  method: ['GET'],
-  path: controller.path,
-  config: {
-    description: 'The Upload the site plan page',
-    handler: controller.handler,
-    bind: controller,
-    state: {
-      parse: true,
-      failAction: 'error'
-    }
-  }
+const routes = [{
+  method: 'GET'
 }]
+
+const route = new BaseRoute(routes, controller)
+module.exports = route.register()

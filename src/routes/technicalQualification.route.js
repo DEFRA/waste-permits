@@ -1,32 +1,16 @@
 'use strict'
 
 const Constants = require('../constants')
+const BaseRoute = require('./baseRoute')
 const TechnicalQualificationController = require('../controllers/technicalQualification.controller')
 const TechnicalQualificationValidator = require('../validators/technicalQualification.validator')
 const controller = new TechnicalQualificationController(Constants.Routes.TECHNICAL_QUALIFICATION)
 
-module.exports = [{
-  method: ['GET'],
-  path: controller.path,
-  config: {
-    description: 'The GET Which qualification does the person providing technical management have? page',
-    handler: controller.handler,
-    bind: controller,
-    state: {
-      parse: true,
-      failAction: 'error'
-    }
-  }
+const routes = [{
+  method: 'GET'
 }, {
-  method: ['POST'],
-  path: controller.path,
-  config: {
-    description: 'The POST Which qualification does the person providing technical management have? page',
-    handler: controller.handler,
-    bind: controller,
-    validate: {
-      payload: TechnicalQualificationValidator.prototype.getFormValidators(),
-      failAction: controller.failAction
-    }
-  }
+  method: 'POST'
 }]
+
+const route = new BaseRoute(routes, controller, new TechnicalQualificationValidator())
+module.exports = route.register()

@@ -1,31 +1,16 @@
 'use strict'
 
 const Constants = require('../constants')
+const BaseRoute = require('./baseRoute')
 const SiteSiteNameController = require('../controllers/siteSiteName.controller')
 const SiteSiteNameValidator = require('../validators/siteSiteName.validator')
 const controller = new SiteSiteNameController(Constants.Routes.SITE_SITE_NAME)
 
-module.exports = [{
-  method: ['GET'],
-  path: controller.path,
-  config: {
-    description: 'The GET Site Name page',
-    handler: controller.handler,
-    bind: controller
-  }
+const routes = [{
+  method: 'GET'
 }, {
-  method: ['POST'],
-  path: controller.path,
-  config: {
-    description: 'The POST Site Name page',
-    handler: controller.handler,
-    bind: controller,
-    validate: {
-      options: {
-        allowUnknown: true
-      },
-      payload: SiteSiteNameValidator.prototype.getFormValidators(),
-      failAction: controller.failAction
-    }
-  }
+  method: 'POST'
 }]
+
+const route = new BaseRoute(routes, controller, new SiteSiteNameValidator())
+module.exports = route.register()

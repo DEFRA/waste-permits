@@ -1,31 +1,16 @@
 'use strict'
 
 const Constants = require('../constants')
+const BaseRoute = require('./baseRoute')
 const PostcodeController = require('../controllers/postcode.controller')
 const PostcodeValidator = require('../validators/postcode.validator')
 const controller = new PostcodeController(Constants.Routes.POSTCODE)
 
-module.exports = [{
-  method: ['GET'],
-  path: controller.path,
-  config: {
-    description: 'The GET Enter Postcode page',
-    handler: controller.handler,
-    bind: controller
-  }
+const routes = [{
+  method: 'GET'
 }, {
-  method: ['POST'],
-  path: controller.path,
-  config: {
-    description: 'The POST Enter Postcode page',
-    handler: controller.handler,
-    bind: controller,
-    validate: {
-      options: {
-        allowUnknown: true
-      },
-      payload: PostcodeValidator.prototype.getFormValidators(),
-      failAction: controller.failAction
-    }
-  }
+  method: 'POST'
 }]
+
+const route = new BaseRoute(routes, controller, new PostcodeValidator())
+module.exports = route.register()

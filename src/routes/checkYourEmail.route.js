@@ -1,31 +1,16 @@
 'use strict'
 
 const Constants = require('../constants')
+const BaseRoute = require('./baseRoute')
 const CheckYourEmailController = require('../controllers/checkYourEmail.controller')
 const CheckYourEmailValidator = require('../validators/checkYourEmail.validator')
 const controller = new CheckYourEmailController(Constants.Routes.CHECK_YOUR_EMAIL, false)
 
-module.exports = [{
-  method: ['GET'],
-  path: controller.path,
-  config: {
-    description: 'The GET Check Your Email page',
-    handler: controller.handler,
-    bind: controller
-  }
+const routes = [{
+  method: 'GET'
 }, {
-  method: ['POST'],
-  path: controller.path,
-  config: {
-    description: 'The POST Check Your Email page',
-    handler: controller.handler,
-    bind: controller,
-    validate: {
-      options: {
-        allowUnknown: true
-      },
-      payload: CheckYourEmailValidator.prototype.getFormValidators(),
-      failAction: controller.failAction
-    }
-  }
+  method: 'POST'
 }]
+
+const route = new BaseRoute(routes, controller, new CheckYourEmailValidator())
+module.exports = route.register()

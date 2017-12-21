@@ -1,35 +1,16 @@
 'use strict'
 
 const Constants = require('../constants')
+const BaseRoute = require('./baseRoute')
 const PermitSelectController = require('../controllers/permitSelect.controller')
 const PermitSelectValidator = require('../validators/permitSelect.validator')
 const controller = new PermitSelectController(Constants.Routes.PERMIT_SELECT)
 
-module.exports = [{
-  method: ['GET'],
-  path: controller.path,
-  config: {
-    description: 'The Select a permit page',
-    handler: controller.handler,
-    bind: controller,
-    state: {
-      parse: true,
-      failAction: 'error'
-    }
-  }
+const routes = [{
+  method: 'GET'
 }, {
-  method: ['POST'],
-  path: controller.path,
-  config: {
-    description: 'The POST Permit Select page',
-    handler: controller.handler,
-    bind: controller,
-    validate: {
-      options: {
-        allowUnknown: true
-      },
-      payload: PermitSelectValidator.prototype.getFormValidators(),
-      failAction: controller.failAction
-    }
-  }
+  method: 'POST'
 }]
+
+const route = new BaseRoute(routes, controller, new PermitSelectValidator())
+module.exports = route.register()

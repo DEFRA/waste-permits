@@ -1,31 +1,16 @@
 'use strict'
 
 const Constants = require('../constants')
+const BaseRoute = require('./baseRoute')
 const StartOrOpenSavedController = require('../controllers/startOrOpenSaved.controller')
 const StartOrOpenSavedValidator = require('../validators/startOrOpenSaved.validator')
 const controller = new StartOrOpenSavedController(Constants.Routes.START_OR_OPEN_SAVED, false)
 
-module.exports = [{
-  method: ['GET'],
-  path: controller.path,
-  config: {
-    description: 'The GET Start Or Resume page',
-    handler: controller.handler,
-    bind: controller
-  }
+const routes = [{
+  method: 'GET'
 }, {
-  method: ['POST'],
-  path: controller.path,
-  config: {
-    description: 'The POST Start Or Resume page',
-    handler: controller.handler,
-    bind: controller,
-    validate: {
-      options: {
-        allowUnknown: true
-      },
-      payload: StartOrOpenSavedValidator.prototype.getFormValidators(),
-      failAction: controller.failAction
-    }
-  }
+  method: 'POST'
 }]
+
+const route = new BaseRoute(routes, controller, new StartOrOpenSavedValidator())
+module.exports = route.register()
