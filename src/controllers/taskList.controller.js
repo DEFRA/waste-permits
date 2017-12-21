@@ -23,7 +23,9 @@ module.exports = class TaskListController extends BaseController {
     const applicationLineId = CookieService.getApplicationLineId(request)
     pageContext.taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
 
-    pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
+    // Not in use for MVP
+    // pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
+    pageContext.permitCategoryRoute = Constants.Routes.PERMIT_SELECT.path
 
     return reply
       .view('taskList', pageContext)

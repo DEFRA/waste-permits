@@ -72,7 +72,7 @@ server.register([
     // See https://www.npmjs.com/package/hapi-router
     register: HapiRouter,
     options: {
-      routes: './src/routes/*.js'
+      routes: './src/routes/*.route.js'
     }
   }, {
     // Plugin to display the routes table to console at startup

@@ -20,13 +20,21 @@ module.exports = class Account extends BaseModel {
     Utilities.convertFromDynamics(this)
   }
 
+  static selectedDynamicsFields () {
+    return [
+      'defra_companyhouseid',
+      'name',
+      'defra_draft'
+    ]
+  }
+
   static async getByApplicationId (authToken, applicationId) {
     let account
     const dynamicsDal = new DynamicsDalService(authToken)
     const application = await Application.getById(authToken, applicationId)
     if (application.accountId) {
       try {
-        const query = encodeURI(`accounts(${application.accountId})?$select=defra_companyhouseid,name,defra_draft`)
+        const query = encodeURI(`accounts(${application.accountId})?$select=${Account.selectedDynamicsFields()}`)
         const result = await dynamicsDal.search(query)
         if (result) {
           account = new Account({
