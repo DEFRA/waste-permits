@@ -15,13 +15,14 @@
         <fieldset class="permit-list" aria-labelledby="permit-select-heading">
           <legend class="visuallyhidden">{{ pageHeading }}</legend>
 
-          <div class="panel panel-border-wide">
+          <!-- Not in use for MVP -->
+          <!-- <div class="panel panel-border-wide">
             <p>Showing permits for car and vehicle dismantling.<br>
-              <a href="{{ permitCategoryRoute }}">
+              <a href="/{{ permitCategoryRoute }}">
                 Back to all permit groups
               </a>
             </p>
-          </div>
+          </div> -->
 
           <div id="chosen-permit" class="form-group {{#getFormErrorGroupClass errors.started-application}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='chosen-permit-error' message=errors.chosen-permit }}
