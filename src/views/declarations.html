@@ -7,7 +7,7 @@
 
       {{> common/errorSummary }}
 
-      <h1 id="page-heading" class="heading-large">{{ pageHeading }}</h1>
+      {{> common/pageHeading pageHeading }}
 
       {{#if isConfidentiality}}
       {{> declarations/confidentialityDescription }}
@@ -22,7 +22,7 @@
       {{/if}}
 
       <form method="post" action="{{formAction}}">
-        <input id="defra-csrf-token" type="hidden" name="DefraCsrfToken" value="{{DefraCsrfToken}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
 
         <fieldset>
           <legend class="visually-hidden">{{ pageHeading }}</legend>
