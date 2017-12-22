@@ -3,7 +3,9 @@
 const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
-const ALLOWED_PERMITS = ['SR2015 No 18']
+// TODO query the need for this - is it one hard-coded list of permits we are matching against or just the
+// ones that are on the screen
+// const ALLOWED_PERMITS = ['SR2015 No 18']
 
 module.exports = class PermitSelectValidator extends BaseValidator {
   constructor () {
@@ -11,8 +13,8 @@ module.exports = class PermitSelectValidator extends BaseValidator {
 
     this.errorMessages = {
       'chosen-permit': {
-        'any.required': `Select the permit you want`,
-        'any.allowOnly': `Select a valid permit`
+        'any.required': `Select the permit you want`
+        // 'any.allowOnly': `Select a valid permit`
       }
     }
   }
@@ -22,7 +24,7 @@ module.exports = class PermitSelectValidator extends BaseValidator {
       'chosen-permit': Joi
         .string()
         .required()
-        .valid(ALLOWED_PERMITS)
+        // .valid(ALLOWED_PERMITS)
     }
   }
 }

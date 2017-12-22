@@ -73,12 +73,25 @@ module.exports = class StandardRule extends BaseModel {
     const dynamicsDal = new DynamicsDalService(authToken)
 
     const filter =
+      // // Must be open for applications
+      // `defra_canapplyfor eq true` +
+      // // Must be SR2015 No 18 - *** this is temporary ***
+      // ` and defra_code eq 'SR2015 No 18'` +
+      // // Status code must be 1
+      // ` and statuscode eq 1`
+
       // Must be open for applications
       `defra_canapplyfor eq true` +
-      // Must be SR2015 No 18 - *** this is temporary ***
-      ` and defra_code eq 'SR2015 No 18'` +
-      // Status code must be 1
-      ` and statuscode eq 1`
+      // Must be a mobile permit - *** this is temporary ***
+      ` and (defra_code eq 'SR2010 No 4'` +
+
+      // *** this is temporary ***
+      ` or defra_code eq 'SR2015 No 18'` +
+
+      ` or defra_code eq 'SR2010 No 6'` +
+      ` or defra_code eq 'SR2015 No 5'` +
+      ` or defra_code eq 'SR2008 No 27'` +
+      ` or defra_code eq 'SR2010 No 11')`
 
     const query = encodeURI(`defra_standardrules?$select=${StandardRule.selectedDynamicsFields()}&$filter=${filter}`)
     try {

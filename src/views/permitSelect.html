@@ -9,10 +9,17 @@
 
       {{> common/pageHeading pageHeading }}
 
+
+      <form method="post" action="{{formAction}}">
+        <div class="form-group">
+          <fieldset class="permitList" aria-labelledby="radio_label">
+            <legend="Permit">
+
+
       <form method="POST" action="{{ formAction }}">
         {{> common/csrfToken token=DefraCsrfToken}}
 
-        <fieldset class="permit-list" aria-labelledby="permit-select-heading">
+        <fieldset aria-labelledby="permit-select-heading">
           <legend class="visuallyhidden">{{ pageHeading }}</legend>
 
           <!-- Not in use for MVP -->
