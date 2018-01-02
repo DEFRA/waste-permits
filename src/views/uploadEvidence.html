@@ -38,6 +38,15 @@
         {{#if isWamitabQualification}}
         {{> upload_evidence/uploadWamitabQualificationDescription }}
         {{/if}}
+        {{#if isCourseRegistration}}
+        {{> upload_evidence/uploadCourseRegistrationDescription }}
+        {{/if}}
+        {{#if isDeemedEvidence}}
+        {{> upload_evidence/uploadDeemedEvidenceDescription }}
+        {{/if}}
+        {{#if isEsaEuSkills}}
+        {{> upload_evidence/uploadEsaEuSkillsDescription }}
+        {{/if}}
       </div>
 
       {{/if}}
@@ -47,14 +56,14 @@
         <div>
           <label class="form-label" for="file">
             <span class="bold-small">Choose the certificate file</span>
-            <span class="text form-hint"><span id="file-types">{{fileTypes}}</span> files, <span id="max-size">{{maxSize}}</span> maximum file size</span>
+            <span class="text form-hint">{{#if fileTypes.length}}<span id="file-types">{{fileTypes}}</span> files, {{/if}}<span id="max-size">{{maxSize}}</span> maximum file size</span>
           </label>
         </div>
 
         <div id="uploader" class="form-group form-uploader">
           <div class="form-group {{#getFormErrorGroupClass errors.file}}{{/getFormErrorGroupClass}} {{#getFormErrorGroupClass errors.content-type}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='file-error' message=errors.file }}
-            <input id="file" name="file" type="file" multiple="multiple">
+            <input id="file" name="file" type="file">
             <input id="filename" name="technicalCertificateFile" type="hidden">
             <input name="technicalCertificateFileUploaded" value="{{technicalCertificateFileUploaded}}" type="hidden">
           </div>
