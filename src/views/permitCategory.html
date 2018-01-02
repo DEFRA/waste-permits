@@ -12,9 +12,7 @@
       <form method="POST" action="{{ formAction }}">
         {{> common/csrfToken token=DefraCsrfToken}}
 
-        <div class="form-group">
-          <button id="permit-category-submit" type="submit" class="button">Continue</button>
-        </div>
+        {{> common/submitButton }}
 
       </form>
 
