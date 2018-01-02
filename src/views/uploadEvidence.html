@@ -68,7 +68,7 @@
         {{> common/csrfToken token=DefraCsrfToken}}
         <div class="form-group">
           {{#if canContinue}}
-          <button id="submit-button" type="submit" class="button" name="Continue">Continue</button>
+          {{> common/submitButton }}
           {{else}}
           <button id="submit-button" type="submit" class="button" name="Continue" aria-disabled="true" disabled="disabled">Continue</button>
           {{/if}}
