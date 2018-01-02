@@ -31,10 +31,10 @@ module.exports = class TaskList extends BaseModel {
   _defineTaskListSections () {
     this.sections = []
 
-    const beforeYouApplySection = {
+    const prepareApplicationSection = {
       id: 'before-you-apply-section',
       sectionNumber: 1,
-      sectionName: Constants.TaskList.SectionHeadings.BEFORE_YOU_APPLY,
+      sectionName: Constants.TaskList.SectionHeadings.PREPARE_APPLICATION,
       sectionItems: [{
         id: 'check-permit-cost-and-time',
         label: Constants.Routes.COST_TIME.taskListHeading,
@@ -63,14 +63,7 @@ module.exports = class TaskList extends BaseModel {
         completedLabelId: 'preapp-completed',
         rulesetId: Constants.Dynamics.RulesetIds.PRE_APPLICATION,
         available: false
-      }]
-    }
-
-    const completeApplicationSection = {
-      id: 'complete-application-section',
-      sectionNumber: 2,
-      sectionName: Constants.TaskList.SectionHeadings.COMPLETE_APPLICATION,
-      sectionItems: [{
+      }, {
         id: 'give-contact-details',
         label: Constants.Routes.CONTACT_DETAILS.taskListHeading,
         href: Constants.Routes.CONTACT_DETAILS.path,
@@ -136,13 +129,20 @@ module.exports = class TaskList extends BaseModel {
         completedLabelId: 'confidentiality-completed',
         rulesetId: Constants.Dynamics.RulesetIds.CONFIRM_CONFIDENTIALLY,
         available: false
+      }, {
+        id: 'invoicing-details',
+        label: Constants.Routes.INVOICING_DETAILS.taskListHeading,
+        href: Constants.Routes.INVOICING_DETAILS.path,
+        completedLabelId: 'invoicing-details',
+        rulesetId: Constants.Dynamics.RulesetIds.INVOICING_DETAILS,
+        available: false
       }]
     }
 
     const sendAndPaySection = {
       id: 'send-and-pay-section',
-      sectionNumber: 3,
-      sectionName: Constants.TaskList.SectionHeadings.SEND_AND_PAY,
+      sectionNumber: 2,
+      sectionName: Constants.TaskList.SectionHeadings.APPLY,
       sectionItems: [{
         id: 'submit-pay',
         label: Constants.Routes.CHECK_BEFORE_SENDING.taskListHeading,
@@ -153,8 +153,7 @@ module.exports = class TaskList extends BaseModel {
       }]
     }
 
-    this.sections.push(beforeYouApplySection)
-    this.sections.push(completeApplicationSection)
+    this.sections.push(prepareApplicationSection)
     this.sections.push(sendAndPaySection)
   }
 

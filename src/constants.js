@@ -24,6 +24,16 @@ Constants.LogLevels = {
   DEBUG: 'DEBUG'
 }
 
+Constants.ALLOWED_PERMITS = [
+  'SR2008 No 27',
+  'SR2010 No 4',
+  'SR2010 No 6',
+  'SR2010 No 11',
+  'SR2015 No 5'
+  // *** Must be a mobile permit so this is temporarily removed ***
+  // 'SR2015 No 18'
+]
+
 Constants.Routes = {
   ROOT: {
     path: '/',
@@ -115,6 +125,11 @@ Constants.Routes = {
   HEALTH: {
     path: '/health',
     pageHeading: 'Health'
+  },
+  INVOICING_DETAILS: {
+    path: '/billing/invoice-postcode',
+    pageHeading: 'What address should we use to send invoices?',
+    taskListHeading: 'Give invoicing details'
   },
   MANAGEMENT_SYSTEM: {
     path: '/management-system',
@@ -262,10 +277,8 @@ Constants.Dynamics = {
 
 Constants.TaskList = {
   SectionHeadings: {
-    BEFORE_YOU_APPLY: 'Before you apply',
-    PREPARE_TO_APPLY: 'Prepare to apply',
-    COMPLETE_APPLICATION: 'Complete application',
-    SEND_AND_PAY: 'Send and pay'
+    PREPARE_APPLICATION: 'Prepare application',
+    APPLY: 'Apply'
   }
 }
 

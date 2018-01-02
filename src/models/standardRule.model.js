@@ -1,5 +1,7 @@
 'use strict'
 
+const Constants = require('../constants')
+
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const ApplicationLine = require('./applicationLine.model')
@@ -40,6 +42,13 @@ module.exports = class StandardRule extends BaseModel {
     ]
   }
 
+  // Map the allowed permits into a Dynamics filter that will retrieve the standard rules
+  static getAllowedPermitFilter () {
+    return Constants.ALLOWED_PERMITS
+      .map(permit =>`defra_code eq '${permit}'`)
+      .join(' or ')
+  }
+
   static async getByCode (authToken, code) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const filter = `defra_code eq '${code}'`
@@ -73,27 +82,13 @@ module.exports = class StandardRule extends BaseModel {
     const dynamicsDal = new DynamicsDalService(authToken)
 
     const filter =
-      // // Must be open for applications
-      // `defra_canapplyfor eq true` +
-      // // Must be SR2015 No 18 - *** this is temporary ***
-      // ` and defra_code eq 'SR2015 No 18'` +
-      // // Status code must be 1
-      // ` and statuscode eq 1`
-
       // Must be open for applications
       `defra_canapplyfor eq true` +
-      // Must be a mobile permit - *** this is temporary ***
-      ` and (defra_code eq 'SR2010 No 4'` +
 
-      // *** this is temporary ***
-      ` or defra_code eq 'SR2015 No 18'` +
+      // Must be one of the allowed permit types
+      ` and (${this.getAllowedPermitFilter()})`
 
-      ` or defra_code eq 'SR2010 No 6'` +
-      ` or defra_code eq 'SR2015 No 5'` +
-      ` or defra_code eq 'SR2008 No 27'` +
-      ` or defra_code eq 'SR2010 No 11')`
-
-    const query = encodeURI(`defra_standardrules?$select=${StandardRule.selectedDynamicsFields()}&$filter=${filter}`)
+    const query = encodeURI(`defra_standardrules?$select=${StandardRule.selectedDynamicsFields()}&$filter=${filter}&$orderby=defra_nameinrulesetdocument asc`)
     try {
       const response = await dynamicsDal.search(query)
 
@@ -105,7 +100,7 @@ module.exports = class StandardRule extends BaseModel {
     }
   }
 
-// Transform the code into kebab-case for ID
+  // Transform the code into kebab-case for ID
   static transformPermitCode (code) {
     return code.replace(/\s+/g, '-').toLowerCase()
   }
