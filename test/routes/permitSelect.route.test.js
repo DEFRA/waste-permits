@@ -104,7 +104,7 @@ lab.experiment('Select a permit page tests:', () => {
       url: routePath,
       headers: {},
       payload: {
-        'chosen-permit': 'SR2015 No 18'
+        'chosen-permit': 'SR2010 No 4'
       }
     }
 

@@ -427,16 +427,12 @@ lab.experiment('Task List page tests:', () => {
 
     // These task list item complete flags should be there
     completedItemIds.forEach((id) => {
-      console.log(id)
-
       element = doc.getElementById(id)
       Code.expect(element).to.exist()
     })
 
     // These task list item complete flags should NOT be there
     incompleteItemIds.forEach((id) => {
-      console.log(id)
-
       element = doc.getElementById(id)
       Code.expect(element).to.not.exist()
     })
