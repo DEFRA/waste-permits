@@ -13,7 +13,8 @@ const validatorOptions = {
   ]
 }
 
-const controller = new UploadWamitabQualificationController(UPLOAD_WAMITAB_QUALIFICATION, true, TASK_LIST, new UploadEntityValidator(validatorOptions))
+const validator = new UploadEntityValidator(validatorOptions)
+const controller = new UploadWamitabQualificationController(UPLOAD_WAMITAB_QUALIFICATION, true, TASK_LIST, validator)
 
 module.exports = [{
   method: 'GET',
