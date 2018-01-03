@@ -45,7 +45,7 @@ module.exports = class StandardRule extends BaseModel {
   // Map the allowed permits into a Dynamics filter that will retrieve the standard rules
   static getAllowedPermitFilter () {
     return Constants.ALLOWED_PERMITS
-      .map(permit =>`defra_code eq '${permit}'`)
+      .map(permit => `defra_code eq '${permit}'`)
       .join(' or ')
   }
 
