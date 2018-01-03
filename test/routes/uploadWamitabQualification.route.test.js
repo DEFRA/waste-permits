@@ -217,7 +217,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
 
       lab.test('when duplicate file', async () => {
         Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
-        const expectedErrorMessage = 'You cannot upload files with the same name as a file you have previously uploaded.'
+        const expectedErrorMessage = 'That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.'
         const req = postRequest({filename: fakeAnnotation.filename})
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(200)

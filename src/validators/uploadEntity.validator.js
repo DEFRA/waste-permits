@@ -17,8 +17,7 @@ module.exports = class UploadEntityValidator extends BaseValidator {
     this.errorMessages = {
       'file': {
         'fileTooBig': `That file’s too big. Upload a file that’s no more than ${this.getMaxSize()}.`,
-        'duplicateFile': `That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.
-`,
+        'duplicateFile': `That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.`,
         'array.base': ' ',
         'object.base': ' '
       },
