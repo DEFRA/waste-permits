@@ -1,9 +1,8 @@
 'use strict'
 
 const Joi = require('joi')
+const Constants = require('../constants')
 const BaseValidator = require('./base.validator')
-
-const ALLOWED_PERMITS = ['SR2015 No 18']
 
 module.exports = class PermitSelectValidator extends BaseValidator {
   constructor () {
@@ -22,7 +21,7 @@ module.exports = class PermitSelectValidator extends BaseValidator {
       'chosen-permit': Joi
         .string()
         .required()
-        .valid(ALLOWED_PERMITS)
+        .valid(Constants.ALLOWED_PERMITS)
     }
   }
 }

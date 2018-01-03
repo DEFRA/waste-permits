@@ -18,6 +18,14 @@ $path: "/public/images/";
   display: none;
 }
 
+// style phone number links on mobile only. Not ea-footer.
+@include media(tablet) {
+  main a[href^="tel:"] {
+    text-decoration: none;
+    color: $black;
+  }
+}
+
 // Add spacing below details (progressive disclosure)
 // Check if this is always required. If not, introduce class.
 details {
