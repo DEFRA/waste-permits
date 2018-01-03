@@ -239,8 +239,7 @@ Constants.Dynamics = {
     CONTACT_DETAILS: 'defra_contactdetailsrequired',
     DEFRA_WASTE_WEIGHT: 'defra_extwasteweightreq',
     FIRE_PREVENTION_PLAN: 'defra_fireplanrequired',
-    // TODO: correctly define this
-    // INVOICING_DETAILS: 'defra_invoicingdetails',
+    INVOICING_DETAILS: 'defra_invoicingdetailsrequired',
     MANAGEMENT_SYSTEM: 'defra_mansystemrequired',
     MINING_WASTE_MANAGEMENT_PLAN: 'defra_miningwastemanplanreq',
     NHS_SCREENING: 'defra_nhscreeningrequired',
@@ -262,8 +261,7 @@ Constants.Dynamics = {
     CONTACT_DETAILS: 'defra_contactdetailsrequired_completed',
     DEFRA_WASTE_WEIGHT: 'defra_extwasteweightreq_completed',
     FIRE_PREVENTION_PLAN: 'defra_fireplanrequired_completed',
-    // TODO: correctly define this
-    // INVOICING_DETAILS: 'defra_invoicingdetails_complated',
+    INVOICING_DETAILS: 'defra_invoicingdetails_completed',
     MANAGEMENT_SYSTEM: 'defra_mansystemrequired_completed',
     MINING_WASTE_MANAGEMENT_PLAN: 'defra_miningwastemanplanreq_completed',
     NHS_SCREENING: 'defra_nhscreeningrequired_completed',

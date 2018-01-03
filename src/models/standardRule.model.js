@@ -73,7 +73,7 @@ module.exports = class StandardRule extends BaseModel {
       const result = await dynamicsDal.search(query)
       return new StandardRule(result ? StandardRule.getDynamicsData(result) : undefined)
     } catch (error) {
-      LoggingService.logError(`Unable to get StandardRule by application ID: ${error}`)
+      LoggingService.logError(`Unable to get StandardRule by ApplicationLine ID: ${error}`)
       throw error
     }
   }

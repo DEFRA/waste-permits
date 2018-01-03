@@ -32,7 +32,7 @@ module.exports = class TaskList extends BaseModel {
     this.sections = []
 
     const prepareApplicationSection = {
-      id: 'before-you-apply-section',
+      id: 'prepare-application-section',
       sectionNumber: 1,
       sectionName: Constants.TaskList.SectionHeadings.PREPARE_APPLICATION,
       sectionItems: [{
@@ -41,6 +41,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.COST_TIME.path,
         completedLabelId: 'cost-and-time-completed',
         rulesetId: Constants.Dynamics.RulesetIds.SHOW_COST_AND_TIME,
+        completedId: Constants.Dynamics.CompletedParamters.SHOW_COST_AND_TIME,
         available: false
       }, {
         id: 'confirm-that-your-operation-meets-the-rules',
@@ -48,6 +49,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.CONFIRM_RULES.path,
         completedLabelId: 'operation-rules-completed',
         rulesetId: Constants.Dynamics.RulesetIds.CONFIRM_RULES,
+        completedId: Constants.Dynamics.CompletedParamters.CONFIRM_RULES,
         available: false
       }, {
         id: 'waste-recovery-plan',
@@ -55,6 +57,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.WASTE_RECOVERY_PLAN.path,
         completedLabelId: 'waste-recovery-plan-completed',
         rulesetId: Constants.Dynamics.RulesetIds.WASTE_RECOVERY_PLAN,
+        completedId: Constants.Dynamics.CompletedParamters.WASTE_RECOVERY_PLAN,
         available: false
       }, {
         id: 'tell-us-if-youve-discussed-this-application-with-us',
@@ -62,6 +65,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.PRE_APPLICATION.path,
         completedLabelId: 'preapp-completed',
         rulesetId: Constants.Dynamics.RulesetIds.PRE_APPLICATION,
+        completedId: Constants.Dynamics.CompletedParamters.PRE_APPLICATION,
         available: false
       }, {
         id: 'give-contact-details',
@@ -69,6 +73,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.CONTACT_DETAILS.path,
         completedLabelId: 'contact-details-completed',
         rulesetId: Constants.Dynamics.RulesetIds.CONTACT_DETAILS,
+        completedId: Constants.Dynamics.CompletedParamters.CONTACT_DETAILS,
         available: false
       }, {
         id: 'give-permit-holder-details',
@@ -79,6 +84,7 @@ module.exports = class TaskList extends BaseModel {
         // href: Constants.Routes.PERMIT_HOLDER_TYPE.path,
         completedLabelId: 'site-operator-completed',
         rulesetId: Constants.Dynamics.RulesetIds.PERMIT_HOLDER_DETAILS,
+        completedId: Constants.Dynamics.CompletedParamters.PERMIT_HOLDER_DETAILS,
         available: false
       }, {
         id: 'give-site-name-and-location',
@@ -86,6 +92,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.SITE_SITE_NAME.path,
         completedLabelId: 'site-name-completed',
         rulesetId: Constants.Dynamics.RulesetIds.SITE_NAME_LOCATION,
+        completedId: Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION,
         available: false
       }, {
         id: 'upload-the-site-plan',
@@ -93,6 +100,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.SITE_PLAN.path,
         completedLabelId: 'site-plan-completed',
         rulesetId: Constants.Dynamics.RulesetIds.SITE_PLAN,
+        completedId: Constants.Dynamics.CompletedParamters.SITE_PLAN,
         available: false
       }, {
         id: 'upload-technical-management-qualifications',
@@ -100,6 +108,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.TECHNICAL_QUALIFICATION.path,
         completedLabelId: 'technical-qualification-completed',
         rulesetId: Constants.Dynamics.RulesetIds.TECHNICAL_QUALIFICATION,
+        completedId: Constants.Dynamics.CompletedParamters.TECHNICAL_QUALIFICATION,
         available: false
       }, {
         id: 'tell-us-which-management-system-you-use',
@@ -107,6 +116,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.MANAGEMENT_SYSTEM.path,
         completedLabelId: 'management-system-completed',
         rulesetId: Constants.Dynamics.RulesetIds.MANAGEMENT_SYSTEM,
+        completedId: Constants.Dynamics.CompletedParamters.MANAGEMENT_SYSTEM,
         available: false
       }, {
         id: 'upload-the-fire-prevention-plan',
@@ -114,6 +124,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.FIRE_PREVENTION_PLAN.path,
         completedLabelId: 'firepp-completed',
         rulesetId: Constants.Dynamics.RulesetIds.FIRE_PREVENTION_PLAN,
+        completedId: Constants.Dynamics.CompletedParamters.FIRE_PREVENTION_PLAN,
         available: false
       }, {
         id: 'confirm-the-drainage-system-for-the-vehicle-storage-area',
@@ -121,6 +132,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.DRAINAGE_TYPE_DRAIN.path,
         completedLabelId: 'confirm-drainage-completed',
         rulesetId: Constants.Dynamics.RulesetIds.SURFACE_DRAINAGE,
+        completedId: Constants.Dynamics.CompletedParamters.SURFACE_DRAINAGE,
         available: false
       }, {
         id: 'confirm-confidentiality-needs',
@@ -128,13 +140,15 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.CONFIDENTIALITY.path,
         completedLabelId: 'confidentiality-completed',
         rulesetId: Constants.Dynamics.RulesetIds.CONFIRM_CONFIDENTIALLY,
+        completedId: Constants.Dynamics.CompletedParamters.CONFIRM_CONFIDENTIALLY,
         available: false
       }, {
         id: 'invoicing-details',
         label: Constants.Routes.INVOICING_DETAILS.taskListHeading,
         href: Constants.Routes.INVOICING_DETAILS.path,
-        completedLabelId: 'invoicing-details',
+        completedLabelId: 'invoicing-details-completed',
         rulesetId: Constants.Dynamics.RulesetIds.INVOICING_DETAILS,
+        completedId: Constants.Dynamics.CompletedParamters.INVOICING_DETAILS,
         available: false
       }]
     }
@@ -165,7 +179,7 @@ module.exports = class TaskList extends BaseModel {
       section.sectionItems.forEach((sectionItem) => {
         if (sectionItem.rulesetId !== undefined) {
           rulesetIds.push(sectionItem.rulesetId)
-          rulesetIds.push(`${sectionItem.rulesetId}_completed`)
+          rulesetIds.push(`${sectionItem.completedId}`)
         }
       })
     })
@@ -180,7 +194,7 @@ module.exports = class TaskList extends BaseModel {
         sectionItem.available = rulesets[sectionItem.rulesetId]
 
         // Set completeness
-        sectionItem.complete = rulesets[sectionItem.rulesetId + '_completed']
+        sectionItem.complete = rulesets[sectionItem.completedId]
       })
     })
 
