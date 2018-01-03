@@ -10,15 +10,15 @@
       {{> common/pageHeading pageHeading }}
 
       {{#if isConfidentiality}}
-      {{> confidentialityDescription }}
+      {{> declarations/confidentialityDescription }}
       {{/if}}
 
       {{#if isDeclareBankruptcy}}
-      {{> declareBankruptcyDescription }}
+      {{> declarations/declareBankruptcyDescription }}
       {{/if}}
 
       {{#if isDeclareOffences}}
-      {{> declareOffencesDescription }}
+      {{> declarations/declareOffencesDescription }}
       {{/if}}
 
       <form method="post" action="{{formAction}}">
@@ -61,10 +61,7 @@
         </div>
         {{/if}}
 
-        <div class="form-group">
-          <button id="submit-button" type="submit" class="button" name="Continue">Continue</button>
-        </div>
-
+        {{> common/submitButton }}
       </form>
     </div>
   </div>

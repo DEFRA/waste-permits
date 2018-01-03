@@ -8,11 +8,22 @@ $path: "/public/images/";
 
 // Take a look at in app/assets/sass/patterns/ to see which files are imported.
 // @import 'patterns/check-your-answers';
+@import 'patterns/buttons';
+@import 'patterns/upload-evidence';
 @import 'patterns/permit-select';
+@import 'patterns/check-your-answers';
 @import 'patterns/task-list';
 
 .no-js {
   display: none;
+}
+
+// style phone number links on mobile only. Not ea-footer.
+@include media(tablet) {
+  main a[href^="tel:"] {
+    text-decoration: none;
+    color: $black;
+  }
 }
 
 // Add spacing below details (progressive disclosure)

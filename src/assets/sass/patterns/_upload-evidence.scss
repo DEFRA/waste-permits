@@ -1,0 +1,38 @@
+// Choose permit radio button list
+#uploadForm {
+  input[type="file"] {
+    max-width: 100%;
+  };
+}
+
+.form-uploader{
+  border:2px solid #000;
+  padding:1em;
+}
+
+// Add extra margin below check your answers
+.govuk-check-your-answers {
+  margin: 30px 0;
+}
+
+// Application saved (column-one-third) on task list
+.application-saved p {
+  word-wrap: break-word;
+}
+
+// Add spacing below wide border panel
+.panel-border-wide {
+  margin-bottom: 30px;
+}
+
+.govuk-check-your-answers.cya-questions-fileupload {
+  border-collapse: collapse;
+  margin-top:0;
+  dt, dd {
+    padding-top: 0.63158em;
+    border-top: 1px solid #bfc1c3;
+  }
+
+  .govuk-check-your-answers.cya-questions-fileupload {
+  }
+}

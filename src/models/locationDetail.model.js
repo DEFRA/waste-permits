@@ -18,12 +18,19 @@ module.exports = class LocationDetail extends BaseModel {
     Utilities.convertFromDynamics(this)
   }
 
+  static selectedDynamicsFields () {
+    return [
+      'defra_gridreferenceid',
+      '_defra_addressid_value'
+    ]
+  }
+
   static async getByLocationId (authToken, locationId) {
     let locationDetail
     if (locationId !== undefined) {
       const dynamicsDal = new DynamicsDalService(authToken)
       const filter = `_defra_locationid_value eq ${locationId}`
-      const query = encodeURI(`defra_locationdetailses?$select=defra_gridreferenceid,_defra_addressid_value&$filter=${filter}`)
+      const query = encodeURI(`defra_locationdetailses?$select=${LocationDetail.selectedDynamicsFields()}&$filter=${filter}`)
       try {
         const response = await dynamicsDal.search(query)
         const result = response.value[0]

@@ -83,7 +83,7 @@ lab.experiment('Contact details page tests:', () => {
     let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
 
-    element = doc.getElementById('contact-details-continue').firstChild
+    element = doc.getElementById('submit-button').firstChild
     Code.expect(element.nodeValue).to.equal('Continue')
   })
 

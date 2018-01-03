@@ -129,7 +129,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
           // DOB day has not been entered
           errors.data.details.push({
             message: `"${directorDobField}" is required`,
-            path: directorDobField,
+            path: [directorDobField],
             type: 'any.required',
             context: { key: directorDobField, label: directorDobField }
           })
