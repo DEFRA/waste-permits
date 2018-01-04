@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseDeclarationsController = require('./baseDeclarations.controller')
-const Confidentiality = require('../models/taskList/confidentiality.model')
+const Confidentiality = require('../../models/taskList/confidentiality.model')
 
 module.exports = class ConfidentialityController extends BaseDeclarationsController {
   getFormData (data) {

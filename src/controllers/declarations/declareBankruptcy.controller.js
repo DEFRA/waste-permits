@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseDeclarationsController = require('./baseDeclarations.controller')
-const CompanyDetails = require('../models/taskList/companyDetails.model')
+const CompanyDetails = require('../../models/taskList/companyDetails.model')
 
 module.exports = class DeclareBankruptcyController extends BaseDeclarationsController {
   getFormData (data) {

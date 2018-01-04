@@ -6,11 +6,11 @@ const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 
-const server = require('../../server')
-const CookieService = require('../../src/services/cookie.service')
-const Annotation = require('../../src/models/annotation.model')
-const TechnicalQualification = require('../../src/models/taskList/technicalQualification.model')
-const LoggingService = require('../../src/services/logging.service')
+const server = require('../../../server')
+const CookieService = require('../../../src/services/cookie.service')
+const Annotation = require('../../../src/models/annotation.model')
+const TechnicalQualification = require('../../../src/models/taskList/technicalQualification.model')
+const LoggingService = require('../../../src/services/logging.service')
 
 let validateCookieStub
 let annotationSaveStub
@@ -21,7 +21,7 @@ let logErrorStub
 let fakeAnnotation
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-qualification/upload-deemed-evidence'
+const routePath = '/technical-qualification/upload-wamitab-qualification'
 const uploadPath = `${routePath}/upload`
 const removePath = `${routePath}/remove/${fakeAnnotationId}`
 const nextRoutePath = '/task-list'
@@ -51,7 +51,7 @@ lab.afterEach(() => {
   Annotation.listByApplicationId = listByApplicationIdStub
 })
 
-lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
+lab.experiment('Company Declare Upload Wamitab tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -62,7 +62,7 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
 
       const parser = new DOMParser()
       doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Upload evidence of their qualification')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Upload the WAMITAB certificate')
       Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal('PDF or JPG')
       Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
@@ -88,7 +88,7 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
         doc = await getDoc()
         Code.expect(doc.getElementById('has-annotations')).to.not.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.exist()
-        Code.expect(doc.getElementById('deemed-evidence-description')).to.exist()
+        Code.expect(doc.getElementById('wamitab-qualification-description')).to.exist()
         Code.expect(doc.getElementById('submit-button').getAttribute('disabled')).to.equal('disabled')
       })
 
@@ -97,7 +97,7 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
         doc = await getDoc()
         Code.expect(doc.getElementById('has-annotations')).to.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.not.exist()
-        Code.expect(doc.getElementById('deemed-evidence-description')).to.not.exist()
+        Code.expect(doc.getElementById('wamitab-qualification-description')).to.not.exist()
         Code.expect(doc.getElementById('submit-button').getAttribute('disabled')).to.equal('')
       })
     })
@@ -266,7 +266,7 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
         url: routePath,
         headers: {},
         payload: {
-          'technical-qualification': 'deemed-evidence'
+          'technical-qualification': 'WAMITAB-QUALIFICATION'
         }
       }
 

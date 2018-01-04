@@ -6,11 +6,11 @@ const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 
-const server = require('../../server')
-const CookieService = require('../../src/services/cookie.service')
-const Annotation = require('../../src/models/annotation.model')
-const TechnicalQualification = require('../../src/models/taskList/technicalQualification.model')
-const LoggingService = require('../../src/services/logging.service')
+const server = require('../../../server')
+const CookieService = require('../../../src/services/cookie.service')
+const Annotation = require('../../../src/models/annotation.model')
+const TechnicalQualification = require('../../../src/models/taskList/technicalQualification.model')
+const LoggingService = require('../../../src/services/logging.service')
 
 let validateCookieStub
 let annotationSaveStub

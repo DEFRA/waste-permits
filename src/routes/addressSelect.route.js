@@ -1,31 +1,10 @@
 'use strict'
 
 const Constants = require('../constants')
+const Route = require('./baseRoute')
 const AddressSelectController = require('../controllers/addressSelect.controller')
 const AddressSelectValidator = require('../validators/addressSelect.validator')
+const validator = new AddressSelectValidator()
 const controller = new AddressSelectController(Constants.Routes.ADDRESS_SELECT)
 
-module.exports = [{
-  method: ['GET'],
-  path: controller.path,
-  config: {
-    description: 'The GET Address Select page',
-    handler: controller.handler,
-    bind: controller
-  }
-}, {
-  method: ['POST'],
-  path: controller.path,
-  config: {
-    description: 'The POST Address Select page',
-    handler: controller.handler,
-    bind: controller,
-    validate: {
-      options: {
-        allowUnknown: true
-      },
-      payload: AddressSelectValidator.prototype.getFormValidators(),
-      failAction: controller.failAction
-    }
-  }
-}]
+module.exports = Route.register('GET, POST', controller, validator)

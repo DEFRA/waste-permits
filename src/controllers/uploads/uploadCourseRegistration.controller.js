@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseUploadEvidenceController = require('./baseUploadEvidence.controller')
-const TechnicalQualification = require('../models/taskList/technicalQualification.model')
+const TechnicalQualification = require('../../models/taskList/technicalQualification.model')
 
 module.exports = class UploadCourseRegistrationController extends BaseUploadEvidenceController {
   getSpecificPageContext () {
