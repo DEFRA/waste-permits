@@ -24,6 +24,16 @@ Constants.LogLevels = {
   DEBUG: 'DEBUG'
 }
 
+Constants.ALLOWED_PERMITS = [
+  'SR2008 No 27',
+  'SR2010 No 4',
+  'SR2010 No 5',
+  'SR2010 No 6',
+  'SR2010 No 11'
+  // *** Must be a mobile permit so this is temporarily removed ***
+  // 'SR2015 No 18'
+]
+
 Constants.Routes = {
   ROOT: {
     path: '/',
@@ -116,6 +126,11 @@ Constants.Routes = {
     path: '/health',
     pageHeading: 'Health'
   },
+  INVOICING_DETAILS: {
+    path: '/billing/invoice-postcode',
+    pageHeading: 'What address should we use to send invoices?',
+    taskListHeading: 'Give invoicing details'
+  },
   MANAGEMENT_SYSTEM: {
     path: '/management-system',
     pageHeading: 'Which management system will you use?',
@@ -174,6 +189,18 @@ Constants.Routes = {
     pageHeading: 'Which qualification does the person providing technical management have?',
     taskListHeading: 'Upload technical management qualifications'
   },
+  UPLOAD_COURSE_REGISTRATION: {
+    path: '/technical-qualification/upload-course-registration',
+    pageHeading: 'Upload the course registration email or letter'
+  },
+  UPLOAD_DEEMED_EVIDENCE: {
+    path: '/technical-qualification/upload-deemed-evidence',
+    pageHeading: 'Upload evidence of their qualification'
+  },
+  UPLOAD_ESA_EU_SKILLS: {
+    path: '/technical-qualification/upload-esa-eu-skills',
+    pageHeading: 'Upload the ESA EU Skills scheme certificate'
+  },
   UPLOAD_WAMITAB_QUALIFICATION: {
     path: '/technical-qualification/upload-wamitab-qualification',
     pageHeading: 'Upload the WAMITAB certificate'
@@ -224,6 +251,7 @@ Constants.Dynamics = {
     CONTACT_DETAILS: 'defra_contactdetailsrequired',
     DEFRA_WASTE_WEIGHT: 'defra_extwasteweightreq',
     FIRE_PREVENTION_PLAN: 'defra_fireplanrequired',
+    INVOICING_DETAILS: 'defra_invoicingdetailsrequired',
     MANAGEMENT_SYSTEM: 'defra_mansystemrequired',
     MINING_WASTE_MANAGEMENT_PLAN: 'defra_miningwastemanplanreq',
     NHS_SCREENING: 'defra_nhscreeningrequired',
@@ -245,6 +273,7 @@ Constants.Dynamics = {
     CONTACT_DETAILS: 'defra_contactdetailsrequired_completed',
     DEFRA_WASTE_WEIGHT: 'defra_extwasteweightreq_completed',
     FIRE_PREVENTION_PLAN: 'defra_fireplanrequired_completed',
+    INVOICING_DETAILS: 'defra_invoicingdetails_completed',
     MANAGEMENT_SYSTEM: 'defra_mansystemrequired_completed',
     MINING_WASTE_MANAGEMENT_PLAN: 'defra_miningwastemanplanreq_completed',
     NHS_SCREENING: 'defra_nhscreeningrequired_completed',
@@ -262,10 +291,8 @@ Constants.Dynamics = {
 
 Constants.TaskList = {
   SectionHeadings: {
-    BEFORE_YOU_APPLY: 'Before you apply',
-    PREPARE_TO_APPLY: 'Prepare to apply',
-    COMPLETE_APPLICATION: 'Complete application',
-    SEND_AND_PAY: 'Send and pay'
+    PREPARE_APPLICATION: 'Prepare application',
+    APPLY: 'Apply'
   }
 }
 

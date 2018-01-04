@@ -9,19 +9,14 @@ const TaskList = require('../models/taskList/taskList.model')
 
 module.exports = class TaskListController extends BaseController {
   async doGet (request, reply, errors) {
-    // For now we are only getting the SR2015 No 18 permit
-    const chosenPermit = 'SR2015 No 18'
-
     const pageContext = this.createPageContext(errors, new TaskListValidator())
     const authToken = CookieService.getAuthToken(request)
+    const applicationLineId = CookieService.getApplicationLineId(request)
+
+    pageContext.standardRule = await StandardRule.getByApplicationLineId(authToken, applicationLineId)
+    pageContext.taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
 
     pageContext.formValues = request.payload
-    pageContext.chosenPermit = chosenPermit
-
-    pageContext.standardRule = await StandardRule.getByCode(authToken, pageContext.chosenPermit)
-
-    const applicationLineId = CookieService.getApplicationLineId(request)
-    pageContext.taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
 
     // Not in use for MVP
     // pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
