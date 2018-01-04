@@ -1,17 +1,10 @@
 'use strict'
 
 const Constants = require('../constants')
-const BaseRoute = require('./baseRoute')
+const Route = require('./baseRoute')
 const ContactDetailsController = require('../controllers/contactDetails.controller')
 const ContactDetailsValidator = require('../validators/contactDetails.validator')
 const validator = new ContactDetailsValidator()
 const controller = new ContactDetailsController(Constants.Routes.CONTACT_DETAILS)
 
-const routes = [{
-  method: 'GET'
-}, {
-  method: 'POST'
-}]
-
-const route = new BaseRoute(routes, controller, validator)
-module.exports = route.register()
+module.exports = Route.register('GET, POST', controller, validator)

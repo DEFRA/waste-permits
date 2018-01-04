@@ -1,9 +1,9 @@
 'use strict'
 
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
-const CookieService = require('../services/cookie.service')
-const Application = require('../models/application.model')
+const Constants = require('../../constants')
+const BaseController = require('../base.controller')
+const CookieService = require('../../services/cookie.service')
+const Application = require('../../models/application.model')
 
 module.exports = class BaseDeclarationsController extends BaseController {
   constructor (route, cookieValidationRequired, nextRoute, validator) {

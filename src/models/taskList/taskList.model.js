@@ -106,7 +106,7 @@ module.exports = class TaskList extends BaseModel {
         id: 'upload-technical-management-qualifications',
         label: Constants.Routes.TECHNICAL_QUALIFICATION.taskListHeading,
         href: Constants.Routes.TECHNICAL_QUALIFICATION.path,
-        completedLabelId: 'technical-qualification-completed',
+        completedLabelId: 'upload-completed',
         rulesetId: Constants.Dynamics.RulesetIds.TECHNICAL_QUALIFICATION,
         completedId: Constants.Dynamics.CompletedParamters.TECHNICAL_QUALIFICATION,
         available: false

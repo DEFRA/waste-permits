@@ -2,11 +2,11 @@
 
 const fs = require('fs')
 const path = require('path')
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
-const CookieService = require('../services/cookie.service')
-const LoggingService = require('../services/logging.service')
-const Annotation = require('../models/annotation.model')
+const Constants = require('../../constants')
+const BaseController = require('../base.controller')
+const CookieService = require('../../services/cookie.service')
+const LoggingService = require('../../services/logging.service')
+const Annotation = require('../../models/annotation.model')
 
 const UPLOAD_PATH = path.resolve(`${__dirname}/../../uploads`)
 

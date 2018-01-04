@@ -53,7 +53,6 @@
   "dependencies": {
     "blipp": "^2.3.0",
     "crumb": "^6.0.3",
-    "deepmerge": "^2.0.1",
     "disinfect": "^0.2.1",
     "dotenv": "^4.0.0",
     "govuk-elements-sass": "^3.1.2",

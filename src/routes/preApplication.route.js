@@ -1,13 +1,8 @@
 'use strict'
 
 const Constants = require('../constants')
-const BaseRoute = require('./baseRoute')
+const Route = require('./baseRoute')
 const PreApplicationController = require('../controllers/preApplication.controller')
 const controller = new PreApplicationController(Constants.Routes.PRE_APPLICATION)
 
-const routes = [{
-  method: 'GET'
-}]
-
-const route = new BaseRoute(routes, controller)
-module.exports = route.register()
+module.exports = Route.register('GET', controller, true)
