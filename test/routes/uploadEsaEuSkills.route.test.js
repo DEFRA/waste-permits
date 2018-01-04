@@ -21,7 +21,7 @@ let logErrorStub
 let fakeAnnotation
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-qualification/upload-wamitab-qualification'
+const routePath = '/technical-qualification/upload-esa-eu-skills'
 const uploadPath = `${routePath}/upload`
 const removePath = `${routePath}/remove/${fakeAnnotationId}`
 const nextRoutePath = '/task-list'
@@ -51,7 +51,7 @@ lab.afterEach(() => {
   Annotation.listByApplicationId = listByApplicationIdStub
 })
 
-lab.experiment('Company Declare Upload Wamitab tests:', () => {
+lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -62,7 +62,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
 
       const parser = new DOMParser()
       doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Upload the WAMITAB certificate')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Upload the ESA EU Skills scheme certificate')
       Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal('PDF or JPG')
       Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
@@ -88,7 +88,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
         doc = await getDoc()
         Code.expect(doc.getElementById('has-annotations')).to.not.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.exist()
-        Code.expect(doc.getElementById('wamitab-qualification-description')).to.exist()
+        Code.expect(doc.getElementById('esa-eu-skills-description')).to.exist()
         Code.expect(doc.getElementById('submit-button').getAttribute('disabled')).to.equal('disabled')
       })
 
@@ -97,7 +97,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
         doc = await getDoc()
         Code.expect(doc.getElementById('has-annotations')).to.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.not.exist()
-        Code.expect(doc.getElementById('wamitab-qualification-description')).to.not.exist()
+        Code.expect(doc.getElementById('esa-eu-skills-description')).to.not.exist()
         Code.expect(doc.getElementById('submit-button').getAttribute('disabled')).to.equal('')
       })
     })
@@ -266,7 +266,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
         url: routePath,
         headers: {},
         payload: {
-          'technical-qualification': 'WAMITAB-QUALIFICATION'
+          'technical-qualification': 'esa-eu-skills'
         }
       }
 
