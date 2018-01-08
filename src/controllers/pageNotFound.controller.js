@@ -11,7 +11,7 @@ module.exports = class PageNotFoundController extends BaseController {
     pageContext.taskList = Constants.Routes.TASK_LIST
     pageContext.startOpenOrSaved = Constants.Routes.START_OR_OPEN_SAVED
 
-    return reply.view('pageNotFound', pageContext)
+    return reply.view('pageNotFound', pageContext).code(404)
   }
 
   handler (request, reply, source, errors) {
