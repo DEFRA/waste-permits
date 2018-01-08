@@ -89,7 +89,6 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
         Code.expect(doc.getElementById('has-annotations')).to.not.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.exist()
         Code.expect(doc.getElementById('wamitab-qualification-description')).to.exist()
-        Code.expect(doc.getElementById('submit-button').getAttribute('disabled')).to.equal('disabled')
       })
 
       lab.test('when there are annotations', async () => {
@@ -98,7 +97,6 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
         Code.expect(doc.getElementById('has-annotations')).to.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.not.exist()
         Code.expect(doc.getElementById('wamitab-qualification-description')).to.not.exist()
-        Code.expect(doc.getElementById('submit-button').getAttribute('disabled')).to.equal('')
       })
     })
 
@@ -280,8 +278,26 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
       TechnicalQualification.updateCompleteness = updateCompletenessStub
     })
 
+    lab.experiment('invalid', () => {
+      lab.test(`when continue button pressed and there are no files uploaded`, async () => {
+        const expectedErrorMessage = `You must upload at least one file. Choose a file then press the 'Upload chosen file' button.`
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(200)
+
+        const parser = new DOMParser()
+        const doc = parser.parseFromString(res.payload, 'text/html')
+
+        // Panel summary error item
+        Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
+
+        // Company number field error
+        Code.expect(doc.getElementById('file-error').firstChild.nodeValue).to.equal(expectedErrorMessage)
+      })
+    })
+
     lab.experiment('success', () => {
-      lab.test(`when posted`, async () => {
+      lab.test(`when continue button pressed and there are files uploaded`, async () => {
+        Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
