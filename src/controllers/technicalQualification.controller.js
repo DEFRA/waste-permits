@@ -19,14 +19,16 @@ module.exports = class TechnicalQualificationController extends BaseController {
       const application = await Application.getById(authToken, applicationId)
       if (application) {
         pageContext.formValues = {
-          'technical-qualification': application.technicalQualification,
-          'wamitab': WAMITAB_QUALIFICATION,
-          'getting-qualification': REGISTERED_ON_A_COURSE,
-          'deemed': DEEMED_COMPETENCE,
-          'esa-eu': ESA_EU_SKILLS
+          'technical-qualification': application.technicalQualification
         }
       }
     }
+    Object.assign(pageContext.formValues, {
+      'wamitab': WAMITAB_QUALIFICATION,
+      'getting-qualification': REGISTERED_ON_A_COURSE,
+      'deemed': DEEMED_COMPETENCE,
+      'esa-eu': ESA_EU_SKILLS
+    })
     switch (pageContext.formValues['technical-qualification']) {
       case WAMITAB_QUALIFICATION:
         pageContext.wamitabChecked = true

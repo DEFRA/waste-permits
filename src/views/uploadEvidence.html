@@ -75,13 +75,7 @@
 
       <form method="POST" action="{{formAction}}">
         {{> common/csrfToken token=DefraCsrfToken}}
-        <div class="form-group">
-          {{#if canContinue}}
-          {{> common/submitButton }}
-          {{else}}
-          <button id="submit-button" type="submit" class="button" name="Continue" aria-disabled="true" disabled="disabled">Continue</button>
-          {{/if}}
-        </div>
+        {{> common/submitButton }}
       </form>
 
     </div>

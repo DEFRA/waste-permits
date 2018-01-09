@@ -2,7 +2,18 @@
 #uploadForm {
   input[type="file"] {
     max-width: 100%;
-  };
+    &::-webkit-file-upload-button {
+      font-size: 2rem;
+      padding: 0.5rem 1rem;
+      margin-right: 50px;
+      background:#f5f6ff;
+      color: #000;
+    }
+  }
+  input[type=file]:hover,
+  input[type=file]::-webkit-file-upload-button:hover {
+    cursor: pointer;
+  }
 }
 
 .form-uploader{
