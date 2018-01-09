@@ -6,11 +6,11 @@ const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 
-const server = require('../../server')
-const CookieService = require('../../src/services/cookie.service')
-const Annotation = require('../../src/models/annotation.model')
-const TechnicalQualification = require('../../src/models/taskList/technicalQualification.model')
-const LoggingService = require('../../src/services/logging.service')
+const server = require('../../../server')
+const CookieService = require('../../../src/services/cookie.service')
+const Annotation = require('../../../src/models/annotation.model')
+const TechnicalQualification = require('../../../src/models/taskList/technicalQualification.model')
+const LoggingService = require('../../../src/services/logging.service')
 
 let validateCookieStub
 let annotationSaveStub
@@ -21,7 +21,7 @@ let logErrorStub
 let fakeAnnotation
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-qualification/upload-wamitab-qualification'
+const routePath = '/technical-qualification/upload-esa-eu-skills'
 const uploadPath = `${routePath}/upload`
 const removePath = `${routePath}/remove/${fakeAnnotationId}`
 const nextRoutePath = '/task-list'
@@ -51,7 +51,7 @@ lab.afterEach(() => {
   Annotation.listByApplicationId = listByApplicationIdStub
 })
 
-lab.experiment('Company Declare Upload Wamitab tests:', () => {
+lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -62,7 +62,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
 
       const parser = new DOMParser()
       doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Upload the WAMITAB certificate')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Upload the ESA EU Skills scheme certificate')
       Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal('PDF or JPG')
       Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
@@ -88,8 +88,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
         doc = await getDoc()
         Code.expect(doc.getElementById('has-annotations')).to.not.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.exist()
-        Code.expect(doc.getElementById('wamitab-qualification-description')).to.exist()
-        Code.expect(doc.getElementById('submit-button').getAttribute('disabled')).to.equal('disabled')
+        Code.expect(doc.getElementById('esa-eu-skills-description')).to.exist()
       })
 
       lab.test('when there are annotations', async () => {
@@ -97,8 +96,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
         doc = await getDoc()
         Code.expect(doc.getElementById('has-annotations')).to.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.not.exist()
-        Code.expect(doc.getElementById('wamitab-qualification-description')).to.not.exist()
-        Code.expect(doc.getElementById('submit-button').getAttribute('disabled')).to.equal('')
+        Code.expect(doc.getElementById('esa-eu-skills-description')).to.not.exist()
       })
     })
 
@@ -217,7 +215,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
 
       lab.test('when duplicate file', async () => {
         Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
-        const expectedErrorMessage = 'You cannot upload files with the same name as a file you have previously uploaded.'
+        const expectedErrorMessage = 'That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.'
         const req = postRequest({filename: fakeAnnotation.filename})
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(200)
@@ -266,7 +264,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
         url: routePath,
         headers: {},
         payload: {
-          'technical-qualification': 'WAMITAB-QUALIFICATION'
+          'technical-qualification': 'esa-eu-skills'
         }
       }
 
@@ -280,8 +278,26 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
       TechnicalQualification.updateCompleteness = updateCompletenessStub
     })
 
+    lab.experiment('invalid', () => {
+      lab.test(`when continue button pressed and there are no files uploaded`, async () => {
+        const expectedErrorMessage = `You must upload at least one file. Choose a file then press the 'Upload chosen file' button.`
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(200)
+
+        const parser = new DOMParser()
+        const doc = parser.parseFromString(res.payload, 'text/html')
+
+        // Panel summary error item
+        Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
+
+        // Company number field error
+        Code.expect(doc.getElementById('file-error').firstChild.nodeValue).to.equal(expectedErrorMessage)
+      })
+    })
+
     lab.experiment('success', () => {
-      lab.test(`when posted`, async () => {
+      lab.test(`when continue button pressed and there are files uploaded`, async () => {
+        Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)

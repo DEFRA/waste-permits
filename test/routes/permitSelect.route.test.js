@@ -85,6 +85,16 @@ lab.experiment('Select a permit page tests:', () => {
     let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Select a permit')
 
+    element = doc.getElementById('select-permit-hint-text')
+    Code.expect(element).to.exist()
+
+    element = doc.getElementById('permit-type-description')
+    Code.expect(element).to.exist()
+
+    // Not visible for MVP
+    element = doc.getElementById('back-to-all-permit-groups-link')
+    Code.expect(element).to.not.exist()
+
     element = doc.getElementById('chosen-permit-sr2015-no-18-name').firstChild
     Code.expect(element.nodeValue).to.include('Metal recycling, vehicle storage, depollution and dismantling facility')
 

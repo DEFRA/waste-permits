@@ -67,6 +67,7 @@
     "https-proxy-agent": "^2.1.1",
     "inert": "^4.2.1",
     "joi": "^13.0.1",
+    "lodash.merge": "^4.6.0",
     "moment": "^2.20.1",
     "path": "^0.12.7",
     "request": "^2.83.0",

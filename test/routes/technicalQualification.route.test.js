@@ -9,22 +9,20 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
-const TechnicalQualification = require('../../src/models/taskList/technicalQualification.model')
 const LoggingService = require('../../src/services/logging.service')
 
 let validateCookieStub
 let applicationSaveStub
 let getByIdStub
-let updateCompletenessStub
 let logErrorStub
 let fakeApplication
 
 const routePath = '/technical-qualification'
 const nextRoutePath = {
   WAMITAB_QUALIFICATION: '/technical-qualification/upload-wamitab-qualification',
-  REGISTERED_ON_A_COURSE: '/task-list',
-  DEEMED_COMPETENCE: '/task-list',
-  ESA_EU_SKILLS: '/task-list'
+  REGISTERED_ON_A_COURSE: '/technical-qualification/upload-course-registration',
+  DEEMED_COMPETENCE: '/technical-qualification/upload-deemed-evidence',
+  ESA_EU_SKILLS: '/technical-qualification/upload-esa-eu-skills'
 }
 const Qualification = {
   WAMITAB_QUALIFICATION: 910400000,
@@ -166,15 +164,11 @@ lab.experiment('Technical Management Qualification tests:', () => {
       // Stub methods
       applicationSaveStub = Application.prototype.save
       Application.prototype.save = () => {}
-
-      updateCompletenessStub = TechnicalQualification.updateCompleteness
-      TechnicalQualification.updateCompleteness = () => {}
     })
 
     lab.afterEach(() => {
       // Restore stubbed methods
       Application.prototype.save = applicationSaveStub
-      TechnicalQualification.updateCompleteness = updateCompletenessStub
     })
 
     lab.experiment('success', () => {

@@ -2,11 +2,11 @@
 
 const fs = require('fs')
 const path = require('path')
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
-const CookieService = require('../services/cookie.service')
-const LoggingService = require('../services/logging.service')
-const Annotation = require('../models/annotation.model')
+const Constants = require('../../constants')
+const BaseController = require('../base.controller')
+const CookieService = require('../../services/cookie.service')
+const LoggingService = require('../../services/logging.service')
+const Annotation = require('../../models/annotation.model')
 
 const UPLOAD_PATH = path.resolve(`${__dirname}/../../uploads`)
 
@@ -19,14 +19,12 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
 
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors, this.validator)
-    pageContext.uploadFormAction = `${this.path}/upload`
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     const list = await Annotation.listByApplicationId(authToken, applicationId)
+
+    pageContext.uploadFormAction = `${this.path}/upload`
     pageContext.annotations = list.map(({filename, id}) => ({filename, removeAction: `${this.path}/remove/${id}`}))
-
-    pageContext.canContinue = pageContext.annotations && pageContext.annotations.length
-
     pageContext.fileTypes = this.validator.formatValidTypes()
     pageContext.maxSize = this.validator.getMaxSize()
     Object.assign(pageContext, this.getSpecificPageContext())
@@ -41,6 +39,10 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
       const applicationLineId = CookieService.getApplicationLineId(request)
+      const list = await Annotation.listByApplicationId(authToken, applicationId)
+      if (!list.length) {
+        return this.handler(request, reply, undefined, BaseUploadEvidenceController._customError('noFilesUploaded'))
+      }
       if (this.updateCompleteness) {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
       }
@@ -63,15 +65,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
 
       // Make sure no duplicate files are uploaded
       if (this._haveDuplicateFiles(fileData, annotationsList)) {
-        const errors = {
-          data: {
-            details: [{
-              path: ['file'],
-              type: 'duplicateFile'
-            }]
-          }
-        }
-        return this.handler(request, reply, undefined, errors)
+        return this.handler(request, reply, undefined, BaseUploadEvidenceController._customError('duplicateFile'))
       }
 
       // Save each file as an attachment to an annotation
@@ -109,14 +103,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
 
   async uploadFailAction (request, reply, errors) {
     if (errors && errors.output && errors.output.statusCode === Constants.Errors.REQUEST_ENTITY_TOO_LARGE) {
-      errors = {
-        data: {
-          details: [{
-            path: ['file'],
-            type: 'fileTooBig'
-          }]
-        }
-      }
+      errors = BaseUploadEvidenceController._customError('fileTooBig')
     }
     return this.handler(request, reply, undefined, errors)
   }
@@ -129,6 +116,17 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
   _haveDuplicateFiles (listA, listB) {
     const haveDuplicateFiles = listA.filter(({filename}) => this._containsFilename(filename, listB))
     return !!haveDuplicateFiles.length
+  }
+
+  static _customError (type) {
+    return {
+      data: {
+        details: [{
+          type,
+          path: ['file']
+        }]
+      }
+    }
   }
 
   _getFileData (file) {

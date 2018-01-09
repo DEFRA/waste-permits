@@ -1,13 +1,12 @@
 // Choose permit radio button list
 .permit-selector {
   float: none;
-  padding: 8px 10px 9px 50px;
+  padding: 0px 10px 0px 40px;
 }
 
-.permit-item {
+label.permit-item {
   display: inline-block;
   width: 100%;
-  margin-top: -5px;
 
   .permit-name {
     float: left;

@@ -2,23 +2,23 @@
 
 const Joi = require('joi')
 const BaseValidator = require('./base.validator')
-const defaultValidatorOptions = {
-  maxSize: '30MB',
-  fileTypes: [
-    {type: 'PDF', mimeType: 'application/pdf'},
-    {type: 'JPG', mimeType: 'image/jpeg'}
-  ]
-}
 
 module.exports = class UploadEntityValidator extends BaseValidator {
-  constructor (options = defaultValidatorOptions) {
+  constructor (options) {
     super()
+    if (!options || typeof options.maxSize !== 'string') {
+      throw new Error('Expected maxSize in validator options')
+    }
+    if (!options || !(options.fileTypes && options.fileTypes.length)) {
+      throw new Error('Expected fileTypes in validator options to contain an array')
+    }
     this._validatorOptions = options
 
     this.errorMessages = {
       'file': {
         'fileTooBig': `That file’s too big. Upload a file that’s no more than ${this.getMaxSize()}.`,
-        'duplicateFile': `You cannot upload files with the same name as a file you have previously uploaded.`,
+        'duplicateFile': `That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.`,
+        'noFilesUploaded': `You must upload at least one file. Choose a file then press the 'Upload chosen file' button.`,
         'array.base': ' ',
         'object.base': ' '
       },
@@ -35,11 +35,11 @@ module.exports = class UploadEntityValidator extends BaseValidator {
     const fileSchema =
       Joi.object().keys({
         'hapi': Joi.object().keys({
-          'headers': Joi.object({
-            'content-type': Joi.string().valid(this.listValidMimeTypes()),
+          'filename': Joi.string().required(),
+          'headers': Joi.object().keys({
+            'content-type': Joi.string(),
             'content-disposition': Joi.string().required()
-          }),
-          'filename': Joi.string().required()
+          }).required().when('filename', {is: Joi.string().required(), then: Joi.object({'content-type': Joi.valid(this.listValidMimeTypes())})})
         })
       }).optional()
     return {
@@ -48,16 +48,28 @@ module.exports = class UploadEntityValidator extends BaseValidator {
   }
 
   formatValidTypes () {
-    return this._validatorOptions
-      .fileTypes
-      .map(({type}) => type)
-      .join(' or ')
+    if (this._validatorOptions.fileTypes) {
+      const types = this._validatorOptions
+        .fileTypes
+        .map(({type}) => type)
+      const lastType = types.pop()
+      if (types.length) {
+        return `${types.join(', ')} or ${lastType}`
+      }
+      return lastType
+    } else {
+      throw new Error('Missing valid filetypes')
+    }
   }
 
   listValidMimeTypes () {
-    return this._validatorOptions
-      .fileTypes
-      .map(({mimeType}) => mimeType)
+    if (this._validatorOptions.fileTypes) {
+      return this._validatorOptions
+        .fileTypes
+        .map(({mimeType}) => mimeType)
+    } else {
+      return ''
+    }
   }
 
   getMaxSize () {

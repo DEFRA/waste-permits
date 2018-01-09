@@ -19,14 +19,16 @@ module.exports = class TechnicalQualificationController extends BaseController {
       const application = await Application.getById(authToken, applicationId)
       if (application) {
         pageContext.formValues = {
-          'technical-qualification': application.technicalQualification,
-          'wamitab': WAMITAB_QUALIFICATION,
-          'getting-qualification': REGISTERED_ON_A_COURSE,
-          'deemed': DEEMED_COMPETENCE,
-          'esa-eu': ESA_EU_SKILLS
+          'technical-qualification': application.technicalQualification
         }
       }
     }
+    Object.assign(pageContext.formValues, {
+      'wamitab': WAMITAB_QUALIFICATION,
+      'getting-qualification': REGISTERED_ON_A_COURSE,
+      'deemed': DEEMED_COMPETENCE,
+      'esa-eu': ESA_EU_SKILLS
+    })
     switch (pageContext.formValues['technical-qualification']) {
       case WAMITAB_QUALIFICATION:
         pageContext.wamitabChecked = true
@@ -63,9 +65,11 @@ module.exports = class TechnicalQualificationController extends BaseController {
       case WAMITAB_QUALIFICATION:
         return Constants.Routes.UPLOAD_WAMITAB_QUALIFICATION.path
       case REGISTERED_ON_A_COURSE:
+        return Constants.Routes.UPLOAD_COURSE_REGISTRATION.path
       case DEEMED_COMPETENCE:
+        return Constants.Routes.UPLOAD_DEEMED_EVIDENCE.path
       case ESA_EU_SKILLS:
-        return Constants.Routes.TASK_LIST.path
+        return Constants.Routes.UPLOAD_ESA_EU_SKILLS.path
       default:
         throw new Error(`Unexpected technical qualification (${technicalQualification})`)
     }

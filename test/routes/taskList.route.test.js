@@ -215,7 +215,7 @@ lab.beforeEach(() => {
   TaskList.getByApplicationLineId = () => fakeTaskList
 
   applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = () => {standardRuleId: 'STANDARD_RULE_ID'}
+  ApplicationLine.getById = () => ({ standardRuleId: 'STANDARD_RULE_ID' })
 
   standardRuleByApplicationIdStub = StandardRule.getByApplicationLineId
   StandardRule.getByApplicationLineId = () => fakeStandardRule
