@@ -41,7 +41,7 @@
     "gulp-sourcemaps": "^2.6.3",
     "gulp-standard": "^10.1.1",
     "gulp-uglify": "^3.0.0",
-    "gulp-watch": "^4.3.11",
+    "gulp-watch": "^5.0.0",
     "htmlhint": "^0.9.13",
     "lab": "^15.1.2",
     "nock": "^9.1.5",
