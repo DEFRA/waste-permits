@@ -244,7 +244,19 @@ Constants.Dynamics = {
     ESA_EU_SKILLS: 910400003
   },
   WASTE_REGIME: 910400000,
-
+  AddressTypes: {
+    COMPANY_SECRETARY_EMAIL: {
+      TYPE: 910400006,
+      NAME: 'Company Secretary Email Address'
+    },
+    PRIMARY_CONTACT_TELEPHONE_NUMBER: {
+      TYPE: 910400007,
+      NAME: 'Primary Contact Telephone Number'
+    }
+  },
+  AccountTypes: {
+    AGENT: 910400000
+  },
   RulesetIds: {
     ALLOW_PERMIT_START_DATE: 'defra_allowpermitstartdate',
     BASELINE_REPORT: 'defra_baselinereportreq',
