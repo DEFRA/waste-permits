@@ -32,7 +32,7 @@ lab.experiment('Page Not Found (404) page tests:', () => {
     }
 
     const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
+    Code.expect(res.statusCode).to.equal(404)
 
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
@@ -49,7 +49,7 @@ lab.experiment('Page Not Found (404) page tests:', () => {
     }
 
     const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
+    Code.expect(res.statusCode).to.equal(404)
 
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
