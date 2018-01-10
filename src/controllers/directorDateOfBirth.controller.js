@@ -7,6 +7,7 @@ const DirectorDateOfBirthValidator = require('../validators/directorDateOfBirth.
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const Account = require('../models/account.model')
+const ApplicationContact = require('../models/applicationContact.model')
 const Contact = require('../models/contact.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
@@ -20,7 +21,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       return reply.redirect(Constants.Routes.ERROR.path)
     }
 
-    const directors = await this._getDirectors(authToken, account.id)
+    const directors = await this._getDirectors(authToken, applicationId, account.id)
 
     const directorDateOfBirthValidator = new DirectorDateOfBirthValidator()
     directorDateOfBirthValidator.setErrorMessages(directors)
@@ -57,7 +58,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       return reply.redirect(Constants.Routes.ERROR.path)
     }
 
-    const directors = await this._getDirectors(authToken, account.id)
+    const directors = await this._getDirectors(authToken, applicationId, account.id)
 
     // Perform manual (non-Joi) validation of dynamic form content
     errors = await this._validateDynamicFormContent(request, directors)
@@ -65,19 +66,47 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      // Save Director dates of birth
+      // Save Director dates of birth in their corresponding ApplicationContact record
       for (let i = 0; i < directors.length; i++) {
         const director = directors[i]
         director.dob.day = parseInt(request.payload[`director-dob-day-${i}`])
-        await director.save(authToken)
+
+        console.log('##########director=', director)
+
+        // Get the ApplicationContact for this application
+        let applicationContact = await ApplicationContact.get(authToken, applicationId, director.id)
+        if (!applicationContact) {
+          // Create a ApplicationContact in Dynamics
+          applicationContact = new ApplicationContact({
+            directorDob: this._formatDateOfBirth(director.dob),
+            applicationId: applicationId,
+            contactId: director.id
+          })
+        } else {
+          // Update existing ApplicationContact
+
+          // TODO build DOB 2018-01-25 as a shared function
+          applicationContact.directorDob = this._formatDateOfBirth(director.dob)
+        }
+        await applicationContact.save(authToken)
       }
 
       return reply.redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
     }
   }
 
-  async _getDirectors (authToken, accountId) {
-    let contacts = await Contact.list(authToken, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
+  async _getDirectors (authToken, applicationId, accountId) {
+
+    // const [contacts, applicationContacts] = await Promise.all([
+    //   Contact.list(authToken, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
+
+    //   // TODO decide if we want this?
+    //   // ApplicationContact.list(authToken, applicationId)
+    // ])
+
+    // TODO use applicationContacts
+
+    const contacts = await Contact.list(authToken, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
 
     for (let director of contacts) {
       if (director.dob && director.dob.month && director.dob.year) {
@@ -92,6 +121,10 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       }
     }
     return contacts
+  }
+
+  _formatDateOfBirth (dob) {
+    return `${dob.year}-${dob.month}-${dob.day}`
   }
 
   async _validateDynamicFormContent (request, directors) {
