@@ -21,7 +21,10 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       return reply.redirect(Constants.Routes.ERROR.path)
     }
 
+    // Get the directors that relate to this application
     const directors = await this._getDirectors(authToken, applicationId, account.id)
+
+    // Add the day of birth to each Director's date of birth from the ApplicationContact (if we have it)
     for (let director of directors) {
       let applicationContact = await ApplicationContact.get(authToken, applicationId, director.id)
       if (applicationContact && applicationContact.directorDob) {
@@ -112,7 +115,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   }
 
   // Formats the date of bith into MMMM YYYY format (e.g. January 1970) ready for persistence
-  _formatDateOfBirthForDisplay(director) {
+  _formatDateOfBirthForDisplay (director) {
     if (director.dob && director.dob.month && director.dob.year) {
       let month = director.dob.month.toString()
       if (month && month.length === 1) {
