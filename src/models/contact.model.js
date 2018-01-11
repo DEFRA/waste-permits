@@ -1,4 +1,3 @@
-
 'use strict'
 
 const Constants = require('../constants')
@@ -34,8 +33,6 @@ module.exports = class Contact extends BaseModel {
       'lastname',
       'telephone1',
       'emailaddress1',
-      // TODO - remove this?
-      // 'defra_dateofbirthdaycompanieshouse',
       'defra_dobmonthcompanieshouse',
       'defra_dobyearcompanieshouse'
     ]
@@ -56,8 +53,6 @@ module.exports = class Contact extends BaseModel {
         telephone: response.telephone1,
         email: response.emailaddress1,
         dob: {
-          // TODO - remove this?
-          // day: response.defra_dateofbirthdaycompanieshouse,
           month: response.defra_dobmonthcompanieshouse,
           year: response.defra_dobyearcompanieshouse
         }
@@ -90,8 +85,6 @@ module.exports = class Contact extends BaseModel {
         telephone: contact.telephone1,
         email: contact.emailaddress1,
         dob: {
-          // TODO - remove this?
-          // day: contact.defra_dateofbirthdaycompanieshouse,
           month: contact.defra_dobmonthcompanieshouse,
           year: contact.defra_dobyearcompanieshouse
         }
@@ -108,11 +101,7 @@ module.exports = class Contact extends BaseModel {
       firstname: this.firstName,
       lastname: this.lastName,
       telephone1: this.telephone,
-      emailaddress1: this.email,
-      // TODO - remove this?
-      // defra_dateofbirthdaycompanieshouse: this.dob.day,
-      // defra_dobmonthcompanieshouse: this.dob.month,
-      // defra_dobyearcompanieshouse: this.dob.year
+      emailaddress1: this.email
     }
     await super.save(authToken, dataObject)
   }

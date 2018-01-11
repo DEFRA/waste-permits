@@ -22,6 +22,12 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     }
 
     const directors = await this._getDirectors(authToken, applicationId, account.id)
+    for (let director of directors) {
+      let applicationContact = await ApplicationContact.get(authToken, applicationId, director.id)
+      if (applicationContact && applicationContact.directorDob) {
+        director.dob.day = this._extractDayFromDate(applicationContact.directorDob)
+      }
+    }
 
     const directorDateOfBirthValidator = new DirectorDateOfBirthValidator()
     directorDateOfBirthValidator.setErrorMessages(directors)
@@ -71,22 +77,18 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         const director = directors[i]
         director.dob.day = parseInt(request.payload[`director-dob-day-${i}`])
 
-        console.log('##########director=', director)
-
         // Get the ApplicationContact for this application
         let applicationContact = await ApplicationContact.get(authToken, applicationId, director.id)
         if (!applicationContact) {
           // Create a ApplicationContact in Dynamics
           applicationContact = new ApplicationContact({
-            directorDob: this._formatDateOfBirth(director.dob),
+            directorDob: this._formatDateOfBirthForPersistence(director.dob),
             applicationId: applicationId,
             contactId: director.id
           })
         } else {
           // Update existing ApplicationContact
-
-          // TODO build DOB 2018-01-25 as a shared function
-          applicationContact.directorDob = this._formatDateOfBirth(director.dob)
+          applicationContact.directorDob = this._formatDateOfBirthForPersistence(director.dob)
         }
         await applicationContact.save(authToken)
       }
@@ -95,38 +97,42 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     }
   }
 
+  // Obtains the Directors that relate to an application
   async _getDirectors (authToken, applicationId, accountId) {
-
-    // const [contacts, applicationContacts] = await Promise.all([
-    //   Contact.list(authToken, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
-
-    //   // TODO decide if we want this?
-    //   // ApplicationContact.list(authToken, applicationId)
-    // ])
-
-    // TODO use applicationContacts
-
-    const contacts = await Contact.list(authToken, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
-
-    for (let director of contacts) {
-      if (director.dob && director.dob.month && director.dob.year) {
-        let month = director.dob.month.toString()
-        if (month && month.length === 1) {
-          // Pad with a leading zero if required
-          month = '0' + month
-        }
-        director.dateOfBirthFormatted = moment(`${director.dob.year}-${month}-01`).format('MMMM YYYY')
-      } else {
-        director.dateOfBirthFormatted = 'Unknown date'
-      }
+    const directors = await Contact.list(authToken, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
+    for (let director of directors) {
+      this._formatDateOfBirthForDisplay(director)
     }
-    return contacts
+    return directors
   }
 
-  _formatDateOfBirth (dob) {
+  // Formats the date of bith into YYYY-MM-DD format ready for persistence
+  _formatDateOfBirthForPersistence (dob) {
     return `${dob.year}-${dob.month}-${dob.day}`
   }
 
+  // Formats the date of bith into MMMM YYYY format (e.g. January 1970) ready for persistence
+  _formatDateOfBirthForDisplay(director) {
+    if (director.dob && director.dob.month && director.dob.year) {
+      let month = director.dob.month.toString()
+      if (month && month.length === 1) {
+        // Pad with a leading zero if required
+        month = '0' + month
+      }
+      director.dateOfBirthFormatted = moment(`${director.dob.year}-${month}-01`).format('MMMM YYYY')
+    } else {
+      director.dateOfBirthFormatted = 'Unknown date'
+    }
+  }
+
+  // Extracts the day from a date that is in YYYY-MM-DD format
+  _extractDayFromDate (inputDate) {
+    return inputDate.split('-').pop()
+  }
+
+  // This is required because the number of directors that relate to an application is variable,
+  // depending on which company is chosen to relate to the application. It has not been possible to
+  // validate the varying number of day of birth fieds using the standard Joi validation methods.
   async _validateDynamicFormContent (request, directors) {
     let errors
 
