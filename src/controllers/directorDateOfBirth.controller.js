@@ -28,7 +28,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     for (let director of directors) {
       let applicationContact = await ApplicationContact.get(authToken, applicationId, director.id)
       if (applicationContact && applicationContact.directorDob) {
-        director.dob.day = this._extractDayFromDate(applicationContact.directorDob)
+        director.dob.day = DirectorDateOfBirthController._extractDayFromDate(applicationContact.directorDob)
       }
     }
 
@@ -85,13 +85,13 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         if (!applicationContact) {
           // Create a ApplicationContact in Dynamics
           applicationContact = new ApplicationContact({
-            directorDob: this._formatDateOfBirthForPersistence(director.dob),
+            directorDob: DirectorDateOfBirthController._formatDateOfBirthForPersistence(director.dob),
             applicationId: applicationId,
             contactId: director.id
           })
         } else {
           // Update existing ApplicationContact
-          applicationContact.directorDob = this._formatDateOfBirthForPersistence(director.dob)
+          applicationContact.directorDob = DirectorDateOfBirthController._formatDateOfBirthForPersistence(director.dob)
         }
         await applicationContact.save(authToken)
       }
@@ -104,32 +104,34 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   async _getDirectors (authToken, applicationId, accountId) {
     const directors = await Contact.list(authToken, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
     for (let director of directors) {
-      this._formatDateOfBirthForDisplay(director)
+      director.dateOfBirthFormatted = DirectorDateOfBirthController._formatDateOfBirthForDisplay(director)
     }
     return directors
   }
 
   // Formats the date of bith into YYYY-MM-DD format ready for persistence
-  _formatDateOfBirthForPersistence (dob) {
+  static _formatDateOfBirthForPersistence (dob) {
     return `${dob.year}-${dob.month}-${dob.day}`
   }
 
   // Formats the date of bith into MMMM YYYY format (e.g. January 1970) ready for persistence
-  _formatDateOfBirthForDisplay (director) {
+  static _formatDateOfBirthForDisplay (director) {
+    let returnValue
     if (director.dob && director.dob.month && director.dob.year) {
       let month = director.dob.month.toString()
       if (month && month.length === 1) {
         // Pad with a leading zero if required
         month = '0' + month
       }
-      director.dateOfBirthFormatted = moment(`${director.dob.year}-${month}-01`).format('MMMM YYYY')
+      returnValue = moment(`${director.dob.year}-${month}-01`).format('MMMM YYYY')
     } else {
-      director.dateOfBirthFormatted = 'Unknown date'
+      returnValue = 'Unknown date'
     }
+    return returnValue
   }
 
   // Extracts the day from a date that is in YYYY-MM-DD format
-  _extractDayFromDate (inputDate) {
+  static _extractDayFromDate (inputDate) {
     return inputDate.split('-').pop()
   }
 
