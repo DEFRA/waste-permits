@@ -203,7 +203,7 @@ lab.experiment('Get company number page tests:', () => {
 
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Account.getByApplicationId = () => Promise.reject(new Error('read failed'))
+        Account.getByCompanyNumber = () => Promise.reject(new Error('read failed'))
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
@@ -214,6 +214,8 @@ lab.experiment('Get company number page tests:', () => {
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Account.prototype.save = () => Promise.reject(new Error('save failed'))
+
+        Account.getByCompanyNumber = () => new Account()
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
