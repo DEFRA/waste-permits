@@ -15,6 +15,13 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Directors Date of Birth Controller tests:', () => {
+  lab.test('_extractDayFromDate() correctly extracts the day from a date that is in YYYY-MM-DD format', () => {
+    const inputValue = '1970-05-01'
+    const expected = 1
+    const actual = DirectorDateOfBirthController._extractDayFromDate(inputValue)
+    Code.expect(expected).to.equal(actual)
+  })
+
   lab.test('_formatDateOfBirthForPersistence() correctly formats the date of bith into YYYY-MM-DD format ready for persistence', () => {
     const inputValue = {
       day: 1,
@@ -83,13 +90,6 @@ lab.experiment('Directors Date of Birth Controller tests:', () => {
     }
     expected = 'May 1970'
     actual = DirectorDateOfBirthController._formatDateOfBirthForDisplay(inputValue)
-    Code.expect(expected).to.equal(actual)
-  })
-
-  lab.test('_extractDayFromDate() correctly extracts the day from a date that is in YYYY-MM-DD format', () => {
-    const inputValue = '1970-5-12'
-    const expected = '12'
-    const actual = DirectorDateOfBirthController._extractDayFromDate(inputValue)
     Code.expect(expected).to.equal(actual)
   })
 })

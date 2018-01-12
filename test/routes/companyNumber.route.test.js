@@ -16,6 +16,7 @@ let validateCookieStub
 let accountSaveStub
 let getByApplicationIdStub
 let applicationGetByIdStub
+let accountGetByCompanyNumberStub
 let logErrorStub
 let fakeAccount
 let fakeApplication
@@ -44,6 +45,9 @@ lab.beforeEach(() => {
 
   applicationGetByIdStub = Application.getById
   Application.getById = () => new Application(fakeApplication)
+
+  accountGetByCompanyNumberStub = Account.getByCompanyNumber
+  Account.getByCompanyNumber = () => new Account(fakeAccount)
 })
 
 lab.afterEach(() => {
@@ -52,6 +56,7 @@ lab.afterEach(() => {
   LoggingService.logError = logErrorStub
   Account.getByApplicationId = getByApplicationIdStub
   Application.getById = applicationGetByIdStub
+  Account.getByCompanyNumber = accountGetByCompanyNumberStub
 })
 
 lab.experiment('Get company number page tests:', () => {

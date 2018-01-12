@@ -8,12 +8,15 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Account = require('../../src/models/account.model')
+const ApplicationContact = require('../../src/models/applicationContact.model')
 const Contact = require('../../src/models/contact.model')
 
 let validateCookieStub
 let applicationGetByIdStub
 let contactListStub
 let contactSaveStub
+let applicationContactGetStub
+let applicationContactSaveStub
 
 const routePath = '/permit-holder/company/director-date-of-birth'
 const nextRoutePath = '/permit-holder/company/declare-offences'
@@ -37,6 +40,13 @@ const fakeCompanyData = {
 const fakeAccountData = {
   companyNumber: fakeCompanyData.companyNumber,
   name: fakeCompanyData.name
+}
+
+const fakeApplicationContactData = {
+  id: 'APPLICATION_CONTACT_ID',
+  directorDob: '1970-01-31',
+  applicationId: 'APPLICATION_ID',
+  contactId: 'CONTACT_ID'
 }
 
 let fakeContacts
@@ -98,8 +108,14 @@ lab.beforeEach(() => {
   contactListStub = Contact.list
   Contact.list = () => fakeContacts
 
-  contactSaveStub = Contact.save
+  contactSaveStub = Contact.prototype.save
   Contact.prototype.save = () => undefined
+
+  applicationContactGetStub = ApplicationContact.get
+  ApplicationContact.get = () => undefined
+
+  applicationContactSaveStub = ApplicationContact.prototype.save
+  ApplicationContact.prototype.save = () => undefined
 })
 
 lab.afterEach(() => {
@@ -108,6 +124,7 @@ lab.afterEach(() => {
   Account.getByApplicationId = applicationGetByIdStub
   Contact.list = contactListStub
   Contact.prototype.save = contactSaveStub
+  ApplicationContact.get = applicationContactGetStub
 })
 
 const checkPageElements = async (request, expectedPageHeading, expectedValues) => {
