@@ -114,7 +114,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     return `${dob.year}-${dob.month}-${dob.day}`
   }
 
-  // Formats the date of bith into MMMM YYYY format (e.g. January 1970) ready for persistence
+  // Formats the date of bith into MMMM YYYY format (e.g. January 1970) for display
   static _formatDateOfBirthForDisplay (director) {
     let returnValue
     if (director.dob && director.dob.month && director.dob.year) {
@@ -132,7 +132,8 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
   // Extracts the day from a date that is in YYYY-MM-DD format
   static _extractDayFromDate (inputDate) {
-    return inputDate.split('-').pop()
+    // Return the day of birth, with the leading zero Stripped if there is one
+    return parseInt(inputDate.split('-').pop())
   }
 
   // This is required because the number of directors that relate to an application is variable,
