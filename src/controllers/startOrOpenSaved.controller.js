@@ -18,7 +18,9 @@ module.exports = class StartOrOpenSavedController extends BaseController {
     pageContext.formValues = request.payload
 
     return reply
-      .view('startOrOpenSaved', pageContext)
+    // For MVP we are only supporting the mobile plant standard rules waste permit
+    //   .view('startOrOpenSaved', pageContext)
+      .view('startOrOpenSavedMobile', pageContext)
   }
 
   async doPost (request, reply, errors) {
