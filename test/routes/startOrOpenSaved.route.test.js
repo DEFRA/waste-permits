@@ -76,13 +76,16 @@ lab.experiment('Start or Open Saved page tests:', () => {
       const doc = parser.parseFromString(res.payload, 'text/html')
 
       let element = doc.getElementById('page-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('Apply for a standard rules waste permit')
+      // For MVP we are only supporting the mobile plant standard rules waste permit
+      // Code.expect(element.nodeValue).to.equal('Apply for a standard rules waste permit')
+      Code.expect(element.nodeValue).to.equal('Apply for a mobile plant standard rules waste permit')
 
       element = doc.getElementById('start-application')
       Code.expect(element).to.exist()
 
-      element = doc.getElementById('open-application')
-      Code.expect(element).to.exist()
+      // For MVP we will not be opening an existing application
+      // element = doc.getElementById('open-application')
+      // Code.expect(element).to.exist()
 
       element = doc.getElementById('submit-button').firstChild
       Code.expect(element.nodeValue).to.equal('Continue')
@@ -108,24 +111,25 @@ lab.experiment('Start or Open Saved page tests:', () => {
       Code.expect(res.headers['location']).to.equal('/save-and-return/check-your-email')
     })
 
-    lab.test('POST Start or Open Saved page shows the error message summary panel when new or open has not been selected', async () => {
-      postRequest.payload = {}
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
-
-      let element
-      let errorMessage = 'Select start new or open a saved application'
-
-      // Panel summary error item
-      element = doc.getElementById('error-summary-list-item-0').firstChild
-      Code.expect(element.nodeValue).to.equal(errorMessage)
-
-      // Site name field error
-      element = doc.getElementById('started-application-error').firstChild
-      Code.expect(element.nodeValue).to.equal(errorMessage)
-    })
+    // For MVP the validator will always pass
+    // lab.test('POST Start or Open Saved page shows the error message summary panel when new or open has not been selected', async () => {
+    //   postRequest.payload = {}
+    //   const res = await server.inject(postRequest)
+    //   Code.expect(res.statusCode).to.equal(200)
+    //
+    //   const parser = new DOMParser()
+    //   const doc = parser.parseFromString(res.payload, 'text/html')
+    //
+    //   let element
+    //   let errorMessage = 'Select start new or open a saved application'
+    //
+    //   // Panel summary error item
+    //   element = doc.getElementById('error-summary-list-item-0').firstChild
+    //   Code.expect(element.nodeValue).to.equal(errorMessage)
+    //
+    //   // Site name field error
+    //   element = doc.getElementById('started-application-error').firstChild
+    //   Code.expect(element.nodeValue).to.equal(errorMessage)
+    // })
   })
 })
