@@ -178,7 +178,9 @@ Constants.Routes = {
   },
   START_OR_OPEN_SAVED: {
     path: `/start/start-or-open-saved`,
-    pageHeading: 'Apply for a standard rules waste permit'
+    // For MVP we are only supporting the mobile plant standard rules waste permit
+    // pageHeading: 'Apply for a standard rules waste permit'
+    pageHeading: 'Apply for a mobile plant standard rules waste permit'
   },
   TASK_LIST: {
     path: '/task-list',
