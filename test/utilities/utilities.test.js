@@ -131,4 +131,74 @@ lab.experiment('Utilities tests:', () => {
     result = Utilities._replaceUndefined(inputValue)
     Code.expect(result).to.equal(expectedResult)
   })
+
+  lab.test('extractDayFromDate() correctly extracts the day from a date that is in YYYY-MM-DD format', () => {
+    const inputValue = '1970-05-01'
+    const expected = 1
+    const actual = Utilities.extractDayFromDate(inputValue)
+    Code.expect(expected).to.equal(actual)
+  })
+
+  lab.test('formatDateForPersistence() correctly formats the date of bith into YYYY-MM-DD format ready for persistence', () => {
+    const inputValue = {
+      day: 1,
+      month: 5,
+      year: 1970
+    }
+    const expected = '1970-5-1'
+    const actual = Utilities.formatDateForPersistence(inputValue)
+    Code.expect(expected).to.equal(actual)
+  })
+
+  lab.test('formatDateForDisplay() correctly formats the date of bith into MMMM YYYY format (e.g. January 1970) ready for persistence', () => {
+    const unknownDate = 'Unknown date'
+
+    // All date parts missing
+    let inputValue = {
+      dob: undefined
+    }
+    let expected = unknownDate
+    let actual = Utilities.formatDateForDisplay(inputValue)
+    Code.expect(expected).to.equal(actual)
+
+    // Day is undefined - shouuld format correctly
+    inputValue = {
+      day: undefined,
+      month: 5,
+      year: 1970
+    }
+    expected = 'May 1970'
+    actual = Utilities.formatDateForDisplay(inputValue)
+    Code.expect(expected).to.equal(actual)
+
+    // Month is missing
+    inputValue = {
+      day: 1,
+      month: undefined,
+      year: 1970
+    }
+    expected = unknownDate
+    actual = Utilities.formatDateForDisplay(inputValue)
+    Code.expect(expected).to.equal(actual)
+
+    // Year is missing
+    inputValue = {
+      day: 1,
+      month: 5,
+      year: undefined
+    }
+    expected = unknownDate
+    actual = Utilities.formatDateForDisplay(inputValue)
+    Code.expect(expected).to.equal(actual)
+
+    // All date parts provided
+    inputValue = {
+      day: 1,
+      month: 5,
+      year: 1970
+    }
+    expected = 'May 1970'
+    actual = Utilities.formatDateForDisplay(inputValue)
+    Code.expect(expected).to.equal(actual)
+  })
 })

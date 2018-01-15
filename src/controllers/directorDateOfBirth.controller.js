@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 const Constants = require('../constants')
+const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
 const DirectorDateOfBirthValidator = require('../validators/directorDateOfBirth.validator')
 const CookieService = require('../services/cookie.service')
@@ -28,7 +29,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     for (let director of directors) {
       let applicationContact = await ApplicationContact.get(authToken, applicationId, director.id)
       if (applicationContact && applicationContact.directorDob) {
-        director.dob.day = DirectorDateOfBirthController._extractDayFromDate(applicationContact.directorDob)
+        director.dob.day = Utilities.extractDayFromDate(applicationContact.directorDob)
       }
     }
 
@@ -85,13 +86,13 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         if (!applicationContact) {
           // Create a ApplicationContact in Dynamics
           applicationContact = new ApplicationContact({
-            directorDob: DirectorDateOfBirthController._formatDateOfBirthForPersistence(director.dob),
+            directorDob: Utilities.formatDateForPersistence(director.dob),
             applicationId: applicationId,
             contactId: director.id
           })
         } else {
           // Update existing ApplicationContact
-          applicationContact.directorDob = DirectorDateOfBirthController._formatDateOfBirthForPersistence(director.dob)
+          applicationContact.directorDob = Utilities.formatDateForPersistence(director.dob)
         }
         await applicationContact.save(authToken)
       }
@@ -104,36 +105,9 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   async _getDirectors (authToken, applicationId, accountId) {
     const directors = await Contact.list(authToken, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
     for (let director of directors) {
-      director.dateOfBirthFormatted = DirectorDateOfBirthController._formatDateOfBirthForDisplay(director)
+      director.dateOfBirthFormatted = Utilities.formatDateForDisplay(director.dob)
     }
     return directors
-  }
-
-  // Extracts the day from a date that is in YYYY-MM-DD format
-  static _extractDayFromDate (inputDate) {
-    // Return the day of birth, with the leading zero Stripped if there is one
-    return parseInt(inputDate.split('-').pop())
-  }
-
-  // Formats the date of bith into YYYY-MM-DD format ready for persistence
-  static _formatDateOfBirthForPersistence (dob) {
-    return `${dob.year}-${dob.month}-${dob.day}`
-  }
-
-  // Formats the date of bith into MMMM YYYY format (e.g. January 1970) for display
-  static _formatDateOfBirthForDisplay (director) {
-    let returnValue
-    if (director.dob && director.dob.month && director.dob.year) {
-      let month = director.dob.month.toString()
-      if (month && month.length === 1) {
-        // Pad with a leading zero if required
-        month = '0' + month
-      }
-      returnValue = moment(`${director.dob.year}-${month}-01`).format('MMMM YYYY')
-    } else {
-      returnValue = 'Unknown date'
-    }
-    return returnValue
   }
 
   // This is required because the number of directors that relate to an application is variable,

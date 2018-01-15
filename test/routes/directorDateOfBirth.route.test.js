@@ -42,13 +42,6 @@ const fakeAccountData = {
   name: fakeCompanyData.name
 }
 
-const fakeApplicationContactData = {
-  id: 'APPLICATION_CONTACT_ID',
-  directorDob: '1970-01-31',
-  applicationId: 'APPLICATION_ID',
-  contactId: 'CONTACT_ID'
-}
-
 let fakeContacts
 
 lab.beforeEach(() => {
@@ -125,6 +118,7 @@ lab.afterEach(() => {
   Contact.list = contactListStub
   Contact.prototype.save = contactSaveStub
   ApplicationContact.get = applicationContactGetStub
+  ApplicationContact.prototype.save = applicationContactSaveStub
 })
 
 const checkPageElements = async (request, expectedPageHeading, expectedValues) => {
