@@ -66,7 +66,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
       const parser = new DOMParser()
       doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Which qualification does the person providing technical management have?')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who will provide technical management on your site?')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
       return doc
     }

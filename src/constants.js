@@ -86,7 +86,7 @@ Constants.Routes = {
   CONFIRM_RULES: {
     path: '/confirm-rules',
     pageHeading: 'Confirm your operation meets the rules',
-    taskListHeading: 'Confirm that your operation meets the rules'
+    taskListHeading: 'Confirm you can meet the rules'
   },
   CONTACT_DETAILS: {
     path: '/contact-details',
@@ -147,7 +147,7 @@ Constants.Routes = {
   PERMIT_HOLDER_TYPE: {
     path: '/permit-holder/type',
     pageHeading: 'Who will be the permit holder?',
-    taskListHeading: 'Give permit holder details'
+    taskListHeading: 'Give company details'
   },
   PERMIT_SELECT: {
     path: '/permit/select',
@@ -186,8 +186,8 @@ Constants.Routes = {
   },
   TECHNICAL_QUALIFICATION: {
     path: '/technical-qualification',
-    pageHeading: 'Which qualification does the person providing technical management have?',
-    taskListHeading: 'Upload technical management qualifications'
+    pageHeading: 'Who will provide technical management on your site?',
+    taskListHeading: 'Give technical management details'
   },
   UPLOAD_COURSE_REGISTRATION: {
     path: '/technical-qualification/upload-course-registration',
