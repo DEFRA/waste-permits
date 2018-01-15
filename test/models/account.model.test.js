@@ -10,17 +10,18 @@ const Application = require('../../src/models/application.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let dynamicsCallActionStub
-let dynamicsCreateStub
 let dynamicsSearchStub
+let dynamicsCreateStub
 let dynamicsUpdateStub
 let applicationGetByIdStub
 
 let testAccount
 const fakeAccountData = {
-  id: undefined,
   companyNumber: 'COMPANY_NUMBER',
-  name: undefined
+  name: 'COMPANY_NAME',
+  isDraft: true
 }
+
 const fakeApplicationData = {
   id: 'APPLICATION_ID',
   accountId: 'ACCOUNT_ID',
@@ -32,18 +33,11 @@ const applicationId = fakeApplicationData.id
 
 lab.beforeEach(() => {
   testAccount = new Account(fakeAccountData)
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = () => {
-    // Dynamics Account object
-    return {
-      '@odata.etag': 'W/"1039178"',
-      defra_companyhouseid: fakeAccountData.companyNumber,
-      defra_draft: true
-    }
-  }
 
   dynamicsCallActionStub = DynamicsDalService.prototype.callAction
-  DynamicsDalService.prototype.callAction = () => {}
+  DynamicsDalService.prototype.callAction = () => { }
+
+  dynamicsSearchStub = DynamicsDalService.prototype.search
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
   DynamicsDalService.prototype.create = () => fakeApplicationData.accountId
@@ -66,6 +60,17 @@ lab.afterEach(() => {
 
 lab.experiment('Account Model tests:', () => {
   lab.test('Constructor creates a Account object correctly', () => {
+    DynamicsDalService.prototype.search = () => {
+      // Dynamics Account object
+      return {
+        '@odata.etag': 'W/"1039178"',
+        accountid: fakeAccountData.id,
+        name: fakeAccountData.name,
+        defra_companyhouseid: fakeAccountData.companyNumber,
+        defra_draft: true
+      }
+    }
+
     const emptyAccount = new Account()
     Code.expect(emptyAccount.id).to.be.equal(undefined)
 
@@ -77,8 +82,39 @@ lab.experiment('Account Model tests:', () => {
   })
 
   lab.test('getByApplicationId() method returns a single Account object', async () => {
+    DynamicsDalService.prototype.search = () => {
+      // Dynamics Account object
+      return {
+        '@odata.etag': 'W/"1039178"',
+        accountid: fakeAccountData.id,
+        name: fakeAccountData.name,
+        defra_companyhouseid: fakeAccountData.companyNumber,
+        defra_draft: true
+      }
+    }
+
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const account = await Account.getByApplicationId(authToken, applicationId)
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
+  })
+
+  lab.test('getByCompanyNumber() method returns a single Account object', async () => {
+    DynamicsDalService.prototype.search = () => {
+      // Object containing an array of Dynamics Account objects
+      return {
+        value: [{
+          '@odata.etag': 'W/"1039178"',
+          accountid: fakeAccountData.id,
+          name: fakeAccountData.name,
+          defra_companyhouseid: fakeAccountData.companyNumber,
+          defra_draft: true
+        }]
+      }
+    }
+
+    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const account = await Account.getByCompanyNumber(authToken, fakeAccountData.companyNumber)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
   })

@@ -34,17 +34,22 @@ module.exports = class CompanyNumberController extends BaseController {
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
-      const account = (await Account.getByApplicationId(authToken, applicationId)) || new Account()
-      const application = await Application.getById(authToken, applicationId)
       const companyNumber = Utilities.stripWhitespace(request.payload['company-number'])
-      const isDraft = account.isDraft || companyNumber !== account.companyNumber
 
-      account.companyNumber = companyNumber
-      await account.save(authToken, isDraft)
-      if (!application.accountId) {
+      // See if there is an existing account with this company number. If not, create one.
+      const account = (await Account.getByCompanyNumber(authToken, companyNumber)) || new Account()
+      if (account.isNew()) {
+        account.companyNumber = companyNumber
+        await account.save(authToken, true)
+      }
+
+      // Update the Application with the Account (if it has changed)
+      const application = await Application.getById(authToken, applicationId)
+      if (application.accountId !== account.id) {
         application.accountId = account.id
         await application.save(authToken)
       }
+
       return reply.redirect(Constants.Routes.COMPANY_CHECK_STATUS.path)
     }
   }

@@ -8,12 +8,15 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Account = require('../../src/models/account.model')
+const ApplicationContact = require('../../src/models/applicationContact.model')
 const Contact = require('../../src/models/contact.model')
 
 let validateCookieStub
 let applicationGetByIdStub
 let contactListStub
 let contactSaveStub
+let applicationContactGetStub
+let applicationContactSaveStub
 
 const routePath = '/permit-holder/company/director-date-of-birth'
 const nextRoutePath = '/permit-holder/company/declare-offences'
@@ -98,8 +101,14 @@ lab.beforeEach(() => {
   contactListStub = Contact.list
   Contact.list = () => fakeContacts
 
-  contactSaveStub = Contact.save
+  contactSaveStub = Contact.prototype.save
   Contact.prototype.save = () => undefined
+
+  applicationContactGetStub = ApplicationContact.get
+  ApplicationContact.get = () => undefined
+
+  applicationContactSaveStub = ApplicationContact.prototype.save
+  ApplicationContact.prototype.save = () => undefined
 })
 
 lab.afterEach(() => {
@@ -108,6 +117,8 @@ lab.afterEach(() => {
   Account.getByApplicationId = applicationGetByIdStub
   Contact.list = contactListStub
   Contact.prototype.save = contactSaveStub
+  ApplicationContact.get = applicationContactGetStub
+  ApplicationContact.prototype.save = applicationContactSaveStub
 })
 
 const checkPageElements = async (request, expectedPageHeading, expectedValues) => {
@@ -248,11 +259,29 @@ lab.experiment('Director Date Of Birth page tests:', () => {
         await checkValidationError(undefined, 'Enter a date of birth')
       })
 
-      lab.test(`POST ${routePath} with a missing DOB entered displays the correct error message`, async () => {
+      lab.test(`POST ${routePath} with a missing day of birth entered displays the correct error message`, async () => {
         postRequest.payload['director-dob-day-0'] = '10'
         // No day of birth for director-dob-day-1 (fakeContacts[1])
         postRequest.payload['director-dob-day-2'] = '30'
         await checkValidationError('director-dob-day-1-error', `Enter a date of birth for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
+      })
+
+      lab.test(`POST ${routePath} with a invalid day of birth (31st Feb) displays the correct error message`, async () => {
+        postRequest.payload['director-dob-day-0'] = '10'
+        postRequest.payload['director-dob-day-2'] = '30'
+
+        // Month is Feb therefore this should trigger a validation error
+        postRequest.payload['director-dob-day-1'] = '31'
+        await checkValidationError('director-dob-day-1-error', `Enter a day between 1 and 28 for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
+      })
+
+      lab.test(`POST ${routePath} with a invalid integer for the day of birth ('XXX')  displays the correct error message`, async () => {
+        postRequest.payload['director-dob-day-0'] = '10'
+        postRequest.payload['director-dob-day-2'] = '30'
+
+        // Day is not a valid integer therefore this should trigger a validation error
+        postRequest.payload['director-dob-day-1'] = 'XXX'
+        await checkValidationError('director-dob-day-1-error', `Enter a day between 1 and 28 for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
       })
     })
   })

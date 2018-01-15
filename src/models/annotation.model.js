@@ -15,8 +15,8 @@ module.exports = class Annotation extends BaseModel {
       this.filename = annotation.filename
       this.documentBody = annotation.documentBody
       this.applicationId = annotation.applicationId
-      Utilities.convertFromDynamics(this)
     }
+    Utilities.convertFromDynamics(this)
   }
 
   static selectedDynamicsFields () {
