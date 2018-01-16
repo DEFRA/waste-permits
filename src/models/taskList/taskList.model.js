@@ -144,8 +144,8 @@ module.exports = class TaskList extends BaseModel {
         available: false
       }, {
         id: 'invoicing-details',
-        label: Constants.Routes.INVOICING_DETAILS.taskListHeading,
-        href: Constants.Routes.INVOICING_DETAILS.path,
+        label: Constants.Routes.POSTCODE_INVOICE.taskListHeading,
+        href: Constants.Routes.POSTCODE_INVOICE.path,
         completedLabelId: 'invoicing-details-completed',
         rulesetId: Constants.Dynamics.RulesetIds.INVOICING_DETAILS,
         completedId: Constants.Dynamics.CompletedParamters.INVOICING_DETAILS,

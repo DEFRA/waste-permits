@@ -43,7 +43,11 @@ Constants.Routes = {
     path: '/address/address-manual',
     pageHeading: `Enter the site address`
   },
-  ADDRESS_SELECT: {
+  ADDRESS_SELECT_INVOICE: {
+    path: '/billing/address/select-address',
+    pageHeading: `What's the invoice address?`
+  },
+  ADDRESS_SELECT_SITE: {
     path: '/site/address/select-address',
     pageHeading: `What's the site address?`
   },
@@ -126,11 +130,6 @@ Constants.Routes = {
     path: '/health',
     pageHeading: 'Health'
   },
-  INVOICING_DETAILS: {
-    path: '/billing/invoice-postcode',
-    pageHeading: 'What address should we use to send invoices?',
-    taskListHeading: 'Give invoicing details'
-  },
   MANAGEMENT_SYSTEM: {
     path: '/management-system',
     pageHeading: 'Which management system will you use?',
@@ -153,7 +152,12 @@ Constants.Routes = {
     path: '/permit/select',
     pageHeading: 'Select a permit'
   },
-  POSTCODE: {
+  POSTCODE_INVOICE: {
+    path: '/billing/address/postcode',
+    pageHeading: 'What address should we use to send invoices?',
+    taskListHeading: 'Give invoicing details'
+  },
+  POSTCODE_SITE: {
     path: '/site/address/postcode',
     pageHeading: `What's the postcode for the site?`
   },
