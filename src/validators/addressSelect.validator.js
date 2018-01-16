@@ -2,7 +2,7 @@
 
 const BaseValidator = require('./base.validator')
 
-module.exports = class SiteSiteNameValidator extends BaseValidator {
+module.exports = class SiteNameValidator extends BaseValidator {
   constructor () {
     super()
 

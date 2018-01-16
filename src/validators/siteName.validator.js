@@ -7,7 +7,7 @@ const DISALLOWED_CHARACTERS = '^ | _ ~ ¬ `'
 const DISALLOWED_CHARACTERS_REGEX = /[\^|_~¬`]/g
 const SITE_NAME_MAX_LENGTH = 170
 
-module.exports = class SiteSiteNameValidator extends BaseValidator {
+module.exports = class SiteNameValidator extends BaseValidator {
   constructor () {
     super()
 

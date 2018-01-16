@@ -2,13 +2,13 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const SiteSiteNameValidator = require('../validators/siteSiteName.validator')
+const SiteNameValidator = require('../validators/siteName.validator')
 const CookieService = require('../services/cookie.service')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
-module.exports = class SiteSiteNameController extends BaseController {
+module.exports = class SiteNameController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new SiteSiteNameValidator())
+    const pageContext = this.createPageContext(errors, new SiteNameValidator())
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     const applicationLineId = CookieService.getApplicationLineId(request)
@@ -22,7 +22,7 @@ module.exports = class SiteSiteNameController extends BaseController {
       }
     }
 
-    return reply.view('siteSiteName', pageContext)
+    return reply.view('siteName', pageContext)
   }
 
   async doPost (request, reply, errors) {
