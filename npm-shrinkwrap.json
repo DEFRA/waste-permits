@@ -5562,15 +5562,15 @@
       }
     },
     "good-console": {
-      "version": "6.4.1",
-      "resolved": "https://registry.npmjs.org/good-console/-/good-console-6.4.1.tgz",
-      "integrity": "sha1-WSKXSGi8872VlDcrozgY3A0BpGQ=",
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/good-console/-/good-console-7.0.0.tgz",
+      "integrity": "sha1-yE5BgpTAH8qb2txZCCnhG1j8Cb8=",
       "dev": true,
       "requires": {
         "hoek": "4.2.0",
-        "joi": "8.1.1",
+        "joi": "12.0.0",
         "json-stringify-safe": "5.0.1",
-        "moment": "2.19.4"
+        "moment": "2.20.1"
       },
       "dependencies": {
         "hoek": {
@@ -5580,28 +5580,24 @@
           "dev": true
         },
         "isemail": {
-          "version": "2.2.1",
-          "resolved": "https://registry.npmjs.org/isemail/-/isemail-2.2.1.tgz",
-          "integrity": "sha1-A1PT2aYpUQgMJiwqoKQrjqjp4qY=",
-          "dev": true
+          "version": "3.0.0",
+          "resolved": "https://registry.npmjs.org/isemail/-/isemail-3.0.0.tgz",
+          "integrity": "sha512-rz0ng/c+fX+zACpLgDB8fnUQ845WSU06f4hlhk4K8TJxmR6f5hyvitu9a9JdMD7aq/P4E0XdG1uaab2OiXgHlA==",
+          "dev": true,
+          "requires": {
+            "punycode": "2.1.0"
+          }
         },
         "joi": {
-          "version": "8.1.1",
-          "resolved": "https://registry.npmjs.org/joi/-/joi-8.1.1.tgz",
-          "integrity": "sha1-LYtSpdkJ0hftRySFd+7+ixeY9I8=",
+          "version": "12.0.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-12.0.0.tgz",
+          "integrity": "sha512-z0FNlV4NGgjQN1fdtHYXf5kmgludM65fG/JlXzU6+rwkt9U5UWuXVYnXa2FpK0u6+qBuCmrm5byPNuiiddAHvQ==",
           "dev": true,
           "requires": {
             "hoek": "4.2.0",
-            "isemail": "2.2.1",
-            "moment": "2.19.4",
+            "isemail": "3.0.0",
             "topo": "2.0.2"
           }
-        },
-        "moment": {
-          "version": "2.19.4",
-          "resolved": "https://registry.npmjs.org/moment/-/moment-2.19.4.tgz",
-          "integrity": "sha512-1xFTAknSLfc47DIxHDUbnJWC+UwgWxATmymaxIPQpmMh7LBm7ZbwVEsuushqwL2GYZU0jie4xO+TK44hJPjNSQ==",
-          "dev": true
         },
         "topo": {
           "version": "2.0.2",
@@ -7095,7 +7091,7 @@
     "inert": {
       "version": "4.2.1",
       "resolved": "https://registry.npmjs.org/inert/-/inert-4.2.1.tgz",
-      "integrity": "sha512-qmbbZYPSzU/eOUOStPQvSjrU9IR1Q3uDtsEsVwnBQeZG43xu7Nrj6yuUrX3ice/03rv5dj/KiKB+NGCbiqH+aQ==",
+      "integrity": "sha1-2nQ8R4oYqDeAMvgK2hKKKM0rupM=",
       "requires": {
         "ammo": "2.0.4",
         "boom": "5.2.0",
