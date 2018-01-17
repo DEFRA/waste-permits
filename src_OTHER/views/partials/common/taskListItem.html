@@ -1,0 +1,14 @@
+<li class="task-list-item" id="{{ id }}">
+
+  {{#if complete}}
+  <a id="{{ id }}-link" class="task-name" href="{{ href }}" aria-describedby="{{ completedLabelId }}">
+    {{ label }}
+  </a>
+  {{else}}
+  <a id="{{ id }}-link" class="task-name" href="{{ href }}">
+    {{ label }}
+  </a>
+  {{/if}}
+
+  {{> common/completedLabel completedLabelId=completedLabelId }}
+</li>

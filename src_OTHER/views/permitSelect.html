@@ -1,0 +1,54 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form method="POST" action="{{ formAction }}">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset aria-labelledby="permit-select-heading">
+          <legend class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div class="panel panel-border-wide">
+            <p id="select-permit-hint-text">Showing permits for <span id="permit-type-description">mobile plant</span>.
+              <!-- Not in use for MVP -->
+              <!-- <a id="back-to-all-permit-groups-link" href="/{{ permitCategoryRoute }}">
+                Back to all permit groups
+              </a> -->
+            </p>
+          </div>
+
+          <div id="chosen-permit" class="form-group {{#getFormErrorGroupClass errors.started-application}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='chosen-permit-error' message=errors.chosen-permit }}
+
+            {{#each standardRules}}
+            <div class="multiple-choice permit-selector">
+              <input id="chosen-permit-{{this.codeForId}}-input" type="radio" name="chosen-permit" value="{{this.code}}">
+              <label id="chosen-permit-{{this.codeForId}}-label" class="selection-button-radio permit-item" for="chosen-permit-{{this.codeForId}}-input">
+                <span id="chosen-permit-{{this.codeForId}}-name" class="permit-name">
+                  {{this.name}}
+                  <br>
+                  <span id="chosen-permit-{{this.codeForId}}-weight" class="permit-weight">
+                    {{this.limits}}
+                  </span>
+                </span>
+                <span id="chosen-permit-{{this.codeForId}}-code" class="permit-code">{{this.code}}</span>
+              </label>
+             </div>
+             {{/each}}
+          </div>
+
+        </fieldset>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>

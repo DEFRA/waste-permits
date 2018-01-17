@@ -1,0 +1,15 @@
+'use strict'
+
+const BaseController = require('./base.controller')
+
+module.exports = class CostTimeController extends BaseController {
+  async doGet (request, reply) {
+    const pageContext = this.createPageContext()
+    return reply
+      .view('costTime', pageContext)
+  }
+
+  async doPost (request, reply, errors) {
+    // Not implemented yet
+  }
+}

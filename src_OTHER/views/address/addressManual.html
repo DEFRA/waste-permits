@@ -1,0 +1,52 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form method="post" action="{{formAction}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
+        <div id="postcode-label" class="postcode-prefix">UK Postcode</div>
+        <div id="postcode-value" class="postcode">
+          <span>{{formValues.postcode}}</span>
+          <a id="change-postcode-link" href="{{changePostcodeLink}}">
+            Change<span class="visuallyhidden"> postcode</span></a>
+        </div>
+
+        <br>
+
+        <fieldset>
+          <legend id="manual-address" class="visuallyhidden">Select an address</legend>
+
+          <div class="form-group">
+            <label id="site-address-label" class="form-label" for="site-address">Select an address</label>
+            <select class="address-select form-control form-control-char-auto" id="site-address" name="site-address" aria-describedby="manual_hint">
+              <option value="">{{formValues.addresses.length}} addresses found</option>
+              {{#each formValues.addresses}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+            </select>
+          </div>
+
+          <p id="manual-hint">
+            <a id="manual-address-link" href="{{manualAddressLink}}">
+            <span class="visuallyhidden">Enter address manually</span>
+            I can’t find the address in the list</a>
+          </p>
+
+        </fieldset>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+
+</main>

@@ -1,0 +1,68 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }} {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <div class="panel panel-border-narrow">
+        <p>This should be where we can send invoices for your ongoing annual costs (the subsistence charge) after the permit has been issued.</p>
+      </div>
+
+      <form method="post" action="{{formAction}}">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend class="visuallyhidden">Postcode</legend>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.postcode}}{{/getFormErrorGroupClass}}">
+            <label id="postcode-label" class="form-label" for="postcode">UK postcode
+              <span id="postcode-hint" class="form-hint">For example, BS1 5AH</span>
+            </label>
+            {{> common/fieldError fieldId='postcode-error' message=errors.postcode }}
+            <input type="text" class="form-control form-control-char-10" id="postcode" name="postcode" value="{{formValues.postcode}}" />
+          </div>
+        </fieldset>
+
+        <p id="manual-hint">
+          <a id="manual-address-link" href="{{manualAddressLink}}">
+          <span class="visuallyhidden">Enter address manually</span>
+          The site doesn't have a postcode</a>
+        </p>
+
+        {{> common/submitButton buttonText='Find address'}}
+
+      </form>
+
+      <div class="form-group">
+        <hr>
+        <p class="text font-xsmall" id="os-notice">
+        &copy; Crown copyright and database rights 2018 Ordnance Survey 100024198. Use of this addressing data is subject to the terms and conditions.
+        </p>
+      </div>
+
+      <details id="ngr_help">
+        <summary><span id="terms-and-conditions-summary font-xsmall" class="summary">Access data terms and conditions</span></summary>
+        <div class="panel panel-border-narrow">
+          <p class="text font-xsmall">Addressing information and mapping data from Ordnance Survey (OS) is &copy; Crown copyright and database rights 2017 OS 100024198.</p>
+
+          <p class="text font-xsmall">Use of this data is subject to the following conditions by way of exception to the standard Open Government Licence (OGL) referred to at the foot of this page.</p>
+
+          <h2 class="heading-medium text font-xsmall">Terms and conditions</h2>
+
+          <ol class="list list-number text font-xsmall">
+            <li>You are granted a non-exclusive, royalty free revocable licence solely to view the licensed mapping and addressing data for non-commercial purposes for the period during which we make it available.</li>
+            <li>You are not permitted to copy, sub-license, distribute, sell or otherwise make available such data to third parties in any form.</li>
+            <li>Third party rights to enforce the terms of this licence shall be reserved to OS.</li>
+          </ol>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+</main>

@@ -62,7 +62,7 @@ const checkPageElements = async (request, expectedValue) => {
   const elementIds = [
     'back-link',
     'defra-csrf-token',
-    'site-site-name-subheading',
+    'site-namesubheading',
     'site-name-label',
     'site-name-hint'
   ]

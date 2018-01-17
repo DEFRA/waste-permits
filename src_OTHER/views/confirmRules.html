@@ -1,0 +1,45 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if complete}}
+        <div id="confirm-result-message" class="panel panel-border-wide">
+          <p>You confirmed that your operation meets the rules.</p>
+        </div>
+      {{/if}}
+
+      <div id="rules-and-risk-hint" class="form-group">
+        <p>Read the
+          <a target="_blank" rel="noopener noreferrer" href="{{guidanceUrl}}">
+            <span>rules and risk assessment for permit {{code}} on GOV.UK  (opens new tab).</span>
+          </a>
+        </p>
+      </div>
+
+      {{#unless complete}}
+        <p id="confirm-rules-paragraph-1">If your operation doesn't meet these rules, you may need a different standard rules permit or a bespoke permit instead.</p>
+      {{/unless}}
+
+      <form method="POST" action="{{ formAction }}">
+        {{> common/csrfToken token=DefraCsrfToken}}
+        <div class="form-group">
+          {{#if complete}}
+            <button id="return-to-task-list-button" type="submit" class="button" name="Return to task list">Return to task list</button>
+          {{else}}
+            <button id="operation-meets-rules-button" type="submit" class="button" name="Our operation meets these rules">Our operation meets these rules</button>
+          {{/if}}
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+
+</main>

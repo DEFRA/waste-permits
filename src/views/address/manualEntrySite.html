@@ -1,0 +1,71 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form method="POST" action="{{ formAction }}">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.site-name}}{{/getFormErrorGroupClass}}">
+            <label class="form-label" for="site-name">
+              <span id="site-name-label">Building name or number</span>
+              <span id="site-name-hint" class="form-hint">For example, a business premises name or house number</span>
+            </label>
+
+            {{> common/fieldError fieldId='site-name-error' message=errors.site-name }}
+
+            <input class="form-control form-control-char-40" id="site-name" name="site-name" type="text" value="{{formValues.site-name}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.site-name}}{{/getFormErrorGroupClass}}">
+            <label class="form-label" for="site-name">
+              <span id="site-name-label">Address line 1</span>
+            </label>
+
+            {{> common/fieldError fieldId='site-name-error' message=errors.site-name }}
+
+            <input class="form-control form-control-char-40" id="site-name" name="site-name" type="text" value="{{formValues.site-name}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.site-name}}{{/getFormErrorGroupClass}}">
+            <label class="form-label" for="site-name">Address line 2 (optional)</label>
+
+            {{> common/fieldError fieldId='site-name-error' message=errors.site-name }}
+
+            <input class="form-control form-control-char-40" id="site-name" name="site-name" type="text" value="{{formValues.site-name}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.site-name}}{{/getFormErrorGroupClass}}">
+            <label class="form-label" for="site-name">Town or city</label>
+
+            {{> common/fieldError fieldId='site-name-error' message=errors.site-name }}
+
+            <input class="form-control form-control-char-40" id="site-name" name="site-name" type="text" value="{{formValues.site-name}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.postcode}}{{/getFormErrorGroupClass}}">
+            <label id="postcode-label" class="form-label" for="postcode">UK postcode</label>
+            {{> common/fieldError fieldId='postcode-error' message=errors.postcode }}
+            <input type="text" class="form-control form-control-char-10" id="postcode" name="postcode" value="{{formValues.postcode}}" />
+          </div>
+
+        </fieldset>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+
+</main>

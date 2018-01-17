@@ -1,0 +1,35 @@
+// Choose permit radio button list
+.permit-selector {
+  float: none;
+  padding: 0px 10px 0px 40px;
+}
+
+label.permit-item {
+  display: inline-block;
+  width: 100%;
+
+  .permit-name {
+    float: left;
+    width: 66.66667%;
+
+    @include media(mobile) {
+      width: 100%;
+    }
+
+    .permit-weight {
+      color: $grey-1;
+    }
+  }
+
+  .permit-code {
+    float: right;
+    font-weight: bold;
+    text-align: right;
+    width: 33.33333%;
+
+    @include media(mobile) {
+      text-align: left;
+      width: 100%;
+    }
+  }
+}
