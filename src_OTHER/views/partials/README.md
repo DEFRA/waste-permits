@@ -1,3 +1,0 @@
-# Usage
-
-Reused Handlebars components

@@ -1,8 +1,0 @@
-.button-secondary {
-  @include button($grey-3);
-  text-align:center;
-}
-
-.button-secondary:active {
-  outline: 3px solid $yellow;
-}
