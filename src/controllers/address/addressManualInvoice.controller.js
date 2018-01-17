@@ -25,6 +25,12 @@ module.exports = class AddressManualInvoiceController extends BaseController {
     //     }
     //   }
     // }
+
+    // TODO
+    pageContext.formValues = {
+      postcode: 'BS1 5AH'
+    }
+
     return reply.view('address/manualEntry', pageContext)
   }
 

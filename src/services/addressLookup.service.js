@@ -11,7 +11,7 @@ module.exports = class AddressLookupService {
     //   json: true
     // }
 
-    let addresses
+    let addresses = []
     // await rp(options)
     //   .then((data) => {
     //     // Extract the concatenated address string from the address entries in the returned data

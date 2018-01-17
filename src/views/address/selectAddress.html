@@ -24,9 +24,11 @@
         <fieldset>
           <legend id="manual-address" class="visuallyhidden">Select as address</legend>
 
-          <div class="form-group">
-            <label id="site-address-label" class="form-label" for="site-address">Select an address</label>
-            <select class="address-select form-control form-control-char-auto" id="site-address" name="site-address" aria-describedby="manual_hint">
+          <div id="address-selection" class="form-group {{#getFormErrorGroupClass errors.select-address}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='select-address-error' message=errors.select-address }}
+
+            <label id="select-address-label" class="form-label" for="select-address">Select an address</label>
+            <select class="address-select form-control form-control-char-auto" id="select-address" name="select-address" aria-describedby="manual_hint">
               <option value="">{{formValues.addresses.length}} addresses found</option>
               {{#each formValues.addresses}}
                 <option value="{{this}}">{{this}}</option>

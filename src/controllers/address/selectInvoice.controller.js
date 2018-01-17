@@ -19,14 +19,18 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
       // If we have Address details in the payload then display them in the form
       // pageContext.formValues = request.payload
     } else {
-      const address = await SiteNameAndLocation.getAddress(request, authToken, applicationId, applicationLineId)
-      if (address) {
-        pageContext.formValues = {
-          // postcode: address.postcode,
-          postcode: 'CF82 8DL',
-          addresses: await AddressLookupService.getAddressesFromPostcode(address.postcode)
-        }
+      // TODO reinstate this
+      // const address = await SiteNameAndLocation.getAddress(request, authToken, applicationId, applicationLineId)
+      // if (address) {
+
+      // TODO
+      pageContext.formValues = {
+        // postcode: address.postcode,
+        postcode: 'BS1 5AH',
+        addresses: []
+        // addresses: await AddressLookupService.getAddressesFromPostcode(address.postcode)
       }
+      // }
     }
     pageContext.changePostcodeLink = Constants.Routes.ADDRESS.POSTCODE_INVOICE.path
     pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_INVOICE.path
