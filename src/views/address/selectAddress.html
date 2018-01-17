@@ -14,7 +14,7 @@
       <form method="post" action="{{formAction}}">
         {{> common/csrfToken token=DefraCsrfToken}}
         <p>
-          <span id="postcode-label" class="postcode-prefix">Postcode:</span>
+          <span id="postcode-label" class="postcode-prefix">UK Postcode:</span>
           <span id="postcode-value" class="postcode">{{formValues.postcode}}</span>
           <a id="change-postcode-link" href="{{changePostcodeLink}}">
             Change<span class="visuallyhidden"> postcode</span>
@@ -22,10 +22,10 @@
         </p>
 
         <fieldset>
-          <legend id="manual-address" class="visuallyhidden">Site address</legend>
+          <legend id="manual-address" class="visuallyhidden">Select as address</legend>
 
           <div class="form-group">
-            <label id="site-address-label" class="form-label" for="site-address">Site address</label>
+            <label id="site-address-label" class="form-label" for="site-address">Select an address</label>
             <select class="address-select form-control form-control-char-auto" id="site-address" name="site-address" aria-describedby="manual_hint">
               <option value="">{{formValues.addresses.length}} addresses found</option>
               {{#each formValues.addresses}}

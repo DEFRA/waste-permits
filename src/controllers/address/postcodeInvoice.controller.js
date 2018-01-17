@@ -24,7 +24,12 @@ module.exports = class PostcodeController extends BaseController {
       //   }
       // }
     }
-    return reply.view('address/postcodeInvoice', pageContext)
+
+    pageContext.showInvoiceSubheading = true
+    pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_INVOICE.path
+    pageContext.noPostcodeLink = `The invoice address doesn't have a postcode`
+
+    return reply.view('address/postcode', pageContext)
   }
 
   async doPost (request, reply, errors) {

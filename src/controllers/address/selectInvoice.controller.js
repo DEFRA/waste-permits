@@ -22,15 +22,16 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
       const address = await SiteNameAndLocation.getAddress(request, authToken, applicationId, applicationLineId)
       if (address) {
         pageContext.formValues = {
-          postcode: address.postcode,
+          // postcode: address.postcode,
+          postcode: 'CF82 8DL',
           addresses: await AddressLookupService.getAddressesFromPostcode(address.postcode)
         }
       }
     }
-    pageContext.changePostcodeLink = Constants.Routes.ADDRESS.POSTCODE_SITE.path
+    pageContext.changePostcodeLink = Constants.Routes.ADDRESS.POSTCODE_INVOICE.path
     pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_INVOICE.path
 
-    return reply.view('address/selectInvoice', pageContext)
+    return reply.view('address/selectAddress', pageContext)
   }
 
   async doPost (request, reply, errors) {

@@ -82,7 +82,7 @@ const checkPageElements = async (request, expectedValue) => {
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
   element = doc.getElementById('submit-button').firstChild
-  Code.expect(element.nodeValue).to.equal('Continue')
+  Code.expect(element.nodeValue).to.equal('Find address')
 }
 
 const checkValidationError = async (expectedErrorMessage) => {

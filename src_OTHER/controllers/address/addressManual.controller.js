@@ -30,7 +30,7 @@ module.exports = class AddressManualSiteController extends BaseController {
     pageContext.changePostcodeLink = Constants.Routes.ADDRESS.POSTCODE_INVOICE.path
     pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_INVOICE.path
 
-    return reply.view('address/manualEntrySite', pageContext)
+    return reply.view('address/manualEntry', pageContext)
   }
 
   async doPost (request, reply, errors) {

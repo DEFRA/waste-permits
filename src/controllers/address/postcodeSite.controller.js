@@ -24,7 +24,11 @@ module.exports = class PostcodeController extends BaseController {
         }
       }
     }
-    return reply.view('address/postcodeSite', pageContext)
+
+    pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_SITE.path
+    pageContext.noPostcodeLink = `The site doesn't have a postcode`
+
+    return reply.view('address/postcode', pageContext)
   }
 
   async doPost (request, reply, errors) {

@@ -25,7 +25,7 @@ module.exports = class AddressManualInvoiceController extends BaseController {
     //     }
     //   }
     // }
-    return reply.view('address/manualEntryInvoice', pageContext)
+    return reply.view('address/manualEntry', pageContext)
   }
 
   async doPost (request, reply, errors) {

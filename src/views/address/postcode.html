@@ -9,14 +9,20 @@
 
       {{> common/pageHeading pageHeading }}
 
+      {{#if showInvoiceSubheading}}
+      <div class="panel panel-border-wide">
+        <p>This should be where we can send invoices for your ongoing annual costs (the subsistence charge) after the permit has been issued.</p>
+      </div>
+      {{/if}}
+
       <form method="post" action="{{formAction}}">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <fieldset>
-          <legend class="visuallyhidden">Postcode</legend>
+          <legend class="visuallyhidden">UK Postcode</legend>
 
           <div class="form-group {{#getFormErrorGroupClass errors.postcode}}{{/getFormErrorGroupClass}}">
-            <label id="postcode-label" class="form-label" for="postcode">UK postcode for the INVOICE
+            <label id="postcode-label" class="form-label" for="postcode">UK postcode
               <span id="postcode-hint" class="form-hint">For example, BS1 5AH</span>
             </label>
             {{> common/fieldError fieldId='postcode-error' message=errors.postcode }}
@@ -24,16 +30,17 @@
           </div>
         </fieldset>
 
-        {{> common/submitButton }}
+        <p id="manual-hint">
+          <a id="manual-address-link" href="{{manualAddressLink}}">
+          <span class="visuallyhidden">Enter address manually</span>
+          {{noPostcodeLink}}</a>
+        </p>
 
-        <div class="form-group">
-          <hr>
-          <p class="text font-xsmall" id="os-notice">
-          &copy; Crown copyright and database rights 2017 Ordnance Survey 100024198. Use of this addressing data is subject to the <a target="_blank" rel="noopener noreferrer" href="/views/os_place_terms">terms and conditions (opens new window)</a>.
-          </p>
-        </div>
+        {{> common/submitButton buttonText='Find address'}}
 
       </form>
+
+      {{> ordnanceSurveyTermsConditions}}
 
     </div>
   </div>

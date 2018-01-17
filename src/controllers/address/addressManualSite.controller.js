@@ -25,9 +25,8 @@ module.exports = class AddressManualSiteController extends BaseController {
     //     }
     //   }
     // }
-    console.log('############ address/manualEntrySite')
 
-    return reply.view('address/manualEntrySite', pageContext)
+    return reply.view('address/manualEntry', pageContext)
   }
 
   async doPost (request, reply, errors) {
