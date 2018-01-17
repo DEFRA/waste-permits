@@ -3,52 +3,39 @@
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
-const Utilities = require('../utilities/utilities')
 
 module.exports = class LocationDetail extends BaseModel {
-  constructor (locationDetail) {
-    super()
-    this.entity = 'defra_locationdetailses'
-    if (locationDetail) {
-      this.id = locationDetail.id
-      this.gridReference = locationDetail.gridReference
-      this.locationId = locationDetail.locationId
-      this.addressId = locationDetail.addressId
-    }
-    Utilities.convertFromDynamics(this)
-  }
-
-  static selectedDynamicsFields () {
+  static mapping () {
     return [
-      'defra_gridreferenceid',
-      '_defra_addressid_value'
+      {field: 'id', dynamics: 'defra_locationdetailsid'},
+      {field: 'locationId', dynamics: '_defra_locationid_value', bind: {id: 'defra_locationId', entity: 'defra_locations'}},
+      {field: 'addressId', dynamics: '_defra_addressid_value', bind: {id: 'defra_addressId', entity: 'defra_addresses'}},
+      {field: 'gridReference', dynamics: 'defra_gridreferenceid'}
     ]
   }
 
+  constructor (...args) {
+    super(...args)
+    this.entity = 'defra_locationdetailses'
+  }
+
   static async getByLocationId (authToken, locationId) {
-    let locationDetail
-    if (locationId !== undefined) {
+    if (locationId) {
       const dynamicsDal = new DynamicsDalService(authToken)
       const filter = `_defra_locationid_value eq ${locationId}`
       const query = encodeURI(`defra_locationdetailses?$select=${LocationDetail.selectedDynamicsFields()}&$filter=${filter}`)
       try {
         const response = await dynamicsDal.search(query)
-        const result = response.value[0]
+        const result = response.value.pop()
 
         if (result) {
-          locationDetail = new LocationDetail({
-            id: result.defra_locationdetailsid,
-            locationId: locationId,
-            gridReference: result.defra_gridreferenceid,
-            addressId: result._defra_addressid_value
-          })
+          return LocationDetail.dynamicsToModel(result)
         }
       } catch (error) {
         LoggingService.logError(`Unable to get LocationDetail by Location ID: ${error}`)
         throw error
       }
     }
-    return locationDetail
   }
 
   setAddress (addressId) {
@@ -56,14 +43,7 @@ module.exports = class LocationDetail extends BaseModel {
   }
 
   async save (authToken) {
-    // Map the Location to the corresponding Dynamics schema LocationDetail object
-    const dataObject = {
-      defra_gridreferenceid: this.gridReference,
-      'defra_locationId@odata.bind': `defra_locations(${this.locationId})`
-    }
-    if (this.addressId) {
-      dataObject['defra_addressId@odata.bind'] = `defra_addresses(${this.addressId})`
-    }
+    const dataObject = this.modelToDynamics(({field}) => field !== 'id')
     await super.save(authToken, dataObject)
   }
 }

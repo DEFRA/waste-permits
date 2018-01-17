@@ -4,38 +4,30 @@ const Constants = require('../constants')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
-const Utilities = require('../utilities/utilities')
 
 module.exports = class Application extends BaseModel {
-  constructor (application) {
-    super()
-    this.entity = 'defra_applications'
-    if (application) {
-      this.accountId = application.accountId
-      this.tradingName = application.tradingName
-      this.technicalQualification = application.technicalQualification
-      this.relevantOffences = application.relevantOffences
-      this.relevantOffencesDetails = application.relevantOffencesDetails
-      this.bankruptcy = application.bankruptcy
-      this.bankruptcyDetails = application.bankruptcyDetails
-      this.confidentiality = application.confidentiality
-      this.confidentialityDetails = application.confidentialityDetails
-    }
-    Utilities.convertFromDynamics(this)
+  static mapping () {
+    return [
+      {field: 'accountId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_account', relationship: 'defra_account_defra_application_customerid', entity: 'accounts'}},
+      {field: 'contactId', dynamics: '_defra_primarycontactid_value', bind: {id: 'defra_primarycontactid', relationship: 'defra_contact_defra_application_primarycontactid', entity: 'contacts'}},
+      {field: 'agentId', dynamics: '_defra_agentid_value', bind: {id: 'defra_agentid_account', relationship: 'defra_account_defra_application_agentid', entity: 'accounts'}},
+      {field: 'tradingName', dynamics: 'defra_tradingname'},
+      {field: 'technicalQualification', dynamics: 'defra_technicalability'},
+      {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},
+      {field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails'},
+      {field: 'bankruptcy', dynamics: 'defra_bankruptcydeclaration'},
+      {field: 'bankruptcyDetails', dynamics: 'defra_bankruptcydeclarationdetails'},
+      {field: 'confidentiality', dynamics: 'defra_confidentialitydeclaration'},
+      {field: 'confidentialityDetails', dynamics: 'defra_confidentialitydeclarationdetails'},
+      {field: 'regime', dynamics: 'defra_regime', defaultVal: Constants.Dynamics.WASTE_REGIME},
+      {field: 'source', dynamics: 'defra_source', defaultVal: Constants.Dynamics.DIGITAL_SOURCE},
+      {field: 'statuscode', dynamics: 'statuscode', defaultVal: Constants.Dynamics.StatusCode.DRAFT}
+    ]
   }
 
-  static selectedDynamicsFields () {
-    return [
-      '_defra_customerid_value',
-      'defra_tradingname',
-      'defra_technicalability',
-      'defra_convictionsdeclaration',
-      'defra_convictionsdeclarationdetails',
-      'defra_bankruptcydeclaration',
-      'defra_bankruptcydeclarationdetails',
-      'defra_confidentialitydeclaration',
-      'defra_confidentialitydeclarationdetails'
-    ]
+  constructor (...args) {
+    super(...args)
+    this.entity = 'defra_applications'
   }
 
   static async getById (authToken, applicationId) {
@@ -43,17 +35,7 @@ module.exports = class Application extends BaseModel {
     const query = encodeURI(`defra_applications(${applicationId})?$select=${Application.selectedDynamicsFields()}`)
     try {
       const result = await dynamicsDal.search(query)
-      const application = new Application({
-        accountId: result._defra_customerid_value,
-        tradingName: result.defra_tradingname,
-        technicalQualification: result.defra_technicalability,
-        relevantOffences: result.defra_convictionsdeclaration,
-        relevantOffencesDetails: result.defra_convictionsdeclarationdetails,
-        bankruptcy: result.defra_bankruptcydeclaration,
-        bankruptcyDetails: result.defra_bankruptcydeclarationdetails,
-        confidentiality: result.defra_confidentialitydeclaration,
-        confidentialityDetails: result.defra_confidentialitydeclarationdetails
-      })
+      const application = Application.dynamicsToModel(result)
       application.id = applicationId
       return application
     } catch (error) {
@@ -63,24 +45,8 @@ module.exports = class Application extends BaseModel {
   }
 
   async save (authToken) {
-    const dataObject = {
-      defra_regime: Constants.Dynamics.WASTE_REGIME,
-      defra_source: Constants.Dynamics.DIGITAL_SOURCE,
-      defra_tradingname: this.tradingName,
-      defra_technicalability: this.technicalQualification,
-      defra_convictionsdeclaration: this.relevantOffences,
-      defra_convictionsdeclarationdetails: this.relevantOffencesDetails,
-      defra_bankruptcydeclaration: this.bankruptcy,
-      defra_bankruptcydeclarationdetails: this.bankruptcyDetails,
-      defra_confidentialitydeclaration: this.confidentiality,
-      defra_confidentialitydeclarationdetails: this.confidentialityDetails
-    }
+    const dataObject = this.modelToDynamics()
     const isNew = this.isNew()
-    if (isNew) {
-      dataObject.statuscode = Constants.Dynamics.StatusCode.DRAFT // Set the status of the new application to draft
-    } else if (this.accountId) {
-      dataObject['defra_customerid_account@odata.bind'] = `accounts(${this.accountId})`
-    }
     await super.save(authToken, dataObject)
     if (isNew) {
       LoggingService.logInfo(`Created application with ID: ${this.id}`)

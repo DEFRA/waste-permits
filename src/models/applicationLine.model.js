@@ -4,18 +4,20 @@ const Constants = require('../constants')
 const LoggingService = require('../services/logging.service')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
-const Utilities = require('../utilities/utilities')
 
 module.exports = class ApplicationLine extends BaseModel {
-  constructor (applicationLine) {
-    super()
+  static mapping () {
+    return [
+      {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationId', entity: 'defra_applications'}},
+      {field: 'standardRuleId', dynamics: '_defra_standardruleid_value', bind: {id: 'defra_standardruleId', entity: 'defra_standardrules'}},
+      {field: 'parametersId', dynamics: '_defra_parametersid_value'},
+      {field: 'permitType', dynamics: 'defra_permittype', defaultVal: Constants.Dynamics.PermitTypes.STANDARD}
+    ]
+  }
+
+  constructor (...args) {
+    super(...args)
     this.entity = 'defra_applicationlines'
-    if (applicationLine) {
-      this.applicationId = applicationLine.applicationId
-      this.standardRuleId = applicationLine.standardRuleId
-      this.parametersId = applicationLine.parametersId
-    }
-    Utilities.convertFromDynamics(this)
   }
 
   static async getById (authToken, applicationLineId) {
@@ -23,11 +25,7 @@ module.exports = class ApplicationLine extends BaseModel {
     const query = encodeURI(`defra_applicationlines(${applicationLineId})`)
     try {
       const result = await dynamicsDal.search(query)
-      const applicationLine = new ApplicationLine({
-        applicationId: result._defra_applicationid_value,
-        standardRuleId: result._defra_standardruleid_value,
-        parametersId: result._defra_parametersid_value
-      })
+      const applicationLine = ApplicationLine.dynamicsToModel(result)
       applicationLine.id = applicationLineId
       return applicationLine
     } catch (error) {
@@ -37,11 +35,7 @@ module.exports = class ApplicationLine extends BaseModel {
   }
 
   async save (authToken) {
-    const dataObject = {
-      'defra_applicationId@odata.bind': `defra_applications(${this.applicationId})`,
-      'defra_standardruleId@odata.bind': `defra_standardrules(${this.standardRuleId})`,
-      defra_permittype: Constants.Dynamics.PermitTypes.STANDARD
-    }
+    const dataObject = this.modelToDynamics()
     await super.save(authToken, dataObject)
   }
 }

@@ -3,65 +3,39 @@
 const Constants = require('../constants')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
+const Application = require('./application.model')
 const LoggingService = require('../services/logging.service')
-const Utilities = require('../utilities/utilities')
 
 module.exports = class Contact extends BaseModel {
-  constructor (contact) {
-    super()
-    this.entity = 'contacts'
-    if (contact) {
-      this.id = contact.id
-      this.firstName = contact.firstName
-      this.lastName = contact.lastName
-      this.telephone = contact.telephone
-      this.email = contact.email
-      this.dob = {
-        day: contact.dob.day,
-        month: contact.dob.month,
-        year: contact.dob.year
-      }
-    }
-    Utilities.convertFromDynamics(this)
+  static mapping () {
+    return [
+      {field: 'id', dynamics: 'contactid'},
+      {field: 'firstName', dynamics: 'firstname'},
+      {field: 'lastName', dynamics: 'lastname'},
+      {field: 'telephone', dynamics: 'telephone1'},
+      {field: 'email', dynamics: 'emailaddress1'},
+      {field: 'companySecretaryEmail', dynamics: 'emailaddress2'},
+      {field: 'dob.day', dynamics: 'defra_dateofbirthdaycompanieshouse', readOnly: true},
+      {field: 'dob.month', dynamics: 'defra_dobmonthcompanieshouse', readOnly: true},
+      {field: 'dob.year', dynamics: 'defra_dobyearcompanieshouse', readOnly: true}
+    ]
   }
 
-  static selectedDynamicsFields () {
-    return [
-      'contactid',
-      'firstname',
-      'fullname',
-      'lastname',
-      'telephone1',
-      'emailaddress1',
-      'defra_dobmonthcompanieshouse',
-      'defra_dobyearcompanieshouse'
-    ]
+  constructor (...args) {
+    super(...args)
+    this.entity = 'contacts'
   }
 
   static async getById (authToken, id) {
     const dynamicsDal = new DynamicsDalService(authToken)
-    const query = `contacts(${id})?$select=${Contact.selectedDynamicsFields()}`
-    let contact
-
+    const query = `contacts(${id})?$select=${Contact.selectedDynamicsFields((field) => field !== 'defra_dateofbirthdaycompanieshouse')}`
     try {
-      const response = await dynamicsDal.search(query)
-
-      contact = new Contact({
-        id: response.contactid,
-        firstName: response.firstname,
-        lastName: response.lastname,
-        telephone: response.telephone1,
-        email: response.emailaddress1,
-        dob: {
-          month: response.defra_dobmonthcompanieshouse,
-          year: response.defra_dobyearcompanieshouse
-        }
-      })
+      const result = await dynamicsDal.search(query)
+      return Contact.dynamicsToModel(result)
     } catch (error) {
       LoggingService.logError(`Unable to get Contact by ID: ${error}`)
       throw error
     }
-    return contact
   }
 
   static async list (authToken, accountId = undefined, contactType = Constants.Dynamics.COMPANY_DIRECTOR) {
@@ -72,37 +46,38 @@ module.exports = class Contact extends BaseModel {
       filter += ` and parentcustomerid_account/accountid eq ${accountId}`
     }
     let orderBy = 'lastname asc,firstname asc'
-    const query = `contacts?$select=${Contact.selectedDynamicsFields()}&$filter=${filter}&$orderby=${orderBy}`
+    const query = `contacts?$select=${Contact.selectedDynamicsFields((field) => field !== 'defra_dateofbirthdaycompanieshouse')}&$filter=${filter}&$orderby=${orderBy}`
 
     try {
       const response = await dynamicsDal.search(query)
 
       // Parse response into Contact objects
-      return response.value.map((contact) => new Contact({
-        id: contact.contactid,
-        firstName: contact.firstname,
-        lastName: contact.lastname,
-        telephone: contact.telephone1,
-        email: contact.emailaddress1,
-        dob: {
-          month: contact.defra_dobmonthcompanieshouse,
-          year: contact.defra_dobyearcompanieshouse
-        }
-      }))
+      return response.value.map((contact) => Contact.dynamicsToModel(contact))
     } catch (error) {
       LoggingService.logError(`Unable to list Contacts: ${error}`)
       throw error
     }
   }
 
-  async save (authToken) {
-    // Map the Contact to the corresponding Dynamics schema Contact object
-    const dataObject = {
-      firstname: this.firstName,
-      lastname: this.lastName,
-      telephone1: this.telephone,
-      emailaddress1: this.email
+  static async getByApplicationId (authToken, applicationId) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const application = await Application.getById(authToken, applicationId)
+    if (application.contactId) {
+      try {
+        const query = encodeURI(`contacts(${application.contactId})?$select=${Contact.selectedDynamicsFields()}`)
+        const result = await dynamicsDal.search(query)
+        if (result) {
+          return Contact.dynamicsToModel(result)
+        }
+      } catch (error) {
+        LoggingService.logError(`Unable to get Contact by application ID: ${error}`)
+        throw error
+      }
     }
+  }
+
+  async save (authToken) {
+    const dataObject = this.modelToDynamics()
     await super.save(authToken, dataObject)
   }
 }

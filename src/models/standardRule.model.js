@@ -6,40 +6,23 @@ const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const ApplicationLine = require('./applicationLine.model')
 const LoggingService = require('../services/logging.service')
-const Utilities = require('../utilities/utilities')
 
 module.exports = class StandardRule extends BaseModel {
-  constructor (standardRule) {
-    super()
-    if (standardRule) {
-      this.id = standardRule.id
-      this.name = standardRule.name
-      this.limits = standardRule.limits
-      this.code = standardRule.code
-      this.codeForId = StandardRule.transformPermitCode(standardRule.code)
-      this.guidanceUrl = standardRule.guidanceUrl
-    }
-    Utilities.convertFromDynamics(this)
-  }
-
-  static getDynamicsData (result) {
-    return {
-      id: result.defra_standardruleid,
-      name: result.defra_rulesnamegovuk,
-      limits: result.defra_limits,
-      code: result.defra_code,
-      guidanceUrl: result.defra_guidanceurl
-    }
-  }
-
-  static selectedDynamicsFields () {
+  static mapping () {
     return [
-      'defra_standardruleid',
-      'defra_rulesnamegovuk',
-      'defra_limits',
-      'defra_code',
-      'defra_guidanceurl'
+      {field: 'id', dynamics: 'defra_standardruleid'},
+      {field: 'name', dynamics: 'defra_rulesnamegovuk'},
+      {field: 'limits', dynamics: 'defra_limits'},
+      {field: 'code', dynamics: 'defra_code'},
+      {field: 'guidanceUrl', dynamics: 'defra_guidanceurl'}
     ]
+  }
+
+  constructor (...args) {
+    super(...args)
+    this.entity = 'defra_standardrules'
+    const [standardRule] = args
+    this.codeForId = StandardRule.transformPermitCode(standardRule.code)
   }
 
   // Map the allowed permits into a Dynamics filter that will retrieve the standard rules
@@ -56,8 +39,8 @@ module.exports = class StandardRule extends BaseModel {
 
     try {
       const response = await dynamicsDal.search(query)
-      const result = response.value[0]
-      return new StandardRule(result ? StandardRule.getDynamicsData(result) : undefined)
+      const result = response.value.pop()
+      return StandardRule.dynamicsToModel(result)
     } catch (error) {
       LoggingService.logError(`Unable to get StandardRule by code: ${error}`)
       throw error
@@ -71,7 +54,7 @@ module.exports = class StandardRule extends BaseModel {
       const {standardRuleId} = await ApplicationLine.getById(authToken, applicationLineId)
       const query = encodeURI(`defra_standardrules(${standardRuleId})?$select=${StandardRule.selectedDynamicsFields()}`)
       const result = await dynamicsDal.search(query)
-      return new StandardRule(result ? StandardRule.getDynamicsData(result) : undefined)
+      return StandardRule.dynamicsToModel(result)
     } catch (error) {
       LoggingService.logError(`Unable to get StandardRule by ApplicationLine ID: ${error}`)
       throw error
@@ -93,7 +76,7 @@ module.exports = class StandardRule extends BaseModel {
       const response = await dynamicsDal.search(query)
 
       // Parse response into Standard Rule objects
-      return response.value.map((standardRule) => new StandardRule(StandardRule.getDynamicsData(standardRule)))
+      return response.value.map((standardRule) => StandardRule.dynamicsToModel(standardRule))
     } catch (error) {
       LoggingService.logError(`Unable to list StandardRules: ${error}`)
       throw error

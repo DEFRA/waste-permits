@@ -3,52 +3,47 @@
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
-const Utilities = require('../utilities/utilities')
 
 module.exports = class Location extends BaseModel {
-  constructor (location) {
-    super()
-    this.entity = 'defra_locations'
+  static mapping () {
+    return [
+      {field: 'id', dynamics: 'defra_locationid'},
+      {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationId', entity: 'defra_applications'}},
+      {field: 'name', dynamics: 'defra_name'}
+    ]
+  }
+
+  constructor (...args) {
+    super(...args)
+    const [location] = args
     if (location) {
-      this.id = location.id
-      this.name = location.name
-      this.applicationId = location.applicationId
       this.applicationLineId = location.applicationLineId
     }
-    Utilities.convertFromDynamics(this)
+    this.entity = 'defra_locations'
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {
-    let location
-    if (applicationId !== undefined) {
+    if (applicationId) {
       const dynamicsDal = new DynamicsDalService(authToken)
       const filter = `_defra_applicationid_value eq ${applicationId}`
-      const query = encodeURI(`defra_locations?$select=defra_name&$filter=${filter}`)
+      const query = encodeURI(`defra_locations?$select=${Location.selectedDynamicsFields()}&$filter=${filter}`)
       try {
         const response = await dynamicsDal.search(query)
         const result = response.value[0]
         if (result) {
-          location = new Location({
-            id: result.defra_locationid,
-            applicationId: applicationId,
-            applicationLineId: applicationLineId,
-            name: result.defra_name
-          })
+          const location = Location.dynamicsToModel(result)
+          location.applicationLineId = applicationLineId
+          return location
         }
       } catch (error) {
         LoggingService.logError(`Unable to get Location by application ID: ${error}`)
         throw error
       }
     }
-    return location
   }
 
   async save (authToken) {
-    // Map the Location to the corresponding Dynamics schema Location object
-    const dataObject = {
-      defra_name: this.name,
-      'defra_applicationId@odata.bind': `defra_applications(${this.applicationId})`
-    }
+    const dataObject = this.modelToDynamics(({field}) => field !== 'id')
     await super.save(authToken, dataObject)
   }
 }
