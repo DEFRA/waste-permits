@@ -1,6 +1,6 @@
 'use strict'
 
-// const Constants = require('../../constants')
+const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const AddressManualValidator = require('../../validators/address/addressManual.validator')
 // const AddressLookupService = require('../../services/addressLookup.service')
@@ -30,9 +30,9 @@ module.exports = class AddressManualSiteController extends BaseController {
   }
 
   async doPost (request, reply, errors) {
-    // if (errors && errors.data.details) {
-    return this.doGet(request, reply, errors)
-    // } else {
+    if (errors && errors.data.details) {
+      return this.doGet(request, reply, errors)
+    } else {
     //   const authToken = CookieService.getAuthToken(request)
     //   const applicationId = CookieService.getApplicationId(request)
     //   const applicationLineId = CookieService.getApplicationLineId(request)
@@ -43,7 +43,7 @@ module.exports = class AddressManualSiteController extends BaseController {
     //   await SiteNameAndLocation.saveAddress(request, address,
     //     authToken, applicationId, applicationLineId)
 
-    // return reply.redirect(Constants.Routes.ADDRESS.MANUAL_SITE.path)
-    // }
+      return reply.redirect(Constants.Routes.ADDRESS.MANUAL_SITE.path)
+    }
   }
 }

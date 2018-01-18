@@ -25,7 +25,9 @@ module.exports = class DynamicsDalService {
       }
     }
     await rp(options)
-      .then((data) => {})
+      .then((data) => {
+        return data
+      })
       .catch((error) => {
         LoggingService.logError('Error calling Dynamics action: ', error)
         throw error
