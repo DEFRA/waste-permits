@@ -71,15 +71,24 @@ const checkPageElements = async (request, expectedValue) => {
     'back-link',
     'defra-csrf-token',
     'postcode-label',
-    'postcode-hint'
+    'postcode-hint',
+    'manual-hint',
+    'manual-address-link',
+    'no-postcode-link-text'
   ]
   for (let id of elementIds) {
     element = doc.getElementById(id)
     Code.expect(doc.getElementById(id)).to.exist()
   }
 
+  element = doc.getElementById('invoice-subheading')
+  Code.expect(element).to.not.exist()
+
   element = doc.getElementById('postcode')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
+
+  element = doc.getElementById('no-postcode-link-text').firstChild
+  Code.expect(element.nodeValue).to.equal(`The site doesn't have a postcode`)
 
   element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Find address')

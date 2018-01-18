@@ -10,7 +10,7 @@
       {{> common/pageHeading pageHeading }}
 
       {{#if showInvoiceSubheading}}
-      <div class="panel panel-border-wide">
+      <div id="invoice-subheading" class="panel panel-border-wide">
         <p>This should be where we can send invoices for your ongoing annual costs (the subsistence charge) after the permit has been issued.</p>
       </div>
       {{/if}}
@@ -33,7 +33,7 @@
         <p id="manual-hint">
           <a id="manual-address-link" href="{{manualAddressLink}}">
           <span class="visuallyhidden">Enter address manually</span>
-          {{noPostcodeLink}}</a>
+          <span id="no-postcode-link-text">{{noPostcodeLink}}</span></a>
         </p>
 
         {{> common/submitButton buttonText='Find address'}}

@@ -10,6 +10,7 @@ const CookieService = require('../../../src/services/cookie.service')
 
 let validateCookieStub
 
+const pageHeading = `What's the site address?`
 const routePath = '/site/address/select-address'
 const getRequest = {
   method: 'GET',
@@ -44,7 +45,7 @@ const checkPageElements = async (getRequest, expectedValue) => {
   const doc = parser.parseFromString(res.payload, 'text/html')
 
   let element = doc.getElementById('page-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`What's the site address?`)
+  Code.expect(element.nodeValue).to.equal(pageHeading)
 
   element = doc.getElementById('postcode-label').firstChild
   Code.expect(element).to.exist()
