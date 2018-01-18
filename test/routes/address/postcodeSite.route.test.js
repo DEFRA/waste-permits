@@ -5,10 +5,10 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 
-const server = require('../../server')
-const CookieService = require('../../src/services/cookie.service')
-const Address = require('../../src/models/address.model')
-const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
+const server = require('../../../server')
+const CookieService = require('../../../src/services/cookie.service')
+const Address = require('../../../src/models/address.model')
+const SiteNameAndLocation = require('../../../src/models/taskList/siteNameAndLocation.model')
 
 let validateCookieStub
 let siteNameAndLocationGetAddressStub

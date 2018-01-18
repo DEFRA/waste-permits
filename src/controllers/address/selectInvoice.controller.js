@@ -4,14 +4,14 @@ const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const AddressSelectValidator = require('../../validators/address/addressSelect.validator')
 // const AddressLookupService = require('../../services/addressLookup.service')
-const CookieService = require('../../services/cookie.service')
-const Address = require('../../models/address.model')
+// const CookieService = require('../../services/cookie.service')
+// const Address = require('../../models/address.model')
 // const SiteNameAndLocation = require('../../models/taskList/siteNameAndLocation.model')
 
 module.exports = class AddressSelectInvoiceController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors, new AddressSelectValidator())
-    const authToken = CookieService.getAuthToken(request)
+    // const authToken = CookieService.getAuthToken(request)
     // const applicationId = CookieService.getApplicationId(request)
     // const applicationLineId = CookieService.getApplicationLineId(request)
 
@@ -37,8 +37,6 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
       addresses: []
       // addresses: await AddressLookupService.getAddressesFromPostcode(address.postcode)}
     }
-
-    // console.log('##### addresses:', pageContext.formValues.addresses)
 
     pageContext.changePostcodeLink = Constants.Routes.ADDRESS.POSTCODE_INVOICE.path
     pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_INVOICE.path

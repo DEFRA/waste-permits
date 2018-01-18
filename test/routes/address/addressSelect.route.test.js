@@ -5,8 +5,8 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 
-const server = require('../../server')
-const CookieService = require('../../src/services/cookie.service')
+const server = require('../../../server')
+const CookieService = require('../../../src/services/cookie.service')
 
 let validateCookieStub
 
@@ -58,10 +58,10 @@ const checkPageElements = async (getRequest, expectedValue) => {
   element = doc.getElementById('manual-address').firstChild
   Code.expect(element).to.exist()
 
-  element = doc.getElementById('site-address-label').firstChild
+  element = doc.getElementById('select-address-label').firstChild
   Code.expect(element).to.exist()
 
-  element = doc.getElementById('site-address').firstChild
+  element = doc.getElementById('select-address').firstChild
   Code.expect(element).to.exist()
 
   element = doc.getElementById('manual-hint').firstChild

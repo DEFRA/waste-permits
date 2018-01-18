@@ -6,7 +6,7 @@ const BaseValidator = require('../base.validator')
 const CHARACTER_LIMIT = 170
 
 // Can’t start or end with a hyphen
-const STARTS_OR_ENDS_WITH_HYPHEN_REGEX = /^\-|\-$/g
+const STARTS_OR_ENDS_WITH_HYPHEN_REGEX = /^-|-$/g
 
 // Only numbers, letters, apostrophes, dashes and spaces
 const VALID_CHARACTERS_REGEX = /^[a-zA-Z0-9'\- ]*$/g
