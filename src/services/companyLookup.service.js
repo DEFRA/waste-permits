@@ -2,6 +2,7 @@
 
 const rp = require('request-promise')
 
+const LoggingService = require('../services/logging.service')
 const config = require('../config/config')
 const Constants = require('../constants')
 const COMPANY_STATUS_LIST = Object.keys(Constants.CompanyStatus)
@@ -13,8 +14,11 @@ module.exports = class CompanyLookupService {
     const options = {
       uri: `${config.COMPANIES_HOUSE_SERVICE}/company/${companyNumber}`,
       json: true,
-      proxy: undefined
+      proxy: ''
     }
+
+    LoggingService.logDebug(`CompanyLookupService: Looking up company details for Company Number: ${companyNumber}`)
+    LoggingService.logDebug(`CompanyLookupService: options:`, options)
 
     let company
     await rp(options)
