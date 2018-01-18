@@ -4,6 +4,7 @@ const Handlebars = require('handlebars')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
+const LoggingService = require('../services/logging.service')
 const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
 
