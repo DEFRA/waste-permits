@@ -38,6 +38,7 @@ module.exports = class CompanyNumberController extends BaseController {
 
       // See if there is an existing account with this company number. If not, create one.
       const account = (await Account.getByCompanyNumber(authToken, companyNumber)) || new Account()
+
       if (account.isNew()) {
         account.companyNumber = companyNumber
         await account.save(authToken, true)

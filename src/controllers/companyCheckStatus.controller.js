@@ -17,8 +17,8 @@ module.exports = class CompanyStatusController extends BaseController {
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     const account = await Account.getByApplicationId(authToken, applicationId)
-
     const company = await CompanyLookupService.getCompany(account.companyNumber)
+
     if (!company || !company.status || company.isActive) {
       return reply.redirect(Constants.Routes.COMPANY_CHECK_NAME.path)
     }

@@ -2,6 +2,7 @@
 
 const rp = require('request-promise')
 
+const LoggingService = require('../services/logging.service')
 const config = require('../config/config')
 const Constants = require('../constants')
 const COMPANY_STATUS_LIST = Object.keys(Constants.CompanyStatus)
@@ -12,13 +13,19 @@ module.exports = class CompanyLookupService {
   static async getCompany (companyNumber) {
     const options = {
       uri: `${config.COMPANIES_HOUSE_SERVICE}/company/${companyNumber}`,
-      json: true
+      json: true,
+      proxy: ''
     }
+
+    LoggingService.logDebug(`CompanyLookupService - looking up company details for Company Number: ${companyNumber}`)
+    LoggingService.logDebug(`CompanyLookupService request options:`, options)
 
     let company
     await rp(options)
       .then((data) => {
         if (data) {
+          LoggingService.logDebug(`CompanyLookupService - retrieved data:`, data)
+
           const formattedCompanyStatus = CompanyLookupService._formatCompanyStatus(data.company_status)
 
           company = {
