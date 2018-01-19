@@ -16,6 +16,7 @@ let validateCookieStub
 
 const pageHeading = `Enter the site address`
 const routePath = '/site/address/address-manual'
+const nextRoutePath = '/task-list'
 const getRequest = {
   method: 'GET',
   url: routePath,
@@ -76,47 +77,39 @@ const checkPageElements = async (request, expectedValue) => {
     'address-line-1',
     'address-line-2',
     'postcode'
-    // 'postcode-label',
-    // 'postcode-hint',
-    // 'manual-hint',
-    // 'manual-address-link',
-    // 'no-postcode-link-text'
   ]
   for (let id of elementIds) {
     element = doc.getElementById(id)
     Code.expect(doc.getElementById(id)).to.exist()
   }
 
-  // element = doc.getElementById('invoice-subheading')
-  // Code.expect(element).to.not.exist()
+  element = doc.getElementById('invoice-subheading')
+  Code.expect(element).to.not.exist()
 
-  // element = doc.getElementById('postcode')
-  // Code.expect(element.getAttribute('value')).to.equal(expectedValue)
-
-  // element = doc.getElementById('no-postcode-link-text').firstChild
-  // Code.expect(element.nodeValue).to.equal(`The site doesn't have a postcode`)
+  element = doc.getElementById('postcode')
+  Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
   element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 
-// const checkValidationError = async (expectedErrorMessage) => {
-//   const res = await server.inject(postRequest)
-//   Code.expect(res.statusCode).to.equal(200)
+const checkValidationError = async (elementName, expectedErrorMessage) => {
+  const res = await server.inject(postRequest)
+  Code.expect(res.statusCode).to.equal(200)
 
-//   const parser = new DOMParser()
-//   const doc = parser.parseFromString(res.payload, 'text/html')
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(res.payload, 'text/html')
 
-//   let element
+  let element
 
-//   // Panel summary error item
-//   element = doc.getElementById('error-summary-list-item-0').firstChild
-//   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
+  // Panel summary error message
+  element = doc.getElementById('error-summary-list-item-0').firstChild
+  Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
-//   // Location grid reference field error
-//   element = doc.getElementById('postcode-error').firstChild
-//   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
-// }
+  // Field level error message
+  element = doc.getElementById(`${elementName}-error`).firstChild
+  Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
+}
 
 lab.experiment('Manual address entry page tests:', () => {
   lab.experiment('General tests:', () => {
@@ -154,11 +147,63 @@ lab.experiment('Manual address entry page tests:', () => {
     // })
   })
 
-  // lab.experiment('POST:', () => {
-  //   lab.test('POST ' + routePath + ' shows an error message when the postcode is blank', async () => {
-  //     postRequest.payload['postcode'] = ''
-  //     await checkValidationError('Enter a postcode')
-  //   })
+  lab.experiment('POST:', () => {
+    lab.test('POST ' + routePath + ' shows an error message when the building name or number is blank', async () => {
+      postRequest.payload = {
+        'building-name-or-number': '',
+        'address-line-1': 'ADDRESS LINE 1',
+        'address-line-2': 'ADDRESS LINE 2',
+        'town-or-city': 'TOWN OR CITY',
+        'postcode': 'POSTCODE'
+      }
+      await checkValidationError('building-name-or-number', 'Enter the building name or number')
+    })
+
+    lab.test('POST ' + routePath + ' shows an error message when the address line 1 is blank', async () => {
+      postRequest.payload = {
+        'building-name-or-number': 'BUILDING NAME',
+        'address-line-1': '',
+        'address-line-2': 'ADDRESS LINE 2',
+        'town-or-city': 'TOWN OR CITY',
+        'postcode': 'POSTCODE'
+      }
+      await checkValidationError('address-line-1', 'Enter an address line 1')
+    })
+
+    lab.test('POST ' + routePath + ' does NOT show an error message when the address line 2 is blank', async () => {
+      postRequest.payload = {
+        'building-name-or-number': 'BUILDING NAME',
+        'address-line-1': 'ADDRESS LINE 1',
+        'address-line-2': '',
+        'town-or-city': 'TOWN OR CITY',
+        'postcode': 'POSTCODE'
+      }
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+    })
+
+    lab.test('POST ' + routePath + ' shows an error message when the town or city is blank', async () => {
+      postRequest.payload = {
+        'building-name-or-number': 'BUILDING NAME',
+        'address-line-1': 'ADDRESS LINE 1',
+        'address-line-2': 'ADDRESS LINE 2',
+        'town-or-city': '',
+        'postcode': 'POSTCODE'
+      }
+      await checkValidationError('town-or-city', 'Enter a town or city')
+    })
+
+    lab.test('POST ' + routePath + ' shows an error message when the postcode is blank', async () => {
+      postRequest.payload = {
+        'building-name-or-number': 'BUILDING NAME',
+        'address-line-1': 'ADDRESS LINE 1',
+        'address-line-2': 'ADDRESS LINE 2',
+        'town-or-city': 'TOWN OR CITY',
+        'postcode': ''
+      }
+      await checkValidationError('postcode', 'Enter a valid postcode')
+    })
 
   //   lab.test('POST ' + routePath + ' shows an error message when the postcode is whitespace', async () => {
   //     postRequest.payload['postcode'] = '     \t       '
@@ -194,5 +239,5 @@ lab.experiment('Manual address entry page tests:', () => {
   //     Code.expect(res.statusCode).to.equal(302)
   //     Code.expect(res.headers['location']).to.equal('/site/address/select-address')
   //   })
-  // })
+  })
 })

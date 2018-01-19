@@ -48,7 +48,7 @@ module.exports = class AddressManualInvoiceController extends BaseController {
     //   await SiteNameAndLocation.saveAddress(request, address,
     //     authToken, applicationId, applicationLineId)
 
-      return reply.redirect(Constants.Routes.ADDRESS.MANUAL_INVOICE.path)
+      return reply.redirect(Constants.Routes.TASK_LIST.path)
     }
   }
 }

@@ -43,7 +43,7 @@ module.exports = class AddressManualSiteController extends BaseController {
     //   await SiteNameAndLocation.saveAddress(request, address,
     //     authToken, applicationId, applicationLineId)
 
-      return reply.redirect(Constants.Routes.ADDRESS.MANUAL_SITE.path)
+      return reply.redirect(Constants.Routes.TASK_LIST.path)
     }
   }
 }
