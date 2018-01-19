@@ -17,13 +17,15 @@ module.exports = class CompanyLookupService {
       proxy: ''
     }
 
-    LoggingService.logDebug(`CompanyLookupService: Looking up company details for Company Number: ${companyNumber}`)
-    LoggingService.logDebug(`CompanyLookupService: options:`, options)
+    LoggingService.logDebug(`CompanyLookupService - looking up company details for Company Number: ${companyNumber}`)
+    LoggingService.logDebug(`CompanyLookupService request options:`, options)
 
     let company
     await rp(options)
       .then((data) => {
         if (data) {
+          LoggingService.logDebug(`CompanyLookupService - retrieved data:`, data)
+
           const formattedCompanyStatus = CompanyLookupService._formatCompanyStatus(data.company_status)
 
           company = {
