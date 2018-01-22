@@ -240,6 +240,9 @@ Constants.PermitTypes = {
 Constants.Dynamics = {
   COMPANY_DIRECTOR: 910400000,
   DIGITAL_SOURCE: 910400000,
+  AddressType: {
+    BILLING_INVOICING: 910400004
+  },
   PermitTypes: {
     STANDARD: 910400000,
     BESPOKE: 910400001

@@ -3,8 +3,8 @@
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const AddressSelectValidator = require('../../validators/address/addressSelect.validator')
-const AddressLookupService = require('../../services/addressLookup.service')
 const CookieService = require('../../services/cookie.service')
+const Address = require('../../models/address.model')
 const SiteNameAndLocation = require('../../models/taskList/siteNameAndLocation.model')
 
 module.exports = class AddressSelectSiteController extends BaseController {
@@ -23,7 +23,7 @@ module.exports = class AddressSelectSiteController extends BaseController {
       if (address) {
         pageContext.formValues = {
           postcode: address.postcode,
-          addresses: await AddressLookupService.getAddressesFromPostcode(address.postcode)
+          addresses: await Address.listByPostcode(authToken, address.postcode)
         }
       }
     }

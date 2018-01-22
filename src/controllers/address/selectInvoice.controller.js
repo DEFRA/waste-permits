@@ -3,7 +3,6 @@
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const AddressSelectValidator = require('../../validators/address/addressSelect.validator')
-// const AddressLookupService = require('../../services/addressLookup.service')
 const CookieService = require('../../services/cookie.service')
 const Address = require('../../models/address.model')
 // const SiteNameAndLocation = require('../../models/taskList/siteNameAndLocation.model')

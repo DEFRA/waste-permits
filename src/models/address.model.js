@@ -17,6 +17,7 @@ module.exports = class Address extends BaseModel {
       this.postcode = address.postcode
       this.fullAddress = address.fullAddress
       this.uprn = address.uprn
+      this.fromAddressLookup = address.fromAddressLookup
     }
     Utilities.convertFromDynamics(this)
   }
@@ -31,7 +32,13 @@ module.exports = class Address extends BaseModel {
         if (result) {
           address = new Address({
             id: result.defra_addressid,
-            postcode: result.defra_postcode
+            buildingNameOrNumber: result.premises,
+            addressLine1: result.street_address,
+            addressLine2: result.locality,
+            postcode: result.defra_postcode,
+            fullAddress: result.address,
+            uprn: result.uprn,
+            fromAddressLookup: result.defra_fromaddresslookup
           })
         }
       } catch (error) {
@@ -63,7 +70,8 @@ module.exports = class Address extends BaseModel {
         addressLine2: address.locality,
         postcode: address.postcode,
         fullAddress: address.address,
-        uprn: address.uprn
+        uprn: address.uprn,
+        fromAddressLookup: address.fromAddressLookup
       }))
     } catch (error) {
       LoggingService.logError(`Unable to list addresses by postcode: ${error}`)
@@ -77,7 +85,17 @@ module.exports = class Address extends BaseModel {
     // Map the Address to the corresponding Dynamics schema Address object
     const dataObject = {
       defra_postcode: this.postcode
+
+      // TODO check if we always have uprn, or if not does it matter?
+      // If from ABF lookup
+      // defra_fromaddresslookup = 1 (yes)
+      // uprn = this.uprn
+
+      // If from manual entry
+      // defra_fromaddresslookup = 0 (yes)
     }
+
+    dataObject.defra_fromaddresslookup = this.fromAddressLookup ? 1 : 0
     await super.save(authToken, dataObject)
   }
 }
