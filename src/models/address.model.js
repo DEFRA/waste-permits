@@ -11,7 +11,12 @@ module.exports = class Address extends BaseModel {
     this.entity = 'defra_addresses'
     if (address) {
       this.id = address.id
+      this.buildingNameOrNumber = address.buildingNameOrNumber
+      this.addressLine1 = address.addressLine1
+      this.addressLine2 = address.addressLine2
       this.postcode = address.postcode
+      this.fullAddress = address.fullAddress
+      this.uprn = address.uprn
     }
     Utilities.convertFromDynamics(this)
   }
@@ -46,19 +51,20 @@ module.exports = class Address extends BaseModel {
     try {
       // Call Dynamics Companies House action
       let action = `defra_postcodelookup`
-      const data = await dynamicsDal.callAction(action, actionDataObject)
+      const response = await dynamicsDal.callAction(action, actionDataObject)
 
-      console.log('#####data:', data)
+      addresses = JSON.parse((JSON.parse(JSON.stringify(response))).addresses).results
 
-      // TODO
-    //   // Parse response into Address objects
-    //   return response.value.map((contact) => new Address({
-    //     id: contact.contactid,
-    //     buildingNameOrNumber: contact.firstname,
-    //     addressLine1: contact.lastname,
-    //     addressLine2: contact.telephone1,
-    //     postcode: contact.emailaddress1,
-    //   }))
+      // Parse response into Address objects
+      addresses = addresses.map((address) => new Address({
+        id: undefined,
+        buildingNameOrNumber: address.premises,
+        addressLine1: address.street_address,
+        addressLine2: address.locality,
+        postcode: address.postcode,
+        fullAddress: address.address,
+        uprn: address.uprn
+      }))
     } catch (error) {
       LoggingService.logError(`Unable to list addresses by postcode: ${error}`)
       throw error

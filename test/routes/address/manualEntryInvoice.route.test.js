@@ -24,9 +24,9 @@ const getRequest = {
 }
 let postRequest
 
-let fakeAddress = {
-  postcode: 'BS1 5AH'
-}
+// let fakeAddress = {
+//   postcode: 'BS1 5AH'
+// }
 
 lab.beforeEach(() => {
   postRequest = {
