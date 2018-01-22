@@ -16,6 +16,7 @@ const fakeStandardRule = {
   id: 'STANDARD_RULE_ID',
   name: 'STANDARD_RULE_NAME',
   limits: 'STANDARD_RULE_LIMITS',
+  _entity: 'defra_standardrules',
   code: 'SR2015 No 18',
   codeForId: 'sr2015-no-18',
   guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL'

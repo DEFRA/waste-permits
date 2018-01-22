@@ -3,44 +3,29 @@
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
-const Utilities = require('../utilities/utilities')
 
 module.exports = class Annotation extends BaseModel {
-  constructor (annotation) {
-    super()
-    this.entity = 'annotations'
-    if (annotation) {
-      this.id = annotation.id
-      this.subject = annotation.subject
-      this.filename = annotation.filename
-      this.documentBody = annotation.documentBody
-      this.applicationId = annotation.applicationId
-    }
-    Utilities.convertFromDynamics(this)
+  static mapping () {
+    return [
+      {field: 'applicationId', dynamics: '_objectid_value', bind: {id: 'objectid_defra_application', entity: 'defra_applications'}},
+      {field: 'id', dynamics: 'annotationid'},
+      {field: 'subject', dynamics: 'subject'},
+      {field: 'filename', dynamics: 'filename'},
+      {field: 'documentBody', dynamics: 'documentbody'}
+    ]
   }
 
-  static selectedDynamicsFields () {
-    return [
-      'annotationid',
-      'subject',
-      'filename',
-      '_objectid_value'
-    ]
+  constructor (...args) {
+    super(...args)
+    this._entity = 'annotations'
   }
 
   static async getById (authToken, id) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const query = `annotations(${id})?$select=${Annotation.selectedDynamicsFields()}`
-
     try {
-      const response = await dynamicsDal.search(query)
-
-      return new Annotation({
-        id: response.annotationid,
-        applicationId: response['_objectid_value'],
-        subject: response.subject,
-        filename: response.filename
-      })
+      const result = await dynamicsDal.search(query)
+      return Annotation.dynamicsToModel(result)
     } catch (error) {
       LoggingService.logError(`Unable to get Annotation by ID: ${error}`)
       throw error
@@ -48,18 +33,13 @@ module.exports = class Annotation extends BaseModel {
   }
 
   static async listByApplicationId (authToken, applicationId) {
-    if (applicationId !== undefined) {
+    if (applicationId) {
       const dynamicsDal = new DynamicsDalService(authToken)
       const filter = `_objectid_value eq ${applicationId} and  objecttypecode eq 'defra_application'`
       const query = encodeURI(`annotations?$select=${Annotation.selectedDynamicsFields()}&$filter=${filter}`)
       try {
         const response = await dynamicsDal.search(query)
-        return response.value.map((result) => new Annotation({
-          id: result.annotationid,
-          applicationId: result['_objectid_value'],
-          subject: result.subject,
-          filename: result.filename
-        }))
+        return response.value.map((result) => Annotation.dynamicsToModel(result))
       } catch (error) {
         LoggingService.logError(`Unable to get Annotations by application ID: ${error}`)
         throw error
@@ -68,13 +48,7 @@ module.exports = class Annotation extends BaseModel {
   }
 
   async save (authToken) {
-    // Map the Annotation to the corresponding Dynamics schema Annotation object
-    const dataObject = {
-      subject: this.subject,
-      filename: this.filename,
-      documentbody: this.documentBody,
-      'objectid_defra_application@odata.bind': `defra_applications(${this.applicationId})`
-    }
+    const dataObject = this.modelToDynamics()
     await super.save(authToken, dataObject)
   }
 }

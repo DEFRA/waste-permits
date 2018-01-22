@@ -7,82 +7,68 @@ const LoggingService = require('../services/logging.service')
 const Utilities = require('../utilities/utilities')
 
 module.exports = class Account extends BaseModel {
-  constructor (account) {
-    super()
-    this.entity = 'accounts'
-    if (account) {
-      this.id = account.id
-      this.companyNumber = account.companyNumber
-      this.name = account.name
-      this.isDraft = account.isDraft
-      this.isValidatedWithCompaniesHouse = account.isValidatedWithCompaniesHouse
-    }
-    Utilities.convertFromDynamics(this)
-  }
-
-  static selectedDynamicsFields () {
+  static mapping () {
     return [
-      'defra_companyhouseid',
-      'name',
-      'defra_draft'
+      {field: 'id', dynamics: 'accountid'},
+      {field: 'companyNumber', dynamics: 'defra_companyhouseid'},
+      {field: 'name', dynamics: 'name'},
+      {field: 'isDraft', dynamics: 'defra_draft'},
+      {field: 'isValidatedWithCompaniesHouse', dynamics: 'defra_validatedwithcompanyhouse'}
     ]
   }
 
+  constructor (...args) {
+    super(...args)
+    this._entity = 'accounts'
+  }
+
+  static async getById (authToken, id) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const query = `accounts(${id})?$select=${Account.selectedDynamicsFields()}`
+    try {
+      const result = await dynamicsDal.search(query)
+      return Account.dynamicsToModel(result)
+    } catch (error) {
+      LoggingService.logError(`Unable to get Account by ID: ${error}`)
+      throw error
+    }
+  }
+
   static async getByApplicationId (authToken, applicationId) {
-    let account
     const dynamicsDal = new DynamicsDalService(authToken)
     const application = await Application.getById(authToken, applicationId)
     if (application.accountId) {
       try {
         const query = encodeURI(`accounts(${application.accountId})?$select=${Account.selectedDynamicsFields()}`)
         const result = await dynamicsDal.search(query)
-        if (result) {
-          account = new Account({
-            id: result.accountid,
-            companyNumber: result.defra_companyhouseid,
-            name: result.name,
-            isDraft: result.defra_draft
-          })
-        }
+        return Account.dynamicsToModel(result)
       } catch (error) {
         LoggingService.logError(`Unable to get Account by application ID: ${error}`)
         throw error
       }
     }
-    return account
   }
 
   static async getByCompanyNumber (authToken, companyNumber) {
-    let account
     const dynamicsDal = new DynamicsDalService(authToken)
     try {
       const filter = `defra_companyhouseid eq '${companyNumber}'`
-      const query = encodeURI(`accounts?$select=defra_companyhouseid,name,defra_draft&$filter=${filter}`)
+      const query = encodeURI(`accounts?$select=${Account.selectedDynamicsFields()}&$filter=${filter}`)
       let result = await dynamicsDal.search(query)
 
-      if (result && result.value && result.value.length > 0) {
-        result = result.value[0]
-        account = new Account({
-          id: result.accountid,
-          companyNumber: result.defra_companyhouseid,
-          name: result.name,
-          isDraft: result.defra_draft
-        })
+      if (result && result.value) {
+        return Account.dynamicsToModel(result.value.pop() || [])
       }
     } catch (error) {
       LoggingService.logError(`Unable to get Account by application ID: ${error}`)
       throw error
     }
-    return account
   }
 
   async save (authToken, isDraft) {
-    const dataObject = {
-      defra_companyhouseid: Utilities.stripWhitespace(this.companyNumber).toUpperCase(),
-      name: this.name,
-      defra_draft: isDraft,
-      defra_validatedwithcompanyhouse: this.isValidatedWithCompaniesHouse
-    }
+    const dataObject = this.modelToDynamics()
+    dataObject.defra_companyhouseid = dataObject.defra_companyhouseid ? Utilities.stripWhitespace(dataObject.defra_companyhouseid).toUpperCase() : undefined
+    dataObject.defra_draft = isDraft
     await super.save(authToken, dataObject)
   }
 

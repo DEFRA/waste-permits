@@ -1,26 +1,23 @@
 'use strict'
 
-const Constants = require('../constants')
+const {CONFIRM_RULES} = require('../constants').Dynamics.CompletedParamters
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
 const ApplicationLine = require('./applicationLine.model')
-const Utilities = require('../utilities/utilities')
 
 module.exports = class ConfirmRules extends BaseModel {
-  constructor (confirmRules) {
-    super()
-    if (confirmRules) {
-      this.applicationId = confirmRules.applicationId
-      this.applicationLineId = confirmRules.applicationLineId
-      this.complete = confirmRules.complete
-    }
-    Utilities.convertFromDynamics(this)
+  static mapping () {
+    return [
+      {field: 'applicationId', dynamics: 'accountid'},
+      {field: 'applicationLineId', dynamics: 'defra_companyhouseid'},
+      {field: 'complete'}
+    ]
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
-    const query = encodeURI(`defra_applicationlines(${applicationLineId})?$expand=defra_parametersId($select=${Constants.Dynamics.CompletedParamters.CONFIRM_RULES})`)
+    const query = encodeURI(`defra_applicationlines(${applicationLineId})?$expand=defra_parametersId($select=${CONFIRM_RULES})`)
     try {
       const result = await dynamicsDal.search(query)
 
@@ -29,7 +26,7 @@ module.exports = class ConfirmRules extends BaseModel {
         confirmRules = new ConfirmRules({
           applicationId: applicationId,
           applicationLineId: applicationLineId,
-          complete: result.defra_parametersId[Constants.Dynamics.CompletedParamters.CONFIRM_RULES]
+          complete: result.defra_parametersId[CONFIRM_RULES]
         })
       }
       return confirmRules
@@ -47,7 +44,7 @@ module.exports = class ConfirmRules extends BaseModel {
       const applicationLine = await ApplicationLine.getById(authToken, this.applicationLineId)
       if (applicationLine) {
         const entity = {}
-        entity[Constants.Dynamics.CompletedParamters.CONFIRM_RULES] = true
+        entity[CONFIRM_RULES] = true
 
         const query = `defra_wasteparamses(${applicationLine.parametersId})`
         await dynamicsDal.update(query, entity)
