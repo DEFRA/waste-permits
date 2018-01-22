@@ -23,7 +23,7 @@ module.exports = class Contact extends BaseModel {
 
   constructor (...args) {
     super(...args)
-    this.entity = 'contacts'
+    this._entity = 'contacts'
   }
 
   static async getById (authToken, id) {

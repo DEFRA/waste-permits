@@ -19,15 +19,15 @@ module.exports = class Application extends BaseModel {
       {field: 'bankruptcyDetails', dynamics: 'defra_bankruptcydeclarationdetails'},
       {field: 'confidentiality', dynamics: 'defra_confidentialitydeclaration'},
       {field: 'confidentialityDetails', dynamics: 'defra_confidentialitydeclarationdetails'},
-      {field: 'regime', dynamics: 'defra_regime', defaultVal: Constants.Dynamics.WASTE_REGIME},
-      {field: 'source', dynamics: 'defra_source', defaultVal: Constants.Dynamics.DIGITAL_SOURCE},
-      {field: 'statuscode', dynamics: 'statuscode', defaultVal: Constants.Dynamics.StatusCode.DRAFT}
+      {field: 'regime', dynamics: 'defra_regime', constant: Constants.Dynamics.WASTE_REGIME},
+      {field: 'source', dynamics: 'defra_source', constant: Constants.Dynamics.DIGITAL_SOURCE},
+      {field: 'statuscode', dynamics: 'statuscode', constant: Constants.Dynamics.StatusCode.DRAFT}
     ]
   }
 
   constructor (...args) {
     super(...args)
-    this.entity = 'defra_applications'
+    this._entity = 'defra_applications'
   }
 
   static async getById (authToken, applicationId) {

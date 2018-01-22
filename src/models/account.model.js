@@ -19,7 +19,7 @@ module.exports = class Account extends BaseModel {
 
   constructor (...args) {
     super(...args)
-    this.entity = 'accounts'
+    this._entity = 'accounts'
   }
 
   static async getById (authToken, id) {

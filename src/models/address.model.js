@@ -14,7 +14,7 @@ module.exports = class Address extends BaseModel {
 
   constructor (...args) {
     super(...args)
-    this.entity = 'defra_addresses'
+    this._entity = 'defra_addresses'
   }
 
   static async getById (authToken, id) {

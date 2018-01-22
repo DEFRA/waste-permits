@@ -19,7 +19,7 @@ module.exports = class Location extends BaseModel {
     if (location) {
       this.applicationLineId = location.applicationLineId
     }
-    this.entity = 'defra_locations'
+    this._entity = 'defra_locations'
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {

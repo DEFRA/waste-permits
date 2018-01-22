@@ -16,7 +16,7 @@ module.exports = class ApplicationContact extends BaseModel {
 
   constructor (...args) {
     super(...args)
-    this.entity = 'defra_applicationcontacts'
+    this._entity = 'defra_applicationcontacts'
   }
 
   static async get (authToken, applicationId, contactId) {

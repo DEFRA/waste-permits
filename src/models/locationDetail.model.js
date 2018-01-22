@@ -16,7 +16,7 @@ module.exports = class LocationDetail extends BaseModel {
 
   constructor (...args) {
     super(...args)
-    this.entity = 'defra_locationdetailses'
+    this._entity = 'defra_locationdetailses'
   }
 
   static async getByLocationId (authToken, locationId) {

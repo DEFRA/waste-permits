@@ -20,7 +20,7 @@ module.exports = class StandardRule extends BaseModel {
 
   constructor (...args) {
     super(...args)
-    this.entity = 'defra_standardrules'
+    this._entity = 'defra_standardrules'
     const [standardRule] = args
     this.codeForId = StandardRule.transformPermitCode(standardRule.code)
   }

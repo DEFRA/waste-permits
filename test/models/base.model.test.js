@@ -9,28 +9,38 @@ const BaseModel = require('../../src/models/base.model')
 class Model extends BaseModel {
   static mapping () {
     return [
-      {field: 'id', dynamics: 'dynamicsIdValue', bind: {id: 'dynamicsId', relationship: 'dynamicsOtherModelDynamicsId', entity: 'dynamicsOtherModel'}},
+      {field: 'id', dynamics: 'dynamicsId'},
+      {field: 'otherId', dynamics: '_dynamicsOtherId_value', bind: {id: 'dynamicsOtherId', relationship: 'dynamicsOtherModelDynamicsOtherId', entity: 'dynamicsOtherModel'}},
       {field: 'name', dynamics: 'dynamicsName'},
       {field: 'dob.month', dynamics: 'dynamicsDobMonth'},
       {field: 'dob.year', dynamics: 'dynamicsDobYear'},
       {field: 'ref', dynamics: 'dynamicsRef', readOnly: true},
-      {field: 'regime', dynamics: 'dynamicsRegime', defaultVal: 'REGIME'}
+      {field: 'regime', dynamics: 'dynamicsRegime', constant: 'REGIME'}
     ]
+  }
+
+  constructor (...args) {
+    super(...args)
+    this._entity = 'accounts'
   }
 }
 
 const modelData = {
+  _entity: 'accounts',
   id: 'ID',
+  otherId: 'OTHERID',
   name: 'NAME',
   dob: {
     month: 'MONTH',
     year: 'YEAR'
   },
-  ref: 'REF'
+  ref: 'REF',
+  regime: 'REGIME'
 }
 
 const dynamicsRequestData = {
-  'dynamicsId@odata.bind': 'dynamicsOtherModel(ID)',
+  dynamicsId: 'ID',
+  'dynamicsOtherId@odata.bind': 'dynamicsOtherModel(OTHERID)',
   dynamicsName: 'NAME',
   dynamicsDobMonth: 'MONTH',
   dynamicsDobYear: 'YEAR',
@@ -38,7 +48,8 @@ const dynamicsRequestData = {
 }
 
 const dynamicsReplyData = {
-  dynamicsIdValue: 'ID',
+  dynamicsId: 'ID',
+  '_dynamicsOtherId_value': 'OTHERID',
   dynamicsName: 'NAME',
   dynamicsDobMonth: 'MONTH',
   dynamicsDobYear: 'YEAR',
@@ -63,7 +74,7 @@ lab.experiment('Base Model tests:', () => {
 
   lab.test('toString() method serialises  test model object correctly', () => {
     const model = new Model(modelData)
-    Code.expect(model.toString()).to.equal('Model: {\n  "id": "ID", "name": "NAME", "dob": {\n  "month": "MONTH", "year": "YEAR"\n}, "ref": "REF"\n}')
+    Code.expect(model.toString()).to.equal('Model: {\n  "id": "ID", "otherId": "OTHERID", "name": "NAME", "dob": {\n  "month": "MONTH", "year": "YEAR"\n}, "ref": "REF", "regime": "REGIME"\n}')
   })
 
   lab.test('isNew() correctly identifies if the instance has a Dynamics ID', () => {
@@ -83,5 +94,25 @@ lab.experiment('Base Model tests:', () => {
 
   lab.test('dynamicsToModel() method converts the dynamics data to the model', () => {
     Code.expect(Model.dynamicsToModel(dynamicsReplyData)).to.equal(modelData)
+  })
+
+  lab.test('_deleteBoundReferences() method to delete a bound reference to another entity ', async () => {
+    const model = new Model(modelData)
+    // now clear the reference
+    model.otherId = undefined
+    let searchQuery
+    let deleteQuery
+    const dynamicsDal = {
+      delete: (query) => {
+        deleteQuery = query
+      },
+      search: (query) => {
+        searchQuery = query
+        return dynamicsReplyData
+      }
+    }
+    await model._deleteBoundReferences(dynamicsDal)
+    Code.expect(searchQuery).to.equal('accounts(ID)?$select=_dynamicsOtherId_value')
+    Code.expect(deleteQuery).to.equal('dynamicsOtherModel(OTHERID)/dynamicsOtherModelDynamicsOtherId(ID)/$ref')
   })
 })

@@ -11,13 +11,13 @@ module.exports = class ApplicationLine extends BaseModel {
       {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationId', entity: 'defra_applications'}},
       {field: 'standardRuleId', dynamics: '_defra_standardruleid_value', bind: {id: 'defra_standardruleId', entity: 'defra_standardrules'}},
       {field: 'parametersId', dynamics: '_defra_parametersid_value'},
-      {field: 'permitType', dynamics: 'defra_permittype', defaultVal: Constants.Dynamics.PermitTypes.STANDARD}
+      {field: 'permitType', dynamics: 'defra_permittype', constant: Constants.Dynamics.PermitTypes.STANDARD}
     ]
   }
 
   constructor (...args) {
     super(...args)
-    this.entity = 'defra_applicationlines'
+    this._entity = 'defra_applicationlines'
   }
 
   static async getById (authToken, applicationLineId) {

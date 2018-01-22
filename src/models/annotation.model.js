@@ -17,7 +17,7 @@ module.exports = class Annotation extends BaseModel {
 
   constructor (...args) {
     super(...args)
-    this.entity = 'annotations'
+    this._entity = 'annotations'
   }
 
   static async getById (authToken, id) {

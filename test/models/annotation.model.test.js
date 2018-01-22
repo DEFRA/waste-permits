@@ -20,7 +20,7 @@ const fakeApplication = {
 }
 
 const fakeAnnotation = {
-  entity: 'annotations',
+  _entity: 'annotations',
   applicationId: fakeApplication.id,
   documentBody: undefined,
   subject: 'ANNOTATION_NAME',
