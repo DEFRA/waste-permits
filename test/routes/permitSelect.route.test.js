@@ -183,7 +183,7 @@ lab.experiment('Select a permit page tests:', () => {
     Code.expect(element.nodeValue).to.equal(errorMessage)
 
     // Chosen permit ID error
-    element = doc.getElementById('chosen-permit-error').firstChild
+    element = doc.getElementById('chosen-permit-error').firstChild.firstChild
     Code.expect(element.nodeValue).to.equal(errorMessage)
   })
 
@@ -211,7 +211,7 @@ lab.experiment('Select a permit page tests:', () => {
     Code.expect(element.nodeValue).to.equal(errorMessage)
 
     // Chosen permit ID error
-    element = doc.getElementById('chosen-permit-error').firstChild
+    element = doc.getElementById('chosen-permit-error').firstChild.firstChild
     Code.expect(element.nodeValue).to.equal(errorMessage)
   })
 })

@@ -172,7 +172,7 @@ const checkValidationError = async (expectedErrorMessage) => {
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
   // Location site name field error
-  element = doc.getElementById('business-trading-name-error').firstChild
+  element = doc.getElementById('business-trading-name-error').firstChild.firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
 

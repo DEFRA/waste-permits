@@ -8,8 +8,9 @@ const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
 
 module.exports = class CompanyStatusController extends BaseController {
-  constructor (route) {
-    super(route)
+  constructor (...args) {
+    const [route] = args
+    super(...args)
     this.orginalPageHeading = route.pageHeading
   }
 

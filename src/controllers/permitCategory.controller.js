@@ -2,11 +2,10 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const PermitCategoryValidator = require('../validators/permitCategory.validator')
 
 module.exports = class PermitCategoryController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new PermitCategoryValidator())
+    const pageContext = this.createPageContext(errors)
 
     pageContext.formValues = request.payload
     return reply.view('permitCategory', pageContext)

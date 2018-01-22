@@ -14,6 +14,6 @@ const validator = new UploadEntityValidator({
   ]
 })
 
-const controller = new UploadCourseRegistrationController(UPLOAD_COURSE_REGISTRATION, true, TASK_LIST, validator)
+const controller = new UploadCourseRegistrationController(UPLOAD_COURSE_REGISTRATION, validator, true, TASK_LIST)
 
 module.exports = Route.register('GET, POST, REMOVE, UPLOAD', controller)

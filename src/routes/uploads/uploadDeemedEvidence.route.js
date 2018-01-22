@@ -14,6 +14,6 @@ const validator = new UploadEntityValidator({
   ]
 })
 
-const controller = new UploadDeemedEvidenceController(UPLOAD_DEEMED_EVIDENCE, true, TASK_LIST, validator)
+const controller = new UploadDeemedEvidenceController(UPLOAD_DEEMED_EVIDENCE, validator, true, TASK_LIST)
 
 module.exports = Route.register('GET, POST, REMOVE, UPLOAD', controller)

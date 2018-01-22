@@ -5,14 +5,18 @@ const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 
 module.exports = class BaseController {
-  constructor (route, cookieValidationRequired = true) {
+  constructor (route, validator, cookieValidationRequired = true) {
     this.route = route
     this.path = route.path
+    if (validator) {
+      this.validator = validator
+    }
     this.failAction = (...args) => this.handler.apply(this, args)
     this.cookieValidationRequired = cookieValidationRequired
   }
 
   createPageContext (errors, validator) {
+    validator = validator || this.validator
     const pageContext = {
       skipLinkMessage: Constants.SKIP_LINK_MESSAGE,
       pageTitle: Constants.buildPageTitle(this.route.pageHeading),
@@ -36,6 +40,10 @@ module.exports = class BaseController {
         await this.doGet(request, reply, errors)
         break
       case 'POST':
+        if (this.validator) {
+          // Apply custom validation if required
+          errors = this.validator.customValidate(request, errors)
+        }
         await this.doPost(request, reply, errors)
         break
     }

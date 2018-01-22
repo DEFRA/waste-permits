@@ -154,7 +154,7 @@ lab.experiment('Company Declare Offences tests:', () => {
         Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 
         // Relevant offences details field error
-        Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.nodeValue).to.equal(expectedErrorMessage)
+        Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
       }
 
       lab.test('when offences not checked', async () => {

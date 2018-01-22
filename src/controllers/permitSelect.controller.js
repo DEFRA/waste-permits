@@ -4,12 +4,11 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const StandardRule = require('../models/standardRule.model')
-const PermitSelectValidator = require('../validators/permitSelect.validator')
 const ApplicationLine = require('../models/applicationLine.model')
 
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new PermitSelectValidator())
+    const pageContext = this.createPageContext(errors)
     const authToken = CookieService.getAuthToken(request)
 
     pageContext.formValues = request.payload
