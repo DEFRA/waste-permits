@@ -33,7 +33,7 @@
     "gulp-autoprefixer": "^4.1.0",
     "gulp-concat": "^2.6.1",
     "gulp-contains": "^1.1.0",
-    "gulp-htmlhint": "^1.0.0",
+    "gulp-htmlhint": "^2.0.0",
     "gulp-imagemin": "^4.1.0",
     "gulp-lab": "^1.0.7",
     "gulp-nodemon": "^2.2.1",
