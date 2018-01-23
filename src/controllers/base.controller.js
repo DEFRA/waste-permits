@@ -1,5 +1,6 @@
 'use strict'
 
+const Merge = require('deepmerge')
 const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
@@ -45,7 +46,7 @@ module.exports = class BaseController {
           const currentErrors = errors && errors.data && errors.data.details ? errors.data.details : []
           const customErrors = this.validator.customValidate(currentErrors)
           if (customErrors.length) {
-            Object.assign(errors.data.details, customErrors)
+            Merge(errors.data.details, customErrors)
           }
         }
         await this.doPost(request, reply, errors)
