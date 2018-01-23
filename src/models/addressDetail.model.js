@@ -6,17 +6,17 @@ const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
 const Utilities = require('../utilities/utilities')
 
-module.exports = class ContactDetail extends BaseModel {
-  constructor (contactDetail) {
+module.exports = class AddressDetail extends BaseModel {
+  constructor (addressDetail) {
     super()
-    this.entity = 'defra_contactdetailses'
-    if (contactDetail) {
-      this.id = contactDetail.id
-      this.addressType = contactDetail.addressType
-      this.addressId = contactDetail.addressType
-      this.applicationId = contactDetail.applicationId
+    this.entity = 'defra_addressdetailses'
+    if (addressDetail) {
+      this.id = addressDetail.id
+      this.addressType = addressDetail.addressType
+      this.addressId = addressDetail.addressType
+      this.applicationId = addressDetail.applicationId
       // TODO
-      // this.customerId = contactDetail.customerId
+      // this.customerId = addressDetail.customerId
     }
     Utilities.convertFromDynamics(this)
   }
@@ -26,7 +26,7 @@ module.exports = class ContactDetail extends BaseModel {
       'defra_name',
       'defra_addresstype',
       'defra_addressdetailsid',
-      'defra_applicationid'
+      'defra_applicationId'
 
       // TODO
       // 'defra_customer'
@@ -34,16 +34,16 @@ module.exports = class ContactDetail extends BaseModel {
   }
 
   static async getByApplicationId (authToken, applicationId, applicationLineId) {
-    let contactDetail
+    let addressDetail
     if (applicationId !== undefined) {
       const dynamicsDal = new DynamicsDalService(authToken)
       const filter = `_defra_applicationid_value eq ${applicationId}`
-      const query = encodeURI(`defra_contactdetailses?$select=${ContactDetail.selectedDynamicsFields()}&$filter=${filter}`)
+      const query = encodeURI(`defra_addressdetailses?$select=${AddressDetail.selectedDynamicsFields()}&$filter=${filter}`)
       try {
         const response = await dynamicsDal.search(query)
         const result = response.value.pop()
         if (result) {
-          contactDetail = new ContactDetail({
+          addressDetail = new AddressDetail({
             // TODO
             id: result.ContractDetailId,
             addressType: result.defra_addresstype,
@@ -52,11 +52,11 @@ module.exports = class ContactDetail extends BaseModel {
           })
         }
       } catch (error) {
-        LoggingService.logError(`Unable to get ContactDetail by application ID: ${error}`)
+        LoggingService.logError(`Unable to get AddressDetail by application ID: ${error}`)
         throw error
       }
     }
-    return contactDetail
+    return addressDetail
   }
 
   // setAddress (addressId) {

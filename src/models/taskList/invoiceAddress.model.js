@@ -6,18 +6,18 @@ const DynamicsDalService = require('../../services/dynamicsDal.service')
 const BaseModel = require('../base.model')
 const ApplicationLine = require('../applicationLine.model')
 const Address = require('../address.model')
-const ContactDetail = require('../contactDetail.model')
+const AddressDetail = require('../addressDetail.model')
 const LoggingService = require('../../services/logging.service')
 
 module.exports = class InvoiceAddress extends BaseModel {
   static async getAddress (request, authToken, applicationId) {
     let address
     try {
-        // Get the ContactDetail for this application
-      let contactDetail = await ContactDetail.getByApplicationId(authToken, applicationId)
+        // Get the AddressDetail for this application
+      let contactDetail = await AddressDetail.getByApplicationId(authToken, applicationId)
 
       if (contactDetail && contactDetail.addressId !== undefined) {
-          // Get the Address for this ContactDetail
+          // Get the Address for this AddressDetail
         address = await Address.getById(authToken, contactDetail.addressId)
       }
     } catch (error) {
@@ -33,11 +33,11 @@ module.exports = class InvoiceAddress extends BaseModel {
     }
 
     try {
-      // Get the ContactDetails for this application (if there is one)
-      let contactDetail = await ContactDetail.getByApplicationId(authToken, applicationId)
+      // Get the AddressDetails for this application (if there is one)
+      let contactDetail = await AddressDetail.getByApplicationId(authToken, applicationId)
       if (!contactDetail) {
-        // Create new ContactDetail
-        contactDetail = new ContactDetail({
+        // Create new AddressDetail
+        contactDetail = new AddressDetail({
           addressType: Constants.Dynamics.AddressType.BILLING_INVOICING,
           applicationId: applicationId
 
@@ -50,7 +50,7 @@ module.exports = class InvoiceAddress extends BaseModel {
         await contactDetail.save(authToken)
       }
 
-      // Get the Address for this ContactDetail (if there is one)
+      // Get the Address for this AddressDetail (if there is one)
       let isNewAddress = false
       let address
 
@@ -89,7 +89,7 @@ module.exports = class InvoiceAddress extends BaseModel {
 
       await address.save(authToken)
 
-      // If the Address was new then we need to associate it with the ContactDetail in Dynamics
+      // If the Address was new then we need to associate it with the AddressDetail in Dynamics
       if (isNewAddress) {
         contactDetail.setAddress(address.id)
         contactDetail.save(authToken)
