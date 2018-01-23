@@ -1,6 +1,5 @@
 'use strict'
 
-const Merge = require('deepmerge')
 const ObjectPath = require('object-path')
 
 function _getRequired (errors) {
@@ -39,17 +38,25 @@ module.exports = class BaseValidator {
     this.errorMessages = {}
   }
 
-  static _customValidate (...args) {
-    // This is here for unit test purposes only
-    return _customValidate(...args)
-  }
-
   customValidate (data, errors) {
     if (this.customValidators) {
+      // Get current errors
       const currentErrors = ObjectPath.get(errors, 'data.details') || []
+      // Get custom errors
       let customErrors = _customValidate(data, currentErrors, this.customValidators(), this.errorMessages)
       if (customErrors.length) {
-        errors = {data: {details: Merge(currentErrors, customErrors)}}
+        // Now merge the errors based on the order of the fields within the errorMessages definition
+        const details = []
+        for (let fieldName in this.errorMessages) {
+          currentErrors
+            .filter(({path}) => path[0] === fieldName)
+            .forEach((error) => details.push(error))
+          customErrors
+            .filter(({path}) => path[0] === fieldName)
+            .forEach((error) => details.push(error))
+        }
+        // Set errors to the structure expected by Hapi
+        errors = {data: {details}}
       }
     }
     return errors
