@@ -1,6 +1,5 @@
 'use strict'
 
-const Merge = require('deepmerge')
 const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
@@ -43,11 +42,7 @@ module.exports = class BaseController {
       case 'POST':
         if (this.validator) {
           // Apply custom validation if required
-          const currentErrors = errors && errors.data && errors.data.details ? errors.data.details : []
-          const customErrors = this.validator.customValidate(currentErrors)
-          if (customErrors.length) {
-            Merge(errors.data.details, customErrors)
-          }
+          errors = this.validator.customValidate(request.payload, errors)
         }
         await this.doPost(request, reply, errors)
         break

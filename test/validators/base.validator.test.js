@@ -102,24 +102,29 @@ lab.experiment('Base Validator tests:', () => {
           telephone: '++++'
         }
       }
-      const errors = [{path: ['telephone'], type: 'min'}]
-      const updatedErrors = validator.customValidate(request, errors)
-      Code.expect(updatedErrors).to.equal([
-        {path: ['telephone'], type: 'custom.invalid', message: 'Telephone number is invalid'},
-        {path: ['telephone'], type: 'custom.test', message: 'Telephone Test failed'}
-      ])
+      const errors = [{path: ['telephone'], type: 'min', message: 'Too small'}]
+      const updatedErrors = validator.customValidate(request, {data: {details: errors}})
+      Code.expect(updatedErrors).to.equal({
+        data: {
+          details: [
+            {path: ['telephone'], type: 'min', message: 'Too small'},
+            {path: ['telephone'], type: 'custom.invalid', message: 'Telephone number is invalid'},
+            {path: ['telephone'], type: 'custom.test', message: 'Telephone Test failed'}
+          ]
+        }
+      })
     })
 
     lab.test('will not validate if a required error exists for that field', () => {
       const validator = new TestValidator()
       const request = {
         payload: {
-          telephone: ''
+          telephone: '++++'
         }
       }
-      const errors = [{path: 'telephone', type: 'any.required'}]
-      const updatedErrors = validator.customValidate(request, errors)
-      Code.expect(updatedErrors).to.equal([])
+      const errors = [{path: ['telephone'], type: 'any.required', message: 'Telephone required'}]
+      const updatedErrors = validator.customValidate(request, {data: {details: errors}})
+      Code.expect(updatedErrors).to.equal({data: {details: errors}})
     })
   })
 })

@@ -1,37 +1,58 @@
 'use strict'
 
+const Merge = require('deepmerge')
+const ObjectPath = require('object-path')
+
+function _getRequired (errors) {
+  const requiredFields = {}
+  errors
+    .filter(({type}) => type === 'any.required')
+    .forEach(({type, path}) => {
+      if (type === 'any.required') {
+        requiredFields[path[0]] = true
+      }
+    })
+  return requiredFields
+}
+
+function _customValidate (data, errors, validators, errorMessages) {
+  const customErrors = []
+  // Only validate fields where there is currently not an error of type 'any.required' already present
+  const requiredFields = _getRequired(errors)
+  Object.keys(validators)
+    .forEach((field) => {
+      if (!requiredFields[field]) {
+        Object.keys(validators[field])
+          .forEach((type) => {
+            const validatorFunction = validators[field][type]
+            if (validatorFunction(data[field] || '')) {
+              customErrors.push({message: errorMessages[field][type], path: [field], type})
+            }
+          })
+      }
+    })
+  return customErrors
+}
+
 module.exports = class BaseValidator {
   constructor () {
     this.errorMessages = {}
   }
 
-  customValidate (request, errors) {
-    const customErrors = []
+  static _customValidate (...args) {
+    // This is here for unit test purposes only
+    return _customValidate(...args)
+  }
+
+  customValidate (data, errors) {
     if (this.customValidators) {
-      // Only validate fields where there is currently not an error of type 'any.required' already present
-      let requiredFields = []
-      if (errors) {
-        requiredFields = errors
-          .filter(({type}) => type === 'any.required')
-          .map(({path}) => path.split('.').pop())
+      const currentErrors = ObjectPath.get(errors, 'data.details') || []
+      let customErrors = _customValidate(data, currentErrors, this.customValidators(), this.errorMessages)
+      if (customErrors.length) {
+        errors = {data: {details: Merge(currentErrors, customErrors)}}
       }
-      const validators = this.customValidators()
-      Object.keys(validators)
-        .forEach((field) => {
-          if (requiredFields.indexOf(field) === -1) {
-            const value = request.payload[field] || ''
-            for (let type in validators[field]) {
-              if (validators[field].hasOwnProperty(type)) {
-                const validatorFunction = validators[field][type]
-                if (validatorFunction(value)) {
-                  customErrors.push({message: this.errorMessages[field][type], path: [field], type})
-                }
-              }
-            }
-          }
-        })
     }
-    return customErrors
+    return errors
   }
 
   addErrorsToPageContext (validationErrors, pageContext) {
