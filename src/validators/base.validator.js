@@ -6,29 +6,32 @@ module.exports = class BaseValidator {
   }
 
   customValidate (request, errors) {
-    const details = errors && errors.data.details ? errors.data.details : []
+    const customErrors = []
     if (this.customValidators) {
+      // Only validate fields where there is currently not an error of type 'any.required' already present
+      let requiredFields = []
+      if (errors) {
+        requiredFields = errors
+          .filter(({type}) => type === 'any.required')
+          .map(({path}) => path.split('.').pop())
+      }
       const validators = this.customValidators()
       Object.keys(validators)
-      // Only validate if no error already exists for this field
-        .filter((field) => !details.some(({path}) => path[0] === field))
         .forEach((field) => {
-          // Only validate if no error already exists for this field
-          const value = request.payload[field] || ''
-          for (let type in validators[field]) {
-            if (validators[field].hasOwnProperty(type) && validators[field][type](value)) {
-              details.push({message: this.errorMessages[field][type], path: [field], type})
+          if (requiredFields.indexOf(field) === -1) {
+            const value = request.payload[field] || ''
+            for (let type in validators[field]) {
+              if (validators[field].hasOwnProperty(type)) {
+                const validatorFunction = validators[field][type]
+                if (validatorFunction(value)) {
+                  customErrors.push({message: this.errorMessages[field][type], path: [field], type})
+                }
+              }
             }
           }
         })
     }
-
-    // Now return the errors in the form expected
-    if (errors && errors.data.details) {
-      return errors
-    } else if (details.length) {
-      return {data: {details}}
-    }
+    return customErrors
   }
 
   addErrorsToPageContext (validationErrors, pageContext) {
@@ -42,30 +45,23 @@ module.exports = class BaseValidator {
       const fieldName = error.path[0] // field that the error is to be associated with.
       const propertyWithError = error.path.pop() // the descendant in the path where the error can be found.
       if (!pageContext.errors[fieldName]) {
+        // Create an array to hold all the errors that will refer to this fieldName
         pageContext.errors[fieldName] = []
       }
 
-      if (!this.errorMessages[propertyWithError]) {
-        // Handle validation messages missing in the validator
-        pageContext.errors[fieldName].push(`Unable to find error messages for field: ${fieldName}`)
+      let message = `Unable to find error messages for field: ${fieldName}`
+      if (this.errorMessages[propertyWithError]) {
+        // Look up the corresponding error message for the field that is in error and add to the page context
+        message = this.errorMessages[propertyWithError][error.type] || `Validation message not found... Field: ${fieldName}, Error Type: ${error.type}`
+      }
+
+      if (message.trim()) {
+        // Only add the error if it's not blank
         pageContext.errorList.push({
           fieldName: fieldName,
-          message: pageContext.errors[fieldName]
+          message: message
         })
-      } else {
-        // Look up the corresponding error message for the field that is in error and add to the page context
-        const message = this.errorMessages[propertyWithError][error.type] || `Validation message not found... Field: [${fieldName}] Error Type: [${error.type}]`
-
-        if (message.trim()) {
-          pageContext.errorList.push({
-            fieldName: fieldName,
-            message: message
-          })
-        }
-
-        if (message.trim()) {
-          pageContext.errors[fieldName].push(message)
-        }
+        pageContext.errors[fieldName].push(message)
       }
     })
   }

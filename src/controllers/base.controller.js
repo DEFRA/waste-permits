@@ -42,7 +42,11 @@ module.exports = class BaseController {
       case 'POST':
         if (this.validator) {
           // Apply custom validation if required
-          errors = this.validator.customValidate(request, errors)
+          const currentErrors = errors && errors.data && errors.data.details ? errors.data.details : []
+          const customErrors = this.validator.customValidate(currentErrors)
+          if (customErrors.length) {
+            Object.assign(errors.data.details, customErrors)
+          }
         }
         await this.doPost(request, reply, errors)
         break
