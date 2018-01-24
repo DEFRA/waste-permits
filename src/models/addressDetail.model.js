@@ -108,7 +108,7 @@ module.exports = class AddressDetail extends BaseModel {
 
     // Map the Location to the corresponding Dynamics schema LocationDetail object
     const dataObject = {
-      defra_name: "Billing Invoicing Address",
+      defra_name: 'Billing Invoicing Address',
       defra_addresstype: Constants.Dynamics.AddressType.BILLING_INVOICING,
       // 'defra_addressdetailsid@odata.bind': `defra_addresses(${this.id})`,
 
