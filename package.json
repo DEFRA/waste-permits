@@ -53,6 +53,7 @@
   "dependencies": {
     "blipp": "^2.3.0",
     "crumb": "^6.0.3",
+    "deepmerge": "^2.0.1",
     "disinfect": "^0.2.1",
     "dotenv": "^4.0.0",
     "govuk-elements-sass": "^3.1.2",
@@ -67,7 +68,6 @@
     "https-proxy-agent": "^2.1.1",
     "inert": "^4.2.1",
     "joi": "^13.0.1",
-    "lodash.merge": "^4.6.0",
     "moment": "^2.20.1",
     "object-path": "^0.11.4",
     "path": "^0.12.7",

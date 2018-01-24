@@ -2,13 +2,12 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const ContactDetailsValidator = require('../validators/contactDetails.validator')
 const Contact = require('../models/contact.model')
 const CookieService = require('../services/cookie.service')
 
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new ContactDetailsValidator())
+    const pageContext = this.createPageContext(errors)
 
     return reply
       .view('contactDetails', pageContext)

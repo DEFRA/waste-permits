@@ -2,14 +2,13 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const AddressSelectValidator = require('../validators/addressSelect.validator')
 const AddressLookupService = require('../services/addressLookup.service')
 const CookieService = require('../services/cookie.service')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
 module.exports = class AddressSelectController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new AddressSelectValidator())
+    const pageContext = this.createPageContext(errors)
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     const applicationLineId = CookieService.getApplicationLineId(request)

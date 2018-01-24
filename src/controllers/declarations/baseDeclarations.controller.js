@@ -6,14 +6,14 @@ const CookieService = require('../../services/cookie.service')
 const Application = require('../../models/application.model')
 
 module.exports = class BaseDeclarationsController extends BaseController {
-  constructor (route, cookieValidationRequired, nextRoute, validator) {
-    super(route, cookieValidationRequired)
-    this.validator = validator
+  constructor (...args) {
+    const nextRoute = args[3]
+    super(...args)
     this.nextPath = nextRoute.path
   }
 
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, this.validator)
+    const pageContext = this.createPageContext(errors)
 
     switch (this.route) {
       case Constants.Routes.COMPANY_DECLARE_OFFENCES:

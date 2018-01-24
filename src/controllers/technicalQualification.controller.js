@@ -2,14 +2,13 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const TechnicalQualificationValidator = require('../validators/technicalQualification.validator')
 const CookieService = require('../services/cookie.service')
 const Application = require('../models/application.model')
 const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.Dynamics.TechnicalQualification
 
 module.exports = class TechnicalQualificationController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new TechnicalQualificationValidator())
+    const pageContext = this.createPageContext(errors)
 
     if (request.payload) {
       pageContext.formValues = request.payload

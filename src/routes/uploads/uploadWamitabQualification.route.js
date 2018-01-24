@@ -14,6 +14,6 @@ const validator = new UploadEntityValidator({
   ]
 })
 
-const controller = new UploadWamitabQualificationController(UPLOAD_WAMITAB_QUALIFICATION, true, TASK_LIST, validator)
+const controller = new UploadWamitabQualificationController(UPLOAD_WAMITAB_QUALIFICATION, validator, true, TASK_LIST)
 
 module.exports = Route.register('GET, POST, REMOVE, UPLOAD', controller)

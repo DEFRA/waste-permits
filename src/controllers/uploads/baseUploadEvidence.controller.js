@@ -11,14 +11,14 @@ const Annotation = require('../../models/annotation.model')
 const UPLOAD_PATH = path.resolve(`${__dirname}/../../uploads`)
 
 module.exports = class BaseUploadEvidenceController extends BaseController {
-  constructor (route, cookieValidationRequired, nextRoute, validator) {
-    super(route, cookieValidationRequired)
-    this.validator = validator
+  constructor (...args) {
+    const nextRoute = args[3]
+    super(...args)
     this.nextPath = nextRoute.path
   }
 
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, this.validator)
+    const pageContext = this.createPageContext(errors)
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     const list = await Annotation.listByApplicationId(authToken, applicationId)

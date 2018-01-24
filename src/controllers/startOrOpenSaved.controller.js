@@ -3,12 +3,11 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
-const StartOrOpenSavedValidator = require('../validators/startOrOpenSaved.validator')
 const Application = require('../models/application.model')
 
 module.exports = class StartOrOpenSavedController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new StartOrOpenSavedValidator())
+    const pageContext = this.createPageContext(errors)
 
     pageContext.cost = {
       lower: (Constants.PermitTypes.STANDARD_RULES.cost.lower).toLocaleString(),
