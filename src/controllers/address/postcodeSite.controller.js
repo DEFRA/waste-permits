@@ -6,7 +6,7 @@ const PostcodeValidator = require('../../validators/address/postcode.validator')
 const CookieService = require('../../services/cookie.service')
 const SiteNameAndLocation = require('../../models/taskList/siteNameAndLocation.model')
 
-module.exports = class PostcodeController extends BaseController {
+module.exports = class PostcodeSiteController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors, new PostcodeValidator())
     const authToken = CookieService.getAuthToken(request)

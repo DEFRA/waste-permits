@@ -23,12 +23,13 @@ module.exports = class Address extends BaseModel {
   static mapping () {
     return [
       {field: 'id', dynamics: 'defra_addressid'},
-      {field: 'buildingNameOrNumber', dynamics: 'premises'},
-      {field: 'addressLine1', dynamics: 'street_address'},
-      {field: 'addressLine2', dynamics: 'locality'},
+      {field: 'buildingNameOrNumber', dynamics: 'defra_premises'},
+      {field: 'addressLine1', dynamics: 'defra_street'},
+      {field: 'addressLine2', dynamics: 'defra_locality'},
+      {field: 'townOrCity', dynamics: '_defra_town_value', bind: {id: 'defra_Town', entity: 'defra_towns'}},
       {field: 'postcode', dynamics: 'defra_postcode'},
-      {field: 'fullAddress', dynamics: 'address'},
-      {field: 'uprn', dynamics: 'uprn'},
+      // {field: 'fullAddress', dynamics: 'address'}, readOnly: true ???
+      {field: 'uprn', dynamics: 'defra_uprn'},
       {field: 'fromAddressLookup', dynamics: 'defra_fromaddresslookup'}
     ]
   }
@@ -80,18 +81,18 @@ module.exports = class Address extends BaseModel {
       addresses = JSON.parse((JSON.parse(JSON.stringify(response))).addresses).results
 
       // Parse response into Address objects
-      addresses = addresses.map((address) => Address.dynamicsToModel(address))
+      // addresses = addresses.map((address) => Address.dynamicsToModel(address))
 
-      // addresses = addresses.map((address) => new Address({
-      //   id: undefined,
-      //   buildingNameOrNumber: address.premises,
-      //   addressLine1: address.street_address,
-      //   addressLine2: address.locality,
-      //   postcode: address.postcode,
-      //   fullAddress: address.address,
-      //   uprn: address.uprn,
-      //   fromAddressLookup: address.fromAddressLookup
-      // }))
+      addresses = addresses.map((address) => new Address({
+        id: undefined,
+        buildingNameOrNumber: address.premises,
+        addressLine1: address.street_address,
+        addressLine2: address.locality,
+        postcode: address.postcode,
+        fullAddress: address.address,
+        uprn: address.uprn,
+        fromAddressLookup: address.fromAddressLookup
+      }))
     } catch (error) {
       LoggingService.logError(`Unable to list addresses by postcode: ${error}`)
       throw error

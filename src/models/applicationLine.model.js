@@ -22,7 +22,6 @@ module.exports = class ApplicationLine extends BaseModel {
 
   static async getById (authToken, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
-    console.log('####query 1')
     const query = encodeURI(`defra_applicationlines(${applicationLineId})`)
     try {
       const result = await dynamicsDal.search(query)

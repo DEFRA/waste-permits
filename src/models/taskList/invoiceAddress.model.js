@@ -14,11 +14,10 @@ module.exports = class InvoiceAddress extends BaseModel {
     let address
     try {
         // Get the AddressDetail for this application
-      let contactDetail = await AddressDetail.getByApplicationId(authToken, applicationId)
-
-      if (contactDetail && contactDetail.addressId !== undefined) {
+      let addressDetail = await AddressDetail.getByApplicationId(authToken, applicationId)
+      if (addressDetail && addressDetail.addressId !== undefined) {
           // Get the Address for this AddressDetail
-        address = await Address.getById(authToken, contactDetail.addressId)
+        address = await Address.getById(authToken, addressDetail.addressId)
       }
     } catch (error) {
       LoggingService.logError(error, request)
@@ -34,28 +33,28 @@ module.exports = class InvoiceAddress extends BaseModel {
 
     try {
       // Get the AddressDetails for this application (if there is one)
-      let contactDetail = await AddressDetail.getByApplicationId(authToken, applicationId)
-      if (!contactDetail) {
+      let addressDetail = await AddressDetail.getByApplicationId(authToken, applicationId)
+
+      if (!addressDetail) {
         // Create new AddressDetail
-        contactDetail = new AddressDetail({
+
+        // addressDetail = AddressDetail.dynamicsToModel(addressDto)
+        addressDetail = new AddressDetail({
           addressType: Constants.Dynamics.AddressType.BILLING_INVOICING,
           applicationId: applicationId
 
-          // TODO
-          // this.addressId = addressId
-
-          // TODO
+          // TODO - determine if we are going to link to a customer
           // customerId: customerId
         })
-        await contactDetail.save(authToken)
+        await addressDetail.save(authToken)
       }
 
       // Get the Address for this AddressDetail (if there is one)
       let isNewAddress = false
       let address
 
-      if (contactDetail.addressId !== undefined) {
-        address = await Address.getById(authToken, contactDetail.addressId)
+      if (addressDetail.addressId !== undefined) {
+        address = await Address.getById(authToken, addressDetail.addressId)
       }
 
       if (!address) {
@@ -91,11 +90,12 @@ module.exports = class InvoiceAddress extends BaseModel {
 
       // If the Address was new then we need to associate it with the AddressDetail in Dynamics
       if (isNewAddress) {
-        contactDetail.setAddress(address.id)
-        contactDetail.save(authToken)
+        addressDetail.setAddress(address.id)
+        addressDetail.save(authToken)
       }
 
-      await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
+      // TODO
+      // await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
