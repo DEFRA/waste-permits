@@ -2,7 +2,6 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const CompanyCheckNameValidator = require('../validators/companyCheckName.validator')
 const CookieService = require('../services/cookie.service')
 const CompanyLookupService = require('../services/companyLookup.service')
 const Application = require('../models/application.model')
@@ -10,7 +9,7 @@ const Account = require('../models/account.model')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new CompanyCheckNameValidator())
+    const pageContext = this.createPageContext(errors)
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
 

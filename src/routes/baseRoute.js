@@ -1,4 +1,4 @@
-const Merge = require('lodash.merge')
+const Merge = require('deepmerge')
 
 class Route {
   static GET (controller, validator) {

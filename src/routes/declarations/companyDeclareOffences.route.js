@@ -6,6 +6,6 @@ const {COMPANY_DECLARE_OFFENCES, COMPANY_DECLARE_BANKRUPTCY} = Constants.Routes
 const CompanyDeclareOffencesController = require('../../controllers/declarations/declareOffences.controller')
 const CompanyDeclareOffencesValidator = require('../../validators/declareOffences.validator')
 const validator = new CompanyDeclareOffencesValidator()
-const controller = new CompanyDeclareOffencesController(COMPANY_DECLARE_OFFENCES, true, COMPANY_DECLARE_BANKRUPTCY, validator)
+const controller = new CompanyDeclareOffencesController(COMPANY_DECLARE_OFFENCES, validator, true, COMPANY_DECLARE_BANKRUPTCY)
 
 module.exports = Route.register('GET, POST', controller, validator)

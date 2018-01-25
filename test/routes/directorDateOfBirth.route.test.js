@@ -188,7 +188,7 @@ const checkValidationError = async (errorField, expectedErrorMessage) => {
 
   // Director DOB Day error
   if (errorField) {
-    element = doc.getElementById(errorField).firstChild
+    element = doc.getElementById(errorField).firstChild.firstChild
     Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
   }
 }

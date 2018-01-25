@@ -41,16 +41,17 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
+      // TODO confirm if this is needed
       // const applicationLineId = CookieService.getApplicationLineId(request)
 
-      // TODO Save the selected address
-
+      // Save the selected address
+      const uprn = request.payload['select-address']
       if (uprn) {
         const addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
         if (addressDetail) {
           const address = await Address.getById(authToken, addressDetail.addressId)
           if (address) {
-            address.uprn = request.payload['select-address']
+            address.uprn = uprn
             address.fromAddressLookup = true
             await address.save()
           }

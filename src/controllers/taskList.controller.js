@@ -3,13 +3,12 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
-const TaskListValidator = require('../validators/taskList.validator')
 const StandardRule = require('../models/standardRule.model')
 const TaskList = require('../models/taskList/taskList.model')
 
 module.exports = class TaskListController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new TaskListValidator())
+    const pageContext = this.createPageContext(errors)
     const authToken = CookieService.getAuthToken(request)
     const applicationLineId = CookieService.getApplicationLineId(request)
 

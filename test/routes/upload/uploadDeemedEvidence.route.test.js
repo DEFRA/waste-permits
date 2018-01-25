@@ -26,6 +26,17 @@ const uploadPath = `${routePath}/upload`
 const removePath = `${routePath}/remove/${fakeAnnotationId}`
 const nextRoutePath = '/task-list'
 
+const checkExpectedErrors = (res, expectedErrorMessage) => {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(res.payload, 'text/html')
+
+  // Panel summary error item
+  Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
+
+  // Company number field error
+  Code.expect(doc.getElementById('file-error').firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
+}
+
 lab.beforeEach(() => {
   fakeAnnotation = {
     id: fakeAnnotationId,
@@ -198,36 +209,18 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
 
     lab.experiment('invalid', () => {
       lab.test('when invalid content type', async () => {
-        const expectedErrorMessage = 'You can only upload PDF or JPG files'
         const req = postRequest({contentType: 'application/octet-stream'})
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(200)
-
-        const parser = new DOMParser()
-        const doc = parser.parseFromString(res.payload, 'text/html')
-
-        // Panel summary error item
-        Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
-
-        // Company number field error
-        Code.expect(doc.getElementById('file-error').firstChild.nodeValue).to.equal(expectedErrorMessage)
+        checkExpectedErrors(res, 'You can only upload PDF or JPG files')
       })
 
       lab.test('when duplicate file', async () => {
         Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
-        const expectedErrorMessage = 'That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.'
         const req = postRequest({filename: fakeAnnotation.filename})
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(200)
-
-        const parser = new DOMParser()
-        const doc = parser.parseFromString(res.payload, 'text/html')
-
-        // Panel summary error item
-        Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
-
-        // Company number field error
-        Code.expect(doc.getElementById('file-error').firstChild.nodeValue).to.equal(expectedErrorMessage)
+        checkExpectedErrors(res, 'That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.')
       })
     })
 
@@ -280,18 +273,9 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
 
     lab.experiment('invalid', () => {
       lab.test(`when continue button pressed and there are no files uploaded`, async () => {
-        const expectedErrorMessage = `You must upload at least one file. Choose a file then press the 'Upload chosen file' button.`
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(200)
-
-        const parser = new DOMParser()
-        const doc = parser.parseFromString(res.payload, 'text/html')
-
-        // Panel summary error item
-        Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
-
-        // Company number field error
-        Code.expect(doc.getElementById('file-error').firstChild.nodeValue).to.equal(expectedErrorMessage)
+        checkExpectedErrors(res, `You must upload at least one file. Choose a file then press the 'Upload chosen file' button.`)
       })
     })
 

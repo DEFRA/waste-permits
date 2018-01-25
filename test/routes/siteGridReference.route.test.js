@@ -126,7 +126,7 @@ const checkValidationError = async (expectedErrorMessage) => {
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
   // Location grid reference field error
-  element = doc.getElementById('site-grid-reference-error').firstChild
+  element = doc.getElementById('site-grid-reference-error').firstChild.firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
 

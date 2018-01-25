@@ -6,6 +6,6 @@ const Route = require('../baseRoute')
 const ConfidentialityController = require('../../controllers/declarations/confidentiality.controller')
 const ConfidentialityValidator = require('../../validators/confidentiality.validator')
 const validator = new ConfidentialityValidator()
-const controller = new ConfidentialityController(CONFIDENTIALITY, true, TASK_LIST, new ConfidentialityValidator())
+const controller = new ConfidentialityController(CONFIDENTIALITY, validator, true, TASK_LIST)
 
 module.exports = Route.register('GET, POST', controller, validator)

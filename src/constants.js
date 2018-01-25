@@ -181,7 +181,7 @@ Constants.Routes = {
     pageHeading: 'Upload the site plan',
     taskListHeading: 'Upload the site plan'
   },
-  SITE_SITE_NAME: {
+  SITE_NAME: {
     path: '/site/site-name',
     pageHeading: `What's the site name?`,
     taskListHeading: 'Give site name and location'

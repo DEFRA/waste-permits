@@ -158,7 +158,7 @@ lab.experiment('Is part of your application commercially confidential? page test
         Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 
         // Relevant confidentiality details field error
-        Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.nodeValue).to.equal(expectedErrorMessage)
+        Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
       }
 
       lab.test('when confidentiality not checked', async () => {

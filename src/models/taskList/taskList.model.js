@@ -88,8 +88,8 @@ module.exports = class TaskList extends BaseModel {
         available: false
       }, {
         id: 'give-site-name-and-location',
-        label: Constants.Routes.SITE_SITE_NAME.taskListHeading,
-        href: Constants.Routes.SITE_SITE_NAME.path,
+        label: Constants.Routes.SITE_NAME.taskListHeading,
+        href: Constants.Routes.SITE_NAME.path,
         completedLabelId: 'site-name-completed',
         rulesetId: Constants.Dynamics.RulesetIds.SITE_NAME_LOCATION,
         completedId: Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION,

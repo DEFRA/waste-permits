@@ -2,13 +2,12 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const SiteNameValidator = require('../validators/siteName.validator')
 const CookieService = require('../services/cookie.service')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
 module.exports = class SiteNameController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new SiteNameValidator())
+    const pageContext = this.createPageContext(errors)
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     const applicationLineId = CookieService.getApplicationLineId(request)
@@ -21,7 +20,6 @@ module.exports = class SiteNameController extends BaseController {
         'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
       }
     }
-
     return reply.view('siteName', pageContext)
   }
 
