@@ -14,7 +14,7 @@ module.exports = class InvoiceAddress extends BaseModel {
     let address
     try {
         // Get the AddressDetail for this application
-      let addressDetail = await AddressDetail.getByApplicationId(authToken, applicationId)
+      let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
       if (addressDetail && addressDetail.addressId !== undefined) {
           // Get the Address for this AddressDetail
         address = await Address.getById(authToken, addressDetail.addressId)
@@ -32,15 +32,15 @@ module.exports = class InvoiceAddress extends BaseModel {
     }
 
     try {
-      // Get the AddressDetails for this application (if there is one)
-      let addressDetail = await AddressDetail.getByApplicationId(authToken, applicationId)
+      // Get the AddressDetail for this application (if there is one)
+      let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
 
       if (!addressDetail) {
         // Create new AddressDetail
 
         // addressDetail = AddressDetail.dynamicsToModel(addressDto)
         addressDetail = new AddressDetail({
-          addressType: Constants.Dynamics.AddressType.BILLING_INVOICING,
+          type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
           applicationId: applicationId
 
           // TODO - determine if we are going to link to a customer
