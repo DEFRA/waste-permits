@@ -40,7 +40,7 @@ module.exports = class BaseController {
         await this.doGet(request, reply, errors)
         break
       case 'POST':
-        if (this.validator) {
+        if (this.validator && this.validator.customValidators) {
           // Apply custom validation if required
           errors = this.validator.customValidate(request.payload, errors)
         }

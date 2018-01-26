@@ -39,25 +39,23 @@ module.exports = class BaseValidator {
   }
 
   customValidate (data, errors) {
-    if (this.customValidators) {
-      // Get current errors
-      const currentErrors = ObjectPath.get(errors, 'data.details') || []
-      // Get custom errors
-      let customErrors = _customValidate(data, currentErrors, this.customValidators(), this.errorMessages)
-      if (customErrors.length) {
-        // Now merge the errors based on the order of the fields within the errorMessages definition
-        const details = []
-        for (let fieldName in this.errorMessages) {
-          currentErrors
-            .filter(({path}) => path[0] === fieldName)
-            .forEach((error) => details.push(error))
-          customErrors
-            .filter(({path}) => path[0] === fieldName)
-            .forEach((error) => details.push(error))
-        }
-        // Set errors to the structure expected by Hapi
-        errors = {data: {details}}
+    // Get current errors
+    const currentErrors = ObjectPath.get(errors, 'data.details') || []
+    // Get custom errors
+    let customErrors = _customValidate(data, currentErrors, this.customValidators(), this.errorMessages)
+    if (customErrors.length) {
+      // Now merge the errors based on the order of the fields within the errorMessages definition
+      const details = []
+      for (let fieldName in this.errorMessages) {
+        currentErrors
+          .filter(({path}) => path[0] === fieldName)
+          .forEach((error) => details.push(error))
+        customErrors
+          .filter(({path}) => path[0] === fieldName)
+          .forEach((error) => details.push(error))
       }
+      // Set errors to the structure expected by Hapi
+      errors = {data: {details}}
     }
     return errors
   }
