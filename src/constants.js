@@ -238,8 +238,9 @@ Constants.PermitTypes = {
 }
 
 Constants.Dynamics = {
-  COMPANY_DIRECTOR: 910400000,
-  DIGITAL_SOURCE: 910400000,
+  AccountTypes: {
+    AGENT: 910400000
+  },
   AddressTypes: {
     BILLING_INVOICING: {
       TYPE: 910400004
@@ -253,6 +254,8 @@ Constants.Dynamics = {
       NAME: 'Primary Contact Telephone Number'
     }
   },
+  COMPANY_DIRECTOR: 910400000,
+  DIGITAL_SOURCE: 910400000,
   PermitTypes: {
     STANDARD: 910400000,
     BESPOKE: 910400001

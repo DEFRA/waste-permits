@@ -51,7 +51,6 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
         if (addressDetail) {
           const address = await Address.getById(authToken, addressDetail.addressId)
           if (address) {
-
             // TOOD set other address properties
             const addresses = await Address.listByPostcode(authToken, address.postcode)
             addresses.filter((address) => address.uprn === uprn)

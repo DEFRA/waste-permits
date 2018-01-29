@@ -106,7 +106,7 @@ lab.experiment('Address Model tests:', () => {
 
   lab.test('save() method saves a new Address object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testAddress.save()
+    await testAddress.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddress.id).to.equal(testAddressId)
   })
@@ -114,7 +114,7 @@ lab.experiment('Address Model tests:', () => {
   lab.test('save() method updates an existing Address object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testAddress.id = testAddressId
-    await testAddress.save()
+    await testAddress.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddress.id).to.equal(testAddressId)
   })

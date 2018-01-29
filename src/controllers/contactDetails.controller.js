@@ -3,60 +3,94 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
+const AddressDetail = require('../models/addressDetail.model')
+const Account = require('../models/account.model')
+const Application = require('../models/application.model')
 const CookieService = require('../services/cookie.service')
 
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
 
+    if (request.payload) {
+      pageContext.formValues = request.payload
+    } else {
+      const authToken = CookieService.getAuthToken(request)
+      const applicationId = CookieService.getApplicationId(request)
+      const application = await Application.getById(authToken, applicationId)
+      const contact = application.contactId ? await Contact.getById(authToken, application.contactId) : new Contact()
+      const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
+      const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
+      if (contact) {
+        pageContext.formValues = {
+          'first-name': contact.firstName,
+          'last-name': contact.lastName,
+          'telephone': primaryContactDetails.telephone,
+          'email': contact.email,
+          'company-secretary-email': companySecretaryDetails.email
+        }
+        if (application.agentId) {
+          const account = await Account.getById(authToken, application.agentId)
+          pageContext.formValues['is-contact-an-agent'] = true
+          pageContext.formValues['agent-company'] = account.name
+        }
+      }
+    }
+
     return reply
       .view('contactDetails', pageContext)
   }
 
   async doPost (request, reply, errors) {
-    const authToken = CookieService.getAuthToken(request)
-
-    // TODO: Our first step after confirming the user session is valid and we
-    // have an authToken would be to validate the post data, possibly using
-    // something like Joi.
-    // Because the properties of a model may be collected over a series of pages
-    // we can't expect to be able to simply call `isValid()` on it (without
-    // putting lots of conditionals within the method based on current state
-    // and page).
-    // Ideally we should aim to follow a similar model as other services, where
-    // validation is related to the current form. In Ruby this is commonly
-    // referred to as 'form objects'.
-
-    if (!request.payload.id) {
-      // Create new contact
-      const contact = new Contact({
-        firstName: request.payload['first-name'],
-        lastName: request.payload['last-name'],
-        telephone: request.payload.telephone,
-        email: request.payload.email,
-        dob: {
-          day: undefined,
-          month: undefined,
-          year: undefined
-        }
-      })
-
-      await contact.save(authToken)
-
-      return reply
-        .redirect(Constants.Routes.TASK_LIST.path)
-    } else {
-      // Update existing Contact
-      const contact = await Contact.getById(authToken, request.payload.id)
-
-      contact.firstName = request.payload.firstName
-      contact.lastName = request.payload.lastName
-      contact.telephone = request.payload.telephone
-      contact.email = request.payload.email
-
-      await contact.save(authToken)
-
+    if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
+    } else {
+      const authToken = CookieService.getAuthToken(request)
+      const applicationId = CookieService.getApplicationId(request)
+      const application = await Application.getById(authToken, applicationId)
+      const {
+        'first-name': firstName,
+        'last-name': lastName,
+        'is-contact-an-agent': isAgent,
+        'agent-company': agentCompany,
+        'company-secretary-email': companySecretaryEmail,
+        telephone,
+        email
+      } = request.payload
+      let contact
+      if (application.contactId) {
+        contact = await Contact.getById(authToken, application.contactId)
+      } else {
+        contact = await Contact.getByFirstnameLastnameEmail(authToken, firstName, lastName, email)
+      }
+      if (!contact) {
+        contact = new Contact({firstName, lastName, email})
+      }
+
+      await contact.save(authToken)
+
+      // The agent company or trading name is only set if the corresponding checkbox is ticked
+      if (isAgent) {
+        const account = application.agentId ? await Account.getById(authToken, application.agentId) : new Account()
+        account.name = agentCompany
+        await account.save(authToken)
+        application.agentId = account.id
+      } else {
+        application.agentId = undefined
+      }
+
+      application.contactId = contact.id
+      await application.save(authToken)
+
+      const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
+      companySecretaryDetails.email = companySecretaryEmail
+      await companySecretaryDetails.save(authToken)
+
+      const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
+      primaryContactDetails.telephone = telephone
+      await primaryContactDetails.save(authToken)
+
+      return reply.redirect(Constants.Routes.TASK_LIST.path)
     }
   }
 }

@@ -69,7 +69,7 @@ lab.experiment('LocationDetail Model tests:', () => {
 
   lab.test('save() method saves a new LocationDetail object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testLocationDetail.save()
+    await testLocationDetail.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testLocationDetail.id).to.equal(testLocationDetailId)
   })
@@ -77,7 +77,7 @@ lab.experiment('LocationDetail Model tests:', () => {
   lab.test('save() method updates an existing LocationDetail object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testLocationDetail.id = testLocationDetailId
-    await testLocationDetail.save()
+    await testLocationDetail.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testLocationDetail.id).to.equal(testLocationDetailId)
   })

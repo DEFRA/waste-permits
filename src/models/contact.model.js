@@ -12,9 +12,7 @@ module.exports = class Contact extends BaseModel {
       {field: 'id', dynamics: 'contactid'},
       {field: 'firstName', dynamics: 'firstname'},
       {field: 'lastName', dynamics: 'lastname'},
-      {field: 'telephone', dynamics: 'telephone1'},
       {field: 'email', dynamics: 'emailaddress1'},
-      {field: 'companySecretaryEmail', dynamics: 'emailaddress2'},
       {field: 'dob.day', dynamics: 'defra_dateofbirthdaycompanieshouse', readOnly: true},
       {field: 'dob.month', dynamics: 'defra_dobmonthcompanieshouse', readOnly: true},
       {field: 'dob.year', dynamics: 'defra_dobyearcompanieshouse', readOnly: true}
@@ -73,6 +71,22 @@ module.exports = class Contact extends BaseModel {
         LoggingService.logError(`Unable to get Contact by application ID: ${error}`)
         throw error
       }
+    }
+  }
+
+  static async getByFirstnameLastnameEmail (authToken, firstName, lastName, email) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const filter = `firstname eq '${firstName}' and lastname eq '${lastName}' and emailaddress1 eq '${encodeURIComponent(email)}'`
+    const query = `contacts?$select=${this.selectedDynamicsFields()}&$filter=${filter}`
+    try {
+      const response = await dynamicsDal.search(query)
+      const result = response && response.value ? response.value.pop() : undefined
+      if (result) {
+        return this.dynamicsToModel(result)
+      }
+    } catch (error) {
+      LoggingService.logError(`Unable to get ${this.name} by firstName(${firstName}) and lastName(${lastName}) and email(${email})): ${error}`)
+      throw error
     }
   }
 

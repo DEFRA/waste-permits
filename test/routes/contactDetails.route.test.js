@@ -7,35 +7,100 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 
+const Application = require('../../src/models/application.model')
+const Account = require('../../src/models/account.model')
+const AddressDetail = require('../../src/models/addressDetail.model')
 const Contact = require('../../src/models/contact.model')
+const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
 
+let fakeApplication
+let fakeAccount
+let fakeContact
+let fakeCompanySecretaryDetails
+let fakePrimaryContactDetails
+
 let validateCookieStub
+let logErrorStub
 let contactSaveStub
 let contactGetByIdStub
+let applicationGetByIdStub
+let applicationSaveStub
+let accountGetByIdStub
+let addressDetailGetCompanySecretaryDetailsStub
+let addressDetailGetPrimaryContactDetailsStub
+let addressDetailSaveStub
+
+let fakeApplicationId = 'APPLICATION_ID'
+let fakeContactId = 'CONTACT_ID'
+let fakeAccountId = 'ACCOUNT_ID'
+let fakeCompanySecretaryDetailsId = 'COMPANY_SECRETARY_DETAILS_ID'
+let fakePrimaryContactDetailsId = 'PRIMARY_CONTACT_DETAILS_ID'
+
+let validPayload
 
 const routePath = '/contact-details'
 
 lab.beforeEach(() => {
+  fakeApplication = {
+    id: fakeApplicationId,
+    contactId: fakeContactId,
+    accountId: fakeAccountId
+  }
+  fakeAccount = {
+    id: fakeAccountId,
+    name: 'Agent'
+  }
+  fakeCompanySecretaryDetails = {
+    id: fakeCompanySecretaryDetailsId,
+    email: 'fred.james@email.com'
+  }
+  fakePrimaryContactDetails = {
+    id: fakePrimaryContactDetailsId,
+    telephone: '01234567890'
+  }
+  fakeContact = {
+    id: fakeContactId,
+    firstName: 'John',
+    lastName: 'Smith',
+    email: 'john.smith@email.com'
+  }
+
+  validPayload = {
+    'first-name': fakeContact.firstName,
+    'last-name': fakeContact.lastName,
+    'telephone': fakePrimaryContactDetails.telephone,
+    'email': fakeContact.email,
+    'company-secretary-email': fakeCompanySecretaryDetails.email
+  }
+
   // Stub methods
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => true
 
+  logErrorStub = LoggingService.logError
+  LoggingService.logError = () => {}
+
+  accountGetByIdStub = Account.getById
+  Account.getById = () => new Account(fakeAccount)
+
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationSaveStub = Application.prototype.save
+  Application.prototype.save = () => {}
+
+  addressDetailGetCompanySecretaryDetailsStub = AddressDetail.getCompanySecretaryDetails
+  AddressDetail.getCompanySecretaryDetails = () => new AddressDetail(fakeCompanySecretaryDetails)
+
+  addressDetailGetPrimaryContactDetailsStub = AddressDetail.getPrimaryContactDetails
+  AddressDetail.getPrimaryContactDetails = () => new AddressDetail(fakePrimaryContactDetails)
+
+  addressDetailSaveStub = AddressDetail.save
+  AddressDetail.prototype.save = () => {}
+
   contactGetByIdStub = Contact.getById
-  Contact.getById = (authToken, id) => {
-    return new Contact({
-      id: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
-      firstName: 'John',
-      lastName: 'Smith,',
-      telephone: '01234567890',
-      email: 'john.smith@email.com',
-      dob: {
-        day: 1,
-        month: 1,
-        year: 1970
-      }
-    })
-  }
+  Contact.getById = () => new Contact(fakeContact)
 
   contactSaveStub = Contact.prototype.save
   Contact.prototype.save = () => {}
@@ -44,118 +109,236 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-  Contact.prototype.getById = contactGetByIdStub
-  Contact.prototype.save = contactSaveStub
+  LoggingService.logError = logErrorStub
+  Account.getById = accountGetByIdStub
+  AddressDetail.getCompanySecretaryDetails = addressDetailGetCompanySecretaryDetailsStub
+  AddressDetail.getPrimaryContactDetails = addressDetailGetPrimaryContactDetailsStub
+  AddressDetail.save = addressDetailSaveStub
+  Application.getById = applicationGetByIdStub
+  Application.save = applicationSaveStub
+  Contact.getById = contactGetByIdStub
+  Contact.save = contactSaveStub
 })
 
 lab.experiment('Contact details page tests:', () => {
-  lab.test('The page should have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
+  lab.experiment(`GET ${routePath}`, () => {
+    let request
+    lab.beforeEach(() => {
+      request = {
+        method: 'GET',
+        url: routePath,
+        headers: {},
+        payload: {}
+      }
+    })
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
+    lab.test('The page should have a back link', async () => {
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(200)
 
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
 
-    const element = doc.getElementById('back-link')
-    Code.expect(element).to.exist()
+      const element = doc.getElementById('back-link')
+      Code.expect(element).to.exist()
+    })
+
+    lab.test('returns the contact page correctly', async () => {
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
+
+      let element = doc.getElementById('page-heading').firstChild
+      Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
+
+      element = doc.getElementById('submit-button').firstChild
+      Code.expect(element.nodeValue).to.equal('Continue')
+    })
   })
 
-  lab.test('GET /contact-details returns the contact page correctly', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {}
+  lab.experiment(`POST ${routePath}`, () => {
+    let request
+    const getDoc = async () => {
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      return parser.parseFromString(res.payload, 'text/html')
     }
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
+    lab.beforeEach(() => {
+      request = {
+        method: 'POST',
+        url: routePath,
+        headers: {},
+        payload: validPayload
+      }
+    })
 
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+    lab.experiment('success', () => {
+      lab.test('redirects to the Task List route after a CREATE', async () => {
+        const res = await server.inject(request)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal('/task-list')
+      })
 
-    let element = doc.getElementById('page-heading').firstChild
-    Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
+      lab.test('redirects to the Task List route after an UPDATE', async () => {
+        const res = await server.inject(request)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal('/task-list')
+      })
+    })
 
-    element = doc.getElementById('submit-button').firstChild
-    Code.expect(element.nodeValue).to.equal('Continue')
-  })
-
-  lab.test('POST /contact-details success redirects to the Task List route after a CREATE', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        id: '',
-        firstName: 'Marlon',
-        lastName: 'Herzog',
-        telephone: '055 8767 0835',
-        email: 'Amparo.Abbott49@example.com',
-        dob: {
-          day: 1,
-          month: 1,
-          year: 1970
+    lab.experiment('invalid', () => {
+      // Test that all and only the expected messages are present for each field when an invalid value has been enetered.
+      const checkErrorMessages = (doc, field, messages) => {
+        const summaryMessages = []
+        for (let index = 0, listItem; (listItem = doc.getElementById(`error-summary-list-item-${index}`)); index++) {
+          summaryMessages.push(listItem.firstChild.nodeValue)
         }
-      }
-    }
+        Code.expect(summaryMessages).to.equal(messages)
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/task-list')
-  })
-
-  lab.test('POST /contact-details success stays on the Contact details page after an UPDATE', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        id: '12345',
-        firstName: 'Marlon',
-        lastName: 'Herzog',
-        telephone: '055 8767 0835',
-        email: 'Amparo.Abbott49@example.com',
-        dob: {
-          day: 1,
-          month: 1,
-          year: 1970
+        const fieldErrors = doc.getElementById(`${field}-error`).childNodes
+        const fieldMessages = []
+        for (let index = 0; index < fieldErrors.length; index++) {
+          fieldMessages.push(fieldErrors[index].firstChild.nodeValue)
         }
+        Code.expect(fieldMessages).to.equal(messages)
       }
-    }
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
+      const fieldErrorTests = [
+        {
+          field: 'first-name',
+          value: '',
+          messages: [
+            'Enter a first name'
+          ]
+        },
+        {
+          field: 'first-name',
+          value: 'fred@james-',
+          messages: [
+            'First name can only include letters, hyphens and apostrophes - delete any other characters',
+            'First name can’t start or end with a dash - delete the dash']
+        },
+        {
+          field: 'first-name',
+          value: '7',
+          messages: [
+            'First name must have at least two letters - if you entered an initial please enter a name',
+            'First name can only include letters, hyphens and apostrophes - delete any other characters']
+        },
+        {
+          field: 'last-name',
+          value: '',
+          messages: ['Enter a last name']
+        },
+        {
+          field: 'last-name',
+          value: 'fred!james-',
+          messages: [
+            'Last name can only include letters, hyphens and apostrophes - delete any other characters',
+            'Last name can’t start or end with a dash - delete the dash']
+        },
+        {
+          field: 'last-name',
+          value: '723423gjhg4234baejrgiuhrkjhkj4hfjkhjk3t378i3qgfiukhkufhf4',
+          messages: ['Last name can only include letters, hyphens and apostrophes - delete any other characters']
+        },
+        {
+          field: 'telephone',
+          value: '',
+          messages: ['Enter a telephone number']
+        },
+        {
+          field: 'telephone',
+          value: '+0',
+          messages: [
+            'The + sign for international numbers should be at the start of the number, followed by a number 1 to 9, not a 0',
+            'That telephone number is too short. It should have at least 10 characters. Make sure you include the area code.']
+        },
+        {
+          field: 'telephone',
+          value: '!',
+          messages: [
+            'Telephone number can only include numbers, spaces and the + sign. Please remove any other characters.',
+            'That telephone number is too short. It should have at least 10 characters. Make sure you include the area code.']
+        },
+        {
+          field: 'telephone',
+          value: '+0456   5 56 45 64      4 44',
+          messages: [
+            'The + sign for international numbers should be at the start of the number, followed by a number 1 to 9, not a 0']
+        },
+        {
+          field: 'telephone',
+          value: '+145600050560450640000004044',
+          messages: [
+            'That telephone number is too long. It should have no more than 15 characters.']
+        },
+        {
+          field: 'telephone',
+          value: '6876867+',
+          messages: [
+            'The + sign for international numbers should be at the start of the number, followed by a number 1 to 9, not a 0',
+            'That telephone number is too short. It should have at least 10 characters. Make sure you include the area code.']
+        },
+        {
+          field: 'email',
+          value: '',
+          messages: ['Enter an email address for the main contact']
+        },
+        {
+          field: 'email',
+          value: 'farm manager@hilltopfarming.co.uk',
+          messages: ['Enter a valid email address for the main contact']
+        },
+        {
+          field: 'company-secretary-email',
+          value: '',
+          messages: ['Enter an email address for the Company Secretary or a director']
+        },
+        {
+          field: 'company-secretary-email',
+          value: 'john"hardman"harding@securityguards.com',
+          messages: ['Enter a valid email address for the Company Secretary or director']
+        },
+        {
+          field: 'agent-company',
+          value: '',
+          isAgent: true,
+          messages: ['Enter the agent’s trading, business or company name']
+        },
+        {
+          field: 'agent-company',
+          value: 'a'.repeat(171),
+          isAgent: true,
+          messages: ['Enter a shorter trading, business or company name with no more than 170 characters']
+        }]
+      fieldErrorTests.forEach(({field, value, messages, isAgent}) => {
+        lab.test(`error messages when ${field} has a value of "${value}"`, async () => {
+          request.payload[field] = value
+          if (isAgent) {
+            request.payload['is-contact-an-agent'] = 'on'
+          }
+          const doc = await getDoc()
+          checkErrorMessages(doc, field, messages)
+        })
+      })
+    })
 
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+    lab.experiment('failure', () => {
+      lab.test('redirects to error screen when the user token is invalid', async () => {
+        CookieService.validateCookie = () => {
+          return undefined
+        }
 
-    let element = doc.getElementById('page-heading').firstChild
-    Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
-  })
-
-  lab.test('POST /contact-details redirects to error screen when the user token is invalid', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        siteName: 'My Site'
-      }
-    }
-
-    CookieService.validateCookie = () => {
-      return undefined
-    }
-
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/error')
+        const res = await server.inject(request)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal('/error')
+      })
+    })
   })
 })

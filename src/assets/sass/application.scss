@@ -28,7 +28,7 @@ $path: "/public/images/";
 
 // Add spacing below details (progressive disclosure)
 // Check if this is always required. If not, introduce class.
-details {
+details:not(.form-hint-details) {
   margin-bottom: 30px;
 }
 
