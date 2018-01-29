@@ -253,7 +253,12 @@ module.exports = class BaseModel {
     }
   }
 
-  async save (authToken, dataObject) {
+  async save (authToken = undefined, dataObject) {
+    if (!authToken) {
+      const errorMessage = `Unable to save ${this._entity}: Auth Token not supplied`
+      LoggingService.logError(errorMessage)
+      throw new Error(errorMessage)
+    }
     const dynamicsDal = new DynamicsDalService(authToken)
     try {
       let query
@@ -275,7 +280,12 @@ module.exports = class BaseModel {
     }
   }
 
-  async delete (authToken, id) {
+  async delete (authToken = undefined, id) {
+    if (!authToken) {
+      const errorMessage = `Unable to delete ${this._entity}: Auth Token not supplied`
+      LoggingService.logError(errorMessage)
+      throw new Error(errorMessage)
+    }
     const dynamicsDal = new DynamicsDalService(authToken)
     try {
       let query = `${this._entity}(${id})`

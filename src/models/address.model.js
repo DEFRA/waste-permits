@@ -40,6 +40,7 @@ module.exports = class Address extends BaseModel {
   }
 
   static async getById (authToken, id) {
+    let address
     if (id) {
       const dynamicsDal = new DynamicsDalService(authToken)
       const query = `defra_addresses(${id})`
@@ -59,12 +60,13 @@ module.exports = class Address extends BaseModel {
 //           })
 //         }
 // =======
-        return Address.dynamicsToModel(result)
+        address = Address.dynamicsToModel(result)
       } catch (error) {
         LoggingService.logError(`Unable to get Address ID: ${error}`)
         throw error
       }
     }
+    return address
   }
 
   static async listByPostcode (authToken, postcode) {
@@ -82,6 +84,8 @@ module.exports = class Address extends BaseModel {
 
       // Parse response into Address objects
       // addresses = addresses.map((address) => Address.dynamicsToModel(address))
+      // TODO: needs
+      // fullAddress: address.address,
 
       addresses = addresses.map((address) => new Address({
         id: undefined,

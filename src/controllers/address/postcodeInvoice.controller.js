@@ -21,6 +21,12 @@ module.exports = class PostcodeInvoiceController extends BaseController {
     } else {
       const address = await InvoiceAddress.getAddress(request, authToken, applicationId)
       if (address) {
+
+        // If the manual entry flag is set then redirect off to the mamual address entry page
+        // TODO
+        if (!address.fromAddressLookup) {
+          return reply.redirect(Constants.Routes.ADDRESS.MANUAL_INVOICE.path)
+        }
         pageContext.formValues = {
           'postcode': address.postcode
         }

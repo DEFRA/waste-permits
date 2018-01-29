@@ -68,7 +68,7 @@ module.exports = class InvoiceAddress extends BaseModel {
           fullAddress: addressDto.fullAddress,
           uprn: addressDto.uprn,
 
-          fromAddressLookup: false
+          fromAddressLookup: true
         // fromAddressLookup: addressDto.fromAddressLookup
         })
         isNewAddress = true
@@ -82,6 +82,7 @@ module.exports = class InvoiceAddress extends BaseModel {
         address.uprn = addressDto.uprn
 
         // TODO - depends on whether selected or manual entry
+        address.fromAddressLookup = true
         // fromAddressLookup: false
         // this.fromAddressLookup = address.fromAddressLookup
       }
@@ -91,7 +92,7 @@ module.exports = class InvoiceAddress extends BaseModel {
       // If the Address was new then we need to associate it with the AddressDetail in Dynamics
       if (isNewAddress) {
         addressDetail.setAddress(address.id)
-        addressDetail.save(authToken)
+        await addressDetail.save(authToken)
       }
 
       // TODO

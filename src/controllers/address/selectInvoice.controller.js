@@ -13,14 +13,14 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
     const pageContext = this.createPageContext(errors, new AddressSelectValidator())
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
-    const applicationLineId = CookieService.getApplicationLineId(request)
+    // const applicationLineId = CookieService.getApplicationLineId(request)
 
     if (request.payload) {
       // TODO confirm if we need this
       // If we have Address details in the payload then display them in the form
       // pageContext.formValues = request.payload
     } else {
-      const address = await InvoiceAddress.getAddress(request, authToken, applicationId, applicationLineId)
+      const address = await InvoiceAddress.getAddress(request, authToken, applicationId)
       if (address) {
         pageContext.formValues = {
           postcode: address.postcode,
@@ -51,9 +51,22 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
         if (addressDetail) {
           const address = await Address.getById(authToken, addressDetail.addressId)
           if (address) {
-            address.uprn = uprn
+
+            // TOOD set other address properties
+            const addresses = await Address.listByPostcode(authToken, address.postcode)
+            addresses.filter((address) => address.uprn === uprn)
+
+            const addressBaseAddress = addresses.pop()
+            // console.log('#####abf address:', addressBaseAddress)
+
+            // TODO deep copy
+
+            address.buildingNameOrNumber = addressBaseAddress.buildingNameOrNumber
+            address.addressLine1 = addressBaseAddress.addressLine1
+            address.addressLine2 = addressBaseAddress.addressLine2
+            // address.uprn = uprn
             address.fromAddressLookup = true
-            await address.save()
+            await address.save(authToken)
           }
         }
       }
