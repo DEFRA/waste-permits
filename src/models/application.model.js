@@ -12,6 +12,7 @@ module.exports = class Application extends BaseModel {
       {field: 'contactId', dynamics: '_defra_primarycontactid_value', bind: {id: 'defra_primarycontactid', relationship: 'defra_contact_defra_application_primarycontactid', entity: 'contacts'}},
       {field: 'agentId', dynamics: '_defra_agentid_value', bind: {id: 'defra_agentid_account', relationship: 'defra_account_defra_application_agentid', entity: 'accounts'}},
       {field: 'tradingName', dynamics: 'defra_tradingname'},
+      {field: 'name', dynamics: 'defra_name', readOnly: true},
       {field: 'technicalQualification', dynamics: 'defra_technicalability'},
       {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},
       {field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails'},
