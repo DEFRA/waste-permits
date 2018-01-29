@@ -25,10 +25,18 @@ const nextRoutePath = {
   ESA_EU_SKILLS: '/technical-qualification/upload-esa-eu-skills'
 }
 const Qualification = {
-  WAMITAB_QUALIFICATION: 910400000,
-  REGISTERED_ON_A_COURSE: 910400001,
-  DEEMED_COMPETENCE: 910400002,
-  ESA_EU_SKILLS: 910400003
+  WAMITAB_QUALIFICATION: {
+    TYPE: 910400000
+  },
+  REGISTERED_ON_A_COURSE: {
+    TYPE: 910400001
+  },
+  DEEMED_COMPETENCE: {
+    TYPE: 910400002
+  },
+  ESA_EU_SKILLS: {
+    TYPE: 910400003
+  }
 }
 
 lab.beforeEach(() => {
@@ -95,25 +103,25 @@ lab.experiment('Technical Management Qualification tests:', () => {
       })
 
       lab.test('when wamitab has been selected', async () => {
-        fakeApplication.technicalQualification = Qualification.WAMITAB_QUALIFICATION
+        fakeApplication.technicalQualification = Qualification.WAMITAB_QUALIFICATION.TYPE
         doc = await getDoc()
         Code.expect(doc.getElementById('wamitab').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when getting-qualification has been selected', async () => {
-        fakeApplication.technicalQualification = Qualification.REGISTERED_ON_A_COURSE
+        fakeApplication.technicalQualification = Qualification.REGISTERED_ON_A_COURSE.TYPE
         doc = await getDoc()
         Code.expect(doc.getElementById('getting-qualification').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when deemed has been selected', async () => {
-        fakeApplication.technicalQualification = Qualification.DEEMED_COMPETENCE
+        fakeApplication.technicalQualification = Qualification.DEEMED_COMPETENCE.TYPE
         doc = await getDoc()
         Code.expect(doc.getElementById('deemed').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when esa-eu has been selected', async () => {
-        fakeApplication.technicalQualification = Qualification.ESA_EU_SKILLS
+        fakeApplication.technicalQualification = Qualification.ESA_EU_SKILLS.TYPE
         doc = await getDoc()
         Code.expect(doc.getElementById('esa-eu').getAttribute('checked')).to.equal('checked')
       })
@@ -157,7 +165,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
         url: routePath,
         headers: {},
         payload: {
-          'technical-qualification': Qualification.WAMITAB_QUALIFICATION
+          'technical-qualification': Qualification.WAMITAB_QUALIFICATION.TYPE
         }
       }
 
@@ -173,7 +181,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
     lab.experiment('success', () => {
       Object.keys(Qualification).forEach((type) => lab.test(`when application is saved with a "${type}" qualification`, async () => {
-        postRequest.payload['technical-qualification'] = Qualification[type]
+        postRequest.payload['technical-qualification'] = Qualification[type].TYPE
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath[type])

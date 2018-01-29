@@ -23,22 +23,22 @@ module.exports = class TechnicalQualificationController extends BaseController {
       }
     }
     Object.assign(pageContext.formValues, {
-      'wamitab': WAMITAB_QUALIFICATION,
-      'getting-qualification': REGISTERED_ON_A_COURSE,
-      'deemed': DEEMED_COMPETENCE,
-      'esa-eu': ESA_EU_SKILLS
+      'wamitab': WAMITAB_QUALIFICATION.TYPE,
+      'getting-qualification': REGISTERED_ON_A_COURSE.TYPE,
+      'deemed': DEEMED_COMPETENCE.TYPE,
+      'esa-eu': ESA_EU_SKILLS.TYPE
     })
     switch (pageContext.formValues['technical-qualification']) {
-      case WAMITAB_QUALIFICATION:
+      case WAMITAB_QUALIFICATION.TYPE:
         pageContext.wamitabChecked = true
         break
-      case REGISTERED_ON_A_COURSE:
+      case REGISTERED_ON_A_COURSE.TYPE:
         pageContext.gettingCourseChecked = true
         break
-      case DEEMED_COMPETENCE:
+      case DEEMED_COMPETENCE.TYPE:
         pageContext.deemedChecked = true
         break
-      case ESA_EU_SKILLS:
+      case ESA_EU_SKILLS.TYPE:
         pageContext.esaEuChecked = true
         break
     }
@@ -61,13 +61,13 @@ module.exports = class TechnicalQualificationController extends BaseController {
 
   static async _getPath (technicalQualification) {
     switch (parseInt(technicalQualification)) {
-      case WAMITAB_QUALIFICATION:
+      case WAMITAB_QUALIFICATION.TYPE:
         return Constants.Routes.UPLOAD_WAMITAB_QUALIFICATION.path
-      case REGISTERED_ON_A_COURSE:
+      case REGISTERED_ON_A_COURSE.TYPE:
         return Constants.Routes.UPLOAD_COURSE_REGISTRATION.path
-      case DEEMED_COMPETENCE:
+      case DEEMED_COMPETENCE.TYPE:
         return Constants.Routes.UPLOAD_DEEMED_EVIDENCE.path
-      case ESA_EU_SKILLS:
+      case ESA_EU_SKILLS.TYPE:
         return Constants.Routes.UPLOAD_ESA_EU_SKILLS.path
       default:
         throw new Error(`Unexpected technical qualification (${technicalQualification})`)

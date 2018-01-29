@@ -212,19 +212,23 @@ Constants.Routes = {
   },
   UPLOAD_COURSE_REGISTRATION: {
     path: '/technical-qualification/upload-course-registration',
-    pageHeading: 'Upload the course registration email or letter'
+    pageHeading: 'Upload the course registration email or letter',
+    checksHeading: 'Course registration:'
   },
   UPLOAD_DEEMED_EVIDENCE: {
     path: '/technical-qualification/upload-deemed-evidence',
-    pageHeading: 'Upload evidence of their qualification'
+    pageHeading: 'Upload evidence of their qualification',
+    checksHeading: 'Evidence of qualification:'
   },
   UPLOAD_ESA_EU_SKILLS: {
     path: '/technical-qualification/upload-esa-eu-skills',
-    pageHeading: 'Upload the ESA EU Skills scheme certificate'
+    pageHeading: 'Upload the ESA EU Skills scheme certificate',
+    checksHeading: 'ESA EU Skills scheme certificate:'
   },
   UPLOAD_WAMITAB_QUALIFICATION: {
     path: '/technical-qualification/upload-wamitab-qualification',
-    pageHeading: 'Upload the WAMITAB certificate'
+    pageHeading: 'Upload the WAMITAB certificate',
+    checksHeading: 'WAMITAB certificate:'
   },
   VERSION: {
     path: '/version',
@@ -274,10 +278,22 @@ Constants.Dynamics = {
     DRAFT: 1
   },
   TechnicalQualification: {
-    WAMITAB_QUALIFICATION: 910400000,
-    REGISTERED_ON_A_COURSE: 910400001,
-    DEEMED_COMPETENCE: 910400002,
-    ESA_EU_SKILLS: 910400003
+    WAMITAB_QUALIFICATION: {
+      TYPE: 910400000,
+      NAME: 'WAMITAB or EPOC qualification'
+    },
+    REGISTERED_ON_A_COURSE: {
+      TYPE: 910400001,
+      NAME: `We're getting WAMITAB or EPOC qualifications`
+    },
+    DEEMED_COMPETENCE: {
+      TYPE: 910400002,
+      NAME: 'Deemed competence or an Environment Agency assessment'
+    },
+    ESA_EU_SKILLS: {
+      TYPE: 910400003,
+      NAME: 'Energy & Utility Skills / ESA system'
+    }
   },
   WASTE_REGIME: 910400000,
 

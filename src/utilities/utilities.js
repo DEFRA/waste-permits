@@ -58,6 +58,14 @@ module.exports = class Utilities {
     return value
   }
 
+  static _leftPad (value, len) {
+    let str = '' + value
+    while (str.length < len) {
+      str = `0${str}`
+    }
+    return str
+  }
+
   // Extracts the day from a date that is in YYYY-MM-DD format
   static extractDayFromDate (inputDate) {
     // Return the day of birth, with the leading zero Stripped if there is one
@@ -73,12 +81,18 @@ module.exports = class Utilities {
   static formatDateForDisplay (inputDate) {
     let returnValue
     if (inputDate && inputDate.month && inputDate.year) {
-      let month = inputDate.month.toString()
-      if (month && month.length === 1) {
-        // Pad with a leading zero if required
-        month = '0' + month
-      }
-      returnValue = moment(`${inputDate.year}-${month}-01`).format('MMMM YYYY')
+      returnValue = moment(`${inputDate.year}-${Utilities._leftPad(inputDate.month, 2, 0)}-01`).format('MMMM YYYY')
+    } else {
+      returnValue = 'Unknown date'
+    }
+    return returnValue
+  }
+
+  // Formats the date object (e.g. { day: 3, month: 1, year: 1970 }) into D MMMM YYYY format (e.g. 3 January 1970) for display
+  static formatFullDateForDisplay (inputDate) {
+    let returnValue
+    if (inputDate && inputDate.day && inputDate.month && inputDate.year) {
+      returnValue = moment(`${inputDate.year}-${Utilities._leftPad(inputDate.month, 2)}-${Utilities._leftPad(inputDate.day, 2)}`).format('D MMMM YYYY')
     } else {
       returnValue = 'Unknown date'
     }

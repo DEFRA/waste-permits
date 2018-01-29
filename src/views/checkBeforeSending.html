@@ -13,6 +13,28 @@
 
         {{> common/csrfToken token=DefraCsrfToken}}
 
+        <dl class="govuk-check-your-answers cya-questions-short">
+          {{#each sections}}
+          <div>
+            <dt id="{{headingId}}" class="cya-question">
+              {{heading}}
+            </dt>
+            <dd class="cya-answer">
+              {{#each answers}}
+                <div id="{{answerId}}">{{answer}}</div>
+              {{/each}}
+            </dd>
+            <dd class="cya-change">
+              {{#each links}}
+              <a id="{{linkId}}" href="{{link}}">
+                Change<span id="{{linkId}}-type" class="visually-hidden"> {{linkType}}</span>
+              </a>
+              {{/each}}
+            </dd>
+          </div>
+          {{/each}}
+        </dl>
+
         <div id="declaration">
 
           <div id="declaration-warning" class="form-group">
@@ -31,8 +53,7 @@
           <div id="declaration-confirmation" class="form-group">
             <p>I confirm that:</p>
             <ul class="list list-bullet">
-              <li>we’ll have a written <a target="_blank" rel="noopener noreferrer"
-                                          href="https://www.gov.uk/guidance/develop-a-management-system-environmental-permits">
+              <li>we’ll have a written <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/guidance/develop-a-management-system-environmental-permits">
                 <span>management system (opens new tab)</span>
               </a> in place before we start operating
               </li>
@@ -40,8 +61,7 @@
               <li>the information I’ve given is true</li>
             </ul>
 
-            <a target="_blank" rel="noopener noreferrer"
-               href="https://www.gov.uk/government/organisations/environment-agency/about/personal-information-charter">
+            <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/organisations/environment-agency/about/personal-information-charter">
               <span>Privacy: how we use your personal information (opens new tab)</span>
             </a>
           </div>

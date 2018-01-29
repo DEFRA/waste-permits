@@ -4,7 +4,7 @@ const Constants = require('../constants')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
-const {COMPANY_SECRETARY_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER} = Constants.Dynamics.AddressTypes
+const {COMPANY_SECRETARY_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING} = Constants.Dynamics.AddressTypes
 
 module.exports = class AddressDetail extends BaseModel {
   static mapping () {
@@ -53,6 +53,11 @@ module.exports = class AddressDetail extends BaseModel {
 
   static async getPrimaryContactDetails (authToken, applicationId) {
     const {TYPE: type, NAME: name} = PRIMARY_CONTACT_TELEPHONE_NUMBER
+    return (await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)) || new AddressDetail({applicationId, name, type})
+  }
+
+  static async getBillingInvoicingDetails (authToken, applicationId) {
+    const {TYPE: type, NAME: name} = BILLING_INVOICING
     return (await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)) || new AddressDetail({applicationId, name, type})
   }
 }

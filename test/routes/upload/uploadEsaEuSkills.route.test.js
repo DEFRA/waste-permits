@@ -9,6 +9,7 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../../server')
 const CookieService = require('../../../src/services/cookie.service')
 const Annotation = require('../../../src/models/annotation.model')
+const Application = require('../../../src/models/application.model')
 const TechnicalQualification = require('../../../src/models/taskList/technicalQualification.model')
 const LoggingService = require('../../../src/services/logging.service')
 
@@ -54,6 +55,9 @@ lab.beforeEach(() => {
 
   listByApplicationIdStub = Annotation.listByApplicationId
   Annotation.listByApplicationId = () => Promise.resolve([])
+
+  getByIdStub = Application.getById
+  Application.getById = () => Promise.resolve({name: 'APPLICATION_REFERENCE'})
 })
 
 lab.afterEach(() => {
@@ -61,6 +65,7 @@ lab.afterEach(() => {
   CookieService.validateCookie = validateCookieStub
   LoggingService.logError = logErrorStub
   Annotation.listByApplicationId = listByApplicationIdStub
+  Application.getById = getByIdStub
 })
 
 lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
