@@ -74,6 +74,7 @@ module.exports = class InvoiceAddress extends BaseModel {
         isNewAddress = true
       } else {
         // Update existing Address
+        // TODO: Confirm if we should only do this for manual entry??
         address.buildingNameOrNumber = addressDto.buildingNameOrNumber
         address.addressLine1 = addressDto.addressLine1
         address.addressLine2 = addressDto.addressLine2
