@@ -194,7 +194,6 @@ lab.experiment('Contact details page tests:', () => {
     lab.experiment('invalid', () => {
       // Test that all and only the expected messages are present for each field when an invalid value has been enetered.
       const checkErrorMessages = (doc, field, messages) => {
-
         const summaryMessages = []
         for (let index = 0, listItem; (listItem = doc.getElementById(`error-summary-list-item-${index}`)); index++) {
           summaryMessages.push(listItem.firstChild.nodeValue)
@@ -232,6 +231,11 @@ lab.experiment('Contact details page tests:', () => {
             'First name can only include letters, hyphens and apostrophes - delete any other characters']
         },
         {
+          field: 'first-name',
+          value: 'a'.repeat(51),
+          messages: ['Enter a shorter first name with no more than 50 characters']
+        },
+        {
           field: 'last-name',
           value: '',
           messages: ['Enter a last name']
@@ -245,8 +249,15 @@ lab.experiment('Contact details page tests:', () => {
         },
         {
           field: 'last-name',
-          value: '723423gjhg4234baejrgiuhrkjhkj4hfjkhjk3t378i3qgfiukhkufhf4',
+          value: '723423gjhg4jkhjk3t378i3qgfiukhkufhf4',
           messages: ['Last name can only include letters, hyphens and apostrophes - delete any other characters']
+        },
+        {
+          field: 'last-name',
+          value: '+'.repeat(51),
+          messages: [
+            'Enter a shorter last name with no more than 50 characters',
+            'Last name can only include letters, hyphens and apostrophes - delete any other characters']
         },
         {
           field: 'telephone',

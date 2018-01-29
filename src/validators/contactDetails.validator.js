@@ -3,6 +3,8 @@
 const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
+const FIRSTNAME_MAX_LENGTH = 50
+const LASTNAME_MAX_LENGTH = 50
 const COMPANY_NAME_MAX_LENGTH = 170
 const SPACES_REGEX = /\s/g
 const PLUSES_AND_SPACES_REGEX = /(\+|\s)/g
@@ -23,14 +25,16 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
         'any.required': `Enter a first name`,
         'string.min': `First name must have at least two letters - if you entered an initial please enter a name`,
         'custom.invalid': `First name can only include letters, hyphens and apostrophes - delete any other characters`,
-        'custom.no-leading-and-trailing-dashes': `First name can’t start or end with a dash - delete the dash`
+        'custom.no-leading-and-trailing-dashes': `First name can’t start or end with a dash - delete the dash`,
+        'string.max': `Enter a shorter first name with no more than ${FIRSTNAME_MAX_LENGTH} characters`
       },
       'last-name': {
         'any.empty': `Enter a last name`,
         'any.required': `Enter a last name`,
         'string.min': `Last name must have at least two letters - if you entered an initial please enter a name`,
         'custom.invalid': `Last name can only include letters, hyphens and apostrophes - delete any other characters`,
-        'custom.no-leading-and-trailing-dashes': `Last name can’t start or end with a dash - delete the dash`
+        'custom.no-leading-and-trailing-dashes': `Last name can’t start or end with a dash - delete the dash`,
+        'string.max': `Enter a shorter last name with no more than ${LASTNAME_MAX_LENGTH} characters`
       },
       'agent-company': {
         'any.empty': `Enter the agent’s trading, business or company name`,
@@ -63,10 +67,12 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
       'first-name': Joi
         .string()
         .min(2)
+        .max(FIRSTNAME_MAX_LENGTH)
         .required(),
       'last-name': Joi
         .string()
         .min(2)
+        .max(LASTNAME_MAX_LENGTH)
         .required(),
       'agent-company': Joi
         .string()
