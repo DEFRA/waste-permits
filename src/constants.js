@@ -47,6 +47,14 @@ Constants.Routes = {
     path: '/site/address/select-address',
     pageHeading: `What's the site address?`
   },
+  APPLICATION_RECEIVED: {
+    path: '/done',
+    pageHeading: `Application received`
+  },
+  APPLICATION_SENT: {
+    path: '/done/application-sent',
+    pageHeading: `You can’t go back to your application because it’s been sent`
+  },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',
     pageHeading: 'Check your answers before sending your application',
