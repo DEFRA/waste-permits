@@ -15,7 +15,7 @@
       </div>
       {{/if}}
 
-      <form method="post" action="{{formAction}}">
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <fieldset>

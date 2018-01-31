@@ -11,7 +11,7 @@
 
       {{> common/pageHeading pageHeading }}
 
-      <form method="post" action="{{formAction}}">
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
         <p>
           <span id="postcode-label" class="postcode-prefix">UK postcode:</span>
