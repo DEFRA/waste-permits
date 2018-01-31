@@ -106,7 +106,6 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
         await addressDetail.save(authToken)
       }
 
-      // TODO remove the invoice postcode from the cookie
       await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
 
       return reply.redirect(Constants.Routes.TASK_LIST.path)
