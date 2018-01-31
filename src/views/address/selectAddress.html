@@ -31,7 +31,7 @@
             <select class="address-select form-control form-control-char-auto" id="select-address" name="select-address" aria-describedby="manual_hint">
               <option value="">{{formValues.addresses.length}} addresses found</option>
               {{#each formValues.addresses}}
-                <option value="{{this.uprn}}">{{this.fullAddress}}</option>
+                <option value="{{this.uprn}}" {{#if this.selected}}selected{{/if}}>{{this.fullAddress}}</option>
               {{/each}}
             </select>
           </div>

@@ -16,15 +16,22 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
     // const applicationLineId = CookieService.getApplicationLineId(request)
 
     const postcode = CookieService.get(request, 'INVOICE_POSTCODE')
+
+    // TODO await all
     const addresses = await Address.listByPostcode(authToken, postcode)
     const address = await InvoiceAddress.getAddress(request, authToken, applicationId)
 
-    console.log('##### postcode: ', postcode)
-    console.log('##### addresses: ', addresses)
-    console.log('##### address: ', address)
+    // Set a flag on the selected address
+    if (address && addresses){
+      const selectedAddress = addresses.filter((element) => element.uprn === address.uprn).pop()
+      if (selectedAddress) {
+        selectedAddress.selected = true
+      }
+    }
 
     pageContext.formValues = {
       postcode: postcode,
+      address: address,
       addresses: addresses
     }
 
@@ -64,9 +71,9 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
       const uprn = request.payload['select-address']
 
       if (!uprn) {
-        // TODO
-        // logger.ERROR
-        // throw new Error('Unable to save address ... as it does not have a UPRN')
+        const errorMessage =`Unable to save invoice address as it does not have a UPRN`
+        LoggingService.logError(errorMessage, request)
+        throw new Error(errorMessage)
       }
 
       // Get the AddressDetail for this Application (if there is one)
@@ -86,8 +93,8 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
       let address = await Address.getByUprn(authToken, uprn)
       if (!address) {
         // The address is not already in Dynamics so look it up in AddressBase and save it in Dynamics
-        const addresses = await Address.listByPostcode(authToken, postcode)
-        addresses.filter((address) => address.uprn === uprn)
+        let addresses = await Address.listByPostcode(authToken, postcode)
+        addresses = addresses.filter((element) => element.uprn === uprn)
         address = addresses.pop()
         address.save(authToken)
       }
