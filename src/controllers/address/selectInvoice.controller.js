@@ -16,11 +16,12 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
     const applicationId = CookieService.getApplicationId(request)
     // const applicationLineId = CookieService.getApplicationLineId(request)
 
-    const postcode = CookieService.get(request, 'INVOICE_POSTCODE')
+    const postcode = CookieService.get(request, Constants.CookieValue.INVOICE_POSTCODE)
 
-    // TODO await all
-    const addresses = await Address.listByPostcode(authToken, postcode)
-    const address = await InvoiceAddress.getAddress(request, authToken, applicationId)
+    const [addresses, address] = await Promise.all([
+      Address.listByPostcode(authToken, postcode),
+      InvoiceAddress.getAddress(request, authToken, applicationId)
+    ])
 
     // Set a flag on the selected address
     if (address && addresses) {
@@ -64,9 +65,8 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
     } else {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
-      // TODO confirm if this is needed
-      // const applicationLineId = CookieService.getApplicationLineId(request)
-      const postcode = CookieService.get(request, 'INVOICE_POSTCODE')
+      const applicationLineId = CookieService.getApplicationLineId(request)
+      const postcode = CookieService.get(request, Constants.CookieValue.INVOICE_POSTCODE)
 
       // Get the UPRN for the selected selected address
       const uprn = request.payload['select-address']
@@ -97,7 +97,7 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
         let addresses = await Address.listByPostcode(authToken, postcode)
         addresses = addresses.filter((element) => element.uprn === uprn)
         address = addresses.pop()
-        address.save(authToken)
+        await address.save(authToken)
       }
 
       // Save the AddressDetail to associate the Address with the Application
@@ -107,6 +107,7 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
       }
 
       // TODO remove the invoice postcode from the cookie
+      await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
 
       return reply.redirect(Constants.Routes.TASK_LIST.path)
     }

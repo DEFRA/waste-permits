@@ -26,54 +26,62 @@ module.exports = class InvoiceAddress extends BaseModel {
     return address
   }
 
-  static async savePostcode (request, addressDto, authToken, applicationId, applicationLineId) {
-    if (addressDto.postcode) {
-      addressDto.postcode = addressDto.postcode.toUpperCase()
-    }
+  static async saveSelectedAddress (request, addressDto, authToken, applicationId, applicationLineId) {
 
-    try {
-      // Get the AddressDetail for this application (if there is one)
-      let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
+  }
 
-      if (!addressDetail) {
-        // Create new AddressDetail
+  static async saveManualAddress (request, addressDto, authToken, applicationId, applicationLineId) {
 
-        // TODO?
-        // addressDetail = AddressDetail.dynamicsToModel(addressDto)
-        addressDetail = new AddressDetail({
-          type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
-          applicationId: applicationId
+  }
 
-          // TODO - determine if we are going to link to a customer
-          // customerId: customerId
-        })
-        await addressDetail.save(authToken)
-      }
+  // static async savePostcode (request, addressDto, authToken, applicationId, applicationLineId) {
+  //   if (addressDto.postcode) {
+  //     addressDto.postcode = addressDto.postcode.toUpperCase()
+  //   }
 
-      // Get the Address for this AddressDetail (if there is one)
-      let address = await Address.getById(authToken, addressDetail.addressId)
-      if (!address) {
-        // Create new Address
-        address = new Address({
-          id: undefined,
-          postcode: addressDto.postcode
-        })
-        await address.save(authToken)
-      }
+  //   try {
+  //     // Get the AddressDetail for this application (if there is one)
+  //     let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
 
-      // Now Update the address
+  //     if (!addressDetail) {
+  //       // Create new AddressDetail
 
-      // If there is an existing Address but the Postcode is now different then update the AddressDetail
-      if (addressDetail.addressId) {
-        if (address.postcode !== addressDto.postcode) {
-          addressDetail.addressId = address.id
-          await addressDetail.save(authToken)
-        }
-      } else {
-        // Link the Address to the AddressDetail
-        addressDetail.addressId = address.id
-        await addressDetail.save(authToken)
-      }
+  //       // TODO?
+  //       // addressDetail = AddressDetail.dynamicsToModel(addressDto)
+  //       addressDetail = new AddressDetail({
+  //         type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
+  //         applicationId: applicationId
+
+  //         // TODO - determine if we are going to link to a customer
+  //         // customerId: customerId
+  //       })
+  //       await addressDetail.save(authToken)
+  //     }
+
+  //     // Get the Address for this AddressDetail (if there is one)
+  //     let address = await Address.getById(authToken, addressDetail.addressId)
+  //     if (!address) {
+  //       // Create new Address
+  //       address = new Address({
+  //         id: undefined,
+  //         postcode: addressDto.postcode
+  //       })
+  //       await address.save(authToken)
+  //     }
+
+  //     // Now Update the address
+
+  //     // If there is an existing Address but the Postcode is now different then update the AddressDetail
+  //     if (addressDetail.addressId) {
+  //       if (address.postcode !== addressDto.postcode) {
+  //         addressDetail.addressId = address.id
+  //         await addressDetail.save(authToken)
+  //       }
+  //     } else {
+  //       // Link the Address to the AddressDetail
+  //       addressDetail.addressId = address.id
+  //       await addressDetail.save(authToken)
+  //     }
 
       // let isNewAddress = false
 
@@ -124,11 +132,12 @@ module.exports = class InvoiceAddress extends BaseModel {
 
       // TODO
       // await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
-    } catch (error) {
-      LoggingService.logError(error, request)
-      throw error
-    }
-  }
+
+  //   } catch (error) {
+  //     LoggingService.logError(error, request)
+  //     throw error
+  //   }
+  // }
 
   // static async saveAddress (request, addressDto, authToken, applicationId, applicationLineId) {
   //   if (addressDto.postcode) {
@@ -229,29 +238,10 @@ module.exports = class InvoiceAddress extends BaseModel {
   static async _isComplete (authToken, applicationId, applicationLineId) {
     let isComplete = false
     try {
-      // TODO: determine how we tell if an InvoiceDetail is complete
-
-      // // Get the Location for this application
-      // const location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
-
-      // // Get the LocationDetail
-      // let locationDetail
-      // if (location) {
-      //   locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
-      // }
-
-      // // Get the Address
-      // let address
-      // if (locationDetail) {
-      //   address = await Address.getById(authToken, locationDetail.addressId)
-      // }
-
-      // if (location && locationDetail && address) {
-      //   isComplete =
-      //     location.name !== undefined && location.name.length > 0 &&
-      //     locationDetail.gridReference !== undefined && locationDetail.gridReference.length > 0 &&
-      //     address.postcode !== undefined && address.postcode.length > 0
-      // }
+      const addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
+      if (addressDetail && addressDetail.addressId) {
+        isComplete = Address.getById(addressDetail.addressId) !== undefined
+      }
     } catch (error) {
       LoggingService.logError(`Unable to calculate InvoiceAddress completeness: ${error}`)
       throw error

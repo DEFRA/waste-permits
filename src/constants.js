@@ -344,6 +344,10 @@ Constants.CompanyStatus = {
   NOT_ACTIVE: `isn't active`
 }
 
+Constants.CookieValue = {
+  INVOICE_POSTCODE: 'INVOICE_POSTCODE'
+}
+
 Constants.buildPageTitle = (pageHeading) => {
   return `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`
 }
