@@ -4,6 +4,7 @@ const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const AddressSelectValidator = require('../../validators/address/addressSelect.validator')
 const CookieService = require('../../services/cookie.service')
+const LoggingService = require('../../services/logging.service')
 const Address = require('../../models/address.model')
 const AddressDetail = require('../../models/addressDetail.model')
 const InvoiceAddress = require('../../models/taskList/InvoiceAddress.model')
@@ -22,7 +23,7 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
     const address = await InvoiceAddress.getAddress(request, authToken, applicationId)
 
     // Set a flag on the selected address
-    if (address && addresses){
+    if (address && addresses) {
       const selectedAddress = addresses.filter((element) => element.uprn === address.uprn).pop()
       if (selectedAddress) {
         selectedAddress.selected = true
@@ -71,7 +72,7 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
       const uprn = request.payload['select-address']
 
       if (!uprn) {
-        const errorMessage =`Unable to save invoice address as it does not have a UPRN`
+        const errorMessage = `Unable to save invoice address as it does not have a UPRN`
         LoggingService.logError(errorMessage, request)
         throw new Error(errorMessage)
       }
