@@ -41,9 +41,9 @@ module.exports = class AddressDetail extends BaseModel {
     }
   }
 
-  setAddress (addressId) {
-    this.addressId = addressId
-  }
+  // setAddress (addressId) {
+  //   this.addressId = addressId
+  // }
 
   // TODO remove this??
 

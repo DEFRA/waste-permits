@@ -23,9 +23,9 @@ module.exports = class PostcodeInvoiceController extends BaseController {
       if (address) {
         // If the manual entry flag is set then redirect off to the mamual address entry page
         // TODO
-        if (!address.fromAddressLookup) {
-          return reply.redirect(Constants.Routes.ADDRESS.MANUAL_INVOICE.path)
-        }
+        // if (!address.fromAddressLookup) {
+        //   return reply.redirect(Constants.Routes.ADDRESS.MANUAL_INVOICE.path)
+        // }
         pageContext.formValues = {
           'postcode': address.postcode
         }
@@ -43,16 +43,32 @@ module.exports = class PostcodeInvoiceController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
+      // const authToken = CookieService.getAuthToken(request)
+      // const applicationId = CookieService.getApplicationId(request)
+      // const applicationLineId = CookieService.getApplicationLineId(request)
 
-      const address = {
-        postcode: request.payload['postcode']
-      }
-      await InvoiceAddress.saveAddress(request, address, authToken, applicationId, applicationLineId)
+      const postcode = request.payload['postcode']
+
+      // const address = {
+      //   postcode: request.payload['postcode']
+      // }
+
+      // TODO: save the postcode in the cookie
+
+      // await InvoiceAddress.savePostcode(request, address, authToken, applicationId, applicationLineId)
+      // await InvoiceAddress.saveAddress(request, address, authToken, applicationId, applicationLineId)
+
+      // return reply.redirect(Constants.Routes.ADDRESS.SELECT_INVOICE.path)
+
+      // TODO cookie constant
+
+      // Set the application ID in the cookie
+      CookieService.set(request, 'INVOICE_POSTCODE', postcode)
 
       return reply.redirect(Constants.Routes.ADDRESS.SELECT_INVOICE.path)
+
+        // Add the updated cookie
+        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }
