@@ -13,7 +13,7 @@
 
       <h1 id="page-heading" class="heading-large">{{pageHeading}}</h1>
 
-      <form action="{{formAction}}" method="post">
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <div class="panel panel-border-wide form-group">

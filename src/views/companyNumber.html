@@ -9,7 +9,7 @@
 
       {{> common/errorSummary }}
 
-      <form method="post" action="{{ formAction }}" novalidate="novalidate">
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <h1 class="heading-large"><label id="page-heading" for="company-number">{{ pageHeading }}</label></h1>
