@@ -11,7 +11,7 @@
 
       {{> common/pageHeading pageHeading }}
 
-      <form method="POST" action="{{ formAction }}">
+      <form method="post" action="{{ formAction }}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <p id="dob-explanation">
