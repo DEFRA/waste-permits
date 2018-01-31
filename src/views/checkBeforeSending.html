@@ -4,6 +4,54 @@
 
   {{> common/backLink }}
 
-  {{> common/pageHeading pageHeading }}
+  <div class="grid-row">
+    <div class="column-two-thirds">
 
+      {{> common/pageHeading pageHeading }}
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div id="declaration">
+
+          <div id="declaration-warning" class="form-group">
+            <h2 class="heading-medium">Declaration</h2>
+
+            <div id="declaration-warning-notice" class="notice">
+              <i class="icon icon-important">
+                <span class="visually-hidden">Warning</span>
+              </i>
+              <strong class="bold-small">
+                You can be fined if you give false or misleading information.
+              </strong>
+            </div>
+          </div>
+
+          <div id="declaration-confirmation" class="form-group">
+            <p>I confirm that:</p>
+            <ul class="list list-bullet">
+              <li>we’ll have a written <a target="_blank" rel="noopener noreferrer"
+                                          href="https://www.gov.uk/guidance/develop-a-management-system-environmental-permits">
+                <span>management system (opens new tab)</span>
+              </a> in place before we start operating
+              </li>
+              <li>I’m authorised to apply for this permit by the organisation or individual responsible</li>
+              <li>the information I’ve given is true</li>
+            </ul>
+
+            <a target="_blank" rel="noopener noreferrer"
+               href="https://www.gov.uk/government/organisations/environment-agency/about/personal-information-charter">
+              <span>Privacy: how we use your personal information (opens new tab)</span>
+            </a>
+          </div>
+
+          {{> common/submitButton text="Confirm and pay"}}
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
 </main>
