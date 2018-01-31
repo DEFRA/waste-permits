@@ -8,7 +8,7 @@
     <div class="column-two-thirds">
       {{> common/errorSummary }}
       {{> common/pageHeading pageHeading }}
-      <form method="post" action="{{ formAction }}" novalidate="novalidate">
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <div class="form-group {{#getFormErrorGroupClass errors.first-name}}{{/getFormErrorGroupClass}}">

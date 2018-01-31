@@ -17,7 +17,7 @@
         <a id="select-a-different-permit" class="font-small" href="{{ permitCategoryRoute }}">Select a different permit</a>
       </p>
 
-      <form method="post" action="{{ formAction }}" name="tasklist">
+      <form method="POST" action="{{formAction}}" novalidate="novalidate" name="tasklist">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <ol class="task-list">
