@@ -11,6 +11,7 @@ const Application = require('../../src/models/application.model')
 const Account = require('../../src/models/account.model')
 const AddressDetail = require('../../src/models/addressDetail.model')
 const Contact = require('../../src/models/contact.model')
+const ContactDetails = require('../../src/models/taskList/contactDetails.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
 
@@ -24,6 +25,7 @@ let validateCookieStub
 let logErrorStub
 let contactSaveStub
 let contactGetByIdStub
+let contactDetailsUpdateCompletenessStub
 let applicationGetByIdStub
 let applicationSaveStub
 let accountGetByIdStub
@@ -104,6 +106,9 @@ lab.beforeEach(() => {
 
   contactSaveStub = Contact.prototype.save
   Contact.prototype.save = () => {}
+
+  contactDetailsUpdateCompletenessStub = ContactDetails.updateCompleteness
+  ContactDetails.updateCompleteness = () => {}
 })
 
 lab.afterEach(() => {
@@ -118,6 +123,7 @@ lab.afterEach(() => {
   Application.save = applicationSaveStub
   Contact.getById = contactGetByIdStub
   Contact.save = contactSaveStub
+  ContactDetails.updateCompleteness = contactDetailsUpdateCompletenessStub
 })
 
 lab.experiment('Contact details page tests:', () => {
