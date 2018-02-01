@@ -4,6 +4,7 @@ const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const PostcodeValidator = require('../../validators/address/postcode.validator')
 const CookieService = require('../../services/cookie.service')
+const Address = require('../../models/address.model')
 const InvoiceAddress = require('../../models/taskList/invoiceAddress.model')
 
 module.exports = class PostcodeInvoiceController extends BaseController {
@@ -36,11 +37,22 @@ module.exports = class PostcodeInvoiceController extends BaseController {
   }
 
   async doPost (request, reply, errors) {
+    const authToken = CookieService.getAuthToken(request)
+    const postcode = request.payload['postcode']
+
+    let addresses
+    try {
+      addresses = await Address.listByPostcode(authToken, postcode)
+    } catch (error) {}
+
+    if (!errors) {
+      // Perform manual (non-Joi) validation of form content
+      errors = await this._customValidate(addresses)
+    }
+
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const postcode = request.payload['postcode']
-
       // Save the postcode in the cookie
       CookieService.set(request, Constants.CookieValue.INVOICE_POSTCODE, postcode)
 
@@ -49,5 +61,26 @@ module.exports = class PostcodeInvoiceController extends BaseController {
         // Add the updated cookie
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY], Constants.COOKIE_PATH)
     }
+  }
+
+  async _customValidate (addresses) {
+    let errors
+
+    // If no addresses were found for the entered postcode
+    if (!addresses || addresses.length === 0) {
+      const errorPath = 'postcode'
+      errors = {
+        data: {
+          details: [
+            {
+              message: `"${errorPath}" is required`,
+              path: [errorPath],
+              type: 'none.found',
+              context: { key: errorPath, label: errorPath }
+            }]
+        }
+      }
+    }
+    return errors
   }
 }

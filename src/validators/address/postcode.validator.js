@@ -10,7 +10,8 @@ module.exports = class PostcodeValidator extends BaseValidator {
     this.errorMessages = {
       'postcode': {
         'any.empty': `Enter a postcode`,
-        'any.required': `Enter a postcode`
+        'any.required': `Enter a postcode`,
+        'none.found': `We can’t find any addresses for that postcode - check it is correct or enter address manually`
       }
     }
   }
