@@ -26,196 +26,45 @@ module.exports = class InvoiceAddress extends BaseModel {
     return address
   }
 
-  static async saveSelectedAddress (request, addressDto, authToken, applicationId, applicationLineId) {
+  static async saveSelectedAddress (request, authToken, applicationId, applicationLineId, type, postcode, uprn) {
+    if (!uprn) {
+      const errorMessage = `Unable to save invoice address as it does not have a UPRN`
+      LoggingService.logError(errorMessage, request)
+      throw new Error(errorMessage)
+    }
 
+    // Get the AddressDetail for this Application (if there is one)
+    let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)
+    if (!addressDetail) {
+      // Create new AddressDetail
+      addressDetail = new AddressDetail({
+        type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
+        applicationId: applicationId
+      })
+      await addressDetail.save(authToken)
+    }
+
+    let address = await Address.getByUprn(authToken, uprn)
+    if (!address) {
+      // The address is not already in Dynamics so look it up in AddressBase and save it in Dynamics
+      let addresses = await Address.listByPostcode(authToken, postcode)
+      addresses = addresses.filter((element) => element.uprn === uprn)
+      address = addresses.pop()
+      await address.save(authToken)
+    }
+
+    // Save the AddressDetail to associate the Address with the Application
+    if (address && addressDetail) {
+      addressDetail.addressId = address.id
+      await addressDetail.save(authToken)
+    }
+
+    await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
   }
 
-  static async saveManualAddress (request, addressDto, authToken, applicationId, applicationLineId) {
+  // TODO This will be used by the manual address entry page
+  // static async saveManualAddress (request, addressDto, authToken, applicationId, applicationLineId) {
 
-  }
-
-  // static async savePostcode (request, addressDto, authToken, applicationId, applicationLineId) {
-  //   if (addressDto.postcode) {
-  //     addressDto.postcode = addressDto.postcode.toUpperCase()
-  //   }
-
-  //   try {
-  //     // Get the AddressDetail for this application (if there is one)
-  //     let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
-
-  //     if (!addressDetail) {
-  //       // Create new AddressDetail
-
-  //       // TODO?
-  //       // addressDetail = AddressDetail.dynamicsToModel(addressDto)
-  //       addressDetail = new AddressDetail({
-  //         type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
-  //         applicationId: applicationId
-
-  //         // TODO - determine if we are going to link to a customer
-  //         // customerId: customerId
-  //       })
-  //       await addressDetail.save(authToken)
-  //     }
-
-  //     // Get the Address for this AddressDetail (if there is one)
-  //     let address = await Address.getById(authToken, addressDetail.addressId)
-  //     if (!address) {
-  //       // Create new Address
-  //       address = new Address({
-  //         id: undefined,
-  //         postcode: addressDto.postcode
-  //       })
-  //       await address.save(authToken)
-  //     }
-
-  //     // Now Update the address
-
-  //     // If there is an existing Address but the Postcode is now different then update the AddressDetail
-  //     if (addressDetail.addressId) {
-  //       if (address.postcode !== addressDto.postcode) {
-  //         addressDetail.addressId = address.id
-  //         await addressDetail.save(authToken)
-  //       }
-  //     } else {
-  //       // Link the Address to the AddressDetail
-  //       addressDetail.addressId = address.id
-  //       await addressDetail.save(authToken)
-  //     }
-
-      // let isNewAddress = false
-
-      // if (addressDetail.addressId !== undefined) {
-      //   address = await Address.getById(authToken, addressDetail.addressId)
-      // }
-
-      // if (!address) {
-      //   // Create new Address
-      //   address = new Address({
-      //     id: undefined,
-      //     // buildingNameOrNumber: addressDto.buildingNameOrNumber,
-      //     // addressLine1: addressDto.addressLine1,
-      //     // addressLine2: addressDto.addressLine2,
-      //     postcode: addressDto.postcode,
-      //     // fullAddress: addressDto.fullAddress,
-      //     // uprn: addressDto.uprn,
-
-      //     fromAddressLookup: true
-      //     // fromAddressLookup: addressDto.fromAddressLookup
-      //   })
-      //   isNewAddress = true
-      // } else {
-      //   // Update existing Address
-
-      //   // TODO: Confirm if we should only do this for manual entry??
-      //   // address.buildingNameOrNumber = addressDto.buildingNameOrNumber
-      //   // address.addressLine1 = addressDto.addressLine1
-      //   // address.addressLine2 = addressDto.addressLine2
-      //   address.postcode = addressDto.postcode
-      //   // address.fullAddress = addressDto.fullAddress
-      //   // address.uprn = addressDto.uprn
-
-      //   // TODO - depends on whether selected or manual entry
-      //   // address.fromAddressLookup = true
-      //   // fromAddressLookup: false
-      //   // this.fromAddressLookup = address.fromAddressLookup
-      //   fromAddressLookup: true
-      // }
-
-      // await address.save(authToken)
-
-      // If the Address was new then we need to associate it with the AddressDetail in Dynamics
-      // if (isNewAddress) {
-      //   addressDetail.setAddress(address.id)
-      //   await addressDetail.save(authToken)
-      // }
-
-      // TODO
-      // await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
-
-  //   } catch (error) {
-  //     LoggingService.logError(error, request)
-  //     throw error
-  //   }
-  // }
-
-  // static async saveAddress (request, addressDto, authToken, applicationId, applicationLineId) {
-  //   if (addressDto.postcode) {
-  //     addressDto.postcode = addressDto.postcode.toUpperCase()
-  //   }
-
-  //   try {
-  //     // Get the AddressDetail for this application (if there is one)
-  //     let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
-
-  //     if (!addressDetail) {
-  //       // Create new AddressDetail
-
-  //       // addressDetail = AddressDetail.dynamicsToModel(addressDto)
-  //       addressDetail = new AddressDetail({
-  //         type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
-  //         applicationId: applicationId
-
-  //         // TODO - determine if we are going to link to a customer
-  //         // customerId: customerId
-  //       })
-  //       await addressDetail.save(authToken)
-  //     }
-
-  //     // Get the Address for this AddressDetail (if there is one)
-  //     let isNewAddress = false
-  //     let address
-
-  //     if (addressDetail.addressId !== undefined) {
-  //       address = await Address.getById(authToken, addressDetail.addressId)
-  //     }
-
-  //     if (!address) {
-  //       // Create new Address
-  //       address = new Address({
-  //         id: undefined,
-  //         buildingNameOrNumber: addressDto.buildingNameOrNumber,
-  //         addressLine1: addressDto.addressLine1,
-  //         addressLine2: addressDto.addressLine2,
-  //         postcode: addressDto.postcode,
-  //         fullAddress: addressDto.fullAddress,
-  //         uprn: addressDto.uprn,
-
-  //         fromAddressLookup: true
-  //       // fromAddressLookup: addressDto.fromAddressLookup
-  //       })
-  //       isNewAddress = true
-  //     } else {
-  //       // Update existing Address
-
-  //       // TODO: Confirm if we should only do this for manual entry??
-  //       // address.buildingNameOrNumber = addressDto.buildingNameOrNumber
-  //       // address.addressLine1 = addressDto.addressLine1
-  //       // address.addressLine2 = addressDto.addressLine2
-  //       // address.postcode = addressDto.postcode
-  //       // address.fullAddress = addressDto.fullAddress
-  //       // address.uprn = addressDto.uprn
-
-  //       // TODO - depends on whether selected or manual entry
-  //       address.fromAddressLookup = true
-  //       // fromAddressLookup: false
-  //       // this.fromAddressLookup = address.fromAddressLookup
-  //     }
-
-  //     await address.save(authToken)
-
-  //     // If the Address was new then we need to associate it with the AddressDetail in Dynamics
-  //     if (isNewAddress) {
-  //       addressDetail.setAddress(address.id)
-  //       await addressDetail.save(authToken)
-  //     }
-
-  //     // TODO
-  //     // await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
-  //   } catch (error) {
-  //     LoggingService.logError(error, request)
-  //     throw error
-  //   }
   // }
 
   static async updateCompleteness (authToken, applicationId, applicationLineId) {

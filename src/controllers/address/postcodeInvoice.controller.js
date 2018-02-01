@@ -12,9 +12,6 @@ module.exports = class PostcodeInvoiceController extends BaseController {
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
 
-    // TODO confirm if this is needed
-    // const applicationLineId = CookieService.getApplicationLineId(request)
-
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
       pageContext.formValues = request.payload
