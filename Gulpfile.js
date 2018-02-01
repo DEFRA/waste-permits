@@ -58,6 +58,11 @@ gulp.task('copy-govuk-files', [], (done) => {
 
 // Install the govuk files into our application
 
+gulp.task('copy-toolkit-assets', () => {
+  gulp.src(paths.govukModules + '/govuk_frontend_toolkit/{images/**/*.*,javascripts/**/*.*,stylesheets/**/*.*}')
+    .pipe(gulp.dest(paths.public))
+})
+
 gulp.task('copy-template-assets', () => {
   gulp.src(paths.govukModules + '/govuk_template_mustache/assets/{images/**/*.*,javascripts/**/*.*,stylesheets/**/*.*}')
     .pipe(gulp.dest(paths.public))
@@ -70,6 +75,7 @@ gulp.task('copy-template-view', () => {
 
 gulp.task('install-govuk-files', [], (done) => {
   runSequence(
+    'copy-toolkit-assets',
     'copy-template-assets',
     'copy-template-view',
     done)
