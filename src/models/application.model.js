@@ -20,6 +20,7 @@ module.exports = class Application extends BaseModel {
       {field: 'bankruptcyDetails', dynamics: 'defra_bankruptcydeclarationdetails'},
       {field: 'confidentiality', dynamics: 'defra_confidentialitydeclaration'},
       {field: 'confidentialityDetails', dynamics: 'defra_confidentialitydeclarationdetails'},
+      {field: 'declaration', dynamics: 'defra_applicationdeclaration'},
       {field: 'regime', dynamics: 'defra_regime', constant: Constants.Dynamics.WASTE_REGIME},
       {field: 'source', dynamics: 'defra_source', constant: Constants.Dynamics.DIGITAL_SOURCE},
       {field: 'statuscode', dynamics: 'statuscode', constant: Constants.Dynamics.StatusCode.DRAFT}
@@ -29,6 +30,8 @@ module.exports = class Application extends BaseModel {
   constructor (...args) {
     super(...args)
     this._entity = 'defra_applications'
+    const declaration = {args}
+    this.declaration = !!declaration // Make declaration a boolean
   }
 
   static async getById (authToken, applicationId) {
