@@ -6,6 +6,7 @@ const Contact = require('../models/contact.model')
 const AddressDetail = require('../models/addressDetail.model')
 const Account = require('../models/account.model')
 const Application = require('../models/application.model')
+const ContactDetails = require('../models/taskList/contactDetails.model')
 const CookieService = require('../services/cookie.service')
 
 module.exports = class ContactDetailsController extends BaseController {
@@ -58,11 +59,18 @@ module.exports = class ContactDetailsController extends BaseController {
         email
       } = request.payload
       let contact
+
       if (application.contactId) {
         contact = await Contact.getById(authToken, application.contactId)
-      } else {
+        if (contact.firstName !== firstName || contact.lastName !== lastName || contact.email !== email) {
+          application.contactId = undefined
+        }
+      }
+
+      if (!application.contactId) {
         contact = await Contact.getByFirstnameLastnameEmail(authToken, firstName, lastName, email)
       }
+
       if (!contact) {
         contact = new Contact({firstName, lastName, email})
       }
@@ -89,6 +97,9 @@ module.exports = class ContactDetailsController extends BaseController {
       const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
       primaryContactDetails.telephone = telephone
       await primaryContactDetails.save(authToken)
+
+      const applicationLineId = CookieService.getApplicationLineId(request)
+      await ContactDetails.updateCompleteness(authToken, applicationId, applicationLineId)
 
       return reply.redirect(Constants.Routes.TASK_LIST.path)
     }
