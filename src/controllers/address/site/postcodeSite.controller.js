@@ -1,9 +1,9 @@
 'use strict'
 
-const Constants = require('../../constants')
-const BaseController = require('../base.controller')
-const CookieService = require('../../services/cookie.service')
-const SiteNameAndLocation = require('../../models/taskList/siteNameAndLocation.model')
+const Constants = require('../../../constants')
+const BaseController = require('../../base.controller')
+const CookieService = require('../../../services/cookie.service')
+const SiteNameAndLocation = require('../../../models/taskList/siteNameAndLocation.model')
 
 module.exports = class PostcodeSiteController extends BaseController {
   async doGet (request, reply, errors) {

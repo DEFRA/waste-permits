@@ -1,11 +1,11 @@
 'use strict'
 
-const Constants = require('../../constants')
-const BaseController = require('../base.controller')
-const AddressSelectValidator = require('../../validators/address/addressSelect.validator')
-const CookieService = require('../../services/cookie.service')
-const Address = require('../../models/address.model')
-const InvoiceAddress = require('../../models/taskList/InvoiceAddress.model')
+const Constants = require('../../../constants')
+const BaseController = require('../../base.controller')
+const AddressSelectValidator = require('../../../validators/address/addressSelect.validator')
+const CookieService = require('../../../services/cookie.service')
+const Address = require('../../../models/address.model')
+const InvoiceAddress = require('../../../models/taskList/invoiceAddress.model')
 
 module.exports = class AddressSelectInvoiceController extends BaseController {
   async doGet (request, reply, errors) {
@@ -47,13 +47,12 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
       const applicationLineId = CookieService.getApplicationLineId(request)
-      const postcode = CookieService.get(request, Constants.CookieValue.INVOICE_POSTCODE)
 
-      // Get the UPRN for the selected selected address
-      const uprn = request.payload['select-address']
-
-      await InvoiceAddress.saveSelectedAddress(request, authToken, applicationId, applicationLineId,
-        Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE, postcode, uprn)
+      const addressDto = {
+        uprn: request.payload['select-address'],
+        postcode: CookieService.get(request, Constants.CookieValue.INVOICE_POSTCODE)
+      }
+      await InvoiceAddress.saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
 
       return reply.redirect(Constants.Routes.TASK_LIST.path)
     }

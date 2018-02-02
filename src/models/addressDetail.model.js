@@ -41,36 +41,6 @@ module.exports = class AddressDetail extends BaseModel {
     }
   }
 
-  // setAddress (addressId) {
-  //   this.addressId = addressId
-  // }
-
-  // TODO remove this??
-
-  // async save (authToken) {
-  //   // const dataObject = this.modelToDynamics()
-
-  //   // TODO make this more generic
-  //   // dataObject.type = Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE
-
-  //   // await super.save(authToken, dataObject)
-
-  //   // Map the Location to the corresponding Dynamics schema LocationDetail object
-  //   const dataObject = {
-  //     defra_name: 'Billing Invoicing Address',
-  //     defra_addresstype: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
-  //     // 'defra_addressdetailsid@odata.bind': `defra_addresses(${this.id})`,
-
-  //     // TODO decide if we are going to have a lookup to the Customer
-  //     // defra_customer
-  //     'defra_applicationId@odata.bind': `defra_applications(${this.applicationId})`
-  //   }
-
-  //   if (this.addressId) {
-  //     dataObject['defra_Address@odata.bind'] = `defra_addresses(${this.addressId})`
-  //   }
-  // }
-
   async save (authToken) {
     const dataObject = this.modelToDynamics()
     await super.save(authToken, dataObject)

@@ -1,11 +1,11 @@
 'use strict'
 
-const Constants = require('../../constants')
-const BaseController = require('../base.controller')
-const PostcodeValidator = require('../../validators/address/postcode.validator')
-const CookieService = require('../../services/cookie.service')
-const Address = require('../../models/address.model')
-const InvoiceAddress = require('../../models/taskList/invoiceAddress.model')
+const Constants = require('../../../constants')
+const BaseController = require('../../base.controller')
+const PostcodeValidator = require('../../../validators/address/postcode.validator')
+const CookieService = require('../../../services/cookie.service')
+const Address = require('../../../models/address.model')
+const InvoiceAddress = require('../../../models/taskList/invoiceAddress.model')
 
 module.exports = class PostcodeInvoiceController extends BaseController {
   async doGet (request, reply, errors) {
@@ -24,7 +24,7 @@ module.exports = class PostcodeInvoiceController extends BaseController {
           return reply.redirect(Constants.Routes.ADDRESS.MANUAL_INVOICE.path)
         }
         pageContext.formValues = {
-          'postcode': address.postcode
+          postcode: address.postcode
         }
       }
     }
@@ -39,15 +39,21 @@ module.exports = class PostcodeInvoiceController extends BaseController {
   async doPost (request, reply, errors) {
     const authToken = CookieService.getAuthToken(request)
     const postcode = request.payload['postcode']
+    const errorPath = 'postcode'
 
     let addresses
     try {
       addresses = await Address.listByPostcode(authToken, postcode)
-    } catch (error) {}
+    } catch (error) {
+      if (!errors) {
+        // Add error if the entered postcode led to an error being returned from AddressBase
+        errors = this._addCustomError(errorPath, `"${errorPath}" is invalid`, 'invalid')
+      }
+    }
 
-    if (!errors) {
-      // Perform manual (non-Joi) validation of form content
-      errors = await this._customValidate(addresses)
+    if (!errors && addresses && addresses.length === 0) {
+      // Add error if there are no addresses found
+      errors = this._addCustomError(errorPath, `"${errorPath}" is required`, 'none.found')
     }
 
     if (errors && errors.data.details) {
@@ -63,24 +69,17 @@ module.exports = class PostcodeInvoiceController extends BaseController {
     }
   }
 
-  async _customValidate (addresses) {
-    let errors
-
-    // If no addresses were found for the entered postcode
-    if (!addresses || addresses.length === 0) {
-      const errorPath = 'postcode'
-      errors = {
-        data: {
-          details: [
-            {
-              message: `"${errorPath}" is required`,
-              path: [errorPath],
-              type: 'none.found',
-              context: { key: errorPath, label: errorPath }
-            }]
-        }
+  _addCustomError (errorPath, message, type) {
+    return {
+      data: {
+        details: [
+          {
+            message: message,
+            path: [errorPath],
+            type: type,
+            context: { key: errorPath, label: errorPath }
+          }]
       }
     }
-    return errors
   }
 }

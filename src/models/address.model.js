@@ -74,9 +74,8 @@ module.exports = class Address extends BaseModel {
       let action = `defra_postcodelookup`
       const response = await dynamicsDal.callAction(action, actionDataObject)
 
-      addresses = JSON.parse((JSON.parse(JSON.stringify(response))).addresses).results
-
       // Parse AddressBase response objects into Address objects
+      addresses = JSON.parse((JSON.parse(JSON.stringify(response))).addresses).results
       addresses = addresses.map((address) => new Address({
         id: undefined,
         buildingNameOrNumber: address.premises,

@@ -14,7 +14,9 @@ module.exports = class InvoiceAddress extends BaseModel {
     let address
     try {
         // Get the AddressDetail for this application
-      let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
+      const addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
+        Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
+
       if (addressDetail && addressDetail.addressId !== undefined) {
           // Get the Address for this AddressDetail
         address = await Address.getById(authToken, addressDetail.addressId)
@@ -26,15 +28,17 @@ module.exports = class InvoiceAddress extends BaseModel {
     return address
   }
 
-  static async saveSelectedAddress (request, authToken, applicationId, applicationLineId, type, postcode, uprn) {
-    if (!uprn) {
+  static async saveSelectedAddress (request, authToken, applicationId, applicationLineId, addressDto) {
+    if (!addressDto.uprn) {
       const errorMessage = `Unable to save invoice address as it does not have a UPRN`
       LoggingService.logError(errorMessage, request)
       throw new Error(errorMessage)
     }
 
     // Get the AddressDetail for this Application (if there is one)
-    let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)
+    let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
+      Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
+
     if (!addressDetail) {
       // Create new AddressDetail
       addressDetail = new AddressDetail({
@@ -44,13 +48,15 @@ module.exports = class InvoiceAddress extends BaseModel {
       await addressDetail.save(authToken)
     }
 
-    let address = await Address.getByUprn(authToken, uprn)
+    let address = await Address.getByUprn(authToken, addressDto.uprn)
     if (!address) {
       // The address is not already in Dynamics so look it up in AddressBase and save it in Dynamics
-      let addresses = await Address.listByPostcode(authToken, postcode)
-      addresses = addresses.filter((element) => element.uprn === uprn)
+      let addresses = await Address.listByPostcode(authToken, addressDto.postcode)
+      addresses = addresses.filter((element) => element.uprn === addressDto.uprn)
       address = addresses.pop()
-      await address.save(authToken)
+      if (address) {
+        await address.save(authToken)
+      }
     }
 
     // Save the AddressDetail to associate the Address with the Application
@@ -62,10 +68,33 @@ module.exports = class InvoiceAddress extends BaseModel {
     await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
   }
 
-  // TODO This will be used by the manual address entry page
-  // static async saveManualAddress (request, addressDto, authToken, applicationId, applicationLineId) {
+  static async saveManualAddress (request, authToken, applicationId, applicationLineId, addressDto) {
+    // Get the AddressDetail for this Application (if there is one)
+    let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
+      Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
 
-  // }
+    if (!addressDetail) {
+      // Create new AddressDetail
+      addressDetail = new AddressDetail({
+        type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
+        applicationId: applicationId
+      })
+      await addressDetail.save(authToken)
+    }
+
+    // TODO find out if we have to try and match an existing manual or auto address?
+    const address = new Address(addressDto)
+    address.fromAddressLookup = false
+    await address.save(authToken)
+
+    // Save the AddressDetail to associate the Address with the Application
+    if (address && addressDetail) {
+      addressDetail.addressId = address.id
+      await addressDetail.save(authToken)
+    }
+
+    await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
+  }
 
   static async updateCompleteness (authToken, applicationId, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
