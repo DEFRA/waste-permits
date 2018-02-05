@@ -11,7 +11,7 @@ const PLUSES_AND_SPACES_REGEX = /(\+|\s)/g
 const PLUSES_SPACES_AND_NUMBERS_REGEX = /^[0-9 +]*$/
 const PLUSES_CANNOT_PRECEED_ZERO = /^(\+[1-9]+[0-9]*|[^+][0-9]*)$/
 const LEADING_AND_TRAILING_DASHES_REGEX = /(^-.*$|^.*-$)/
-const LETTERS_HYPHENS_AND_APOSTROPHES_REGEX = /^[A-Za-z'-]+$/
+const LETTERS_HYPHENS_AND_APOSTROPHES_REGEX = /^[A-zÀ-ÖØ-öø-ÿ'-]+$/
 const EMAIL_VALID_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 module.exports = class ContactDetailsValidator extends BaseValidator {
