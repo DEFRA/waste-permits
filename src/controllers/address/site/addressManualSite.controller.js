@@ -2,13 +2,16 @@
 
 const Constants = require('../../../constants')
 const BaseController = require('../../base.controller')
-const AddressManualValidator = require('../../../validators/address/addressManual.validator')
+
+// This is part of the Site Details story that is a later development
 // const CookieService = require('../../../services/cookie.service')
 // const SiteNameAndLocation = require('../../../models/taskList/siteNameAndLocation.model')
 
 module.exports = class AddressManualSiteController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new AddressManualValidator())
+    const pageContext = this.createPageContext(errors)
+    // This is part of the Site Details story that is a later development
+
     // const authToken = CookieService.getAuthToken(request)
     // const applicationId = CookieService.getApplicationId(request)
     // const applicationLineId = CookieService.getApplicationLineId(request)
@@ -32,6 +35,8 @@ module.exports = class AddressManualSiteController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
+    // This is part of the Site Details story that is a later development
+
     //   const authToken = CookieService.getAuthToken(request)
     //   const applicationId = CookieService.getApplicationId(request)
     //   const applicationLineId = CookieService.getApplicationLineId(request)

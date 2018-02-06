@@ -2,14 +2,13 @@
 
 const Constants = require('../../../constants')
 const BaseController = require('../../base.controller')
-const AddressSelectValidator = require('../../../validators/address/addressSelect.validator')
 const CookieService = require('../../../services/cookie.service')
 const Address = require('../../../models/address.model')
 const InvoiceAddress = require('../../../models/taskList/invoiceAddress.model')
 
 module.exports = class AddressSelectInvoiceController extends BaseController {
   async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors, new AddressSelectValidator())
+    const pageContext = this.createPageContext(errors)
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
 
