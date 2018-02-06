@@ -29,7 +29,8 @@ Constants.ALLOWED_PERMITS = [
   'SR2010 No 4',
   'SR2010 No 5',
   'SR2010 No 6',
-  'SR2010 No 11'
+  'SR2010 No 11',
+  'SR2010 No 12'
   // *** Must be a mobile permit so this is temporarily removed ***
   // 'SR2015 No 18'
 ]
