@@ -251,7 +251,8 @@ Constants.Dynamics = {
   },
   AddressTypes: {
     BILLING_INVOICING: {
-      TYPE: 910400004
+      TYPE: 910400004,
+      NAME: 'Billing Invoicing Address'
     },
     COMPANY_SECRETARY_EMAIL: {
       TYPE: 910400006,

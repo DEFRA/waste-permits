@@ -12,7 +12,7 @@ module.exports = class AddressDetail extends BaseModel {
       {field: 'id', dynamics: 'defra_addressdetailsid'},
       {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationId', relationship: 'defra_application_defra_addressdetails', entity: 'defra_applications'}},
       {field: 'addressId', dynamics: '_defra_address_value', bind: {id: 'defra_Address', relationship: 'defra_address_defra_addressdetails', entity: 'defra_addresses'}},
-      {field: 'defraName', dynamics: 'defra_name', constant: 'Billing Invoicing Address'},
+      {field: 'defraName', dynamics: 'defra_name', constant: Constants.Dynamics.AddressTypes.BILLING_INVOICING.NAME},
       {field: 'email', dynamics: 'emailaddress'},
       {field: 'name', dynamics: 'defra_name'},
       {field: 'telephone', dynamics: 'defra_phone'},
