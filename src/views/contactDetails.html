@@ -16,7 +16,7 @@
             First name
           </label>
           {{> common/fieldError fieldId='first-name-error' message=errors.first-name }}
-          <input class="form-control form-control-char-15" id="first-name" name="first-name" type="text" value="{{formValues.first-name}}">
+          <input class="form-control form-control-char-15 {{#if errors.first-name}}form-control-error{{/if}}" id="first-name" name="first-name" type="text" value="{{formValues.first-name}}">
         </div>
 
         <div class="form-group {{#getFormErrorGroupClass errors.last-name}}{{/getFormErrorGroupClass}}">
@@ -24,7 +24,7 @@
             Last name
           </label>
           {{> common/fieldError fieldId='last-name-error' message=errors.last-name }}
-          <input class="form-control form-control-char-15" id="last-name" name="last-name" type="text" value="{{formValues.last-name}}">
+          <input class="form-control form-control-char-15 {{#if errors.last-name}}form-control-error{{/if}}" id="last-name" name="last-name" type="text" value="{{formValues.last-name}}">
         </div>
 
         <div class="form-group {{#getFormErrorGroupClass errors.agent-company}}{{/getFormErrorGroupClass}}">
@@ -40,7 +40,7 @@
             Agent’s trading, business or company name
           </label>
           {{> common/fieldError fieldId='agent-company-error' message=errors.agent-company }}
-          <input class="form-control form-control-char-50" id="agent-company" name="agent-company" type="text" value="{{formValues.agent-company}}">
+          <input class="form-control form-control-char-50 {{#if errors.agent-company}}form-control-error{{/if}}" id="agent-company" name="agent-company" type="text" value="{{formValues.agent-company}}">
         </div>
 
         <div class="form-group {{#getFormErrorGroupClass errors.telephone}}{{/getFormErrorGroupClass}}">
@@ -49,7 +49,7 @@
             <span class="form-hint">This can be a landline or mobile</span>
           </label>
           {{> common/fieldError fieldId='telephone-error' message=errors.telephone }}
-          <input class="form-control form-control-char-15" id="telephone" name="telephone" type="tel" value="{{formValues.telephone}}">
+          <input class="form-control form-control-char-15 {{#if errors.telephone}}form-control-error{{/if}}" id="telephone" name="telephone" type="tel" value="{{formValues.telephone}}">
         </div>
 
         <fieldset>
@@ -61,7 +61,7 @@
               <span class="form-hint">They get every communication and also the permit and any notices</span>
             </label>
             {{> common/fieldError fieldId='email-error' message=errors.email }}
-            <input class="form-control form-control-char-35" id="email" name="email" type="email" value="{{formValues.email}}">
+            <input class="form-control form-control-char-35 {{#if errors.email}}form-control-error{{/if}}" id="email" name="email" type="email" value="{{formValues.email}}">
           </div>
 
           <div class="form-group {{#getFormErrorGroupClass errors.company-secretary-email}}{{/getFormErrorGroupClass}}">
@@ -78,7 +78,7 @@
               </div>
             </details>
             {{> common/fieldError fieldId='company-secretary-email-error' message=errors.company-secretary-email }}
-            <input class="form-control form-control-char-35" id="company-secretary-email" name="company-secretary-email" type="email" value="{{formValues.company-secretary-email}}">
+            <input class="form-control form-control-char-35 {{#if errors.company-secretary-email}}form-control-error{{/if}}" id="company-secretary-email" name="company-secretary-email" type="email" value="{{formValues.company-secretary-email}}">
           </div>
         </fieldset>
 

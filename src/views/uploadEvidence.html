@@ -63,7 +63,7 @@
         <div id="uploader" class="form-group form-uploader">
           <div class="form-group {{#getFormErrorGroupClass errors.file}}{{/getFormErrorGroupClass}} {{#getFormErrorGroupClass errors.content-type}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='file-error' message=errors.file }}
-            <input id="file" name="file" type="file">
+            <input id="file" class="{{#if errors.file}}form-control-error{{/if}}" name="file" type="file">
             <input id="filename" name="technicalCertificateFile" type="hidden">
             <input name="technicalCertificateFileUploaded" value="{{technicalCertificateFileUploaded}}" type="hidden">
           </div>

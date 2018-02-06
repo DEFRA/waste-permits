@@ -24,7 +24,7 @@
 
           {{> common/fieldError fieldId='site-name-error' message=errors.site-name }}
 
-          <input class="form-control form-control-char-60" id="site-name" name="site-name" type="text" value="{{formValues.site-name}}">
+          <input class="form-control form-control-char-60 {{#if errors.site-name}}form-control-error{{/if}}" id="site-name" name="site-name" type="text" value="{{formValues.site-name}}">
         </div>
 
         {{> common/submitButton }}
