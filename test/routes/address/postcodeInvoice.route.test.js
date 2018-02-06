@@ -18,6 +18,7 @@ let addressListByPostcodeStub
 const routePath = '/invoice/address/postcode'
 const nextRoutePath = '/invoice/address/select-address'
 const nextRoutePathManual = '/invoice/address/address-manual'
+const pageHeading = `Where should we send invoices for the annual costs after the permit has been issued?`
 const getRequest = {
   method: 'GET',
   url: routePath,
@@ -103,7 +104,7 @@ const checkPageElements = async (request, expectedValue) => {
   const doc = parser.parseFromString(res.payload, 'text/html')
 
   let element = doc.getElementById('page-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`Where should we send invoices for the annual costs after the permit has been issued?`)
+  Code.expect(element.nodeValue).to.equal(pageHeading)
 
   const elementIds = [
     'back-link',
@@ -126,7 +127,7 @@ const checkPageElements = async (request, expectedValue) => {
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
   element = doc.getElementById('no-postcode-link-text').firstChild
-  Code.expect(element.nodeValue).to.equal(`The invoice address doesn't have a postcode`)
+  Code.expect(element.nodeValue).to.equal(`Enter address manually`)
 
   element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Find address')
@@ -230,7 +231,7 @@ lab.experiment('Postcode page tests:', () => {
         Address.listByPostcode = () => {
           throw new Error('AddressBase error')
         }
-        await checkValidationError('Enter a valid UK postcode')
+        await checkValidationError('Enter a valid postcode')
       })
     })
   })

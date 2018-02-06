@@ -88,7 +88,7 @@ const checkPageElements = async (request, expectedValue) => {
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
   element = doc.getElementById('no-postcode-link-text').firstChild
-  Code.expect(element.nodeValue).to.equal(`The site doesn't have a postcode`)
+  Code.expect(element.nodeValue).to.equal(`Enter address manually`)
 
   element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Find address')

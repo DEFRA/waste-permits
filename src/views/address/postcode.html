@@ -18,23 +18,19 @@
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
-        <fieldset>
-          <legend class="visuallyhidden">UK postcode</legend>
+        <div class="form-group {{#getFormErrorGroupClass errors.postcode}}{{/getFormErrorGroupClass}}">
+          <label id="postcode-label" class="form-label" for="postcode">UK postcode
+            <span id="postcode-hint" class="form-hint">For example, BS1 5AH</span>
+          </label>
+          {{> common/fieldError fieldId='postcode-error' message=errors.postcode }}
+          <input type="text" class="form-control form-control-char-10" id="postcode" name="postcode" value="{{formValues.postcode}}" />
+        </div>
 
-          <div class="form-group {{#getFormErrorGroupClass errors.postcode}}{{/getFormErrorGroupClass}}">
-            <label id="postcode-label" class="form-label" for="postcode">UK postcode
-              <span id="postcode-hint" class="form-hint">For example, BS1 5AH</span>
-            </label>
-            {{> common/fieldError fieldId='postcode-error' message=errors.postcode }}
-            <input type="text" class="form-control form-control-char-10" id="postcode" name="postcode" value="{{formValues.postcode}}" />
-          </div>
-        </fieldset>
-
-        <p id="manual-hint">
+        <div class="form-group" id="manual-hint">
           <a id="manual-address-link" href="{{manualAddressLink}}">
           <span class="visuallyhidden">Enter address manually</span>
-          <span id="no-postcode-link-text">{{noPostcodeLink}}</span></a>
-        </p>
+          <span id="no-postcode-link-text">Enter address manually</span></a>
+        </div>
 
         {{> common/submitButton text='Find address'}}
 

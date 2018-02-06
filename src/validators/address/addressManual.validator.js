@@ -4,6 +4,8 @@ const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 
 const CHARACTER_LIMIT = 170
+const TOWN_OR_CITY_CHARACTER_LIMIT = 70
+const POSTCODE_CHARACTER_LIMIT = 8
 
 // Can’t start or end with a hyphen
 const STARTS_OR_ENDS_WITH_HYPHEN_REGEX = /^-|-$/g
@@ -44,7 +46,7 @@ module.exports = class AddressManualValidator extends BaseValidator {
       'town-or-city': {
         'any.empty': `Enter a town or city`,
         'any.required': `Enter a town or city`,
-        'string.max': `Enter a shorter town or city with no more than ${CHARACTER_LIMIT} characters`,
+        'string.max': `Enter a shorter town or city with no more than ${TOWN_OR_CITY_CHARACTER_LIMIT} characters`,
         'string.regex.invert.base': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Town or city`),
         'string.regex.base': INVALID_CHARS_ERROR_MESSAGE_NO_NUMBERS.replace('<FIELD>', `Town or city`),
         'custom.multiple.apostrophes': 'Town or city can only contain one apostrophe - remove all but one'
@@ -52,7 +54,8 @@ module.exports = class AddressManualValidator extends BaseValidator {
       'postcode': {
         'any.empty': `Enter a valid postcode`,
         'any.required': `Enter a valid postcode`,
-        'string.regex.invert.base': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `postcode`)
+        'string.max': `Enter a shorter postcode with no more than ${POSTCODE_CHARACTER_LIMIT} characters`,
+        'string.regex.invert.base': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Postcode`)
       }
     }
   }
@@ -82,7 +85,7 @@ module.exports = class AddressManualValidator extends BaseValidator {
         }),
       'town-or-city': Joi
         .string()
-        .max(CHARACTER_LIMIT)
+        .max(TOWN_OR_CITY_CHARACTER_LIMIT)
         .required()
         .regex(STARTS_OR_ENDS_WITH_HYPHEN_REGEX, {
           invert: true
@@ -90,6 +93,7 @@ module.exports = class AddressManualValidator extends BaseValidator {
         .regex(VALID_CHARACTERS_REGEX_NO_NUMBERS),
       'postcode': Joi
         .string()
+        .max(POSTCODE_CHARACTER_LIMIT)
         .required()
         .regex(STARTS_OR_ENDS_WITH_HYPHEN_REGEX, {
           invert: true

@@ -21,28 +21,21 @@
         </a>
         </p>
 
-        <fieldset>
-          <legend id="manual-address" class="visuallyhidden">Select as address</legend>
+        <div id="address-selection" class="form-group {{#getFormErrorGroupClass errors.select-address}}{{/getFormErrorGroupClass}}">
+          <label id="select-address-label" class="form-label" for="select-address">Select an address</label>
+          {{> common/fieldError fieldId='select-address-error' message=errors.select-address }}
 
-          <div id="address-selection" class="form-group {{#getFormErrorGroupClass errors.select-address}}{{/getFormErrorGroupClass}}">
-            <label id="select-address-label" class="form-label" for="select-address">Select an address</label>
-            {{> common/fieldError fieldId='select-address-error' message=errors.select-address }}
+          <select class="form-control form-control-char-auto" id="select-address" name="select-address" aria-describedby="manual-hint">
+            <option value="">{{formValues.addresses.length}} addresses found</option>
+            {{#each formValues.addresses}}
+              <option value="{{this.uprn}}" {{#if this.selected}}selected{{/if}}>{{this.fullAddress}}</option>
+            {{/each}}
+          </select>
+        </div>
 
-            <select class="address-select form-control form-control-char-auto" id="select-address" name="select-address" aria-describedby="manual_hint">
-              <option value="">{{formValues.addresses.length}} addresses found</option>
-              {{#each formValues.addresses}}
-                <option value="{{this.uprn}}" {{#if this.selected}}selected{{/if}}>{{this.fullAddress}}</option>
-              {{/each}}
-            </select>
-          </div>
-
-          <p id="manual-hint">
-            <a id="manual-address-link" href="{{manualAddressLink}}">
-            <span class="visuallyhidden">Enter address manually</span>
-            I can’t find the address in the list</a>
-          </p>
-
-        </fieldset>
+        <div  class="form-group" id="manual-hint">
+          <a id="manual-address-link" href="{{manualAddressLink}}"><span class="visuallyhidden">Enter address manually</span>I can’t find the address in the list</a>
+        </div>
 
         {{> common/submitButton }}
       </form>

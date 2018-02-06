@@ -107,42 +107,32 @@ lab.afterEach(() => {
   InvoiceAddress.saveSelectedAddress = invoiceAddressSaveSelectedAddressStub
 })
 
-const checkPageElements = async (getRequest, expectedValue) => {
+const checkPageElements = async (getRequest) => {
   const res = await server.inject(getRequest)
   Code.expect(res.statusCode).to.equal(200)
 
   const parser = new DOMParser()
   const doc = parser.parseFromString(res.payload, 'text/html')
 
-  let element = doc.getElementById('back-link')
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('page-heading').firstChild
+  let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(pageHeading)
 
-  element = doc.getElementById('postcode-label').firstChild
-  Code.expect(element).to.exist()
+  const elementIds = [
+    'back-link',
+    'defra-csrf-token',
+    'postcode-label',
+    'select-address-label',
+    'select-address',
+    'manual-hint',
+    'manual-address-link'
+  ]
+  for (let id of elementIds) {
+    element = doc.getElementById(id)
+    Code.expect(doc.getElementById(id)).to.exist()
+  }
 
   element = doc.getElementById('postcode-value').firstChild
   Code.expect(element.nodeValue).to.equal(postcode)
-
-  element = doc.getElementById('change-postcode-link')
-  Code.expect(element.getAttribute('value')).to.equal(expectedValue)
-
-  element = doc.getElementById('manual-address').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('select-address-label').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('select-address').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('manual-hint').firstChild
-  Code.expect(element).to.exist()
-
-  element = doc.getElementById('manual-address-link').firstChild
-  Code.expect(element).to.exist()
 
   element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
@@ -189,7 +179,7 @@ lab.experiment('Address select page tests:', () => {
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Address Select page correctly`, async () => {
-      await checkPageElements(getRequest, '')
+      await checkPageElements(getRequest)
     })
   })
 

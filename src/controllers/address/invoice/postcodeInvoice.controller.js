@@ -31,7 +31,6 @@ module.exports = class PostcodeInvoiceController extends BaseController {
 
     pageContext.showInvoiceSubheading = true
     pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_INVOICE.path
-    pageContext.noPostcodeLink = `The invoice address doesn't have a postcode`
 
     return reply.view('address/postcode', pageContext)
   }
