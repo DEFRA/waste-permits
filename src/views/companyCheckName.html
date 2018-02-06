@@ -51,7 +51,7 @@
               <div class="panel panel-border-narrow js-hidden" id="give-business-trading-name">
                 <label id="business-trading-name-label" class="form-label" for="business-trading-name">Business trading name</label>
                 {{> common/fieldError fieldId='business-trading-name-error' message=errors.business-trading-name }}
-                <input id="business-trading-name" class="form-control form-control-char-40" type="text" name="business-trading-name"
+                <input id="business-trading-name" class="form-control form-control-char-40 {{#if errors.business-trading-name}}form-control-error{{/if}}" type="text" name="business-trading-name"
                   value="{{ formValues.business-trading-name }}">
               </div>
 

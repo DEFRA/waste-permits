@@ -185,6 +185,7 @@ const checkValidationError = async (fieldId, expectedErrorMessage, fieldIndex = 
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
   // Field error
+  Code.expect(doc.getElementById(fieldId).getAttribute('class')).contains('form-control-error')
   element = doc.getElementById(fieldId + '-error').firstChild.firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }

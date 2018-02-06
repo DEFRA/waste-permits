@@ -32,7 +32,7 @@
             {{> common/fieldError fieldId='declared-error' message=errors.declared }}
 
             <div class="multiple-choice" data-target="declaredD">
-              <input id="declared" type="radio" name="declared" value="yes" {{#if declared}}checked{{/if}}>
+              <input id="declared" type="radio" name="declared" value="yes" {{#if declared}}checked="checked"{{/if}}>
               <label id="declared-label" for="declared">{{ declaredLabel }}</label>
             </div>
             <div class="panel panel-border-narrow js-hidden" id="declaredD">
@@ -41,7 +41,7 @@
 
               {{> common/fieldError fieldId='declaration-details-error' message=errors.declaration-details}}
 
-              <textarea class="form-control form-control-full" name="declaration-details" rows="10" type="text"
+              <textarea class="form-control form-control-full {{#if errors.declaration-details}}form-control-error{{/if}}" name="declaration-details" rows="10" type="text"
                         id="declaration-details" aria-describedby="declaration-details-max-length">{{formValues.declaration-details}}</textarea>
               <p id="declaration-details-max-length" class="form-hint">No more than {{declaredDetailsMaxLength}}
                 characters</p>
