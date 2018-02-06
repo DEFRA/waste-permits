@@ -5,7 +5,7 @@ const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 
-module.exports = class SiteSiteNameController extends BaseController {
+module.exports = class SiteNameController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
     const authToken = CookieService.getAuthToken(request)
@@ -20,8 +20,7 @@ module.exports = class SiteSiteNameController extends BaseController {
         'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
       }
     }
-
-    return reply.view('siteSiteName', pageContext)
+    return reply.view('siteName', pageContext)
   }
 
   async doPost (request, reply, errors) {

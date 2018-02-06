@@ -71,4 +71,18 @@ module.exports = class CookieService {
       request.state[Constants.COOKIE_KEY].applicationLineId = applicationLineId
     }
   }
+
+  static get (request, key) {
+    let value
+    if (request.state[Constants.COOKIE_KEY]) {
+      value = request.state[Constants.COOKIE_KEY][key]
+    }
+    return value
+  }
+
+  static set (request, key, value) {
+    if (request.state[Constants.COOKIE_KEY]) {
+      request.state[Constants.COOKIE_KEY][key] = value
+    }
+  }
 }

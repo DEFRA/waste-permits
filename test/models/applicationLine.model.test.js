@@ -12,7 +12,8 @@ let fakeApplicationLine
 let dynamicsCreateStub
 let dynamicsSearchStub
 
-let applicationLineId = 'APPLICATION_LINE_ID'
+const authToken = 'THE_AUTH_TOKEN'
+const applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {
   // testApplication = new ApplicationLine()
@@ -95,7 +96,7 @@ lab.experiment('ApplicationLine Model tests:', () => {
 
   lab.test('save() method saves a new ApplicationLine object', async() => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await fakeApplicationLine.save()
+    await fakeApplicationLine.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(fakeApplicationLine.id).to.equal(applicationLineId)
   })

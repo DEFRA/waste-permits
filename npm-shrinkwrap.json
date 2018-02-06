@@ -7555,7 +7555,7 @@
     "is-number-like": {
       "version": "1.0.8",
       "resolved": "https://registry.npmjs.org/is-number-like/-/is-number-like-1.0.8.tgz",
-      "integrity": "sha1-LhKWILUIkQQuROm7uzBZPnXPu+M=",
+      "integrity": "sha512-6rZi3ezCyFcn5L71ywzz2bS5b2Igl1En3eTlZlvKjpz1n3IZLAYMbKYAIQgFmEu0GENg92ziU/faEOA/aixjbA==",
       "dev": true,
       "requires": {
         "lodash.isfinite": "3.3.2"
@@ -8402,7 +8402,7 @@
     "limiter": {
       "version": "1.1.2",
       "resolved": "https://registry.npmjs.org/limiter/-/limiter-1.1.2.tgz",
-      "integrity": "sha1-Ip2AVYkcixGvng7lIA6OCbs9y+s=",
+      "integrity": "sha512-JIKZ0xb6fZZYa3deZ0BgXCgX6HgV8Nx3mFGeFHmFWW8Fb2c08e0CyE+G3nalpD0xGvGssjGb1UdFr+PprxZEbw==",
       "dev": true
     },
     "load-json-file": {

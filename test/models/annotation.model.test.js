@@ -38,6 +38,8 @@ const fakeDynamicsRecord = (options = {}) => {
   }
 }
 
+const authToken = 'THE_AUTH_TOKEN'
+
 lab.beforeEach(() => {
   testAnnotation = new Annotation(fakeAnnotation)
   // Stub methods
@@ -94,7 +96,7 @@ lab.experiment('Annotation Model tests:', () => {
 
   lab.test('save() method saves a new Annotation object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testAnnotation.save()
+    await testAnnotation.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAnnotation.id).to.equal(testAnnotationId)
   })
@@ -102,7 +104,7 @@ lab.experiment('Annotation Model tests:', () => {
   lab.test('save() method updates an existing Annotation object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testAnnotation.id = testAnnotationId
-    await testAnnotation.save()
+    await testAnnotation.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAnnotation.id).to.equal(testAnnotationId)
   })
@@ -110,7 +112,7 @@ lab.experiment('Annotation Model tests:', () => {
   lab.test('delete() method removes an existing Annotation object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'delete')
     testAnnotation.id = testAnnotationId
-    await testAnnotation.delete()
+    await testAnnotation.delete(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAnnotation.id).to.equal(testAnnotationId)
   })

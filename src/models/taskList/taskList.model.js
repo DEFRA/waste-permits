@@ -88,8 +88,8 @@ module.exports = class TaskList extends BaseModel {
         available: false
       }, {
         id: 'give-site-name-and-location',
-        label: Constants.Routes.SITE_SITE_NAME.taskListHeading,
-        href: Constants.Routes.SITE_SITE_NAME.path,
+        label: Constants.Routes.SITE_NAME.taskListHeading,
+        href: Constants.Routes.SITE_NAME.path,
         completedLabelId: 'site-name-completed',
         rulesetId: Constants.Dynamics.RulesetIds.SITE_NAME_LOCATION,
         completedId: Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION,
@@ -144,8 +144,8 @@ module.exports = class TaskList extends BaseModel {
         available: false
       }, {
         id: 'invoicing-details',
-        label: Constants.Routes.INVOICING_DETAILS.taskListHeading,
-        href: Constants.Routes.INVOICING_DETAILS.path,
+        label: Constants.Routes.ADDRESS.POSTCODE_INVOICE.taskListHeading,
+        href: Constants.Routes.ADDRESS.POSTCODE_INVOICE.path,
         completedLabelId: 'invoicing-details-completed',
         rulesetId: Constants.Dynamics.RulesetIds.INVOICING_DETAILS,
         completedId: Constants.Dynamics.CompletedParamters.INVOICING_DETAILS,

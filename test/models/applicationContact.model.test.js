@@ -13,9 +13,10 @@ let dynamicsCreateStub
 let dynamicsUpdateStub
 let dynamicsSearchStub
 
-let applicationContactId = 'APPLICATION_CONTACT_ID'
-let applicationId = 'APPLICATION_ID'
-let contactId = 'CONTACT_ID'
+const authToken = 'THE_AUTH_TOKEN'
+const applicationContactId = 'APPLICATION_CONTACT_ID'
+const applicationId = 'APPLICATION_ID'
+const contactId = 'CONTACT_ID'
 
 lab.beforeEach(() => {
   // testApplication = new ApplicationContact()
@@ -69,7 +70,7 @@ lab.experiment('ApplicationContact Model tests:', () => {
 
   lab.test('save() method saves a new ApplicationContact object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await fakeApplicationContact.save()
+    await fakeApplicationContact.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(fakeApplicationContact.id).to.equal(applicationContactId)
   })
@@ -77,7 +78,7 @@ lab.experiment('ApplicationContact Model tests:', () => {
   lab.test('save() method saves an existing ApplicationContact object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     fakeApplicationContact.id = applicationContactId
-    await fakeApplicationContact.save()
+    await fakeApplicationContact.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(fakeApplicationContact.id).to.equal(applicationContactId)
   })

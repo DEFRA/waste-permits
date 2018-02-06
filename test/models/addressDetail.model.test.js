@@ -118,7 +118,7 @@ lab.experiment('AddressDetail Model tests:', () => {
 
   lab.test('save() method saves a new AddressDetail object', async () => {
     const spy = sandbox.spy(DynamicsDalService.prototype, 'create')
-    await testAddressDetail.save()
+    await testAddressDetail.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddressDetail.id).to.equal(testAddressDetailId)
   })
@@ -126,7 +126,7 @@ lab.experiment('AddressDetail Model tests:', () => {
   lab.test('save() method updates an existing AddressDetail object', async () => {
     const spy = sandbox.spy(DynamicsDalService.prototype, 'update')
     testAddressDetail.id = testAddressDetailId
-    await testAddressDetail.save()
+    await testAddressDetail.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddressDetail.id).to.equal(testAddressDetailId)
   })

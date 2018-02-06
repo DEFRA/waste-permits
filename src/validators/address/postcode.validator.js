@@ -1,7 +1,7 @@
 'use strict'
 
 const Joi = require('joi')
-const BaseValidator = require('./base.validator')
+const BaseValidator = require('../base.validator')
 
 module.exports = class PostcodeValidator extends BaseValidator {
   constructor () {
@@ -10,7 +10,9 @@ module.exports = class PostcodeValidator extends BaseValidator {
     this.errorMessages = {
       'postcode': {
         'any.empty': `Enter a postcode`,
-        'any.required': `Enter a postcode`
+        'any.required': `Enter a postcode`,
+        'invalid': `Enter a valid postcode`,
+        'none.found': `We can’t find any addresses for that postcode - check it's correct or enter address manually`
       }
     }
   }

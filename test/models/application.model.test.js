@@ -16,7 +16,8 @@ let dynamicsUpdateStub
 const fakeApplicationData = {
   accountId: 'ACCOUNT_ID'
 }
-let testApplicationId = 'APPLICATION_ID'
+const testApplicationId = 'APPLICATION_ID'
+const authToken = 'THE_AUTH_TOKEN'
 
 lab.beforeEach(() => {
   testApplication = new Application(fakeApplicationData)
@@ -57,7 +58,7 @@ lab.experiment('Application Model tests:', () => {
 
   lab.test('save() method saves a new Application object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testApplication.save()
+    await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
   })
@@ -65,7 +66,7 @@ lab.experiment('Application Model tests:', () => {
   lab.test('save() method updates an existing Application object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testApplication.id = testApplicationId
-    await testApplication.save()
+    await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
   })
