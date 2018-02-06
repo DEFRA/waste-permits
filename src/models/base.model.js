@@ -29,7 +29,7 @@ module.exports = class BaseModel {
     //
     // The following example is a constant and so will not be retrieved from dynamics, but will be included when saving a new instance on dynamics:
     // [
-    //    {field: 'name', dynamics: 'defra_name', constant: 'Constant Value},
+    //    {field: 'name', dynamics: 'defra_name', constant: 'Constant Value'},
     // ]
     //
     // The following example maps the model field: 'locationId' to a dynamics field: '_defra_locationid_value' which is bound to a dynamics entity 'defra_locations' where the id is 'defra_locationId':
@@ -253,7 +253,12 @@ module.exports = class BaseModel {
     }
   }
 
-  async save (authToken, dataObject) {
+  async save (authToken = undefined, dataObject) {
+    if (!authToken) {
+      const errorMessage = `Unable to save ${this._entity}: Auth Token not supplied`
+      LoggingService.logError(errorMessage)
+      throw new Error(errorMessage)
+    }
     const dynamicsDal = new DynamicsDalService(authToken)
     try {
       let query
@@ -275,7 +280,12 @@ module.exports = class BaseModel {
     }
   }
 
-  async delete (authToken, id) {
+  async delete (authToken = undefined, id) {
+    if (!authToken) {
+      const errorMessage = `Unable to delete ${this._entity}: Auth Token not supplied`
+      LoggingService.logError(errorMessage)
+      throw new Error(errorMessage)
+    }
     const dynamicsDal = new DynamicsDalService(authToken)
     try {
       let query = `${this._entity}(${id})`

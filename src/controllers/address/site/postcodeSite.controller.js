@@ -1,11 +1,11 @@
 'use strict'
 
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
-const CookieService = require('../services/cookie.service')
-const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
+const Constants = require('../../../constants')
+const BaseController = require('../../base.controller')
+const CookieService = require('../../../services/cookie.service')
+const SiteNameAndLocation = require('../../../models/taskList/siteNameAndLocation.model')
 
-module.exports = class PostcodeController extends BaseController {
+module.exports = class PostcodeSiteController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
     const authToken = CookieService.getAuthToken(request)
@@ -23,7 +23,10 @@ module.exports = class PostcodeController extends BaseController {
         }
       }
     }
-    return reply.view('postcode', pageContext)
+
+    pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_SITE.path
+
+    return reply.view('address/postcode', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -40,7 +43,7 @@ module.exports = class PostcodeController extends BaseController {
       await SiteNameAndLocation.saveAddress(request, address,
         authToken, applicationId, applicationLineId)
 
-      return reply.redirect(Constants.Routes.ADDRESS_SELECT.path)
+      return reply.redirect(Constants.Routes.ADDRESS.SELECT_SITE.path)
     }
   }
 }

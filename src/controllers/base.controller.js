@@ -6,6 +6,9 @@ const LoggingService = require('../services/logging.service')
 
 module.exports = class BaseController {
   constructor (route, validator, cookieValidationRequired = true) {
+    if (!route) {
+      console.error(`Error - Unable to find Constants.Routes for: ${Object.getPrototypeOf(this).constructor.name}`)
+    }
     this.route = route
     this.path = route.path
     if (validator) {
