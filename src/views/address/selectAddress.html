@@ -1,0 +1,46 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+        <p>
+          <span id="postcode-label" class="postcode-prefix">UK postcode:</span>
+          <span id="postcode-value" class="postcode">{{formValues.postcode}}</span>
+          <a id="change-postcode-link" href="{{changePostcodeLink}}">
+            Change<span class="visuallyhidden"> postcode</span>
+        </a>
+        </p>
+
+        <div id="address-selection" class="form-group {{#getFormErrorGroupClass errors.select-address}}{{/getFormErrorGroupClass}}">
+          <label id="select-address-label" class="form-label" for="select-address">Select an address</label>
+          {{> common/fieldError fieldId='select-address-error' message=errors.select-address }}
+
+          <select class="form-control form-control-char-auto" id="select-address" name="select-address" aria-describedby="manual-hint">
+            <option value="">{{formValues.addresses.length}} addresses found</option>
+            {{#each formValues.addresses}}
+              <option value="{{this.uprn}}" {{#if this.selected}}selected{{/if}}>{{this.fullAddress}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div  class="form-group" id="manual-hint">
+          <a id="manual-address-link" href="{{manualAddressLink}}"><span class="visuallyhidden">Enter address manually</span>I can’t find the address in the list</a>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+
+</main>

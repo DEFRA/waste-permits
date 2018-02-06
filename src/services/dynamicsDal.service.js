@@ -15,6 +15,7 @@ module.exports = class DynamicsDalService {
   }
 
   async callAction (action, dataObject) {
+    let result
     const options = {
       method: 'POST',
       uri: `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}${action}`,
@@ -24,12 +25,16 @@ module.exports = class DynamicsDalService {
         'Authorization': `Bearer ${this.authToken}`
       }
     }
+    LoggingService.logDebug('Dynamics Call Action POST options', options)
     await rp(options)
-      .then((data) => {})
+      .then((data) => {
+        result = data
+      })
       .catch((error) => {
         LoggingService.logError('Error calling Dynamics action: ', error)
         throw error
       })
+    return result
   }
 
   async create (query, dataObject) {

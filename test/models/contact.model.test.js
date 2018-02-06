@@ -12,6 +12,7 @@ let testContact
 let dynamicsCreateStub
 let dynamicsSearchStub
 let dynamicsUpdateStub
+const authToken = 'THE_AUTH_TOKEN'
 
 lab.beforeEach(() => {
   testContact = new Contact({
@@ -120,7 +121,7 @@ lab.experiment('Contact Model tests:', () => {
 
   lab.test('save() method saves a new Contact object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testContact.save()
+    await testContact.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testContact.id).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
   })
@@ -128,7 +129,7 @@ lab.experiment('Contact Model tests:', () => {
   lab.test('save() method updates an existing Contact object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testContact.id = '123'
-    await testContact.save()
+    await testContact.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testContact.id).to.equal('123')
   })

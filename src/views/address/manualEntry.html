@@ -1,0 +1,69 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form method="POST" action="{{ formAction }}">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.building-name-or-number}}{{/getFormErrorGroupClass}}">
+            <label class="form-label" for="building-name-or-number">
+              <span id="building-name-or-number-label">Building name or number</span>
+              <span id="building-name-or-number-hint" class="form-hint">For example, a business premises name or house number</span>
+            </label>
+
+            {{> common/fieldError fieldId='building-name-or-number-error' message=errors.building-name-or-number }}
+
+            <input class="form-control form-control-char-40" id="building-name-or-number" name="building-name-or-number" type="text" value="{{formValues.building-name-or-number}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.address-line-1}}{{/getFormErrorGroupClass}}">
+            <label class="form-label" for="address-line-1">Address line 1</label>
+
+            {{> common/fieldError fieldId='address-line-1-error' message=errors.address-line-1 }}
+
+            <input class="form-control form-control-char-40" id="address-line-1" name="address-line-1" type="text" value="{{formValues.address-line-1}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.address-line-2}}{{/getFormErrorGroupClass}}">
+            <label class="form-label" for="address-line-2">Address line 2 (optional)</label>
+
+            {{> common/fieldError fieldId='address-line-2-error' message=errors.address-line-2 }}
+
+            <input class="form-control form-control-char-40" id="address-line-2" name="address-line-2" type="text" value="{{formValues.address-line-2}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.town-or-city}}{{/getFormErrorGroupClass}}">
+            <label class="form-label" for="town-or-city">Town or city</label>
+
+            {{> common/fieldError fieldId='town-or-city-error' message=errors.town-or-city }}
+
+            <input class="form-control form-control-char-40" id="town-or-city" name="town-or-city" type="text" value="{{formValues.town-or-city}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.postcode}}{{/getFormErrorGroupClass}}">
+            <label id="postcode-label" class="form-label" for="postcode">UK postcode</label>
+            {{> common/fieldError fieldId='postcode-error' message=errors.postcode }}
+            <input type="text" class="form-control form-control-char-10" id="postcode" name="postcode" value="{{formValues.postcode}}" />
+          </div>
+
+        </fieldset>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+
+</main>

@@ -11,9 +11,11 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 let dynamicsCreateStub
 let dynamicsSearchStub
 let dynamicsUpdateStub
+let dynamicsCallActionStub
 
 let testAddress
 const fakeAddressData = {
+  uprn: '123456',
   postcode: 'BS1 5AH'
 }
 
@@ -74,11 +76,19 @@ lab.beforeEach(() => {
     }
   }
 
+  const postcodeLookupResult = {
+    '@odata.context': 'https://ea-lp-crm-devmaster.crm4.dynamics.com/api/data/v8.2/$metadata#Microsoft.Dynamics.CRM.defra_postcodelookupResponse',
+    addresses: '{"header":{"totalMatches":3,"startMatch":1,"endMatch":3,"query":"postcode=BS1 5AH","language":"EN","dataset":"DPA","epoch":"55","uriToSupplier":"https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?lr=EN&postcode=BS1%205AH&fq=logical_status_code%3A1&dataset=DPA","uriFromClient":"http://ea-addressfacade1081.cloudapp.net/address-service/v1/addresses/postcode?query-string=BS1%205AH"},"results":[{"uprn":340116,"address":"NATURAL ENGLAND, HORIZON HOUSE, DEANERY ROAD, BRISTOL, BS1 5AH","organisation":"NATURAL ENGLAND","premises":"HORIZON HOUSE","street_address":"DEANERY ROAD","locality":null,"city":"BRISTOL","postcode":"BS1 5AH","country":"United Kingdom","x":358205.03,"y":172708.06,"coordinate_system":null,"blpu_state_date":"12/10/2009","blpu_state_code":2,"postal_address_code":"D","logical_status_code":1,"source_data_type":"dpa","blpu_state_code_description":"In use","classification_code":"CO01","classification_code_description":"Office / Work Studio","lpi_logical_status_code":null,"lpi_logical_status_code_description":null,"match":1.0,"match_description":"EXACT","topography_layer_toid":"osgb1000002529079737","parent_uprn":null,"last_update_date":"10/02/2016","status":"APPROVED","entry_date":"12/10/2009","postal_address_code_description":"A record which is linked to PAF","usrn":null,"language":"EN"},{"uprn":10091760640,"address":"HARMSEN GROUP, TRIODOS BANK, DEANERY ROAD, BRISTOL, BS1 5AH","organisation":"HARMSEN GROUP","premises":"TRIODOS BANK","street_address":"DEANERY ROAD","locality":null,"city":"BRISTOL","postcode":"BS1 5AH","country":"United Kingdom","x":358130.1,"y":172687.88,"coordinate_system":null,"blpu_state_date":null,"blpu_state_code":null,"postal_address_code":"D","logical_status_code":1,"source_data_type":"dpa","blpu_state_code_description":"Unknown/Not applicable","classification_code":"OR04","classification_code_description":"Additional Mail / Packet Addressee","lpi_logical_status_code":null,"lpi_logical_status_code_description":null,"match":1.0,"match_description":"EXACT","topography_layer_toid":"osgb1000002529079753","parent_uprn":340117,"last_update_date":"10/02/2016","status":"APPROVED","entry_date":"20/06/2012","postal_address_code_description":"A record which is linked to PAF","usrn":null,"language":"EN"},{"uprn":340117,"address":"THRIVE RENEWABLES PLC, DEANERY ROAD, BRISTOL, BS1 5AH","organisation":"THRIVE RENEWABLES PLC","premises":null,"street_address":"DEANERY ROAD","locality":null,"city":"BRISTOL","postcode":"BS1 5AH","country":"United Kingdom","x":358130.1,"y":172687.88,"coordinate_system":null,"blpu_state_date":"12/10/2009","blpu_state_code":2,"postal_address_code":"D","logical_status_code":1,"source_data_type":"dpa","blpu_state_code_description":"In use","classification_code":"CO01","classification_code_description":"Office / Work Studio","lpi_logical_status_code":null,"lpi_logical_status_code_description":null,"match":1.0,"match_description":"EXACT","topography_layer_toid":"osgb1000002529079753","parent_uprn":null,"last_update_date":"26/03/2017","status":"APPROVED","entry_date":"12/10/2009","postal_address_code_description":"A record which is linked to PAF","usrn":null,"language":"EN"}]}'
+  }
+
   dynamicsCreateStub = DynamicsDalService.prototype.create
   DynamicsDalService.prototype.create = () => testAddressId
 
   dynamicsUpdateStub = DynamicsDalService.prototype.update
   DynamicsDalService.prototype.update = (dataObject) => dataObject.id
+
+  dynamicsCallActionStub = DynamicsDalService.prototype.callAction
+  DynamicsDalService.prototype.callAction = () => postcodeLookupResult
 })
 
 lab.afterEach(() => {
@@ -86,6 +96,7 @@ lab.afterEach(() => {
   DynamicsDalService.prototype.create = dynamicsCreateStub
   DynamicsDalService.prototype.search = dynamicsSearchStub
   DynamicsDalService.prototype.update = dynamicsUpdateStub
+  DynamicsDalService.prototype.callAction = dynamicsCallActionStub
 })
 
 lab.experiment('Address Model tests:', () => {
@@ -104,9 +115,42 @@ lab.experiment('Address Model tests:', () => {
     Code.expect(address.postcode).to.equal(fakeAddressData.postcode)
   })
 
+  lab.test('getByUprn() method returns a single Address object', async () => {
+    const responseData = { '@odata.context': 'https://ea-lp-crm-devmaster.crm4.dynamics.com/api/data/v8.2/$metadata#defra_addresses(defra_addressid,defra_premises,defra_street,defra_locality,defra_towntext,defra_postcode,defra_uprn,defra_fromaddresslookup)',
+      value: [{
+        '@odata.etag': 'W/"123456"',
+        defra_addressid: 'ADDRESS_ID',
+        defra_premises: 'HORIZON HOUSE',
+        defra_street: 'DEANERY ROAD',
+        defra_locality: null,
+        defra_towntext: 'BRISTOL',
+        defra_postcode: 'BS1 5AH',
+        defra_uprn: fakeAddressData.uprn,
+        'defra_fromaddresslookup@OData.Community.Display.V1.FormattedValue': 'Yes',
+        defra_fromaddresslookup: true
+      }]
+    }
+    DynamicsDalService.prototype.search = () => {
+      // Dynamics Address object
+      return responseData
+    }
+
+    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const address = await Address.getByUprn(authToken, fakeAddressData.uprn)
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(address.uprn).to.equal(fakeAddressData.uprn)
+  })
+
+  lab.test('listByPostcode() method returns a collection of Address objects', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
+    const addresses = await Address.listByPostcode(authToken, fakeAddressData.postcode)
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(addresses.length).to.equal(3)
+  })
+
   lab.test('save() method saves a new Address object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testAddress.save()
+    await testAddress.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddress.id).to.equal(testAddressId)
   })
@@ -114,7 +158,7 @@ lab.experiment('Address Model tests:', () => {
   lab.test('save() method updates an existing Address object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testAddress.id = testAddressId
-    await testAddress.save()
+    await testAddress.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddress.id).to.equal(testAddressId)
   })

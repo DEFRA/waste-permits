@@ -29,7 +29,7 @@ module.exports = class ApplicationLine extends BaseModel {
       applicationLine.id = applicationLineId
       return applicationLine
     } catch (error) {
-      LoggingService.logError(`Unable to get ApplicationLine by applicationLineId: ${error}`)
+      LoggingService.logError(`Unable to get ApplicationLine by Id: ${error}`)
       throw error
     }
   }

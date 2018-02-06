@@ -40,13 +40,32 @@ Constants.Routes = {
     path: '/',
     pageHeading: 'Waste Permits Home Page'
   },
-  ADDRESS_MANUAL: {
-    path: '/address/address-manual',
-    pageHeading: `Enter the site address`
-  },
-  ADDRESS_SELECT: {
-    path: '/site/address/select-address',
-    pageHeading: `What's the site address?`
+  ADDRESS: {
+    MANUAL_INVOICE: {
+      path: '/invoice/address/address-manual',
+      pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`
+    },
+    MANUAL_SITE: {
+      path: '/site/address/address-manual',
+      pageHeading: `Enter the site address`
+    },
+    POSTCODE_INVOICE: {
+      path: '/invoice/address/postcode',
+      pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`,
+      taskListHeading: 'Give invoicing details'
+    },
+    POSTCODE_SITE: {
+      path: '/site/address/postcode',
+      pageHeading: `What's the postcode for the site?`
+    },
+    SELECT_INVOICE: {
+      path: '/invoice/address/select-address',
+      pageHeading: `What's the invoice address?`
+    },
+    SELECT_SITE: {
+      path: '/site/address/select-address',
+      pageHeading: `What's the site address?`
+    }
   },
   APPLICATION_RECEIVED: {
     path: '/done',
@@ -135,11 +154,6 @@ Constants.Routes = {
     path: '/health',
     pageHeading: 'Health'
   },
-  INVOICING_DETAILS: {
-    path: '/billing/invoice-postcode',
-    pageHeading: 'What address should we use to send invoices?',
-    taskListHeading: 'Give invoicing details'
-  },
   MANAGEMENT_SYSTEM: {
     path: '/management-system',
     pageHeading: 'Which management system will you use?',
@@ -162,10 +176,6 @@ Constants.Routes = {
     path: '/permit/select',
     pageHeading: 'Select a permit'
   },
-  POSTCODE: {
-    path: '/site/address/postcode',
-    pageHeading: `What's the postcode for the site?`
-  },
   PRE_APPLICATION: {
     path: '/pre-application',
     pageHeading: 'Have you discussed this application with us?',
@@ -180,7 +190,7 @@ Constants.Routes = {
     pageHeading: 'Upload the site plan',
     taskListHeading: 'Upload the site plan'
   },
-  SITE_SITE_NAME: {
+  SITE_NAME: {
     path: '/site/site-name',
     pageHeading: `What's the site name?`,
     taskListHeading: 'Give site name and location'
@@ -237,6 +247,23 @@ Constants.PermitTypes = {
 }
 
 Constants.Dynamics = {
+  AccountTypes: {
+    AGENT: 910400000
+  },
+  AddressTypes: {
+    BILLING_INVOICING: {
+      TYPE: 910400004,
+      NAME: 'Billing Invoicing Address'
+    },
+    COMPANY_SECRETARY_EMAIL: {
+      TYPE: 910400006,
+      NAME: 'Company Secretary Email Address'
+    },
+    PRIMARY_CONTACT_TELEPHONE_NUMBER: {
+      TYPE: 910400007,
+      NAME: 'Primary Contact Telephone Number'
+    }
+  },
   COMPANY_DIRECTOR: 910400000,
   DIGITAL_SOURCE: 910400000,
   PermitTypes: {
@@ -253,19 +280,7 @@ Constants.Dynamics = {
     ESA_EU_SKILLS: 910400003
   },
   WASTE_REGIME: 910400000,
-  AddressTypes: {
-    COMPANY_SECRETARY_EMAIL: {
-      TYPE: 910400006,
-      NAME: 'Company Secretary Email Address'
-    },
-    PRIMARY_CONTACT_TELEPHONE_NUMBER: {
-      TYPE: 910400007,
-      NAME: 'Primary Contact Telephone Number'
-    }
-  },
-  AccountTypes: {
-    AGENT: 910400000
-  },
+
   RulesetIds: {
     ALLOW_PERMIT_START_DATE: 'defra_allowpermitstartdate',
     BASELINE_REPORT: 'defra_baselinereportreq',
@@ -329,6 +344,10 @@ Constants.CompanyStatus = {
   CONVERTED_CLOSED: 'has been closed or converted',
   INSOLVENCY_PROCEEDINGS: 'is insolvent',
   NOT_ACTIVE: `isn't active`
+}
+
+Constants.CookieValue = {
+  INVOICE_POSTCODE: 'INVOICE_POSTCODE'
 }
 
 Constants.buildPageTitle = (pageHeading) => {

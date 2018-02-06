@@ -1,12 +1,12 @@
 'use strict'
 
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
-const AddressLookupService = require('../services/addressLookup.service')
-const CookieService = require('../services/cookie.service')
-const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
+const Constants = require('../../../constants')
+const BaseController = require('../../base.controller')
+const CookieService = require('../../../services/cookie.service')
+const Address = require('../../../models/address.model')
+const SiteNameAndLocation = require('../../../models/taskList/siteNameAndLocation.model')
 
-module.exports = class AddressSelectController extends BaseController {
+module.exports = class AddressSelectSiteController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
     const authToken = CookieService.getAuthToken(request)
@@ -22,14 +22,14 @@ module.exports = class AddressSelectController extends BaseController {
       if (address) {
         pageContext.formValues = {
           postcode: address.postcode,
-          addresses: await AddressLookupService.getAddressesFromPostcode(address.postcode)
+          addresses: await Address.listByPostcode(authToken, address.postcode)
         }
       }
     }
-    pageContext.changePostcodeLink = Constants.Routes.POSTCODE.path
-    pageContext.manualAddressLink = Constants.Routes.ADDRESS_MANUAL.path
+    pageContext.changePostcodeLink = Constants.Routes.ADDRESS.POSTCODE_SITE.path
+    pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_SITE.path
 
-    return reply.view('addressSelect', pageContext)
+    return reply.view('address/selectAddress', pageContext)
   }
 
   async doPost (request, reply, errors) {
