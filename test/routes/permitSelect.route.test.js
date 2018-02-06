@@ -85,11 +85,13 @@ lab.experiment('Select a permit page tests:', () => {
     let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Select a permit')
 
+    // Not visible for MVP
     element = doc.getElementById('select-permit-hint-text')
-    Code.expect(element).to.exist()
+    Code.expect(element).to.not.exist()
 
+    // Not visible for MVP
     element = doc.getElementById('permit-type-description')
-    Code.expect(element).to.exist()
+    Code.expect(element).to.not.exist()
 
     // Not visible for MVP
     element = doc.getElementById('back-to-all-permit-groups-link')
