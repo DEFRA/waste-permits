@@ -173,7 +173,7 @@ const checkPageElements = async (request, expectedPageHeading, expectedValues) =
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 
-const checkValidationError = async (errorField, expectedErrorMessage) => {
+const checkValidationError = async (field, expectedErrorMessage) => {
   const res = await server.inject(postRequest)
   Code.expect(res.statusCode).to.equal(200)
 
@@ -187,8 +187,9 @@ const checkValidationError = async (errorField, expectedErrorMessage) => {
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
   // Director DOB Day error
-  if (errorField) {
-    element = doc.getElementById(errorField).firstChild.firstChild
+  if (field) {
+    Code.expect(doc.getElementById(`${field}`).getAttribute('class')).contains('form-control-error')
+    element = doc.getElementById(`${field}-error`).firstChild.firstChild
     Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
   }
 }
@@ -263,7 +264,7 @@ lab.experiment('Director Date Of Birth page tests:', () => {
         postRequest.payload['director-dob-day-0'] = '10'
         // No day of birth for director-dob-day-1 (fakeContacts[1])
         postRequest.payload['director-dob-day-2'] = '30'
-        await checkValidationError('director-dob-day-1-error', `Enter a date of birth for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
+        await checkValidationError('director-dob-day-1', `Enter a date of birth for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
       })
 
       lab.test(`POST ${routePath} with a invalid day of birth (31st Feb) displays the correct error message`, async () => {
@@ -272,7 +273,7 @@ lab.experiment('Director Date Of Birth page tests:', () => {
 
         // Month is Feb therefore this should trigger a validation error
         postRequest.payload['director-dob-day-1'] = '31'
-        await checkValidationError('director-dob-day-1-error', `Enter a day between 1 and 28 for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
+        await checkValidationError('director-dob-day-1', `Enter a day between 1 and 28 for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
       })
 
       lab.test(`POST ${routePath} with a invalid integer for the day of birth ('XXX')  displays the correct error message`, async () => {
@@ -281,7 +282,7 @@ lab.experiment('Director Date Of Birth page tests:', () => {
 
         // Day is not a valid integer therefore this should trigger a validation error
         postRequest.payload['director-dob-day-1'] = 'XXX'
-        await checkValidationError('director-dob-day-1-error', `Enter a day between 1 and 28 for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
+        await checkValidationError('director-dob-day-1', `Enter a day between 1 and 28 for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
       })
     })
   })

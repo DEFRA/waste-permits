@@ -173,6 +173,7 @@ lab.experiment('Get company number page tests:', () => {
         Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 
         // Company number field error
+        Code.expect(doc.getElementById('company-number').getAttribute('class')).contains('form-control-error')
         Code.expect(doc.getElementById('company-number-error').firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
 
         // Company number field contains payload
