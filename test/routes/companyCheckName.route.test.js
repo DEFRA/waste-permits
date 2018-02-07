@@ -172,6 +172,7 @@ const checkValidationError = async (expectedErrorMessage) => {
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
   // Location site name field error
+  Code.expect(doc.getElementById('business-trading-name').getAttribute('class')).contains('form-control-error')
   element = doc.getElementById('business-trading-name-error').firstChild.firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }

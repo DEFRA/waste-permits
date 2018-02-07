@@ -25,7 +25,7 @@
           <label id="select-address-label" class="form-label" for="select-address">Select an address</label>
           {{> common/fieldError fieldId='select-address-error' message=errors.select-address }}
 
-          <select class="form-control form-control-char-auto" id="select-address" name="select-address" aria-describedby="manual-hint">
+          <select class="form-control form-control-char-auto {{#if errors.select-address}}form-control-error{{/if}}" id="select-address" name="select-address" aria-describedby="manual-hint">
             <option value="">{{formValues.addresses.length}} addresses found</option>
             {{#each formValues.addresses}}
               <option value="{{this.uprn}}" {{#if this.selected}}selected{{/if}}>{{this.fullAddress}}</option>

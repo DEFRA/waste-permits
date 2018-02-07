@@ -155,12 +155,15 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
     })
 
     lab.experiment('invalid', () => {
-      const checkValidationMessage = async (fieldId, expectedErrorMessage) => {
+      const checkValidationMessage = async (fieldId, expectedErrorMessage, shouldHaveErrorClass) => {
         const doc = await getDoc()
         // Panel summary error item
         Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 
         // Relevant bankruptcy details field error
+        if (shouldHaveErrorClass) {
+          Code.expect(doc.getElementById(`${fieldId}`).getAttribute('class')).contains('form-control-error')
+        }
         Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
       }
 
@@ -171,12 +174,12 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
 
       lab.test('when bankruptcy set to yes and no details entered', async () => {
         postRequest.payload = {'declared': 'yes'}
-        await checkValidationMessage('declaration-details', 'Enter details of the bankruptcy or insolvency')
+        await checkValidationMessage('declaration-details', 'Enter details of the bankruptcy or insolvency', true)
       })
 
       lab.test('when bankruptcy set to yes and details entered with 2001 characters', async () => {
         postRequest.payload = {'declared': 'yes', 'declaration-details': 'a'.repeat(2001)}
-        await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you’ve written')
+        await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you’ve written', true)
       })
     })
 

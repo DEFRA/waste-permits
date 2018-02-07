@@ -206,6 +206,7 @@ lab.experiment('Contact details page tests:', () => {
         }
         Code.expect(summaryMessages).to.equal(messages)
 
+        Code.expect(doc.getElementById(`${field}`).getAttribute('class')).contains('form-control-error')
         const fieldErrors = doc.getElementById(`${field}-error`).childNodes
         const fieldMessages = []
         for (let index = 0; index < fieldErrors.length; index++) {

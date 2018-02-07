@@ -108,6 +108,7 @@ const checkValidationError = async (expectedErrorMessage) => {
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
   // Location grid reference field error
+  Code.expect(doc.getElementById('postcode').getAttribute('class')).contains('form-control-error')
   element = doc.getElementById('postcode-error').firstChild.firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
