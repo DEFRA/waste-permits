@@ -129,7 +129,13 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     return address
   }
 
-  static async saveAddress (request, addressDto, authToken, applicationId, applicationLineId) {
+  static async saveSelectedAddress (request, authToken, applicationId, applicationLineId, addressDto) {
+    if (!addressDto.uprn) {
+      const errorMessage = `Unable to save site address as it does not have a UPRN`
+      LoggingService.logError(errorMessage, request)
+      throw new Error(errorMessage)
+    }
+
     if (addressDto.postcode) {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
@@ -158,32 +164,21 @@ module.exports = class SiteNameAndLocation extends BaseModel {
         await locationDetail.save(authToken)
       }
 
-      // Get the Address for this Location Detail (if there is one)
-      let isNewAddress = false
-      let address
-
-      if (locationDetail.addressId !== undefined) {
-        address = await Address.getById(authToken, locationDetail.addressId)
-      }
-
+      let address = await Address.getByUprn(authToken, addressDto.uprn)
       if (!address) {
-        // Create new Address
-        address = new Address({
-          postcode: addressDto.postcode,
-          locationId: location.id
-        })
-        isNewAddress = true
-      } else {
-        // Update existing Address
-        address.postcode = addressDto.postcode
+        // The address is not already in Dynamics so look it up in AddressBase and save it in Dynamics
+        let addresses = await Address.listByPostcode(authToken, addressDto.postcode)
+        addresses = addresses.filter((element) => element.uprn === addressDto.uprn)
+        address = addresses.pop()
+        if (address) {
+          await address.save(authToken)
+        }
       }
 
-      await address.save(authToken)
-
-      // If the Address was new then we need to associate it with the Location Detail in Dynamics
-      if (isNewAddress) {
-        locationDetail.setAddress(address.id)
-        locationDetail.save(authToken)
+      // Save the LocationDetail to associate the Address with the Application
+      if (address && locationDetail) {
+        locationDetail.addressId = address.id
+        await locationDetail.save(authToken)
       }
 
       await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
@@ -191,6 +186,38 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       LoggingService.logError(error, request)
       throw error
     }
+  }
+
+  static async saveManualAddress (request, authToken, applicationId, applicationLineId, addressDto) {
+    if (addressDto.postcode) {
+      addressDto.postcode = addressDto.postcode.toUpperCase()
+    }
+
+    // Get the AddressDetail for this Application (if there is one)
+    // let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
+    //   Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
+
+    // if (!addressDetail) {
+    //   // Create new AddressDetail
+    //   addressDetail = new AddressDetail({
+    //     type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
+    //     applicationId: applicationId
+    //   })
+    //   await addressDetail.save(authToken)
+    // }
+
+    // // TODO find out if we have to try and match an existing manual or auto address?
+    // const address = new Address(addressDto)
+    // address.fromAddressLookup = false
+    // await address.save(authToken)
+
+    // // Save the AddressDetail to associate the Address with the Application
+    // if (address && addressDetail) {
+    //   addressDetail.addressId = address.id
+    //   await addressDetail.save(authToken)
+    // }
+
+    await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
   }
 
   static async updateCompleteness (authToken, applicationId, applicationLineId) {
@@ -223,7 +250,6 @@ module.exports = class SiteNameAndLocation extends BaseModel {
         locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
       }
 
-      // Get the Address
       let address
       if (locationDetail) {
         address = await Address.getById(authToken, locationDetail.addressId)
@@ -232,8 +258,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       if (location && locationDetail && address) {
         isComplete =
           location.name !== undefined && location.name.length > 0 &&
-          locationDetail.gridReference !== undefined && locationDetail.gridReference.length > 0 &&
-          address.postcode !== undefined && address.postcode.length > 0
+          locationDetail.gridReference !== undefined && locationDetail.gridReference.length > 0
       }
     } catch (error) {
       LoggingService.logError(`Unable to calculate SiteNameAndLocation completeness: ${error}`)

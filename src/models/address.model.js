@@ -14,7 +14,8 @@ module.exports = class Address extends BaseModel {
       {field: 'townOrCity', dynamics: 'defra_towntext'},
       {field: 'postcode', dynamics: 'defra_postcode'},
       {field: 'uprn', dynamics: 'defra_uprn'},
-      {field: 'fromAddressLookup', dynamics: 'defra_fromaddresslookup'}
+      {field: 'fromAddressLookup', dynamics: 'defra_fromaddresslookup'},
+      {field: 'fullAddress', dynamics: 'defra_name'}
     ]
   }
 
@@ -96,7 +97,12 @@ module.exports = class Address extends BaseModel {
   }
 
   async save (authToken) {
+    // Build the address name (i.e. the full address) if it is a manual address entry
+    if (!this.fromAddressLookup) {
+      this.fullAddress = `${this.buildingNameOrNumber}, ${this.addressLine1}, ${this.addressLine2}, ${this.townOrCity}, ${this.postcode}`
+    }
     const dataObject = this.modelToDynamics()
+
     await super.save(authToken, dataObject)
   }
 }

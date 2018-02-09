@@ -13,19 +13,27 @@ module.exports = class AddressSelectSiteController extends BaseController {
     const applicationId = CookieService.getApplicationId(request)
     const applicationLineId = CookieService.getApplicationLineId(request)
 
-    if (request.payload) {
-      // TODO confirm if we need this
-      // If we have Address details in the payload then display them in the form
-      // pageContext.formValues = request.payload
-    } else {
-      const address = await SiteNameAndLocation.getAddress(request, authToken, applicationId, applicationLineId)
-      if (address) {
-        pageContext.formValues = {
-          postcode: address.postcode,
-          addresses: await Address.listByPostcode(authToken, address.postcode)
-        }
+    const postcode = CookieService.get(request, Constants.CookieValue.SITE_POSTCODE)
+
+    const [addresses, address] = await Promise.all([
+      Address.listByPostcode(authToken, postcode),
+      SiteNameAndLocation.getAddress(request, authToken, applicationId, applicationLineId)
+    ])
+
+    if (!errors && address && addresses) {
+      // Set a flag on the selected address
+      const selectedAddress = addresses.filter((element) => element.uprn === address.uprn).pop()
+      if (selectedAddress) {
+        selectedAddress.selected = true
       }
     }
+
+    pageContext.formValues = {
+      postcode: postcode,
+      address: address,
+      addresses: addresses
+    }
+
     pageContext.changePostcodeLink = Constants.Routes.ADDRESS.POSTCODE_SITE.path
     pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_SITE.path
 
@@ -36,6 +44,16 @@ module.exports = class AddressSelectSiteController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
+      const authToken = CookieService.getAuthToken(request)
+      const applicationId = CookieService.getApplicationId(request)
+      const applicationLineId = CookieService.getApplicationLineId(request)
+
+      const addressDto = {
+        uprn: request.payload['select-address'],
+        postcode: CookieService.get(request, Constants.CookieValue.SITE_POSTCODE)
+      }
+      await SiteNameAndLocation.saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
+
       return reply.redirect(Constants.Routes.TASK_LIST.path)
     }
   }

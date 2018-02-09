@@ -35,6 +35,10 @@ module.exports = class InvoiceAddress extends BaseModel {
       throw new Error(errorMessage)
     }
 
+    if (addressDto.postcode) {
+      addressDto.postcode = addressDto.postcode.toUpperCase()
+    }
+
     // Get the AddressDetail for this Application (if there is one)
     let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
       Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
@@ -69,6 +73,10 @@ module.exports = class InvoiceAddress extends BaseModel {
   }
 
   static async saveManualAddress (request, authToken, applicationId, applicationLineId, addressDto) {
+    if (addressDto.postcode) {
+      addressDto.postcode = addressDto.postcode.toUpperCase()
+    }
+
     // Get the AddressDetail for this Application (if there is one)
     let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
       Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)

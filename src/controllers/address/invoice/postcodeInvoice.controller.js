@@ -25,6 +25,11 @@ module.exports = class PostcodeInvoiceController extends BaseController {
         pageContext.formValues = {
           postcode: address.postcode
         }
+      } else {
+        // Get the postcode out of the Cookie if there is one
+        pageContext.formValues = {
+          postcode: CookieService.get(request, Constants.CookieValue.INVOICE_POSTCODE)
+        }
       }
     }
 
@@ -38,6 +43,9 @@ module.exports = class PostcodeInvoiceController extends BaseController {
     const authToken = CookieService.getAuthToken(request)
     const postcode = request.payload['postcode']
     const errorPath = 'postcode'
+
+    // Save the postcode in the cookie
+    CookieService.set(request, Constants.CookieValue.INVOICE_POSTCODE, postcode)
 
     let addresses
     try {
@@ -57,11 +65,7 @@ module.exports = class PostcodeInvoiceController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      // Save the postcode in the cookie
-      CookieService.set(request, Constants.CookieValue.INVOICE_POSTCODE, postcode)
-
       return reply.redirect(Constants.Routes.ADDRESS.SELECT_INVOICE.path)
-
         // Add the updated cookie
         .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY], Constants.COOKIE_PATH)
     }
