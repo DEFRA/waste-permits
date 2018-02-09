@@ -170,7 +170,6 @@ lab.experiment('Address Model tests:', () => {
   })
 
   lab.test('save() method creates the name (fullAddress) property correctly for manually created addresses', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     let expectedValue = testAddress.fullAddress
     testAddress.fromAddressLookup = false
     testAddress.fullAddress = undefined

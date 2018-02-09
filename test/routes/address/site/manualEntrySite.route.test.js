@@ -39,8 +39,6 @@ const getRequest = {
 }
 let postRequest
 
-const postcode = 'BS1 4AH'
-
 const fakeAddress1 = {
   id: 'ADDRESS_ID_1',
   buildingNameOrNumber: '101',
