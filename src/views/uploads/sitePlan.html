@@ -1,0 +1,47 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> uploads/annotations }}
+
+      {{else}}
+
+      <div id="has-no-annotations">
+        <div id="site-plan-description">
+          <details role="group" class="form-hint-details">
+            <summary role="button" aria-controls="details-content-0" aria-expanded="false"><span class="summary">What the site plan must include</span></summary>
+            <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true">
+              <p>The site plan must include:</p>
+              <ul class="list list-bullet">
+                <li>all of the land on which your operations take place</li>
+                <li>an outline of the area you want the permit to cover, clearly marked in green</li>
+                <li>surrounding local features to help us locate it</li>
+                <li>the date it was prepared</li>
+                <li>a scale</li>
+                <li>a pointer to show north</li>
+              </ul>
+              <p>The plan must be legible at A4 size and drawn accurately to scale. Don’t use aerial photos or sketched maps.</p>
+              <img src="/public/images/site-plan-map-web-v1.png" width="100%" height="auto" alt="Example site plan">
+            </div>
+          </details>
+        </div>
+      </div>
+
+      {{/if}}
+
+      {{> uploads/uploadForm }}
+    </div>
+  </div>
+
+</main>

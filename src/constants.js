@@ -358,6 +358,12 @@ Constants.CompanyStatus = {
   NOT_ACTIVE: `isn't active`
 }
 
+Constants.UploadSubject = {
+  TECHNICAL_QUALIFICATION: 'technical qualification',
+  SITE_PLAN: 'site plan',
+  FIRE_PLAN: 'fire plan'
+}
+
 Constants.CookieValue = {
   INVOICE_POSTCODE: 'INVOICE_POSTCODE',
   SITE_POSTCODE: 'SITE_POSTCODE'

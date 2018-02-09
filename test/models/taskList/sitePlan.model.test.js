@@ -6,9 +6,9 @@ const Code = require('code')
 const sinon = require('sinon')
 
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
-const Annotation = require('../../../src/models/annotation.model')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
-const TechnicalQualification = require('../../../src/models/taskList/technicalQualification.model')
+const Annotation = require('../../../src/models/annotation.model')
+const SitePlan = require('../../../src/models/taskList/sitePlan.model')
 
 const fakeApplicationLine = {
   id: 'APPLICATION_LINE_ID',
@@ -27,6 +27,7 @@ lab.beforeEach(() => {
   // Stub the asynchronous model methods
   sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
   sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
+  sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [])
 })
 
 lab.afterEach(() => {
@@ -34,22 +35,22 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Task List: TechnicalQualification Model tests:', () => {
+lab.experiment('Task List: SitePlan Model tests:', () => {
   lab.test('updateCompleteness() method updates the task list item completeness', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-    await TechnicalQualification.updateCompleteness(authToken, applicationId, applicationLineId)
+    await SitePlan.updateCompleteness(authToken, applicationId, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
     sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [{}])
-    const result = await TechnicalQualification._isComplete(authToken, applicationId)
+    const result = await SitePlan._isComplete(authToken, applicationId)
     Code.expect(result).to.equal(true)
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete', async () => {
     sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [])
-    const result = await TechnicalQualification._isComplete(authToken, applicationId)
+    const result = await SitePlan._isComplete(authToken, applicationId)
     Code.expect(result).to.equal(false)
   })
 })

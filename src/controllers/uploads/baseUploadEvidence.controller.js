@@ -26,15 +26,15 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
     }
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
-    const list = await Annotation.listByApplicationId(authToken, applicationId)
+    const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
     pageContext.uploadFormAction = `${this.path}/upload`
     pageContext.annotations = list.map(({filename, id}) => ({filename, removeAction: `${this.path}/remove/${id}`}))
     pageContext.fileTypes = this.validator.formatValidTypes()
     pageContext.maxSize = this.validator.getMaxSize()
-    Object.assign(pageContext, this.getSpecificPageContext())
+    pageContext.subject = this.subject
 
-    return reply.view('uploadEvidence', pageContext)
+    return reply.view(this.view, pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -44,7 +44,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
       const applicationLineId = CookieService.getApplicationLineId(request)
-      const list = await Annotation.listByApplicationId(authToken, applicationId)
+      const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
       if (!list.length) {
         return this.handler(request, reply, undefined, BaseUploadEvidenceController._customError('noFilesUploaded'))
       }
@@ -79,8 +79,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
       const {name: applicationReference} = await Application.getById(authToken, applicationId)
-      const annotationsList = await Annotation.listByApplicationId(authToken, applicationId)
-      const {subject} = this.getSpecificPageContext()
+      const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
       const fileData = this._getFileData(request.payload.file, applicationReference)
 
       // Make sure no duplicate files are uploaded
@@ -91,6 +90,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
       // Save each file as an attachment to an annotation
       const uploadPromises = fileData.map(async ({file, filename, path}) => {
         const documentBody = await this._uploadFile(file, filename, path)
+        const {subject} = this
         const annotation = new Annotation({subject, filename, applicationId, documentBody})
         return annotation.save(authToken)
       })

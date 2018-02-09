@@ -6,6 +6,7 @@ const ApplicationLine = require('../models/applicationLine.model')
 const BaseController = require('./base.controller')
 const PermitCheck = require('../models/checkYourAnswers/permit.check')
 const SiteCheck = require('../models/checkYourAnswers/site.check')
+const SitePlanCheck = require('../models/checkYourAnswers/sitePlan.check')
 const TechnicalCompetenceCheck = require('../models/checkYourAnswers/technicalCompetence.check')
 const ContactCheck = require('../models/checkYourAnswers/contact.check')
 const PermitHolderCheck = require('../models/checkYourAnswers/permitHolder.check')
@@ -23,6 +24,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       ContactCheck,
       PermitHolderCheck,
       SiteCheck,
+      SitePlanCheck,
       TechnicalCompetenceCheck,
       ConfidentialityCheck,
       InvoiceCheck

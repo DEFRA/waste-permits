@@ -32,10 +32,10 @@ module.exports = class Annotation extends BaseModel {
     }
   }
 
-  static async listByApplicationId (authToken, applicationId) {
+  static async listByApplicationIdAndSubject (authToken, applicationId, subject) {
     if (applicationId) {
       const dynamicsDal = new DynamicsDalService(authToken)
-      const filter = `_objectid_value eq ${applicationId} and  objecttypecode eq 'defra_application'`
+      const filter = `_objectid_value eq ${applicationId} and  objecttypecode eq 'defra_application' and subject eq '${subject}'`
       const query = encodeURI(`annotations?$select=${Annotation.selectedDynamicsFields()}&$filter=${filter}`)
       try {
         const response = await dynamicsDal.search(query)

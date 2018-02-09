@@ -1,0 +1,40 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> uploads/annotations }}
+
+      {{else}}
+
+      <div id="has-no-annotations">
+        <div id="course-registration-description">
+          <p>
+            The email or letter must show that you have registered to get 4 units of an appropriate {{> abbreviations/WAMITAB }} qualification or are registered on an {{> abbreviations/EPOC }} course.
+          </p>
+          <p>
+            You must complete the {{> abbreviations/EPOC }} course or 4 units within 4 weeks of starting  operations.
+          </p>
+          <p>
+            You must get a full qualification within 12 months of starting the operation.
+          </p>
+        </div>
+      </div>
+
+      {{/if}}
+
+      {{> uploads/uploadForm }}
+    </div>
+  </div>
+
+</main>

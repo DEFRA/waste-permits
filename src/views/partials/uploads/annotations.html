@@ -1,0 +1,19 @@
+<div id="has-annotations">
+  <h2 class="heading-small">
+    Uploaded files
+  </h2>
+  <dl class="govuk-check-your-answers cya-questions-short cya-questions-fileupload">
+    {{#each annotations}}
+    <div>
+      <dt class="cya-answer">
+        {{this.filename}}
+      </dt>
+      <dd class="cya-change">
+        <a href="{{this.removeAction}}">
+          Remove file <span class="visuallyhidden">{{this.filename}}</span>
+        </a>
+      </dd>
+    </div>
+    {{/each}}
+  </dl>
+</div>
