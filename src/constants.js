@@ -212,23 +212,19 @@ Constants.Routes = {
   },
   UPLOAD_COURSE_REGISTRATION: {
     path: '/technical-qualification/upload-course-registration',
-    pageHeading: 'Upload the course registration email or letter',
-    checksHeading: 'Course registration:'
+    pageHeading: 'Upload the course registration email or letter'
   },
   UPLOAD_DEEMED_EVIDENCE: {
     path: '/technical-qualification/upload-deemed-evidence',
-    pageHeading: 'Upload evidence of their qualification',
-    checksHeading: 'Evidence of qualification:'
+    pageHeading: 'Upload evidence of their qualification'
   },
   UPLOAD_ESA_EU_SKILLS: {
     path: '/technical-qualification/upload-esa-eu-skills',
-    pageHeading: 'Upload the ESA EU Skills scheme certificate',
-    checksHeading: 'ESA EU Skills scheme certificate:'
+    pageHeading: 'Upload the ESA EU Skills scheme certificate'
   },
   UPLOAD_WAMITAB_QUALIFICATION: {
     path: '/technical-qualification/upload-wamitab-qualification',
-    pageHeading: 'Upload the WAMITAB certificate',
-    checksHeading: 'WAMITAB certificate:'
+    pageHeading: 'Upload the WAMITAB certificate'
   },
   VERSION: {
     path: '/version',

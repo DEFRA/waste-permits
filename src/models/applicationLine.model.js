@@ -39,16 +39,18 @@ module.exports = class ApplicationLine extends BaseModel {
     const dynamicsDal = new DynamicsDalService(authToken)
     const rulesetIds = Object.keys(RulesetIds).map((prop) => RulesetIds[prop])
     const query = encodeURI(`defra_applicationlines(${applicationLineId})?$expand=defra_parametersId($select=${rulesetIds.join()})`)
+    let validRuleIds = []
     try {
       const result = await dynamicsDal.search(query)
       if (result && result.defra_parametersId) {
         // return only those rulesetIds with a value of true
-        return rulesetIds.filter((rulesetId) => result.defra_parametersId[rulesetId])
+        validRuleIds = rulesetIds.filter((rulesetId) => result.defra_parametersId[rulesetId])
       }
     } catch (error) {
       LoggingService.logError(`Unable to get RulesetId list by applicationLineId: ${error}`)
       throw error
     }
+    return validRuleIds
   }
 
   async save (authToken) {
