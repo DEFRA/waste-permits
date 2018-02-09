@@ -35,7 +35,6 @@ const checkExpectedErrors = (res, expectedErrorMessage) => {
   Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 
   // Company number field error
-  Code.expect(doc.getElementById('file').getAttribute('class')).contains('form-control-error')
   Code.expect(doc.getElementById('file-error').firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
 }
 
