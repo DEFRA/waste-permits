@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const BILLING_INVOICING_ADDRESS_TYPE = 910400004
 const COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE = 910400006
 const PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE = 910400007
 
@@ -114,6 +115,20 @@ lab.experiment('AddressDetail Model tests:', () => {
     const {applicationId} = fakeAddressDetailData
     const addressDetail = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
     Code.expect(addressDetail.type).to.equal(PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE)
+  })
+
+  lab.test(`getBillingInvoicingDetails() method calls getByApplicationIdAndType() method with type of ${BILLING_INVOICING_ADDRESS_TYPE}`, async () => {
+    const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
+    const {applicationId} = fakeAddressDetailData
+    await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
+    Code.expect(spy.calledWith(authToken, applicationId, BILLING_INVOICING_ADDRESS_TYPE)).to.equal(true)
+  })
+
+  lab.test(`getBillingInvoicingDetails() method creates a new AddressDetail with type of ${BILLING_INVOICING_ADDRESS_TYPE}`, async () => {
+    sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
+    const {applicationId} = fakeAddressDetailData
+    const addressDetail = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
+    Code.expect(addressDetail.type).to.equal(BILLING_INVOICING_ADDRESS_TYPE)
   })
 
   lab.test('save() method saves a new AddressDetail object', async () => {
