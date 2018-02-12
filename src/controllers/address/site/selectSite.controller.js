@@ -13,7 +13,10 @@ module.exports = class AddressSelectSiteController extends BaseController {
     const applicationId = CookieService.getApplicationId(request)
     const applicationLineId = CookieService.getApplicationLineId(request)
 
-    const postcode = CookieService.get(request, Constants.CookieValue.SITE_POSTCODE)
+    let postcode = CookieService.get(request, Constants.CookieValue.SITE_POSTCODE)
+    if (postcode) {
+      postcode = postcode.toUpperCase()
+    }
 
     const [addresses, address] = await Promise.all([
       Address.listByPostcode(authToken, postcode),

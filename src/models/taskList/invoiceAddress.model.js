@@ -90,8 +90,13 @@ module.exports = class InvoiceAddress extends BaseModel {
       await addressDetail.save(authToken)
     }
 
-    // TODO find out if we have to try and match an existing manual or auto address?
-    const address = new Address(addressDto)
+    // Get the Address for this AddressDetail (if there is one)
+    let address = await Address.getById(authToken, addressDetail.addressId)
+    if (!address) {
+      address = new Address(addressDto)
+    } else {
+      Object.assign(address, addressDto)
+    }
     address.fromAddressLookup = false
     await address.save(authToken)
 

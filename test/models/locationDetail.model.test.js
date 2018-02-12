@@ -14,6 +14,7 @@ let dynamicsUpdateStub
 
 let testLocationDetail
 const fakeLocationDetailData = {
+  name: 'THE_SITE_NAME',
   gridReference: 'AB1234567890',
   locationId: 'LOCATION_ID'
 }
@@ -32,7 +33,8 @@ lab.beforeEach(() => {
       value: [{
         '@odata.etag': 'W/"1234567"',
         defra_gridreferenceid: fakeLocationDetailData.gridReference,
-        defra_locationdetailsid: fakeLocationDetailData.locationId
+        defra_locationdetailsid: fakeLocationDetailData.locationId,
+        defra_name: fakeLocationDetailData.name
       }]
     }
   }

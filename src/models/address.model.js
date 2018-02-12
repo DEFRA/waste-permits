@@ -75,19 +75,21 @@ module.exports = class Address extends BaseModel {
       let action = `defra_postcodelookup`
       const response = await dynamicsDal.callAction(action, actionDataObject)
 
-      // Parse AddressBase response objects into Address objects
-      addresses = JSON.parse((JSON.parse(JSON.stringify(response))).addresses).results
-      addresses = addresses.map((address) => new Address({
-        id: undefined,
-        buildingNameOrNumber: address.premises,
-        addressLine1: address.street_address,
-        addressLine2: address.locality,
-        townOrCity: address.city,
-        postcode: address.postcode,
-        fullAddress: address.address,
-        uprn: address.uprn.toString(),
-        fromAddressLookup: true
-      }))
+      if (response) {
+        // Parse AddressBase response objects into Address objects
+        addresses = JSON.parse((JSON.parse(JSON.stringify(response))).addresses).results
+        addresses = addresses.map((address) => new Address({
+          id: undefined,
+          buildingNameOrNumber: address.premises,
+          addressLine1: address.street_address,
+          addressLine2: address.locality,
+          townOrCity: address.city,
+          postcode: address.postcode,
+          fullAddress: address.address,
+          uprn: address.uprn.toString(),
+          fromAddressLookup: true
+        }))
+      }
     } catch (error) {
       LoggingService.logError(`Unable to list addresses by postcode: ${error}`)
       throw error

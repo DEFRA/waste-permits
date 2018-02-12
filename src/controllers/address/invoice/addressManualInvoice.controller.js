@@ -26,8 +26,12 @@ module.exports = class AddressManualInvoiceController extends BaseController {
         }
       } else {
         // Get the postcode out of the Cookie if there is one
+        let postcode = CookieService.get(request, Constants.CookieValue.INVOICE_POSTCODE)
+        if (postcode) {
+          postcode = postcode.toUpperCase()
+        }
         pageContext.formValues = {
-          postcode: CookieService.get(request, Constants.CookieValue.INVOICE_POSTCODE)
+          postcode: postcode
         }
       }
     }

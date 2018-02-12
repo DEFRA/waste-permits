@@ -12,7 +12,10 @@ module.exports = class AddressSelectInvoiceController extends BaseController {
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
 
-    const postcode = CookieService.get(request, Constants.CookieValue.INVOICE_POSTCODE)
+    let postcode = CookieService.get(request, Constants.CookieValue.INVOICE_POSTCODE)
+    if (postcode) {
+      postcode = postcode.toUpperCase()
+    }
 
     const [addresses, address] = await Promise.all([
       Address.listByPostcode(authToken, postcode),

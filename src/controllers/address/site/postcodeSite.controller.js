@@ -18,7 +18,6 @@ module.exports = class PostcodeSiteController extends BaseController {
       pageContext.formValues = request.payload
     } else {
       const address = await SiteNameAndLocation.getAddress(request, authToken, applicationId, applicationLineId)
-
       if (address) {
         // If the manual entry flag is set then redirect off to the mamual address entry page instead
         if (!address.fromAddressLookup) {
@@ -26,6 +25,15 @@ module.exports = class PostcodeSiteController extends BaseController {
         }
         pageContext.formValues = {
           postcode: address.postcode
+        }
+      } else {
+        // Get the postcode out of the Cookie if there is one
+        let postcode = CookieService.get(request, Constants.CookieValue.SITE_POSTCODE)
+        if (postcode) {
+          postcode = postcode.toUpperCase()
+        }
+        pageContext.formValues = {
+          postcode: postcode
         }
       }
     }

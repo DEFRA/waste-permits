@@ -79,7 +79,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       if (!location) {
         // Create a Location in Dynamics
         location = new Location({
-          name: undefined,
+          name: 'Unknown site name',
           applicationId: applicationId,
           applicationLineId: applicationLineId
         })
@@ -91,6 +91,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       if (!locationDetail) {
         // Create new LocationDetail
         locationDetail = new LocationDetail({
+          name: location.name,
           gridReference: gridReference,
           locationId: location.id
         })
@@ -140,52 +141,48 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    try {
-      // Get the Location for this application
-      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
-      if (!location) {
-        // Create a Location in Dynamics
-        location = new Location({
-          name: undefined,
-          applicationId: applicationId,
-          applicationLineId: applicationLineId
-        })
-        await location.save(authToken)
-      }
-
-      // Get the LocationDetail for this application (if there is one)
-      let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
-      if (!locationDetail) {
-        // Create new LocationDetail
-        locationDetail = new LocationDetail({
-          gridReference: undefined,
-          locationId: location.id
-        })
-        await locationDetail.save(authToken)
-      }
-
-      let address = await Address.getByUprn(authToken, addressDto.uprn)
-      if (!address) {
-        // The address is not already in Dynamics so look it up in AddressBase and save it in Dynamics
-        let addresses = await Address.listByPostcode(authToken, addressDto.postcode)
-        addresses = addresses.filter((element) => element.uprn === addressDto.uprn)
-        address = addresses.pop()
-        if (address) {
-          await address.save(authToken)
-        }
-      }
-
-      // Save the LocationDetail to associate the Address with the Application
-      if (address && locationDetail) {
-        locationDetail.addressId = address.id
-        await locationDetail.save(authToken)
-      }
-
-      await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
-    } catch (error) {
-      LoggingService.logError(error, request)
-      throw error
+    // Get the Location for this application
+    let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+    if (!location) {
+      // Create a Location in Dynamics
+      location = new Location({
+        name: 'Unknown site name',
+        applicationId: applicationId,
+        applicationLineId: applicationLineId
+      })
+      await location.save(authToken)
     }
+
+    // Get the LocationDetail for this application (if there is one)
+    let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+    if (!locationDetail) {
+      // Create new LocationDetail
+      locationDetail = new LocationDetail({
+        name: location.name,
+        gridReference: undefined,
+        locationId: location.id
+      })
+      await locationDetail.save(authToken)
+    }
+
+    let address = await Address.getByUprn(authToken, addressDto.uprn)
+    if (!address) {
+      // The address is not already in Dynamics so look it up in AddressBase and save it in Dynamics
+      let addresses = await Address.listByPostcode(authToken, addressDto.postcode)
+      addresses = addresses.filter((element) => element.uprn === addressDto.uprn)
+      address = addresses.pop()
+      if (address) {
+        await address.save(authToken)
+      }
+    }
+
+    // Save the LocationDetail to associate the Address with the Application
+    if (address && locationDetail) {
+      locationDetail.addressId = address.id
+      await locationDetail.save(authToken)
+    }
+
+    await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
   }
 
   static async saveManualAddress (request, authToken, applicationId, applicationLineId, addressDto) {
@@ -193,29 +190,45 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    // Get the AddressDetail for this Application (if there is one)
-    // let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
-    //   Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
+    // Get the Location for this application
+    let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+    if (!location) {
+      // Create a Location in Dynamics
+      location = new Location({
+        name: 'Unknown site name',
+        applicationId: applicationId,
+        applicationLineId: applicationLineId
+      })
+      await location.save(authToken)
+    }
 
-    // if (!addressDetail) {
-    //   // Create new AddressDetail
-    //   addressDetail = new AddressDetail({
-    //     type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
-    //     applicationId: applicationId
-    //   })
-    //   await addressDetail.save(authToken)
-    // }
+    // Get the LocationDetail for this application (if there is one)
+    let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+    if (!locationDetail) {
+      // Create new LocationDetail
+      locationDetail = new LocationDetail({
+        name: location.name,
+        gridReference: undefined,
+        locationId: location.id
+      })
+      await locationDetail.save(authToken)
+    }
 
-    // // TODO find out if we have to try and match an existing manual or auto address?
-    // const address = new Address(addressDto)
-    // address.fromAddressLookup = false
-    // await address.save(authToken)
+    // Get the Address for this AddressDetail (if there is one)
+    let address = await Address.getById(authToken, locationDetail.addressId)
+    if (!address) {
+      address = new Address(addressDto)
+    } else {
+      Object.assign(address, addressDto)
+    }
+    address.fromAddressLookup = false
+    await address.save(authToken)
 
-    // // Save the AddressDetail to associate the Address with the Application
-    // if (address && addressDetail) {
-    //   addressDetail.addressId = address.id
-    //   await addressDetail.save(authToken)
-    // }
+    // Save the LocationDetail to associate the Address with the Application
+    if (address && locationDetail) {
+      locationDetail.addressId = address.id
+      await locationDetail.save(authToken)
+    }
 
     await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
   }
