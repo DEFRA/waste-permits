@@ -6553,18 +6553,18 @@
       "dev": true
     },
     "hapi-dev-errors": {
-      "version": "1.3.2",
-      "resolved": "https://registry.npmjs.org/hapi-dev-errors/-/hapi-dev-errors-1.3.2.tgz",
-      "integrity": "sha512-aODRWSY6g6J1oD298hhM71IRq5mtHBkZ51VarOFBINYpAsfkVDA3ssmhIiyKbk83O3dQGZiTacQIpGFF//Lj3g==",
+      "version": "2.1.0",
+      "resolved": "https://registry.npmjs.org/hapi-dev-errors/-/hapi-dev-errors-2.1.0.tgz",
+      "integrity": "sha512-Zi72oMnOmMe5nytXdb9m2wL7McDLYF+CfwZFfXajy42UlQ9+fnYQF6TWjJFwX7L0hYfCI9wcuI7tNzVyNG6Y/A==",
       "requires": {
-        "hoek": "4.2.0",
-        "youch": "2.0.5"
+        "hoek": "5.0.3",
+        "youch": "2.0.7"
       },
       "dependencies": {
         "hoek": {
-          "version": "4.2.0",
-          "resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.0.tgz",
-          "integrity": "sha512-v0XCLxICi9nPfYrS9RL8HbYnXi9obYAeLbSP00BmnZwCK9+Ih9WOjoZ8YoHCoav2csqn4FOz4Orldsy2dmDwmQ=="
+          "version": "5.0.3",
+          "resolved": "https://registry.npmjs.org/hoek/-/hoek-5.0.3.tgz",
+          "integrity": "sha512-Bmr56pxML1c9kU+NS51SMFkiVQAb+9uFfXwyqR2tn4w2FPvmPt65eZ9aCcEfRXd9G74HkZnILC6p967pED4aiw=="
         }
       }
     },
@@ -7093,7 +7093,7 @@
     "inert": {
       "version": "4.2.1",
       "resolved": "https://registry.npmjs.org/inert/-/inert-4.2.1.tgz",
-      "integrity": "sha512-qmbbZYPSzU/eOUOStPQvSjrU9IR1Q3uDtsEsVwnBQeZG43xu7Nrj6yuUrX3ice/03rv5dj/KiKB+NGCbiqH+aQ==",
+      "integrity": "sha1-2nQ8R4oYqDeAMvgK2hKKKM0rupM=",
       "requires": {
         "ammo": "2.0.4",
         "boom": "5.2.0",
@@ -14026,9 +14026,9 @@
       "dev": true
     },
     "youch": {
-      "version": "2.0.5",
-      "resolved": "https://registry.npmjs.org/youch/-/youch-2.0.5.tgz",
-      "integrity": "sha512-JcWNp4G7+HX1uSb5jc5UgUEgeVWBNY0RMc5C2O22lStQeo47CcLGPVRUbxXsI8jNvq6c7NRqvVOvxKOlfg5+vg==",
+      "version": "2.0.7",
+      "resolved": "https://registry.npmjs.org/youch/-/youch-2.0.7.tgz",
+      "integrity": "sha512-8/JWYarU6+Zov+QOxPr3028i+8geKSsRP57Fv5oiy5HEtBepFHui6FrTWj9jgUAtIszcBPvZKsXoYjFjNFETDg==",
       "requires": {
         "cookie": "0.3.1",
         "mustache": "2.3.0",
