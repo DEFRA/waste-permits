@@ -2,11 +2,11 @@
 #uploadForm {
   input[type="file"] {
     max-width: 100%;
+    font-weight: bold;
     &::-webkit-file-upload-button {
       font-size: 2rem;
       padding: 0.5rem 1rem;
-      margin-right: 50px;
-      background:#f5f6ff;
+      background:#dee0e2;
       color: #000;
     }
   }

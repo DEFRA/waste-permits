@@ -16,14 +16,12 @@ module.exports = class UploadEntityValidator extends BaseValidator {
 
     this.errorMessages = {
       'file': {
+        'custom.empty': 'Choose and upload a file',
         'fileTooBig': `That file’s too big. Upload a file that’s no more than ${this.getMaxSize()}.`,
         'duplicateFile': `That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.`,
         'noFilesUploaded': `You must upload at least one file. Choose a file then press the 'Upload chosen file' button.`,
         'array.base': ' ',
         'object.base': ' '
-      },
-      'filename': {
-        'any.empty': 'Choose and upload a file'
       },
       'content-type': {
         'any.allowOnly': `You can only upload ${this.formatValidTypes()} files`
@@ -35,7 +33,6 @@ module.exports = class UploadEntityValidator extends BaseValidator {
     const fileSchema =
       Joi.object().keys({
         'hapi': Joi.object().keys({
-          'filename': Joi.string().required(),
           'headers': Joi.object().keys({
             'content-type': Joi.string(),
             'content-disposition': Joi.string().required()
@@ -44,6 +41,16 @@ module.exports = class UploadEntityValidator extends BaseValidator {
       }).optional()
     return {
       'file': Joi.alternatives([Joi.array().items(fileSchema), fileSchema])
+    }
+  }
+
+  customValidators () {
+    return {
+      'file': {
+        'custom.empty': ({hapi: {filename}}, {'is-upload-file': isUpload}) => {
+          return isUpload && !filename
+        }
+      }
     }
   }
 
