@@ -10,7 +10,7 @@ const AddressDetail = require('../addressDetail.model')
 const LoggingService = require('../../services/logging.service')
 
 module.exports = class InvoiceAddress extends BaseModel {
-  static async getAddress (request, authToken, applicationId) {
+  static async getAddress (request, authToken, applicationId, applicationLineId) {
     let address
     try {
         // Get the AddressDetail for this application
