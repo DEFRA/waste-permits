@@ -3,24 +3,27 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 
 const Application = require('../../src/models/application.model')
+const ApplicationLine = require('../../src/models/applicationLine.model')
 const LoggingService = require('../../src/services/logging.service')
+const BaseCheck = require('../../src/models/checkYourAnswers/base.check')
+const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
 const CookieService = require('../../src/services/cookie.service')
 
-let fakeApplication
-
-let validateCookieStub
-let logErrorStub
-let applicationGetByIdStub
-let applicationSaveStub
-
 let fakeApplicationId = 'APPLICATION_ID'
+let fakeApplication
+let fakeValidRulesetId
+let fakeInvalidRulesetId
+let fakeLineData
 
 const routePath = '/check-before-sending'
+
+let sandbox
 
 lab.beforeEach(() => {
   fakeApplication = {
@@ -28,26 +31,54 @@ lab.beforeEach(() => {
     declaration: true
   }
 
+  fakeValidRulesetId = 'TEST_RULESETID'
+  fakeInvalidRulesetId = 'TEST_INVALID_RULESETID'
+  fakeLineData = {
+    heading: 'TEST',
+    answers: ['test1', 'test2'],
+    links: [
+      {path: '/test-1', type: 'test details 1'},
+      {path: '/test-2', type: 'test details 2'}
+    ]
+  }
+
+  // Should be included in page
+  class ValidCheck extends BaseCheck {
+    static get rulesetId () {
+      return fakeValidRulesetId
+    }
+
+    get prefix () {
+      return `${super.prefix}-test`
+    }
+
+    async buildLines () {
+      return [this.buildLine(fakeLineData)]
+    }
+  }
+
+  // Should not be included in page
+  class InvalidCheck extends BaseCheck {
+    static get rulesetId () {
+      return fakeInvalidRulesetId
+    }
+  }
+
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationSaveStub = Application.prototype.save
-  Application.prototype.save = () => {}
+  sandbox.stub(CookieService, 'validateCookie').value(() => true)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(ApplicationLine, 'getValidRulesetIds').value(() => [fakeValidRulesetId])
+  sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  Application.getById = applicationGetByIdStub
-  Application.save = applicationSaveStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Check your answers before sending your application page tests:', () => {
@@ -81,6 +112,19 @@ lab.experiment('Check your answers before sending your application page tests:',
 
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Check your answers before sending your application')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Confirm and pay')
+
+      const {heading, answers, links} = fakeLineData
+      Code.expect(doc.getElementById('section-test-heading').firstChild.nodeValue.trim()).to.equal(heading)
+      answers.forEach((answer, index) => {
+        Code.expect(doc.getElementById(`section-test-answer-${index + 1}`).firstChild.nodeValue.trim()).to.equal(answers[index])
+      })
+      links.forEach((answer, index) => {
+        const id = `section-test-link-${index + 1}`
+        const {path, type} = links[index]
+        Code.expect(doc.getElementById(id).getAttribute('href')).to.equal(path)
+        Code.expect(doc.getElementById(id).firstChild.nodeValue.trim()).to.equal('Change')
+        Code.expect(doc.getElementById(`${id}-type`).firstChild.nodeValue.trim()).to.equal(type)
+      })
     })
   })
 

@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const {RulesetIds} = Constants.Dynamics
 const LoggingService = require('../services/logging.service')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
@@ -32,6 +33,24 @@ module.exports = class ApplicationLine extends BaseModel {
       LoggingService.logError(`Unable to get ApplicationLine by Id: ${error}`)
       throw error
     }
+  }
+
+  static async getValidRulesetIds (authToken, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const rulesetIds = Object.keys(RulesetIds).map((prop) => RulesetIds[prop])
+    const query = encodeURI(`defra_applicationlines(${applicationLineId})?$expand=defra_parametersId($select=${rulesetIds.join()})`)
+    let validRuleIds = []
+    try {
+      const result = await dynamicsDal.search(query)
+      if (result && result.defra_parametersId) {
+        // return only those rulesetIds with a value of true
+        validRuleIds = rulesetIds.filter((rulesetId) => result.defra_parametersId[rulesetId])
+      }
+    } catch (error) {
+      LoggingService.logError(`Unable to get RulesetId list by applicationLineId: ${error}`)
+      throw error
+    }
+    return validRuleIds
   }
 
   async save (authToken) {

@@ -7,6 +7,7 @@ const BaseController = require('../base.controller')
 const CookieService = require('../../services/cookie.service')
 const LoggingService = require('../../services/logging.service')
 const Annotation = require('../../models/annotation.model')
+const Application = require('../../models/application.model')
 
 const UPLOAD_PATH = path.resolve(`${__dirname}/../../uploads`)
 
@@ -59,9 +60,10 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
 
       const authToken = CookieService.getAuthToken(request)
       const applicationId = CookieService.getApplicationId(request)
+      const {name: applicationReference} = await Application.getById(authToken, applicationId)
       const annotationsList = await Annotation.listByApplicationId(authToken, applicationId)
       const {subject} = this.getSpecificPageContext()
-      const fileData = this._getFileData(request.payload.file)
+      const fileData = this._getFileData(request.payload.file, applicationReference)
 
       // Make sure no duplicate files are uploaded
       if (this._haveDuplicateFiles(fileData, annotationsList)) {
@@ -69,8 +71,8 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
       }
 
       // Save each file as an attachment to an annotation
-      const uploadPromises = fileData.map(async ({file, filename}) => {
-        const documentBody = await this._uploadFile({file, filename})
+      const uploadPromises = fileData.map(async ({file, filename, path}) => {
+        const documentBody = await this._uploadFile(file, filename, path)
         const annotation = new Annotation({subject, filename, applicationId, documentBody})
         return annotation.save(authToken)
       })
@@ -129,9 +131,13 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
     }
   }
 
-  _getFileData (file) {
+  _getFileData (file, applicationReference) {
     if (!fs.existsSync(UPLOAD_PATH)) {
       fs.mkdirSync(UPLOAD_PATH)
+    }
+    const uploadPath = path.resolve(UPLOAD_PATH, applicationReference)
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath)
     }
     const files = file.hapi ? [file] : file
     return files.map((file) => {
@@ -141,20 +147,17 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
         fieldname: file.hapi.name,
         filename,
         mimetype: file.hapi.headers['content-type'],
-        destination: UPLOAD_PATH,
+        destination: uploadPath,
         path: savedFileName,
         file
       }
     })
   }
 
-  async _uploadFile (fileData) {
-    const {file, filename} = fileData
-
+  async _uploadFile (file, filename, path) {
     // Upload the file to the server
-    const savedFileName = path.resolve(UPLOAD_PATH, filename)
     await new Promise((resolve, reject) => {
-      const fileStream = fs.createWriteStream(savedFileName)
+      const fileStream = fs.createWriteStream(path)
 
       fileStream.on('error', function (err) {
         reject(err)
@@ -169,7 +172,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
 
     // Stream the file from the node server into a base24 string as required by the CRM
     return new Promise((resolve, reject) => {
-      const stream = fs.createReadStream(savedFileName)
+      const stream = fs.createReadStream(path)
       const chunks = []
       stream.on('error', function (err) {
         reject(err)
@@ -180,7 +183,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
       stream.on('end', function () {
         const documentBody = Buffer.concat(chunks).toString('base64')
         // Delete the file on the node server
-        fs.unlink(savedFileName, (err) => {
+        fs.unlink(path, (err) => {
           if (err) {
             reject(err)
           } else {
