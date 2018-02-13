@@ -274,10 +274,22 @@ Constants.Dynamics = {
     DRAFT: 1
   },
   TechnicalQualification: {
-    WAMITAB_QUALIFICATION: 910400000,
-    REGISTERED_ON_A_COURSE: 910400001,
-    DEEMED_COMPETENCE: 910400002,
-    ESA_EU_SKILLS: 910400003
+    WAMITAB_QUALIFICATION: {
+      TYPE: 910400000,
+      NAME: 'WAMITAB or EPOC qualification'
+    },
+    REGISTERED_ON_A_COURSE: {
+      TYPE: 910400001,
+      NAME: `We're getting WAMITAB or EPOC qualifications`
+    },
+    DEEMED_COMPETENCE: {
+      TYPE: 910400002,
+      NAME: 'Deemed competence or an Environment Agency assessment'
+    },
+    ESA_EU_SKILLS: {
+      TYPE: 910400003,
+      NAME: 'Energy & Utility Skills / ESA system'
+    }
   },
   WASTE_REGIME: 910400000,
 
@@ -347,7 +359,8 @@ Constants.CompanyStatus = {
 }
 
 Constants.CookieValue = {
-  INVOICE_POSTCODE: 'INVOICE_POSTCODE'
+  INVOICE_POSTCODE: 'INVOICE_POSTCODE',
+  SITE_POSTCODE: 'SITE_POSTCODE'
 }
 
 Constants.buildPageTitle = (pageHeading) => {

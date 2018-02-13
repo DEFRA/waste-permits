@@ -6,19 +6,19 @@ const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 const sinon = require('sinon')
 
-const server = require('../../../server')
-const CookieService = require('../../../src/services/cookie.service')
-const Address = require('../../../src/models/address.model')
-const InvoiceAddress = require('../../../src/models/taskList/invoiceAddress.model')
+const server = require('../../../../server')
+const CookieService = require('../../../../src/services/cookie.service')
+const Address = require('../../../../src/models/address.model')
+const SiteNameAndLocation = require('../../../../src/models/taskList/siteNameAndLocation.model')
 
 let validateCookieStub
 let cookieServiceGetStub
 let addressListByPostcodeStub
-let invoiceAddressGetAddressStub
-let invoiceAddressSaveSelectedAddressStub
+let siteNameAndLocationGetAddressStub
+let siteNameAndLocationSaveSelectedAddressStub
 
-const pageHeading = `What's the invoice address?`
-const routePath = '/invoice/address/select-address'
+const pageHeading = `What's the site address?`
+const routePath = '/site/address/select-address'
 const nextRoutePath = '/task-list'
 
 const getRequest = {
@@ -91,11 +91,11 @@ lab.beforeEach(() => {
     new Address(fakeAddress3)
   ]
 
-  invoiceAddressGetAddressStub = InvoiceAddress.getAddress
-  InvoiceAddress.getAddress = () => new Address(fakeAddress1)
+  siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
+  SiteNameAndLocation.getAddress = () => new Address(fakeAddress1)
 
-  invoiceAddressSaveSelectedAddressStub = InvoiceAddress.saveSelectedAddress
-  InvoiceAddress.saveSelectedAddress = () => undefined
+  siteNameAndLocationSaveSelectedAddressStub = SiteNameAndLocation.saveSelectedAddress
+  SiteNameAndLocation.saveSelectedAddress = () => undefined
 })
 
 lab.afterEach(() => {
@@ -103,8 +103,8 @@ lab.afterEach(() => {
   CookieService.validateCookie = validateCookieStub
   CookieService.get = cookieServiceGetStub
   Address.listByPostcode = addressListByPostcodeStub
-  InvoiceAddress.getAddress = invoiceAddressGetAddressStub
-  InvoiceAddress.saveSelectedAddress = invoiceAddressSaveSelectedAddressStub
+  SiteNameAndLocation.getAddress = siteNameAndLocationGetAddressStub
+  SiteNameAndLocation.saveSelectedAddress = siteNameAndLocationSaveSelectedAddressStub
 })
 
 const checkPageElements = async (getRequest) => {
@@ -150,7 +150,6 @@ const checkValidationError = async (expectedErrorMessage) => {
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
   // Field error
-  Code.expect(doc.getElementById('select-address').getAttribute('class')).contains('form-control-error')
   element = doc.getElementById('select-address-error').firstChild.firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
@@ -189,7 +188,7 @@ lab.experiment('Address select page tests:', () => {
       lab.test(`POST ${routePath} success redirects to the Task List route: ${nextRoutePath}`, async () => {
         postRequest.payload['select-address'] = fakeAddress1.uprn
 
-        const spy = sinon.spy(InvoiceAddress, 'saveSelectedAddress')
+        const spy = sinon.spy(SiteNameAndLocation, 'saveSelectedAddress')
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
 

@@ -6,19 +6,19 @@ const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 const sinon = require('sinon')
 
-const server = require('../../../server')
-const CookieService = require('../../../src/services/cookie.service')
-const Address = require('../../../src/models/address.model')
-const InvoiceAddress = require('../../../src/models/taskList/invoiceAddress.model')
+const server = require('../../../../server')
+const CookieService = require('../../../../src/services/cookie.service')
+const Address = require('../../../../src/models/address.model')
+const SiteNameAndLocation = require('../../../../src/models/taskList/siteNameAndLocation.model')
 
 let validateCookieStub
 let cookieServiceGetStub
 let addressListByPostcodeStub
-let invoiceAddressGetAddressStub
-let invoiceAddressSaveManualAddressStub
+let siteNameAndLocationGetAddressStub
+let siteNameAndLocationSaveManualAddressStub
 
-const pageHeading = `Where should we send invoices for the annual costs after the permit has been issued?`
-const routePath = '/invoice/address/address-manual'
+const pageHeading = `Enter the site address`
+const routePath = '/site/address/address-manual'
 const nextRoutePath = '/task-list'
 
 const FORM_FIELD_ID = {
@@ -38,8 +38,6 @@ const getRequest = {
   headers: {}
 }
 let postRequest
-
-const postcode = 'BS1 4AH'
 
 const fakeAddress1 = {
   id: 'ADDRESS_ID_1',
@@ -93,7 +91,7 @@ lab.beforeEach(() => {
   CookieService.validateCookie = () => true
 
   cookieServiceGetStub = CookieService.get
-  CookieService.get = () => postcode
+  CookieService.get = () => undefined
 
   addressListByPostcodeStub = Address.listByPostcode
   Address.listByPostcode = () => [
@@ -102,11 +100,11 @@ lab.beforeEach(() => {
     new Address(fakeAddress3)
   ]
 
-  invoiceAddressGetAddressStub = InvoiceAddress.getAddress
-  InvoiceAddress.getAddress = () => new Address(fakeAddress1)
+  siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
+  SiteNameAndLocation.getAddress = () => new Address(fakeAddress1)
 
-  invoiceAddressSaveManualAddressStub = InvoiceAddress.saveManualAddress
-  InvoiceAddress.saveManualAddress = () => undefined
+  siteNameAndLocationSaveManualAddressStub = SiteNameAndLocation.saveManualAddress
+  SiteNameAndLocation.saveManualAddress = () => undefined
 })
 
 lab.afterEach(() => {
@@ -114,8 +112,8 @@ lab.afterEach(() => {
   CookieService.validateCookie = validateCookieStub
   CookieService.get = cookieServiceGetStub
   Address.listByPostcode = addressListByPostcodeStub
-  InvoiceAddress.getAddress = invoiceAddressGetAddressStub
-  InvoiceAddress.saveManualAddress = invoiceAddressSaveManualAddressStub
+  SiteNameAndLocation.getAddress = siteNameAndLocationGetAddressStub
+  SiteNameAndLocation.saveManualAddress = siteNameAndLocationSaveManualAddressStub
 })
 
 const checkPageElements = async (request, expectedValue) => {
@@ -132,9 +130,6 @@ const checkPageElements = async (request, expectedValue) => {
     element = doc.getElementById(id)
     Code.expect(doc.getElementById(id)).to.exist()
   }
-
-  element = doc.getElementById('invoice-subheading')
-  Code.expect(element).to.not.exist()
 
   // Check value of form elements
   if (expectedValue) {
@@ -185,7 +180,6 @@ const checkValidationError = async (fieldId, expectedErrorMessage, fieldIndex = 
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
   // Field error
-  Code.expect(doc.getElementById(fieldId).getAttribute('class')).contains('form-control-error')
   element = doc.getElementById(fieldId + '-error').firstChild.firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
@@ -211,12 +205,25 @@ lab.experiment('Address select page tests:', () => {
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the manual address entry page correctly on first visit to the page`, async () => {
-      InvoiceAddress.getAddress = () => undefined
+      SiteNameAndLocation.getAddress = () => undefined
       await checkPageElements(getRequest)
     })
 
     lab.test(`GET ${routePath} returns the manual address entry page correctly on subsequent visits to the page`, async () => {
       const expectedValue = fakeAddress1
+      await checkPageElements(getRequest, expectedValue)
+    })
+
+    lab.test(`GET ${routePath} returns the manual address entry page correctly with the postcode from the cookie`, async () => {
+      CookieService.get = () => fakeAddress1.postcode
+      SiteNameAndLocation.getAddress = () => undefined
+      const expectedValue = {
+        buildingNameOrNumber: '',
+        addressLine1: '',
+        addressLine2: '',
+        townOrCity: '',
+        postcode: fakeAddress1.postcode
+      }
       await checkPageElements(getRequest, expectedValue)
     })
   })
@@ -230,7 +237,7 @@ lab.experiment('Address select page tests:', () => {
         postRequest.payload[FORM_FIELD_ID.townOrCity] = fakeAddress1.townOrCity
         postRequest.payload[FORM_FIELD_ID.postcode] = fakeAddress1.postcode
 
-        const spy = sinon.spy(InvoiceAddress, 'saveManualAddress')
+        const spy = sinon.spy(SiteNameAndLocation, 'saveManualAddress')
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
 

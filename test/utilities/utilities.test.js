@@ -150,7 +150,7 @@ lab.experiment('Utilities tests:', () => {
     Code.expect(expected).to.equal(actual)
   })
 
-  lab.test('formatDateForDisplay() correctly formats the date of bith into MMMM YYYY format (e.g. January 1970) ready for persistence', () => {
+  lab.test('formatDateForDisplay() correctly formats the date of birth into MMMM YYYY format (e.g. January 1970) ready for display', () => {
     const unknownDate = 'Unknown date'
 
     // All date parts missing
@@ -199,6 +199,58 @@ lab.experiment('Utilities tests:', () => {
     }
     expected = 'May 1970'
     actual = Utilities.formatDateForDisplay(inputValue)
+    Code.expect(expected).to.equal(actual)
+  })
+
+  lab.test('formatFullDateForDisplay() correctly formats the date of birth into D MMMM YYYY format (e.g. 1 January 1970) ready for display', () => {
+    const unknownDate = 'Unknown date'
+
+    // All date parts missing
+    let inputValue = {
+      dob: undefined
+    }
+    let expected = unknownDate
+    let actual = Utilities.formatFullDateForDisplay(inputValue)
+    Code.expect(expected).to.equal(actual)
+
+    // Day is missing
+    inputValue = {
+      day: undefined,
+      month: 5,
+      year: 1970
+    }
+    expected = unknownDate
+    actual = Utilities.formatFullDateForDisplay(inputValue)
+    Code.expect(expected).to.equal(actual)
+
+    // Month is missing
+    inputValue = {
+      day: 1,
+      month: undefined,
+      year: 1970
+    }
+    expected = unknownDate
+    actual = Utilities.formatFullDateForDisplay(inputValue)
+    Code.expect(expected).to.equal(actual)
+
+    // Year is missing
+    inputValue = {
+      day: 1,
+      month: 5,
+      year: undefined
+    }
+    expected = unknownDate
+    actual = Utilities.formatFullDateForDisplay(inputValue)
+    Code.expect(expected).to.equal(actual)
+
+    // All date parts provided
+    inputValue = {
+      day: 1,
+      month: 5,
+      year: 1970
+    }
+    expected = '1 May 1970'
+    actual = Utilities.formatFullDateForDisplay(inputValue)
     Code.expect(expected).to.equal(actual)
   })
 })

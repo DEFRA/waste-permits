@@ -15,9 +15,15 @@ let dynamicsCallActionStub
 
 let testAddress
 const fakeAddressData = {
-  uprn: '123456',
+  uprn: 'UPRN_123456',
+  fromAddressLookup: true,
+  buildingNameOrNumber: '123',
+  addressLine1: 'THE STREET',
+  addressLine2: 'THE DISTRICT',
+  townOrCity: 'TEST TOWN',
   postcode: 'BS1 5AH'
 }
+fakeAddressData.fullAddress = `${fakeAddressData.buildingNameOrNumber}, ${fakeAddressData.addressLine1}, ${fakeAddressData.addressLine2}, ${fakeAddressData.townOrCity}, ${fakeAddressData.postcode}`
 
 const testAddressId = 'ADDRESS_ID'
 
@@ -161,5 +167,13 @@ lab.experiment('Address Model tests:', () => {
     await testAddress.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddress.id).to.equal(testAddressId)
+  })
+
+  lab.test('save() method creates the name (fullAddress) property correctly for manually created addresses', async () => {
+    let expectedValue = testAddress.fullAddress
+    testAddress.fromAddressLookup = false
+    testAddress.fullAddress = undefined
+    await testAddress.save(authToken)
+    Code.expect(testAddress.fullAddress).to.equal(expectedValue)
   })
 })

@@ -10,6 +10,7 @@ module.exports = class LocationDetail extends BaseModel {
       {field: 'id', dynamics: 'defra_locationdetailsid'},
       {field: 'locationId', dynamics: '_defra_locationid_value', bind: {id: 'defra_locationId', entity: 'defra_locations'}},
       {field: 'addressId', dynamics: '_defra_addressid_value', bind: {id: 'defra_addressId', entity: 'defra_addresses'}},
+      {field: 'name', dynamics: 'defra_name'},
       {field: 'gridReference', dynamics: 'defra_gridreferenceid'}
     ]
   }
