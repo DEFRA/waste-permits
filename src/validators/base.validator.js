@@ -24,7 +24,7 @@ function _customValidate (data, errors, validators, errorMessages) {
         Object.keys(validators[field])
           .forEach((type) => {
             const validatorFunction = validators[field][type]
-            if (validatorFunction(data[field] || '')) {
+            if (validatorFunction(data[field] || '', data)) {
               customErrors.push({message: errorMessages[field][type], path: [field], type})
             }
           })

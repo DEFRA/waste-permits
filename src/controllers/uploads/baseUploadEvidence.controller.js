@@ -2,6 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
+const { Stream } = require('stream')
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const CookieService = require('../../services/cookie.service')
@@ -20,6 +21,9 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
 
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
+    if (request.payload) {
+      pageContext.formValues = request.payload
+    }
     const authToken = CookieService.getAuthToken(request)
     const applicationId = CookieService.getApplicationId(request)
     const list = await Annotation.listByApplicationId(authToken, applicationId)
@@ -51,11 +55,25 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
     }
   }
 
-  async upload (request, reply) {
+  async upload (request, reply, errors) {
     try {
       // Validate the cookie
       if (!CookieService.validateCookie(request)) {
         return reply.redirect(Constants.Routes.ERROR.path)
+      }
+
+      // Post if it's not an attempt to upload a file
+      if (!request.payload['is-upload-file']) {
+        return this.doPost(request, reply, errors)
+      }
+
+      // Apply custom validation if required
+      if (this.validator && this.validator.customValidators) {
+        errors = this.validator.customValidate(request.payload, errors)
+      }
+
+      if (errors && errors.data.details) {
+        return this.doGet(request, reply, errors)
       }
 
       const authToken = CookieService.getAuthToken(request)
@@ -107,7 +125,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
     if (errors && errors.output && errors.output.statusCode === Constants.Errors.REQUEST_ENTITY_TOO_LARGE) {
       errors = BaseUploadEvidenceController._customError('fileTooBig')
     }
-    return this.handler(request, reply, undefined, errors)
+    return this.doGet(request, reply, errors)
   }
 
   _containsFilename (filename, fileList) {
@@ -167,7 +185,9 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
         resolve('ok')
       })
 
-      file.pipe(fileStream)
+      if (fileStream instanceof Stream) {
+        file.pipe(fileStream)
+      }
     })
 
     // Stream the file from the node server into a base24 string as required by the CRM
