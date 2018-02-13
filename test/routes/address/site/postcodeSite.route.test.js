@@ -5,20 +5,20 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 
-const server = require('../../../server')
-const CookieService = require('../../../src/services/cookie.service')
-const Address = require('../../../src/models/address.model')
-const InvoiceAddress = require('../../../src/models/taskList/invoiceAddress.model')
+const server = require('../../../../server')
+const CookieService = require('../../../../src/services/cookie.service')
+const Address = require('../../../../src/models/address.model')
+const SiteNameAndLocation = require('../../../../src/models/taskList/siteNameAndLocation.model')
 
 let validateCookieStub
-let invoiceAddressGetAddressStub
-let invoiceAddressSaveSelectedAddressStub
+let siteNameAndLocationGetAddressStub
+let siteNameAndLocationSaveSelectedAddressStub
 let addressListByPostcodeStub
 
-const routePath = '/invoice/address/postcode'
-const nextRoutePath = '/invoice/address/select-address'
-const nextRoutePathManual = '/invoice/address/address-manual'
-const pageHeading = `Where should we send invoices for the annual costs after the permit has been issued?`
+const routePath = '/site/address/postcode'
+const nextRoutePath = '/site/address/select-address'
+const nextRoutePathManual = '/site/address/address-manual'
+const pageHeading = `What's the postcode for the site?`
 const getRequest = {
   method: 'GET',
   url: routePath,
@@ -74,11 +74,11 @@ lab.beforeEach(() => {
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => true
 
-  invoiceAddressGetAddressStub = InvoiceAddress.getAddress
-  InvoiceAddress.getAddress = () => new Address(fakeAddress1)
+  siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
+  SiteNameAndLocation.getAddress = () => new Address(fakeAddress1)
 
-  invoiceAddressSaveSelectedAddressStub = InvoiceAddress.saveSelectedAddress
-  InvoiceAddress.saveSelectedAddress = () => {}
+  siteNameAndLocationSaveSelectedAddressStub = SiteNameAndLocation.saveSelectedAddress
+  SiteNameAndLocation.saveSelectedAddress = () => undefined
 
   addressListByPostcodeStub = Address.listByPostcode
   Address.listByPostcode = () => [
@@ -91,8 +91,8 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-  InvoiceAddress.getAddress = invoiceAddressGetAddressStub
-  InvoiceAddress.saveSelectedAddress = invoiceAddressSaveSelectedAddressStub
+  SiteNameAndLocation.getAddress = siteNameAndLocationGetAddressStub
+  SiteNameAndLocation.saveSelectedAddress = siteNameAndLocationSaveSelectedAddressStub
   Address.listByPostcode = addressListByPostcodeStub
 })
 
@@ -121,7 +121,7 @@ const checkPageElements = async (request, expectedValue) => {
   }
 
   element = doc.getElementById('invoice-subheading')
-  Code.expect(element).to.exist()
+  Code.expect(element).to.not.exist()
 
   element = doc.getElementById('postcode')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
@@ -147,7 +147,6 @@ const checkValidationError = async (expectedErrorMessage) => {
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 
   // Field error
-  Code.expect(doc.getElementById('postcode').getAttribute('class')).contains('form-control-error')
   element = doc.getElementById('postcode-error').firstChild.firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
@@ -177,7 +176,7 @@ lab.experiment('Postcode page tests:', () => {
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the postcode page correctly when there is no saved postcode`, async () => {
-      InvoiceAddress.getAddress = () => {
+      SiteNameAndLocation.getAddress = () => {
         return undefined
       }
       checkPageElements(getRequest, '')
@@ -190,7 +189,7 @@ lab.experiment('Postcode page tests:', () => {
     lab.test(`GET ${routePath} redirects to the Manual Address Entry route when the fromAddressLookup is not set: ${nextRoutePath}`, async () => {
       const fakeAddressManual = Object.assign({}, fakeAddress1)
       fakeAddressManual.fromAddressLookup = false
-      InvoiceAddress.getAddress = () => new Address(fakeAddressManual)
+      SiteNameAndLocation.getAddress = () => new Address(fakeAddressManual)
       const res = await server.inject(getRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePathManual)
