@@ -66,7 +66,7 @@ config.dynamicsWebApiHost = process.env.DYNAMICS_WEB_API_HOST || 'mycrminstance.
 config.dynamicsWebApiPath = process.env.DYNAMICS_WEB_API_PATH || '/api/data/v8.2/'
 
 // The address lookup service used to perform address lookups based on postcode
-config.ADDRESS_LOOKUP_SERVICE = process.env.ADDRESS_LOOKUP_SERVICE  || 'http://addresslookupservice'
-config.ADDRESS_LOOKUP_SERVICE_KEY = process.env.ADDRESS_LOOKUP_SERVICE_KEY  || 'ADDRESS_LOOKUP_SERVICE_KEY'
+config.ADDRESS_LOOKUP_SERVICE = process.env.ADDRESS_LOOKUP_SERVICE || 'http://addresslookupservice'
+config.ADDRESS_LOOKUP_SERVICE_KEY = process.env.ADDRESS_LOOKUP_SERVICE_KEY || 'ADDRESS_LOOKUP_SERVICE_KEY'
 
-config.COMPANIES_HOUSE_SERVICE = process.env.COMPANIES_HOUSE_SERVICE  || 'http://companieshouselookupservice'
+config.COMPANIES_HOUSE_SERVICE = process.env.COMPANIES_HOUSE_SERVICE || 'http://companieshouselookupservice'
