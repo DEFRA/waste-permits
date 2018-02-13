@@ -359,7 +359,8 @@ Constants.CompanyStatus = {
 }
 
 Constants.CookieValue = {
-  INVOICE_POSTCODE: 'INVOICE_POSTCODE'
+  INVOICE_POSTCODE: 'INVOICE_POSTCODE',
+  SITE_POSTCODE: 'SITE_POSTCODE'
 }
 
 Constants.buildPageTitle = (pageHeading) => {

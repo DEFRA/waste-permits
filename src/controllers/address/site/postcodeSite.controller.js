@@ -1,49 +1,27 @@
 'use strict'
 
 const Constants = require('../../../constants')
-const BaseController = require('../../base.controller')
-const CookieService = require('../../../services/cookie.service')
+const PostcodeController = require('../base/postcode.controller')
 const SiteNameAndLocation = require('../../../models/taskList/siteNameAndLocation.model')
 
-module.exports = class PostcodeSiteController extends BaseController {
-  async doGet (request, reply, errors) {
-    const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
-    const applicationLineId = CookieService.getApplicationLineId(request)
-
-    if (request.payload) {
-      // If we have Address details in the payload then display them in the form
-      pageContext.formValues = request.payload
-    } else {
-      const address = await SiteNameAndLocation.getAddress(request, authToken, applicationId, applicationLineId)
-      if (address) {
-        pageContext.formValues = {
-          'postcode': address.postcode
-        }
-      }
-    }
-
-    pageContext.manualAddressLink = Constants.Routes.ADDRESS.MANUAL_SITE.path
-
-    return reply.view('address/postcode', pageContext)
+module.exports = class PostcodeInvoiceController extends PostcodeController {
+  getPostcodeCookieKey () {
+    return Constants.CookieValue.SITE_POSTCODE
   }
 
-  async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
-      return this.doGet(request, reply, errors)
-    } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
+  getManualEntryRoute () {
+    return Constants.Routes.ADDRESS.MANUAL_SITE.path
+  }
 
-      const address = {
-        postcode: request.payload['postcode']
-      }
-      await SiteNameAndLocation.saveAddress(request, address,
-        authToken, applicationId, applicationLineId)
+  getAddressSelectionPath () {
+    return Constants.Routes.ADDRESS.SELECT_SITE.path
+  }
 
-      return reply.redirect(Constants.Routes.ADDRESS.SELECT_SITE.path)
-    }
+  getModel () {
+    return SiteNameAndLocation
+  }
+
+  customisePageContext (pageContext) {
+    // Not required for this address type
   }
 }

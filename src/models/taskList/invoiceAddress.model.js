@@ -10,7 +10,7 @@ const AddressDetail = require('../addressDetail.model')
 const LoggingService = require('../../services/logging.service')
 
 module.exports = class InvoiceAddress extends BaseModel {
-  static async getAddress (request, authToken, applicationId) {
+  static async getAddress (request, authToken, applicationId, applicationLineId) {
     let address
     try {
         // Get the AddressDetail for this application
@@ -33,6 +33,10 @@ module.exports = class InvoiceAddress extends BaseModel {
       const errorMessage = `Unable to save invoice address as it does not have a UPRN`
       LoggingService.logError(errorMessage, request)
       throw new Error(errorMessage)
+    }
+
+    if (addressDto.postcode) {
+      addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
     // Get the AddressDetail for this Application (if there is one)
@@ -69,6 +73,10 @@ module.exports = class InvoiceAddress extends BaseModel {
   }
 
   static async saveManualAddress (request, authToken, applicationId, applicationLineId, addressDto) {
+    if (addressDto.postcode) {
+      addressDto.postcode = addressDto.postcode.toUpperCase()
+    }
+
     // Get the AddressDetail for this Application (if there is one)
     let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
       Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
@@ -82,8 +90,13 @@ module.exports = class InvoiceAddress extends BaseModel {
       await addressDetail.save(authToken)
     }
 
-    // TODO find out if we have to try and match an existing manual or auto address?
-    const address = new Address(addressDto)
+    // Get the Address for this AddressDetail (if there is one)
+    let address = await Address.getById(authToken, addressDetail.addressId)
+    if (!address) {
+      address = new Address(addressDto)
+    } else {
+      Object.assign(address, addressDto)
+    }
     address.fromAddressLookup = false
     await address.save(authToken)
 

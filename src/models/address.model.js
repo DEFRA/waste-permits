@@ -14,7 +14,8 @@ module.exports = class Address extends BaseModel {
       {field: 'townOrCity', dynamics: 'defra_towntext'},
       {field: 'postcode', dynamics: 'defra_postcode'},
       {field: 'uprn', dynamics: 'defra_uprn'},
-      {field: 'fromAddressLookup', dynamics: 'defra_fromaddresslookup'}
+      {field: 'fromAddressLookup', dynamics: 'defra_fromaddresslookup'},
+      {field: 'fullAddress', dynamics: 'defra_name'}
     ]
   }
 
@@ -74,19 +75,21 @@ module.exports = class Address extends BaseModel {
       let action = `defra_postcodelookup`
       const response = await dynamicsDal.callAction(action, actionDataObject)
 
-      // Parse AddressBase response objects into Address objects
-      addresses = JSON.parse((JSON.parse(JSON.stringify(response))).addresses).results
-      addresses = addresses.map((address) => new Address({
-        id: undefined,
-        buildingNameOrNumber: address.premises,
-        addressLine1: address.street_address,
-        addressLine2: address.locality,
-        townOrCity: address.city,
-        postcode: address.postcode,
-        fullAddress: address.address,
-        uprn: address.uprn.toString(),
-        fromAddressLookup: true
-      }))
+      if (response) {
+        // Parse AddressBase response objects into Address objects
+        addresses = JSON.parse((JSON.parse(JSON.stringify(response))).addresses).results
+        addresses = addresses.map((address) => new Address({
+          id: undefined,
+          buildingNameOrNumber: address.premises,
+          addressLine1: address.street_address,
+          addressLine2: address.locality,
+          townOrCity: address.city,
+          postcode: address.postcode,
+          fullAddress: address.address,
+          uprn: address.uprn.toString(),
+          fromAddressLookup: true
+        }))
+      }
     } catch (error) {
       LoggingService.logError(`Unable to list addresses by postcode: ${error}`)
       throw error
@@ -96,7 +99,12 @@ module.exports = class Address extends BaseModel {
   }
 
   async save (authToken) {
+    // Build the address name (i.e. the full address) if it is a manual address entry
+    if (!this.fromAddressLookup) {
+      this.fullAddress = `${this.buildingNameOrNumber}, ${this.addressLine1}, ${this.addressLine2}, ${this.townOrCity}, ${this.postcode}`
+    }
     const dataObject = this.modelToDynamics()
+
     await super.save(authToken, dataObject)
   }
 }
