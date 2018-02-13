@@ -16,4 +16,4 @@ const validator = new UploadEntityValidator({
 
 const controller = new UploadEsaEuSkillsController(UPLOAD_ESA_EU_SKILLS, validator, true, TASK_LIST)
 
-module.exports = Route.register('GET, POST, REMOVE, UPLOAD', controller)
+module.exports = Route.register('GET, REMOVE, UPLOAD', controller)
