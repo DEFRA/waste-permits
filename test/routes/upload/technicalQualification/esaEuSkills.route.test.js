@@ -4,13 +4,13 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const SitePlan = require('../../../src/models/taskList/sitePlan.model')
+const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
 
-const UploadTestHelper = require('./uploadTestHelper')
+const UploadTestHelper = require('../uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/site-plan'
+const routePath = '/technical-qualification/upload-esa-eu-skills'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -25,7 +25,7 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
-  sandbox.stub(SitePlan, 'updateCompleteness').value(() => Promise.resolve({}))
+  sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
   helper.setStubs(sandbox)
 })
 
@@ -34,13 +34,13 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Site Upload Site plan tests:', () => {
+lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
   const {uploadPath, removePath} = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'site-plan-description',
-      pageHeading: 'Upload the site plan',
+      descriptionId: 'esa-eu-skills-description',
+      pageHeading: 'Upload the ESA EU Skills scheme certificate',
       submitButton: 'Continue'
     }
 
@@ -63,6 +63,6 @@ lab.experiment('Site Upload Site plan tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'site-plan': 'site-plan'}})
+    helper.postSuccess({payload: {'technical-qualification': 'esa-eu-skills'}})
   })
 })
