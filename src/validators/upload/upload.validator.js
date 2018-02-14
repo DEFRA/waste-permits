@@ -1,9 +1,9 @@
 'use strict'
 
 const Joi = require('joi')
-const BaseValidator = require('./base.validator')
+const BaseValidator = require('../base.validator')
 
-module.exports = class UploadEntityValidator extends BaseValidator {
+module.exports = class UploadValidator extends BaseValidator {
   constructor (options) {
     super()
     if (!options || typeof options.maxSize !== 'string') {

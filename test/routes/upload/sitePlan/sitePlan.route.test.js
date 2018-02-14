@@ -4,13 +4,13 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const TechnicalQualification = require('../../../src/models/taskList/technicalQualification.model')
+const SitePlan = require('../../../../src/models/taskList/sitePlan.model')
 
-const UploadTestHelper = require('./uploadTestHelper')
+const UploadTestHelper = require('../uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-qualification/upload-wamitab-qualification'
+const routePath = '/site-plan'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -25,7 +25,7 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
-  sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
+  sandbox.stub(SitePlan, 'updateCompleteness').value(() => Promise.resolve({}))
   helper.setStubs(sandbox)
 })
 
@@ -34,13 +34,13 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Company Declare Upload Wamitab tests:', () => {
+lab.experiment('Site Upload Site plan tests:', () => {
   const {uploadPath, removePath} = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'wamitab-qualification-description',
-      pageHeading: 'Upload the WAMITAB certificate',
+      descriptionId: 'site-plan-description',
+      pageHeading: 'Upload the site plan',
       submitButton: 'Continue'
     }
 
@@ -63,6 +63,6 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'technical-qualification': 'WAMITAB-QUALIFICATION'}})
+    helper.postSuccess({payload: {'site-plan': 'site-plan'}})
   })
 })

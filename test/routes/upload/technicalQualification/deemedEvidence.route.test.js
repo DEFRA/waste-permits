@@ -4,9 +4,9 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const TechnicalQualification = require('../../../src/models/taskList/technicalQualification.model')
+const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
 
-const UploadTestHelper = require('./uploadTestHelper')
+const UploadTestHelper = require('../uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
