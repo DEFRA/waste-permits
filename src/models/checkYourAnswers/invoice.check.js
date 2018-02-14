@@ -21,7 +21,7 @@ module.exports = class InvoiceCheck extends BaseCheck {
 
   async getInvoiceAddressLine () {
     const {
-      fromAddressLookup = false,
+      fromAddressLookup = true,
       buildingNameOrNumber = '',
       addressLine1 = '',
       addressLine2 = '',

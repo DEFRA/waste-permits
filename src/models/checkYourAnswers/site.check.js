@@ -45,7 +45,7 @@ module.exports = class SiteCheck extends BaseCheck {
 
   async getSiteAddressLine () {
     const {
-      fromAddressLookup = false,
+      fromAddressLookup = true,
       buildingNameOrNumber = '',
       addressLine1 = '',
       addressLine2 = '',
