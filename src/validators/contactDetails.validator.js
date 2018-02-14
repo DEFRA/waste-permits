@@ -6,12 +6,11 @@ const BaseValidator = require('./base.validator')
 const FIRSTNAME_MAX_LENGTH = 50
 const LASTNAME_MAX_LENGTH = 50
 const COMPANY_NAME_MAX_LENGTH = 170
-const SPACES_REGEX = /\s/g
 const PLUSES_AND_SPACES_REGEX = /(\+|\s)/g
 const PLUSES_SPACES_AND_NUMBERS_REGEX = /^[0-9 +]*$/
 const PLUSES_CANNOT_PRECEED_ZERO = /^(\+[1-9]+[0-9]*|[^+][0-9]*)$/
 const LEADING_AND_TRAILING_DASHES_REGEX = /(^-.*$|^.*-$)/
-const LETTERS_HYPHENS_AND_APOSTROPHES_REGEX = /^[A-zÀ-ÖØ-öø-ÿ'-]+$/
+const LETTERS_HYPHENS_AND_APOSTROPHES_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+$/
 const EMAIL_VALID_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 module.exports = class ContactDetailsValidator extends BaseValidator {
@@ -97,16 +96,16 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
   customValidators () {
     return {
       'first-name': {
-        'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value.replace(SPACES_REGEX, '')),
-        'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value.replace(SPACES_REGEX, ''))
+        'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value),
+        'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value)
       },
       'last-name': {
-        'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value.replace(SPACES_REGEX, '')),
-        'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value.replace(SPACES_REGEX, ''))
+        'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value),
+        'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value)
       },
       'telephone': {
-        'custom.invalid': (value) => !(PLUSES_SPACES_AND_NUMBERS_REGEX).test(value.replace(SPACES_REGEX, '')),
-        'custom.plus-zero': (value) => !(PLUSES_CANNOT_PRECEED_ZERO).test(value.replace(SPACES_REGEX, '')),
+        'custom.invalid': (value) => !(PLUSES_SPACES_AND_NUMBERS_REGEX).test(value),
+        'custom.plus-zero': (value) => !(PLUSES_CANNOT_PRECEED_ZERO).test(value),
         'custom.min': (value) => value.replace(PLUSES_AND_SPACES_REGEX, '').length < this.getTelephoneMin(),
         'custom.max': (value) => value.replace(PLUSES_AND_SPACES_REGEX, '').length > this.getTelephoneMax()
       }
