@@ -1,0 +1,36 @@
+<form id="uploadForm" enctype="multipart/form-data" method="POST" action="{{uploadFormAction}}"  novalidate="novalidate">
+  {{> common/csrfToken token=DefraCsrfToken}}
+
+  {{#if annotations.length}}
+  <div class="form-group {{#getFormErrorGroupClass errors.agent-company}}{{/getFormErrorGroupClass}}">
+    <div class="multiple-choice" data-target="upload-file-yes">
+      <input id="is-upload-file" name="is-upload-file" type="checkbox" value="on" {{#if formValues.is-upload-file}}checked{{/if}}>
+      <label for="is-upload-file">
+        Upload another file
+      </label>
+    </div>
+  </div>
+  {{else}}
+  <div>
+    <input id="is-upload-file" name="is-upload-file" type="hidden" value="on">
+    <label class="form-label" for="file">
+      <span class="bold-small">Choose a file to upload</span>
+      <span class="text form-hint">{{#if fileTypes.length}}<span id="file-types">{{fileTypes}}</span> files, {{/if}}<span id="max-size">{{maxSize}}</span> maximum file size</span>
+    </label>
+  </div>
+  {{/if}}
+
+  <div class="{{#if annotations.length}}panel panel-border-narrow js-hidden{{/if}}" id="upload-file-yes">
+    <div id="uploader" class="form-group form-uploader">
+      <div class="{{#getFormErrorGroupClass errors.file}}{{/getFormErrorGroupClass}} {{#getFormErrorGroupClass errors.content-type}}{{/getFormErrorGroupClass}}">
+        {{> common/fieldError fieldId='file-error' message=errors.file }}
+        <input id="file" name="file" type="file">
+        <input id="filename" name="technicalCertificateFile" type="hidden">
+        <input name="technicalCertificateFileUploaded" value="{{technicalCertificateFileUploaded}}" type="hidden">
+      </div>
+    </div>
+  </div>
+  <div>
+    {{> common/submitButton }}
+  </div>
+</form>

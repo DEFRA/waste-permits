@@ -59,7 +59,7 @@ class UploadTestHelper {
     sandbox.stub(fs, 'existsSync').value(() => false)
     sandbox.stub(fs, 'createWriteStream').value(() => mockStream())
     sandbox.stub(fs, 'createReadStream').value(() => mockStream())
-    sandbox.stub(Annotation, 'listByApplicationId').value(() => Promise.resolve([]))
+    sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => Promise.resolve([]))
     sandbox.stub(Annotation, 'getById').value(() => Promise.resolve(new Annotation(fakeAnnotation)))
     sandbox.stub(Annotation.prototype, 'delete').value(() => Promise.resolve({}))
     sandbox.stub(Annotation.prototype, 'save').value(() => Promise.resolve({}))
@@ -100,7 +100,7 @@ class UploadTestHelper {
       })
 
       lab.test('when there are annotations', async () => {
-        Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
+        Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const doc = await getDoc(options)
         Code.expect(doc.getElementById('file-types')).to.not.exist()
         Code.expect(doc.getElementById('max-size')).to.not.exist()
@@ -124,7 +124,7 @@ class UploadTestHelper {
 
       lab.test('redirects to error screen when failing to get the annotation ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Annotation.listByApplicationId = () => Promise.reject(new Error('read failed'))
+        Annotation.listByApplicationIdAndSubject = () => Promise.reject(new Error('read failed'))
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
@@ -209,7 +209,7 @@ class UploadTestHelper {
       })
 
       lab.test('when duplicate file', async () => {
-        Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
+        Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const req = this._uploadRequest({filename: fakeAnnotation.filename})
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(200)
@@ -270,7 +270,7 @@ class UploadTestHelper {
     const {lab, nextRoutePath} = this
     lab.experiment('success', () => {
       lab.test(`when continue button pressed and there are files uploaded`, async () => {
-        Annotation.listByApplicationId = () => Promise.resolve([new Annotation(fakeAnnotation)])
+        Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const req = this._postRequest(options)
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(302)

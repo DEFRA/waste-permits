@@ -80,7 +80,7 @@ lab.beforeEach(() => {
   sandbox.stub(AddressDetail, 'getCompanySecretaryDetails').value(() => Merge({}, fakeCompanySecretary))
   sandbox.stub(AddressDetail, 'getPrimaryContactDetails').value(() => Merge({}, fakePrimaryContact))
   sandbox.stub(AddressDetail, 'getBillingInvoicingDetails').value(() => Merge({}, fakeBillingInvoicing))
-  sandbox.stub(Annotation, 'listByApplicationId').value(() => [Merge({}, fakeAnnotation)])
+  sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [Merge({}, fakeAnnotation)])
   sandbox.stub(Application, 'getById').value(() => Merge({}, fakeApplication))
   sandbox.stub(ApplicationContact, 'get').value(() => Merge({}, fakeApplicationContact))
   sandbox.stub(Contact, 'getById').value(() => Merge({}, fakeContact))
@@ -204,5 +204,11 @@ lab.experiment('Base Check tests:', () => {
     const check = new BaseCheck()
     const technicalCompetenceEvidence = await check.getTechnicalCompetenceEvidence()
     Code.expect(technicalCompetenceEvidence).to.equal([fakeAnnotation])
+  })
+
+  lab.test('getSitePlan works correctly', async () => {
+    const check = new BaseCheck()
+    const sitePlan = await check.getSitePlan()
+    Code.expect(sitePlan).to.equal([fakeAnnotation])
   })
 })

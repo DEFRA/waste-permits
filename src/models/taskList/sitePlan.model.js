@@ -7,26 +7,21 @@ const LoggingService = require('../../services/logging.service')
 const Annotation = require('../annotation.model')
 const ApplicationLine = require('../applicationLine.model')
 
-module.exports = class TechnicalQualification extends BaseModel {
-  constructor (data) {
-    super()
-    this.applicationLineId = data.applicationLineId
-  }
-
+module.exports = class SitePlan extends BaseModel {
   static async updateCompleteness (authToken, applicationId, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await TechnicalQualification._isComplete(authToken, applicationId)
+      const isComplete = await SitePlan._isComplete(authToken, applicationId)
 
       const entity = {
-        [Constants.Dynamics.CompletedParamters.TECHNICAL_QUALIFICATION]: isComplete
+        [Constants.Dynamics.CompletedParamters.SITE_PLAN]: isComplete
       }
       const query = `defra_wasteparamses(${applicationLine.parametersId})`
       await dynamicsDal.update(query, entity)
     } catch (error) {
-      LoggingService.logError(`Unable to update TechnicalQualification completeness: ${error}`)
+      LoggingService.logError(`Unable to update SitePlan completeness: ${error}`)
       throw error
     }
   }
@@ -34,11 +29,11 @@ module.exports = class TechnicalQualification extends BaseModel {
   static async _isComplete (authToken, applicationId) {
     let isComplete = false
     try {
-      // Get the Evidence for a technical qualification
-      const evidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, Constants.UploadSubject.TECHNICAL_QUALIFICATION)
+      // Get the Evidence for a site plan
+      const evidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, Constants.UploadSubject.SITE_PLAN)
       isComplete = !!evidence.length
     } catch (error) {
-      LoggingService.logError(`Unable to calculate TechnicalQualification completeness: ${error}`)
+      LoggingService.logError(`Unable to calculate SitePlan completeness: ${error}`)
       throw error
     }
     return isComplete

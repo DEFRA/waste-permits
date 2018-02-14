@@ -1,0 +1,37 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> uploads/annotations }}
+
+      {{else}}
+
+      <div id="has-no-annotations">
+        <div id="wamitab-qualification-description">
+          <p>
+            Check the <a target="_blank" rel="noopener noreferrer" href="https://wamitab.org.uk/competence/operator-competence/">{{> abbreviations/WAMITAB }} risk tables (opens new tab)</a> to find out which qualification you need for this permit. If the qualification is over 2 years old you also need a continuing competence certificate.
+          </p>
+          <p>
+            We’ll check their qualification on the {{> abbreviations/WAMITAB }} database.
+          </p>
+        </div>
+      </div>
+
+      {{/if}}
+
+      {{> uploads/uploadForm }}
+    </div>
+  </div>
+
+</main>

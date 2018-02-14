@@ -2,13 +2,16 @@
 
 const BaseUploadEvidenceController = require('./baseUploadEvidence.controller')
 const TechnicalQualification = require('../../models/taskList/technicalQualification.model')
+const Constants = require('../../constants')
+const {TECHNICAL_QUALIFICATION} = Constants.UploadSubject
 
 module.exports = class UploadDeemedEvidenceController extends BaseUploadEvidenceController {
-  getSpecificPageContext () {
-    return {
-      isDeemedEvidence: true,
-      subject: 'Deemed Evidence'
-    }
+  get subject () {
+    return TECHNICAL_QUALIFICATION
+  }
+
+  get view () {
+    return 'uploads/deemedEvidence'
   }
 
   async updateCompleteness (...args) {

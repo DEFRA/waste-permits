@@ -12,6 +12,7 @@ const StandardRule = require('../standardRule.model')
 const CompanyLookupService = require('../../services/companyLookup.service')
 const Utilities = require('../../utilities/utilities')
 const {COMPANY_DIRECTOR} = Constants.Dynamics
+const {TECHNICAL_QUALIFICATION, SITE_PLAN} = Constants.UploadSubject
 
 module.exports = class BaseCheck {
   constructor (authToken, applicationId, applicationLineId) {
@@ -160,9 +161,17 @@ module.exports = class BaseCheck {
 
   async getTechnicalCompetenceEvidence () {
     const {authToken, applicationId} = this
-    if (!this._technicalCompetenceEvidenceocationAddress) {
-      this._technicalCompetenceEvidenceocationAddress = await Annotation.listByApplicationId(authToken, applicationId)
+    if (!this._technicalCompetenceEvidence) {
+      this._technicalCompetenceEvidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, TECHNICAL_QUALIFICATION)
     }
-    return this._technicalCompetenceEvidenceocationAddress || {}
+    return this._technicalCompetenceEvidence || {}
+  }
+
+  async getSitePlan () {
+    const {authToken, applicationId} = this
+    if (!this._sitePlan) {
+      this._sitePlan = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, SITE_PLAN)
+    }
+    return this._sitePlan || {}
   }
 }

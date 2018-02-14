@@ -73,7 +73,7 @@ lab.experiment('Annotation Model tests:', () => {
     Code.expect(annotation.id).to.equal(fakeAnnotation.id)
   })
 
-  lab.test('listByApplicationId() method returns a list of Annotation objects', async () => {
+  lab.test('listByApplicationIdAndSubject() method returns a list of Annotation objects', async () => {
     const ids = ['ANNOTATION_ID_1', 'ANNOTATION_ID_2', 'ANNOTATION_ID_3']
     DynamicsDalService.prototype.search = () => {
       return {
@@ -85,7 +85,7 @@ lab.experiment('Annotation Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const annotationList = await Annotation.listByApplicationId(undefined, fakeApplication.id)
+    const annotationList = await Annotation.listByApplicationIdAndSubject(undefined, fakeApplication.id)
     Code.expect(Array.isArray(annotationList)).to.be.true()
     Code.expect(annotationList.length).to.equal(3)
     annotationList.forEach((annotation, index) => {
