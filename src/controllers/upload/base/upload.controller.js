@@ -3,16 +3,16 @@
 const fs = require('fs')
 const path = require('path')
 const { Stream } = require('stream')
-const Constants = require('../../constants')
-const BaseController = require('../base.controller')
-const CookieService = require('../../services/cookie.service')
-const LoggingService = require('../../services/logging.service')
-const Annotation = require('../../models/annotation.model')
-const Application = require('../../models/application.model')
+const Constants = require('../../../constants')
+const BaseController = require('../../base.controller')
+const CookieService = require('../../../services/cookie.service')
+const LoggingService = require('../../../services/logging.service')
+const Annotation = require('../../../models/annotation.model')
+const Application = require('../../../models/application.model')
 
 const UPLOAD_PATH = path.resolve(`${__dirname}/../../uploads`)
 
-module.exports = class BaseUploadEvidenceController extends BaseController {
+module.exports = class UploadController extends BaseController {
   constructor (...args) {
     const nextRoute = args[3]
     super(...args)
@@ -46,7 +46,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
       const applicationLineId = CookieService.getApplicationLineId(request)
       const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
       if (!list.length) {
-        return this.handler(request, reply, undefined, BaseUploadEvidenceController._customError('noFilesUploaded'))
+        return this.handler(request, reply, undefined, UploadController._customError('noFilesUploaded'))
       }
       if (this.updateCompleteness) {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
@@ -84,7 +84,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
 
       // Make sure no duplicate files are uploaded
       if (this._haveDuplicateFiles(fileData, annotationsList)) {
-        return this.handler(request, reply, undefined, BaseUploadEvidenceController._customError('duplicateFile'))
+        return this.handler(request, reply, undefined, UploadController._customError('duplicateFile'))
       }
 
       // Save each file as an attachment to an annotation
@@ -123,7 +123,7 @@ module.exports = class BaseUploadEvidenceController extends BaseController {
 
   async uploadFailAction (request, reply, errors) {
     if (errors && errors.output && errors.output.statusCode === Constants.Errors.REQUEST_ENTITY_TOO_LARGE) {
-      errors = BaseUploadEvidenceController._customError('fileTooBig')
+      errors = UploadController._customError('fileTooBig')
     }
     return this.doGet(request, reply, errors)
   }

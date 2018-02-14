@@ -4,13 +4,13 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const TechnicalQualification = require('../../../src/models/taskList/technicalQualification.model')
+const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
 
-const UploadTestHelper = require('./uploadTestHelper')
+const UploadTestHelper = require('../uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-qualification/upload-esa-eu-skills'
+const routePath = '/technical-qualification/upload-wamitab-qualification'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -34,13 +34,13 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
+lab.experiment('Company Declare Upload Wamitab tests:', () => {
   const {uploadPath, removePath} = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'esa-eu-skills-description',
-      pageHeading: 'Upload the ESA EU Skills scheme certificate',
+      descriptionId: 'wamitab-qualification-description',
+      pageHeading: 'Upload the WAMITAB certificate',
       submitButton: 'Continue'
     }
 
@@ -63,6 +63,6 @@ lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'technical-qualification': 'esa-eu-skills'}})
+    helper.postSuccess({payload: {'technical-qualification': 'WAMITAB-QUALIFICATION'}})
   })
 })
