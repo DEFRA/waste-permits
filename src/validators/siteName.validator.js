@@ -5,7 +5,7 @@ const BaseValidator = require('./base.validator')
 
 const CHARACTER_LIMIT = 170
 const DISALLOWED_CHARACTERS = '^ | _ ~ ¬ `'
-const DISALLOWED_CHARACTERS_REGEX = /[\^|_~¬`]/g
+const DISALLOWED_CHARACTERS_REGEX = /[\^|_~¬`]/
 
 module.exports = class SiteNameValidator extends BaseValidator {
   constructor () {
@@ -16,7 +16,7 @@ module.exports = class SiteNameValidator extends BaseValidator {
         'any.empty': `Enter the site name`,
         'any.required': `Enter the site name`,
         'string.max': `Enter a shorter site name with no more than ${CHARACTER_LIMIT} characters`,
-        'string.regex.invert.base': `The site name cannot contain any of these characters: ${DISALLOWED_CHARACTERS}`
+        'custom.invalid': `The site name cannot contain any of these characters: ${DISALLOWED_CHARACTERS}`
       }
     }
   }
@@ -26,10 +26,15 @@ module.exports = class SiteNameValidator extends BaseValidator {
       'site-name': Joi
         .string()
         .max(CHARACTER_LIMIT)
-        .regex(DISALLOWED_CHARACTERS_REGEX, {
-          invert: true
-        })
         .required()
+    }
+  }
+
+  customValidators () {
+    return {
+      'site-name': {
+        'custom.invalid': (value) => (DISALLOWED_CHARACTERS_REGEX).test(value)
+      }
     }
   }
 }

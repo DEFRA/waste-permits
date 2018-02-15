@@ -25,7 +25,7 @@ const crumbOptions = {
 
 // Don't require CSRF tokens when running tests
 if (config.nodeEnvironment === 'test') {
-  crumbOptions.skip = function () { return true }
+  crumbOptions.skip = () => true
 }
 
 module.exports = { options: crumbOptions }

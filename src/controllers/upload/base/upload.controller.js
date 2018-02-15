@@ -177,11 +177,11 @@ module.exports = class UploadController extends BaseController {
     await new Promise((resolve, reject) => {
       const fileStream = fs.createWriteStream(path)
 
-      fileStream.on('error', function (err) {
+      fileStream.on('error', (err) => {
         reject(err)
       })
 
-      fileStream.on('finish', function () {
+      fileStream.on('finish', () => {
         resolve('ok')
       })
 
@@ -194,13 +194,13 @@ module.exports = class UploadController extends BaseController {
     return new Promise((resolve, reject) => {
       const stream = fs.createReadStream(path)
       const chunks = []
-      stream.on('error', function (err) {
+      stream.on('error', (err) => {
         reject(err)
       })
-      stream.on('data', function (chunk) {
+      stream.on('data', (chunk) => {
         chunks.push(chunk)
       })
-      stream.on('end', function () {
+      stream.on('end', () => {
         const documentBody = Buffer.concat(chunks).toString('base64')
         // Delete the file on the node server
         fs.unlink(path, (err) => {

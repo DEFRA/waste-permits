@@ -206,7 +206,7 @@ lab.experiment('Director Date Of Birth page tests:', () => {
       Code.expect(res.headers['location']).to.equal('/error')
     })
 
-    lab.test('POST ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
+    lab.test(`POST ${routePath} redirects to error screen when the user token is invalid`, async () => {
       CookieService.validateCookie = () => {
         return undefined
       }
