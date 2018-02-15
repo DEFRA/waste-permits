@@ -211,4 +211,10 @@ lab.experiment('Base Check tests:', () => {
     const sitePlan = await check.getSitePlan()
     Code.expect(sitePlan).to.equal([fakeAnnotation])
   })
+
+  lab.test('getFirePreventionPlan works correctly', async () => {
+    const check = new BaseCheck()
+    const sitePlan = await check.getFirePreventionPlan()
+    Code.expect(sitePlan).to.equal([fakeAnnotation])
+  })
 })

@@ -4,7 +4,7 @@ const BaseCheck = require('./base.check')
 const {SITE_PLAN: ruleSetId} = Constants.Dynamics.RulesetIds
 const {SITE_PLAN} = Constants.Routes
 
-module.exports = class SiteCheck extends BaseCheck {
+module.exports = class SitePlanCheck extends BaseCheck {
   static get rulesetId () {
     return ruleSetId
   }
