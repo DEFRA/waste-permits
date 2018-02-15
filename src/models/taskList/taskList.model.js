@@ -125,7 +125,7 @@ module.exports = class TaskList extends BaseModel {
         completedLabelId: 'firepp-completed',
         rulesetId: Constants.Dynamics.RulesetIds.FIRE_PREVENTION_PLAN,
         completedId: Constants.Dynamics.CompletedParamters.FIRE_PREVENTION_PLAN,
-        available: false
+        available: true
       }, {
         id: 'confirm-the-drainage-system-for-the-vehicle-storage-area',
         label: Constants.Routes.DRAINAGE_TYPE_DRAIN.taskListHeading,
