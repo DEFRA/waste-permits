@@ -2,6 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
+const del = require('del')
 const { Stream } = require('stream')
 const Constants = require('../../../constants')
 const BaseController = require('../../base.controller')
@@ -10,7 +11,7 @@ const LoggingService = require('../../../services/logging.service')
 const Annotation = require('../../../models/annotation.model')
 const Application = require('../../../models/application.model')
 
-const UPLOAD_PATH = path.resolve(`${__dirname}/../../uploads`)
+const UPLOAD_PATH = path.resolve(`${process.cwd()}/temp`)
 
 module.exports = class UploadController extends BaseController {
   constructor (...args) {
@@ -80,7 +81,12 @@ module.exports = class UploadController extends BaseController {
       const applicationId = CookieService.getApplicationId(request)
       const {name: applicationReference} = await Application.getById(authToken, applicationId)
       const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
-      const fileData = this._getFileData(request.payload.file, applicationReference)
+
+      // create temporary uploads directory
+      const uploadPath = path.resolve(UPLOAD_PATH, applicationReference)
+      this._createTempUploadDirectory(uploadPath)
+
+      const fileData = this._getFileData(request.payload.file, uploadPath)
 
       // Make sure no duplicate files are uploaded
       if (this._haveDuplicateFiles(fileData, annotationsList)) {
@@ -95,6 +101,9 @@ module.exports = class UploadController extends BaseController {
         return annotation.save(authToken)
       })
       await Promise.all(uploadPromises)
+
+      // Remove temporary uploads directory
+      await this._removeTempUploadDirectory(uploadPath)
       return reply.redirect(this.path)
     } catch (error) {
       LoggingService.logError(error, request)
@@ -149,18 +158,28 @@ module.exports = class UploadController extends BaseController {
     }
   }
 
-  _getFileData (file, applicationReference) {
+  _createTempUploadDirectory (uploadPath) {
     if (!fs.existsSync(UPLOAD_PATH)) {
       fs.mkdirSync(UPLOAD_PATH)
     }
-    const uploadPath = path.resolve(UPLOAD_PATH, applicationReference)
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath)
     }
+    return uploadPath
+  }
+
+  _removeTempUploadDirectory (uploadPath) {
+    if (fs.existsSync(uploadPath)) {
+      del(uploadPath)
+    }
+    return uploadPath
+  }
+
+  _getFileData (file, uploadPath) {
     const files = file.hapi ? [file] : file
     return files.map((file) => {
       const filename = file.hapi.filename
-      const savedFileName = path.resolve(UPLOAD_PATH, filename)
+      const savedFileName = path.resolve(uploadPath, filename)
       return {
         fieldname: file.hapi.name,
         filename,
@@ -176,14 +195,8 @@ module.exports = class UploadController extends BaseController {
     // Upload the file to the server
     await new Promise((resolve, reject) => {
       const fileStream = fs.createWriteStream(path)
-
-      fileStream.on('error', (err) => {
-        reject(err)
-      })
-
-      fileStream.on('finish', () => {
-        resolve('ok')
-      })
+      fileStream.on('error', (err) => reject(err))
+      fileStream.on('finish', () => resolve('ok'))
 
       if (fileStream instanceof Stream) {
         file.pipe(fileStream)
@@ -194,23 +207,9 @@ module.exports = class UploadController extends BaseController {
     return new Promise((resolve, reject) => {
       const stream = fs.createReadStream(path)
       const chunks = []
-      stream.on('error', (err) => {
-        reject(err)
-      })
-      stream.on('data', (chunk) => {
-        chunks.push(chunk)
-      })
-      stream.on('end', () => {
-        const documentBody = Buffer.concat(chunks).toString('base64')
-        // Delete the file on the node server
-        fs.unlink(path, (err) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(documentBody)
-          }
-        })
-      })
+      stream.on('error', (err) => reject(err))
+      stream.on('data', (chunk) => chunks.push(chunk))
+      stream.on('end', () => resolve(Buffer.concat(chunks).toString('base64')))
     })
   }
 }
