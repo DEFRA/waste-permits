@@ -239,8 +239,10 @@ lab.experiment('Contact details page tests:', () => {
         },
         {
           field: 'first-name',
-          value: 'a'.repeat(51),
-          messages: ['Enter a shorter first name with no more than 50 characters']
+          value: `_${'a'.repeat(50)}`,
+          messages: [
+            'Enter a shorter first name with no more than 50 characters',
+            'First name can only include letters, hyphens and apostrophes - delete any other characters']
         },
         {
           field: 'last-name',
