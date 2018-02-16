@@ -45,6 +45,33 @@ module.exports = class CompanyLookupService {
     return company
   }
 
+  static async getActiveDirectors (companyNumber) {
+    const options = {
+      uri: `${config.COMPANIES_HOUSE_SERVICE}/company/${companyNumber}/officers`,
+      json: true,
+      proxy: ''
+    }
+
+    LoggingService.logDebug(`CompanyLookupService - looking up officers for Company Number: ${companyNumber}`)
+    LoggingService.logDebug(`CompanyLookupService request options:`, options)
+
+    let activeDirectors = []
+    await rp(options)
+      .then((data) => {
+        if (data && data.items) {
+          LoggingService.logDebug(`CompanyLookupService - retrieved data:`, data)
+          activeDirectors = data.items.filter((officer) => officer.officer_role === 'director' && !officer.resigned_on)
+        }
+      })
+      .catch((error) => {
+        if (error.statusCode !== 404) {
+          throw error
+        }
+      })
+
+    return activeDirectors
+  }
+
   // Convert to upper case and replaces the hyphens with underscores
   static _formatCompanyStatus (companyStatus) {
     return (companyStatus || '').toUpperCase().replace(/-/g, '_')

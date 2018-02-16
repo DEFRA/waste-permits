@@ -25,6 +25,7 @@ const COMPANY_STATUSES = {
 
 let validateCookieStub
 let companyLookupGetCompanyStub
+let companyLookupGetActiveDirectors
 let getByApplicationIdStub
 let logErrorStub
 let fakeAccount
@@ -56,6 +57,9 @@ lab.beforeEach(() => {
   companyLookupGetCompanyStub = CompanyLookupService.getCompany
   CompanyLookupService.getCompany = () => fakeCompany
 
+  companyLookupGetActiveDirectors = CompanyLookupService.getActiveDirectors
+  CompanyLookupService.getActiveDirectors = () => [{}]
+
   getByApplicationIdStub = Account.getByApplicationId
   Account.getByApplicationId = () => undefined
 })
@@ -64,6 +68,7 @@ lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
   LoggingService.logError = logErrorStub
+  CompanyLookupService.getActiveDirectors = companyLookupGetActiveDirectors
   CompanyLookupService.getCompany = companyLookupGetCompanyStub
   Account.getByApplicationId = getByApplicationIdStub
 })
@@ -113,6 +118,18 @@ lab.experiment('Check company status page tests:', () => {
             Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)
             Code.expect(doc.getElementById('company-number').firstChild.nodeValue).to.equal(fakeAccount.companyNumber)
           })
+        })
+      })
+
+      lab.experiment('for company with', () => {
+        lab.test('no directors', async () => {
+          CompanyLookupService.getActiveDirectors = () => []
+          fakeCompany.isActive = true
+          const doc = await getDoc()
+          Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We can't issue a permit to that company because it has no directors`)
+          Code.expect(doc.getElementById('company-status-message')).to.exist()
+          Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)
+          Code.expect(doc.getElementById('company-number').firstChild.nodeValue).to.equal(fakeAccount.companyNumber)
         })
       })
 
