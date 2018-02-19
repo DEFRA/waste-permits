@@ -1,22 +1,22 @@
 'use strict'
 
 const Joi = require('joi')
-const BaseValidator = require('./base.validator')
+const BaseValidator = require('../../base.validator')
 
 const DECLARED_DETAILS_MAX_LENGTH = 2000
 
-module.exports = class DeclareOffencesValidator extends BaseValidator {
+module.exports = class BankruptcyValidator extends BaseValidator {
   constructor () {
     super()
 
     this.errorMessages = {
       'declared': {
-        'any.empty': `Select yes if you have convictions to declare or no if you don't`,
-        'any.required': `Select yes if you have convictions to declare or no if you don't`
+        'any.empty': `Select yes if you have bankruptcy or insolvency to declare or no if you don't`,
+        'any.required': `Select yes if you have bankruptcy or insolvency to declare or no if you don't`
       },
       'declaration-details': {
-        'any.empty': `Enter details of the convictions`,
-        'any.required': `Enter details of the convictions`,
+        'any.empty': `Enter details of the bankruptcy or insolvency`,
+        'any.required': `Enter details of the bankruptcy or insolvency`,
         'string.max': `You can only enter ${DECLARED_DETAILS_MAX_LENGTH.toLocaleString()} characters - please shorten what you’ve written`
       }
     }

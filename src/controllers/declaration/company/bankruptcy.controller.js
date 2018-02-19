@@ -1,9 +1,13 @@
 'use strict'
 
-const BaseDeclarationsController = require('./baseDeclarations.controller')
-const CompanyDetails = require('../../models/taskList/companyDetails.model')
+const DeclarationsController = require('../base/declarations.controller')
+const CompanyDetails = require('../../../models/taskList/companyDetails.model')
 
-module.exports = class DeclareBankruptcyController extends BaseDeclarationsController {
+module.exports = class BankruptcyController extends DeclarationsController {
+  get view () {
+    return 'declaration/company/bankruptcy'
+  }
+
   getFormData (data) {
     return super.getFormData(data, 'bankruptcy', 'bankruptcyDetails')
   }
@@ -14,7 +18,7 @@ module.exports = class DeclareBankruptcyController extends BaseDeclarationsContr
 
   getSpecificPageContext () {
     return {
-      isDeclareBankruptcy: true,
+      isBankruptcy: true,
       declaredLabel: 'Yes, there are bankruptcy or insolvency proceedings',
       noneDeclaredLabel: 'No',
       declarationDetailsLabel: 'Give details of the bankruptcy or insolvency',
