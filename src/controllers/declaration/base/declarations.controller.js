@@ -1,11 +1,11 @@
 'use strict'
 
-const Constants = require('../../constants')
-const BaseController = require('../base.controller')
-const CookieService = require('../../services/cookie.service')
-const Application = require('../../models/application.model')
+const Constants = require('../../../constants')
+const BaseController = require('../../base.controller')
+const CookieService = require('../../../services/cookie.service')
+const Application = require('../../../models/application.model')
 
-module.exports = class BaseDeclarationsController extends BaseController {
+module.exports = class DeclarationsController extends BaseController {
   constructor (...args) {
     const nextRoute = args[3]
     super(...args)
@@ -42,7 +42,7 @@ module.exports = class BaseDeclarationsController extends BaseController {
 
     Object.assign(pageContext, this.getSpecificPageContext())
 
-    return reply.view('declarations', pageContext)
+    return reply.view(this.view, pageContext)
   }
 
   async doPost (request, reply, errors) {

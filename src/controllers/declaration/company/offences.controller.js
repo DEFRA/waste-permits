@@ -1,8 +1,12 @@
 'use strict'
 
-const BaseDeclarationsController = require('./baseDeclarations.controller')
+const DeclarationsController = require('../base/declarations.controller')
 
-module.exports = class DeclareOffencesController extends BaseDeclarationsController {
+module.exports = class OffencesController extends DeclarationsController {
+  get view () {
+    return 'declaration/company/offences'
+  }
+
   getFormData (data) {
     return super.getFormData(data, 'relevantOffences', 'relevantOffencesDetails')
   }
@@ -13,7 +17,7 @@ module.exports = class DeclareOffencesController extends BaseDeclarationsControl
 
   getSpecificPageContext () {
     return {
-      isDeclareOffences: true,
+      isOffences: true,
       declaredLabel: 'Yes, there are convictions to declare',
       noneDeclaredLabel: 'No',
       declarationDetailsLabel: 'Give details of the convictions',
