@@ -11,5 +11,6 @@ module.exports = class DrainageTypeDrainController extends BaseController {
 
   async doPost (request, reply, errors) {
     // Not implemented yet
+    return this.doGet(request, reply, errors)
   }
 }

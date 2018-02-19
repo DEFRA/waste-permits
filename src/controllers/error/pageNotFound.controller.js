@@ -1,8 +1,8 @@
 'use strict'
 
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
-const CookieService = require('../../src/services/cookie.service')
+const Constants = require('../../constants')
+const BaseController = require('../base.controller')
+const CookieService = require('../../../src/services/cookie.service')
 
 module.exports = class PageNotFoundController extends BaseController {
   async doGet (request, reply, errors) {
@@ -11,7 +11,7 @@ module.exports = class PageNotFoundController extends BaseController {
     pageContext.taskList = Constants.Routes.TASK_LIST
     pageContext.startOpenOrSaved = Constants.Routes.START_OR_OPEN_SAVED
 
-    return reply.view('pageNotFound', pageContext).code(404)
+    return reply.view('error/pageNotFound', pageContext).code(404)
   }
 
   handler (request, reply, source, errors) {

@@ -5,12 +5,14 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../routes/generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Location = require('../../src/models/location.model')
 const LocationDetail = require('../../src/models/locationDetail.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
 let locationSaveStub
@@ -54,7 +56,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   locationSaveStub = Location.prototype.save
   Location.prototype.save = () => {}
@@ -134,27 +136,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Site Grid Reference page tests:', () => {
-  lab.experiment('General tests:', () => {
-    lab.test(`GET ${routePath} redirects to error screen when the user token is invalid`, async () => {
-      CookieService.validateCookie = () => {
-        return undefined
-      }
-
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
-
-    lab.test(`POST ${routePath} redirects to error screen when the user token is invalid`, async () => {
-      CookieService.validateCookie = () => {
-        return undefined
-      }
-
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
-  })
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Site grid reference page correctly when the grid reference has not been entered yet`, async () => {

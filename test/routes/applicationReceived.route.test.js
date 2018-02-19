@@ -10,6 +10,7 @@ const server = require('../../server')
 const Application = require('../../src/models/application.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let fakeApplication
 
@@ -29,7 +30,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   logErrorStub = LoggingService.logError
   LoggingService.logError = () => {}

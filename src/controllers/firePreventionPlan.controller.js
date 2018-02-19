@@ -2,11 +2,11 @@
 
 const BaseController = require('./base.controller')
 
-module.exports = class PreApplicationController extends BaseController {
+module.exports = class FirePreventionPlanController extends BaseController {
   async doGet (request, reply) {
     const pageContext = this.createPageContext()
     return reply
-      .view('preApplication', pageContext)
+      .view('firePreventionPlan', pageContext)
   }
 
   async doPost (request, reply, errors) {

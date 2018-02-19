@@ -4,12 +4,14 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../routes/generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 
 const StandardRule = require('../../src/models/standardRule.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
 let standardRuleListStub
@@ -17,6 +19,7 @@ let standardRuleGetByCodeStub
 let applicationLineSaveStub
 
 const routePath = '/permit/select'
+const nextRoutePath = '/task-list'
 
 const fakeStandardRule = {
   id: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
@@ -29,7 +32,7 @@ const fakeStandardRule = {
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   standardRuleListStub = StandardRule.list
   StandardRule.list = () => [fakeStandardRule]
@@ -50,6 +53,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Select a permit page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
   lab.test('The page should NOT have a back link', async () => {
     const request = {
       method: 'GET',
@@ -110,7 +115,7 @@ lab.experiment('Select a permit page tests:', () => {
     Code.expect(element.nodeValue).to.equal('Continue')
   })
 
-  lab.test('POST /permit/select success redirects to the task list route', async () => {
+  lab.test('POST /permit/select success redirects to the next route', async () => {
     const request = {
       method: 'POST',
       url: routePath,
@@ -122,24 +127,7 @@ lab.experiment('Select a permit page tests:', () => {
 
     const res = await server.inject(request)
     Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/task-list')
-  })
-
-  lab.test('GET /permit/select redirects to error screen when the user token is invalid', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    CookieService.validateCookie = () => {
-      return undefined
-    }
-
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/error')
+    Code.expect(res.headers['location']).to.equal(nextRoutePath)
   })
 
   lab.test('POST /permit/select shows the error message summary panel when the site data is invalid', async () => {

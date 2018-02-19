@@ -4,12 +4,14 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../routes/generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Account = require('../../src/models/account.model')
 const ApplicationContact = require('../../src/models/applicationContact.model')
 const Contact = require('../../src/models/contact.model')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
 let applicationGetByIdStub
@@ -93,7 +95,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   applicationGetByIdStub = Account.getByApplicationId
   Account.getByApplicationId = () => new Account(fakeAccountData)
@@ -195,27 +197,7 @@ const checkValidationError = async (field, expectedErrorMessage) => {
 }
 
 lab.experiment('Director Date Of Birth page tests:', () => {
-  lab.experiment('General tests:', () => {
-    lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
-      CookieService.validateCookie = () => {
-        return undefined
-      }
-
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
-
-    lab.test(`POST ${routePath} redirects to error screen when the user token is invalid`, async () => {
-      CookieService.validateCookie = () => {
-        return undefined
-      }
-
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
-  })
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Director DOB page correctly when there are no Directors`, async () => {

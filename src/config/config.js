@@ -25,6 +25,9 @@ config.requestTimeout = parseInt(process.env.REQUEST_TIMEOUT) || 5000
 // long it should wait (in milliseconds) before timing out the attempt
 config.uploadRequestTimeout = parseInt(process.env.UPLOAD_REQUEST_TIMEOUT) || 120000
 
+// The cookie session timeout length (in milliseconds)
+config.cookieTimeout = parseInt(process.env.COOKIE_TIMEOUT) || 60000
+
 // Get the address of a proxy server if one is being used in the environment.
 // Typically this will used in our environments, but not locally. The app is
 // setup to tell if the env var has been set and amend calls made using `https`
