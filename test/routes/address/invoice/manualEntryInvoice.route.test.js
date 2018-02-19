@@ -302,6 +302,20 @@ lab.experiment('Address select page tests:', () => {
         await checkValidationError(FORM_FIELD_ID.townOrCity, 'Enter a town or city')
       })
 
+      lab.test(`POST ${routePath} shows an error message when the town or city has more than one apostrophe`, async () => {
+        postRequest.payload = {
+          [FORM_FIELD_ID.buildingNameOrNumber]: fakeAddress1.buildingNameOrNumber,
+          [FORM_FIELD_ID.addressLine1]: fakeAddress1.addressLine1,
+          [FORM_FIELD_ID.addressLine2]: fakeAddress1.addressLine2,
+          [FORM_FIELD_ID.townOrCity]: '',
+          [FORM_FIELD_ID.postcode]: fakeAddress1.postcode
+        }
+        await checkValidationError(FORM_FIELD_ID.townOrCity, 'Enter a town or city')
+
+        postRequest.payload[FORM_FIELD_ID.townOrCity] = `King's Cros's`
+        await checkValidationError(FORM_FIELD_ID.townOrCity, 'Town or city can only contain one apostrophe - remove all but one')
+      })
+
       lab.test(`POST ${routePath} shows an error message when the maximum field length has been exceeded`, async () => {
         let longValue, longTownOrCity, longPostcode
         for (let i = 0; i <= 170; i++) {
