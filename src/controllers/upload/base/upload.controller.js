@@ -70,7 +70,7 @@ module.exports = class UploadController extends BaseController {
 
       // Apply custom validation if required
       if (this.validator && this.validator.customValidators) {
-        errors = this.validator.customValidate(request.payload, errors)
+        errors = await this.validator.customValidate(request.payload, errors)
       }
 
       if (errors && errors.data.details) {

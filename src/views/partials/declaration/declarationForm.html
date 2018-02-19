@@ -1,0 +1,42 @@
+<form method="POST" action="{{formAction}}" novalidate="novalidate">
+  {{> common/csrfToken token=DefraCsrfToken}}
+
+  <fieldset>
+    <legend class="visually-hidden">{{ pageHeading }}</legend>
+
+    <div
+        class="form-group {{#getFormErrorGroupClass errors.declared}}{{/getFormErrorGroupClass}} {{#getFormErrorGroupClass errors.declaration-details}}{{/getFormErrorGroupClass}}">
+      {{> common/fieldError fieldId='declared-error' message=errors.declared }}
+
+      <div class="multiple-choice" data-target="declaredD">
+        <input id="declared" type="radio" name="declared" value="yes" {{#if declared}}checked="checked"{{/if}}>
+        <label id="declared-label" for="declared">{{ declaredLabel }}</label>
+      </div>
+      <div class="panel panel-border-narrow js-hidden" id="declaredD">
+        <label class="form-label" for="declaration-details">{{ declarationDetailsLabel }}
+          <p id="declaration-details-hint" class="form-hint">{{ declarationDetailsHint }}</p></label>
+
+        {{> common/fieldError fieldId='declaration-details-error' message=errors.declaration-details}}
+
+        <textarea class="form-control form-control-full {{#if errors.declaration-details}}form-control-error{{/if}}" name="declaration-details" rows="10" type="text"
+                  id="declaration-details" aria-describedby="declaration-details-max-length">{{formValues.declaration-details}}</textarea>
+        <p id="declaration-details-max-length" class="form-hint">No more than {{declaredDetailsMaxLength}}
+          characters</p>
+      </div>
+
+      <div class="multiple-choice">
+        <input id="none-declared" type="radio" name="declared" value="no" {{#if noneDeclared}}checked{{/if}}>
+        <label id="none-declared-label" for="none-declared">{{ noneDeclaredLabel }}</label>
+      </div>
+
+    </div>
+  </fieldset>
+
+  {{#if declarationNotice}}
+  <div class="form-group">
+    <p id="declaration-notice">{{declarationNotice}}</p>
+  </div>
+  {{/if}}
+
+  {{> common/submitButton }}
+</form>

@@ -1,7 +1,7 @@
 'use strict'
 
 const Joi = require('joi')
-const BaseValidator = require('./base.validator')
+const BaseValidator = require('../../base.validator')
 
 const DECLARED_DETAILS_MAX_LENGTH = 2000
 

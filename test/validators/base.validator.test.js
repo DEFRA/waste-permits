@@ -17,7 +17,8 @@ class TestValidator extends BaseValidator {
         'any.required': `Enter a telephone number`,
         'min': `Enter a telephone number with at least 6 numbers`,
         'custom.invalid': `Telephone number is invalid`,
-        'custom.test': `Telephone Test failed`
+        'custom.test': `Telephone Test failed`,
+        'custom.async.test': `Telephone Test failed asynchronously`
       }
     }
   }
@@ -26,7 +27,8 @@ class TestValidator extends BaseValidator {
     return {
       'telephone': {
         'custom.invalid': () => true,
-        'custom.test': () => true
+        'custom.test': () => true,
+        'custom.async.test': () => Promise.resolve(true)
       }
     }
   }
@@ -95,7 +97,7 @@ lab.experiment('Base Validator tests:', () => {
   })
 
   lab.experiment('customValidate() method', () => {
-    lab.test('will validate even if a required error exists for that field', () => {
+    lab.test('will validate even if a required error exists for that field', async () => {
       const validator = new TestValidator()
       const request = {
         payload: {
@@ -103,19 +105,20 @@ lab.experiment('Base Validator tests:', () => {
         }
       }
       const errors = [{path: ['telephone'], type: 'min', message: 'Too small'}]
-      const updatedErrors = validator.customValidate(request, {data: {details: errors}})
+      const updatedErrors = await validator.customValidate(request, {data: {details: errors}})
       Code.expect(updatedErrors).to.equal({
         data: {
           details: [
             {path: ['telephone'], type: 'min', message: 'Too small'},
             {path: ['telephone'], type: 'custom.invalid', message: 'Telephone number is invalid'},
-            {path: ['telephone'], type: 'custom.test', message: 'Telephone Test failed'}
+            {path: ['telephone'], type: 'custom.test', message: 'Telephone Test failed'},
+            {path: ['telephone'], type: 'custom.async.test', message: 'Telephone Test failed asynchronously'}
           ]
         }
       })
     })
 
-    lab.test('will not validate if a required error exists for that field', () => {
+    lab.test('will not validate if a required error exists for that field', async () => {
       const validator = new TestValidator()
       const request = {
         payload: {
@@ -123,7 +126,7 @@ lab.experiment('Base Validator tests:', () => {
         }
       }
       const errors = [{path: ['telephone'], type: 'any.required', message: 'Telephone required'}]
-      const updatedErrors = validator.customValidate(request, {data: {details: errors}})
+      const updatedErrors = await validator.customValidate(request, {data: {details: errors}})
       Code.expect(updatedErrors).to.equal({data: {details: errors}})
     })
   })

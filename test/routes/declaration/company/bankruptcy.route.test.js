@@ -6,28 +6,28 @@ const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 
-const server = require('../../server')
-const CookieService = require('../../src/services/cookie.service')
-const Application = require('../../src/models/application.model')
-const Confidentiality = require('../../src/models/taskList/confidentiality.model')
-const LoggingService = require('../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const server = require('../../../../server')
+const CookieService = require('../../../../src/services/cookie.service')
+const Application = require('../../../../src/models/application.model')
+const CompanyDetails = require('../../../../src/models/taskList/companyDetails.model')
+const LoggingService = require('../../../../src/services/logging.service')
+const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let validateCookieStub
 let applicationSaveStub
-let confidentialityUpdateCompletenessStub
 let getByIdStub
 let logErrorStub
+let companyDetailsUpdateCompletenessStub
 let fakeApplication
 
-const routePath = '/confidentiality'
+const routePath = '/permit-holder/company/bankruptcy-insolvency'
 const nextRoutePath = '/task-list'
 
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID',
-    confidentialityDetails: 'CONFIDENTIALITY DETAILS',
-    confidentiality: true
+    bankruptcyDetails: 'BANKRUPTCY DETAILS',
+    bankruptcy: 'yes'
   }
 
   // Stub methods
@@ -48,7 +48,7 @@ lab.afterEach(() => {
   Application.getById = getByIdStub
 })
 
-lab.experiment('Is part of your application commercially confidential? page tests:', () => {
+lab.experiment('Company Declare Bankruptcy tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -59,7 +59,7 @@ lab.experiment('Is part of your application commercially confidential? page test
 
       const parser = new DOMParser()
       doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Is part of your application commercially confidential?')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Do you have current or past bankruptcy or insolvency proceedings to declare?')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
       return doc
     }
@@ -82,9 +82,12 @@ lab.experiment('Is part of your application commercially confidential? page test
     lab.test('success', async () => {
       doc = await getDoc()
 
-      Code.expect(doc.getElementById('declaration-details').firstChild.nodeValue).to.equal(fakeApplication.confidentialityDetails)
-      Code.expect(doc.getElementById('confidentiality-hint')).to.exist()
-      Code.expect(doc.getElementById('declaration-notice')).to.not.exist()
+      Code.expect(doc.getElementById('declaration-details').firstChild.nodeValue).to.equal(fakeApplication.bankruptcyDetails)
+      Code.expect(doc.getElementById('declaration-hint')).to.not.exist()
+      Code.expect(doc.getElementById('declaration-notice')).to.exist()
+      Code.expect(doc.getElementById('operator-type-is-limited-company')).to.exist()
+      Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()
+      Code.expect(doc.getElementById('operator-type-is-partnership')).to.not.exist()
     })
 
     lab.experiment('failure', () => {
@@ -125,8 +128,8 @@ lab.experiment('Is part of your application commercially confidential? page test
         url: routePath,
         headers: {},
         payload: {
-          'declared': fakeApplication.confidentiality,
-          'declaration-details': fakeApplication.confidentialityDetails
+          'declared': fakeApplication.bankruptcy,
+          'declaration-details': fakeApplication.bankruptcyDetails
         }
       }
 
@@ -134,14 +137,14 @@ lab.experiment('Is part of your application commercially confidential? page test
       applicationSaveStub = Application.prototype.save
       Application.prototype.save = () => {}
 
-      confidentialityUpdateCompletenessStub = Confidentiality.updateCompleteness
-      Confidentiality.updateCompleteness = () => {}
+      companyDetailsUpdateCompletenessStub = CompanyDetails.updateCompleteness
+      CompanyDetails.updateCompleteness = () => {}
     })
 
     lab.afterEach(() => {
       // Restore stubbed methods
       Application.prototype.save = applicationSaveStub
-      Confidentiality.updateCompleteness = confidentialityUpdateCompletenessStub
+      CompanyDetails.updateCompleteness = companyDetailsUpdateCompletenessStub
     })
 
     lab.experiment('success', () => {
@@ -158,24 +161,24 @@ lab.experiment('Is part of your application commercially confidential? page test
         // Panel summary error item
         Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 
-        // Relevant confidentiality details field error
+        // Relevant bankruptcy details field error
         if (shouldHaveErrorClass) {
           Code.expect(doc.getElementById(`${fieldId}`).getAttribute('class')).contains('form-control-error')
         }
         Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
       }
 
-      lab.test('when confidentiality not checked', async () => {
+      lab.test('when bankruptcy not checked', async () => {
         postRequest.payload = {}
-        await checkValidationMessage('declared', `Select yes if you want to claim confidentiality or no if you don't`)
+        await checkValidationMessage('declared', `Select yes if you have bankruptcy or insolvency to declare or no if you don't`)
       })
 
-      lab.test('when confidentiality set to yes and no details entered', async () => {
+      lab.test('when bankruptcy set to yes and no details entered', async () => {
         postRequest.payload = {'declared': 'yes'}
-        await checkValidationMessage('declaration-details', 'Explain what information is confidential and why', true)
+        await checkValidationMessage('declaration-details', 'Enter details of the bankruptcy or insolvency', true)
       })
 
-      lab.test('when confidentiality set to yes and details entered with 2001 characters', async () => {
+      lab.test('when bankruptcy set to yes and details entered with 2001 characters', async () => {
         postRequest.payload = {'declared': 'yes', 'declaration-details': 'a'.repeat(2001)}
         await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you’ve written', true)
       })
