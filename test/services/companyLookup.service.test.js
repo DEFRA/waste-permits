@@ -85,6 +85,11 @@ const mockResponse = (serviceResponse) =>
     .get('/company/07421224')
     .reply(200, serviceResponse)
 
+const mockOfficersResponse = (serviceResponse) =>
+  nock(`${config.COMPANIES_HOUSE_SERVICE}`)
+    .get('/company/07421224/officers')
+    .reply(200, serviceResponse)
+
 const formattedAddress = 'Peninsula House, Rydon Lane, Exeter, Devon, EX2 7HR'
 
 lab.beforeEach(() => {
@@ -142,6 +147,32 @@ lab.experiment('Company Lookup Service tests:', () => {
           Code.expect(company.isActive).to.equal(status === 'active')
         })
       })
+    })
+  })
+
+  lab.experiment('getActiveDirectors() method should', async () => {
+    lab.test('handle a company that does not exist', async () => {
+      mockOfficersResponse()
+      const directors = await CompanyLookupService.getActiveDirectors('07421224')
+      Code.expect(directors.length).to.equal(0)
+    })
+
+    lab.test('return a list of active directors when the company exists', async () => {
+      const serviceResponse = {
+        items: [
+          {officer_role: 'director', name: 'Jack'},
+          {officer_role: 'secretary', name: 'Bill'},
+          {officer_role: 'director', name: 'Jill'},
+          {officer_role: 'secretary', name: 'Ben', resigned_on: '1996-08-29'},
+          {officer_role: 'director', name: 'James', resigned_on: '2001-10-09'}
+        ]
+      }
+      mockOfficersResponse(serviceResponse)
+      const directors = await CompanyLookupService.getActiveDirectors('07421224')
+      Code.expect(directors).to.equal([
+        {officer_role: 'director', name: 'Jack'},
+        {officer_role: 'director', name: 'Jill'}
+      ])
     })
   })
 
