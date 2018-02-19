@@ -53,7 +53,7 @@
           </div>
 
           <div class="form-group {{#getFormErrorGroupClass errors.postcode}}{{/getFormErrorGroupClass}}">
-            <label id="postcode-label" class="form-label" for="postcode">UK postcode</label>
+            <label id="postcode-label" class="form-label" for="postcode">UK postcode (optional)</label>
             {{> common/fieldError fieldId='postcode-error' message=errors.postcode }}
             <input type="text" class="form-control form-control-char-10 {{#if errors.postcode}}form-control-error{{/if}}" id="postcode" name="postcode" value="{{formValues.postcode}}" />
           </div>

@@ -288,20 +288,6 @@ lab.experiment('Address select page tests:', () => {
         await checkValidationError(FORM_FIELD_ID.townOrCity, 'Enter a town or city')
       })
 
-      lab.test(`POST ${routePath} shows an error message when the postcode is blank or whitespace`, async () => {
-        postRequest.payload = {
-          [FORM_FIELD_ID.buildingNameOrNumber]: fakeAddress1.buildingNameOrNumber,
-          [FORM_FIELD_ID.addressLine1]: fakeAddress1.addressLine1,
-          [FORM_FIELD_ID.addressLine2]: fakeAddress1.addressLine2,
-          [FORM_FIELD_ID.townOrCity]: fakeAddress1.townOrCity,
-          [FORM_FIELD_ID.postcode]: ''
-        }
-        await checkValidationError(FORM_FIELD_ID.postcode, 'Enter a valid postcode')
-
-        postRequest.payload[FORM_FIELD_ID.postcode] = '      '
-        await checkValidationError(FORM_FIELD_ID.postcode, 'Enter a valid postcode')
-      })
-
       lab.test(`POST ${routePath} shows an error message when the maximum field length has been exceeded`, async () => {
         let longValue, longTownOrCity, longPostcode
         for (let i = 0; i <= 170; i++) {
