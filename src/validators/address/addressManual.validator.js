@@ -54,8 +54,6 @@ module.exports = class AddressManualValidator extends BaseValidator {
         'custom.multiple.apostrophes': 'Town or city can only contain one apostrophe - remove all but one'
       },
       'postcode': {
-        'any.empty': `Enter a valid postcode`,
-        'any.required': `Enter a valid postcode`,
         'string.max': `Enter a shorter postcode with no more than ${POSTCODE_CHARACTER_LIMIT} characters`,
         'custom.starts.or.ends.with.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Postcode`)
       }
@@ -82,7 +80,6 @@ module.exports = class AddressManualValidator extends BaseValidator {
       'postcode': Joi
         .string()
         .max(POSTCODE_CHARACTER_LIMIT)
-        .required()
     }
   }
 
