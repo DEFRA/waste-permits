@@ -4,12 +4,17 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 
-const {COOKIE_RESULT} = require('../../src/constants')
+const ActiveDirectoryAuthService = require('../../src/services/activeDirectoryAuth.service')
 const CookieService = require('../../src/services/cookie.service')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let fakeRequest
+let authServiceGetTokenStub
 
 lab.beforeEach(() => {
+  authServiceGetTokenStub = ActiveDirectoryAuthService.prototype.getToken
+  ActiveDirectoryAuthService.prototype.getToken = () => {}
+
   fakeRequest = {
     path: '/some/path',
     state: {
@@ -25,6 +30,7 @@ lab.beforeEach(() => {
 })
 
 lab.afterEach(() => {
+  ActiveDirectoryAuthService.prototype.getToken = authServiceGetTokenStub
 })
 
 lab.experiment('Cookie Service tests:', () => {
