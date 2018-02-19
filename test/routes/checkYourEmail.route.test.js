@@ -7,6 +7,7 @@ const DOMParser = require('xmldom').DOMParser
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
 
@@ -15,7 +16,7 @@ const routePath = '/save-and-return/check-your-email'
 lab.beforeEach(() => {
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 })
 
 lab.afterEach(() => {

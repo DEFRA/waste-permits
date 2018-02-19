@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
+const {COOKIE_RESULT} = require('../constants')
 
 module.exports = class BaseController {
   constructor (route, validator, cookieValidationRequired = true) {
@@ -55,7 +56,11 @@ module.exports = class BaseController {
   async handler (request, reply, source, errors) {
     if (this.cookieValidationRequired) {
       // Validate the cookie
-      if (!CookieService.validateCookie(request)) {
+      const cookieValidationResult = await CookieService.validateCookie(request)
+
+      if (cookieValidationResult === COOKIE_RESULT.COOKIE_NOT_FOUND || cookieValidationResult === COOKIE_RESULT.COOKIE_EXPIRED) {
+        return reply.redirect(Constants.Routes.TIMEOUT.path)
+      } else if (cookieValidationResult === COOKIE_RESULT.APPLICATION_NOT_FOUND) {
         return reply.redirect(Constants.Routes.ERROR.path)
       }
     }

@@ -4,12 +4,14 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../routes/generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const StandardRule = require('../../src/models/standardRule.model')
 const TaskList = require('../../src/models/taskList/taskList.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let generateCookieStub
 let validateCookieStub
@@ -206,7 +208,7 @@ lab.beforeEach(() => {
   CookieService.generateCookie = () => fakeCookie
 
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   standardRuleGetByCodeStub = StandardRule.getByCode
   StandardRule.getByCode = async () => fakeStandardRule
@@ -232,6 +234,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
   lab.test('The page should NOT have a back link', async () => {
     const request = {
       method: 'GET',
@@ -436,22 +440,5 @@ lab.experiment('Task List page tests:', () => {
       element = doc.getElementById(id)
       Code.expect(element).to.not.exist()
     })
-  })
-
-  lab.test('GET /task-list redirects to error screen when the user token is invalid', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    CookieService.validateCookie = () => {
-      return undefined
-    }
-
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/error')
   })
 })

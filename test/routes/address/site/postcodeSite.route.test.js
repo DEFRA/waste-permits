@@ -4,11 +4,13 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../../../routes/generalTestHelper.test')
 
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
 const SiteNameAndLocation = require('../../../../src/models/taskList/siteNameAndLocation.model')
+const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let validateCookieStub
 let siteNameAndLocationGetAddressStub
@@ -72,7 +74,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
   SiteNameAndLocation.getAddress = () => new Address(fakeAddress1)
@@ -152,27 +154,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Postcode page tests:', () => {
-  lab.experiment('General tests:', () => {
-    lab.test(`GET ${routePath} redirects to error screen when the user token is invalid`, async () => {
-      CookieService.validateCookie = () => {
-        return undefined
-      }
-
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
-
-    lab.test(`POST ${routePath} redirects to error screen when the user token is invalid`, async () => {
-      CookieService.validateCookie = () => {
-        return undefined
-      }
-
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
-  })
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the postcode page correctly when there is no saved postcode`, async () => {

@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../routes/generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
@@ -13,6 +14,7 @@ const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
 const Account = require('../../src/models/account.model')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
 let companyLookupGetCompanyStub
@@ -58,7 +60,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   companyLookupGetCompanyStub = CompanyLookupService.getCompany
   CompanyLookupService.getCompany = () => fakeCompanyData
@@ -178,27 +180,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Check Company Details page tests:', () => {
-  lab.experiment('General page tests:', () => {
-    lab.test('GET ' + routePath + ' redirects to error screen when the user token is invalid', async () => {
-      CookieService.validateCookie = () => {
-        return undefined
-      }
-
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
-
-    lab.test(`POST ${routePath} redirects to error screen when the user token is invalid`, async () => {
-      CookieService.validateCookie = () => {
-        return undefined
-      }
-
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
-  })
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment(`GET ${routePath} page tests`, () => {
     lab.test('Check page elements - no existing trading name saved', async () => {

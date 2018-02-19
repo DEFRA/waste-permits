@@ -5,11 +5,13 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 const sinon = require('sinon')
+const GeneralTestHelper = require('../../../routes/generalTestHelper.test')
 
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
 const InvoiceAddress = require('../../../../src/models/taskList/invoiceAddress.model')
+const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let validateCookieStub
 let cookieServiceGetStub
@@ -79,7 +81,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   cookieServiceGetStub = CookieService.get
   CookieService.get = () => postcode
@@ -155,27 +157,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Address select page tests:', () => {
-  lab.experiment('General tests:', () => {
-    lab.test(`GET ${routePath} redirects to error screen when the user token is invalid`, async () => {
-      CookieService.validateCookie = () => {
-        return undefined
-      }
-
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
-
-    lab.test(`POST ${routePath} redirects to error screen when the user token is invalid`, async () => {
-      CookieService.validateCookie = () => {
-        return undefined
-      }
-
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/error')
-    })
-  })
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Address Select page correctly`, async () => {

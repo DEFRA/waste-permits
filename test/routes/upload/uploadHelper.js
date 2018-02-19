@@ -1,3 +1,5 @@
+'use strict'
+
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
@@ -7,6 +9,7 @@ const Annotation = require('../../../src/models/annotation.model')
 const Application = require('../../../src/models/application.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
+const {COOKIE_RESULT} = require('../../../src/constants')
 
 const server = require('../../../server')
 
@@ -44,7 +47,7 @@ let fakeAnnotation
 let getRequest
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-class UploadTestHelper {
+module.exports = class UploadTestHelper {
   constructor (lab, {routePath, uploadPath, removePath, nextRoutePath}) {
     this.lab = lab
     this.routePath = routePath
@@ -64,7 +67,7 @@ class UploadTestHelper {
     sandbox.stub(Annotation.prototype, 'delete').value(() => Promise.resolve({}))
     sandbox.stub(Annotation.prototype, 'save').value(() => Promise.resolve({}))
     sandbox.stub(Application, 'getById').value(() => Promise.resolve({name: 'APPLICATION_REFERENCE'}))
-    sandbox.stub(CookieService, 'validateCookie').value(() => true)
+    sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(LoggingService, 'logError').value(() => {})
   }
 
@@ -114,14 +117,6 @@ class UploadTestHelper {
   getFailure () {
     const {lab} = this
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => undefined
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
-      })
-
       lab.test('redirects to error screen when failing to get the annotation ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Annotation.listByApplicationIdAndSubject = () => Promise.reject(new Error('read failed'))
@@ -221,14 +216,6 @@ class UploadTestHelper {
   uploadFailure () {
     const {lab} = this
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => undefined
-        const req = this._uploadRequest({})
-        const res = await server.inject(req)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
-      })
-
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Annotation.prototype.save = () => Promise.reject(new Error('save failed'))
@@ -279,5 +266,3 @@ class UploadTestHelper {
     })
   }
 }
-
-module.exports = UploadTestHelper

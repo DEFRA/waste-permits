@@ -4,9 +4,10 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
-const server = require('../../server')
+const server = require('../../../server')
 
-const routePath = '/error'
+const routePath = '/errors/timeout'
+const pageTitle = 'Your application has timed out'
 
 lab.beforeEach(() => {
 
@@ -16,7 +17,7 @@ lab.afterEach(() => {
 
 })
 
-lab.experiment('Error page tests:', () => {
+lab.experiment('Timeout page tests:', () => {
   lab.test('The page should NOT have a back link', async () => {
     const request = {
       method: 'GET',
@@ -35,7 +36,7 @@ lab.experiment('Error page tests:', () => {
     Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET /error returns the error page correctly', async () => {
+  lab.test(`GET ${routePath} returns the timeout page correctly`, async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -48,7 +49,17 @@ lab.experiment('Error page tests:', () => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
 
-    let element = doc.getElementById('error-heading').firstChild
-    Code.expect(element.nodeValue).to.equal('Something went wrong')
+    let element = doc.getElementById('page-heading').firstChild
+    Code.expect(element.nodeValue).to.equal(pageTitle)
+
+    const elementIds = [
+      'timeout-message-para-1',
+      'timeout-message-para-2',
+      'start-again-link'
+    ]
+    for (let id of elementIds) {
+      element = doc.getElementById(id)
+      Code.expect(doc.getElementById(id)).to.exist()
+    }
   })
 })

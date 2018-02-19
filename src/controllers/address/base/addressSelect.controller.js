@@ -12,22 +12,29 @@ module.exports = class AddressSelectController extends BaseController {
     const applicationId = CookieService.getApplicationId(request)
     const applicationLineId = CookieService.getApplicationLineId(request)
 
+    let addresses, address
     let postcode = CookieService.get(request, this.getPostcodeCookieKey())
     if (postcode) {
       postcode = postcode.toUpperCase()
+
+      addresses = await Address.listByPostcode(authToken, postcode)
+      address = await this.getModel().getAddress(request, authToken, applicationId, applicationLineId)
+
+      if (!errors && address && addresses) {
+        // Set a flag on the selected address
+        const selectedAddress = addresses.filter((element) => element.uprn === address.uprn).pop()
+        if (selectedAddress) {
+          selectedAddress.selected = true
+        }
+      }
     }
 
-    const [addresses, address] = await Promise.all([
-      Address.listByPostcode(authToken, postcode),
-      this.getModel().getAddress(request, authToken, applicationId, applicationLineId)
-    ])
-
-    if (!errors && address && addresses) {
-      // Set a flag on the selected address
-      const selectedAddress = addresses.filter((element) => element.uprn === address.uprn).pop()
-      if (selectedAddress) {
-        selectedAddress.selected = true
-      }
+    // Handle missing values in case the user accesses this route without having been to the Enter Postcode route beforehand
+    if (!postcode) {
+      postcode = 'Not entered'
+    }
+    if (!addresses) {
+      addresses = []
     }
 
     pageContext.formValues = {

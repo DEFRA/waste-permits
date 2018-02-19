@@ -11,5 +11,6 @@ module.exports = class PreApplicationController extends BaseController {
 
   async doPost (request, reply, errors) {
     // Not implemented yet
+    return this.doGet(request, reply, errors)
   }
 }

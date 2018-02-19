@@ -1,10 +1,10 @@
 'use strict'
 
-const BaseController = require('./base.controller')
+const BaseController = require('../base.controller')
 
 module.exports = class ErrorController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    return reply.view('error', pageContext)
+    return reply.view('error/error', pageContext)
   }
 }

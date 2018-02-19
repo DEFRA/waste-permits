@@ -9,6 +9,7 @@
 
 // const server = require('../../server')
 // const CookieService = require('../../src/services/cookie.service')
+// const {COOKIE_RESULT} = require('../../src/constants')
 
 // let validateCookieStub
 
@@ -17,7 +18,7 @@
 // lab.beforeEach(() => {
 //   // Stub methods
 //   validateCookieStub = CookieService.validateCookie
-//   CookieService.validateCookie = () => true
+//   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 // })
 
 // lab.afterEach(() => {
@@ -69,7 +70,7 @@
 //     Code.expect(res.headers['location']).to.equal('/permit/select')
 //   })
 
-//   lab.test('GET /permit/category redirects to error screen when the user token is invalid', async () => {
+//   lab.test('GET /permit/category redirects to timeout screen when the user token is invalid', async () => {
 //     const request = {
 //       method: 'GET',
 //       url: routePath,
@@ -83,6 +84,6 @@
 
 //     const res = await server.inject(request)
 //     Code.expect(res.statusCode).to.equal(302)
-//     Code.expect(res.headers['location']).to.equal('/error')
+//     Code.expect(res.headers['location']).to.equal('/errors/timeout')
 //   })
 // })

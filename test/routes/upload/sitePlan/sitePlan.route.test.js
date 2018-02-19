@@ -6,6 +6,7 @@ const sinon = require('sinon')
 
 const SitePlan = require('../../../../src/models/taskList/sitePlan.model')
 
+const GeneralTestHelper = require('../../generalTestHelper.test')
 const UploadTestHelper = require('../uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
@@ -35,6 +36,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Site Upload Site plan tests:', () => {
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(true)
+
   const {uploadPath, removePath} = paths
 
   lab.experiment(`GET ${routePath}`, () => {

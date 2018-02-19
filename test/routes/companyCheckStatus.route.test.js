@@ -12,6 +12,7 @@ const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Account = require('../../src/models/account.model')
 const LoggingService = require('../../src/services/logging.service')
 
+const {COOKIE_RESULT} = require('../../src/constants')
 const COMPANY_STATUSES = {
   DISSOLVED: 'has been dissolved',
   LIQUIDATION: 'has gone into liquidation',
@@ -48,7 +49,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   logErrorStub = LoggingService.logError
   LoggingService.logError = () => {}
@@ -133,12 +134,12 @@ lab.experiment('Check company status page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => undefined
+      lab.test('redirects to timeout screen when the user token is invalid', async () => {
+        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
 
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal('/errors/timeout')
       })
 
       lab.test('redirects to error screen when failing to get the application ID', async () => {
