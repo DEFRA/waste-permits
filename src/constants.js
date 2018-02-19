@@ -356,7 +356,8 @@ Constants.CompanyStatus = {
   VOLUNTARY_ARRANGEMENT: 'is insolvent and has a Company Voluntary Arrangement',
   CONVERTED_CLOSED: 'has been closed or converted',
   INSOLVENCY_PROCEEDINGS: 'is insolvent',
-  NOT_ACTIVE: `isn't active`
+  NOT_ACTIVE: `isn't active`,
+  NO_DIRECTORS: `has no directors`
 }
 
 Constants.UploadSubject = {

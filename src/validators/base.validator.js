@@ -2,7 +2,7 @@
 
 const ObjectPath = require('object-path')
 
-function _getRequired (errors) {
+const _getRequired = (errors) => {
   const requiredFields = {}
   errors
     .filter(({type}) => type === 'any.required')
@@ -14,23 +14,27 @@ function _getRequired (errors) {
   return requiredFields
 }
 
-function _customValidate (data, errors, validators, errorMessages) {
-  const customErrors = []
+const _customValidate = async (data, errors, validators, errorMessages) => {
   // Only validate fields where there is currently not an error of type 'any.required' already present
   const requiredFields = _getRequired(errors)
-  Object.keys(validators)
-    .forEach((field) => {
-      if (!requiredFields[field]) {
-        Object.keys(validators[field])
-          .forEach((type) => {
-            const validatorFunction = validators[field][type]
-            if (validatorFunction(data[field] || '', data)) {
-              customErrors.push({message: errorMessages[field][type], path: [field], type})
-            }
-          })
-      }
-    })
-  return customErrors
+
+  const errorList = (await Promise.all(Object.keys(validators)
+    .filter((field) => !requiredFields[field])
+    .map(async (field) => Promise.all(Object.keys(validators[field])
+        .map(async (type) => {
+          const validatorFunction = validators[field][type]
+          const result = await validatorFunction(data[field] || '', data)
+          if (result) {
+            return ({message: errorMessages[field][type], path: [field], type})
+          }
+        })
+    ))
+  ))
+
+  // Please note that the customeErrors are nested array which is flattened with the reduce
+  const errs = errorList.reduce((acc, cur) => acc.concat(cur), [])
+  // Now only return those items with an error
+  return errs.filter((error) => error)
 }
 
 module.exports = class BaseValidator {
@@ -38,11 +42,12 @@ module.exports = class BaseValidator {
     this.errorMessages = {}
   }
 
-  customValidate (data, errors) {
+  async customValidate (data, errors) {
     // Get current errors
     const currentErrors = ObjectPath.get(errors, 'data.details') || []
     // Get custom errors
-    let customErrors = _customValidate(data, currentErrors, this.customValidators(), this.errorMessages)
+    let customErrors = (await _customValidate(data, currentErrors, this.customValidators(), this.errorMessages))
+      .filter((error) => error)
     if (customErrors.length) {
       // Now merge the errors based on the order of the fields within the errorMessages definition
       const details = []
