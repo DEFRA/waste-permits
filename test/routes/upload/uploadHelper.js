@@ -57,7 +57,6 @@ module.exports = class UploadTestHelper {
   }
 
   setStubs (sandbox) {
-    sandbox.stub(fs, 'unlink').value((path, fn) => fn())
     sandbox.stub(fs, 'mkdirSync').value(() => {})
     sandbox.stub(fs, 'existsSync').value(() => false)
     sandbox.stub(fs, 'createWriteStream').value(() => mockStream())

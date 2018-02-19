@@ -30,7 +30,8 @@ Constants.ALLOWED_PERMITS = [
   'SR2010 No 5',
   'SR2010 No 6',
   'SR2010 No 11',
-  'SR2010 No 12'
+  'SR2010 No 12',
+  'SR2015 No 17'
   // *** Must be a mobile permit so this is temporarily removed ***
   // 'SR2015 No 18'
 ]
@@ -369,7 +370,7 @@ Constants.CompanyStatus = {
 Constants.UploadSubject = {
   TECHNICAL_QUALIFICATION: 'technical qualification',
   SITE_PLAN: 'site plan',
-  FIRE_PLAN: 'fire plan'
+  FIRE_PREVENTION_PLAN: 'fire prevention plan'
 }
 
 Constants.CookieValue = {
