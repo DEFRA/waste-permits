@@ -8,6 +8,7 @@ const server = require('../../server')
 const DOMParser = require('xmldom').DOMParser
 const Application = require('../../src/models/application.model')
 const CookieService = require('../../src/services/cookie.service')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let generateCookieStub
 let validateCookieStub
@@ -34,7 +35,7 @@ lab.beforeEach(() => {
   CookieService.generateCookie = () => fakeCookie
 
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   applicationSaveStub = Application.prototype.save
   Application.prototype.save = () => {}

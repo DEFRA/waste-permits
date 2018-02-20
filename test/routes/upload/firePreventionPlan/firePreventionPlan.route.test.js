@@ -6,6 +6,7 @@ const sinon = require('sinon')
 
 const FirePreventionPlan = require('../../../../src/models/taskList/firePreventionPlan.model')
 
+const GeneralTestHelper = require('../../generalTestHelper.test')
 const UploadTestHelper = require('../uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
@@ -35,6 +36,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('FirePrevention Upload FirePrevention plan tests:', () => {
+  new GeneralTestHelper(lab, routePath).test(true)
+
   const {uploadPath, removePath} = paths
 
   lab.experiment(`GET ${routePath}`, () => {

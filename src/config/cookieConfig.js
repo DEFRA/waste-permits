@@ -1,7 +1,7 @@
 const config = require('./config')
 
 const cookieOptions = {
-  ttl: null,                // Session lifespan (deleted when browser closed)
+  ttl: undefined,          // Session lifespan (deleted when browser closed)
   isSecure: true,           // Secure
   isHttpOnly: true,         // and non-secure
   isSameSite: 'Strict',     // Don't attach cookies on cross-site requests, preventing CSRF attacks

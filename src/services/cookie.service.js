@@ -1,20 +1,27 @@
 'use strict'
 
+const config = require('../config/config')
 const Constants = require('../constants')
 const LoggingService = require('../services/logging.service')
 const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
 const authService = new ActiveDirectoryAuthService()
+const {COOKIE_RESULT} = require('../constants')
 
 module.exports = class CookieService {
+  static _calculateExpiryDate () {
+    return Date.now() + config.cookieTimeout
+  }
+
   static async generateCookie (reply) {
     try {
       // Generate a CRM token
       const authToken = await authService.getToken()
 
-      // Create the cookie
+      // Create the cookie and set the cookie Time to Live (TTL)
       return {
         applicationId: undefined,
-        authToken: authToken
+        authToken: authToken,
+        expiry: this._calculateExpiryDate()
       }
     } catch (error) {
       LoggingService.logError(error)
@@ -22,24 +29,44 @@ module.exports = class CookieService {
     }
   }
 
-  static validateCookie (request) {
-    let isValid = false
+  static async validateCookie (request) {
+    let isValid = true
+    let result
     const cookie = request.state[Constants.COOKIE_KEY]
-    if (!cookie) {
-      LoggingService.logInfo(`${request.path}: Unable to validate undefined cookie`, request)
-    } else {
+
+    // Ensure that the cookie exists
+    if (isValid && !cookie) {
+      LoggingService.logInfo(`${request.path}: Cookie not found`, request)
+      result = COOKIE_RESULT.COOKIE_NOT_FOUND
+      isValid = false
+    }
+
+    // Check the Cookie Time to Live
+    if (isValid && (!cookie.expiry || cookie.expiry < Date.now())) {
+      LoggingService.logInfo(`${request.path}: Cookie has expired`, request)
+      result = COOKIE_RESULT.COOKIE_EXPIRED
+      isValid = false
+    }
+
+    // Check the Application ID in the cookie
+    if (isValid) {
       const applicationId = cookie.applicationId
-      if (applicationId) {
-        if (applicationId.length > 0) {
-          isValid = true
-        } else {
-          LoggingService.logInfo(`${request.path}: Invalid application ID [${applicationId}]`, request)
-        }
-      } else {
-        LoggingService.logInfo(`${request.path}: Missing application ID`, request)
+      if (!applicationId || applicationId.length === 0) {
+        LoggingService.logInfo(`${request.path}: Invalid application ID`, request)
+        result = COOKIE_RESULT.APPLICATION_NOT_FOUND
+        isValid = false
       }
     }
-    return isValid
+
+    if (isValid) {
+      result = COOKIE_RESULT.VALID_COOKIE
+
+      // Update the cookie TTL and generate a new CRM token
+      request.state[Constants.COOKIE_KEY].authToken = await authService.getToken()
+      request.state[Constants.COOKIE_KEY].expiry = this._calculateExpiryDate()
+    }
+
+    return result
   }
 
   static getAuthToken (request) {

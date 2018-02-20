@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../routes/generalTestHelper.test')
 
 const server = require('../../server')
 
@@ -14,6 +15,7 @@ const Contact = require('../../src/models/contact.model')
 const ContactDetails = require('../../src/models/taskList/contactDetails.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let fakeApplication
 let fakeAccount
@@ -42,6 +44,7 @@ let fakePrimaryContactDetailsId = 'PRIMARY_CONTACT_DETAILS_ID'
 let validPayload
 
 const routePath = '/contact-details'
+const nextRoutePath = '/task-list'
 
 lab.beforeEach(() => {
   fakeApplication = {
@@ -78,7 +81,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   logErrorStub = LoggingService.logError
   LoggingService.logError = () => {}
@@ -127,6 +130,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Contact details page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
   lab.experiment(`GET ${routePath}`, () => {
     let request
     lab.beforeEach(() => {
@@ -185,15 +190,17 @@ lab.experiment('Contact details page tests:', () => {
 
     lab.experiment('success', () => {
       lab.test('redirects to the Task List route after a CREATE', async () => {
+        // TODO Ensure that this is a CREATE
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/task-list')
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
       lab.test('redirects to the Task List route after an UPDATE', async () => {
+        // TODO Ensure that this is an UPDATE
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/task-list')
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
     })
 
@@ -347,18 +354,6 @@ lab.experiment('Contact details page tests:', () => {
           const doc = await getDoc()
           checkErrorMessages(doc, field, messages)
         })
-      })
-    })
-
-    lab.experiment('failure', () => {
-      lab.test('redirects to error screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => {
-          return undefined
-        }
-
-        const res = await server.inject(request)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
       })
     })
   })

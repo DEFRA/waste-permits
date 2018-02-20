@@ -36,6 +36,15 @@ Constants.ALLOWED_PERMITS = [
   // 'SR2015 No 18'
 ]
 
+Constants.COOKIE_RESULT = {
+  VALID_COOKIE: 'The cookie is valid',
+  COOKIE_NOT_FOUND: 'The cookie was not found',
+  COOKIE_EXPIRED: 'The cookie has expired',
+  APPLICATION_NOT_FOUND: 'The application was not found',
+  APPLICATION_ALREADY_SUBMITTED: 'The application has already been submitted',
+  APPLICATION_NOT_SUBMITTED: 'The application has not been submitted yet'
+}
+
 Constants.Routes = {
   ROOT: {
     path: '/',
@@ -122,11 +131,6 @@ Constants.Routes = {
     pageHeading: 'Who should we contact about this application?',
     taskListHeading: 'Give contact details'
   },
-  CONTACT_SEARCH: {
-    path: '/contact-search',
-    pageHeading: 'Contact search',
-    taskListHeading: 'Contact search'
-  },
   COST_TIME: {
     path: '/cost-time',
     pageHeading: 'Costs and processing time',
@@ -210,6 +214,10 @@ Constants.Routes = {
     path: '/technical-qualification',
     pageHeading: 'Who will provide technical management on your site?',
     taskListHeading: 'Give technical management details'
+  },
+  TIMEOUT: {
+    path: '/errors/timeout',
+    pageHeading: 'Your application has timed out'
   },
   UPLOAD_COURSE_REGISTRATION: {
     path: '/technical-qualification/upload-course-registration',

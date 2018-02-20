@@ -5,12 +5,14 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../routes/generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
 const Account = require('../../src/models/account.model')
 const LoggingService = require('../../src/services/logging.service')
+const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
 let accountSaveStub
@@ -35,7 +37,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => true
+  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
   logErrorStub = LoggingService.logError
   LoggingService.logError = () => {}
@@ -60,6 +62,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Get company number page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -103,14 +107,6 @@ lab.experiment('Get company number page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => undefined
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Account.getByApplicationId = () => Promise.reject(new Error('read failed'))
@@ -194,14 +190,6 @@ lab.experiment('Get company number page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => undefined
-
-        const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Account.getByCompanyNumber = () => Promise.reject(new Error('read failed'))

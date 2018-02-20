@@ -6,4 +6,10 @@
 
   {{> common/pageHeading pageHeading }}
 
+  <form method="POST" action="{{formAction}}" novalidate="novalidate">
+    {{> common/csrfToken token=DefraCsrfToken}}
+
+    {{> common/submitButton }}
+  </form>
+
 </main>
