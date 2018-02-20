@@ -57,9 +57,9 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
   async doGet (request, reply) {
     const pageContext = this.createPageContext()
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
-    const applicationLineId = CookieService.getApplicationLineId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
     pageContext.sections = await this._buildSections(authToken, applicationId, applicationLineId)
 
     return reply
@@ -67,8 +67,8 @@ module.exports = class CheckBeforeSendingController extends BaseController {
   }
 
   async doPost (request, reply) {
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const application = await Application.getById(authToken, applicationId)
     application.declaration = true
     await application.save(authToken)

@@ -57,7 +57,7 @@ server.connection({
 })
 
 // Create a session cookie in which to store a waste permit application token
-server.state(Constants.COOKIE_KEY, cookieConfig.options)
+server.state(Constants.DEFRA_COOKIE_KEY, cookieConfig.options)
 
 server.register([
   // Static file and directory handlers plugin for hapi.js

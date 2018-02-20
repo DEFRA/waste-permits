@@ -6,7 +6,6 @@ const Constants = module.exports = {}
 
 Constants.SERVICE_NAME = 'Waste Permits'
 Constants.GDS_NAME = 'GOV.UK'
-Constants.COOKIE_KEY = 'DefraSession'
 Constants.COOKIE_PATH = { path: '/' }
 Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
 Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
@@ -36,6 +35,8 @@ Constants.ALLOWED_PERMITS = [
   // 'SR2015 No 18'
 ]
 
+Constants.DEFRA_COOKIE_KEY = 'DefraSession'
+
 Constants.COOKIE_RESULT = {
   VALID_COOKIE: 'The cookie is valid',
   COOKIE_NOT_FOUND: 'The cookie was not found',
@@ -43,6 +44,13 @@ Constants.COOKIE_RESULT = {
   APPLICATION_NOT_FOUND: 'The application was not found',
   APPLICATION_ALREADY_SUBMITTED: 'The application has already been submitted',
   APPLICATION_NOT_SUBMITTED: 'The application has not been submitted yet'
+}
+
+Constants.COOKIE_KEY = {
+  AUTH_TOKEN: 'authToken',
+  APPLICATION_ID: 'applicationId',
+  APPLICATION_LINE_ID: 'applicationLineId',
+  EXPIRY: 'expiry'
 }
 
 Constants.Routes = {

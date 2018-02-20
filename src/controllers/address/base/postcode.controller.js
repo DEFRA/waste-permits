@@ -8,9 +8,9 @@ const Address = require('../../../models/address.model')
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
-    const applicationLineId = CookieService.getApplicationLineId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
@@ -44,7 +44,7 @@ module.exports = class PostcodeController extends BaseController {
   }
 
   async doPost (request, reply, errors) {
-    const authToken = CookieService.getAuthToken(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
     const postcode = request.payload['postcode']
     const errorPath = 'postcode'
 
@@ -71,7 +71,7 @@ module.exports = class PostcodeController extends BaseController {
     } else {
       return reply.redirect(this.getAddressSelectionPath())
         // Add the updated cookie
-        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY], Constants.COOKIE_PATH)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 
