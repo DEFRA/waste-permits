@@ -63,7 +63,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
       if (application && account) {
         const company = await CompanyLookupService.getCompany(account.companyNumber)
 
-        account.name = company.name
+        account.accountName = company.name
         account.isValidatedWithCompaniesHouse = true
 
         await account.save(authToken, false)

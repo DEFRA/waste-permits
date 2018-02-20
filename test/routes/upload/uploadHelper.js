@@ -66,7 +66,7 @@ module.exports = class UploadTestHelper {
     sandbox.stub(Annotation, 'getById').value(() => Promise.resolve(new Annotation(fakeAnnotation)))
     sandbox.stub(Annotation.prototype, 'delete').value(() => Promise.resolve({}))
     sandbox.stub(Annotation.prototype, 'save').value(() => Promise.resolve({}))
-    sandbox.stub(Application, 'getById').value(() => Promise.resolve({name: 'APPLICATION_REFERENCE'}))
+    sandbox.stub(Application, 'getById').value(() => Promise.resolve({applicationName: 'APPLICATION_REFERENCE'}))
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(LoggingService, 'logError').value(() => {})
   }
@@ -209,6 +209,14 @@ module.exports = class UploadTestHelper {
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(200)
         checkExpectedErrors(res, 'That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.')
+      })
+
+      lab.test('when the filename is too long', async () => {
+        Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
+        const req = this._uploadRequest({filename: `${'a'.repeat(252)}.jpg`})
+        const res = await server.inject(req)
+        Code.expect(res.statusCode).to.equal(200)
+        checkExpectedErrors(res, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
       })
     })
   }

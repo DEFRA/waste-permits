@@ -32,8 +32,7 @@ let fakeAddress1 = {
   townOrCity: 'CITY1',
   postcode: 'AB12 1AA',
   uprn: 'UPRN1',
-  fromAddressLookup: true,
-  _entity: 'defra_addresses'
+  fromAddressLookup: true
 }
 
 let fakeAddress2 = {
@@ -44,8 +43,7 @@ let fakeAddress2 = {
   townOrCity: 'CITY2',
   postcode: 'AB12 2AA',
   uprn: 'UPRN2',
-  fromAddressLookup: true,
-  _entity: 'defra_addresses'
+  fromAddressLookup: true
 }
 
 let fakeAddress3 = {
@@ -56,8 +54,7 @@ let fakeAddress3 = {
   townOrCity: 'CITY3',
   postcode: 'AB12 3AA',
   uprn: 'UPRN3',
-  fromAddressLookup: true,
-  _entity: 'defra_addresses'
+  fromAddressLookup: true
 }
 
 lab.beforeEach(() => {

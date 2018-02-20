@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
@@ -29,6 +30,7 @@ let fakeCompany
 
 const routePath = '/permit-holder/company/wrong-type'
 const nextRoutePath = '/permit-holder/company/status-not-active'
+const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
   fakeAccount = {
@@ -56,7 +58,7 @@ lab.beforeEach(() => {
   CompanyLookupService.getActiveDirectors = () => [{}]
 
   getByApplicationIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => undefined
+  Account.getByApplicationId = () => fakeAccount
 })
 
 lab.afterEach(() => {
@@ -69,6 +71,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Check company type page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test(false, true)
+
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -147,7 +151,7 @@ lab.experiment('Check company type page tests:', () => {
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })

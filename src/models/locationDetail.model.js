@@ -4,20 +4,19 @@ const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
 
-module.exports = class LocationDetail extends BaseModel {
-  static mapping () {
+class LocationDetail extends BaseModel {
+  static get entity () {
+    return 'defra_locationdetailses'
+  }
+
+  static get mapping () {
     return [
       {field: 'id', dynamics: 'defra_locationdetailsid'},
       {field: 'locationId', dynamics: '_defra_locationid_value', bind: {id: 'defra_locationId', entity: 'defra_locations'}},
       {field: 'addressId', dynamics: '_defra_addressid_value', bind: {id: 'defra_addressId', entity: 'defra_addresses'}},
-      {field: 'name', dynamics: 'defra_name'},
-      {field: 'gridReference', dynamics: 'defra_gridreferenceid'}
+      {field: 'siteName', dynamics: 'defra_name', length: {max: 170}},
+      {field: 'gridReference', dynamics: 'defra_gridreferenceid', length: {max: 14}}
     ]
-  }
-
-  constructor (...args) {
-    super(...args)
-    this._entity = 'defra_locationdetailses'
   }
 
   static async getByLocationId (authToken, locationId) {
@@ -48,3 +47,7 @@ module.exports = class LocationDetail extends BaseModel {
     await super.save(authToken, dataObject)
   }
 }
+
+LocationDetail.setDefinitions()
+
+module.exports = LocationDetail

@@ -26,7 +26,7 @@ const routePath = '/done'
 lab.beforeEach(() => {
   fakeApplication = {
     id: fakeApplicationId,
-    name: 'APPLICATION_NAME'
+    applicationName: 'APPLICATION_NAME'
   }
 
   // Stub methods
@@ -79,7 +79,7 @@ lab.experiment('ApplicationReceived page tests:', () => {
       const doc = parser.parseFromString(res.payload, 'text/html')
 
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Application received')
-      Code.expect(doc.getElementById('application-name').firstChild.nodeValue).to.equal(fakeApplication.name)
+      Code.expect(doc.getElementById('application-name').firstChild.nodeValue).to.equal(fakeApplication.applicationName)
       Code.expect(doc.getElementById('application-received-info')).to.exist()
       Code.expect(doc.getElementById('application-received-hint')).to.exist()
       Code.expect(doc.getElementById('application-received-warning')).to.exist()

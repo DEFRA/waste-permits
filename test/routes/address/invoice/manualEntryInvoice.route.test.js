@@ -50,8 +50,7 @@ const fakeAddress1 = {
   postcode: 'AB12 1AA',
   uprn: 'UPRN1',
   fromAddressLookup: true,
-  fullAddress: 'FULL_ADDRESS_1',
-  _entity: 'defra_addresses'
+  fullAddress: 'FULL_ADDRESS_1'
 }
 
 const fakeAddress2 = {
@@ -63,8 +62,7 @@ const fakeAddress2 = {
   postcode: 'AB12 2AA',
   uprn: 'UPRN2',
   fromAddressLookup: true,
-  fullAddress: 'FULL_ADDRESS_2',
-  _entity: 'defra_addresses'
+  fullAddress: 'FULL_ADDRESS_2'
 }
 
 const fakeAddress3 = {
@@ -76,8 +74,7 @@ const fakeAddress3 = {
   postcode: 'AB12 3AA',
   uprn: 'UPRN3',
   fromAddressLookup: true,
-  fullAddress: 'FULL_ADDRESS_3',
-  _entity: 'defra_addresses'
+  fullAddress: 'FULL_ADDRESS_3'
 }
 
 lab.beforeEach(() => {

@@ -341,9 +341,9 @@ lab.experiment('Contact details page tests:', () => {
         },
         {
           field: 'agent-company',
-          value: 'a'.repeat(171),
+          value: 'a'.repeat(161),
           isAgent: true,
-          messages: ['Enter a shorter trading, business or company name with no more than 170 characters']
+          messages: ['Enter a shorter trading, business or company name with no more than 160 characters']
         }]
       fieldErrorTests.forEach(({field, value, messages, isAgent}) => {
         lab.test(`error messages when ${field} has a value of "${value}"`, async () => {

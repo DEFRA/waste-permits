@@ -64,7 +64,7 @@ lab.beforeEach(() => {
   CompanyLookupService.getActiveDirectors = () => [{}]
 
   getByApplicationIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => undefined
+  Account.getByApplicationId = () => fakeAccount
 })
 
 lab.afterEach(() => {
@@ -77,8 +77,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Check company status page tests:', () => {
-  // TODO get this test to work
-  // new GeneralTestHelper(lab, routePath).test(false, true)
+  new GeneralTestHelper(lab, routePath).test(false, true)
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc
