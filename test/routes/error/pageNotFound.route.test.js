@@ -9,7 +9,7 @@ const CookieService = require('../../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
 let validateCookieStub
-const routePath = '/page-not-found'
+const routePath = '/errors/page-not-found'
 
 lab.beforeEach(() => {
   // Stub methods

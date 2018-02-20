@@ -36,7 +36,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Upload Course registration tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(true)
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true)
 
   const {uploadPath, removePath} = paths
 

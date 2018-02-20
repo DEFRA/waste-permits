@@ -2,10 +2,11 @@
 
 const BaseController = require('./base.controller')
 
-module.exports = class DrainageTypeDrainController extends BaseController {
+module.exports = class CookiesController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    return reply.view('drainageTypeDrain', pageContext)
+    return reply
+      .view('cookies', pageContext)
   }
 
   async doPost (request, reply, errors) {

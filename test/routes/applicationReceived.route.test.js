@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 
@@ -46,7 +47,9 @@ lab.afterEach(() => {
   Application.getById = applicationGetByIdStub
 })
 
-lab.experiment('Contact details page tests:', () => {
+lab.experiment('ApplicationReceived page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test(false, true)
+
   lab.experiment(`GET ${routePath}`, () => {
     let request
     lab.beforeEach(() => {

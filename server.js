@@ -141,8 +141,9 @@ server.register([
 server.ext('onPreResponse', (request, reply) => {
   // if the response is a Boom error object and the status code is 404
   if (request.response.isBoom && request.response.output.statusCode === 404) {
-    // Redirect to the 404 page
-    return reply.redirect(Constants.Routes.PAGE_NOT_FOUND.path)
+    return reply.redirect(Constants.Routes.ERROR.PAGE_NOT_FOUND.path)
+  } else if (request.response.isBoom && request.response.output.statusCode === 403) {
+    return reply.redirect(Constants.Routes.ERROR.COOKIES_DISABLED.path)
   } else {
     return reply.continue()
   }

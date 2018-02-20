@@ -47,7 +47,6 @@ module.exports = class CompanyStatusController extends BaseController {
     pageContext.companyStatus = companyStatus
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return reply
-      .view('companyCheckStatus', pageContext)
+    return reply.view('companyCheckStatus', pageContext)
   }
 }

@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
@@ -22,6 +23,7 @@ let fakeConfirmRules
 let fakeStandardRule
 
 const routePath = '/confirm-rules'
+const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
   fakeConfirmRules = {
@@ -54,6 +56,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Confirm that your operation meets the rules page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
   lab.experiment('GET /confirm-rules', () => {
     let doc
     let getRequest
@@ -124,7 +128,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })
@@ -183,7 +187,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
 
       lab.test('redirects to error screen when save fails', async () => {
@@ -193,7 +197,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })

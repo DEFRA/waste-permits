@@ -2,9 +2,9 @@
 
 const BaseController = require('../base.controller')
 
-module.exports = class ErrorController extends BaseController {
+module.exports = class TechnicalProblemController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    return reply.view('error/error', pageContext)
+    return reply.view('error/technicalProblem', pageContext)
   }
 }

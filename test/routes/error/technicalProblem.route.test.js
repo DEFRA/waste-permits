@@ -6,7 +6,7 @@ const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 const server = require('../../../server')
 
-const routePath = '/error'
+const routePath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
 
@@ -16,26 +16,8 @@ lab.afterEach(() => {
 
 })
 
-lab.experiment('Error page tests:', () => {
-  lab.test('The page should NOT have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    let element = doc.getElementById('back-link')
-    Code.expect(element).to.not.exist()
-  })
-
-  lab.test(`GET ${routePath} returns the error page correctly`, async () => {
+lab.experiment('Technical Problem page tests:', () => {
+  lab.test(`GET ${routePath} returns the technical problem page correctly`, async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -50,5 +32,17 @@ lab.experiment('Error page tests:', () => {
 
     let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Something went wrong')
+
+    const elementIds = [
+      'back-link',
+      'paragraph-1',
+      'paragraph-2',
+      'paragraph-3',
+      'paragraph-4'
+    ]
+    for (let id of elementIds) {
+      element = doc.getElementById(id)
+      Code.expect(doc.getElementById(id)).to.exist()
+    }
   })
 })

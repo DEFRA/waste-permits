@@ -186,7 +186,7 @@ const checkValidationError = async (fieldId, expectedErrorMessage, fieldIndex = 
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
 
-lab.experiment('Address select page tests:', () => {
+lab.experiment('Invoice address select page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment('GET:', () => {
@@ -303,16 +303,10 @@ lab.experiment('Address select page tests:', () => {
       })
 
       lab.test(`POST ${routePath} shows an error message when the maximum field length has been exceeded`, async () => {
-        let longValue, longTownOrCity, longPostcode
-        for (let i = 0; i <= 170; i++) {
-          longValue += 'X'
-        }
-        for (let i = 0; i <= 70; i++) {
-          longTownOrCity += 'X'
-        }
-        for (let i = 0; i <= 8; i++) {
-          longPostcode += 'X'
-        }
+        const longValue = 'X'.repeat(171)
+        const longTownOrCity = 'X'.repeat(71)
+        const longPostcode = 'X'.repeat(9)
+
         postRequest.payload = {
           [FORM_FIELD_ID.buildingNameOrNumber]: longValue,
           [FORM_FIELD_ID.addressLine1]: longValue,

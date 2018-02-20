@@ -289,15 +289,16 @@ lab.experiment('Address select page tests:', () => {
       })
 
       lab.test(`POST ${routePath} shows an error message when the maximum field length has been exceeded`, async () => {
-        let longValue, longTownOrCity, longPostcode
-        for (let i = 0; i <= 170; i++) {
-          longValue += 'X'
-        }
-        for (let i = 0; i <= 70; i++) {
-          longTownOrCity += 'X'
-        }
-        for (let i = 0; i <= 8; i++) {
-          longPostcode += 'X'
+        const longValue = 'X'.repeat(171)
+        const longTownOrCity = 'X'.repeat(71)
+        const longPostcode = 'X'.repeat(9)
+
+        postRequest.payload = {
+          [FORM_FIELD_ID.buildingNameOrNumber]: longValue,
+          [FORM_FIELD_ID.addressLine1]: longValue,
+          [FORM_FIELD_ID.addressLine2]: longValue,
+          [FORM_FIELD_ID.townOrCity]: longTownOrCity,
+          [FORM_FIELD_ID.postcode]: longPostcode
         }
         postRequest.payload = {
           [FORM_FIELD_ID.buildingNameOrNumber]: longValue,

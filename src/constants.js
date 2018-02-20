@@ -81,10 +81,6 @@ Constants.Routes = {
     path: '/done',
     pageHeading: `Application received`
   },
-  APPLICATION_SENT: {
-    path: '/done/application-sent',
-    pageHeading: `You can’t go back to your application because it’s been sent`
-  },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',
     pageHeading: 'Check your answers before sending your application',
@@ -131,6 +127,10 @@ Constants.Routes = {
     pageHeading: 'Who should we contact about this application?',
     taskListHeading: 'Give contact details'
   },
+  COOKIES: {
+    path: '/information/cookies',
+    pageHeading: 'Cookies'
+  },
   COST_TIME: {
     path: '/cost-time',
     pageHeading: 'Costs and processing time',
@@ -147,8 +147,26 @@ Constants.Routes = {
     taskListHeading: 'Confirm the drainage system for your site'
   },
   ERROR: {
-    path: '/error',
-    pageHeading: 'Something went wrong'
+    COOKIES_DISABLED: {
+      path: '/errors/cookies-off',
+      pageHeading: 'You must switch on cookies to use this service'
+    },
+    TECHNICAL_PROBLEM: {
+      path: '/errors/technical-problem',
+      pageHeading: 'Something went wrong'
+    },
+    PAGE_NOT_FOUND: {
+      path: '/errors/page-not-found',
+      pageHeading: `We can't find that page`
+    },
+    START_AT_BEGINNING: {
+      path: '/errors/order/start-at-beginning',
+      pageHeading: 'Please start at the beginning of the application'
+    },
+    TIMEOUT: {
+      path: '/errors/timeout',
+      pageHeading: 'Your application has timed out'
+    }
   },
   FIRE_PREVENTION_PLAN: {
     path: '/fire-prevention-plan',
@@ -163,10 +181,6 @@ Constants.Routes = {
     path: '/management-system',
     pageHeading: 'Which management system will you use?',
     taskListHeading: 'Tell us which management system you use'
-  },
-  PAGE_NOT_FOUND: {
-    path: '/page-not-found',
-    pageHeading: `We can't find that page`
   },
   PERMIT_CATEGORY: {
     path: '/permit/category',
@@ -214,10 +228,6 @@ Constants.Routes = {
     path: '/technical-qualification',
     pageHeading: 'Who will provide technical management on your site?',
     taskListHeading: 'Give technical management details'
-  },
-  TIMEOUT: {
-    path: '/errors/timeout',
-    pageHeading: 'Your application has timed out'
   },
   UPLOAD_COURSE_REGISTRATION: {
     path: '/technical-qualification/upload-course-registration',

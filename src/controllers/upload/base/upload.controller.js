@@ -60,7 +60,7 @@ module.exports = class UploadController extends BaseController {
     try {
       // Validate the cookie
       if (!CookieService.validateCookie(request)) {
-        return reply.redirect(Constants.Routes.ERROR.path)
+        return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
       }
 
       // Post if it's not an attempt to upload a file
@@ -107,14 +107,14 @@ module.exports = class UploadController extends BaseController {
       return reply.redirect(this.path)
     } catch (error) {
       LoggingService.logError(error, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
   }
 
   async remove (request, reply) {
     // Validate the cookie
     if (!CookieService.validateCookie(request)) {
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
     // const result = this.getRequestData(request)
     const authToken = CookieService.getAuthToken(request)
@@ -124,7 +124,7 @@ module.exports = class UploadController extends BaseController {
 
     // make sure this annotation belongs to this application
     if (annotation.applicationId !== applicationId) {
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
     await annotation.delete(authToken, annotationId)
     return reply.redirect(this.path)
