@@ -9,7 +9,7 @@ const ApplicationLine = require('../models/applicationLine.model')
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.getAuthToken(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
 
     pageContext.formValues = request.payload
 
@@ -24,8 +24,8 @@ module.exports = class PermitSelectController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
       // Look up the Standard Rule based on the chosen permit type
       const standardRule = await StandardRule.getByCode(authToken, request.payload['chosen-permit'])
 
@@ -39,12 +39,12 @@ module.exports = class PermitSelectController extends BaseController {
       await applicationLine.save(authToken)
 
       // Set the application ID in the cookie
-      CookieService.setApplicationLineId(request, applicationLine.id)
+      CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)
 
       return reply.redirect(Constants.Routes.TASK_LIST.path)
 
       // Add the updated cookie
-        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY], Constants.COOKIE_PATH)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }

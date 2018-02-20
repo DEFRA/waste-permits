@@ -26,8 +26,8 @@ module.exports = class DeclarationsController extends BaseController {
         throw new Error(`Unexpected route (${this.route.path})`)
     }
 
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -49,9 +49,9 @@ module.exports = class DeclarationsController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
       const application = await Application.getById(authToken, applicationId)
       Object.assign(application, this.getRequestData(request))
       await application.save(authToken)

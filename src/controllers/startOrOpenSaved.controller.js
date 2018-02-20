@@ -48,9 +48,9 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       .redirect(nextPage.path)
 
       // Delete the existing session cookie (if there is one)
-      .unstate(Constants.COOKIE_KEY, Constants.COOKIE_PATH)
+      .unstate(Constants.DEFRA_COOKIE_KEY, Constants.COOKIE_PATH)
 
       // Add the new cookie
-      .state(Constants.COOKIE_KEY, cookie, Constants.COOKIE_PATH)
+      .state(Constants.DEFRA_COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 }

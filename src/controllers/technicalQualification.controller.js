@@ -13,8 +13,8 @@ module.exports = class TechnicalQualificationController extends BaseController {
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
       const application = await Application.getById(authToken, applicationId)
       if (application) {
         pageContext.formValues = {
@@ -50,8 +50,8 @@ module.exports = class TechnicalQualificationController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
       const application = await Application.getById(authToken, applicationId)
       application.technicalQualification = request.payload['technical-qualification']
       await application.save(authToken)

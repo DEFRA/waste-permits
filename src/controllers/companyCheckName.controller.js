@@ -10,8 +10,8 @@ const Account = require('../models/account.model')
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
 
     const [application, account] = await Promise.all([
       Application.getById(authToken, applicationId),
@@ -50,8 +50,8 @@ module.exports = class CompanyCheckNameController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
 
       const [application, account] = await Promise.all([
         Application.getById(authToken, applicationId),

@@ -7,9 +7,9 @@ const CookieService = require('../../../services/cookie.service')
 module.exports = class AddressManualController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
-    const applicationLineId = CookieService.getApplicationLineId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
@@ -43,9 +43,9 @@ module.exports = class AddressManualController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
 
       const addressDto = {
         buildingNameOrNumber: request.payload['building-name-or-number'],
