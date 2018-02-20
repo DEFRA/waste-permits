@@ -15,8 +15,8 @@ module.exports = class CompanyStatusController extends BaseController {
   }
 
   async doGet (request, reply, errors) {
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const account = await Account.getByApplicationId(authToken, applicationId)
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 

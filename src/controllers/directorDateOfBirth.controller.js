@@ -13,8 +13,8 @@ const Contact = require('../models/contact.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
   async doGet (request, reply, errors) {
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
 
     let account = await Account.getByApplicationId(authToken, applicationId)
     if (!account) {
@@ -59,8 +59,8 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   }
 
   async doPost (request, reply, errors) {
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
 
     let account = await Account.getByApplicationId(authToken, applicationId)
     if (!account) {

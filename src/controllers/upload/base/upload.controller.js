@@ -25,8 +25,8 @@ module.exports = class UploadController extends BaseController {
     if (request.payload) {
       pageContext.formValues = request.payload
     }
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
     pageContext.uploadFormAction = `${this.path}/upload`
@@ -42,9 +42,9 @@ module.exports = class UploadController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
       const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
       if (!list.length) {
         return this.handler(request, reply, undefined, UploadController._customError('noFilesUploaded'))
@@ -77,8 +77,8 @@ module.exports = class UploadController extends BaseController {
         return this.doGet(request, reply, errors)
       }
 
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
       const {name: applicationReference} = await Application.getById(authToken, applicationId)
       const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
@@ -117,8 +117,8 @@ module.exports = class UploadController extends BaseController {
       return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
     // const result = this.getRequestData(request)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const annotationId = request.params.id
     const annotation = await Annotation.getById(authToken, annotationId)
 

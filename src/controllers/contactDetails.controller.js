@@ -16,8 +16,8 @@ module.exports = class ContactDetailsController extends BaseController {
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
       const application = await Application.getById(authToken, applicationId)
       const contact = application.contactId ? await Contact.getById(authToken, application.contactId) : new Contact()
       const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
@@ -46,8 +46,8 @@ module.exports = class ContactDetailsController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
       const application = await Application.getById(authToken, applicationId)
       const {
         'first-name': firstName,
@@ -98,7 +98,7 @@ module.exports = class ContactDetailsController extends BaseController {
       primaryContactDetails.telephone = telephone
       await primaryContactDetails.save(authToken)
 
-      const applicationLineId = CookieService.getApplicationLineId(request)
+      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
       await ContactDetails.updateCompleteness(authToken, applicationId, applicationLineId)
 
       return reply.redirect(Constants.Routes.TASK_LIST.path)

@@ -3,24 +3,16 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-// const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 
 const ActiveDirectoryAuthService = require('../../src/services/activeDirectoryAuth.service')
 
-let getAuthTokenStub
-
 lab.beforeEach(() => {
   // Stub methods
-  getAuthTokenStub = ActiveDirectoryAuthService.prototype.getToken
-  ActiveDirectoryAuthService.prototype.getToken = () => {
-    return '__GENERATED_CRM_TOKEN__'
-  }
 })
 
 lab.afterEach(() => {
   // Restore stubbed methods
-  ActiveDirectoryAuthService.prototype.getToken = getAuthTokenStub
 })
 
 lab.experiment('Default page tests:', () => {

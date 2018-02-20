@@ -10,8 +10,8 @@ const Utilities = require('../utilities/utilities')
 module.exports = class CompanyNumberController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -31,8 +31,8 @@ module.exports = class CompanyNumberController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
       const companyNumber = Utilities.stripWhitespace(request.payload['company-number'])
 
       // See if there is an existing account with this company number. If not, create one.
