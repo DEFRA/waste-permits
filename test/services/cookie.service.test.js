@@ -36,7 +36,6 @@ lab.afterEach(() => {
 
 lab.experiment('Cookie Service tests:', () => {
   lab.test('Validate cookie should successfully validate a valid cookie', async () => {
-    console.log('###### cookie:', fakeRequest)
     Code.expect(await CookieService.validateCookie(fakeRequest)).to.equal(COOKIE_RESULT.VALID_COOKIE)
   })
 
