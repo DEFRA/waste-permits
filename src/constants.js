@@ -124,6 +124,10 @@ Constants.Routes = {
     path: '/permit-holder/company/status-not-active',
     pageHeading: `We can't issue a permit to that company because it {{{companyStatus}}}`
   },
+  COMPANY_CHECK_TYPE: {
+    path: '/permit-holder/company/wrong-type',
+    pageHeading: `That company can’t apply because it’s {{{companyType}}}`
+  },
   CONFIDENTIALITY: {
     path: '/confidentiality',
     pageHeading: 'Is part of your application commercially confidential?',
@@ -363,17 +367,23 @@ Constants.TaskList = {
   }
 }
 
-Constants.CompanyStatus = {
-  ACTIVE: 'is active',
-  DISSOLVED: 'has been dissolved',
-  LIQUIDATION: 'has gone into liquidation',
-  RECEIVERSHIP: 'is in receivership',
-  ADMINISTRATION: 'is in administration',
-  VOLUNTARY_ARRANGEMENT: 'is insolvent and has a Company Voluntary Arrangement',
-  CONVERTED_CLOSED: 'has been closed or converted',
-  INSOLVENCY_PROCEEDINGS: 'is insolvent',
-  NOT_ACTIVE: `isn't active`,
-  NO_DIRECTORS: `has no directors`
+Constants.Company = {
+  Status: {
+    ACTIVE: 'is active',
+    DISSOLVED: 'has been dissolved',
+    LIQUIDATION: 'has gone into liquidation',
+    RECEIVERSHIP: 'is in receivership',
+    ADMINISTRATION: 'is in administration',
+    VOLUNTARY_ARRANGEMENT: 'is insolvent and has a Company Voluntary Arrangement',
+    CONVERTED_CLOSED: 'has been closed or converted',
+    INSOLVENCY_PROCEEDINGS: 'is insolvent',
+    NOT_ACTIVE: `isn't active`,
+    NO_DIRECTORS: `has no directors`,
+    NOT_APPLICABLE_COMPANY_TYPE: `is not applicable for this company type`
+  },
+  Type: {
+    UK_ESTABLISHMENT: 'a UK establishment company'
+  }
 }
 
 Constants.UploadSubject = {
