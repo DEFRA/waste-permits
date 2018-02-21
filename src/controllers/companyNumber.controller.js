@@ -50,7 +50,7 @@ module.exports = class CompanyNumberController extends BaseController {
         await application.save(authToken)
       }
 
-      return reply.redirect(Constants.Routes.COMPANY_CHECK_STATUS.path)
+      return reply.redirect(Constants.Routes.COMPANY_CHECK_TYPE.path)
     }
   }
 }

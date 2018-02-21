@@ -7,7 +7,7 @@ const CookieService = require('../services/cookie.service')
 const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
 
-module.exports = class CompanyStatusController extends BaseController {
+module.exports = class CompanyTypeController extends BaseController {
   constructor (...args) {
     const [route] = args
     super(...args)
@@ -20,34 +20,24 @@ module.exports = class CompanyStatusController extends BaseController {
     const account = await Account.getByApplicationId(authToken, applicationId)
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
-    if (!company) {
-      return reply.redirect(Constants.Routes.COMPANY_CHECK_NAME.path)
-    }
+    const companyType = company ? Constants.Company.Type[company.type] : undefined
 
-    let companyStatus
-
-    if (company.status && !company.isActive) {
-      companyStatus = Constants.Company.Status[company.status]
-    } else {
-      const activeDirectors = await CompanyLookupService.getActiveDirectors(account.companyNumber)
-      if (activeDirectors.length) {
-        return reply.redirect(Constants.Routes.COMPANY_CHECK_NAME.path)
-      } else {
-        companyStatus = Constants.Company.Status.NO_DIRECTORS
-      }
+    if (!companyType) {
+      return reply.redirect(Constants.Routes.COMPANY_CHECK_STATUS.path)
     }
 
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({
-      companyStatus: companyStatus
+      companyType: companyType
     })
+
     const pageContext = this.createPageContext(errors)
 
     pageContext.companyNumber = account.companyNumber
     pageContext.companyName = company.name
-    pageContext.companyStatus = companyStatus
+    pageContext.companyType = companyType
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
     return reply
-      .view('companyCheckStatus', pageContext)
+      .view('companyCheckType', pageContext)
   }
 }
