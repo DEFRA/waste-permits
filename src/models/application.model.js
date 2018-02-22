@@ -8,6 +8,7 @@ const LoggingService = require('../services/logging.service')
 module.exports = class Application extends BaseModel {
   static mapping () {
     return [
+      {field: 'applicationNumber', dynamics: 'defra_applicationnumber'},
       {field: 'accountId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_account', relationship: 'defra_account_defra_application_customerid', entity: 'accounts'}},
       {field: 'contactId', dynamics: '_defra_primarycontactid_value', bind: {id: 'defra_primarycontactid', relationship: 'defra_contact_defra_application_primarycontactid', entity: 'contacts'}},
       {field: 'agentId', dynamics: '_defra_agentid_value', bind: {id: 'defra_agentid_account', relationship: 'defra_account_defra_application_agentid', entity: 'accounts'}},

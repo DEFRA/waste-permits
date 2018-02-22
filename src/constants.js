@@ -155,13 +155,25 @@ Constants.Routes = {
     taskListHeading: 'Confirm the drainage system for your site'
   },
   ERROR: {
+    ALREADY_SUBMITTED: {
+      path: '/errors/order/done-cant-go-back',
+      pageHeading: `You’ve sent your application so you can't go back and change it`
+    },
     COOKIES_DISABLED: {
       path: '/errors/cookies-off',
       pageHeading: 'You must switch on cookies to use this service'
     },
-    TECHNICAL_PROBLEM: {
-      path: '/errors/technical-problem',
-      pageHeading: 'Something went wrong'
+    NOT_COMPLETE: {
+      path: '/errors/order/task-list-not-complete',
+      pageHeading: 'You need to complete your application'
+    },
+    NOT_PAID: {
+      path: '/errors/order/card-payment-not-complete',
+      pageHeading: 'You need to pay for your application'
+    },
+    NOT_SUBMITTED: {
+      path: '/errors/order/check-answers-not-complete',
+      pageHeading: 'You need to check your answers and submit your application'
     },
     PAGE_NOT_FOUND: {
       path: '/errors/page-not-found',
@@ -170,6 +182,10 @@ Constants.Routes = {
     START_AT_BEGINNING: {
       path: '/errors/order/start-at-beginning',
       pageHeading: 'Please start at the beginning of the application'
+    },
+    TECHNICAL_PROBLEM: {
+      path: '/errors/technical-problem',
+      pageHeading: 'Something went wrong'
     },
     TIMEOUT: {
       path: '/errors/timeout',

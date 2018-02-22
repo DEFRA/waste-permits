@@ -47,7 +47,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
     Code.expect(element).to.exist()
   })
 
-  lab.test('GET /drainage-type/drain success ', async () => {
+  lab.test(`GET ${routePath} success`, async () => {
     const request = {
       method: 'GET',
       url: routePath,

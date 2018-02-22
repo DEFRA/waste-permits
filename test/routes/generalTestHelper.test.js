@@ -74,13 +74,6 @@ module.exports = class GeneralTestHelper {
       lab.test(`GET ${routePath} page should have the beta banner`, async () => {
         const res = await server.inject(getRequest)
 
-        // TODO remove this
-        if (routePath === '/permit-holder/company/status-not-active') {
-          console.log('###### res:', res)
-        }
-
-        Code.expect(res.statusCode).to.equal(200)
-
         const parser = new DOMParser()
         const doc = parser.parseFromString(res.payload, 'text/html')
 

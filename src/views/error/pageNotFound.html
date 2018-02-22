@@ -1,13 +1,20 @@
+
 <main id="content" role="main">
 
   {{> common/betaBanner }}
 
-  {{> common/pageHeading pageHeading }}
+  <div class="grid-row">
+    <div class="column-two-thirds">
 
-  <p id="page-not-found-paragraph">Please check that the web address is correct, or you can:</p>
+      {{> common/pageHeading pageHeading }}
 
-  <ul class="list list-bullet">
-    <li>go to the <a id="page-not-found-task-list-link" href="{{ taskList.path }}">task list for your application</a></li>
-    <li><a id="page-not-found-apply-link" href="{{ startOpenOrSaved.path }}">apply for a standard rules waste permit</a></li>
-  </ul>
+      <p id="page-not-found-paragraph">Check that the web address is correct.</p>
+
+      {{#if hasApplication}}
+      <p>Go to the <a id="task-list-link" href="{{taskListRoute}}">task list for your application</a></p>
+      {{else}}
+      <p><a id="apply-link" href="{{startOpenOrSavedRoute}}">Apply for a standard rules waste permit</a></p>
+      {{/if}}
+    </div>
+  </div>
 </main>

@@ -47,7 +47,7 @@ lab.experiment(`Search for 'standard rules permit application' in your email pag
     Code.expect(element).to.exist()
   })
 
-  lab.test('GET /save-and-return/check-your-email success ', async () => {
+  lab.test(`GET ${routePath} success`, async () => {
     const request = {
       method: 'GET',
       url: routePath,

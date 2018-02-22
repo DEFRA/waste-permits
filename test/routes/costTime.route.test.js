@@ -47,7 +47,7 @@ lab.experiment('Cost and time for this permit page tests:', () => {
     Code.expect(element).to.exist()
   })
 
-  lab.test('GET /cost-time success ', async () => {
+  lab.test(`GET ${routePath} success`, async () => {
     const request = {
       method: 'GET',
       url: routePath,
