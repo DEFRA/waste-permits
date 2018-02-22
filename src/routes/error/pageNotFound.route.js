@@ -3,6 +3,6 @@
 const Constants = require('../../constants')
 const Route = require('../baseRoute')
 const PageNotFoundController = require('../../controllers/error/pageNotFound.controller')
-const controller = new PageNotFoundController(Constants.Routes.PAGE_NOT_FOUND, undefined, false)
+const controller = new PageNotFoundController(Constants.Routes.ERROR.PAGE_NOT_FOUND, undefined, true)
 
 module.exports = Route.register('GET', controller)

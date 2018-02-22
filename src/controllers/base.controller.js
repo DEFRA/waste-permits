@@ -59,9 +59,9 @@ module.exports = class BaseController {
       const cookieValidationResult = await CookieService.validateCookie(request)
 
       if (cookieValidationResult === COOKIE_RESULT.COOKIE_NOT_FOUND || cookieValidationResult === COOKIE_RESULT.COOKIE_EXPIRED) {
-        return reply.redirect(Constants.Routes.TIMEOUT.path)
+        return reply.redirect(Constants.Routes.ERROR.TIMEOUT.path)
       } else if (cookieValidationResult === COOKIE_RESULT.APPLICATION_NOT_FOUND) {
-        return reply.redirect(Constants.Routes.ERROR.path)
+        return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
       }
     }
     switch (this.route) {
@@ -73,7 +73,7 @@ module.exports = class BaseController {
           await this._handler(request, reply, errors)
         } catch (error) {
           LoggingService.logError(error, request)
-          await reply.redirect(Constants.Routes.ERROR.path)
+          await reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
         }
     }
   }

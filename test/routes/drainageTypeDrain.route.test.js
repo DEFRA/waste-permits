@@ -4,7 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
-const GeneralTestHelper = require('../routes/generalTestHelper.test')
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
@@ -47,7 +47,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
     Code.expect(element).to.exist()
   })
 
-  lab.test('GET /drainage-type/drain success ', async () => {
+  lab.test(`GET ${routePath} success`, async () => {
     const request = {
       method: 'GET',
       url: routePath,

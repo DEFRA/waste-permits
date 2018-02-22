@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
@@ -25,6 +26,9 @@ lab.afterEach(() => {
 })
 
 lab.experiment(`Search for 'standard rules permit application' in your email page tests:`, () => {
+  // TODO get these tests to work
+  new GeneralTestHelper(lab, routePath).test(true, true)
+
   lab.test('The page should have a back link', async () => {
     const request = {
       method: 'GET',
@@ -43,7 +47,7 @@ lab.experiment(`Search for 'standard rules permit application' in your email pag
     Code.expect(element).to.exist()
   })
 
-  lab.test('GET /save-and-return/check-your-email success ', async () => {
+  lab.test(`GET ${routePath} success`, async () => {
     const request = {
       method: 'GET',
       url: routePath,

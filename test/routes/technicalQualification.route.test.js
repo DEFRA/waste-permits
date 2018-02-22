@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
@@ -25,6 +26,8 @@ const nextRoutePath = {
   DEEMED_COMPETENCE: '/technical-qualification/upload-deemed-evidence',
   ESA_EU_SKILLS: '/technical-qualification/upload-esa-eu-skills'
 }
+const errorPath = '/errors/technical-problem'
+
 const Qualification = {
   WAMITAB_QUALIFICATION: {
     TYPE: 910400000
@@ -65,6 +68,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Technical Management Qualification tests:', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -144,7 +149,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })
@@ -221,7 +226,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
 
       lab.test('redirects to error screen when save fails', async () => {
@@ -231,7 +236,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
 
       lab.test('redirects to error screen when an unexpected qualification is selected', async () => {
@@ -241,7 +246,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })

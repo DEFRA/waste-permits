@@ -43,7 +43,9 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return reply.view('companyCheckName', pageContext)
+    return reply
+      .view('companyCheckName', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -77,7 +79,9 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         await application.save(authToken)
       }
-      return reply.redirect(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
+      return reply
+        .redirect(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }

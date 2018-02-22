@@ -35,7 +35,9 @@ module.exports = class UploadController extends BaseController {
     pageContext.maxSize = this.validator.getMaxSize()
     pageContext.subject = this.subject
 
-    return reply.view(this.view, pageContext)
+    return reply
+      .view(this.view, pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -52,7 +54,9 @@ module.exports = class UploadController extends BaseController {
       if (this.updateCompleteness) {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
       }
-      return reply.redirect(this.nextPath)
+      return reply
+        .redirect(this.nextPath)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 
@@ -60,7 +64,7 @@ module.exports = class UploadController extends BaseController {
     try {
       // Validate the cookie
       if (!CookieService.validateCookie(request)) {
-        return reply.redirect(Constants.Routes.ERROR.path)
+        return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
       }
 
       // Post if it's not an attempt to upload a file
@@ -107,14 +111,16 @@ module.exports = class UploadController extends BaseController {
       return reply.redirect(this.path)
     } catch (error) {
       LoggingService.logError(error, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply
+        .redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 
   async remove (request, reply) {
     // Validate the cookie
     if (!CookieService.validateCookie(request)) {
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
     // const result = this.getRequestData(request)
     const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
@@ -124,10 +130,12 @@ module.exports = class UploadController extends BaseController {
 
     // make sure this annotation belongs to this application
     if (annotation.applicationId !== applicationId) {
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
     await annotation.delete(authToken, annotationId)
-    return reply.redirect(this.path)
+    return reply
+      .redirect(this.path)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async uploadFailAction (request, reply, errors) {

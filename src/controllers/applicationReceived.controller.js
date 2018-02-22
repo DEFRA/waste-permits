@@ -12,7 +12,9 @@ module.exports = class ApplicationReceivedController extends BaseController {
     const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const application = await Application.getById(authToken, applicationId)
     pageContext.applicationName = application.name
+
     return reply
       .view('applicationReceived', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 }

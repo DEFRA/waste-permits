@@ -23,6 +23,7 @@ module.exports = class TaskListController extends BaseController {
 
     return reply
       .view('taskList', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {

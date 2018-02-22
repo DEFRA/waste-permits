@@ -42,7 +42,9 @@ module.exports = class DeclarationsController extends BaseController {
 
     Object.assign(pageContext, this.getSpecificPageContext())
 
-    return reply.view(this.view, pageContext)
+    return reply
+      .view(this.view, pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -58,7 +60,9 @@ module.exports = class DeclarationsController extends BaseController {
       if (this.updateCompleteness) {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
       }
-      return reply.redirect(this.nextPath)
+      return reply
+        .redirect(this.nextPath)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 

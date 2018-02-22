@@ -4,7 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
-const GeneralTestHelper = require('../routes/generalTestHelper.test')
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
@@ -47,7 +47,7 @@ lab.experiment('Cost and time for this permit page tests:', () => {
     Code.expect(element).to.exist()
   })
 
-  lab.test('GET /cost-time success ', async () => {
+  lab.test(`GET ${routePath} success`, async () => {
     const request = {
       method: 'GET',
       url: routePath,

@@ -21,7 +21,9 @@ module.exports = class CompanyStatusController extends BaseController {
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
     if (!company) {
-      return reply.redirect(Constants.Routes.COMPANY_CHECK_NAME.path)
+      return reply
+        .redirect(Constants.Routes.COMPANY_CHECK_NAME.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
 
     let companyStatus
@@ -49,5 +51,6 @@ module.exports = class CompanyStatusController extends BaseController {
 
     return reply
       .view('companyCheckStatus', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 }

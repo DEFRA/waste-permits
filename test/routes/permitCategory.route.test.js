@@ -6,6 +6,7 @@
 // const lab = exports.lab = Lab.script()
 // const Code = require('code')
 // const DOMParser = require('xmldom').DOMParser
+// const GeneralTestHelper = require('./generalTestHelper.test')
 
 // const server = require('../../server')
 // const CookieService = require('../../src/services/cookie.service')
@@ -27,6 +28,8 @@
 // })
 
 // lab.experiment('What do you want the permit for? page tests:', () => {
+  // new GeneralTestHelper(lab, routePath).test()
+
 //   lab.test('The page should NOT have a back link', async () => {
 //     const request = {
 //       method: 'GET',

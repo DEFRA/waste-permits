@@ -45,7 +45,7 @@ lab.experiment('Cookie Service tests:', () => {
   })
 
   lab.test('Validate cookie method should detect when the cookie has expired', async () => {
-    fakeRequest.state.DefraSession.expiry =  Date.now() - 1
+    fakeRequest.state.DefraSession.expiry = Date.now() - 1
     Code.expect(await CookieService.validateCookie(fakeRequest)).to.equal(COOKIE_RESULT.COOKIE_EXPIRED)
   })
 

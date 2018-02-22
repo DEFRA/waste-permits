@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../../generalTestHelper.test')
 
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
@@ -22,6 +23,7 @@ let fakeApplication
 
 const routePath = '/confidentiality'
 const nextRoutePath = '/task-list'
+const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
   fakeApplication = {
@@ -49,6 +51,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Is part of your application commercially confidential? page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -103,7 +107,7 @@ lab.experiment('Is part of your application commercially confidential? page test
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })
@@ -197,7 +201,7 @@ lab.experiment('Is part of your application commercially confidential? page test
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
 
       lab.test('redirects to error screen when save fails', async () => {
@@ -207,7 +211,7 @@ lab.experiment('Is part of your application commercially confidential? page test
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })

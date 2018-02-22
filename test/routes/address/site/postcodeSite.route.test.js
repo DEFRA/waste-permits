@@ -153,7 +153,7 @@ const checkValidationError = async (expectedErrorMessage) => {
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
 
-lab.experiment('Postcode page tests:', () => {
+lab.experiment('Site postcode page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment('GET:', () => {

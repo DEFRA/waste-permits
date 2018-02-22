@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 
@@ -82,6 +83,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Check your answers before sending your application page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
   lab.experiment(`GET ${routePath}`, () => {
     let request
     lab.beforeEach(() => {

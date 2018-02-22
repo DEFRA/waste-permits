@@ -23,8 +23,10 @@ module.exports = class ConfirmRulesController extends BaseController {
     pageContext.guidanceUrl = standardRule.guidanceUrl
     pageContext.code = standardRule.code
     pageContext.complete = await this.isComplete(request)
+
     return reply
       .view('confirmRules', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -44,7 +46,10 @@ module.exports = class ConfirmRulesController extends BaseController {
       })
 
       await confirmRules.save(authToken)
-      return reply.redirect(Constants.Routes.TASK_LIST.path)
+
+      return reply
+        .redirect(Constants.Routes.TASK_LIST.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }

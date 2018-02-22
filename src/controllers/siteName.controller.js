@@ -20,7 +20,9 @@ module.exports = class SiteNameController extends BaseController {
         'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
       }
     }
-    return reply.view('siteName', pageContext)
+    return reply
+      .view('siteName', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -34,7 +36,9 @@ module.exports = class SiteNameController extends BaseController {
       await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'],
         authToken, applicationId, applicationLineId)
 
-      return reply.redirect(Constants.Routes.SITE_GRID_REFERENCE.path)
+      return reply
+        .redirect(Constants.Routes.SITE_GRID_REFERENCE.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }

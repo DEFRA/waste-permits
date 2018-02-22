@@ -8,16 +8,13 @@ module.exports = class CheckYourEmailController extends BaseController {
     const pageContext = this.createPageContext(errors)
 
     pageContext.formValues = request.payload
-    return reply.view('checkYourEmail', pageContext)
+    return reply
+      .view('checkYourEmail', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
-      return this.doGet(request, reply, errors)
-    } else {
-      // TODO persist the data here if required using the applicationId from the cookie
-
-      return reply.redirect(Constants.Routes.CONTACT.path)
-    }
+    // Not implemented yet
+    return this.doGet(request, reply, errors)
   }
 }

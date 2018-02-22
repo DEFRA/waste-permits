@@ -54,6 +54,7 @@ module.exports = class UploadTestHelper {
     this.uploadPath = uploadPath
     this.removePath = removePath
     this.nextRoutePath = nextRoutePath
+    this.errorPath = '/errors/technical-problem'
   }
 
   setStubs (sandbox) {
@@ -123,7 +124,7 @@ module.exports = class UploadTestHelper {
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(this.errorPath)
       })
     })
   }
@@ -213,7 +214,7 @@ module.exports = class UploadTestHelper {
   }
 
   uploadFailure () {
-    const {lab} = this
+    const {lab, errorPath} = this
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
@@ -222,7 +223,7 @@ module.exports = class UploadTestHelper {
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   }
