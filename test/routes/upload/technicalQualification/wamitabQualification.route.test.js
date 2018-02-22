@@ -43,7 +43,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'wamitab-qualification-description',
-      pageHeading: 'Upload the WAMITAB certificate',
+      pageHeading: 'WAMITAB or EPOC: upload evidence',
       submitButton: 'Continue'
     }
 

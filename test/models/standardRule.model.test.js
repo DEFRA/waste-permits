@@ -17,6 +17,7 @@ const fakeStandardRule = {
   permitName: 'STANDARD_RULE_NAME',
   limits: 'STANDARD_RULE_LIMITS',
   code: 'SR2015 No 18',
+  wamitabRiskLevel: 'WAMITAB_RISK_LEVEL',
   codeForId: 'sr2015-no-18',
   guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL'
 }
@@ -26,6 +27,7 @@ const fakeDynamicsRecord = (options = {}) => {
   return {
     defra_limits: standardRule.limits,
     defra_code: standardRule.code,
+    defra_wamitabrisklevel: standardRule.wamitabRiskLevel,
     defra_rulesnamegovuk: standardRule.permitName,
     defra_standardruleid: standardRule.id,
     defra_guidanceurl: standardRule.guidanceUrl

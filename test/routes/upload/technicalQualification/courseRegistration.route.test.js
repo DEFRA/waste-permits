@@ -2,12 +2,19 @@
 
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
+const Code = require('code')
 const sinon = require('sinon')
 
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
+const StandardRule = require('../../../../src/models/standardRule.model')
 
 const GeneralTestHelper = require('../../generalTestHelper.test')
 const UploadTestHelper = require('../uploadHelper')
+
+const WamitabRiskLevel = {
+  LOW: 910400001,
+  MEDIUM: 910400002
+}
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
@@ -27,6 +34,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
   sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => Promise.resolve({}))
   helper.setStubs(sandbox)
 })
 
@@ -43,12 +51,24 @@ lab.experiment('Company Declare Upload Course registration tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'course-registration-description',
-      pageHeading: 'Upload the course registration email or letter',
+      pageHeading: 'Getting a qualification: upload evidence',
       submitButton: 'Continue'
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays WAMITAB medium or high risk information',
+        stubs: () => (StandardRule.getByApplicationLineId = () => ({wamitabRiskLevel: WamitabRiskLevel.MEDIUM})),
+        test: (doc) => Code.expect(doc.getElementById('wamitab-risk-is-medium-or-high')).to.exist()
+      },
+      {
+        title: 'displays WAMITAB low risk information',
+        stubs: () => (StandardRule.getByApplicationLineId = () => ({wamitabRiskLevel: WamitabRiskLevel.LOW})),
+        test: (doc) => Code.expect(doc.getElementById('wamitab-risk-is-low')).to.exist()
+      }
+    ])
     helper.getFailure()
   })
 

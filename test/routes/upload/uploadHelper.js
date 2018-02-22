@@ -71,7 +71,7 @@ module.exports = class UploadTestHelper {
     sandbox.stub(LoggingService, 'logError').value(() => {})
   }
 
-  getSuccess (options) {
+  getSuccess (options, additionalTests = []) {
     const {lab, routePath} = this
     lab.experiment('success', () => {
       lab.beforeEach(() => {
@@ -111,6 +111,12 @@ module.exports = class UploadTestHelper {
         Code.expect(doc.getElementById('has-no-annotations')).to.not.exist()
         Code.expect(doc.getElementById(options.descriptionId)).to.not.exist()
       })
+
+      additionalTests.forEach(({title, stubs, test}) => lab.test(title, async () => {
+        stubs()
+        const doc = await getDoc(options)
+        test(doc)
+      }))
     })
   }
 

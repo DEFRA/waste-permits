@@ -12,8 +12,13 @@
       {{> common/pageHeading pageHeading }}
 
       <p>
-        Your site must be managed by a 'competent person'. To prove this, you must provide evidence of a technical
-        competence qualification, for example from the Waste Management Industry Training and Advisory Board (WAMITAB).
+        To prove you are able to manage your operations correctly, you must upload evidence of technical competence
+        qualifications.
+      </p>
+      <p>
+        These could be Waste Management Industry Training and Advisory Board ({{> abbreviations/WAMITAB }}) certificates, Environmental
+        Permitting Operator's Certificates ({{> abbreviations/EPOC }}) or an Energy & Utility Skills / Environmental Services Association
+        ({{> abbreviations/ESA }}) Competence Management System.
       </p>
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
@@ -26,30 +31,34 @@
 
             {{> common/fieldError fieldId='technical-qualification-error' message=errors.technical-qualification }}
             <div class="multiple-choice">
-              <input id="wamitab" type="radio" name="technical-qualification" value="{{formValues.wamitab}}" {{#if wamitabChecked}}checked{{/if}}>
+              <input id="wamitab" type="radio" name="technical-qualification" value="{{formValues.wamitab}}" {{#if
+                     wamitabChecked}}checked{{/if}}>
               <label for="wamitab">
-                A {{> abbreviations/WAMITAB }} certificate and, if needed, a continuing competence certificate
+                {{> abbreviations/WAMITAB }} or {{> abbreviations/EPOC }} qualification
               </label>
             </div>
 
             <div class="multiple-choice">
-              <input id="getting-qualification" type="radio" name="technical-qualification" value="{{formValues.getting-qualification}}" {{#if gettingCourseChecked}}checked{{/if}}>
+              <input id="getting-qualification" type="radio" name="technical-qualification"
+                     value="{{formValues.getting-qualification}}" {{#if gettingCourseChecked}}checked{{/if}}>
               <label for="getting-qualification">
-                They are getting a {{> abbreviations/WAMITAB }} qualification and may have an {{> abbreviations/EPOC }} qualification
+                We’re getting {{> abbreviations/WAMITAB }} or {{> abbreviations/EPOC }} qualifications
               </label>
             </div>
 
             <div class="multiple-choice">
-              <input id="deemed" type="radio" name="technical-qualification" value="{{formValues.deemed}}" {{#if deemedChecked}}checked{{/if}}>
+              <input id="deemed" type="radio" name="technical-qualification" value="{{formValues.deemed}}" {{#if
+                     deemedChecked}}checked{{/if}}>
               <label for="deemed">
-                Deemed competence or an assessment with continuing competence certification
+                Deemed competence or an Environment Agency assessment with {{> abbreviations/WAMITAB }} continuing competence certification
               </label>
             </div>
 
             <div class="multiple-choice">
-              <input id="esa-eu" type="radio" name="technical-qualification" value="{{formValues.esa-eu}}" {{#if esaEuChecked}}checked{{/if}}>
+              <input id="esa-eu" type="radio" name="technical-qualification" value="{{formValues.esa-eu}}" {{#if
+                     esaEuChecked}}checked{{/if}}>
               <label for="esa-eu">
-                Our site uses an {{> abbreviations/ESA }} {{> abbreviations/EU }} Skills Competence Management System
+                Energy & Utility Skills / {{> abbreviations/ESA }} Competence Management System
               </label>
             </div>
           </fieldset>

@@ -43,7 +43,7 @@
     "gulp-watch": "^4.3.11",
     "htmlhint": "^0.9.13",
     "lab": "^15.2.2",
-    "nock": "^9.1.6",
+    "nock": "^9.1.9",
     "run-sequence": "^2.2.1",
     "sinon": "^4.3.0",
     "standard": "^11.0.0",

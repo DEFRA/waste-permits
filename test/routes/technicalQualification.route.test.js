@@ -13,10 +13,6 @@ const Application = require('../../src/models/application.model')
 const LoggingService = require('../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let validateCookieStub
-let applicationSaveStub
-let getByIdStub
-let logErrorStub
 let fakeApplication
 
 const routePath = '/technical-qualification'
@@ -43,28 +39,26 @@ const Qualification = {
   }
 }
 
+let sandbox
+
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID',
     applicationLineId: 'APPLICATION_LINE_ID'
   }
 
-  // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  getByIdStub = Application.getById
-  Application.getById = () => Promise.resolve(new Application(fakeApplication))
+  // Create a sinon sandbox
+  sandbox = sinon.createSandbox()
+  // Stub the asynchronous model methods
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application, 'getById').value(() => Promise.resolve(new Application(fakeApplication)))
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  Application.getById = getByIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Technical Management Qualification tests:', () => {
@@ -80,7 +74,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
       const parser = new DOMParser()
       doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who will provide technical management on your site?')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What evidence of technical competence do you have?')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
       return doc
     }
@@ -174,15 +168,6 @@ lab.experiment('Technical Management Qualification tests:', () => {
           'technical-qualification': Qualification.WAMITAB_QUALIFICATION.TYPE
         }
       }
-
-      // Stub methods
-      applicationSaveStub = Application.prototype.save
-      Application.prototype.save = () => {}
-    })
-
-    lab.afterEach(() => {
-      // Restore stubbed methods
-      Application.prototype.save = applicationSaveStub
     })
 
     lab.experiment('success', () => {

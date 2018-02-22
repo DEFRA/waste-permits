@@ -254,24 +254,24 @@ Constants.Routes = {
   },
   TECHNICAL_QUALIFICATION: {
     path: '/technical-qualification',
-    pageHeading: 'Who will provide technical management on your site?',
+    pageHeading: 'What evidence of technical competence do you have?',
     taskListHeading: 'Give technical management details'
   },
   UPLOAD_COURSE_REGISTRATION: {
     path: '/technical-qualification/upload-course-registration',
-    pageHeading: 'Upload the course registration email or letter'
+    pageHeading: 'Getting a qualification: upload evidence'
   },
   UPLOAD_DEEMED_EVIDENCE: {
     path: '/technical-qualification/upload-deemed-evidence',
-    pageHeading: 'Upload evidence of their qualification'
+    pageHeading: 'Deemed competence or an assessment: upload evidence'
   },
   UPLOAD_ESA_EU_SKILLS: {
     path: '/technical-qualification/upload-esa-eu-skills',
-    pageHeading: 'Upload the ESA EU Skills scheme certificate'
+    pageHeading: 'Energy & Utility Skills / ESA: upload evidence'
   },
   UPLOAD_WAMITAB_QUALIFICATION: {
     path: '/technical-qualification/upload-wamitab-qualification',
-    pageHeading: 'Upload the WAMITAB certificate'
+    pageHeading: 'WAMITAB or EPOC: upload evidence'
   },
   VERSION: {
     path: '/version',
@@ -337,6 +337,12 @@ Constants.Dynamics = {
       TYPE: 910400003,
       NAME: 'Energy & Utility Skills / ESA system'
     }
+  },
+  WamitabRiskLevel: {
+    NA: 910400000,
+    LOW: 910400001,
+    MEDIUM: 910400002,
+    HIGH: 910400003
   },
   WASTE_REGIME: 910400000,
 
