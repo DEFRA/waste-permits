@@ -42,8 +42,10 @@ module.exports = class TechnicalQualificationController extends BaseController {
         pageContext.esaEuChecked = true
         break
     }
+
     return reply
       .view('technicalQualification', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -55,7 +57,10 @@ module.exports = class TechnicalQualificationController extends BaseController {
       const application = await Application.getById(authToken, applicationId)
       application.technicalQualification = request.payload['technical-qualification']
       await application.save(authToken)
-      return reply.redirect(await TechnicalQualificationController._getPath(application.technicalQualification))
+
+      return reply
+        .redirect(await TechnicalQualificationController._getPath(application.technicalQualification))
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 

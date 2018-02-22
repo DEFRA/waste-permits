@@ -5,7 +5,7 @@ const rp = require('request-promise')
 const LoggingService = require('../services/logging.service')
 const config = require('../config/config')
 const Constants = require('../constants')
-const COMPANY_STATUS_LIST = Object.keys(Constants.CompanyStatus)
+const COMPANY_STATUS_LIST = Object.keys(Constants.Company.Status)
 const DEFAULT_COMPANY_STATUS = 'NOT_ACTIVE'
 const ACTIVE_COMPANY_STATUS = 'ACTIVE'
 
@@ -27,11 +27,13 @@ module.exports = class CompanyLookupService {
           LoggingService.logDebug(`CompanyLookupService - retrieved data:`, data)
 
           const formattedCompanyStatus = CompanyLookupService._formatCompanyStatus(data.company_status)
+          const formattedCompanyType = CompanyLookupService._formatCompanyType(data.type)
 
           company = {
             name: data.company_name,
             address: CompanyLookupService._formatAddress(data.registered_office_address),
             status: (COMPANY_STATUS_LIST.includes(formattedCompanyStatus) ? formattedCompanyStatus : DEFAULT_COMPANY_STATUS),
+            type: formattedCompanyType,
             isActive: (formattedCompanyStatus === ACTIVE_COMPANY_STATUS)
           }
         }
@@ -75,6 +77,11 @@ module.exports = class CompanyLookupService {
   // Convert to upper case and replaces the hyphens with underscores
   static _formatCompanyStatus (companyStatus) {
     return (companyStatus || '').toUpperCase().replace(/-/g, '_')
+  }
+
+  // Convert to upper case and replaces the hyphens with underscores
+  static _formatCompanyType (companyType) {
+    return (companyType || '').toUpperCase().replace(/-/g, '_')
   }
 
   // Format the address that has come back from Companies House

@@ -15,6 +15,8 @@ module.exports = class AlreadySubmittedController extends BaseController {
     pageContext.startOpenOrSavedRoute = Constants.Routes.START_OR_OPEN_SAVED.path
     pageContext.applicationRef = application.applicationNumber
 
-    return reply.view('error/alreadySubmitted', pageContext)
+    return reply
+      .view('error/alreadySubmitted', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 }

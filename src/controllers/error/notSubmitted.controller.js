@@ -17,6 +17,8 @@ module.exports = class NotSubmittedController extends BaseController {
 
     pageContext.checkYourAnswersRoute = Constants.Routes.CHECK_BEFORE_SENDING.path
 
-    return reply.view('error/notSubmitted', pageContext)
+    return reply
+      .view('error/notSubmitted', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 }

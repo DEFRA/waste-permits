@@ -20,6 +20,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
     // For MVP we are only supporting the mobile plant standard rules waste permit
     //   .view('startOrOpenSaved', pageContext)
       .view('startOrOpenSavedMobile', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -46,11 +47,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
     return reply
       .redirect(nextPage.path)
-
-      // Delete the existing session cookie (if there is one)
-      .unstate(Constants.DEFRA_COOKIE_KEY, Constants.COOKIE_PATH)
-
-      // Add the new cookie
       .state(Constants.DEFRA_COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 }

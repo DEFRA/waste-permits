@@ -29,5 +29,6 @@ module.exports = class VersionController extends BaseController {
 
     return reply
       .view('version', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 }

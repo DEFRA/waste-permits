@@ -1,0 +1,29 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/pageHeading pageHeading }}
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        <div class="form-group">
+          <div id="company-type-message" class="panel panel-border-wide">
+            <p>
+              <span id="company-name">{{ companyName }}</span> (company number <span id="company-number">{{ companyNumber }}</span>)
+              can’t be a permit holder because it's <span id="company-type">{{ companyType }}</span>.
+            </p>
+            <p>Please apply on behalf of the main company using its own company number.</p>
+          </div>
+
+          <p><a id="enter-different-number-link" href="{{ enterCompanyNumberRoute }}">Enter a different company number</a></p>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+</main>
