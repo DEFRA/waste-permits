@@ -1,5 +1,6 @@
 'use strict'
 
+const Constants = require('../constants')
 const BaseController = require('./base.controller')
 
 module.exports = class CheckYourEmailController extends BaseController {
@@ -7,7 +8,9 @@ module.exports = class CheckYourEmailController extends BaseController {
     const pageContext = this.createPageContext(errors)
 
     pageContext.formValues = request.payload
-    return reply.view('checkYourEmail', pageContext)
+    return reply
+      .view('checkYourEmail', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {

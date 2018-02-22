@@ -36,7 +36,9 @@ module.exports = class AddressManualController extends BaseController {
       }
     }
 
-    return reply.view('address/manualEntry', pageContext)
+    return reply
+      .view('address/manualEntry', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -57,7 +59,9 @@ module.exports = class AddressManualController extends BaseController {
 
       await this.getModel().saveManualAddress(request, authToken, applicationId, applicationLineId, addressDto)
 
-      return reply.redirect(Constants.Routes.TASK_LIST.path)
+      return reply
+        .redirect(Constants.Routes.TASK_LIST.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }

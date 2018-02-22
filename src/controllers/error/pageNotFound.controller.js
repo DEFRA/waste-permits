@@ -19,7 +19,9 @@ module.exports = class PageNotFoundController extends BaseController {
     pageContext.taskListRoute = Constants.Routes.TASK_LIST.path
     pageContext.startOpenOrSavedRoute = Constants.Routes.START_OR_OPEN_SAVED.path
 
-    return reply.view('error/pageNotFound', pageContext).code(404)
+    return reply
+      .view('error/pageNotFound', pageContext).code(404)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   handler (request, reply, source, errors) {

@@ -40,7 +40,9 @@ module.exports = class PostcodeController extends BaseController {
     this.customisePageContext(pageContext)
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return reply.view('address/postcode', pageContext)
+    return reply
+      .view('address/postcode', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -69,8 +71,8 @@ module.exports = class PostcodeController extends BaseController {
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      return reply.redirect(this.getAddressSelectionPath())
-        // Add the updated cookie
+      return reply
+        .redirect(this.getAddressSelectionPath())
         .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }

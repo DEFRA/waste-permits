@@ -23,8 +23,10 @@ module.exports = class CompanyNumberController extends BaseController {
         }
       }
     }
+
     return reply
       .view('companyNumber', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -50,7 +52,9 @@ module.exports = class CompanyNumberController extends BaseController {
         await application.save(authToken)
       }
 
-      return reply.redirect(Constants.Routes.COMPANY_CHECK_STATUS.path)
+      return reply
+        .redirect(Constants.Routes.COMPANY_CHECK_STATUS.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }

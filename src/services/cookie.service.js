@@ -19,9 +19,9 @@ module.exports = class CookieService {
 
       // Create the cookie and set the cookie Time to Live (TTL)
       return {
-        applicationId: undefined,
-        authToken: authToken,
-        expiry: this._calculateExpiryDate()
+        [Constants.COOKIE_KEY.APPLICATION_ID]: undefined,
+        [Constants.COOKIE_KEY.AUTH_TOKEN]: authToken,
+        [Constants.COOKIE_KEY.EXPIRY]: this._calculateExpiryDate()
       }
     } catch (error) {
       LoggingService.logError(error)

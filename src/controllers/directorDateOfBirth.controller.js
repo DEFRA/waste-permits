@@ -55,7 +55,9 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         pageContext.directors[i].dob.day = field || ''
       }
     }
-    return reply.view('directorDateOfBirth', pageContext)
+    return reply
+      .view('directorDateOfBirth', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -97,7 +99,9 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         await applicationContact.save(authToken)
       }
 
-      return reply.redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
+      return reply
+        .redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 

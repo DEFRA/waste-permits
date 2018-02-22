@@ -64,6 +64,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
     return reply
       .view('checkBeforeSending', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply) {
@@ -72,6 +73,9 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
     application.declaration = true
     await application.save(authToken)
-    return reply.redirect(Constants.Routes.APPLICATION_RECEIVED.path)
+
+    return reply
+      .redirect(Constants.Routes.APPLICATION_RECEIVED.path)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 }

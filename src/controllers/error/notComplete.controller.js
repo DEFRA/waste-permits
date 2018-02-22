@@ -17,6 +17,8 @@ module.exports = class NotCompleteController extends BaseController {
 
     pageContext.taskListRoute = Constants.Routes.TASK_LIST.path
 
-    return reply.view('error/notComplete', pageContext)
+    return reply
+      .view('error/notComplete', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 }

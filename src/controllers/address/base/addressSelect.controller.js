@@ -46,7 +46,9 @@ module.exports = class AddressSelectController extends BaseController {
     pageContext.changePostcodeLink = this.getPostcodeRoute()
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return reply.view('address/selectAddress', pageContext)
+    return reply
+      .view('address/selectAddress', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
@@ -63,7 +65,9 @@ module.exports = class AddressSelectController extends BaseController {
       }
       await this.getModel().saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
 
-      return reply.redirect(Constants.Routes.TASK_LIST.path)
+      return reply
+        .redirect(Constants.Routes.TASK_LIST.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }
