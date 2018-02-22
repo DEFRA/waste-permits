@@ -29,6 +29,7 @@ let fakeCompany
 
 const routePath = '/permit-holder/company/wrong-type'
 const nextRoutePath = '/permit-holder/company/status-not-active'
+const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
   fakeAccount = {
@@ -147,7 +148,7 @@ lab.experiment('Check company type page tests:', () => {
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })

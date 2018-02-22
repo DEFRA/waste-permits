@@ -24,11 +24,7 @@ let fakeAccount
 let fakeApplication
 
 const routePath = '/permit-holder/company/number'
-<<<<<<< HEAD
-const nextRoutePath = '/permit-holder/company/status-not-active'
-=======
 const nextRoutePath = '/permit-holder/company/wrong-type'
->>>>>>> f2a422b6d61755ad3ba19b6e25fce02706d5026a
 const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
