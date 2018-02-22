@@ -24,7 +24,7 @@ let fakeAccount
 let fakeApplication
 
 const routePath = '/permit-holder/company/number'
-const nextRoutePath = '/permit-holder/company/status-not-active'
+const nextRoutePath = '/permit-holder/company/wrong-type'
 const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
@@ -88,7 +88,7 @@ lab.experiment('Get company number page tests:', () => {
         payload: {}
       }
 
-      Account.getByApplicationId = (authToken, applicationId) => Promise.resolve(new Account(fakeAccount))
+      Account.getByApplicationId = () => Promise.resolve(new Account(fakeAccount))
 
       accountSaveStub = Account.prototype.save
       Account.prototype.save = () => new Account(fakeAccount)
@@ -150,7 +150,7 @@ lab.experiment('Get company number page tests:', () => {
       })
 
       lab.test('when account is updated', async () => {
-        Account.getByApplicationId = (authToken, applicationId) => Promise.resolve(new Account(fakeAccount))
+        Account.getByApplicationId = () => Promise.resolve(new Account(fakeAccount))
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)

@@ -53,7 +53,7 @@ module.exports = class CompanyNumberController extends BaseController {
       }
 
       return reply
-        .redirect(Constants.Routes.COMPANY_CHECK_STATUS.path)
+        .redirect(Constants.Routes.COMPANY_CHECK_TYPE.path)
         .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
