@@ -5,9 +5,7 @@ const Route = require('./baseRoute')
 const ContactDetailsController = require('../controllers/contactDetails.controller')
 const ContactDetailsValidator = require('../validators/contactDetails.validator')
 
-const validator = new ContactDetailsValidator({
-  telephone: {min: 10, max: 15}
-})
+const validator = new ContactDetailsValidator()
 
 const controller = new ContactDetailsController(Constants.Routes.CONTACT_DETAILS, validator)
 

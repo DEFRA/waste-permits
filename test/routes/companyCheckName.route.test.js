@@ -47,7 +47,7 @@ const fakeCompanyData = {
 
 const fakeAccountData = {
   companyNumber: fakeCompanyData.companyNumber,
-  name: fakeCompanyData.name
+  accountName: fakeCompanyData.name
 }
 
 lab.beforeEach(() => {
@@ -133,7 +133,7 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
     }
 
     element = doc.getElementById('company-name').firstChild
-    Code.expect(element.nodeValue).to.equal(fakeAccountData.name)
+    Code.expect(element.nodeValue).to.equal(fakeAccountData.accountName)
 
     element = doc.getElementById('company-address').firstChild
     Code.expect(element.nodeValue).to.equal(fakeCompanyData.address)

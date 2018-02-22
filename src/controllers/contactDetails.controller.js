@@ -33,7 +33,7 @@ module.exports = class ContactDetailsController extends BaseController {
         if (application.agentId) {
           const account = await Account.getById(authToken, application.agentId)
           pageContext.formValues['is-contact-an-agent'] = true
-          pageContext.formValues['agent-company'] = account.name
+          pageContext.formValues['agent-company'] = account.accountName
         }
       }
     }
@@ -81,7 +81,7 @@ module.exports = class ContactDetailsController extends BaseController {
       // The agent company or trading name is only set if the corresponding checkbox is ticked
       if (isAgent) {
         const account = application.agentId ? await Account.getById(authToken, application.agentId) : new Account()
-        account.name = agentCompany
+        account.accountName = agentCompany
         await account.save(authToken)
         application.agentId = account.id
       } else {

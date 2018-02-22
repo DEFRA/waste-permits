@@ -7,29 +7,29 @@ const Code = require('code')
 const BaseModel = require('../../src/models/base.model')
 
 class Model extends BaseModel {
-  static mapping () {
+  static get entity () {
+    return 'accounts'
+  }
+
+  static get mapping () {
     return [
       {field: 'id', dynamics: 'dynamicsId'},
       {field: 'otherId', dynamics: '_dynamicsOtherId_value', bind: {id: 'dynamicsOtherId', relationship: 'dynamicsOtherModelDynamicsOtherId', entity: 'dynamicsOtherModel'}},
-      {field: 'name', dynamics: 'dynamicsName'},
+      {field: 'modelName', dynamics: 'dynamicsName', length: {max: 15, min: 10}},
       {field: 'dob.month', dynamics: 'dynamicsDobMonth'},
       {field: 'dob.year', dynamics: 'dynamicsDobYear'},
       {field: 'ref', dynamics: 'dynamicsRef', readOnly: true},
       {field: 'regime', dynamics: 'dynamicsRegime', constant: 'REGIME'}
     ]
   }
-
-  constructor (...args) {
-    super(...args)
-    this._entity = 'accounts'
-  }
 }
 
+Model.setDefinitions()
+
 const modelData = {
-  _entity: 'accounts',
   id: 'ID',
   otherId: 'OTHERID',
-  name: 'NAME',
+  modelName: 'MODEL_NAME',
   dob: {
     month: 'MONTH',
     year: 'YEAR'
@@ -41,7 +41,7 @@ const modelData = {
 const dynamicsRequestData = {
   dynamicsId: 'ID',
   'dynamicsOtherId@odata.bind': 'dynamicsOtherModel(OTHERID)',
-  dynamicsName: 'NAME',
+  dynamicsName: 'MODEL_NAME',
   dynamicsDobMonth: 'MONTH',
   dynamicsDobYear: 'YEAR',
   dynamicsRegime: 'REGIME'
@@ -50,7 +50,7 @@ const dynamicsRequestData = {
 const dynamicsReplyData = {
   dynamicsId: 'ID',
   '_dynamicsOtherId_value': 'OTHERID',
-  dynamicsName: 'NAME',
+  dynamicsName: 'MODEL_NAME',
   dynamicsDobMonth: 'MONTH',
   dynamicsDobYear: 'YEAR',
   dynamicsRef: 'REF'
@@ -74,7 +74,7 @@ lab.experiment('Base Model tests:', () => {
 
   lab.test('toString() method serialises  test model object correctly', () => {
     const model = new Model(modelData)
-    Code.expect(model.toString()).to.equal('Model: {\n  "id": "ID", "otherId": "OTHERID", "name": "NAME", "dob": {\n  "month": "MONTH", "year": "YEAR"\n}, "ref": "REF", "regime": "REGIME"\n}')
+    Code.expect(model.toString()).to.equal('Model: {\n  "id": "ID", "otherId": "OTHERID", "modelName": "MODEL_NAME", "dob": {\n  "month": "MONTH", "year": "YEAR"\n}, "ref": "REF", "regime": "REGIME"\n}')
   })
 
   lab.test('isNew() correctly identifies if the instance has a Dynamics ID', () => {
@@ -87,9 +87,35 @@ lab.experiment('Base Model tests:', () => {
     Code.expect(modelObject.isNew()).to.be.false()
   })
 
-  lab.test('modelToDynamics() method converts the model to dynamics data', () => {
+  lab.test('modelToDynamics() method successfully converts the model to dynamics data', () => {
     const model = new Model(modelData)
     Code.expect(model.modelToDynamics()).to.equal(dynamicsRequestData)
+  })
+
+  lab.experiment('modelToDynamics() method fails to convert the model to dynamics data', () => {
+    lab.test('when a field value is too long', () => {
+      const model = new Model(modelData)
+      model.modelName = 'NAME_IS_FAR_TO_LONG'
+      let message
+      try {
+        model.modelToDynamics()
+      } catch (error) {
+        message = error.message
+      }
+      Code.expect(message).to.equal(`Model.modelName exceeds maximum length of ${Model.modelName.length.max} characters`)
+    })
+
+    lab.test('when a field value is too short', () => {
+      const model = new Model(modelData)
+      model.modelName = 'TOO_SHORT'
+      let message
+      try {
+        model.modelToDynamics()
+      } catch (error) {
+        message = error.message
+      }
+      Code.expect(message).to.equal(`Model.modelName does not meet minimum length of ${Model.modelName.length.min} characters`)
+    })
   })
 
   lab.test('dynamicsToModel() method converts the dynamics data to the model', () => {

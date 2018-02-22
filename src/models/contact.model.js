@@ -6,22 +6,21 @@ const BaseModel = require('./base.model')
 const Application = require('./application.model')
 const LoggingService = require('../services/logging.service')
 
-module.exports = class Contact extends BaseModel {
-  static mapping () {
+class Contact extends BaseModel {
+  static get entity () {
+    return 'contacts'
+  }
+
+  static get mapping () {
     return [
       {field: 'id', dynamics: 'contactid'},
-      {field: 'firstName', dynamics: 'firstname'},
-      {field: 'lastName', dynamics: 'lastname'},
-      {field: 'email', dynamics: 'emailaddress1'},
+      {field: 'firstName', dynamics: 'firstname', length: {max: 50}},
+      {field: 'lastName', dynamics: 'lastname', length: {max: 50}},
+      {field: 'email', dynamics: 'emailaddress1', length: {max: 100}},
       {field: 'dob.day', dynamics: 'defra_dateofbirthdaycompanieshouse', readOnly: true},
       {field: 'dob.month', dynamics: 'defra_dobmonthcompanieshouse', readOnly: true},
       {field: 'dob.year', dynamics: 'defra_dobyearcompanieshouse', readOnly: true}
     ]
-  }
-
-  constructor (...args) {
-    super(...args)
-    this._entity = 'contacts'
   }
 
   static async getById (authToken, id) {
@@ -95,3 +94,7 @@ module.exports = class Contact extends BaseModel {
     await super.save(authToken, dataObject)
   }
 }
+
+Contact.setDefinitions()
+
+module.exports = Contact

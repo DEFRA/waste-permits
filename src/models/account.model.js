@@ -6,20 +6,19 @@ const Application = require('./application.model')
 const LoggingService = require('../services/logging.service')
 const Utilities = require('../utilities/utilities')
 
-module.exports = class Account extends BaseModel {
-  static mapping () {
+class Account extends BaseModel {
+  static get entity () {
+    return 'accounts'
+  }
+
+  static get mapping () {
     return [
       {field: 'id', dynamics: 'accountid'},
-      {field: 'companyNumber', dynamics: 'defra_companyhouseid'},
-      {field: 'name', dynamics: 'name'},
+      {field: 'companyNumber', dynamics: 'defra_companyhouseid', length: {max: 8, min: 8}},
+      {field: 'accountName', dynamics: 'name', length: {max: 160}},
       {field: 'isDraft', dynamics: 'defra_draft'},
       {field: 'isValidatedWithCompaniesHouse', dynamics: 'defra_validatedwithcompanyhouse'}
     ]
-  }
-
-  constructor (...args) {
-    super(...args)
-    this._entity = 'accounts'
   }
 
   static async getById (authToken, id) {
@@ -87,3 +86,7 @@ module.exports = class Account extends BaseModel {
     }
   }
 }
+
+Account.setDefinitions()
+
+module.exports = Account

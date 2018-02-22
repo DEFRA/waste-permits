@@ -83,7 +83,7 @@ module.exports = class UploadController extends BaseController {
 
       const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
       const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-      const {name: applicationReference} = await Application.getById(authToken, applicationId)
+      const {applicationName: applicationReference} = await Application.getById(authToken, applicationId)
       const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
       // create temporary uploads directory

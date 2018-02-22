@@ -11,7 +11,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
     const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
     const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const application = await Application.getById(authToken, applicationId)
-    pageContext.applicationName = application.name
+    pageContext.applicationName = application.applicationName
 
     return reply
       .view('applicationReceived', pageContext)

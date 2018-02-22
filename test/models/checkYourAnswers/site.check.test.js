@@ -13,7 +13,7 @@ const GRID_REFERENCE_LINE = 1
 const SITE_ADDRESS_LINE = 2
 
 const fakeLocation = {
-  name: 'SITE_NAME'
+  siteName: 'SITE_NAME'
 }
 const fakeLocationDetail = {
   gridReference: 'GRID_REFERENCE'
@@ -66,8 +66,8 @@ lab.experiment('Site Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const {answer, answerId} = answers.pop()
-      const {name} = fakeLocation
-      Code.expect(answer).to.equal(name)
+      const {siteName} = fakeLocation
+      Code.expect(answer).to.equal(siteName)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
       const {link, linkId, linkType} = links.pop()

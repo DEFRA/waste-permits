@@ -21,13 +21,13 @@ const _customValidate = async (data, errors, validators, errorMessages) => {
   const errorList = (await Promise.all(Object.keys(validators)
     .filter((field) => !requiredFields[field])
     .map(async (field) => Promise.all(Object.keys(validators[field])
-        .map(async (type) => {
-          const validatorFunction = validators[field][type]
-          const result = await validatorFunction(data[field] || '', data)
-          if (result) {
-            return ({message: errorMessages[field][type], path: [field], type})
-          }
-        })
+      .map(async (type) => {
+        const validatorFunction = validators[field][type]
+        const result = await validatorFunction(data[field] || '', data)
+        if (result) {
+          return ({message: errorMessages[field][type], path: [field], type})
+        }
+      })
     ))
   ))
 

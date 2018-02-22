@@ -19,7 +19,7 @@ let sandbox
 let testAddressDetail
 const fakeAddressDetailData = {
   email: 'EMAIL',
-  telephone: 'TELEPHONE',
+  telephone: 'PHONE_NUMBER',
   type: 'TYPE',
   name: 'NAME',
   applicationId: 'APPLICATION_ID',

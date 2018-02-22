@@ -2,8 +2,7 @@
 
 const Joi = require('joi')
 const BaseValidator = require('../../base.validator')
-
-const DECLARED_DETAILS_MAX_LENGTH = 2000
+const Application = require('../../../models/application.model')
 
 module.exports = class BankruptcyValidator extends BaseValidator {
   constructor () {
@@ -17,13 +16,13 @@ module.exports = class BankruptcyValidator extends BaseValidator {
       'declaration-details': {
         'any.empty': `Enter details of the bankruptcy or insolvency`,
         'any.required': `Enter details of the bankruptcy or insolvency`,
-        'string.max': `You can only enter ${DECLARED_DETAILS_MAX_LENGTH.toLocaleString()} characters - please shorten what you’ve written`
+        'string.max': `You can only enter ${Application.bankruptcyDetails.length.max.toLocaleString()} characters - please shorten what you’ve written`
       }
     }
   }
 
   getDeclaredDetailsMaxLength () {
-    return DECLARED_DETAILS_MAX_LENGTH
+    return Application.bankruptcyDetails.length.max
   }
 
   getFormValidators () {
@@ -32,7 +31,7 @@ module.exports = class BankruptcyValidator extends BaseValidator {
         .required(),
       'declaration-details': Joi
         .string()
-        .max(DECLARED_DETAILS_MAX_LENGTH)
+        .max(Application.bankruptcyDetails.length.max)
         .when('declared', {
           is: 'yes',
           then: Joi.required() })

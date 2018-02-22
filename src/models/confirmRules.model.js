@@ -6,8 +6,8 @@ const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
 const ApplicationLine = require('./applicationLine.model')
 
-module.exports = class ConfirmRules extends BaseModel {
-  static mapping () {
+class ConfirmRules extends BaseModel {
+  static get mapping () {
     return [
       {field: 'applicationId', dynamics: 'accountid'},
       {field: 'applicationLineId', dynamics: 'defra_companyhouseid'},
@@ -55,3 +55,7 @@ module.exports = class ConfirmRules extends BaseModel {
     }
   }
 }
+
+ConfirmRules.setDefinitions()
+
+module.exports = ConfirmRules

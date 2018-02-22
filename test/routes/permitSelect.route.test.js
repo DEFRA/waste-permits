@@ -23,7 +23,7 @@ const nextRoutePath = '/task-list'
 
 const fakeStandardRule = {
   id: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
-  name: 'Metal recycling, vehicle storage, depollution and dismantling facility',
+  permitName: 'Metal recycling, vehicle storage, depollution and dismantling facility',
   limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
   code: 'SR2015 No 18',
   codeForId: 'sr2015-no-18'
