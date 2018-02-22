@@ -2,8 +2,7 @@
 
 const Joi = require('joi')
 const BaseValidator = require('./base.validator')
-
-const COMPANY_NAME_MAX_LENGTH = 170
+const Application = require('../models/application.model')
 
 module.exports = class CompanyCheckNameValidator extends BaseValidator {
   constructor () {
@@ -13,7 +12,7 @@ module.exports = class CompanyCheckNameValidator extends BaseValidator {
       'business-trading-name': {
         'any.empty': `Enter a business trading name`,
         'any.required': `Enter a business trading name`,
-        'string.max': `Enter a shorter trading name with no more than 170 characters`
+        'string.max': `Enter a shorter trading name with no more than ${Application.tradingName.length.max} characters`
       }
     }
   }
@@ -22,7 +21,7 @@ module.exports = class CompanyCheckNameValidator extends BaseValidator {
     return {
       'business-trading-name': Joi
         .string()
-        .max(COMPANY_NAME_MAX_LENGTH)
+        .max(Application.tradingName.length.max)
         .when('use-business-trading-name', {
           is: 'on',
           then: Joi.required() })

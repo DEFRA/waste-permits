@@ -14,7 +14,7 @@ let dynamicsUpdateStub
 
 let testLocation
 const fakeLocationData = {
-  name: 'THE_SITE_NAME',
+  siteName: 'THE_SITE_NAME',
   applicationId: 'APPLICATION_ID'
 }
 const testLocationId = 'LOCATION_ID'
@@ -32,7 +32,7 @@ lab.beforeEach(() => {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
       value: [{
         '@odata.etag': 'W/"1234567"',
-        defra_name: fakeLocationData.name,
+        defra_name: fakeLocationData.siteName,
         defra_locationid: fakeLocationData.applicationId
       }]
     }
@@ -55,9 +55,9 @@ lab.afterEach(() => {
 lab.experiment('Location Model tests:', () => {
   lab.test('Constructor creates a Location object correctly', () => {
     const emptyLocation = new Location({})
-    Code.expect(emptyLocation.name).to.be.undefined()
+    Code.expect(emptyLocation.siteName).to.be.undefined()
 
-    Code.expect(testLocation.name).to.equal(fakeLocationData.name)
+    Code.expect(testLocation.siteName).to.equal(fakeLocationData.siteName)
     Code.expect(testLocation.applicationId).to.equal(fakeLocationData.applicationId)
   })
 
@@ -65,7 +65,7 @@ lab.experiment('Location Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const site = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
-    Code.expect(site.name).to.equal(fakeLocationData.name)
+    Code.expect(site.siteName).to.equal(fakeLocationData.siteName)
   })
 
   lab.test('save() method saves a new Location object', async () => {

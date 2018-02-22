@@ -11,7 +11,7 @@ const PermitCheck = require('../../../src/models/checkYourAnswers/permit.check')
 
 const fakeStandardRule = {
   code: 'STANDARD_RULE_CODE',
-  name: 'STANDARD_RULE_NAME'
+  permitName: 'STANDARD_RULE_NAME'
 }
 
 const prefix = 'section-permit'
@@ -38,8 +38,8 @@ lab.experiment('Permit Check tests:', () => {
     Code.expect(headingId).to.equal(`${prefix}-heading`)
 
     const {answer, answerId} = answers.pop()
-    const {code, name} = fakeStandardRule
-    Code.expect(answer).to.equal(`${name} ${code}`)
+    const {code, permitName} = fakeStandardRule
+    Code.expect(answer).to.equal(`${permitName} ${code}`)
     Code.expect(answerId).to.equal(`${prefix}-answer`)
 
     const {link, linkId, linkType} = links.pop()

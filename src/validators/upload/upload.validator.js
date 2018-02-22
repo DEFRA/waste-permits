@@ -2,6 +2,7 @@
 
 const Joi = require('joi')
 const BaseValidator = require('../base.validator')
+const Annotation = require('../../models/annotation.model')
 
 module.exports = class UploadValidator extends BaseValidator {
   constructor (options) {
@@ -16,6 +17,7 @@ module.exports = class UploadValidator extends BaseValidator {
 
     this.errorMessages = {
       'file': {
+        'custom.max.filename': `That file’s name is greater than ${Annotation.filename.length.max} characters - please rename the file with a shorter name before uploading it again.`,
         'custom.empty': 'Choose and upload a file',
         'fileTooBig': `That file’s too big. Upload a file that’s no more than ${this.getMaxSize()}.`,
         'duplicateFile': `That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.`,
@@ -47,6 +49,7 @@ module.exports = class UploadValidator extends BaseValidator {
   customValidators () {
     return {
       'file': {
+        'custom.max.filename': ({hapi: {filename}}) => filename.length > Annotation.filename.length.max,
         'custom.empty': ({hapi: {filename}}, {'is-upload-file': isUpload}) => {
           return isUpload && !filename
         }

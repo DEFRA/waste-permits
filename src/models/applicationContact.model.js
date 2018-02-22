@@ -4,19 +4,18 @@ const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
 
-module.exports = class ApplicationContact extends BaseModel {
-  static mapping () {
+class ApplicationContact extends BaseModel {
+  static get entity () {
+    return 'defra_applicationcontacts'
+  }
+
+  static get mapping () {
     return [
       {field: 'id', dynamics: 'defra_applicationcontactid'},
       {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationid', entity: 'defra_applications'}},
       {field: 'contactId', dynamics: '_defra_contactid_value', bind: {id: 'defra_contactid', entity: 'contacts'}},
       {field: 'directorDob', dynamics: 'defra_dobcompanieshouse'}
     ]
-  }
-
-  constructor (...args) {
-    super(...args)
-    this._entity = 'defra_applicationcontacts'
   }
 
   static async get (authToken, applicationId, contactId) {
@@ -40,3 +39,7 @@ module.exports = class ApplicationContact extends BaseModel {
     await super.save(authToken, dataObject)
   }
 }
+
+ApplicationContact.setDefinitions()
+
+module.exports = ApplicationContact

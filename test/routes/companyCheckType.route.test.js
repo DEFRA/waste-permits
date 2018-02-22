@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
@@ -57,7 +58,7 @@ lab.beforeEach(() => {
   CompanyLookupService.getActiveDirectors = () => [{}]
 
   getByApplicationIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => undefined
+  Account.getByApplicationId = () => fakeAccount
 })
 
 lab.afterEach(() => {
@@ -70,6 +71,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Check company type page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test(false, true)
+
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest

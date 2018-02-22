@@ -15,10 +15,10 @@ module.exports = class PermitCheck extends BaseCheck {
   }
 
   async getPermitLine () {
-    const {code = '', name = ''} = await this.getStandardRule()
+    const {code = '', permitName = ''} = await this.getStandardRule()
     return this.buildLine({
       heading: 'Permit',
-      answers: [`${name} ${code}`],
+      answers: [`${permitName} ${code}`],
       links: [{path, type: 'contact details'}]
     })
   }

@@ -14,9 +14,8 @@ let applicationLineGetByIdStub
 
 const fakeStandardRule = {
   id: 'STANDARD_RULE_ID',
-  name: 'STANDARD_RULE_NAME',
+  permitName: 'STANDARD_RULE_NAME',
   limits: 'STANDARD_RULE_LIMITS',
-  _entity: 'defra_standardrules',
   code: 'SR2015 No 18',
   codeForId: 'sr2015-no-18',
   guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL'
@@ -27,7 +26,7 @@ const fakeDynamicsRecord = (options = {}) => {
   return {
     defra_limits: standardRule.limits,
     defra_code: standardRule.code,
-    defra_rulesnamegovuk: standardRule.name,
+    defra_rulesnamegovuk: standardRule.permitName,
     defra_standardruleid: standardRule.id,
     defra_guidanceurl: standardRule.guidanceUrl
   }

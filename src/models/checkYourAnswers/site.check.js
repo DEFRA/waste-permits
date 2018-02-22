@@ -23,11 +23,11 @@ module.exports = class SiteCheck extends BaseCheck {
 
   async getSiteNameLine () {
     const {path} = SITE_NAME
-    const {name = ''} = await this.getLocation()
+    const {siteName = ''} = await this.getLocation()
     return this.buildLine({
       heading: 'Site name',
       prefix: 'name',
-      answers: [name],
+      answers: [siteName],
       links: [{path, type: 'site name'}]
     })
   }
