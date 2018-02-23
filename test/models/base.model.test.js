@@ -3,6 +3,8 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
+const LoggingService = require('../../src/services/logging.service')
 
 const BaseModel = require('../../src/models/base.model')
 
@@ -55,13 +57,18 @@ const dynamicsReplyData = {
   dynamicsDobYear: 'YEAR',
   dynamicsRef: 'REF'
 }
+let sandbox
 
 lab.beforeEach(() => {
-
+  // Create a sinon sandbox
+  sandbox = sinon.createSandbox()
+  // Stub the asynchronous model methods
+  sandbox.stub(LoggingService, 'logError').value(() => {})
 })
 
 lab.afterEach(() => {
-
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Base Model tests:', () => {
@@ -140,5 +147,38 @@ lab.experiment('Base Model tests:', () => {
     await model._deleteBoundReferences(dynamicsDal)
     Code.expect(searchQuery).to.equal('accounts(ID)?$select=_dynamicsOtherId_value')
     Code.expect(deleteQuery).to.equal('dynamicsOtherModel(OTHERID)/dynamicsOtherModelDynamicsOtherId(ID)/$ref')
+  })
+
+  lab.experiment('readOnly property on model set to true should', () => {
+    const entity = 'read_only_entity'
+    class ReadOnlyModel extends BaseModel {
+      static get entity () {
+        return entity
+      }
+      static get readOnly () {
+        return true
+      }
+    }
+    const model = new ReadOnlyModel(modelData)
+
+    lab.test('prevent saving', async () => {
+      let message
+      try {
+        await model.save()
+      } catch (error) {
+        message = error.message
+      }
+      Code.expect(message).to.equal(`Unable to save ${entity}: Read only!`)
+    })
+
+    lab.test('prevent deletion', async () => {
+      let message
+      try {
+        await model.delete()
+      } catch (error) {
+        message = error.message
+      }
+      Code.expect(message).to.equal(`Unable to delete ${entity}: Read only!`)
+    })
   })
 })

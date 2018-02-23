@@ -12,12 +12,17 @@ class StandardRule extends BaseModel {
     return 'defra_standardrules'
   }
 
+  static get readOnly () {
+    return true
+  }
+
   static get mapping () {
     return [
       {field: 'id', dynamics: 'defra_standardruleid'},
       {field: 'permitName', dynamics: 'defra_rulesnamegovuk'},
       {field: 'limits', dynamics: 'defra_limits'},
       {field: 'code', dynamics: 'defra_code'},
+      {field: 'wamitabRiskLevel', dynamics: 'defra_wamitabrisklevel'},
       {field: 'guidanceUrl', dynamics: 'defra_guidanceurl'}
     ]
   }
