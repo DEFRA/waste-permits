@@ -1,7 +1,7 @@
 const config = require('./config')
 
 const cookieOptions = {
-  ttl: undefined,          // Session lifespan (deleted when browser closed)
+  ttl: undefined,           // Session lifespan (deleted when browser closed)
   isSecure: true,           // Secure
   isHttpOnly: true,         // and non-secure
   isSameSite: 'Strict',     // Don't attach cookies on cross-site requests, preventing CSRF attacks
@@ -10,7 +10,8 @@ const cookieOptions = {
     password: config.cookieValidationPassword
   },
   clearInvalid: false,      // Remove invalid cookies
-  strictHeader: true        // Don't allow violations of RFC 6265
+  strictHeader: true,       // Don't allow violations of RFC 6265,
+  ignoreErrors: true        // Errors are ignored and treated as missing cookies
 }
 
 module.exports = { options: cookieOptions }
