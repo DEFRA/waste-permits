@@ -24,7 +24,7 @@
 
           {{#each taskList.sections}}
           <li>
-            <h2 class="task-list-section">
+            <h2 id="{{this.id}}" class="task-list-section">
               <span id="{{this.id}}-number" class="task-list-section-number">{{this.sectionNumber}}. </span><span id="{{this.id}}-heading">{{this.sectionName}}</span>
             </h2>
 
