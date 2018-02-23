@@ -58,7 +58,9 @@ module.exports = class BaseController {
       // Validate the cookie
       const cookieValidationResult = await CookieService.validateCookie(request)
 
-      if (cookieValidationResult === COOKIE_RESULT.COOKIE_NOT_FOUND || cookieValidationResult === COOKIE_RESULT.COOKIE_EXPIRED) {
+      if (cookieValidationResult === COOKIE_RESULT.COOKIE_NOT_FOUND) {
+        return reply.redirect(Constants.Routes.ERROR.START_AT_BEGINNING.path)
+      } else if (cookieValidationResult === COOKIE_RESULT.COOKIE_EXPIRED) {
         return reply.redirect(Constants.Routes.ERROR.TIMEOUT.path)
       } else if (cookieValidationResult === COOKIE_RESULT.APPLICATION_NOT_FOUND) {
         return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
