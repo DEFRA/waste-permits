@@ -76,6 +76,17 @@ lab.experiment('Technical Management Qualification tests:', () => {
       doc = parser.parseFromString(res.payload, 'text/html')
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What evidence of technical competence do you have?')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+      Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
+
+      Code.expect(doc.getElementById('page-description-paragagraph-1')).to.exist()
+      Code.expect(doc.getElementById('page-description-paragagraph-2')).to.exist()
+
+      // Test dynamic html contents
+      Code.expect(doc.getElementById('wamitab').getAttribute('value')).to.equal(`${Qualification.WAMITAB_QUALIFICATION.TYPE}`)
+      Code.expect(doc.getElementById('getting-qualification').getAttribute('value')).to.equal(`${Qualification.REGISTERED_ON_A_COURSE.TYPE}`)
+      Code.expect(doc.getElementById('deemed').getAttribute('value')).to.equal(`${Qualification.DEEMED_COMPETENCE.TYPE}`)
+      Code.expect(doc.getElementById('esa-eu').getAttribute('value')).to.equal(`${Qualification.ESA_EU_SKILLS.TYPE}`)
+
       return doc
     }
 

@@ -11,17 +11,17 @@
 
       {{> common/pageHeading pageHeading }}
 
-      <p>
+      <p id="page-description-paragagraph-1">
         To prove you are able to manage your operations correctly, you must upload evidence of technical competence
         qualifications.
       </p>
-      <p>
+      <p id="page-description-paragagraph-2">
         These could be Waste Management Industry Training and Advisory Board ({{> abbreviations/WAMITAB }}) certificates, Environmental
         Permitting Operator's Certificates ({{> abbreviations/EPOC }}) or an Energy & Utility Skills / Environmental Services Association
         ({{> abbreviations/ESA }}) Competence Management System.
       </p>
 
-      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <div class="form-group {{#getFormErrorGroupClass errors.technical-qualification}}{{/getFormErrorGroupClass}}">
