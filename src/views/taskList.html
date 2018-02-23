@@ -13,7 +13,7 @@
       </h1>
 
       <p class="text">
-        <span id="standard-rule-name-and-code">{{standardRule.name}} - {{standardRule.code}}</span><br>
+        <span id="standard-rule-name-and-code">{{standardRule.permitName}} - {{standardRule.code}}</span><br>
         <a id="select-a-different-permit" class="font-small" href="{{ permitCategoryRoute }}">Select a different permit</a>
       </p>
 
@@ -24,7 +24,7 @@
 
           {{#each taskList.sections}}
           <li>
-            <h2 class="task-list-section">
+            <h2 id="{{this.id}}" class="task-list-section">
               <span id="{{this.id}}-number" class="task-list-section-number">{{this.sectionNumber}}. </span><span id="{{this.id}}-heading">{{this.sectionName}}</span>
             </h2>
 
