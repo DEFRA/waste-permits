@@ -6,7 +6,8 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-const timeoutPath = '/errors/timeout'
+const cookieNotFoundPath = '/errors/order/start-at-beginning'
+const cookieTimeoutPath = '/errors/timeout'
 
 let getRequest, postRequest
 
@@ -41,7 +42,7 @@ module.exports = class GeneralTestHelper {
 
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(timeoutPath)
+          Code.expect(res.headers['location']).to.equal(cookieNotFoundPath)
         })
 
         lab.test(`GET ${routePath} redirects to timeout screen when the cookie has expired`, async () => {
@@ -49,7 +50,7 @@ module.exports = class GeneralTestHelper {
 
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(timeoutPath)
+          Code.expect(res.headers['location']).to.equal(cookieTimeoutPath)
         })
       }
 
@@ -59,7 +60,7 @@ module.exports = class GeneralTestHelper {
 
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(timeoutPath)
+          Code.expect(res.headers['location']).to.equal(cookieNotFoundPath)
         })
 
         lab.test(`POST ${routePath} redirects to timeout screen when the cookie has expired`, async () => {
@@ -67,7 +68,7 @@ module.exports = class GeneralTestHelper {
 
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(timeoutPath)
+          Code.expect(res.headers['location']).to.equal(cookieTimeoutPath)
         })
       }
 
