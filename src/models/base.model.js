@@ -193,10 +193,14 @@ module.exports = class BaseModel {
         // check the value in the field meets the length constraints if applicable
         if (length && typeof value === 'string') {
           if (length.max && value.length > length.max) {
-            throw new Error(`${name}.${field} exceeds maximum length of ${length.max} characters`)
+            const errorMessage = `${name}.${field} exceeds maximum length of ${length.max} characters`
+            LoggingService.logError(errorMessage)
+            throw new Error(errorMessage)
           }
           if (length.min && value.length < length.min) {
-            throw new Error(`${name}.${field} does not meet minimum length of ${length.min} characters`)
+            const errorMessage = `${name}.${field} does not meet minimum length of ${length.min} characters`
+            LoggingService.logError(errorMessage)
+            throw new Error(errorMessage)
           }
         }
         if (bind) {
@@ -276,7 +280,12 @@ module.exports = class BaseModel {
   }
 
   async save (authToken = undefined, dataObject) {
-    const {entity} = this.constructor
+    const {entity, readOnly} = this.constructor
+    if (readOnly) {
+      const errorMessage = `Unable to save ${entity}: Read only!`
+      LoggingService.logError(errorMessage)
+      throw new Error(errorMessage)
+    }
     if (!authToken) {
       const errorMessage = `Unable to save ${entity}: Auth Token not supplied`
       LoggingService.logError(errorMessage)
@@ -302,7 +311,12 @@ module.exports = class BaseModel {
   }
 
   async delete (authToken = undefined, id) {
-    const {entity} = this.constructor
+    const {entity, readOnly} = this.constructor
+    if (readOnly) {
+      const errorMessage = `Unable to delete ${entity}: Read only!`
+      LoggingService.logError(errorMessage)
+      throw new Error(errorMessage)
+    }
     if (!authToken) {
       const errorMessage = `Unable to delete ${entity}: Auth Token not supplied`
       LoggingService.logError(errorMessage)

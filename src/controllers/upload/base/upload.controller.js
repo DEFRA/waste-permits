@@ -35,6 +35,10 @@ module.exports = class UploadController extends BaseController {
     pageContext.maxSize = this.validator.getMaxSize()
     pageContext.subject = this.subject
 
+    if (this.getSpecificPageContext) {
+      Object.assign(pageContext, await this.getSpecificPageContext(request))
+    }
+
     return reply
       .view(this.view, pageContext)
       .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
