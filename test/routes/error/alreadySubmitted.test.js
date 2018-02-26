@@ -1,4 +1,5 @@
 'use strict'
+'use strict'
 
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
@@ -14,6 +15,7 @@ const {COOKIE_RESULT} = require('../../../src/constants')
 
 let validateCookieStub
 const routePath = '/errors/order/done-cant-go-back'
+const pageHeading = `You’ve sent your application so you can't go back and change it`
 
 let applicationGetByIdStub
 
@@ -47,7 +49,7 @@ lab.afterEach(() => {
   Application.getById = applicationGetByIdStub
 })
 
-lab.experiment('Already submitted page tests:', () => {
+lab.experiment('Already Submitted page tests:', () => {
   new GeneralTestHelper(lab, routePath).test(false, true)
 
   lab.test('The page should NOT have a back link', async () => {
@@ -69,7 +71,7 @@ lab.experiment('Already submitted page tests:', () => {
     const doc = parser.parseFromString(res.payload, 'text/html')
 
     let element = doc.getElementById('page-heading').firstChild
-    Code.expect(element.nodeValue).to.equal(`You’ve sent your application so you can't go back and change it`)
+    Code.expect(element.nodeValue).to.equal(pageHeading)
 
     const elementIds = [
       'paragraph-1',

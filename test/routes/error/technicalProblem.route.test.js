@@ -8,6 +8,13 @@ const server = require('../../../server')
 
 const routePath = '/errors/technical-problem'
 
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {},
+  payload: {}
+}
+
 lab.beforeEach(() => {
 
 })
@@ -24,7 +31,7 @@ lab.experiment('Technical Problem page tests:', () => {
       headers: {}
     }
 
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()

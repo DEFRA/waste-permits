@@ -9,6 +9,13 @@ const server = require('../../../server')
 const routePath = '/errors/timeout'
 const pageTitle = 'Your application has timed out'
 
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {},
+  payload: {}
+}
+
 lab.beforeEach(() => {
 
 })
@@ -19,14 +26,7 @@ lab.afterEach(() => {
 
 lab.experiment('Timeout page tests:', () => {
   lab.test('The page should NOT have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -37,13 +37,7 @@ lab.experiment('Timeout page tests:', () => {
   })
 
   lab.test(`GET ${routePath} returns the timeout page correctly`, async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
