@@ -304,9 +304,9 @@ lab.experiment('Address select page tests:', () => {
           [FORM_FIELD_ID.townOrCity]: longTownOrCity,
           [FORM_FIELD_ID.postcode]: longPostcode
         }
-        await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Enter a shorter building name or number with no more than 170 characters`, 0)
-        await checkValidationError(FORM_FIELD_ID.addressLine1, `Enter a shorter address line 1 with no more than 170 characters`, 1)
-        await checkValidationError(FORM_FIELD_ID.addressLine2, `Enter a shorter address line 2 with no more than 170 characters`, 2)
+        await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Enter a shorter building name or number with no more than 50 characters`, 0)
+        await checkValidationError(FORM_FIELD_ID.addressLine1, `Enter a shorter address line 1 with no more than 100 characters`, 1)
+        await checkValidationError(FORM_FIELD_ID.addressLine2, `Enter a shorter address line 2 with no more than 100 characters`, 2)
         await checkValidationError(FORM_FIELD_ID.townOrCity, `Enter a shorter town or city with no more than 70 characters`, 3)
         await checkValidationError(FORM_FIELD_ID.postcode, `Enter a shorter postcode with no more than 8 characters`, 4)
       })
