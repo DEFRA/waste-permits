@@ -12,14 +12,14 @@ class Address extends BaseModel {
   static get mapping () {
     return [
       {field: 'id', dynamics: 'defra_addressid'},
-      {field: 'buildingNameOrNumber', dynamics: 'defra_premises', length: {max: 170}},
-      {field: 'addressLine1', dynamics: 'defra_street', length: {max: 170}},
-      {field: 'addressLine2', dynamics: 'defra_locality', length: {max: 170}},
+      {field: 'buildingNameOrNumber', dynamics: 'defra_premises', length: {max: 50}},
+      {field: 'addressLine1', dynamics: 'defra_street', length: {max: 100}},
+      {field: 'addressLine2', dynamics: 'defra_locality', length: {max: 100}},
       {field: 'townOrCity', dynamics: 'defra_towntext', length: {max: 70}},
       {field: 'postcode', dynamics: 'defra_postcode', length: {max: 8}},
       {field: 'uprn', dynamics: 'defra_uprn', length: {max: 20}},
       {field: 'fromAddressLookup', dynamics: 'defra_fromaddresslookup'},
-      {field: 'fullAddress', dynamics: 'defra_name', length: {max: 600}}
+      {field: 'fullAddress', dynamics: 'defra_name', length: {max: 450}}
     ]
   }
 
