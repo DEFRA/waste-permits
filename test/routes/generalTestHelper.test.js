@@ -16,6 +16,11 @@ module.exports = class GeneralTestHelper {
     this.routePath = routePath
   }
 
+  static textContent (element) {
+    // Returns the trimmed text content of an element reducing the embedded whitespace to single spaces
+    return element.textContent.trim().replace(/\s+/g, ' ')
+  }
+
   test (excludeCookieGetTests = false, excludeCookiePostTests = false) {
     const {lab, routePath} = this
 
