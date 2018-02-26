@@ -2,6 +2,7 @@
 
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
+const Code = require('code')
 const sinon = require('sinon')
 
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
@@ -48,7 +49,22 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays expected static content',
+        test: (doc) => {
+          Code.expect(doc.getElementById('deemed-evidence-description-list-heading')).to.exist()
+          Code.expect(doc.getElementById('deemed-evidence-description-list')).to.exist()
+          Code.expect(doc.getElementById('deemed-evidence-description-list-item-1')).to.exist()
+          Code.expect(doc.getElementById('deemed-evidence-description-list-item-2')).to.exist()
+          Code.expect(doc.getElementById('deemed-evidence-description-list-item-3')).to.exist()
+          Code.expect(doc.getElementById('deemed-evidence-description-important-info')).to.exist()
+          Code.expect(doc.getElementById('deemed-evidence-description-important-info-abbr')).to.exist()
+          Code.expect(doc.getElementById('deemed-evidence-description-last-paragraph')).to.exist()
+        }
+      }
+    ])
     helper.getFailure()
   })
 

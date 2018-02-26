@@ -61,12 +61,28 @@ lab.experiment('Company Declare Upload Course registration tests:', () => {
       {
         title: 'displays WAMITAB medium or high risk information',
         stubs: () => (StandardRule.getByApplicationLineId = () => ({wamitabRiskLevel: WamitabRiskLevel.MEDIUM})),
-        test: (doc) => Code.expect(doc.getElementById('wamitab-risk-is-medium-or-high')).to.exist()
+        test: (doc) => {
+          Code.expect(doc.getElementById('wamitab-risk-is-medium-or-high')).to.exist()
+          Code.expect(doc.getElementById('wamitab-risk-is-medium-or-high-abbr')).to.exist()
+        }
       },
       {
         title: 'displays WAMITAB low risk information',
         stubs: () => (StandardRule.getByApplicationLineId = () => ({wamitabRiskLevel: WamitabRiskLevel.LOW})),
-        test: (doc) => Code.expect(doc.getElementById('wamitab-risk-is-low')).to.exist()
+        test: (doc) => {
+          Code.expect(doc.getElementById('wamitab-risk-is-low')).to.exist()
+        }
+      },
+      {
+        title: 'displays expected static content',
+        test: (doc) => {
+          Code.expect(doc.getElementById('course-registration-description-heading')).to.exist()
+          Code.expect(doc.getElementById('course-registration-description-heading-abbr-1')).to.exist()
+          Code.expect(doc.getElementById('course-registration-description-heading-abbr-2')).to.exist()
+          Code.expect(doc.getElementById('operator-competence-paragraph')).to.exist()
+          Code.expect(doc.getElementById('operator-competence-link')).to.exist()
+          Code.expect(doc.getElementById('operator-competence-link-abbr')).to.exist()
+        }
       }
     ])
     helper.getFailure()

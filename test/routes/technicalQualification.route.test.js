@@ -78,8 +78,22 @@ lab.experiment('Technical Management Qualification tests:', () => {
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
       Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
 
+      // Test static html exists
       Code.expect(doc.getElementById('page-description-paragagraph-1')).to.exist()
       Code.expect(doc.getElementById('page-description-paragagraph-2')).to.exist()
+      Code.expect(doc.getElementById('page-description-paragagraph-2-abbr-1')).to.exist()
+      Code.expect(doc.getElementById('page-description-paragagraph-2-abbr-2')).to.exist()
+      Code.expect(doc.getElementById('page-description-paragagraph-2-abbr-3')).to.exist()
+      Code.expect(doc.getElementById('wamitab-label')).to.exist()
+      Code.expect(doc.getElementById('wamitab-label-abbr-1')).to.exist()
+      Code.expect(doc.getElementById('wamitab-label-abbr-2')).to.exist()
+      Code.expect(doc.getElementById('getting-qualification-label')).to.exist()
+      Code.expect(doc.getElementById('getting-qualification-label-abbr-1')).to.exist()
+      Code.expect(doc.getElementById('getting-qualification-label-abbr-2')).to.exist()
+      Code.expect(doc.getElementById('deemed-label')).to.exist()
+      Code.expect(doc.getElementById('deemed-label-abbr')).to.exist()
+      Code.expect(doc.getElementById('esa-eu-label')).to.exist()
+      Code.expect(doc.getElementById('esa-eu-label-abbr')).to.exist()
 
       // Test dynamic html contents
       Code.expect(doc.getElementById('wamitab').getAttribute('value')).to.equal(`${Qualification.WAMITAB_QUALIFICATION.TYPE}`)
