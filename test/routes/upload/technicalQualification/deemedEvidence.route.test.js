@@ -2,6 +2,7 @@
 
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
+const Code = require('code')
 const sinon = require('sinon')
 
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
@@ -48,7 +49,16 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays correct course registration details',
+        test: (doc) => {
+          Code.expect(GeneralTestHelper.textContent(doc.getElementById('deemed-evidence-description')))
+            .to.equal('Upload evidence of one of these: deemed competence an Environment Agency assessment that they were a nominated manager under the transitional provisions for previously exempt activities and passed the general knowledge assessment. Also upload up-to-date relevant WAMITAB continuing competence certificates. You must pass a new continuing competence assessment every 2 years.')
+        }
+      }
+    ])
     helper.getFailure()
   })
 

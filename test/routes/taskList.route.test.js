@@ -205,7 +205,7 @@ const fakeTaskList = {
 const checkElement = (element, text, href) => {
   Code.expect(element).to.exist()
   if (text) {
-    Code.expect(element.lastChild.nodeValue.trim()).to.equal(text)
+    Code.expect(GeneralTestHelper.textContent(element)).to.equal(text)
   }
   if (href) {
     Code.expect(element.getAttribute('href')).to.equal(href)
@@ -291,7 +291,7 @@ lab.experiment('Task List page tests:', () => {
     const doc = parser.parseFromString(res.payload, 'text/html')
 
     // Check the existence of the page title and Standard Rule infos
-    checkElement(doc.getElementById('page-heading'), 'Apply for a standard rules waste permit')
+    checkElement(doc.getElementById('page-heading'), 'Task list: Apply for a standard rules waste permit')
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
     checkElement(doc.getElementById('standard-rule-name-and-code'), `${fakeStandardRule.permitName} - ${fakeStandardRule.code}`)
     checkElement(doc.getElementById('select-a-different-permit'))

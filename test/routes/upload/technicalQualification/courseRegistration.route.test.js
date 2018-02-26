@@ -67,6 +67,13 @@ lab.experiment('Company Declare Upload Course registration tests:', () => {
         title: 'displays WAMITAB low risk information',
         stubs: () => (StandardRule.getByApplicationLineId = () => ({wamitabRiskLevel: WamitabRiskLevel.LOW})),
         test: (doc) => Code.expect(doc.getElementById('wamitab-risk-is-low')).to.exist()
+      },
+      {
+        title: 'displays correct course registration details',
+        test: (doc) => {
+          Code.expect(GeneralTestHelper.textContent(doc.getElementById('course-registration-description')))
+            .to.equal('Upload the WAMITAB or EPOC course registration email or letter. You must complete the qualification within 4 weeks of starting operating. Check the WAMITAB risk tables (opens new tab) to find the qualifications needed for this permit.')
+        }
       }
     ])
     helper.getFailure()

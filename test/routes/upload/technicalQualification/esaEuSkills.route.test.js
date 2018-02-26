@@ -2,6 +2,7 @@
 
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
+const Code = require('code')
 const sinon = require('sinon')
 
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
@@ -48,7 +49,16 @@ lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays correct course registration details',
+        test: (doc) => {
+          Code.expect(GeneralTestHelper.textContent(doc.getElementById('esa-eu-skills-description')))
+            .to.equal('Upload a copy of the Competence Management System certificate. Check the certificate hasn\'t expired. They are valid for 3 years. If you’re getting a certificate, upload evidence of a contract with an accredited certification body. After 4 weeks you must have evidence of an agreed schedule for audit and certification and after 6 months evidence of a completed gap analysis audit. You must have a certified system within 12 months of starting operations at the site.')
+        }
+      }
+    ])
     helper.getFailure()
   })
 

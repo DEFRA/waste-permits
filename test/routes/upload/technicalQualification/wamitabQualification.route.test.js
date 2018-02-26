@@ -2,6 +2,7 @@
 
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
+const Code = require('code')
 const sinon = require('sinon')
 
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
@@ -48,7 +49,16 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays correct course registration details',
+        test: (doc) => {
+          Code.expect(GeneralTestHelper.textContent(doc.getElementById('wamitab-qualification-description')))
+            .to.equal('Upload copies of the certificates. If the qualification is over 2 years old, upload copies of the relevant continuing competence certificates as well. Check the WAMITAB risk tables (opens new tab) to make sure you have the correct qualification for this permit. We’ll use the WAMITAB database to check that the qualifications are valid.')
+        }
+      }
+    ])
     helper.getFailure()
   })
 
