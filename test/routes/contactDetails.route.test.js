@@ -161,11 +161,27 @@ lab.experiment('Contact details page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('page-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who should we contact about this application?')
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+      Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
 
-      element = doc.getElementById('submit-button').firstChild
-      Code.expect(element.nodeValue).to.equal('Continue')
+      // Test for the existence of expected static content
+      const elementIds = [
+        'first-name-label',
+        'last-name-label',
+        'is-contact-an-agent-label',
+        'agent-company-label',
+        'telephone-label',
+        'telephone-hint',
+        'email-heading',
+        'email-label',
+        'email-hint',
+        'company-secretary-email-label',
+        'company-secretary-email-hint',
+        'company-secretary-email-summary',
+        'company-secretary-email-description']
+
+      elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
     })
   })
 
