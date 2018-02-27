@@ -42,7 +42,7 @@ module.exports = class ConfirmRulesController extends BaseController {
     const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
 
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
       const complete = await this.isComplete(authToken, applicationId, applicationLineId)

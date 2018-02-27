@@ -157,7 +157,9 @@ lab.experiment('Check company type page tests:', () => {
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Account.getByApplicationId = () => Promise.reject(new Error('read failed'))
+        Account.getByApplicationId = () => {
+          throw new Error('read failed')
+        }
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)

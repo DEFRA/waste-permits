@@ -52,7 +52,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       pageContext.pageTitle = Constants.buildPageTitle(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate)
 
       // Change page title if there is an error using the following
-      if (errors && errors.data.details) {
+      if (errors && errors.details) {
         pageContext.pageTitle = `${Constants.PAGE_TITLE_ERROR_PREFIX} ${pageContext.pageTitle}`
       }
     }
@@ -83,7 +83,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     // Perform manual (non-Joi) validation of dynamic form content
     errors = await this._validateDynamicFormContent(request, directors)
 
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
       // Save Director dates of birth in their corresponding ApplicationContact record
@@ -132,22 +132,18 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (Object.keys(request.payload).length === 0) {
       const errorPath = 'director-dobs-not-entered'
       errors = {
-        data: {
-          details: [
-            {
-              message: `"${errorPath}" is required`,
-              path: [errorPath],
-              type: 'any.required',
-              context: { key: errorPath, label: errorPath }
-            }]
-        }
+        details: [
+          {
+            message: `"${errorPath}" is required`,
+            path: [errorPath],
+            type: 'any.required',
+            context: { key: errorPath, label: errorPath }
+          }]
       }
     } else {
       // Clear errors
       errors = {
-        data: {
-          details: []
-        }
+        details: []
       }
 
       // Validate the entered DOB for each director
@@ -158,7 +154,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
         if (dobDay === undefined) {
           // DOB day has not been entered
-          errors.data.details.push({
+          errors.details.push({
             message: `"${directorDobField}" is required`,
             path: [directorDobField],
             type: 'any.required',
@@ -171,7 +167,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
           dobDay = parseInt(dobDay)
           if (isNaN(dobDay) || dobDay < 1 || dobDay > daysInBirthMonth) {
             // DOB day is invalid
-            errors.data.details.push({
+            errors.details.push({
               message: `"${directorDobField}" is invalid`,
               path: [directorDobField],
               type: 'invalid',
@@ -182,7 +178,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       }
     }
 
-    if (errors.data.details.length === 0) {
+    if (errors && errors.details.length === 0) {
       errors = undefined
     }
 

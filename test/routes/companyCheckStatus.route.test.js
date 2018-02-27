@@ -58,6 +58,9 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
+  sandbox = sinon.createSandbox()
+
+  // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompany)
@@ -65,6 +68,7 @@ lab.beforeEach(() => {
   sandbox.stub(Account, 'getByApplicationId').value(() => fakeAccount)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Account.prototype, 'save').value(() => fakeAccount)
 })
 
 lab.afterEach(() => {
@@ -96,10 +100,6 @@ lab.experiment('Check company status page tests:', () => {
         headers: {},
         payload: {}
       }
-
-      Account.getByApplicationId = () => Promise.resolve(new Account(fakeAccount))
-
-      Account.prototype.save = () => new Account(fakeAccount)
     })
 
     lab.experiment('success', () => {
@@ -154,7 +154,9 @@ lab.experiment('Check company status page tests:', () => {
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Account.getByApplicationId = () => Promise.reject(new Error('read failed'))
+        Account.getByApplicationId = () => {
+          throw new Error('read failed')
+        }
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)

@@ -5,4 +5,4 @@ const Route = require('./baseRoute')
 const RootController = require('../controllers/root.controller')
 const controller = new RootController(Constants.Routes.ROOT, undefined, false)
 
-module.exports = Route.register('GET, POST', controller)
+module.exports = Route.register('GET', controller)

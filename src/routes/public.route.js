@@ -4,7 +4,7 @@ module.exports = [{
   method: 'GET',
   path: '/public/{param*}',
 
-  config: {
+  options: {
     description: 'The public folder',
     handler: {
       directory: {

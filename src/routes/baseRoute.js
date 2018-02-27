@@ -5,14 +5,14 @@ class Route {
     const route = {
       method: 'GET',
       path: controller.path,
-      config: {
+      options: {
         description: `The GET ${controller.route.pageHeading} page`,
         handler: controller.handler,
         bind: controller
       }
     }
     if (validator) {
-      route.config.state = {
+      route.options.state = {
         parse: true,
         failAction: 'error'
       }
@@ -24,14 +24,14 @@ class Route {
     const route = {
       method: 'POST',
       path: controller.path,
-      config: {
+      options: {
         description: `The POST ${controller.route.pageHeading} page`,
         handler: controller.handler,
         bind: controller
       }
     }
     if (validator) {
-      route.config.validate = {
+      route.options.validate = {
         options: {
           allowUnknown: true
         },
@@ -52,7 +52,7 @@ class Route {
           .split(',')
           .forEach((method) => routeArray.push(this[method](controller, validator)))
         break
-      // when routes require any extra options then just add specified route methods as keyed objects: eg {GET: {extra: 'config'}, POST: {extra: 'config'}
+      // when routes require any extra options then just add specified route methods as keyed objects: eg {GET: {extra: 'options'}, POST: {extra: 'options'}
       default:
         Object.keys(routes).map((method) => routeArray.push(Merge(this[method](controller, validator), routes[method])))
     }

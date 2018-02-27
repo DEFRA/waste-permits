@@ -135,7 +135,9 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.getByApplicationId = () => undefined
+        ConfirmRules.getByApplicationId = () => {
+          throw new Error('read failed')
+        }
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
@@ -186,7 +188,9 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.getByApplicationId = () => Promise.reject(new Error('read failed'))
+        ConfirmRules.getByApplicationId = () => {
+          throw new Error('read failed')
+        }
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)

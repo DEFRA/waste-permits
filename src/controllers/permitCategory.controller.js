@@ -26,7 +26,7 @@ module.exports = class PermitCategoryController extends BaseController {
   }
 
   async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
       // TODO persist the data here if required using the applicationId from the cookie

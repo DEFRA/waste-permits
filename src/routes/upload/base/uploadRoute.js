@@ -4,7 +4,7 @@ const Constants = require('../../../constants')
 class UploadRoute extends BaseRoute {
   static POST (controller) {
     const route = super.POST(controller)
-    route.config.plugins = {
+    route.options.plugins = {
       crumb: false // Disabled to prevent 403 when testing for missing file upload
     }
     return route
@@ -14,7 +14,7 @@ class UploadRoute extends BaseRoute {
     return {
       method: 'GET',
       path: `${controller.path}/remove/{id}`,
-      config: {
+      options: {
         description: `The REMOVE ${controller.route.pageHeading} page`,
         handler: controller.remove,
         bind: controller
@@ -26,7 +26,7 @@ class UploadRoute extends BaseRoute {
     return {
       method: 'POST',
       path: `${controller.path}/upload`,
-      config: {
+      options: {
         description: `The UPLOAD ${controller.route.pageHeading} page`,
         handler: controller.upload,
         bind: controller,

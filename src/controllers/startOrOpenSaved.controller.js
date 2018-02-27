@@ -24,7 +24,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
   }
 
   async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     }
 
