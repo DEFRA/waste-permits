@@ -2,7 +2,6 @@
 
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
-const Code = require('code')
 const sinon = require('sinon')
 
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
@@ -53,15 +52,14 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
       // Additional tests
       {
         title: 'displays expected static content',
-        test: (doc) => {
-          Code.expect(doc.getElementById('wamitab-qualification-description-paragraph-1')).to.exist()
-          Code.expect(doc.getElementById('wamitab-qualification-description-paragraph-2')).to.exist()
-          Code.expect(doc.getElementById('wamitab-qualification-description-paragraph-3')).to.exist()
-          Code.expect(doc.getElementById('wamitab-qualification-operator-competence-link')).to.exist()
-          Code.expect(doc.getElementById('wamitab-qualification-operator-competence-link').getAttribute('href')).to.equal('https://wamitab.org.uk/competence/operator-competence/')
-          Code.expect(doc.getElementById('wamitab-qualification-operator-competence-link-abbr')).to.exist()
-          Code.expect(doc.getElementById('wamitab-qualification-operator-competence-abbr')).to.exist()
-        }
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'wamitab-qualification-description-paragraph-1',
+          'wamitab-qualification-description-paragraph-2',
+          'wamitab-qualification-description-paragraph-3',
+          'wamitab-qualification-operator-competence-link',
+          'wamitab-qualification-operator-competence-link',
+          'wamitab-qualification-operator-competence-link-abbr',
+          'wamitab-qualification-operator-competence-abbr'])
       }
     ])
     helper.getFailure()

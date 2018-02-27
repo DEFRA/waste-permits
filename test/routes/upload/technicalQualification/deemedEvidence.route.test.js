@@ -2,7 +2,6 @@
 
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
-const Code = require('code')
 const sinon = require('sinon')
 
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
@@ -53,16 +52,15 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
       // Additional tests
       {
         title: 'displays expected static content',
-        test: (doc) => {
-          Code.expect(doc.getElementById('deemed-evidence-description-list-heading')).to.exist()
-          Code.expect(doc.getElementById('deemed-evidence-description-list')).to.exist()
-          Code.expect(doc.getElementById('deemed-evidence-description-list-item-1')).to.exist()
-          Code.expect(doc.getElementById('deemed-evidence-description-list-item-2')).to.exist()
-          Code.expect(doc.getElementById('deemed-evidence-description-list-item-3')).to.exist()
-          Code.expect(doc.getElementById('deemed-evidence-description-important-info')).to.exist()
-          Code.expect(doc.getElementById('deemed-evidence-description-important-info-abbr')).to.exist()
-          Code.expect(doc.getElementById('deemed-evidence-description-last-paragraph')).to.exist()
-        }
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'deemed-evidence-description-list-heading',
+          'deemed-evidence-description-list',
+          'deemed-evidence-description-list-item-1',
+          'deemed-evidence-description-list-item-2',
+          'deemed-evidence-description-list-item-3',
+          'deemed-evidence-description-important-info',
+          'deemed-evidence-description-important-info-abbr',
+          'deemed-evidence-description-last-paragraph'])
       }
     ])
     helper.getFailure()

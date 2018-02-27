@@ -2,7 +2,6 @@
 
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
-const Code = require('code')
 const sinon = require('sinon')
 
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
@@ -53,12 +52,11 @@ lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
       // Additional tests
       {
         title: 'displays expected static content',
-        test: (doc) => {
-          Code.expect(doc.getElementById('esa-eu-skills-description-span-1')).to.exist()
-          Code.expect(doc.getElementById('esa-eu-skills-description-paragraph-1')).to.exist()
-          Code.expect(doc.getElementById('esa-eu-skills-description-span-2')).to.exist()
-          Code.expect(doc.getElementById('esa-eu-skills-description-paragraph-2')).to.exist()
-        }
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'esa-eu-skills-description-span-1',
+          'esa-eu-skills-description-paragraph-1',
+          'esa-eu-skills-description-span-2',
+          'esa-eu-skills-description-paragraph-2'])
       }
     ])
     helper.getFailure()
