@@ -15,14 +15,7 @@ const LocationDetail = require('../../src/models/locationDetail.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let validateCookieStub
-let applicationGetByIdStub
-let applicationIsSubmittedStub
-let locationSaveStub
-let locationDetailSaveStub
-let locationGetByApplicationIdStub
-let getByLocationIdStub
-let siteNameAndLocationUpdateCompletenessStub
+let sandbox
 
 const routePath = '/site/grid-reference'
 const nextRoutePath = '/site/address/postcode'
@@ -40,10 +33,10 @@ const fakeApplication = {
 }
 
 const fakeLocation = {
-  id: 'dff66fce-18b8-e711-8119-5065f38ac931',
+  id: 'LOCATION_ID',
   name: 'THE SITE NAME',
-  applicationId: '403710b7-18b8-e711-810d-5065f38bb461',
-  applicationLineId: '423710b7-18b8-e711-810d-5065f38bb461',
+  applicationId: 'APPLICATION_ID',
+  applicationLineId: 'APPLICATION_LINE_ID',
   save: (authToken) => {}
 }
 
@@ -62,43 +55,23 @@ lab.beforeEach(() => {
     payload: {}
   }
 
-  // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
+    // Create a sinon sandbox to stub methods
+    sandbox = sinon.createSandbox()
 
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
-
-  locationSaveStub = Location.prototype.save
-  Location.prototype.save = () => {}
-
-  locationDetailSaveStub = LocationDetail.prototype.save
-  LocationDetail.prototype.save = () => {}
-
-  locationGetByApplicationIdStub = Location.getByApplicationId
-  Location.getByApplicationId = () => fakeLocation
-
-  getByLocationIdStub = LocationDetail.getByLocationId
-  LocationDetail.getByLocationId = () => fakeLocationDetail
-
-  siteNameAndLocationUpdateCompletenessStub = SiteNameAndLocation.updateCompleteness
-  SiteNameAndLocation.updateCompleteness = () => {}
+    // Stub methods
+    sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+    sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+    sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+    sandbox.stub(Location.prototype, 'save').value(() => {})
+    sandbox.stub(LocationDetail.prototype, 'save').value(() => {})
+    sandbox.stub(Location, 'getByApplicationId').value(() => fakeLocation)
+    sandbox.stub(LocationDetail, 'getByLocationId').value(() => fakeLocationDetail)
+    sandbox.stub(SiteNameAndLocation, 'updateCompleteness').value(() => {})
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-
-  Application.getById = applicationGetByIdStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
-  Location.prototype.save = locationSaveStub
-  LocationDetail.prototype.save = locationDetailSaveStub
-  Location.getByApplicationId = locationGetByApplicationIdStub
-  LocationDetail.getByLocationId = getByLocationIdStub
-  SiteNameAndLocation.updateCompleteness = siteNameAndLocationUpdateCompletenessStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const checkPageElements = async (getRequest, expectedValue) => {
@@ -111,7 +84,8 @@ const checkPageElements = async (getRequest, expectedValue) => {
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the grid reference for the centre of the site?`)
 
-  const elementIds = [
+  // Test for the existence of expected static content
+  GeneralTestHelper.checkElementsExist(doc, [
     'back-link',
     'defra-csrf-token',
     'site-grid-reference-label',
@@ -119,11 +93,7 @@ const checkPageElements = async (getRequest, expectedValue) => {
     'site-grid-reference-summary',
     'site-grid-reference-finder-link',
     'grid-reference-help-list'
-  ]
-  for (let id of elementIds) {
-    element = doc.getElementById(id)
-    Code.expect(doc.getElementById(id)).to.exist()
-  }
+  ])
 
   element = doc.getElementById('site-grid-reference')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)
@@ -152,7 +122,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Site Grid Reference page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, false, false)
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Site grid reference page correctly when the grid reference has not been entered yet`, async () => {

@@ -50,7 +50,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Cost and time for this permit page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, false, false)
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.test('The page should have a back link', async () => {
     const res = await server.inject(getRequest)

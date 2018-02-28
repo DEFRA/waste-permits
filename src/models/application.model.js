@@ -67,10 +67,10 @@ class Application extends BaseModel {
   }
 
   isSubmitted () {
-    return this.statusCode && (this.statusCode !== 1)
+    // return this.statusCode && (this.statusCode !== 1)
 
     // TODO remove this
-    // return true
+    return true
   }
 
   isPaidFor () {

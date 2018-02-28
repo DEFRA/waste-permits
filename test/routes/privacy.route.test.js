@@ -11,8 +11,9 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-const routePath = '/information/privacy'
 let sandbox
+
+const routePath = '/information/privacy'
 
 lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
@@ -45,7 +46,7 @@ lab.experiment('Privacy page tests:', () => {
     const doc = parser.parseFromString(res.payload, 'text/html')
 
     // Test for the existence of expected static content
-    const elementIds = [
+    GeneralTestHelper.checkElementsExist(doc, [
       'personal-information-charter-paragraph-1',
       'personal-information-charter-paragraph-2',
       'personal-information-charter-paragraph-3',
@@ -61,9 +62,8 @@ lab.experiment('Privacy page tests:', () => {
       'personal-information-item-4',
       'personal-information-item-5',
       'personal-information-item-6',
-      'sharing-information']
-
-    elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
+      'sharing-information'
+    ])
 
     Code.expect(doc.getElementById('personal-information-charter-link').getAttribute('href')).to.equal('https://www.gov.uk/government/organisations/environment-agency/about/personal-information-charter')
   })

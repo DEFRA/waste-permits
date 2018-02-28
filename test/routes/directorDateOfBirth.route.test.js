@@ -149,16 +149,14 @@ const checkPageElements = async (request, expectedPageHeading, expectedValues) =
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(expectedPageHeading)
 
-  const elementIds = [
+  // Test for the existence of expected static content
+  GeneralTestHelper.checkElementsExist(doc, [
     'back-link',
     'defra-csrf-token',
     'dob-explanation',
     'dob-visually-hidden',
     'dates-of-birth'
-  ]
-  for (let id of elementIds) {
-    Code.expect(doc.getElementById(id)).to.exist()
-  }
+  ])
 
   // Check the director rows
   let index = 0
@@ -213,7 +211,7 @@ const checkValidationError = async (field, expectedErrorMessage) => {
 }
 
 lab.experiment('Director Date Of Birth page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, false, false)
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Director DOB page correctly when there are no Directors`, async () => {

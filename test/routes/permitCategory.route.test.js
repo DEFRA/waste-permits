@@ -47,7 +47,7 @@
 // })
 
 // lab.experiment('What do you want the permit for? (permit category) page tests:', () => {
-//   new GeneralTestHelper(lab, routePath).test(false, false, false)
+//   new GeneralTestHelper(lab, routePath).test()
 
 //   lab.test('The page should NOT have a back link', async () => {
 //     const res = await server.inject(getRequest)

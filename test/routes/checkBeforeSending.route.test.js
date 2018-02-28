@@ -121,7 +121,7 @@ lab.experiment('Check your answers before sending your application page tests:',
       Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
 
       // Test for the existence of expected static content
-      const elementIds = [
+      GeneralTestHelper.checkElementsExist(doc, [
         'declaration-warning-heading',
         'declaration-warning-notice-hidden',
         'declaration-warning-notice-content',
@@ -130,9 +130,8 @@ lab.experiment('Check your answers before sending your application page tests:',
         'declaration-confirmation-list-item-2',
         'declaration-confirmation-list-item-3',
         'managment-system-link',
-        'managment-system-link-text']
-
-      elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
+        'managment-system-link-text'
+      ])
     })
 
     lab.test('returns the check before sending page dynamic content correctly', async () => {

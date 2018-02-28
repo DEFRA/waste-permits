@@ -76,7 +76,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Confirm that your operation meets the rules page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, false, false)
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc

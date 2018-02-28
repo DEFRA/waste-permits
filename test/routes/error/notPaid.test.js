@@ -4,6 +4,8 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const sinon = require('sinon')
+
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
@@ -12,18 +14,13 @@ const Application = require('../../../src/models/application.model')
 const CookieService = require('../../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
+let sandbox
+
 let validateCookieStub
 const routePath = '/errors/order/card-payment-not-complete'
 const pageHeading = 'You need to pay for your application'
 
 let applicationGetByIdStub
-
-const fakeApplicationData = {
-  id: 'APPLICATION_ID',
-  accountId: 'ACCOUNT_ID',
-  tradingName: 'THE TRADING NAME',
-  applicationNumber: 'APPLICATION_REFERENCE'
-}
 
 const getRequest = {
   method: 'GET',
@@ -33,23 +30,21 @@ const getRequest = {
 }
 
 lab.beforeEach(() => {
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplicationData)
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Application, 'getById').value(() => new Application({}))
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  Application.getById = applicationGetByIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Not Paid page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, true)
+  new GeneralTestHelper(lab, routePath).test(false, true, true)
 
   lab.test('The page should NOT have a back link', async () => {
     const res = await server.inject(getRequest)
@@ -72,12 +67,9 @@ lab.experiment('Not Paid page tests:', () => {
     let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(pageHeading)
 
-    const elementIds = [
+    // Test for the existence of expected static content
+    GeneralTestHelper.checkElementsExist(doc, [
       'pay-for-application-link'
-    ]
-    for (let id of elementIds) {
-      element = doc.getElementById(id)
-      Code.expect(doc.getElementById(id)).to.exist()
-    }
+    ])
   })
 })

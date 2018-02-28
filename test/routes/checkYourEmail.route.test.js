@@ -49,7 +49,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment(`Search for 'standard rules permit application' in your email page tests:`, () => {
-  new GeneralTestHelper(lab, routePath).test(false, false, false)
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.test('The page should have a back link', async () => {
     const res = await server.inject(getRequest)

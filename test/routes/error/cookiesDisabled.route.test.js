@@ -4,6 +4,8 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../generalTestHelper.test')
+
 const server = require('../../../server')
 
 const routePath = '/errors/cookies-off'
@@ -25,6 +27,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Cookies Disabled page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test(true, true, true)
+
   lab.test(`GET ${routePath} returns the disabled cookies page correctly`, async () => {
     const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
@@ -35,16 +39,13 @@ lab.experiment('Cookies Disabled page tests:', () => {
     let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(pageHeading)
 
-    const elementIds = [
+    // Test for the existence of expected static content
+    GeneralTestHelper.checkElementsExist(doc, [
       'paragraph-1',
       'paragraph-2',
       'paragraph-3',
       'ico-link',
       'cookie-list-link'
-    ]
-    for (let id of elementIds) {
-      element = doc.getElementById(id)
-      Code.expect(doc.getElementById(id)).to.exist()
-    }
+    ])
   })
 })

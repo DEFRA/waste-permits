@@ -85,7 +85,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Select a permit page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, false, false)
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.test('The page should NOT have a back link', async () => {
     const res = await server.inject(getRequest)

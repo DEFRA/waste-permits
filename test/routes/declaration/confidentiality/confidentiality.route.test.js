@@ -61,7 +61,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Is part of your application commercially confidential? page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, false, false)
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc

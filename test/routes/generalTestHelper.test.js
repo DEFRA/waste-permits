@@ -28,7 +28,8 @@ module.exports = class GeneralTestHelper {
   // new GeneralTestHelper(lab, routePath).test(false, false, true)
   // to become
   // new GeneralTestHelper(lab, routePath).test() i.e. all exclude = false
-  test (excludeCookieGetTests = false, excludeCookiePostTests = false, excludeAlreadySubnmittedTest = true) {
+  // test (excludeCookieGetTests = false, excludeCookiePostTests = false, excludeAlreadySubnmittedTest = true) {
+  test (excludeCookieGetTests = false, excludeCookiePostTests = false, excludeAlreadySubnmittedTest = false) {
     const {lab, routePath} = this
 
     lab.beforeEach(() => {

@@ -135,7 +135,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Contact details page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, false, false)
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let request
@@ -171,7 +171,7 @@ lab.experiment('Contact details page tests:', () => {
       Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
 
       // Test for the existence of expected static content
-      const elementIds = [
+      GeneralTestHelper.checkElementsExist(doc, [
         'first-name-label',
         'last-name-label',
         'is-contact-an-agent-label',
@@ -184,9 +184,8 @@ lab.experiment('Contact details page tests:', () => {
         'company-secretary-email-label',
         'company-secretary-email-hint',
         'company-secretary-email-summary',
-        'company-secretary-email-description']
-
-      elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
+        'company-secretary-email-description'
+      ])
     })
   })
 

@@ -49,7 +49,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('ApplicationReceived page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, true)
+  new GeneralTestHelper(lab, routePath).test(false, true, true)
 
   lab.experiment(`GET ${routePath}`, () => {
     let request

@@ -115,7 +115,8 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
     element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(`Is this the right company?`)
 
-    const elementIds = [
+    // Test for the existence of expected static content
+    GeneralTestHelper.checkElementsExist(doc, [
       'back-link',
       'defra-csrf-token',
       'company-number-label',
@@ -131,11 +132,7 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
       'give-business-trading-name',
       'business-trading-name-label',
       'business-trading-name'
-    ]
-    for (let id of elementIds) {
-      element = doc.getElementById(id)
-      Code.expect(doc.getElementById(id)).to.exist()
-    }
+    ])
 
     element = doc.getElementById('company-name').firstChild
     Code.expect(element.nodeValue).to.equal(fakeAccountData.accountName)
@@ -153,15 +150,11 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
     element = doc.getElementById('page-heading-company-not-found').firstChild
     Code.expect(element.nodeValue).to.equal(`We can't find that company`)
 
-    const elementIds = [
+    // Test for the existence of expected static content
+    GeneralTestHelper.checkElementsExist(doc, [
       'search-term-text',
       'enter-different-number-link'
-    ]
-
-    for (let id of elementIds) {
-      element = doc.getElementById(id).firstChild
-      Code.expect(element).to.exist()
-    }
+    ])
   }
 }
 
@@ -185,7 +178,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Check Company Details page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, false, false)
+  new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment(`GET ${routePath} page tests`, () => {
     lab.test('Check page elements - no existing trading name saved', async () => {

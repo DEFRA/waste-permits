@@ -4,6 +4,8 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../generalTestHelper.test')
+
 const server = require('../../../server')
 
 const routePath = '/errors/timeout'
@@ -25,6 +27,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Timeout page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test(true, true, true)
+
   lab.test('The page should NOT have a back link', async () => {
     const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
@@ -46,14 +50,11 @@ lab.experiment('Timeout page tests:', () => {
     let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(pageTitle)
 
-    const elementIds = [
+    // Test for the existence of expected static content
+    GeneralTestHelper.checkElementsExist(doc, [
       'timeout-message-para-1',
       'timeout-message-para-2',
       'start-again-link'
-    ]
-    for (let id of elementIds) {
-      element = doc.getElementById(id)
-      Code.expect(doc.getElementById(id)).to.exist()
-    }
+    ])
   })
 })
