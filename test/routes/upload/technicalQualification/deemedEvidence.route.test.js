@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
+const Application = require('../../../../src/models/application.model')
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
 
 const GeneralTestHelper = require('../../generalTestHelper.test')
@@ -26,7 +27,9 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
+
   sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
+
   helper.setStubs(sandbox)
 })
 
@@ -36,7 +39,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true)
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true, false)
 
   const {uploadPath, removePath} = paths
 

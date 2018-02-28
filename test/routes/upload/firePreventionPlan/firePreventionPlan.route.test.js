@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
+const Application = require('../../../../src/models/application.model')
 const FirePreventionPlan = require('../../../../src/models/taskList/firePreventionPlan.model')
 
 const GeneralTestHelper = require('../../generalTestHelper.test')
@@ -26,7 +27,9 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
+
   sandbox.stub(FirePreventionPlan, 'updateCompleteness').value(() => Promise.resolve({}))
+
   helper.setStubs(sandbox)
 })
 
@@ -36,7 +39,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('FirePrevention Upload FirePrevention plan tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, true)
+  new GeneralTestHelper(lab, routePath).test(false, true, false)
 
   const {uploadPath, removePath} = paths
 

@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
+const Application = require('../../../../src/models/application.model')
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
 const StandardRule = require('../../../../src/models/standardRule.model')
 
@@ -32,8 +33,10 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
+
   sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => Promise.resolve({}))
+
   helper.setStubs(sandbox)
 })
 
@@ -43,7 +46,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Upload Course registration tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true)
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true, false)
 
   const {uploadPath, removePath} = paths
 

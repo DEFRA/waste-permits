@@ -102,10 +102,6 @@ module.exports = class GeneralTestHelper {
         const parser = new DOMParser()
         const doc = parser.parseFromString(res.payload, 'text/html')
 
-        if (!doc) {
-          console.log('A problem')
-        }
-
         const element = doc.getElementById('beta-banner')
         Code.expect(element).to.exist()
       })
@@ -115,10 +111,6 @@ module.exports = class GeneralTestHelper {
 
         const parser = new DOMParser()
         const doc = parser.parseFromString(res.payload, 'text/html')
-
-        if (!doc) {
-          console.log('A problem')
-        }
 
         const element = doc.getElementById('footer-privacy-link')
         Code.expect(element).to.exist()

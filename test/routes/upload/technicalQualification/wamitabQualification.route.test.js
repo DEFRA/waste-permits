@@ -6,6 +6,7 @@ const sinon = require('sinon')
 
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
 
+const Application = require('../../../../src/models/application.model')
 const GeneralTestHelper = require('../../generalTestHelper.test')
 const UploadTestHelper = require('../uploadHelper')
 
@@ -26,7 +27,9 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
+
   sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
+
   helper.setStubs(sandbox)
 })
 
@@ -36,7 +39,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Upload Wamitab tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true)
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true, false)
 
   const {uploadPath, removePath} = paths
 

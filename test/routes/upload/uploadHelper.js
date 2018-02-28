@@ -47,6 +47,11 @@ let fakeAnnotation
 let getRequest
 let fakeAnnotationId = 'ANNOTATION_ID'
 
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
+
 module.exports = class UploadTestHelper {
   constructor (lab, {routePath, uploadPath, removePath, nextRoutePath}) {
     this.lab = lab
@@ -68,6 +73,8 @@ module.exports = class UploadTestHelper {
     sandbox.stub(Annotation.prototype, 'save').value(() => Promise.resolve({}))
     sandbox.stub(Application, 'getById').value(() => Promise.resolve({applicationName: 'APPLICATION_REFERENCE'}))
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+    sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+    sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(LoggingService, 'logError').value(() => {})
   }
 
