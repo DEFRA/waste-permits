@@ -54,6 +54,7 @@ lab.beforeEach(() => {
   sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(Application, 'getById').value(() => Promise.resolve(new Application(fakeApplication)))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -62,7 +63,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Technical Management Qualification tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc
@@ -139,14 +140,6 @@ lab.experiment('Technical Management Qualification tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Application.getById = () => Promise.reject(new Error('read failed'))
@@ -207,14 +200,6 @@ lab.experiment('Technical Management Qualification tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Application.getById = () => Promise.reject(new Error('read failed'))

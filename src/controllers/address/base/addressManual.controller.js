@@ -3,6 +3,7 @@
 const Constants = require('../../../constants')
 const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
+const Application = require('../../../models/application.model')
 
 module.exports = class AddressManualController extends BaseController {
   async doGet (request, reply, errors) {
@@ -10,6 +11,13 @@ module.exports = class AddressManualController extends BaseController {
     const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
     const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
+    const application = await Application.getById(authToken, applicationId)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form

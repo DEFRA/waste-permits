@@ -10,16 +10,33 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 
 const StandardRule = require('../../src/models/standardRule.model')
+const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
 let standardRuleListStub
 let standardRuleGetByCodeStub
 let applicationLineSaveStub
 
 const routePath = '/permit/select'
 const nextRoutePath = '/task-list'
+
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {},
+  payload: {}
+}
+
+let postRequest
+
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
 
 const fakeStandardRule = {
   id: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
@@ -30,9 +47,22 @@ const fakeStandardRule = {
 }
 
 lab.beforeEach(() => {
+  postRequest = {
+    method: 'POST',
+    url: routePath,
+    headers: {},
+    payload: {}
+  }
+
   // Stub methods
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
+
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
 
   standardRuleListStub = StandardRule.list
   StandardRule.list = () => [fakeStandardRule]
@@ -47,23 +77,18 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   StandardRule.prototype.list = standardRuleListStub
   StandardRule.getByCode = standardRuleGetByCodeStub
   ApplicationLine.prototype.save = applicationLineSaveStub
 })
 
 lab.experiment('Select a permit page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.test('The page should NOT have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -73,15 +98,8 @@ lab.experiment('Select a permit page tests:', () => {
     Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET /permit/select returns the permit selection page correctly', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+  lab.test(`GET ${routePath} returns the permit selection page correctly`, async () => {
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -116,31 +134,17 @@ lab.experiment('Select a permit page tests:', () => {
   })
 
   lab.test('POST /permit/select success redirects to the next route', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        'chosen-permit': 'SR2010 No 4'
-      }
-    }
+    postRequest.payload['chosen-permit'] = 'SR2010 No 4'
 
-    const res = await server.inject(request)
+    const res = await server.inject(postRequest)
     Code.expect(res.statusCode).to.equal(302)
     Code.expect(res.headers['location']).to.equal(nextRoutePath)
   })
 
   lab.test('POST /permit/select shows the error message summary panel when the site data is invalid', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        'chosen-permit': ''
-      }
-    }
+    postRequest.payload['chosen-permit'] = ''
 
-    const res = await server.inject(request)
+    const res = await server.inject(postRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -152,14 +156,7 @@ lab.experiment('Select a permit page tests:', () => {
   })
 
   lab.test('POST /permit/select shows an error message when no permit is selected', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(postRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -178,16 +175,9 @@ lab.experiment('Select a permit page tests:', () => {
   })
 
   lab.test('POST /permit/select shows an error message when the permit value is not allowed', async () => {
-    const request = {
-      method: 'POST',
-      url: routePath,
-      headers: {},
-      payload: {
-        'chosen-permit': 'not a real permit'
-      }
-    }
+    postRequest.payload['chosen-permit'] = 'not a real permit'
 
-    const res = await server.inject(request)
+    const res = await server.inject(postRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()

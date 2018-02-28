@@ -22,6 +22,12 @@ module.exports = class CompanyCheckNameController extends BaseController {
       return reply.redirect(Constants.Routes.TASK_LIST.path)
     }
 
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
+
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
     if (request.payload) {

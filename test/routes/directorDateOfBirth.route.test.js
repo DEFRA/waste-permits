@@ -9,12 +9,15 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Account = require('../../src/models/account.model')
+const Application = require('../../src/models/application.model')
 const ApplicationContact = require('../../src/models/applicationContact.model')
 const Contact = require('../../src/models/contact.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
+let accountGetByApplicationIdStub
 let applicationGetByIdStub
+let applicationIsSubmittedStub
 let contactListStub
 let contactSaveStub
 let applicationContactGetStub
@@ -37,6 +40,11 @@ const fakeCompanyData = {
   address: 'THE COMPANY ADDRESS',
   status: 'ACTIVE',
   IsActive: true
+}
+
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
 }
 
 const fakeAccountData = {
@@ -97,8 +105,14 @@ lab.beforeEach(() => {
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
-  applicationGetByIdStub = Account.getByApplicationId
+  accountGetByApplicationIdStub = Account.getByApplicationId
   Account.getByApplicationId = () => new Account(fakeAccountData)
+
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
 
   contactListStub = Contact.list
   Contact.list = () => fakeContacts
@@ -116,7 +130,9 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
-  Account.getByApplicationId = applicationGetByIdStub
+  Account.getByApplicationId = accountGetByApplicationIdStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   Contact.list = contactListStub
   Contact.prototype.save = contactSaveStub
   ApplicationContact.get = applicationContactGetStub
@@ -197,7 +213,7 @@ const checkValidationError = async (field, expectedErrorMessage) => {
 }
 
 lab.experiment('Director Date Of Birth page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Director DOB page correctly when there are no Directors`, async () => {

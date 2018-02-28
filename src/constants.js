@@ -103,6 +103,14 @@ Constants.Routes = {
     path: '/permit-holder/company/check-name',
     pageHeading: `Is this the right company?`
   },
+  COMPANY_CHECK_STATUS: {
+    path: '/permit-holder/company/status-not-active',
+    pageHeading: `We can't issue a permit to that company because it {{{companyStatus}}}`
+  },
+  COMPANY_CHECK_TYPE: {
+    path: '/permit-holder/company/wrong-type',
+    pageHeading: `That company can’t apply because it’s {{{companyType}}}`
+  },
   COMPANY_DECLARE_OFFENCES: {
     path: '/permit-holder/company/declare-offences',
     pageHeading: 'Does anyone connected with your business have a conviction for a relevant offence?'
@@ -115,14 +123,6 @@ Constants.Routes = {
     path: '/permit-holder/company/number',
     pageHeading: `What's the UK company registration number?`,
     taskListHeading: `What's the company name or registration number?`
-  },
-  COMPANY_CHECK_STATUS: {
-    path: '/permit-holder/company/status-not-active',
-    pageHeading: `We can't issue a permit to that company because it {{{companyStatus}}}`
-  },
-  COMPANY_CHECK_TYPE: {
-    path: '/permit-holder/company/wrong-type',
-    pageHeading: `That company can’t apply because it’s {{{companyType}}}`
   },
   CONFIDENTIALITY: {
     path: '/confidentiality',

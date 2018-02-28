@@ -26,7 +26,8 @@ const routePath = '/done'
 lab.beforeEach(() => {
   fakeApplication = {
     id: fakeApplicationId,
-    applicationName: 'APPLICATION_NAME'
+    applicationName: 'APPLICATION_NAME',
+    paymentReceived: 1
   }
 
   // Stub methods
@@ -83,6 +84,14 @@ lab.experiment('ApplicationReceived page tests:', () => {
       Code.expect(doc.getElementById('application-received-info')).to.exist()
       Code.expect(doc.getElementById('application-received-hint')).to.exist()
       Code.expect(doc.getElementById('application-received-warning')).to.exist()
+    })
+
+    lab.test('Redirects to the Not Paid screen if the application has been paid for yet', async () => {
+      fakeApplication.paymentReceived = 0
+
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal('/errors/order/card-payment-not-complete')
     })
   })
 })

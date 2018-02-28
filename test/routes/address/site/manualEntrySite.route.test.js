@@ -10,10 +10,13 @@ const GeneralTestHelper = require('../../../routes/generalTestHelper.test')
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
+const Application = require('../../../../src/models/application.model')
 const SiteNameAndLocation = require('../../../../src/models/taskList/siteNameAndLocation.model')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let validateCookieStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
 let cookieServiceGetStub
 let addressListByPostcodeStub
 let siteNameAndLocationGetAddressStub
@@ -40,6 +43,11 @@ const getRequest = {
   headers: {}
 }
 let postRequest
+
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
 
 const fakeAddress1 = {
   id: 'ADDRESS_ID_1',
@@ -92,6 +100,12 @@ lab.beforeEach(() => {
   cookieServiceGetStub = CookieService.get
   CookieService.get = () => undefined
 
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
   addressListByPostcodeStub = Address.listByPostcode
   Address.listByPostcode = () => [
     new Address(fakeAddress1),
@@ -110,6 +124,8 @@ lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
   CookieService.get = cookieServiceGetStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   Address.listByPostcode = addressListByPostcodeStub
   SiteNameAndLocation.getAddress = siteNameAndLocationGetAddressStub
   SiteNameAndLocation.saveManualAddress = siteNameAndLocationSaveManualAddressStub
@@ -184,7 +200,7 @@ const checkValidationError = async (fieldId, expectedErrorMessage, fieldIndex = 
 }
 
 lab.experiment('Address select page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the manual address entry page correctly on first visit to the page`, async () => {

@@ -23,6 +23,8 @@ let fakeInvalidRulesetId
 let fakeLineData
 
 const routePath = '/check-before-sending'
+const nextRoutePath = '/done'
+const notCompleteRoutePath = '/errors/order/task-list-not-complete'
 
 let sandbox
 
@@ -75,6 +77,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(ApplicationLine, 'getValidRulesetIds').value(() => [fakeValidRulesetId])
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
+  sandbox.stub(Application.prototype, 'isComplete').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -83,7 +86,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Check your answers before sending your application page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(true, true, true)
 
   lab.experiment(`GET ${routePath}`, () => {
     let request
@@ -129,6 +132,14 @@ lab.experiment('Check your answers before sending your application page tests:',
         Code.expect(doc.getElementById(`${id}-type`).firstChild.nodeValue.trim()).to.equal(type)
       })
     })
+
+    lab.test('Redirects to the Not Complete screen if the application has not been completed', async () => {
+      Application.prototype.isComplete = () => false
+
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(notCompleteRoutePath)
+    })
   })
 
   lab.experiment(`POST ${routePath}`, () => {
@@ -146,7 +157,7 @@ lab.experiment('Check your answers before sending your application page tests:',
       lab.test('redirects to the Application Received route after an UPDATE', async () => {
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/done')
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
     })
   })

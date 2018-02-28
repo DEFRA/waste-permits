@@ -15,6 +15,8 @@ const LoggingService = require('../../../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let validateCookieStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
 let applicationSaveStub
 let getByIdStub
 let logErrorStub
@@ -36,6 +38,12 @@ lab.beforeEach(() => {
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
   logErrorStub = LoggingService.logError
   LoggingService.logError = () => {}
 
@@ -46,12 +54,14 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   LoggingService.logError = logErrorStub
   Application.getById = getByIdStub
 })
 
 lab.experiment('Company Declare Bankruptcy tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc
@@ -95,14 +105,6 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Application.getById = () => Promise.reject(new Error('read failed'))
@@ -189,14 +191,6 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Application.getById = () => Promise.reject(new Error('read failed'))

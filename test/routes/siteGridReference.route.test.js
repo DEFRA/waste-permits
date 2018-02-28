@@ -9,12 +9,15 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
+const Application = require('../../src/models/application.model')
 const Location = require('../../src/models/location.model')
 const LocationDetail = require('../../src/models/locationDetail.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
 let locationSaveStub
 let locationDetailSaveStub
 let locationGetByApplicationIdStub
@@ -30,6 +33,11 @@ const getRequest = {
   headers: {}
 }
 let postRequest
+
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
 
 const fakeLocation = {
   id: 'dff66fce-18b8-e711-8119-5065f38ac931',
@@ -58,6 +66,12 @@ lab.beforeEach(() => {
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
   locationSaveStub = Location.prototype.save
   Location.prototype.save = () => {}
 
@@ -78,6 +92,8 @@ lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
 
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   Location.prototype.save = locationSaveStub
   LocationDetail.prototype.save = locationDetailSaveStub
   Location.getByApplicationId = locationGetByApplicationIdStub
@@ -136,7 +152,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Site Grid Reference page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Site grid reference page correctly when the grid reference has not been entered yet`, async () => {

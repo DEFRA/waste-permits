@@ -25,12 +25,6 @@ lab.afterEach(() => {
 
 lab.experiment('Technical Problem page tests:', () => {
   lab.test(`GET ${routePath} returns the technical problem page correctly`, async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {}
-    }
-
     const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 

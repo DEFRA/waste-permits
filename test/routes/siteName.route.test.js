@@ -8,10 +8,13 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
+const Application = require('../../src/models/application.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
 let getSiteNameStub
 let saveSiteNameStub
 
@@ -27,6 +30,11 @@ let postRequest
 
 const siteName = 'THE_SITE_NAME'
 
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
+
 lab.beforeEach(() => {
   postRequest = {
     method: 'POST',
@@ -39,6 +47,12 @@ lab.beforeEach(() => {
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
   getSiteNameStub = SiteNameAndLocation.getSiteName
   SiteNameAndLocation.getSiteName = () => siteName
 
@@ -49,6 +63,8 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   SiteNameAndLocation.getSiteName = getSiteNameStub
   SiteNameAndLocation.saveSiteName = saveSiteNameStub
 })
@@ -104,7 +120,7 @@ const checkValidationErrors = async (expectedErrors) => {
 }
 
 lab.experiment('Site Name page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the site page correctly when it is a new application`, async () => {

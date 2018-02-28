@@ -6,6 +6,7 @@ const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const CompanyLookupService = require('../services/companyLookup.service')
 const Account = require('../models/account.model')
+const Application = require('../models/application.model')
 
 module.exports = class CompanyTypeController extends BaseController {
   constructor (...args) {
@@ -17,6 +18,14 @@ module.exports = class CompanyTypeController extends BaseController {
   async doGet (request, reply, errors) {
     const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
     const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const application = await Application.getById(authToken, applicationId)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
+
     const account = await Account.getByApplicationId(authToken, applicationId)
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 

@@ -9,10 +9,13 @@ const GeneralTestHelper = require('../../../routes/generalTestHelper.test')
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
+const Application = require('../../../../src/models/application.model')
 const SiteNameAndLocation = require('../../../../src/models/taskList/siteNameAndLocation.model')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let validateCookieStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
 let siteNameAndLocationGetAddressStub
 let siteNameAndLocationSaveSelectedAddressStub
 let addressListByPostcodeStub
@@ -27,6 +30,11 @@ const getRequest = {
   headers: {}
 }
 let postRequest
+
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
 
 const fakeAddress1 = {
   id: 'ADDRESS_ID_1',
@@ -73,6 +81,12 @@ lab.beforeEach(() => {
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
   siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
   SiteNameAndLocation.getAddress = () => new Address(fakeAddress1)
 
@@ -90,6 +104,8 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   SiteNameAndLocation.getAddress = siteNameAndLocationGetAddressStub
   SiteNameAndLocation.saveSelectedAddress = siteNameAndLocationSaveSelectedAddressStub
   Address.listByPostcode = addressListByPostcodeStub
@@ -151,7 +167,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Site postcode page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the postcode page correctly when there is no saved postcode`, async () => {

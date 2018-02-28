@@ -23,6 +23,7 @@ let applicationLineGetByIdStub
 let accountConfirmStub
 let accountSaveStub
 let applicationSaveStub
+let applicationIsSubmittedStub
 
 const routePath = '/permit-holder/company/check-name'
 const nextRoutePath = '/permit-holder/company/director-date-of-birth'
@@ -82,6 +83,9 @@ lab.beforeEach(() => {
 
   applicationSaveStub = Application.prototype.save
   Application.prototype.save = () => {}
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
 })
 
 lab.afterEach(() => {
@@ -94,6 +98,7 @@ lab.afterEach(() => {
   Account.prototype.confirm = accountConfirmStub
   Account.prototype.save = accountSaveStub
   Application.prototype.save = applicationSaveStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
 })
 
 const checkPageElements = async (request, companyFound, expectedValue) => {
@@ -180,7 +185,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Check Company Details page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.experiment(`GET ${routePath} page tests`, () => {
     lab.test('Check page elements - no existing trading name saved', async () => {

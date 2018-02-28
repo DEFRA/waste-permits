@@ -60,11 +60,20 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
     const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
+    const application = await Application.getById(authToken, applicationId)
+
     pageContext.sections = await this._buildSections(authToken, applicationId, applicationLineId)
 
-    return reply
+    // If all the task list items are not complete
+    if (!application.isComplete()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.NOT_COMPLETE.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    } else {
+      return reply
       .view('checkBeforeSending', pageContext)
       .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
   }
 
   async doPost (request, reply) {

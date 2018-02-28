@@ -14,6 +14,12 @@ let dynamicSolutionGetStub
 
 const routePath = '/version'
 
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {}
+}
+
 // Test data
 const dynamicsVersionInfo = [{
   componentName: 'FIRST_COMPONENT',
@@ -48,14 +54,7 @@ lab.afterEach(() => {
 
 lab.experiment('Version page tests:', () => {
   lab.test('The page should NOT have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -65,14 +64,8 @@ lab.experiment('Version page tests:', () => {
     Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET /version returns the version page correctly', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {}
-    }
-
-    const res = await server.inject(request)
+  lab.test(`GET ${routePath} returns the version page correctly`, async () => {
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()

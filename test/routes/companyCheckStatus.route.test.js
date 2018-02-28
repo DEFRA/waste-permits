@@ -11,6 +11,7 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Account = require('../../src/models/account.model')
+const Application = require('../../src/models/application.model')
 const LoggingService = require('../../src/services/logging.service')
 
 const {COOKIE_RESULT} = require('../../src/constants')
@@ -28,8 +29,12 @@ const COMPANY_STATUSES = {
 let validateCookieStub
 let companyLookupGetCompanyStub
 let companyLookupGetActiveDirectors
-let getByApplicationIdStub
+let accountGetByApplicationIdStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
 let logErrorStub
+
+let fakeApplication
 let fakeAccount
 let fakeCompany
 
@@ -38,6 +43,11 @@ const nextRoutePath = '/permit-holder/company/check-name'
 const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
+  fakeApplication = {
+    id: 'APPLICATION_ID',
+    applicationName: 'APPLICATION_NAME'
+  }
+
   fakeAccount = {
     id: 'ACCOUNT_ID',
     companyNumber: '01234567'
@@ -63,8 +73,14 @@ lab.beforeEach(() => {
   companyLookupGetActiveDirectors = CompanyLookupService.getActiveDirectors
   CompanyLookupService.getActiveDirectors = () => [{}]
 
-  getByApplicationIdStub = Account.getByApplicationId
+  accountGetByApplicationIdStub = Account.getByApplicationId
   Account.getByApplicationId = () => fakeAccount
+
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
 })
 
 lab.afterEach(() => {
@@ -73,11 +89,14 @@ lab.afterEach(() => {
   LoggingService.logError = logErrorStub
   CompanyLookupService.getActiveDirectors = companyLookupGetActiveDirectors
   CompanyLookupService.getCompany = companyLookupGetCompanyStub
-  Account.getByApplicationId = getByApplicationIdStub
+  Account.getByApplicationId = accountGetByApplicationIdStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
 })
 
 lab.experiment('Check company status page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, true)
+  // There is no POST for this route
+  new GeneralTestHelper(lab, routePath).test(false, true, false)
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc
@@ -155,14 +174,6 @@ lab.experiment('Check company status page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Account.getByApplicationId = () => Promise.reject(new Error('read failed'))

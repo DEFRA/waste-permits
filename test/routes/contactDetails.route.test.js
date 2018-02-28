@@ -29,6 +29,7 @@ let contactSaveStub
 let contactGetByIdStub
 let contactDetailsUpdateCompletenessStub
 let applicationGetByIdStub
+let applicationIsSubmittedStub
 let applicationSaveStub
 let accountGetByIdStub
 let addressDetailGetCompanySecretaryDetailsStub
@@ -92,6 +93,9 @@ lab.beforeEach(() => {
   applicationGetByIdStub = Application.getById
   Application.getById = () => new Application(fakeApplication)
 
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
   applicationSaveStub = Application.prototype.save
   Application.prototype.save = () => {}
 
@@ -123,6 +127,7 @@ lab.afterEach(() => {
   AddressDetail.getPrimaryContactDetails = addressDetailGetPrimaryContactDetailsStub
   AddressDetail.save = addressDetailSaveStub
   Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   Application.save = applicationSaveStub
   Contact.getById = contactGetByIdStub
   Contact.save = contactSaveStub
@@ -130,7 +135,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Contact details page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.experiment(`GET ${routePath}`, () => {
     let request

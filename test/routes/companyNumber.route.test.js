@@ -19,7 +19,9 @@ let accountSaveStub
 let getByApplicationIdStub
 let applicationGetByIdStub
 let accountGetByCompanyNumberStub
+let applicationIsSubmittedStub
 let logErrorStub
+
 let fakeAccount
 let fakeApplication
 
@@ -51,6 +53,9 @@ lab.beforeEach(() => {
 
   accountGetByCompanyNumberStub = Account.getByCompanyNumber
   Account.getByCompanyNumber = () => new Account(fakeAccount)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
 })
 
 lab.afterEach(() => {
@@ -60,10 +65,11 @@ lab.afterEach(() => {
   Account.getByApplicationId = getByApplicationIdStub
   Application.getById = applicationGetByIdStub
   Account.getByCompanyNumber = accountGetByCompanyNumberStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
 })
 
 lab.experiment('Get company number page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, false)
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc

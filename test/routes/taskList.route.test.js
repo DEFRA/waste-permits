@@ -22,6 +22,13 @@ let standardRuleByApplicationIdStub
 
 const routePath = '/task-list'
 
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {},
+  payload: {}
+}
+
 const fakeCookie = {
   applicationId: 'APPLICATION_ID',
   authToken: 'AUTH_TOKEN'
@@ -247,14 +254,7 @@ lab.experiment('Task List page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
   lab.test('The page should NOT have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -264,27 +264,13 @@ lab.experiment('Task List page tests:', () => {
     Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET /task-list success ', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+  lab.test(`GET ${routePath} success`, async () => {
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
   })
 
   lab.test('Task list contains the correct heading and StandardRule info', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -301,14 +287,7 @@ lab.experiment('Task List page tests:', () => {
     fakeTaskList.sections.forEach((section) => {
       section.sectionItems.forEach((sectionItem) => {
         lab.test(`for ${sectionItem.label}`, async () => {
-          const request = {
-            method: 'GET',
-            url: routePath,
-            headers: {},
-            payload: {}
-          }
-
-          const res = await server.inject(request)
+          const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(200)
 
           const parser = new DOMParser()
