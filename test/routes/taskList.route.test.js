@@ -8,13 +8,16 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
+const Application = require('../../src/models/application.model')
+const ApplicationLine = require('../../src/models/applicationLine.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const TaskList = require('../../src/models/taskList/taskList.model')
-const ApplicationLine = require('../../src/models/applicationLine.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let generateCookieStub
 let validateCookieStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
 let standardRuleGetByCodeStub
 let taskListGetByApplicationLineIdStub
 let applicationLineGetByIdStub
@@ -27,6 +30,11 @@ const getRequest = {
   url: routePath,
   headers: {},
   payload: {}
+}
+
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
 }
 
 const fakeCookie = {
@@ -227,6 +235,12 @@ lab.beforeEach(() => {
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
   standardRuleGetByCodeStub = StandardRule.getByCode
   StandardRule.getByCode = async () => fakeStandardRule
 
@@ -244,6 +258,8 @@ lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.generateCookie = generateCookieStub
   CookieService.validateCookie = validateCookieStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   StandardRule.getByCode = standardRuleGetByCodeStub
   TaskList.getByApplicationLineId = taskListGetByApplicationLineIdStub
   ApplicationLine.getById = applicationLineGetByIdStub
