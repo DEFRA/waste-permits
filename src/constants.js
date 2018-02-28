@@ -228,6 +228,10 @@ Constants.Routes = {
     pageHeading: 'Have you discussed this application with us?',
     taskListHeading: `Tell us if you've discussed this application with us`
   },
+  PRIVACY: {
+    path: '/information/privacy',
+    pageHeading: 'Privacy: how we use your personal information'
+  },
   SITE_GRID_REFERENCE: {
     path: '/site/grid-reference',
     pageHeading: `What's the grid reference for the centre of the site?`

@@ -48,7 +48,21 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays expected static content',
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'deemed-evidence-description-list-heading',
+          'deemed-evidence-description-list',
+          'deemed-evidence-description-list-item-1',
+          'deemed-evidence-description-list-item-2',
+          'deemed-evidence-description-list-item-3',
+          'deemed-evidence-description-important-info',
+          'deemed-evidence-description-important-info-abbr',
+          'deemed-evidence-description-last-paragraph'])
+      }
+    ])
     helper.getFailure()
   })
 

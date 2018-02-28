@@ -48,7 +48,17 @@ lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays expected static content',
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'esa-eu-skills-description-span-1',
+          'esa-eu-skills-description-paragraph-1',
+          'esa-eu-skills-description-span-2',
+          'esa-eu-skills-description-paragraph-2'])
+      }
+    ])
     helper.getFailure()
   })
 

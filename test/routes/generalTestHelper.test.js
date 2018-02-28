@@ -20,6 +20,10 @@ module.exports = class GeneralTestHelper {
     this.routePath = routePath
   }
 
+  static checkElementsExist (doc, elementIds) {
+    elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
+  }
+
   // TODO: make excludeAlreadySubnmittedTest default to false
   // new GeneralTestHelper(lab, routePath).test(false, false, true)
   // to become
@@ -103,6 +107,21 @@ module.exports = class GeneralTestHelper {
 
         const element = doc.getElementById('beta-banner')
         Code.expect(element).to.exist()
+      })
+
+      lab.test(`GET ${routePath} page should have the privacy footer link`, async () => {
+        const res = await server.inject(getRequest)
+
+        const parser = new DOMParser()
+        const doc = parser.parseFromString(res.payload, 'text/html')
+
+        if (!doc) {
+          console.log('A problem')
+        }
+
+        const element = doc.getElementById('footer-privacy-link')
+        Code.expect(element).to.exist()
+        Code.expect(element.getAttribute('href')).to.equal('/information/privacy')
       })
     })
   }

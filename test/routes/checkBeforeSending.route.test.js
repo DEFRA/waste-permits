@@ -109,7 +109,7 @@ lab.experiment('Check your answers before sending your application page tests:',
       Code.expect(doc.getElementById('back-link')).to.exist()
     })
 
-    lab.test('returns the check before sending page correctly', async () => {
+    lab.test('returns the check before sending page static content correctly', async () => {
       const res = await server.inject(request)
       Code.expect(res.statusCode).to.equal(200)
 
@@ -118,6 +118,29 @@ lab.experiment('Check your answers before sending your application page tests:',
 
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Check your answers before sending your application')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Confirm and pay')
+      Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
+
+      // Test for the existence of expected static content
+      const elementIds = [
+        'declaration-warning-heading',
+        'declaration-warning-notice-hidden',
+        'declaration-warning-notice-content',
+        'declaration-confirmation-list-heading',
+        'declaration-confirmation-list-item-1',
+        'declaration-confirmation-list-item-2',
+        'declaration-confirmation-list-item-3',
+        'managment-system-link',
+        'managment-system-link-text']
+
+      elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
+    })
+
+    lab.test('returns the check before sending page dynamic content correctly', async () => {
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
 
       const {heading, answers, links} = fakeLineData
       Code.expect(doc.getElementById('section-test-heading').firstChild.nodeValue.trim()).to.equal(heading)

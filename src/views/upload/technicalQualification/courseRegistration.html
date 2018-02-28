@@ -19,10 +19,10 @@
 
       <div id="has-no-annotations" class="form-group">
         <div id="course-registration-description">
-          <span class="bold-small">Upload the {{> abbreviations/WAMITAB }} or {{> abbreviations/EPOC }} course registration email or letter.</span>
+          <span id="course-registration-description-heading" class="bold-small">Upload the {{> abbreviations/WAMITAB id="course-registration-description-heading-abbr-1"}} or {{> abbreviations/EPOC id="course-registration-description-heading-abbr-2"}} course registration email or letter.</span>
           {{#if wamitabRiskIsMediumOrHigh}}
           <p id="wamitab-risk-is-medium-or-high">
-            You must complete the EPOC course or 4 units of the {{> abbreviations/WAMITAB }} qualification within 4 weeks of starting operating.
+            You must complete the EPOC course or 4 units of the {{> abbreviations/WAMITAB id="wamitab-risk-is-medium-or-high-abbr"}} qualification within 4 weeks of starting operating.
             You must get a full qualification within 12 months of starting operating.
           </p>
           {{else}}
@@ -30,8 +30,8 @@
             You must complete the qualification within 4 weeks of starting operating.
           </p>
           {{/if}}
-          <p>
-            Check the <a target="_blank" rel="noopener noreferrer" href="https://wamitab.org.uk/competence/operator-competence/">{{> abbreviations/WAMITAB }} risk tables (opens new tab)</a> to find the qualifications needed for this permit.
+          <p id="operator-competence-paragraph">
+            Check the <a id="operator-competence-link" target="_blank" rel="noopener noreferrer" href="https://wamitab.org.uk/competence/operator-competence/">{{> abbreviations/WAMITAB id="operator-competence-link-abbr"}} risk tables (opens new tab)</a> to find the qualifications needed for this permit.
           </p>
         </div>
       </div>
