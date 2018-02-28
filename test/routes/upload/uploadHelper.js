@@ -113,7 +113,9 @@ module.exports = class UploadTestHelper {
       })
 
       additionalTests.forEach(({title, stubs, test}) => lab.test(title, async () => {
-        stubs()
+        if (stubs) {
+          stubs()
+        }
         const doc = await getDoc(options)
         test(doc)
       }))

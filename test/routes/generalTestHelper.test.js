@@ -16,6 +16,10 @@ module.exports = class GeneralTestHelper {
     this.routePath = routePath
   }
 
+  static checkElementsExist (doc, elementIds) {
+    elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
+  }
+
   test (excludeCookieGetTests = false, excludeCookiePostTests = false) {
     const {lab, routePath} = this
 

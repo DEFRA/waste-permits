@@ -48,7 +48,20 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays expected static content',
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'wamitab-qualification-description-paragraph-1',
+          'wamitab-qualification-description-paragraph-2',
+          'wamitab-qualification-description-paragraph-3',
+          'wamitab-qualification-operator-competence-link',
+          'wamitab-qualification-operator-competence-link',
+          'wamitab-qualification-operator-competence-link-abbr',
+          'wamitab-qualification-operator-competence-abbr'])
+      }
+    ])
     helper.getFailure()
   })
 

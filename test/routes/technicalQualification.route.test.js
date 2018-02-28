@@ -78,8 +78,23 @@ lab.experiment('Technical Management Qualification tests:', () => {
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
       Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
 
-      Code.expect(doc.getElementById('page-description-paragagraph-1')).to.exist()
-      Code.expect(doc.getElementById('page-description-paragagraph-2')).to.exist()
+      // Test for the existence of expected static content
+      GeneralTestHelper.checkElementsExist(doc, [
+        'page-description-paragagraph-1',
+        'page-description-paragagraph-2',
+        'page-description-paragagraph-2-abbr-1',
+        'page-description-paragagraph-2-abbr-2',
+        'page-description-paragagraph-2-abbr-3',
+        'wamitab-label',
+        'wamitab-label-abbr-1',
+        'wamitab-label-abbr-2',
+        'getting-qualification-label',
+        'getting-qualification-label-abbr-1',
+        'getting-qualification-label-abbr-2',
+        'deemed-label',
+        'deemed-label-abbr',
+        'esa-eu-label',
+        'esa-eu-label-abbr'])
 
       // Test dynamic html contents
       Code.expect(doc.getElementById('wamitab').getAttribute('value')).to.equal(`${Qualification.WAMITAB_QUALIFICATION.TYPE}`)
