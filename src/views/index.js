@@ -7,7 +7,7 @@ const cacheBust = (source) => {
   let version = require(Path.join(__dirname, '..', '..', 'package.json')).version
 
   // Replace the token in the source string with the application version number to bust the browser cache
-  return source.replace('##APP_VERSION##', version)
+  return source.replace(/APP_VERSION/g, version)
 }
 
 const loadCommonPartial = (partialName) => {
