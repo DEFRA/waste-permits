@@ -28,7 +28,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Privacy page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(true, true, true)
 
   lab.test(`GET ${routePath} success`, async () => {
     const request = {
