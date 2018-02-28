@@ -38,7 +38,7 @@ const loadHealthTemplate = () => {
   template = template
     .replace('##PAGE_TITLE##', Constants.buildPageTitle(Constants.Routes.HEALTH.pageHeading))
     .replace('##SERVICE_NAME##', Constants.SERVICE_NAME)
-    .replace('APP_VERSION', Constants.getVersion())
+    .replace('##APP_VERSION##', Constants.getVersion())
     .replace('##GITHUB_HREF##', `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`)
     .replace('##GITHB_COMMIT_REF##', config.gitSha)
     .replace('##APP_PATH##', fs.realpathSync(__dirname))
