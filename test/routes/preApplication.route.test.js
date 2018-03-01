@@ -16,7 +16,6 @@ let applicationGetByIdStub
 let applicationIsSubmittedStub
 
 const routePath = '/pre-application'
-// const nextRoutePath = '/task-list'
 
 const getRequest = {
   method: 'GET',

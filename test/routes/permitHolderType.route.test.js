@@ -16,7 +16,6 @@ let applicationGetByIdStub
 let applicationIsSubmittedStub
 
 const routePath = '/permit-holder/type'
-// const nextRoutePath = '/task-list'
 
 const getRequest = {
   method: 'GET',
