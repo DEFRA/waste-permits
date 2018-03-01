@@ -321,7 +321,7 @@ Constants.Dynamics = {
     STANDARD: 910400000,
     BESPOKE: 910400001
   },
-  RECEIVED: 910400000,
+  APPLICATION_RECEIVED: 910400000,
   StatusCode: {
     DRAFT: 1
   },

@@ -55,7 +55,7 @@ class Application extends BaseModel {
   }
 
   isSubmitted () {
-    return this.statusCode && (this.statusCode === Constants.Dynamics.RECEIVED)
+    return this.statusCode && (this.statusCode === Constants.Dynamics.APPLICATION_RECEIVED)
   }
 
   isPaidFor () {
