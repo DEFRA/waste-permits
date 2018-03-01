@@ -14,7 +14,7 @@ const Inert = require('inert')
 const Vision = require('vision')
 const HapiRouter = require('hapi-router')
 const Blipp = require('blipp')
-// const Disinfect = require('disinfect')
+const Disinfect = require('disinfect')
 const SanitizePayload = require('hapi-sanitize-payload')
 const HapiAlive = require('hapi-alive')
 const Good = require('good')
@@ -83,16 +83,16 @@ const registerPlugins = async () => Promise.all([
 
   // Plugin to prevent CSS attack by applying Google's Caja HTML Sanitizer on route query, payload, and params
   // See https://www.npmjs.com/package/disinfect
-  // server.register({
-  //   plugin: Disinfect,
-  //   options: {
-  //     deleteEmpty: true,
-  //     deleteWhitespace: true,
-  //     disinfectQuery: true,
-  //     disinfectParams: true,
-  //     disinfectPayload: true
-  //   }
-  // }),
+  server.register({
+    plugin: Disinfect,
+    options: {
+      deleteEmpty: true,
+      deleteWhitespace: true,
+      disinfectQuery: true,
+      disinfectParams: true,
+      disinfectPayload: true
+    }
+  }),
 
   // Plugin to recursively sanitize or prune values in a request.payload object
   // See https://www.npmjs.com/package/hapi-sanitize-payload
