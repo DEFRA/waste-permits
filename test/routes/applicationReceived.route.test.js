@@ -3,6 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
@@ -13,39 +14,31 @@ const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
+let sandbox
+
 let fakeApplication
-
-let validateCookieStub
-let logErrorStub
-let applicationGetByIdStub
-
-let fakeApplicationId = 'APPLICATION_ID'
 
 const routePath = '/done'
 
 lab.beforeEach(() => {
   fakeApplication = {
-    id: fakeApplicationId,
+    id: 'APPLICATION_ID',
     applicationName: 'APPLICATION_NAME',
     paymentReceived: 1
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  Application.getById = applicationGetByIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('ApplicationReceived page tests:', () => {

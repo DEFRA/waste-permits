@@ -97,7 +97,7 @@ const testCompleteness = async (obj, expectedResult) => {
   fakeLocation.siteName = obj.siteName
   fakeLocationDetail.gridReference = obj.gridReference
   fakeAddress.postcode = obj.postcode
-  const result = await SiteNameAndLocation._isComplete(authToken, applicationId, applicationLineId)
+  const result = await SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId)
   Code.expect(result).to.equal(expectedResult)
 }
 
@@ -151,7 +151,7 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
-    const result = await SiteNameAndLocation._isComplete(authToken, applicationId, applicationLineId)
+    const result = await SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId)
     Code.expect(result).to.be.true()
   })
 

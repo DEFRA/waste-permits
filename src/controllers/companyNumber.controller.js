@@ -54,7 +54,7 @@ module.exports = class CompanyNumberController extends BaseController {
 
       // Update the Application with the Account (if it has changed)
       const application = await Application.getById(authToken, applicationId)
-      if (application.accountId !== account.id) {
+      if (application && application.accountId !== account.id) {
         application.accountId = account.id
         await application.save(authToken)
       }

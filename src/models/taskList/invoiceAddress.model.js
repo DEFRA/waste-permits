@@ -113,7 +113,7 @@ module.exports = class InvoiceAddress extends BaseModel {
     const dynamicsDal = new DynamicsDalService(authToken)
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await InvoiceAddress._isComplete(authToken, applicationId, applicationLineId)
+      const isComplete = await InvoiceAddress.isComplete(authToken, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.INVOICING_DETAILS]: isComplete
@@ -126,7 +126,7 @@ module.exports = class InvoiceAddress extends BaseModel {
     }
   }
 
-  static async _isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (authToken, applicationId, applicationLineId) {
     let isComplete = false
     try {
       const addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)

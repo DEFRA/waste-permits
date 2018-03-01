@@ -11,6 +11,7 @@ const server = require('../../server')
 
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
+const TaskList = require('../../src/models/taskList/taskList.model')
 const LoggingService = require('../../src/services/logging.service')
 const BaseCheck = require('../../src/models/checkYourAnswers/base.check')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
@@ -77,7 +78,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(ApplicationLine, 'getValidRulesetIds').value(() => [fakeValidRulesetId])
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
-  sandbox.stub(Application.prototype, 'isComplete').value(() => true)
+  sandbox.stub(TaskList, 'isComplete').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -156,7 +157,7 @@ lab.experiment('Check your answers before sending your application page tests:',
     })
 
     lab.test('Redirects to the Not Complete screen if the application has not been completed', async () => {
-      Application.prototype.isComplete = () => false
+      sandbox.stub(TaskList, 'isComplete').value(() => false)
 
       const res = await server.inject(request)
       Code.expect(res.statusCode).to.equal(302)

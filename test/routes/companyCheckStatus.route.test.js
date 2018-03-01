@@ -26,13 +26,7 @@ const COMPANY_STATUSES = {
   NOT_ACTIVE: `isn't active`
 }
 
-let validateCookieStub
-let companyLookupGetCompanyStub
-let companyLookupGetActiveDirectors
-let accountGetByApplicationIdStub
-let applicationGetByIdStub
-let applicationIsSubmittedStub
-let logErrorStub
+let sandbox
 
 let fakeApplication
 let fakeAccount
@@ -60,38 +54,22 @@ lab.beforeEach(() => {
     isActive: false
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  companyLookupGetCompanyStub = CompanyLookupService.getCompany
-  CompanyLookupService.getCompany = () => fakeCompany
-
-  companyLookupGetActiveDirectors = CompanyLookupService.getActiveDirectors
-  CompanyLookupService.getActiveDirectors = () => [{}]
-
-  accountGetByApplicationIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => fakeAccount
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompany)
+  sandbox.stub(CompanyLookupService, 'getActiveDirectors').value(() => [{}])
+  sandbox.stub(Account, 'getByApplicationId').value(() => fakeAccount)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  CompanyLookupService.getActiveDirectors = companyLookupGetActiveDirectors
-  CompanyLookupService.getCompany = companyLookupGetCompanyStub
-  Account.getByApplicationId = accountGetByApplicationIdStub
-  Application.getById = applicationGetByIdStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Check company status page tests:', () => {

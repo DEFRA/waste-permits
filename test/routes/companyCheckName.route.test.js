@@ -16,14 +16,7 @@ const ApplicationLine = require('../../src/models/applicationLine.model')
 const Account = require('../../src/models/account.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let validateCookieStub
-let companyLookupGetCompanyStub
-let applicationGetByIdStub
-let applicationLineGetByIdStub
-let accountConfirmStub
-let accountSaveStub
-let applicationSaveStub
-let applicationIsSubmittedStub
+let sandbox
 
 const routePath = '/permit-holder/company/check-name'
 const nextRoutePath = '/permit-holder/company/director-date-of-birth'
@@ -34,7 +27,7 @@ const getRequest = {
 }
 let postRequest
 
-const fakeApplicationData = {
+const fakeApplication = {
   accountId: 'ACCOUNT_ID',
   tradingName: 'THE TRADING NAME'
 }
@@ -59,46 +52,24 @@ lab.beforeEach(() => {
     payload: {}
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  companyLookupGetCompanyStub = CompanyLookupService.getCompany
-  CompanyLookupService.getCompany = () => fakeCompanyData
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplicationData)
-
-  applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = () => new ApplicationLine()
-
-  applicationGetByIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => new Account(fakeAccountData)
-
-  accountConfirmStub = Account.prototype.confirm
-  Account.prototype.confirm = () => {}
-
-  accountSaveStub = Account.prototype.save
-  Account.prototype.save = () => {}
-
-  applicationSaveStub = Application.prototype.save
-  Application.prototype.save = () => {}
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompanyData)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine())
+  sandbox.stub(Account, 'getByApplicationId').value(() => new Account(fakeAccountData))
+  sandbox.stub(Account.prototype, 'confirm').value(() => {})
+  sandbox.stub(Account.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  CompanyLookupService.getCompany = companyLookupGetCompanyStub
-  Application.getById = applicationGetByIdStub
-  ApplicationLine.getById = applicationLineGetByIdStub
-  Account.getByApplicationId = applicationGetByIdStub
-  Account.prototype.confirm = accountConfirmStub
-  Account.prototype.save = accountSaveStub
-  Application.prototype.save = applicationSaveStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const checkPageElements = async (request, companyFound, expectedValue) => {
@@ -196,7 +167,7 @@ lab.experiment('Check Company Details page tests:', () => {
     })
 
     lab.test('Check page elements - existing trading name loaded', async () => {
-      checkPageElements(getRequest, true, fakeApplicationData.tradingName)
+      checkPageElements(getRequest, true, fakeApplication.tradingName)
     })
   })
 
@@ -204,7 +175,7 @@ lab.experiment('Check Company Details page tests:', () => {
     lab.experiment('Success', () => {
       lab.test('Checkbox ticked and trading name entered - redirects to the next route', async () => {
         postRequest.payload['use-business-trading-name'] = 'on'
-        postRequest.payload['business-trading-name'] = fakeApplicationData.tradingName
+        postRequest.payload['business-trading-name'] = fakeApplication.tradingName
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)

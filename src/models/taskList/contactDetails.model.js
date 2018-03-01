@@ -18,7 +18,7 @@ module.exports = class ContactDetails extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await ContactDetails._isComplete(authToken, applicationId)
+      const isComplete = await ContactDetails.isComplete(authToken, applicationId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.CONTACT_DETAILS]: isComplete
@@ -31,7 +31,7 @@ module.exports = class ContactDetails extends BaseModel {
     }
   }
 
-  static async _isComplete (authToken, applicationId) {
+  static async isComplete (authToken, applicationId) {
     let isComplete = false
     try {
       // Get the Contact for this application

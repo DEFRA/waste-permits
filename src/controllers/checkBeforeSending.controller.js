@@ -4,6 +4,7 @@ const Constants = require('../constants')
 const Application = require('../models/application.model')
 const ApplicationLine = require('../models/applicationLine.model')
 const BaseController = require('./base.controller')
+const TaskList = require('../models/taskList/taskList.model')
 const PermitCheck = require('../models/checkYourAnswers/permit.check')
 const SiteCheck = require('../models/checkYourAnswers/site.check')
 const SitePlanCheck = require('../models/checkYourAnswers/sitePlan.check')
@@ -65,14 +66,14 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     pageContext.sections = await this._buildSections(authToken, applicationId, applicationLineId)
 
     // If all the task list items are not complete
-    if (!application.isComplete()) {
+    if (!TaskList.isComplete(authToken, application.id)) {
       return reply
         .redirect(Constants.Routes.ERROR.NOT_COMPLETE.path)
         .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     } else {
       return reply
-      .view('checkBeforeSending', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+        .view('checkBeforeSending', pageContext)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 

@@ -133,7 +133,7 @@ lab.experiment('Task List: Invoice Address Model tests:', () => {
     })
 
     lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
-      const result = await InvoiceAddress._isComplete(authToken, applicationId, applicationLineId)
+      const result = await InvoiceAddress.isComplete(authToken, applicationId, applicationLineId)
       Code.expect(result).to.be.true()
     })
   })

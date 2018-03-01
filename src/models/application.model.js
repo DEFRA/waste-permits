@@ -47,13 +47,6 @@ class Application extends BaseModel {
       const application = Application.dynamicsToModel(result)
       application.id = applicationId
 
-      // TODO remove this
-
-      // While the Application is being filled out on Digital front end the status is Draft = 1
-      // When its submitted it becomes "Received" = 910400000
-      // Also expect (defra_submittedon) to be completed when its ready to work on in CRM
-      // defra_paymentreceived tells you if we have received the payment. Yes = 1 and No = 0
-
       return application
     } catch (error) {
       LoggingService.logError(`Unable to get Application by applicationId: ${error}`)
@@ -61,17 +54,12 @@ class Application extends BaseModel {
     }
   }
 
-  isComplete () {
-    // TODO Work out completeness
-    return true
-  }
-
   isSubmitted () {
-    return this.statusCode && (this.statusCode !== 1)
+    return this.statusCode && (this.statusCode === Constants.Dynamics.RECEIVED)
   }
 
   isPaidFor () {
-    return this.paymentReceived
+    return Boolean(this.paymentReceived)
   }
 
   async save (authToken) {

@@ -44,13 +44,13 @@ lab.experiment('Task List: FirePreventionPlan Model tests:', () => {
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
     sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [{}])
-    const result = await FirePreventionPlan._isComplete(authToken, applicationId)
+    const result = await FirePreventionPlan.isComplete(authToken, applicationId)
     Code.expect(result).to.equal(true)
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete', async () => {
     sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [])
-    const result = await FirePreventionPlan._isComplete(authToken, applicationId)
+    const result = await FirePreventionPlan.isComplete(authToken, applicationId)
     Code.expect(result).to.equal(false)
   })
 })

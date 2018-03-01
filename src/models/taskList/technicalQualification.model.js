@@ -18,7 +18,7 @@ module.exports = class TechnicalQualification extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await TechnicalQualification._isComplete(authToken, applicationId)
+      const isComplete = await TechnicalQualification.isComplete(authToken, applicationId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.TECHNICAL_QUALIFICATION]: isComplete
@@ -31,7 +31,7 @@ module.exports = class TechnicalQualification extends BaseModel {
     }
   }
 
-  static async _isComplete (authToken, applicationId) {
+  static async isComplete (authToken, applicationId) {
     let isComplete = false
     try {
       // Get the Evidence for a technical qualification

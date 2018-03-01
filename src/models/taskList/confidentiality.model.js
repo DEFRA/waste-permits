@@ -18,7 +18,7 @@ module.exports = class Confidentiality extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await Confidentiality._isComplete(authToken, applicationId)
+      const isComplete = await Confidentiality.isComplete(authToken, applicationId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.CONFIRM_CONFIDENTIALLY]: isComplete
@@ -31,7 +31,7 @@ module.exports = class Confidentiality extends BaseModel {
     }
   }
 
-  static async _isComplete (authToken, applicationId) {
+  static async isComplete (authToken, applicationId) {
     let isComplete = false
     try {
       // Get the Application for this application
