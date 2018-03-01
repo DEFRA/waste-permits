@@ -64,7 +64,7 @@
     "hapi-alive": "^2.0.0",
     "hapi-dev-errors": "^2.1.0",
     "hapi-router": "^4.0.0",
-    "hapi-sanitize-payload": "^1.5.0",
+    "hapi-sanitize-payload": "git+https://github.com/ajaxscape/hapi-sanitize-payload.git",
     "https-proxy-agent": "^2.1.1",
     "inert": "^5.1.0",
     "joi": "^13.1.2",

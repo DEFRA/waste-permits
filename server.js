@@ -15,7 +15,7 @@ const Vision = require('vision')
 const HapiRouter = require('hapi-router')
 const Blipp = require('blipp')
 // const Disinfect = require('disinfect')
-// const SanitizePayload = require('hapi-sanitize-payload')
+const SanitizePayload = require('hapi-sanitize-payload')
 const HapiAlive = require('hapi-alive')
 const Good = require('good')
 const HapiDevErrors = require('hapi-dev-errors')
@@ -96,12 +96,12 @@ const registerPlugins = async () => Promise.all([
 
   // Plugin to recursively sanitize or prune values in a request.payload object
   // See https://www.npmjs.com/package/hapi-sanitize-payload
-  // server.register({
-  //   plugin: SanitizePayload,
-  //   options: {
-  //     pruneMethod: 'delete'
-  //   }
-  // }),
+  server.register({
+    plugin: SanitizePayload,
+    options: {
+      pruneMethod: 'delete'
+    }
+  }),
 
   // Plugin providing a health route for the server
   // See https://www.npmjs.com/package/hapi-alive

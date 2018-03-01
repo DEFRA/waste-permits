@@ -6567,47 +6567,13 @@
       }
     },
     "hapi-sanitize-payload": {
-      "version": "1.5.0",
-      "resolved": "https://registry.npmjs.org/hapi-sanitize-payload/-/hapi-sanitize-payload-1.5.0.tgz",
-      "integrity": "sha1-oXcj2gMhhzxwWLhsl8wkKhS7jXU=",
+      "version": "git+https://github.com/ajaxscape/hapi-sanitize-payload.git#409b32cd8c2213659c9bb3c070883b2eade61633",
       "requires": {
-        "joi": "9.2.0",
+        "joi": "13.1.2",
         "lodash.clonedeep": "4.5.0",
         "lodash.isplainobject": "4.0.6",
         "lodash.isstring": "4.0.1",
         "lodash.unset": "4.5.2"
-      },
-      "dependencies": {
-        "hoek": {
-          "version": "4.2.1",
-          "resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.1.tgz",
-          "integrity": "sha512-QLg82fGkfnJ/4iy1xZ81/9SIJiq1NGFUMGs6ParyjBZr6jW2Ufj/snDqTHixNlHdPNwN2RLVD0Pi3igeK9+JfA=="
-        },
-        "isemail": {
-          "version": "2.2.1",
-          "resolved": "https://registry.npmjs.org/isemail/-/isemail-2.2.1.tgz",
-          "integrity": "sha1-A1PT2aYpUQgMJiwqoKQrjqjp4qY="
-        },
-        "joi": {
-          "version": "9.2.0",
-          "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz",
-          "integrity": "sha1-M4WseQGSEwy+Iw6ALsAskhW7/to=",
-          "requires": {
-            "hoek": "4.2.1",
-            "isemail": "2.2.1",
-            "items": "2.1.1",
-            "moment": "2.20.1",
-            "topo": "2.0.2"
-          }
-        },
-        "topo": {
-          "version": "2.0.2",
-          "resolved": "https://registry.npmjs.org/topo/-/topo-2.0.2.tgz",
-          "integrity": "sha1-zVYVdSU5BXwNwEkaYhw7xvvh0YI=",
-          "requires": {
-            "hoek": "4.2.1"
-          }
-        }
       }
     },
     "hapi-scope-start": {
