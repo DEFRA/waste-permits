@@ -18,12 +18,15 @@ let generateCookieStub
 let validateCookieStub
 let applicationGetByIdStub
 let applicationIsSubmittedStub
+let applicationIsPaidForStub
 let standardRuleGetByCodeStub
 let taskListGetByApplicationLineIdStub
 let applicationLineGetByIdStub
 let standardRuleByApplicationIdStub
 
 const routePath = '/task-list'
+const notPaidForRoute = '/errors/order/card-payment-not-complete'
+const alreadySubmittedRoutePath = '/errors/order/done-cant-go-back'
 
 const getRequest = {
   method: 'GET',
@@ -241,6 +244,9 @@ lab.beforeEach(() => {
   applicationIsSubmittedStub = Application.prototype.isSubmitted
   Application.prototype.isSubmitted = () => false
 
+  applicationIsPaidForStub = Application.prototype.isPaidFor
+  Application.prototype.isPaidFor = () => false
+
   standardRuleGetByCodeStub = StandardRule.getByCode
   StandardRule.getByCode = async () => fakeStandardRule
 
@@ -260,6 +266,7 @@ lab.afterEach(() => {
   CookieService.validateCookie = validateCookieStub
   Application.getById = applicationGetByIdStub
   Application.prototype.isSubmitted = applicationIsSubmittedStub
+  Application.prototype.isPaidFor = applicationIsSubmittedStub
   StandardRule.getByCode = standardRuleGetByCodeStub
   TaskList.getByApplicationLineId = taskListGetByApplicationLineIdStub
   ApplicationLine.getById = applicationLineGetByIdStub
@@ -267,7 +274,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, true)
 
   lab.test('The page should NOT have a back link', async () => {
     const res = await server.inject(getRequest)
@@ -297,6 +304,24 @@ lab.experiment('Task List page tests:', () => {
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
     checkElement(doc.getElementById('standard-rule-name-and-code'), `${fakeStandardRule.permitName} - ${fakeStandardRule.code}`)
     checkElement(doc.getElementById('select-a-different-permit'))
+  })
+
+  lab.test(`GET ${routePath} redirects to the Not Paid route ${notPaidForRoute} if the applicaiton has been submitted but not paid for yet`, async () => {
+    Application.prototype.isSubmitted = () => true
+    Application.prototype.isPaidFor = () => false
+
+    const res = await server.inject(getRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal(notPaidForRoute)
+  })
+
+  lab.test(`GET ${routePath} redirects to the Already Submitted route ${alreadySubmittedRoutePath} if the application has been submitted and paid for`, async () => {
+    Application.prototype.isSubmitted = () => true
+    Application.prototype.isPaidFor = () => true
+
+    const res = await server.inject(getRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal(alreadySubmittedRoutePath)
   })
 
   lab.experiment('Task list contains the correct section headings and correct task list items', () => {

@@ -15,10 +15,18 @@ module.exports = class TaskListController extends BaseController {
     const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
     const application = await Application.getById(authToken, applicationId)
 
+    // If the application has been submitted
     if (application.isSubmitted()) {
-      return reply
+      // If the application has not been paid for
+      if (!application.isPaidFor()) {
+        return reply
+          .redirect(Constants.Routes.ERROR.NOT_PAID.path)
+          .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      } else {
+        return reply
         .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
         .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      }
     }
 
     pageContext.standardRule = await StandardRule.getByApplicationLineId(authToken, applicationLineId)
