@@ -159,12 +159,12 @@ module.exports = class UploadController extends BaseController {
 
   _containsFilename (filename, fileList) {
     const containsFilename = fileList.filter((file) => file.filename === filename)
-    return !!containsFilename.length
+    return Boolean(containsFilename.length)
   }
 
   _haveDuplicateFiles (listA, listB) {
     const haveDuplicateFiles = listA.filter(({filename}) => this._containsFilename(filename, listB))
-    return !!haveDuplicateFiles.length
+    return Boolean(haveDuplicateFiles.length)
   }
 
   static _customError (type) {

@@ -36,7 +36,7 @@ class Application extends BaseModel {
   constructor (...args) {
     super(...args)
     const declaration = {args}
-    this.declaration = !!declaration // Make declaration a boolean
+    this.declaration = Boolean(declaration)
   }
 
   static async getById (authToken, applicationId) {

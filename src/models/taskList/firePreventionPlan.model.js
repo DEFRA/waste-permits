@@ -31,7 +31,7 @@ module.exports = class FirePreventionPlan extends BaseModel {
     try {
       // Get the Evidence for a fire prevention plan
       const evidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, Constants.UploadSubject.FIRE_PREVENTION_PLAN)
-      isComplete = !!evidence.length
+      isComplete = Boolean(evidence.length)
     } catch (error) {
       LoggingService.logError(`Unable to calculate ${this.name} completeness: ${error}`)
       throw error

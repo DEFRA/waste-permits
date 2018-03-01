@@ -31,7 +31,7 @@ module.exports = class SitePlan extends BaseModel {
     try {
       // Get the Evidence for a site plan
       const evidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, Constants.UploadSubject.SITE_PLAN)
-      isComplete = !!evidence.length
+      isComplete = Boolean(evidence.length)
     } catch (error) {
       LoggingService.logError(`Unable to calculate SitePlan completeness: ${error}`)
       throw error

@@ -16,11 +16,8 @@ const {COOKIE_RESULT} = require('../../../src/constants')
 
 let sandbox
 
-let validateCookieStub
 const routePath = '/errors/order/start-at-beginning'
 const pageHeading = 'Please start at the beginning of the application'
-
-let applicationGetByIdStub
 
 const getRequest = {
   method: 'GET',

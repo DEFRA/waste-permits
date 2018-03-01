@@ -37,7 +37,7 @@ module.exports = class ContactDetails extends BaseModel {
       // Get the Contact for this application
       const contact = await Contact.getByApplicationId(authToken, applicationId)
 
-      isComplete = !!(contact.firstName)
+      isComplete = Boolean(contact.firstName)
     } catch (error) {
       LoggingService.logError(`Unable to calculate ContactDetails completeness: ${error}`)
       throw error

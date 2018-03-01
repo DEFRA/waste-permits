@@ -56,17 +56,17 @@ lab.beforeEach(() => {
   }
 
     // Create a sinon sandbox to stub methods
-    sandbox = sinon.createSandbox()
+  sandbox = sinon.createSandbox()
 
     // Stub methods
-    sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-    sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-    sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(Location.prototype, 'save').value(() => {})
-    sandbox.stub(LocationDetail.prototype, 'save').value(() => {})
-    sandbox.stub(Location, 'getByApplicationId').value(() => fakeLocation)
-    sandbox.stub(LocationDetail, 'getByLocationId').value(() => fakeLocationDetail)
-    sandbox.stub(SiteNameAndLocation, 'updateCompleteness').value(() => {})
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Location.prototype, 'save').value(() => {})
+  sandbox.stub(LocationDetail.prototype, 'save').value(() => {})
+  sandbox.stub(Location, 'getByApplicationId').value(() => fakeLocation)
+  sandbox.stub(LocationDetail, 'getByLocationId').value(() => fakeLocationDetail)
+  sandbox.stub(SiteNameAndLocation, 'updateCompleteness').value(() => {})
 })
 
 lab.afterEach(() => {

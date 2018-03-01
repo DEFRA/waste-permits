@@ -24,11 +24,6 @@ module.exports = class GeneralTestHelper {
     elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
   }
 
-  // TODO: make excludeAlreadySubnmittedTest default to false
-  // new GeneralTestHelper(lab, routePath).test(false, false, true)
-  // to become
-  // new GeneralTestHelper(lab, routePath).test() i.e. all exclude = false
-  // test (excludeCookieGetTests = false, excludeCookiePostTests = false, excludeAlreadySubnmittedTest = true) {
   test (excludeCookieGetTests = false, excludeCookiePostTests = false, excludeAlreadySubnmittedTest = false) {
     const {lab, routePath} = this
 

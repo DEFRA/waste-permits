@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const Application = require('../../../../src/models/application.model')
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
 const StandardRule = require('../../../../src/models/standardRule.model')
 

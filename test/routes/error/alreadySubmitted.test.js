@@ -16,11 +16,8 @@ const {COOKIE_RESULT} = require('../../../src/constants')
 
 let sandbox
 
-let validateCookieStub
 const routePath = '/errors/order/done-cant-go-back'
 const pageHeading = `You’ve sent your application so you can't go back and change it`
-
-let applicationGetByIdStub
 
 const fakeApplication = {
   id: 'APPLICATION_ID',

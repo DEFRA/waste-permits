@@ -16,11 +16,8 @@ const {COOKIE_RESULT} = require('../../../src/constants')
 
 let sandbox
 
-let validateCookieStub
 const routePath = '/errors/order/task-list-not-complete'
 const pageHeading = 'You need to complete your application'
-
-let applicationGetByIdStub
 
 const getRequest = {
   method: 'GET',

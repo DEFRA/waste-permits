@@ -15,7 +15,6 @@ const {COOKIE_RESULT} = require('../../../src/constants')
 
 let sandbox
 
-let validateCookieStub
 const routePath = '/errors/page-not-found'
 const pageHeading = `We can't find that page`
 
