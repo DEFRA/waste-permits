@@ -47,21 +47,4 @@ module.exports = class CompanyDetails extends BaseModel {
     }
     return isComplete
   }
-
-  static async isCompleteX (authToken, application) {
-    let isComplete = false
-    try {
-      // Get the Account for this application
-      const account = await Account.getById(authToken, application)
-
-      if (account && account.accountName) {
-        isComplete =
-          account.accountName !== undefined && account.accountName.length > 0
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to calculate CompanyDetails completeness: ${error}`)
-      throw error
-    }
-    return isComplete
-  }
 }

@@ -9,6 +9,7 @@ const LoggingService = require('../../services/logging.service')
 // Task List related models used to check for application completeness
 const CompanyDetails = require('./companyDetails.model')
 const Confidentiality = require('./confidentiality.model')
+const ConfirmRules = require('../../controllers/confirmRules.controller')
 const ContactDetails = require('./siteNameAndLocation.model')
 const FirePreventionPlan = require('./firePreventionPlan.model')
 const InvoiceAddress = require('./invoiceAddress.model')
@@ -215,14 +216,15 @@ module.exports = class TaskList extends BaseModel {
     finalItem.available = true
   }
 
-  static async isComplete (authToken, applicationId) {
+  static async isComplete (authToken, applicationId, applicationLineId) {
     return Promise.all([
       CompanyDetails.isComplete(authToken, applicationId),
       Confidentiality.isComplete(authToken, applicationId),
-      ContactDetails.isComplete(authToken, applicationId),
+      ConfirmRules.isComplete(authToken, applicationId, applicationLineId),
+      ContactDetails.isComplete(authToken, applicationId, applicationLineId),
       FirePreventionPlan.isComplete(authToken, applicationId),
-      InvoiceAddress.isComplete(authToken, applicationId),
-      SiteNameAndLocation.isComplete(authToken, applicationId),
+      InvoiceAddress.isComplete(authToken, applicationId, applicationLineId),
+      SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId),
       SitePlan.isComplete(authToken, applicationId),
       TechnicalQualification.isComplete(authToken, applicationId)
     ]).then((values) => {

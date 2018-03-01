@@ -8,10 +8,7 @@ const StandardRule = require('../models/standardRule.model')
 const ConfirmRules = require('../models/confirmRules.model')
 
 module.exports = class ConfirmRulesController extends BaseController {
-  async isComplete (request) {
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
+  async isComplete (authToken, applicationId, applicationLineId) {
     const {complete} = (await ConfirmRules.getByApplicationId(authToken, applicationId, applicationLineId))
     return complete
   }
@@ -33,7 +30,7 @@ module.exports = class ConfirmRulesController extends BaseController {
 
     pageContext.guidanceUrl = standardRule.guidanceUrl
     pageContext.code = standardRule.code
-    pageContext.complete = await this.isComplete(request)
+    pageContext.complete = await this.isComplete(authToken, applicationId, applicationLineId)
 
     return reply
       .view('confirmRules', pageContext)
@@ -41,13 +38,14 @@ module.exports = class ConfirmRulesController extends BaseController {
   }
 
   async doPost (request, reply, errors) {
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
+
     if (errors && errors.data.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
-
-      const complete = await this.isComplete(request)
+      const complete = await this.isComplete(authToken, applicationId, applicationLineId)
       if (complete) {
         return reply.redirect(Constants.Routes.TASK_LIST.path)
       }
