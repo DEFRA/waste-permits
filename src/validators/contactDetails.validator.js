@@ -80,7 +80,8 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
         .max(Account.accountName.length.max)
         .when('is-contact-an-agent', {
           is: 'on',
-          then: Joi.required() }),
+          then: Joi.required(),
+          otherwise: Joi.optional() }),
       'telephone': Joi
         .string()
         .required(),

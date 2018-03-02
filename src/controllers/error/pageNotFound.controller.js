@@ -28,12 +28,12 @@ module.exports = class PageNotFoundController extends BaseController {
     return application && applicationLine
   }
 
-  handler (request, reply, source, errors) {
+  handler (request, reply, errors) {
     if (!CookieService.validateCookie(request)) {
       // Re-direct to the start page if they don't have a valid cookie
       reply.redirect(Constants.Routes.START_OR_OPEN_SAVED.path)
     } else {
-      return super.handler(request, reply, source, errors)
+      return super.handler(request, reply, errors)
     }
   }
 }

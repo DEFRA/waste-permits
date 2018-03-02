@@ -50,7 +50,7 @@ module.exports = class ContactDetailsController extends BaseController {
   }
 
   async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
       const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)

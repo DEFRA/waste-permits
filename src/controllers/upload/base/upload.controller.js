@@ -53,7 +53,7 @@ module.exports = class UploadController extends BaseController {
   }
 
   async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
       const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
@@ -89,7 +89,7 @@ module.exports = class UploadController extends BaseController {
         errors = await this.validator.customValidate(request.payload, errors)
       }
 
-      if (errors && errors.data.details) {
+      if (errors && errors.details) {
         return this.doGet(request, reply, errors)
       }
 
@@ -106,7 +106,7 @@ module.exports = class UploadController extends BaseController {
 
       // Make sure no duplicate files are uploaded
       if (this._haveDuplicateFiles(fileData, annotationsList)) {
-        return this.handler(request, reply, undefined, UploadController._customError('duplicateFile'))
+        return this.handler(request, reply, UploadController._customError('duplicateFile'))
       }
 
       // Save each file as an attachment to an annotation
@@ -154,7 +154,7 @@ module.exports = class UploadController extends BaseController {
     if (errors && errors.output && errors.output.statusCode === Constants.Errors.REQUEST_ENTITY_TOO_LARGE) {
       errors = UploadController._customError('fileTooBig')
     }
-    return this.doGet(request, reply, errors)
+    return this.doGet(request, reply, errors).takeover()
   }
 
   _containsFilename (filename, fileList) {
@@ -169,12 +169,10 @@ module.exports = class UploadController extends BaseController {
 
   static _customError (type) {
     return {
-      data: {
-        details: [{
-          type,
-          path: ['file']
-        }]
-      }
+      details: [{
+        type,
+        path: ['file']
+      }]
     }
   }
 

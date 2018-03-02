@@ -76,7 +76,7 @@ module.exports = class PostcodeController extends BaseController {
       errors = this._addCustomError(errorPath, `"${errorPath}" is required`, 'none.found')
     }
 
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
       return reply
@@ -87,15 +87,13 @@ module.exports = class PostcodeController extends BaseController {
 
   _addCustomError (errorPath, message, type) {
     return {
-      data: {
-        details: [
-          {
-            message: message,
-            path: [errorPath],
-            type: type,
-            context: { key: errorPath, label: errorPath }
-          }]
-      }
+      details: [
+        {
+          message: message,
+          path: [errorPath],
+          type: type,
+          context: { key: errorPath, label: errorPath }
+        }]
     }
   }
 }
