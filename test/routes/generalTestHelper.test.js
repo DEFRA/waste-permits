@@ -24,6 +24,10 @@ module.exports = class GeneralTestHelper {
     elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
   }
 
+  static checkElementsDoNotExist (doc, elementIds) {
+    elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.not.exist())
+  }
+
   test (excludeCookieGetTests = false, excludeCookiePostTests = false, excludeAlreadySubnmittedTest = false) {
     const {lab, routePath} = this
 
