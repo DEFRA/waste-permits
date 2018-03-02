@@ -8,19 +8,37 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
+const Application = require('../../src/models/application.model')
+const ApplicationLine = require('../../src/models/applicationLine.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const TaskList = require('../../src/models/taskList/taskList.model')
-const ApplicationLine = require('../../src/models/applicationLine.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let generateCookieStub
 let validateCookieStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
+let applicationIsPaidForStub
 let standardRuleGetByCodeStub
 let taskListGetByApplicationLineIdStub
 let applicationLineGetByIdStub
 let standardRuleByApplicationIdStub
 
 const routePath = '/task-list'
+const notPaidForRoute = '/errors/order/card-payment-not-complete'
+const alreadySubmittedRoutePath = '/errors/order/done-cant-go-back'
+
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {},
+  payload: {}
+}
+
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
 
 const fakeCookie = {
   applicationId: 'APPLICATION_ID',
@@ -220,6 +238,15 @@ lab.beforeEach(() => {
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
+  applicationIsPaidForStub = Application.prototype.isPaidFor
+  Application.prototype.isPaidFor = () => false
+
   standardRuleGetByCodeStub = StandardRule.getByCode
   StandardRule.getByCode = async () => fakeStandardRule
 
@@ -237,6 +264,9 @@ lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.generateCookie = generateCookieStub
   CookieService.validateCookie = validateCookieStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
+  Application.prototype.isPaidFor = applicationIsPaidForStub
   StandardRule.getByCode = standardRuleGetByCodeStub
   TaskList.getByApplicationLineId = taskListGetByApplicationLineIdStub
   ApplicationLine.getById = applicationLineGetByIdStub
@@ -244,17 +274,10 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, true)
 
   lab.test('The page should NOT have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -264,27 +287,13 @@ lab.experiment('Task List page tests:', () => {
     Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET /task-list success ', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+  lab.test(`GET ${routePath} success`, async () => {
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
   })
 
   lab.test('Task list contains the correct heading and StandardRule info', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -297,18 +306,29 @@ lab.experiment('Task List page tests:', () => {
     checkElement(doc.getElementById('select-a-different-permit'))
   })
 
+  lab.test(`GET ${routePath} redirects to the Not Paid route ${notPaidForRoute} if the applicaiton has been submitted but not paid for yet`, async () => {
+    Application.prototype.isSubmitted = () => true
+    Application.prototype.isPaidFor = () => false
+
+    const res = await server.inject(getRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal(notPaidForRoute)
+  })
+
+  lab.test(`GET ${routePath} redirects to the Already Submitted route ${alreadySubmittedRoutePath} if the application has been submitted and paid for`, async () => {
+    Application.prototype.isSubmitted = () => true
+    Application.prototype.isPaidFor = () => true
+
+    const res = await server.inject(getRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal(alreadySubmittedRoutePath)
+  })
+
   lab.experiment('Task list contains the correct section headings and correct task list items', () => {
     fakeTaskList.sections.forEach((section) => {
       section.sectionItems.forEach((sectionItem) => {
         lab.test(`for ${sectionItem.label}`, async () => {
-          const request = {
-            method: 'GET',
-            url: routePath,
-            headers: {},
-            payload: {}
-          }
-
-          const res = await server.inject(request)
+          const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(200)
 
           const parser = new DOMParser()

@@ -3,17 +3,17 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
+const Application = require('../../src/models/application.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let validateCookieStub
-let getSiteNameStub
-let saveSiteNameStub
+let sandbox
 
 const routePath = '/site/site-name'
 const nextRoutePath = '/site/grid-reference'
@@ -27,6 +27,11 @@ let postRequest
 
 const siteName = 'THE_SITE_NAME'
 
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
+
 lab.beforeEach(() => {
   postRequest = {
     method: 'POST',
@@ -35,22 +40,20 @@ lab.beforeEach(() => {
     payload: {}
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  getSiteNameStub = SiteNameAndLocation.getSiteName
-  SiteNameAndLocation.getSiteName = () => siteName
-
-  saveSiteNameStub = SiteNameAndLocation.saveSiteName
-  SiteNameAndLocation.saveSiteName = () => {}
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(SiteNameAndLocation, 'getSiteName').value(() => siteName)
+  sandbox.stub(SiteNameAndLocation, 'saveSiteName').value(() => {})
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  SiteNameAndLocation.getSiteName = getSiteNameStub
-  SiteNameAndLocation.saveSiteName = saveSiteNameStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const checkPageElements = async (request, expectedValue) => {
@@ -63,17 +66,14 @@ const checkPageElements = async (request, expectedValue) => {
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the site name?`)
 
-  const elementIds = [
+  // Test for the existence of expected static content
+  GeneralTestHelper.checkElementsExist(doc, [
     'back-link',
     'defra-csrf-token',
     'site-namesubheading',
     'site-name-label',
     'site-name-hint'
-  ]
-  for (let id of elementIds) {
-    element = doc.getElementById(id)
-    Code.expect(doc.getElementById(id)).to.exist()
-  }
+  ])
 
   element = doc.getElementById('site-name')
   Code.expect(element.getAttribute('value')).to.equal(expectedValue)

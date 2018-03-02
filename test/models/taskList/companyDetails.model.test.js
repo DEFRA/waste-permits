@@ -60,7 +60,7 @@ lab.afterEach(() => {
 
 const testCompleteness = async (obj, expectedResult) => {
   fakeAccount.accountName = obj.accountName
-  const result = await CompanyDetails._isComplete(authToken, applicationId)
+  const result = await CompanyDetails.isComplete(authToken, applicationId)
   Code.expect(result).to.equal(expectedResult)
 }
 

@@ -29,6 +29,7 @@ let contactSaveStub
 let contactGetByIdStub
 let contactDetailsUpdateCompletenessStub
 let applicationGetByIdStub
+let applicationIsSubmittedStub
 let applicationSaveStub
 let accountGetByIdStub
 let addressDetailGetCompanySecretaryDetailsStub
@@ -92,6 +93,9 @@ lab.beforeEach(() => {
   applicationGetByIdStub = Application.getById
   Application.getById = () => new Application(fakeApplication)
 
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
   applicationSaveStub = Application.prototype.save
   Application.prototype.save = () => {}
 
@@ -123,6 +127,7 @@ lab.afterEach(() => {
   AddressDetail.getPrimaryContactDetails = addressDetailGetPrimaryContactDetailsStub
   AddressDetail.save = addressDetailSaveStub
   Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   Application.save = applicationSaveStub
   Contact.getById = contactGetByIdStub
   Contact.save = contactSaveStub
@@ -166,7 +171,7 @@ lab.experiment('Contact details page tests:', () => {
       Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
 
       // Test for the existence of expected static content
-      const elementIds = [
+      GeneralTestHelper.checkElementsExist(doc, [
         'first-name-label',
         'last-name-label',
         'is-contact-an-agent-label',
@@ -179,9 +184,8 @@ lab.experiment('Contact details page tests:', () => {
         'company-secretary-email-label',
         'company-secretary-email-hint',
         'company-secretary-email-summary',
-        'company-secretary-email-description']
-
-      elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
+        'company-secretary-email-description'
+      ])
     })
   })
 

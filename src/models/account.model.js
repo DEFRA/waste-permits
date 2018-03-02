@@ -36,7 +36,7 @@ class Account extends BaseModel {
   static async getByApplicationId (authToken, applicationId) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const application = await Application.getById(authToken, applicationId)
-    if (application.accountId) {
+    if (application && application.accountId) {
       try {
         const query = encodeURI(`accounts(${application.accountId})?$select=${Account.selectedDynamicsFields()}`)
         const result = await dynamicsDal.search(query)

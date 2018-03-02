@@ -15,13 +15,17 @@ module.exports = class PageNotFoundController extends BaseController {
     const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
     const applicationLine = applicationLineId ? await ApplicationLine.getById(authToken, applicationLineId) : undefined
 
-    pageContext.hasApplication = application && applicationLine
+    pageContext.hasApplication = PageNotFoundController.hasApplication(application, applicationLine)
     pageContext.taskListRoute = Constants.Routes.TASK_LIST.path
     pageContext.startOpenOrSavedRoute = Constants.Routes.START_OR_OPEN_SAVED.path
 
     return reply
       .view('error/pageNotFound', pageContext).code(404)
       .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+  }
+
+  static hasApplication (application, applicationLine) {
+    return application && applicationLine
   }
 
   handler (request, reply, source, errors) {

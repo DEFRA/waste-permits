@@ -11,6 +11,7 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Account = require('../../src/models/account.model')
+const Application = require('../../src/models/application.model')
 const LoggingService = require('../../src/services/logging.service')
 
 const {COOKIE_RESULT} = require('../../src/constants')
@@ -25,11 +26,9 @@ const COMPANY_STATUSES = {
   NOT_ACTIVE: `isn't active`
 }
 
-let validateCookieStub
-let companyLookupGetCompanyStub
-let companyLookupGetActiveDirectors
-let getByApplicationIdStub
-let logErrorStub
+let sandbox
+
+let fakeApplication
 let fakeAccount
 let fakeCompany
 
@@ -38,6 +37,11 @@ const nextRoutePath = '/permit-holder/company/check-name'
 const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
+  fakeApplication = {
+    id: 'APPLICATION_ID',
+    applicationName: 'APPLICATION_NAME'
+  }
+
   fakeAccount = {
     id: 'ACCOUNT_ID',
     companyNumber: '01234567'
@@ -50,34 +54,27 @@ lab.beforeEach(() => {
     isActive: false
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  companyLookupGetCompanyStub = CompanyLookupService.getCompany
-  CompanyLookupService.getCompany = () => fakeCompany
-
-  companyLookupGetActiveDirectors = CompanyLookupService.getActiveDirectors
-  CompanyLookupService.getActiveDirectors = () => [{}]
-
-  getByApplicationIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => fakeAccount
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompany)
+  sandbox.stub(CompanyLookupService, 'getActiveDirectors').value(() => [{}])
+  sandbox.stub(Account, 'getByApplicationId').value(() => fakeAccount)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  CompanyLookupService.getActiveDirectors = companyLookupGetActiveDirectors
-  CompanyLookupService.getCompany = companyLookupGetCompanyStub
-  Account.getByApplicationId = getByApplicationIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Check company status page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(false, true)
+  // There is no POST for this route
+  new GeneralTestHelper(lab, routePath).test(false, true, false)
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc
@@ -155,14 +152,6 @@ lab.experiment('Check company status page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Account.getByApplicationId = () => Promise.reject(new Error('read failed'))

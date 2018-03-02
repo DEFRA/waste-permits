@@ -3,6 +3,6 @@
 const Constants = require('../../constants')
 const Route = require('../baseRoute')
 const NotPaidController = require('../../controllers/error/notPaid.controller')
-const controller = new NotPaidController(Constants.Routes.ERROR.NOT_PAID, undefined, true)
+const controller = new NotPaidController(Constants.Routes.ERROR.NOT_PAID, undefined)
 
 module.exports = Route.register('GET', controller)

@@ -11,6 +11,7 @@ const server = require('../../server')
 
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
+const TaskList = require('../../src/models/taskList/taskList.model')
 const LoggingService = require('../../src/services/logging.service')
 const BaseCheck = require('../../src/models/checkYourAnswers/base.check')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
@@ -23,6 +24,8 @@ let fakeInvalidRulesetId
 let fakeLineData
 
 const routePath = '/check-before-sending'
+const nextRoutePath = '/done'
+const notCompleteRoutePath = '/errors/order/task-list-not-complete'
 
 let sandbox
 
@@ -75,6 +78,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(ApplicationLine, 'getValidRulesetIds').value(() => [fakeValidRulesetId])
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
+  sandbox.stub(TaskList, 'isComplete').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -83,7 +87,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Check your answers before sending your application page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(true, true, true)
 
   lab.experiment(`GET ${routePath}`, () => {
     let request
@@ -118,7 +122,7 @@ lab.experiment('Check your answers before sending your application page tests:',
       Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
 
       // Test for the existence of expected static content
-      const elementIds = [
+      GeneralTestHelper.checkElementsExist(doc, [
         'declaration-warning-heading',
         'declaration-warning-notice-hidden',
         'declaration-warning-notice-content',
@@ -127,9 +131,8 @@ lab.experiment('Check your answers before sending your application page tests:',
         'declaration-confirmation-list-item-2',
         'declaration-confirmation-list-item-3',
         'managment-system-link',
-        'managment-system-link-text']
-
-      elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.exist())
+        'managment-system-link-text'
+      ])
     })
 
     lab.test('returns the check before sending page dynamic content correctly', async () => {
@@ -152,6 +155,14 @@ lab.experiment('Check your answers before sending your application page tests:',
         Code.expect(doc.getElementById(`${id}-type`).firstChild.nodeValue.trim()).to.equal(type)
       })
     })
+
+    lab.test('Redirects to the Not Complete screen if the application has not been completed', async () => {
+      sandbox.stub(TaskList, 'isComplete').value(() => false)
+
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(notCompleteRoutePath)
+    })
   })
 
   lab.experiment(`POST ${routePath}`, () => {
@@ -169,7 +180,7 @@ lab.experiment('Check your answers before sending your application page tests:',
       lab.test('redirects to the Application Received route after an UPDATE', async () => {
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/done')
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
     })
   })

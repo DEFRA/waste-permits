@@ -4,18 +4,17 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const sinon = require('sinon')
 const GeneralTestHelper = require('../../../routes/generalTestHelper.test')
 
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
+const Application = require('../../../../src/models/application.model')
 const InvoiceAddress = require('../../../../src/models/taskList/invoiceAddress.model')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
-let validateCookieStub
-let invoiceAddressGetAddressStub
-let invoiceAddressSaveSelectedAddressStub
-let addressListByPostcodeStub
+let sandbox
 
 const routePath = '/invoice/address/postcode'
 const nextRoutePath = '/invoice/address/select-address'
@@ -27,6 +26,11 @@ const getRequest = {
   headers: {}
 }
 let postRequest
+
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
 
 const fakeAddress1 = {
   id: 'ADDRESS_ID_1',
@@ -69,30 +73,25 @@ lab.beforeEach(() => {
     payload: {}
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  invoiceAddressGetAddressStub = InvoiceAddress.getAddress
-  InvoiceAddress.getAddress = () => new Address(fakeAddress1)
-
-  invoiceAddressSaveSelectedAddressStub = InvoiceAddress.saveSelectedAddress
-  InvoiceAddress.saveSelectedAddress = () => undefined
-
-  addressListByPostcodeStub = Address.listByPostcode
-  Address.listByPostcode = () => [
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(InvoiceAddress, 'getAddress').value(() => new Address(fakeAddress1))
+  sandbox.stub(Address, 'listByPostcode').value(() => [
     new Address(fakeAddress1),
     new Address(fakeAddress2),
     new Address(fakeAddress3)
-  ]
+  ])
+  sandbox.stub(InvoiceAddress, 'saveSelectedAddress').value(() => undefined)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  InvoiceAddress.getAddress = invoiceAddressGetAddressStub
-  InvoiceAddress.saveSelectedAddress = invoiceAddressSaveSelectedAddressStub
-  Address.listByPostcode = addressListByPostcodeStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const checkPageElements = async (request, expectedValue) => {
@@ -105,7 +104,8 @@ const checkPageElements = async (request, expectedValue) => {
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(pageHeading)
 
-  const elementIds = [
+  // Test for the existence of expected static content
+  GeneralTestHelper.checkElementsExist(doc, [
     'back-link',
     'defra-csrf-token',
     'postcode-label',
@@ -113,11 +113,7 @@ const checkPageElements = async (request, expectedValue) => {
     'manual-hint',
     'manual-address-link',
     'no-postcode-link-text'
-  ]
-  for (let id of elementIds) {
-    element = doc.getElementById(id)
-    Code.expect(doc.getElementById(id)).to.exist()
-  }
+  ])
 
   element = doc.getElementById('invoice-subheading')
   Code.expect(element).to.exist()

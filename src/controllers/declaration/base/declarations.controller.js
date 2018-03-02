@@ -14,6 +14,15 @@ module.exports = class DeclarationsController extends BaseController {
 
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const application = await Application.getById(authToken, applicationId)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
 
     switch (this.route) {
       case Constants.Routes.COMPANY_DECLARE_OFFENCES:
@@ -26,13 +35,9 @@ module.exports = class DeclarationsController extends BaseController {
         throw new Error(`Unexpected route (${this.route.path})`)
     }
 
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const application = await Application.getById(authToken, applicationId)
       pageContext.formValues = this.getFormData(application, pageContext)
     }
 

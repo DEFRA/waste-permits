@@ -10,14 +10,11 @@ const GeneralTestHelper = require('../../../routes/generalTestHelper.test')
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
+const Application = require('../../../../src/models/application.model')
 const InvoiceAddress = require('../../../../src/models/taskList/invoiceAddress.model')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
-let validateCookieStub
-let cookieServiceGetStub
-let addressListByPostcodeStub
-let invoiceAddressGetAddressStub
-let invoiceAddressSaveManualAddressStub
+let sandbox
 
 const pageHeading = `Where should we send invoices for the annual costs after the permit has been issued?`
 const routePath = '/invoice/address/address-manual'
@@ -37,9 +34,16 @@ const FORM_FIELD_ID = {
 const getRequest = {
   method: 'GET',
   url: routePath,
-  headers: {}
+  headers: {},
+  payload: {}
 }
+
 let postRequest
+
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
 
 const fakeAddress1 = {
   id: 'ADDRESS_ID_1',
@@ -85,34 +89,26 @@ lab.beforeEach(() => {
     payload: {}
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  cookieServiceGetStub = CookieService.get
-  CookieService.get = () => undefined
-
-  addressListByPostcodeStub = Address.listByPostcode
-  Address.listByPostcode = () => [
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(CookieService, 'get').value(() => undefined)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Address, 'listByPostcode').value(() => [
     new Address(fakeAddress1),
     new Address(fakeAddress2),
     new Address(fakeAddress3)
-  ]
-
-  invoiceAddressGetAddressStub = InvoiceAddress.getAddress
-  InvoiceAddress.getAddress = () => new Address(fakeAddress1)
-
-  invoiceAddressSaveManualAddressStub = InvoiceAddress.saveManualAddress
-  InvoiceAddress.saveManualAddress = () => undefined
+  ])
+  sandbox.stub(InvoiceAddress, 'getAddress').value(() => new Address(fakeAddress1))
+  sandbox.stub(InvoiceAddress, 'saveManualAddress').value(() => undefined)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  CookieService.get = cookieServiceGetStub
-  Address.listByPostcode = addressListByPostcodeStub
-  InvoiceAddress.getAddress = invoiceAddressGetAddressStub
-  InvoiceAddress.saveManualAddress = invoiceAddressSaveManualAddressStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const checkPageElements = async (request, expectedValue) => {

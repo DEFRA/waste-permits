@@ -22,12 +22,20 @@ module.exports = class UploadController extends BaseController {
 
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const application = await Application.getById(authToken, applicationId)
+    const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
+
     if (request.payload) {
       pageContext.formValues = request.payload
     }
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
     pageContext.uploadFormAction = `${this.path}/upload`
     pageContext.annotations = list.map(({filename, id}) => ({filename, removeAction: `${this.path}/remove/${id}`}))
@@ -151,12 +159,12 @@ module.exports = class UploadController extends BaseController {
 
   _containsFilename (filename, fileList) {
     const containsFilename = fileList.filter((file) => file.filename === filename)
-    return !!containsFilename.length
+    return Boolean(containsFilename.length)
   }
 
   _haveDuplicateFiles (listA, listB) {
     const haveDuplicateFiles = listA.filter(({filename}) => this._containsFilename(filename, listB))
-    return !!haveDuplicateFiles.length
+    return Boolean(haveDuplicateFiles.length)
   }
 
   static _customError (type) {

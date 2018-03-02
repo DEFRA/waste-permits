@@ -12,30 +12,31 @@ class Application extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'applicationNumber', dynamics: 'defra_applicationnumber'},
       {field: 'accountId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_account', relationship: 'defra_account_defra_application_customerid', entity: 'accounts'}},
-      {field: 'contactId', dynamics: '_defra_primarycontactid_value', bind: {id: 'defra_primarycontactid', relationship: 'defra_contact_defra_application_primarycontactid', entity: 'contacts'}},
       {field: 'agentId', dynamics: '_defra_agentid_value', bind: {id: 'defra_agentid_account', relationship: 'defra_account_defra_application_agentid', entity: 'accounts'}},
-      {field: 'tradingName', dynamics: 'defra_tradingname', length: {max: 170}},
       {field: 'applicationName', dynamics: 'defra_name', readOnly: true},
-      {field: 'technicalQualification', dynamics: 'defra_technicalability'},
-      {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},
-      {field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails', length: {max: 2000}},
+      {field: 'applicationNumber', dynamics: 'defra_applicationnumber'},
       {field: 'bankruptcy', dynamics: 'defra_bankruptcydeclaration'},
       {field: 'bankruptcyDetails', dynamics: 'defra_bankruptcydeclarationdetails', length: {max: 2000}},
       {field: 'confidentiality', dynamics: 'defra_confidentialitydeclaration'},
       {field: 'confidentialityDetails', dynamics: 'defra_confidentialitydeclarationdetails', length: {max: 2000}},
+      {field: 'contactId', dynamics: '_defra_primarycontactid_value', bind: {id: 'defra_primarycontactid', relationship: 'defra_contact_defra_application_primarycontactid', entity: 'contacts'}},
       {field: 'declaration', dynamics: 'defra_applicationdeclaration'},
+      {field: 'paymentReceived', dynamics: 'defra_paymentreceived'},
       {field: 'regime', dynamics: 'defra_regime', constant: Constants.Dynamics.WASTE_REGIME},
+      {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},
+      {field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails', length: {max: 2000}},
       {field: 'source', dynamics: 'defra_source', constant: Constants.Dynamics.DIGITAL_SOURCE},
-      {field: 'statuscode', dynamics: 'statuscode', constant: Constants.Dynamics.StatusCode.DRAFT}
+      {field: 'statusCode', dynamics: 'statuscode', constant: Constants.Dynamics.StatusCode.DRAFT},
+      {field: 'technicalQualification', dynamics: 'defra_technicalability'},
+      {field: 'tradingName', dynamics: 'defra_tradingname', length: {max: 170}}
     ]
   }
 
   constructor (...args) {
     super(...args)
     const declaration = {args}
-    this.declaration = !!declaration // Make declaration a boolean
+    this.declaration = Boolean(declaration)
   }
 
   static async getById (authToken, applicationId) {
@@ -45,11 +46,20 @@ class Application extends BaseModel {
       const result = await dynamicsDal.search(query)
       const application = Application.dynamicsToModel(result)
       application.id = applicationId
+
       return application
     } catch (error) {
       LoggingService.logError(`Unable to get Application by applicationId: ${error}`)
       throw error
     }
+  }
+
+  isSubmitted () {
+    return this.statusCode && (this.statusCode === Constants.Dynamics.APPLICATION_RECEIVED)
+  }
+
+  isPaidFor () {
+    return Boolean(this.paymentReceived)
   }
 
   async save (authToken) {

@@ -238,7 +238,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await SiteNameAndLocation._isComplete(authToken, applicationId, applicationLineId)
+      const isComplete = await SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION]: isComplete
@@ -251,7 +251,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     }
   }
 
-  static async _isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (authToken, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the Location for this application

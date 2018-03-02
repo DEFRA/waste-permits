@@ -4,6 +4,7 @@ const Constants = require('../../../constants')
 const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
 const Address = require('../../../models/address.model')
+const Application = require('../../../models/application.model')
 
 module.exports = class AddressSelectController extends BaseController {
   async doGet (request, reply, errors) {
@@ -11,6 +12,13 @@ module.exports = class AddressSelectController extends BaseController {
     const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
     const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
+    const application = await Application.getById(authToken, applicationId)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
 
     let addresses, address
     let postcode = CookieService.get(request, this.getPostcodeCookieKey())

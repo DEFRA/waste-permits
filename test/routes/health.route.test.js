@@ -9,6 +9,13 @@ const server = require('../../server')
 
 const routePath = '/health'
 
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {},
+  payload: {}
+}
+
 lab.beforeEach(() => {
 
 })
@@ -19,14 +26,7 @@ lab.afterEach(() => {
 
 lab.experiment('Health page tests:', () => {
   lab.test('The page should NOT have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -36,14 +36,8 @@ lab.experiment('Health page tests:', () => {
     Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET /health returns the health page correctly', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {}
-    }
-
-    const res = await server.inject(request)
+  lab.test(`GET ${routePath} returns the health page correctly`, async () => {
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
