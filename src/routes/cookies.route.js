@@ -2,7 +2,7 @@
 
 const Constants = require('../constants')
 const Route = require('./baseRoute')
-const DrainageTypeDrainController = require('../controllers/drainageTypeDrain.controller')
-const controller = new DrainageTypeDrainController(Constants.Routes.COOKIES)
+const CookiesController = require('../controllers/cookies.controller')
+const controller = new CookiesController(Constants.Routes.COOKIES, undefined, false)
 
-module.exports = Route.register('GET, POST', controller)
+module.exports = Route.register('GET', controller)

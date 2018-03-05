@@ -14,9 +14,9 @@ class UploadRoute extends BaseRoute {
     return {
       method: 'GET',
       path: `${controller.path}/remove/{id}`,
+      handler: controller.remove,
       options: {
         description: `The REMOVE ${controller.route.pageHeading} page`,
-        handler: controller.remove,
         bind: controller
       }
     }
@@ -26,9 +26,9 @@ class UploadRoute extends BaseRoute {
     return {
       method: 'POST',
       path: `${controller.path}/upload`,
+      handler: controller.upload,
       options: {
         description: `The UPLOAD ${controller.route.pageHeading} page`,
-        handler: controller.upload,
         bind: controller,
         plugins: {
           disinfect: false, // Disabled to allow payload to contain file data

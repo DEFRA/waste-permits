@@ -5,9 +5,9 @@ class Route {
     const route = {
       method: 'GET',
       path: controller.path,
+      handler: controller.handler,
       options: {
         description: `The GET ${controller.route.pageHeading} page`,
-        handler: controller.handler,
         bind: controller
       }
     }
@@ -24,9 +24,9 @@ class Route {
     const route = {
       method: 'POST',
       path: controller.path,
+      handler: controller.handler,
       options: {
         description: `The POST ${controller.route.pageHeading} page`,
-        handler: controller.handler,
         bind: controller
       }
     }

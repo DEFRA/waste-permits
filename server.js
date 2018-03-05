@@ -56,34 +56,38 @@ const server = new Hapi.Server(serverOptions)
 // Create a session cookie in which to store a waste permit application token
 server.state(Constants.DEFRA_COOKIE_KEY, cookieConfig.options)
 
-const registerPlugins = async () => Promise.all([
+const registerPlugins = async () => server.register([
   // Static file and directory handlers plugin for hapi.js
   // See https://www.npmjs.com/package/inert
-  server.register({plugin: Inert}),
+  {
+    plugin: Inert
+  },
 
   // Templates rendering plugin support for hapi.js
   // See https://www.npmjs.com/package/vision
-  server.register({plugin: Vision}),
+  {
+    plugin: Vision
+  },
 
   // Plugin to automatically load the routes based on their file location
   // See https://www.npmjs.com/package/hapi-router
-  server.register({
+  {
     plugin: HapiRouter,
     options: {
       routes: './src/routes/**/*.route.js'
     }
-  }),
+  },
 
   // Plugin to display the routes table to console at startup
   // See https://www.npmjs.com/package/blipp
-  server.register({
+  {
     plugin: Blipp,
     options: {}
-  }),
+  },
 
   // Plugin to prevent CSS attack by applying Google's Caja HTML Sanitizer on route query, payload, and params
   // See https://www.npmjs.com/package/disinfect
-  server.register({
+  {
     plugin: Disinfect,
     options: {
       deleteEmpty: true,
@@ -92,20 +96,20 @@ const registerPlugins = async () => Promise.all([
       disinfectParams: true,
       disinfectPayload: true
     }
-  }),
+  },
 
   // Plugin to recursively sanitize or prune values in a request.payload object
   // See https://www.npmjs.com/package/hapi-sanitize-payload
-  server.register({
+  {
     plugin: SanitizePayload,
     options: {
       pruneMethod: 'delete'
     }
-  }),
+  },
 
   // Plugin providing a health route for the server
   // See https://www.npmjs.com/package/hapi-alive
-  server.register({
+  {
     plugin: HapiAlive,
     options: {
       path: Constants.Routes.HEALTH.path,
@@ -118,30 +122,30 @@ const registerPlugins = async () => Promise.all([
         }
       }
     }
-  }),
+  },
 
   // Plugin to return an error view for web request. Only used when the server is running in DEVELOPMENT mode.
   // See https://www.npmjs.com/package/hapi-dev-errors
-  server.register({
+  {
     plugin: HapiDevErrors,
     options: {
       showErrors: config.nodeEnvironment === 'DEVELOPMENT'
     }
-  }),
+  },
 
   // Plugin for logging
   // See https://www.npmjs.com/package/good
-  server.register({
+  {
     plugin: Good,
     options: logConfig.options
-  }),
+  },
 
   // Plugin for CSRF tokens
   // See https://www.npmjs.com/package/crumb
-  server.register({
+  {
     plugin: Crumb,
     options: crumbConfig.options
-  })
+  }
 ])
 
 const start = async () => {
