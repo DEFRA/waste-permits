@@ -15,8 +15,8 @@ const sections = [
         purpose: `Used to store encrypted information that we need to help you complete your application. For example, to link securely to the data you've already entered.`,
         expires: 'After 3 hours of inactivity or when you close your browser'},
       {
-        id: 'defra-cserf-token-cookie',
-        name: 'DefraCserfToken',
+        id: 'defra-csrf-token-cookie',
+        name: 'DefraCsrfToken',
         purpose: 'A randomly generated reference number used to make the service more secure.',
         expires: 'After 3 hours of inactivity or when you close your browser'
       }
