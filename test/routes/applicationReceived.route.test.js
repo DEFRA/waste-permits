@@ -74,9 +74,13 @@ lab.experiment('ApplicationReceived page tests:', () => {
 
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Application received')
       Code.expect(doc.getElementById('application-name').firstChild.nodeValue).to.equal(fakeApplication.applicationName)
-      Code.expect(doc.getElementById('application-received-info')).to.exist()
-      Code.expect(doc.getElementById('application-received-hint')).to.exist()
-      Code.expect(doc.getElementById('application-received-warning')).to.exist()
+      GeneralTestHelper.checkElementsExist(doc, [
+        'reference-number-paragraph',
+        'page-sub-heading',
+        'application-received-info',
+        'application-received-hint',
+        'application-received-warning'
+      ])
     })
 
     lab.test('Redirects to the Not Paid screen if the application has been paid for yet', async () => {
