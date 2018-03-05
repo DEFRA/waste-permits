@@ -1,0 +1,52 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      <h1 id="page-heading" class="heading-large">{{pageHeading}}</h1>
+
+      <div class="panel panel-border-wide">
+        <p id="print-page-hint"><span id="payment-cost-hint">The cost of the application is &pound;</span><span id="payment-cost">{{cost}}</span></p>
+      </div>
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.payment-type}}{{/getFormErrorGroupClass}}">
+          <fieldset>
+
+            <legend id="payment-type-legend" class="visually-hidden">{{pageHeading}}</legend>
+
+            {{> common/fieldError fieldId='payment-type-error' message=errors.payment-type }}
+            <div class="multiple-choice">
+              <input id="card-payment" type="radio" name="payment-type" value="{{formValues.card-payment}}">
+              <label for="card-payment">
+                <span id="card-payment-label">Debit or credit card</span>
+                <span id="card-payment-label-hint" class="form-hint">Application processed immediately. No extra fee.</span>
+              </label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="bacs-payment" type="radio" name="payment-type" value="{{formValues.bacs-payment}}">
+              <label for="bacs-payment">
+                <span id="bacs-payment-label">Bank transfer by {{> abbreviations/BACS id="bacs-payment-label-abbr"}}</span>
+                <span id="bacs-payment-label-hint" class="form-hint">Application processed after the payment arrives</span>
+              </label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+
+      </form>
+    </div>
+  </div>
+
+</main>

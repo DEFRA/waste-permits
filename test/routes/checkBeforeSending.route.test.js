@@ -24,7 +24,7 @@ let fakeInvalidRulesetId
 let fakeLineData
 
 const routePath = '/check-before-sending'
-const nextRoutePath = '/done'
+const nextRoutePath = '/pay/type'
 const notCompleteRoutePath = '/errors/order/task-list-not-complete'
 
 let sandbox
@@ -117,8 +117,8 @@ lab.experiment('Check your answers before sending your application page tests:',
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Check your answers before sending your application')
-      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Confirm and pay')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Check your answers')
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Confirm and continue')
       Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
 
       // Test for the existence of expected static content
@@ -131,7 +131,8 @@ lab.experiment('Check your answers before sending your application page tests:',
         'declaration-confirmation-list-item-2',
         'declaration-confirmation-list-item-3',
         'managment-system-link',
-        'managment-system-link-text'
+        'managment-system-link-text',
+        'print-page-hint'
       ])
     })
 

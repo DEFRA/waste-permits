@@ -2562,7 +2562,9 @@
       "dev": true
     },
     "disinfect": {
-      "version": "git+https://github.com/DEFRA/disinfect.git#32e0934e896bbca6ec02868d7dacf7d06e4fdcb0",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/disinfect/-/disinfect-1.0.0.tgz",
+      "integrity": "sha512-RI4bcznLn+jAuWGHfEC2fcmId4vS4cy1UZJkwU/2qf/LguTex+5qPcNH1r/vGsI++xieSuvxCyCyfNdodLBjYw==",
       "requires": {
         "async": "2.6.0",
         "hoek": "5.0.3",
