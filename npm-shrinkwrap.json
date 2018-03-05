@@ -2562,7 +2562,7 @@
       "dev": true
     },
     "disinfect": {
-      "version": "git+https://github.com/ajaxscape/disinfect.git#32e0934e896bbca6ec02868d7dacf7d06e4fdcb0",
+      "version": "git+https://github.com/DEFRA/disinfect.git#32e0934e896bbca6ec02868d7dacf7d06e4fdcb0",
       "requires": {
         "async": "2.6.0",
         "hoek": "5.0.3",
@@ -6533,7 +6533,7 @@
       }
     },
     "hapi-sanitize-payload": {
-      "version": "git+https://github.com/ajaxscape/hapi-sanitize-payload.git#770d458757180a6c4e568f8f5a0514c859331ed8",
+      "version": "git+https://github.com/DEFRA/hapi-sanitize-payload.git#45ac77881623cdb4e107fe8179e14359bfdd3ba2",
       "requires": {
         "joi": "13.1.2",
         "lodash.clonedeep": "4.5.0",
