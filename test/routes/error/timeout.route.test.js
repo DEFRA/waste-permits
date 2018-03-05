@@ -4,10 +4,19 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../generalTestHelper.test')
+
 const server = require('../../../server')
 
 const routePath = '/errors/timeout'
 const pageTitle = 'Your application has timed out'
+
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {},
+  payload: {}
+}
 
 lab.beforeEach(() => {
 
@@ -18,15 +27,10 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Timeout page tests:', () => {
-  lab.test('The page should NOT have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
+  new GeneralTestHelper(lab, routePath).test(true, true, true)
 
-    const res = await server.inject(request)
+  lab.test('The page should NOT have a back link', async () => {
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -37,13 +41,7 @@ lab.experiment('Timeout page tests:', () => {
   })
 
   lab.test(`GET ${routePath} returns the timeout page correctly`, async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -52,14 +50,11 @@ lab.experiment('Timeout page tests:', () => {
     let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(pageTitle)
 
-    const elementIds = [
+    // Test for the existence of expected static content
+    GeneralTestHelper.checkElementsExist(doc, [
       'timeout-message-para-1',
       'timeout-message-para-2',
       'start-again-link'
-    ]
-    for (let id of elementIds) {
-      element = doc.getElementById(id)
-      Code.expect(doc.getElementById(id)).to.exist()
-    }
+    ])
   })
 })

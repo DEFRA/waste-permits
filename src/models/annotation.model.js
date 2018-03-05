@@ -4,20 +4,19 @@ const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
 
-module.exports = class Annotation extends BaseModel {
-  static mapping () {
+class Annotation extends BaseModel {
+  static get entity () {
+    return 'annotations'
+  }
+
+  static get mapping () {
     return [
       {field: 'applicationId', dynamics: '_objectid_value', bind: {id: 'objectid_defra_application', entity: 'defra_applications'}},
       {field: 'id', dynamics: 'annotationid'},
       {field: 'subject', dynamics: 'subject'},
-      {field: 'filename', dynamics: 'filename'},
+      {field: 'filename', dynamics: 'filename', length: {max: 255}},
       {field: 'documentBody', dynamics: 'documentbody'}
     ]
-  }
-
-  constructor (...args) {
-    super(...args)
-    this._entity = 'annotations'
   }
 
   static async getById (authToken, id) {
@@ -52,3 +51,7 @@ module.exports = class Annotation extends BaseModel {
     await super.save(authToken, dataObject)
   }
 }
+
+Annotation.setDefinitions()
+
+module.exports = Annotation

@@ -5,7 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
-const GeneralTestHelper = require('../routes/generalTestHelper.test')
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
@@ -16,13 +16,7 @@ const ApplicationLine = require('../../src/models/applicationLine.model')
 const Account = require('../../src/models/account.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let validateCookieStub
-let companyLookupGetCompanyStub
-let applicationGetByIdStub
-let applicationLineGetByIdStub
-let accountConfirmStub
-let accountSaveStub
-let applicationSaveStub
+let sandbox
 
 const routePath = '/permit-holder/company/check-name'
 const nextRoutePath = '/permit-holder/company/director-date-of-birth'
@@ -33,7 +27,7 @@ const getRequest = {
 }
 let postRequest
 
-const fakeApplicationData = {
+const fakeApplication = {
   accountId: 'ACCOUNT_ID',
   tradingName: 'THE TRADING NAME'
 }
@@ -47,7 +41,7 @@ const fakeCompanyData = {
 
 const fakeAccountData = {
   companyNumber: fakeCompanyData.companyNumber,
-  name: fakeCompanyData.name
+  accountName: fakeCompanyData.name
 }
 
 lab.beforeEach(() => {
@@ -58,42 +52,24 @@ lab.beforeEach(() => {
     payload: {}
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  companyLookupGetCompanyStub = CompanyLookupService.getCompany
-  CompanyLookupService.getCompany = () => fakeCompanyData
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplicationData)
-
-  applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = () => new ApplicationLine()
-
-  applicationGetByIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => new Account(fakeAccountData)
-
-  accountConfirmStub = Account.prototype.confirm
-  Account.prototype.confirm = () => {}
-
-  accountSaveStub = Account.prototype.save
-  Account.prototype.save = () => {}
-
-  applicationSaveStub = Application.prototype.save
-  Application.prototype.save = () => {}
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompanyData)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine())
+  sandbox.stub(Account, 'getByApplicationId').value(() => new Account(fakeAccountData))
+  sandbox.stub(Account.prototype, 'confirm').value(() => {})
+  sandbox.stub(Account.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  CompanyLookupService.getCompany = companyLookupGetCompanyStub
-  Application.getById = applicationGetByIdStub
-  ApplicationLine.getById = applicationLineGetByIdStub
-  Account.getByApplicationId = applicationGetByIdStub
-  Account.prototype.confirm = accountConfirmStub
-  Account.prototype.save = accountSaveStub
-  Application.prototype.save = applicationSaveStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const checkPageElements = async (request, companyFound, expectedValue) => {
@@ -110,7 +86,8 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
     element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(`Is this the right company?`)
 
-    const elementIds = [
+    // Test for the existence of expected static content
+    GeneralTestHelper.checkElementsExist(doc, [
       'back-link',
       'defra-csrf-token',
       'company-number-label',
@@ -126,14 +103,10 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
       'give-business-trading-name',
       'business-trading-name-label',
       'business-trading-name'
-    ]
-    for (let id of elementIds) {
-      element = doc.getElementById(id)
-      Code.expect(doc.getElementById(id)).to.exist()
-    }
+    ])
 
     element = doc.getElementById('company-name').firstChild
-    Code.expect(element.nodeValue).to.equal(fakeAccountData.name)
+    Code.expect(element.nodeValue).to.equal(fakeAccountData.accountName)
 
     element = doc.getElementById('company-address').firstChild
     Code.expect(element.nodeValue).to.equal(fakeCompanyData.address)
@@ -148,15 +121,11 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
     element = doc.getElementById('page-heading-company-not-found').firstChild
     Code.expect(element.nodeValue).to.equal(`We can't find that company`)
 
-    const elementIds = [
+    // Test for the existence of expected static content
+    GeneralTestHelper.checkElementsExist(doc, [
       'search-term-text',
       'enter-different-number-link'
-    ]
-
-    for (let id of elementIds) {
-      element = doc.getElementById(id).firstChild
-      Code.expect(element).to.exist()
-    }
+    ])
   }
 }
 
@@ -198,7 +167,7 @@ lab.experiment('Check Company Details page tests:', () => {
     })
 
     lab.test('Check page elements - existing trading name loaded', async () => {
-      checkPageElements(getRequest, true, fakeApplicationData.tradingName)
+      checkPageElements(getRequest, true, fakeApplication.tradingName)
     })
   })
 
@@ -206,7 +175,7 @@ lab.experiment('Check Company Details page tests:', () => {
     lab.experiment('Success', () => {
       lab.test('Checkbox ticked and trading name entered - redirects to the next route', async () => {
         postRequest.payload['use-business-trading-name'] = 'on'
-        postRequest.payload['business-trading-name'] = fakeApplicationData.tradingName
+        postRequest.payload['business-trading-name'] = fakeApplication.tradingName
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)

@@ -1,0 +1,44 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+  {{> common/pageHeading pageHeading }}
+
+      <div class="form-group">
+        <p id="cookies-description-paragraph-1">When you use the standard rules waste permit application service we put small files (known as ‘cookies’) onto your computer.</p>
+
+        <p id="cookies-description-paragraph-2">These cookies are used to:</p>
+        <ul class="list list-bullet">
+          <li id="cookies-description-list-item-1">temporarily store an anonymous link so you can see information you’ve already entered</li>
+          <li id="cookies-description-list-item-2">measure how you use the service so it can be improved based on your needs</li>
+          <li id="cookies-description-list-item-3">tremember the notifications you’ve seen so that we don’t show them to you again</li>
+        </ul>
+
+        <p id="cookies-description-paragraph-3">The cookies used on this service aren’t used to identify you personally</p>
+        <p><span id="cookies-description-link-prefix">Find out </span><a id="cookies-description-link" rel="noopener noreferrer" href="https://ico.org.uk/for-the-public/online/cookies/">how to manage cookies on the Information Commissioner's website</a></p>
+      </div>
+
+      {{#each sections}}
+      <div id="{{id}}" class="form-group">
+        <h2 id="{{id}}-heading" class="heading-medium">{{heading}}</h2>
+        {{#each intro}}
+        <p id="{{../id}}-intro-{{@index}}">{{.}}</p>
+        {{/each}}
+        <table class="cookies-table" role="presentation">
+          <thead>
+            <tr id="{{id}}"><th id="{{id}}-name">Name</th><th id="{{id}}-purpose">Purpose</th><th id="{{id}}-expires" class="cookie-expires-col">Expires</th></tr>
+          </thead>
+          <tbody>
+            {{#each cookies}}
+            <tr id="{{id}}"><td id="{{id}}-name">{{name}}</td><td id="{{id}}-purpose">{{purpose}}</td><td id="{{id}}-expires">{{expires}}</td></tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</main>

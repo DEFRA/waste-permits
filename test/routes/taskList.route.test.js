@@ -4,23 +4,41 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
-const GeneralTestHelper = require('../routes/generalTestHelper.test')
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
+const Application = require('../../src/models/application.model')
+const ApplicationLine = require('../../src/models/applicationLine.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const TaskList = require('../../src/models/taskList/taskList.model')
-const ApplicationLine = require('../../src/models/applicationLine.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let generateCookieStub
 let validateCookieStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
+let applicationIsPaidForStub
 let standardRuleGetByCodeStub
 let taskListGetByApplicationLineIdStub
 let applicationLineGetByIdStub
 let standardRuleByApplicationIdStub
 
 const routePath = '/task-list'
+const notPaidForRoute = '/errors/order/card-payment-not-complete'
+const alreadySubmittedRoutePath = '/errors/order/done-cant-go-back'
+
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {},
+  payload: {}
+}
+
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
 
 const fakeCookie = {
   applicationId: 'APPLICATION_ID',
@@ -29,7 +47,7 @@ const fakeCookie = {
 
 const fakeStandardRule = {
   id: 'STANDARD_RULE_ID',
-  name: 'Metal recycling, vehicle storage, depollution and dismantling facility',
+  permitName: 'Metal recycling, vehicle storage, depollution and dismantling facility',
   limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
   code: 'SR2015 No 18',
   codeForId: 'sr2015-no-18',
@@ -202,6 +220,16 @@ const fakeTaskList = {
   ]
 }
 
+const checkElement = (element, text, href) => {
+  Code.expect(element).to.exist()
+  if (text) {
+    Code.expect(element.lastChild.nodeValue.trim()).to.equal(text)
+  }
+  if (href) {
+    Code.expect(element.getAttribute('href')).to.equal(href)
+  }
+}
+
 lab.beforeEach(() => {
   // Stub methods
   generateCookieStub = CookieService.generateCookie
@@ -209,6 +237,15 @@ lab.beforeEach(() => {
 
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
+
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
+  applicationIsPaidForStub = Application.prototype.isPaidFor
+  Application.prototype.isPaidFor = () => false
 
   standardRuleGetByCodeStub = StandardRule.getByCode
   StandardRule.getByCode = async () => fakeStandardRule
@@ -227,6 +264,9 @@ lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.generateCookie = generateCookieStub
   CookieService.validateCookie = validateCookieStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
+  Application.prototype.isPaidFor = applicationIsPaidForStub
   StandardRule.getByCode = standardRuleGetByCodeStub
   TaskList.getByApplicationLineId = taskListGetByApplicationLineIdStub
   ApplicationLine.getById = applicationLineGetByIdStub
@@ -234,17 +274,10 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test(false, false, true)
 
   lab.test('The page should NOT have a back link', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
@@ -254,191 +287,75 @@ lab.experiment('Task List page tests:', () => {
     Code.expect(element).to.not.exist()
   })
 
-  lab.test('GET /task-list success ', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+  lab.test(`GET ${routePath} success`, async () => {
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
   })
 
   lab.test('Task list contains the correct heading and StandardRule info', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
-
-    const res = await server.inject(request)
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(200)
 
     const parser = new DOMParser()
     const doc = parser.parseFromString(res.payload, 'text/html')
-
-    let element
 
     // Check the existence of the page title and Standard Rule infos
-    element = doc.getElementById('page-heading')
-    Code.expect(element).to.exist()
-
-    element = doc.getElementById('task-list-heading-visually-hidden')
-    Code.expect(element).to.exist()
-
-    element = doc.getElementById('standard-rule-name-and-code')
-    Code.expect(element).to.exist()
-
-    element = doc.getElementById('select-a-different-permit')
-    Code.expect(element).to.exist()
+    checkElement(doc.getElementById('page-heading'), 'Apply for a standard rules waste permit')
+    checkElement(doc.getElementById('task-list-heading-visually-hidden'))
+    checkElement(doc.getElementById('standard-rule-name-and-code'), `${fakeStandardRule.permitName} - ${fakeStandardRule.code}`)
+    checkElement(doc.getElementById('select-a-different-permit'))
   })
 
-  lab.test('Task list contains the correct section headings', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
+  lab.test(`GET ${routePath} redirects to the Not Paid route ${notPaidForRoute} if the applicaiton has been submitted but not paid for yet`, async () => {
+    Application.prototype.isSubmitted = () => true
+    Application.prototype.isPaidFor = () => false
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    let element
-
-    // Check the existence of the correct task list sections
-    element = doc.getElementById('prepare-application-section-number')
-    Code.expect(element).to.exist()
-    element = doc.getElementById('prepare-application-section-heading')
-    Code.expect(element).to.exist()
-
-    element = doc.getElementById('send-and-pay-section-number')
-    Code.expect(element).to.exist()
-    element = doc.getElementById('send-and-pay-section-heading')
-    Code.expect(element).to.exist()
+    const res = await server.inject(getRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal(notPaidForRoute)
   })
 
-  lab.test('Task list contains the correct task list items', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
+  lab.test(`GET ${routePath} redirects to the Already Submitted route ${alreadySubmittedRoutePath} if the application has been submitted and paid for`, async () => {
+    Application.prototype.isSubmitted = () => true
+    Application.prototype.isPaidFor = () => true
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-
-    let element
-
-    const taskListItemIds = [
-      'check-permit-cost-and-time',
-      'confirm-that-your-operation-meets-the-rules',
-      'tell-us-if-youve-discussed-this-application-with-us',
-      'give-contact-details',
-      'give-permit-holder-details',
-      'give-site-name-and-location',
-      'upload-technical-management-qualifications',
-      'tell-us-which-management-system-you-use',
-      'upload-the-fire-prevention-plan',
-      'confirm-the-drainage-system-for-the-vehicle-storage-area',
-      'confirm-confidentiality-needs',
-      'invoicing-details',
-      'submit-pay'
-    ]
-
-    // These task list items should exist
-    taskListItemIds.forEach((id) => {
-      element = doc.getElementById(id)
-      Code.expect(element).to.exist()
-    })
-
-    const taskListItemLinkIds = [
-      'check-permit-cost-and-time-link',
-      'confirm-that-your-operation-meets-the-rules-link',
-      'tell-us-if-youve-discussed-this-application-with-us-link',
-      'give-contact-details-link',
-      'give-permit-holder-details-link',
-      'give-site-name-and-location-link',
-      'upload-technical-management-qualifications-link',
-      'tell-us-which-management-system-you-use-link',
-      'upload-the-fire-prevention-plan-link',
-      'confirm-the-drainage-system-for-the-vehicle-storage-area-link',
-      'confirm-confidentiality-needs-link',
-      'invoicing-details-link',
-      'submit-pay-link'
-    ]
-
-    // These task list item links should exist
-    taskListItemLinkIds.forEach((id) => {
-      element = doc.getElementById(id)
-      Code.expect(element).to.exist()
-    })
-
-    // This task list item should NOT exist
-    element = doc.getElementById('upload-the-site-plan')
-    Code.expect(element).to.not.exist()
-    element = doc.getElementById('upload-the-site-plan-link')
-    Code.expect(element).to.not.exist()
+    const res = await server.inject(getRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['location']).to.equal(alreadySubmittedRoutePath)
   })
 
-  // Completeness flags are not in scope yet
-  lab.test('Task list items have the correct completeness flags', async () => {
-    const request = {
-      method: 'GET',
-      url: routePath,
-      headers: {},
-      payload: {}
-    }
+  lab.experiment('Task list contains the correct section headings and correct task list items', () => {
+    fakeTaskList.sections.forEach((section) => {
+      section.sectionItems.forEach((sectionItem) => {
+        lab.test(`for ${sectionItem.label}`, async () => {
+          const res = await server.inject(getRequest)
+          Code.expect(res.statusCode).to.equal(200)
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
+          const parser = new DOMParser()
+          const doc = parser.parseFromString(res.payload, 'text/html')
 
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+          // Check the existence of the correct task list sections
+          checkElement(doc.getElementById(section.id))
+          checkElement(doc.getElementById(`${section.id}-number`), `${section.sectionNumber}.`)
+          checkElement(doc.getElementById(`${section.id}-heading`), section.sectionName)
 
-    let element
-
-    const completedItemIds = [
-      'site-name-completed'
-    ]
-
-    const incompleteItemIds = [
-      'cost-and-time-completed',
-      'operation-rules-completed',
-      'waste-recovery-plan-completed',
-      'preapp-completed',
-      'contact-details-completed',
-      'site-operator-completed',
-      'site-plan-completed',
-      'technical-qualification-completed',
-      'management-system-completed',
-      'firepp-completed',
-      'confirm-drainage-completed',
-      'confidentiality-completed',
-      'invoicing-details-completed',
-      'submit-and-pay'
-    ]
-
-    // These task list item complete flags should be there
-    completedItemIds.forEach((id) => {
-      element = doc.getElementById(id)
-      Code.expect(element).to.exist()
-    })
-
-    // These task list item complete flags should NOT be there
-    incompleteItemIds.forEach((id) => {
-      element = doc.getElementById(id)
-      Code.expect(element).to.not.exist()
+          if (sectionItem.available) {
+            // The task list item should exist
+            checkElement(doc.getElementById(sectionItem.id))
+            checkElement(doc.getElementById(`${sectionItem.id}-link`), sectionItem.label, sectionItem.href)
+            if (sectionItem.complete) {
+              // The task list item complete flag should exist
+              checkElement(doc.getElementById(sectionItem.completedLabelId))
+            } else {
+              // The task list item complete flag should not exist
+              Code.expect(doc.getElementById(sectionItem.completedLabelId)).to.not.exist()
+            }
+          } else {
+            // The task list item should not exist
+            Code.expect(doc.getElementById(sectionItem.id)).to.not.exist()
+          }
+        })
+      })
     })
   })
 })

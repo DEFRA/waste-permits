@@ -28,7 +28,7 @@ const fakeCompanySecretary = {
 }
 const fakeAgentAccount = {
   description: 'This person is an agent or consultant',
-  name: 'AGENT_ACCOUNT_NAME'
+  accountName: 'AGENT_ACCOUNT_NAME'
 }
 
 const prefix = 'section-contact'
@@ -86,7 +86,7 @@ lab.experiment('Contact Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {description, name} = fakeAgentAccount
+      const {description, accountName} = fakeAgentAccount
       answers.forEach(({answer, answerId}, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
@@ -95,7 +95,7 @@ lab.experiment('Contact Check tests:', () => {
             break
           }
           case 1: {
-            Code.expect(answer).to.equal(name)
+            Code.expect(answer).to.equal(accountName)
             break
           }
         }

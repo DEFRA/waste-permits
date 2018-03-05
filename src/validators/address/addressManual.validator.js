@@ -2,10 +2,7 @@
 
 const Joi = require('joi')
 const BaseValidator = require('../base.validator')
-
-const CHARACTER_LIMIT = 170
-const TOWN_OR_CITY_CHARACTER_LIMIT = 70
-const POSTCODE_CHARACTER_LIMIT = 8
+const Address = require('../../models/address.model')
 
 // Can’t start or end with a hyphen
 const STARTS_OR_ENDS_WITH_HYPHEN_REGEX = /^-|-$/
@@ -31,31 +28,31 @@ module.exports = class AddressManualValidator extends BaseValidator {
       'building-name-or-number': {
         'any.empty': `Enter the building name or number`,
         'any.required': `Enter the building name or number`,
-        'string.max': `Enter a shorter building name or number with no more than ${CHARACTER_LIMIT} characters`,
-        'custom.starts.or.ends.with.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Building name or number`),
+        'string.max': `Enter a shorter building name or number with no more than ${Address.buildingNameOrNumber.length.max} characters`,
+        'custom.starts.or.ends.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Building name or number`),
         'custom.invalid.characters': INVALID_CHARS_ERROR_MESSAGE.replace('<FIELD>', `Building name or number`)
       },
       'address-line-1': {
         'any.empty': `Enter an address line 1`,
         'any.required': `Enter an address line 1`,
-        'string.max': `Enter a shorter address line 1 with no more than ${CHARACTER_LIMIT} characters`,
-        'custom.starts.or.ends.with.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Address line 1`)
+        'string.max': `Enter a shorter address line 1 with no more than ${Address.addressLine1.length.max} characters`,
+        'custom.starts.or.ends.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Address line 1`)
       },
       'address-line-2': {
-        'string.max': `Enter a shorter address line 2 with no more than ${CHARACTER_LIMIT} characters`,
-        'custom.starts.or.ends.with.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Address line 2`)
+        'string.max': `Enter a shorter address line 2 with no more than ${Address.addressLine2.length.max} characters`,
+        'custom.starts.or.ends.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Address line 2`)
       },
       'town-or-city': {
         'any.empty': `Enter a town or city`,
         'any.required': `Enter a town or city`,
-        'string.max': `Enter a shorter town or city with no more than ${TOWN_OR_CITY_CHARACTER_LIMIT} characters`,
-        'custom.starts.or.ends.with.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Town or city`),
+        'string.max': `Enter a shorter town or city with no more than ${Address.townOrCity.length.max} characters`,
+        'custom.starts.or.ends.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Town or city`),
         'custom.invalid.characters.no.numbers': INVALID_CHARS_ERROR_MESSAGE_NO_NUMBERS.replace('<FIELD>', `Town or city`),
         'custom.multiple.apostrophes': 'Town or city can only contain one apostrophe - remove all but one'
       },
       'postcode': {
-        'string.max': `Enter a shorter postcode with no more than ${POSTCODE_CHARACTER_LIMIT} characters`,
-        'custom.starts.or.ends.with.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Postcode`)
+        'string.max': `Enter a shorter postcode with no more than ${Address.postcode.length.max} characters`,
+        'custom.starts.or.ends.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Postcode`)
       }
     }
   }
@@ -64,44 +61,44 @@ module.exports = class AddressManualValidator extends BaseValidator {
     return {
       'building-name-or-number': Joi
         .string()
-        .max(CHARACTER_LIMIT)
+        .max(Address.buildingNameOrNumber.length.max)
         .required(),
       'address-line-1': Joi
         .string()
-        .max(CHARACTER_LIMIT)
+        .max(Address.addressLine1.length.max)
         .required(),
       'address-line-2': Joi
         .string()
-        .max(CHARACTER_LIMIT),
+        .max(Address.addressLine2.length.max),
       'town-or-city': Joi
         .string()
-        .max(TOWN_OR_CITY_CHARACTER_LIMIT)
+        .max(Address.townOrCity.length.max)
         .required(),
       'postcode': Joi
         .string()
-        .max(POSTCODE_CHARACTER_LIMIT)
+        .max(Address.postcode.length.max)
     }
   }
 
   customValidators () {
     return {
       'building-name-or-number': {
-        'custom.starts.or.ends.with.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value),
+        'custom.starts.or.ends.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value),
         'custom.invalid.characters': (value) => !(VALID_CHARACTERS_REGEX).test(value)
       },
       'address-line-1': {
-        'custom.starts.or.ends.with.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value)
+        'custom.starts.or.ends.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value)
       },
       'address-line-2': {
-        'custom.starts.or.ends.with.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value)
+        'custom.starts.or.ends.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value)
       },
       'town-or-city': {
         'custom.multiple.apostrophes': (value) => ((value.match(MULTIPLE_APOSTROPHES_REGEX) || []).length > 1),
-        'custom.starts.or.ends.with.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value),
+        'custom.starts.or.ends.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value),
         'custom.invalid.characters.no.numbers': (value) => !(VALID_CHARACTERS_REGEX_NO_NUMBERS).test(value)
       },
       'postcode': {
-        'custom.starts.or.ends.with.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value)
+        'custom.starts.or.ends.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value)
       }
     }
   }

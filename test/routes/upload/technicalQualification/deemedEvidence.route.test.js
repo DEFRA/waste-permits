@@ -26,7 +26,9 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
+
   sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
+
   helper.setStubs(sandbox)
 })
 
@@ -36,19 +38,33 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(true)
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true, false)
 
   const {uploadPath, removePath} = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'deemed-evidence-description',
-      pageHeading: 'Upload evidence of their qualification',
+      pageHeading: 'Deemed competence or an assessment: upload evidence',
       submitButton: 'Continue'
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays expected static content',
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'deemed-evidence-description-list-heading',
+          'deemed-evidence-description-list',
+          'deemed-evidence-description-list-item-1',
+          'deemed-evidence-description-list-item-2',
+          'deemed-evidence-description-list-item-3',
+          'deemed-evidence-description-important-info',
+          'deemed-evidence-description-important-info-abbr',
+          'deemed-evidence-description-last-paragraph'])
+      }
+    ])
     helper.getFailure()
   })
 

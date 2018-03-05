@@ -4,7 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
-const GeneralTestHelper = require('../routes/generalTestHelper.test')
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 
@@ -29,6 +29,7 @@ let contactSaveStub
 let contactGetByIdStub
 let contactDetailsUpdateCompletenessStub
 let applicationGetByIdStub
+let applicationIsSubmittedStub
 let applicationSaveStub
 let accountGetByIdStub
 let addressDetailGetCompanySecretaryDetailsStub
@@ -92,6 +93,9 @@ lab.beforeEach(() => {
   applicationGetByIdStub = Application.getById
   Application.getById = () => new Application(fakeApplication)
 
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
   applicationSaveStub = Application.prototype.save
   Application.prototype.save = () => {}
 
@@ -123,6 +127,7 @@ lab.afterEach(() => {
   AddressDetail.getPrimaryContactDetails = addressDetailGetPrimaryContactDetailsStub
   AddressDetail.save = addressDetailSaveStub
   Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   Application.save = applicationSaveStub
   Contact.getById = contactGetByIdStub
   Contact.save = contactSaveStub
@@ -161,11 +166,26 @@ lab.experiment('Contact details page tests:', () => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
 
-      let element = doc.getElementById('page-heading').firstChild
-      Code.expect(element.nodeValue).to.equal('Who should we contact about this application?')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who should we contact about this application?')
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+      Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
 
-      element = doc.getElementById('submit-button').firstChild
-      Code.expect(element.nodeValue).to.equal('Continue')
+      // Test for the existence of expected static content
+      GeneralTestHelper.checkElementsExist(doc, [
+        'first-name-label',
+        'last-name-label',
+        'is-contact-an-agent-label',
+        'agent-company-label',
+        'telephone-label',
+        'telephone-hint',
+        'email-heading',
+        'email-label',
+        'email-hint',
+        'company-secretary-email-label',
+        'company-secretary-email-hint',
+        'company-secretary-email-summary',
+        'company-secretary-email-description'
+      ])
     })
   })
 
@@ -341,9 +361,9 @@ lab.experiment('Contact details page tests:', () => {
         },
         {
           field: 'agent-company',
-          value: 'a'.repeat(171),
+          value: 'a'.repeat(161),
           isAgent: true,
-          messages: ['Enter a shorter trading, business or company name with no more than 170 characters']
+          messages: ['Enter a shorter trading, business or company name with no more than 160 characters']
         }]
       fieldErrorTests.forEach(({field, value, messages, isAgent}) => {
         lab.test(`error messages when ${field} has a value of "${value}"`, async () => {

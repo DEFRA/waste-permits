@@ -22,12 +22,20 @@ module.exports = class UploadController extends BaseController {
 
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const application = await Application.getById(authToken, applicationId)
+    const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
+
     if (request.payload) {
       pageContext.formValues = request.payload
     }
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
-    const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
     pageContext.uploadFormAction = `${this.path}/upload`
     pageContext.annotations = list.map(({filename, id}) => ({filename, removeAction: `${this.path}/remove/${id}`}))
@@ -35,16 +43,22 @@ module.exports = class UploadController extends BaseController {
     pageContext.maxSize = this.validator.getMaxSize()
     pageContext.subject = this.subject
 
-    return reply.view(this.view, pageContext)
+    if (this.getSpecificPageContext) {
+      Object.assign(pageContext, await this.getSpecificPageContext(request))
+    }
+
+    return reply
+      .view(this.view, pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
       const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
       if (!list.length) {
         return this.handler(request, reply, undefined, UploadController._customError('noFilesUploaded'))
@@ -52,7 +66,9 @@ module.exports = class UploadController extends BaseController {
       if (this.updateCompleteness) {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
       }
-      return reply.redirect(this.nextPath)
+      return reply
+        .redirect(this.nextPath)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 
@@ -60,7 +76,7 @@ module.exports = class UploadController extends BaseController {
     try {
       // Validate the cookie
       if (!CookieService.validateCookie(request)) {
-        return reply.redirect(Constants.Routes.ERROR.path)
+        return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
       }
 
       // Post if it's not an attempt to upload a file
@@ -73,13 +89,13 @@ module.exports = class UploadController extends BaseController {
         errors = await this.validator.customValidate(request.payload, errors)
       }
 
-      if (errors && errors.data.details) {
+      if (errors && errors.details) {
         return this.doGet(request, reply, errors)
       }
 
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const {name: applicationReference} = await Application.getById(authToken, applicationId)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+      const {applicationName: applicationReference} = await Application.getById(authToken, applicationId)
       const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
       // create temporary uploads directory
@@ -90,7 +106,7 @@ module.exports = class UploadController extends BaseController {
 
       // Make sure no duplicate files are uploaded
       if (this._haveDuplicateFiles(fileData, annotationsList)) {
-        return this.handler(request, reply, undefined, UploadController._customError('duplicateFile'))
+        return this.handler(request, reply, UploadController._customError('duplicateFile'))
       }
 
       // Save each file as an attachment to an annotation
@@ -107,54 +123,56 @@ module.exports = class UploadController extends BaseController {
       return reply.redirect(this.path)
     } catch (error) {
       LoggingService.logError(error, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply
+        .redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 
   async remove (request, reply) {
     // Validate the cookie
     if (!CookieService.validateCookie(request)) {
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
     // const result = this.getRequestData(request)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const annotationId = request.params.id
     const annotation = await Annotation.getById(authToken, annotationId)
 
     // make sure this annotation belongs to this application
     if (annotation.applicationId !== applicationId) {
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
     await annotation.delete(authToken, annotationId)
-    return reply.redirect(this.path)
+    return reply
+      .redirect(this.path)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async uploadFailAction (request, reply, errors) {
     if (errors && errors.output && errors.output.statusCode === Constants.Errors.REQUEST_ENTITY_TOO_LARGE) {
       errors = UploadController._customError('fileTooBig')
     }
-    return this.doGet(request, reply, errors)
+    return this.doGet(request, reply, errors).takeover()
   }
 
   _containsFilename (filename, fileList) {
     const containsFilename = fileList.filter((file) => file.filename === filename)
-    return !!containsFilename.length
+    return Boolean(containsFilename.length)
   }
 
   _haveDuplicateFiles (listA, listB) {
     const haveDuplicateFiles = listA.filter(({filename}) => this._containsFilename(filename, listB))
-    return !!haveDuplicateFiles.length
+    return Boolean(haveDuplicateFiles.length)
   }
 
   static _customError (type) {
     return {
-      data: {
-        details: [{
-          type,
-          path: ['file']
-        }]
-      }
+      details: [{
+        type,
+        path: ['file']
+      }]
     }
   }
 

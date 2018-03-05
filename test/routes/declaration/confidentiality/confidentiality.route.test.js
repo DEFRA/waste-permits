@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../../generalTestHelper.test')
 
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
@@ -14,6 +15,8 @@ const LoggingService = require('../../../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let validateCookieStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
 let applicationSaveStub
 let confidentialityUpdateCompletenessStub
 let getByIdStub
@@ -22,6 +25,7 @@ let fakeApplication
 
 const routePath = '/confidentiality'
 const nextRoutePath = '/task-list'
+const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
   fakeApplication = {
@@ -34,6 +38,12 @@ lab.beforeEach(() => {
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
+
   logErrorStub = LoggingService.logError
   LoggingService.logError = () => {}
 
@@ -44,11 +54,15 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore stubbed methods
   CookieService.validateCookie = validateCookieStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
   LoggingService.logError = logErrorStub
   Application.getById = getByIdStub
 })
 
 lab.experiment('Is part of your application commercially confidential? page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -88,22 +102,16 @@ lab.experiment('Is part of your application commercially confidential? page test
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Application.getById = () => Promise.reject(new Error('read failed'))
+        Application.getById = async () => {
+          throw new Error('read failed')
+        }
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })
@@ -182,14 +190,6 @@ lab.experiment('Is part of your application commercially confidential? page test
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Application.getById = () => Promise.reject(new Error('read failed'))
@@ -197,7 +197,7 @@ lab.experiment('Is part of your application commercially confidential? page test
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
 
       lab.test('redirects to error screen when save fails', async () => {
@@ -207,7 +207,7 @@ lab.experiment('Is part of your application commercially confidential? page test
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })

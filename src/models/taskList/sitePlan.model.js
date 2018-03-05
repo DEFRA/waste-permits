@@ -13,7 +13,7 @@ module.exports = class SitePlan extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await SitePlan._isComplete(authToken, applicationId)
+      const isComplete = await SitePlan.isComplete(authToken, applicationId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.SITE_PLAN]: isComplete
@@ -26,12 +26,12 @@ module.exports = class SitePlan extends BaseModel {
     }
   }
 
-  static async _isComplete (authToken, applicationId) {
+  static async isComplete (authToken, applicationId) {
     let isComplete = false
     try {
       // Get the Evidence for a site plan
       const evidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, Constants.UploadSubject.SITE_PLAN)
-      isComplete = !!evidence.length
+      isComplete = Boolean(evidence.length)
     } catch (error) {
       LoggingService.logError(`Unable to calculate SitePlan completeness: ${error}`)
       throw error

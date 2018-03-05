@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
@@ -12,10 +13,6 @@ const Application = require('../../src/models/application.model')
 const LoggingService = require('../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let validateCookieStub
-let applicationSaveStub
-let getByIdStub
-let logErrorStub
 let fakeApplication
 
 const routePath = '/technical-qualification'
@@ -25,6 +22,8 @@ const nextRoutePath = {
   DEEMED_COMPETENCE: '/technical-qualification/upload-deemed-evidence',
   ESA_EU_SKILLS: '/technical-qualification/upload-esa-eu-skills'
 }
+const errorPath = '/errors/technical-problem'
+
 const Qualification = {
   WAMITAB_QUALIFICATION: {
     TYPE: 910400000
@@ -40,31 +39,32 @@ const Qualification = {
   }
 }
 
+let sandbox
+
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID',
     applicationLineId: 'APPLICATION_LINE_ID'
   }
 
-  // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  getByIdStub = Application.getById
-  Application.getById = () => Promise.resolve(new Application(fakeApplication))
+  // Create a sinon sandbox
+  sandbox = sinon.createSandbox()
+  // Stub the asynchronous model methods
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application, 'getById').value(() => Promise.resolve(new Application(fakeApplication)))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  Application.getById = getByIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Technical Management Qualification tests:', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -75,8 +75,34 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
       const parser = new DOMParser()
       doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who will provide technical management on your site?')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What evidence of technical competence do you have?')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+      Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
+
+      // Test for the existence of expected static content
+      GeneralTestHelper.checkElementsExist(doc, [
+        'page-description-paragagraph-1',
+        'page-description-paragagraph-2',
+        'page-description-paragagraph-2-abbr-1',
+        'page-description-paragagraph-2-abbr-2',
+        'page-description-paragagraph-2-abbr-3',
+        'wamitab-label',
+        'wamitab-label-abbr-1',
+        'wamitab-label-abbr-2',
+        'getting-qualification-label',
+        'getting-qualification-label-abbr-1',
+        'getting-qualification-label-abbr-2',
+        'deemed-label',
+        'deemed-label-abbr',
+        'esa-eu-label',
+        'esa-eu-label-abbr'])
+
+      // Test dynamic html contents
+      Code.expect(doc.getElementById('wamitab').getAttribute('value')).to.equal(`${Qualification.WAMITAB_QUALIFICATION.TYPE}`)
+      Code.expect(doc.getElementById('getting-qualification').getAttribute('value')).to.equal(`${Qualification.REGISTERED_ON_A_COURSE.TYPE}`)
+      Code.expect(doc.getElementById('deemed').getAttribute('value')).to.equal(`${Qualification.DEEMED_COMPETENCE.TYPE}`)
+      Code.expect(doc.getElementById('esa-eu').getAttribute('value')).to.equal(`${Qualification.ESA_EU_SKILLS.TYPE}`)
+
       return doc
     }
 
@@ -129,22 +155,16 @@ lab.experiment('Technical Management Qualification tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Application.getById = () => Promise.reject(new Error('read failed'))
+        Application.getById = () => {
+          throw new Error('read failed')
+        }
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })
@@ -169,15 +189,6 @@ lab.experiment('Technical Management Qualification tests:', () => {
           'technical-qualification': Qualification.WAMITAB_QUALIFICATION.TYPE
         }
       }
-
-      // Stub methods
-      applicationSaveStub = Application.prototype.save
-      Application.prototype.save = () => {}
-    })
-
-    lab.afterEach(() => {
-      // Restore stubbed methods
-      Application.prototype.save = applicationSaveStub
     })
 
     lab.experiment('success', () => {
@@ -206,14 +217,6 @@ lab.experiment('Technical Management Qualification tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Application.getById = () => Promise.reject(new Error('read failed'))
@@ -221,7 +224,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
 
       lab.test('redirects to error screen when save fails', async () => {
@@ -231,7 +234,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
 
       lab.test('redirects to error screen when an unexpected qualification is selected', async () => {
@@ -241,7 +244,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })

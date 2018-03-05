@@ -4,18 +4,17 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
+const sinon = require('sinon')
 const GeneralTestHelper = require('../../../routes/generalTestHelper.test')
 
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
+const Application = require('../../../../src/models/application.model')
 const SiteNameAndLocation = require('../../../../src/models/taskList/siteNameAndLocation.model')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
-let validateCookieStub
-let siteNameAndLocationGetAddressStub
-let siteNameAndLocationSaveSelectedAddressStub
-let addressListByPostcodeStub
+let sandbox
 
 const routePath = '/site/address/postcode'
 const nextRoutePath = '/site/address/select-address'
@@ -28,6 +27,11 @@ const getRequest = {
 }
 let postRequest
 
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
+
 const fakeAddress1 = {
   id: 'ADDRESS_ID_1',
   buildingNameOrNumber: '101',
@@ -36,8 +40,7 @@ const fakeAddress1 = {
   townOrCity: 'CITY1',
   postcode: 'AB12 1AA',
   uprn: 'UPRN1',
-  fromAddressLookup: true,
-  _entity: 'defra_addresses'
+  fromAddressLookup: true
 }
 
 const fakeAddress2 = {
@@ -48,8 +51,7 @@ const fakeAddress2 = {
   townOrCity: 'CITY2',
   postcode: 'AB12 2AA',
   uprn: 'UPRN2',
-  fromAddressLookup: true,
-  _entity: 'defra_addresses'
+  fromAddressLookup: true
 }
 
 const fakeAddress3 = {
@@ -60,8 +62,7 @@ const fakeAddress3 = {
   townOrCity: 'CITY3',
   postcode: 'AB12 3AA',
   uprn: 'UPRN3',
-  fromAddressLookup: true,
-  _entity: 'defra_addresses'
+  fromAddressLookup: true
 }
 
 lab.beforeEach(() => {
@@ -72,30 +73,25 @@ lab.beforeEach(() => {
     payload: {}
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
-  SiteNameAndLocation.getAddress = () => new Address(fakeAddress1)
-
-  siteNameAndLocationSaveSelectedAddressStub = SiteNameAndLocation.saveSelectedAddress
-  SiteNameAndLocation.saveSelectedAddress = () => undefined
-
-  addressListByPostcodeStub = Address.listByPostcode
-  Address.listByPostcode = () => [
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(SiteNameAndLocation, 'getAddress').value(() => new Address(fakeAddress1))
+  sandbox.stub(Address, 'listByPostcode').value(() => [
     new Address(fakeAddress1),
     new Address(fakeAddress2),
     new Address(fakeAddress3)
-  ]
+  ])
+  sandbox.stub(SiteNameAndLocation, 'saveSelectedAddress').value(() => undefined)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  SiteNameAndLocation.getAddress = siteNameAndLocationGetAddressStub
-  SiteNameAndLocation.saveSelectedAddress = siteNameAndLocationSaveSelectedAddressStub
-  Address.listByPostcode = addressListByPostcodeStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const checkPageElements = async (request, expectedValue) => {
@@ -108,7 +104,8 @@ const checkPageElements = async (request, expectedValue) => {
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(pageHeading)
 
-  const elementIds = [
+  // Test for the existence of expected static content
+  GeneralTestHelper.checkElementsExist(doc, [
     'back-link',
     'defra-csrf-token',
     'postcode-label',
@@ -116,11 +113,7 @@ const checkPageElements = async (request, expectedValue) => {
     'manual-hint',
     'manual-address-link',
     'no-postcode-link-text'
-  ]
-  for (let id of elementIds) {
-    element = doc.getElementById(id)
-    Code.expect(doc.getElementById(id)).to.exist()
-  }
+  ])
 
   element = doc.getElementById('invoice-subheading')
   Code.expect(element).to.not.exist()
@@ -153,7 +146,7 @@ const checkValidationError = async (expectedErrorMessage) => {
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
 }
 
-lab.experiment('Postcode page tests:', () => {
+lab.experiment('Site postcode page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment('GET:', () => {

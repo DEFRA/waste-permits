@@ -3,36 +3,30 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-// const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 
-const ActiveDirectoryAuthService = require('../../src/services/activeDirectoryAuth.service')
+const routePath = '/'
+const firstPageRoutePath = '/start/start-or-open-saved'
 
-let getAuthTokenStub
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {},
+  payload: {}
+}
 
 lab.beforeEach(() => {
   // Stub methods
-  getAuthTokenStub = ActiveDirectoryAuthService.prototype.getToken
-  ActiveDirectoryAuthService.prototype.getToken = () => {
-    return '__GENERATED_CRM_TOKEN__'
-  }
 })
 
 lab.afterEach(() => {
   // Restore stubbed methods
-  ActiveDirectoryAuthService.prototype.getToken = getAuthTokenStub
 })
 
 lab.experiment('Default page tests:', () => {
-  lab.test('Get / re-directs to the first page in the application flow', async () => {
-    const request = {
-      method: 'GET',
-      url: '/',
-      headers: {}
-    }
-
-    const res = await server.inject(request)
+  lab.test(`Get ${routePath} re-directs to the first page in the application flow`, async () => {
+    const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal('/start/start-or-open-saved')
+    Code.expect(res.headers['location']).to.equal(firstPageRoutePath)
   })
 })

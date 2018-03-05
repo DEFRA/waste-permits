@@ -5,9 +5,15 @@ const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
 const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
+const StandardRule = require('../../../../src/models/standardRule.model')
 
 const GeneralTestHelper = require('../../generalTestHelper.test')
 const UploadTestHelper = require('../uploadHelper')
+
+const WamitabRiskLevel = {
+  LOW: 910400001,
+  MEDIUM: 910400002
+}
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
@@ -26,7 +32,10 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
+
   sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => Promise.resolve({}))
+
   helper.setStubs(sandbox)
 })
 
@@ -36,19 +45,44 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Upload Course registration tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(true)
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true, false)
 
   const {uploadPath, removePath} = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'course-registration-description',
-      pageHeading: 'Upload the course registration email or letter',
+      pageHeading: 'Getting a qualification: upload evidence',
       submitButton: 'Continue'
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays WAMITAB medium or high risk information',
+        stubs: () => (StandardRule.getByApplicationLineId = () => ({wamitabRiskLevel: WamitabRiskLevel.MEDIUM})),
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'wamitab-risk-is-medium-or-high',
+          'wamitab-risk-is-medium-or-high-abbr'])
+      },
+      {
+        title: 'displays WAMITAB low risk information',
+        stubs: () => (StandardRule.getByApplicationLineId = () => ({wamitabRiskLevel: WamitabRiskLevel.LOW})),
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'wamitab-risk-is-low'])
+      },
+      {
+        title: 'displays expected static content',
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'course-registration-description-heading',
+          'course-registration-description-heading-abbr-1',
+          'course-registration-description-heading-abbr-2',
+          'operator-competence-paragraph',
+          'operator-competence-link',
+          'operator-competence-link-abbr'])
+      }
+    ])
     helper.getFailure()
   })
 

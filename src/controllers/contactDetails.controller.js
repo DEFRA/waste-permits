@@ -12,13 +12,19 @@ const CookieService = require('../services/cookie.service')
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const application = await Application.getById(authToken, applicationId)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
 
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const application = await Application.getById(authToken, applicationId)
       const contact = application.contactId ? await Contact.getById(authToken, application.contactId) : new Contact()
       const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
       const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
@@ -33,21 +39,22 @@ module.exports = class ContactDetailsController extends BaseController {
         if (application.agentId) {
           const account = await Account.getById(authToken, application.agentId)
           pageContext.formValues['is-contact-an-agent'] = true
-          pageContext.formValues['agent-company'] = account.name
+          pageContext.formValues['agent-company'] = account.accountName
         }
       }
     }
 
     return reply
       .view('contactDetails', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
       const application = await Application.getById(authToken, applicationId)
       const {
         'first-name': firstName,
@@ -80,7 +87,7 @@ module.exports = class ContactDetailsController extends BaseController {
       // The agent company or trading name is only set if the corresponding checkbox is ticked
       if (isAgent) {
         const account = application.agentId ? await Account.getById(authToken, application.agentId) : new Account()
-        account.name = agentCompany
+        account.accountName = agentCompany
         await account.save(authToken)
         application.agentId = account.id
       } else {
@@ -98,10 +105,12 @@ module.exports = class ContactDetailsController extends BaseController {
       primaryContactDetails.telephone = telephone
       await primaryContactDetails.save(authToken)
 
-      const applicationLineId = CookieService.getApplicationLineId(request)
+      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
       await ContactDetails.updateCompleteness(authToken, applicationId, applicationLineId)
 
-      return reply.redirect(Constants.Routes.TASK_LIST.path)
+      return reply
+        .redirect(Constants.Routes.TASK_LIST.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }

@@ -5,11 +5,13 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Account = require('../../src/models/account.model')
+const Application = require('../../src/models/application.model')
 const LoggingService = require('../../src/services/logging.service')
 
 const {COOKIE_RESULT} = require('../../src/constants')
@@ -24,18 +26,22 @@ const COMPANY_STATUSES = {
   NOT_ACTIVE: `isn't active`
 }
 
-let validateCookieStub
-let companyLookupGetCompanyStub
-let companyLookupGetActiveDirectors
-let getByApplicationIdStub
-let logErrorStub
+let sandbox
+
+let fakeApplication
 let fakeAccount
 let fakeCompany
 
 const routePath = '/permit-holder/company/status-not-active'
 const nextRoutePath = '/permit-holder/company/check-name'
+const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
+  fakeApplication = {
+    id: 'APPLICATION_ID',
+    applicationName: 'APPLICATION_NAME'
+  }
+
   fakeAccount = {
     id: 'ACCOUNT_ID',
     companyNumber: '01234567'
@@ -48,33 +54,32 @@ lab.beforeEach(() => {
     isActive: false
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
+  sandbox = sinon.createSandbox()
 
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  companyLookupGetCompanyStub = CompanyLookupService.getCompany
-  CompanyLookupService.getCompany = () => fakeCompany
-
-  companyLookupGetActiveDirectors = CompanyLookupService.getActiveDirectors
-  CompanyLookupService.getActiveDirectors = () => [{}]
-
-  getByApplicationIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => undefined
+  // Stub methods
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompany)
+  sandbox.stub(CompanyLookupService, 'getActiveDirectors').value(() => [{}])
+  sandbox.stub(Account, 'getByApplicationId').value(() => fakeAccount)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Account.prototype, 'save').value(() => fakeAccount)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  CompanyLookupService.getActiveDirectors = companyLookupGetActiveDirectors
-  CompanyLookupService.getCompany = companyLookupGetCompanyStub
-  Account.getByApplicationId = getByApplicationIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Check company status page tests:', () => {
+  // There is no POST for this route
+  new GeneralTestHelper(lab, routePath).test(false, true, false)
+
   lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
@@ -95,10 +100,6 @@ lab.experiment('Check company status page tests:', () => {
         headers: {},
         payload: {}
       }
-
-      Account.getByApplicationId = () => Promise.resolve(new Account(fakeAccount))
-
-      Account.prototype.save = () => new Account(fakeAccount)
     })
 
     lab.experiment('success', () => {
@@ -151,22 +152,16 @@ lab.experiment('Check company status page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Account.getByApplicationId = () => Promise.reject(new Error('read failed'))
+        Account.getByApplicationId = () => {
+          throw new Error('read failed')
+        }
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })

@@ -10,8 +10,8 @@ const Account = require('../models/account.model')
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
 
     const [application, account] = await Promise.all([
       Application.getById(authToken, applicationId),
@@ -20,6 +20,12 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
     if (!application || !account) {
       return reply.redirect(Constants.Routes.TASK_LIST.path)
+    }
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -43,15 +49,17 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return reply.view('companyCheckName', pageContext)
+    return reply
+      .view('companyCheckName', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
 
       const [application, account] = await Promise.all([
         Application.getById(authToken, applicationId),
@@ -61,7 +69,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
       if (application && account) {
         const company = await CompanyLookupService.getCompany(account.companyNumber)
 
-        account.name = company.name
+        account.accountName = company.name
         account.isValidatedWithCompaniesHouse = true
 
         await account.save(authToken, false)
@@ -77,7 +85,9 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         await application.save(authToken)
       }
-      return reply.redirect(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
+      return reply
+        .redirect(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }

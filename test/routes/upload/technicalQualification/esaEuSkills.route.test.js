@@ -26,7 +26,9 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
+
   sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
+
   helper.setStubs(sandbox)
 })
 
@@ -36,19 +38,29 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(true)
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true, false)
 
   const {uploadPath, removePath} = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'esa-eu-skills-description',
-      pageHeading: 'Upload the ESA EU Skills scheme certificate',
+      pageHeading: 'Energy & Utility Skills / ESA: upload evidence',
       submitButton: 'Continue'
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays expected static content',
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'esa-eu-skills-description-span-1',
+          'esa-eu-skills-description-paragraph-1',
+          'esa-eu-skills-description-span-2',
+          'esa-eu-skills-description-paragraph-2'])
+      }
+    ])
     helper.getFailure()
   })
 

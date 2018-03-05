@@ -14,7 +14,7 @@ module.exports = class BaseModel {
     Utilities.convertFromDynamics(this)
   }
 
-  static mapping () {
+  static get mapping () {
     // This method should be overridden by the derived class to specify a model to dynamics mapping.
     //
     // The following example maps the model field: 'name' to a dynamics field: 'defra_name':
@@ -41,6 +41,16 @@ module.exports = class BaseModel {
     return []
   }
 
+  static setDefinitions () {
+    // This method adds properties to the model class itself to allow a reference to each field definition in the mapping.
+    // For example if the mapping for "class Model" contains a mapping definition of [{field: 'blah', dynamics: 'defra_blah'}]
+    // then it will be possible to access the dynamics property as follows:
+    // "Model.blah.dynamics" which would have the value of "defra_blah"
+    this.mapping.forEach((definition) => {
+      this[definition.field] = definition
+    })
+  }
+
   static selectedDynamicsFields (customFilter = () => true) {
     // This method returns an array of dynamics field names retrieved from the mapping method.
     // Note that a custom filter can be used to include only those mappings that are required.
@@ -63,7 +73,7 @@ module.exports = class BaseModel {
     // - The defra_id field is missing as the custom filter has omitted it.
     // - The defra_type field is missing as it is a constant as specified in the mapping.
     //
-    return this.mapping()
+    return this.mapping
       .filter(customFilter)
       // ignore readonly values as they will only be set when reading from dynamics
       .filter(({constant}) => !constant)
@@ -115,7 +125,7 @@ module.exports = class BaseModel {
     // - The type field has been added with the value of 'TYPE' as specified in the mapping.
     //
     const modelData = {}
-    this.mapping()
+    this.mapping
     // See the explanation of a custom filter in the method selectedDynamicsFields above.
       .filter(customFilter)
       .forEach(({field, dynamics, constant}) => {
@@ -171,22 +181,37 @@ module.exports = class BaseModel {
     // - The defra_type field has been added with the value of 'TYPE' as specified in the mapping.
     // - The dynamics account entity has been bound to the contacts entity via the contactId
     //
+    const {mapping, name} = this.constructor
     const dynamicsData = {}
-    this.constructor.mapping()
+    mapping
     // See the explanation of a custom filter in the method selectedDynamicsFields above
       .filter(customFilter)
       // ignore readonly values as they will only be set when reading from dynamics
       .filter(({readOnly}) => !readOnly)
-      .forEach(({field, dynamics, constant, bind}) => {
+      .forEach(({field, dynamics, constant, bind, length}) => {
+        const value = this[field]
+        // check the value in the field meets the length constraints if applicable
+        if (length && typeof value === 'string') {
+          if (length.max && value.length > length.max) {
+            const errorMessage = `${name}.${field} exceeds maximum length of ${length.max} characters`
+            LoggingService.logError(errorMessage)
+            throw new Error(errorMessage)
+          }
+          if (length.min && value.length < length.min) {
+            const errorMessage = `${name}.${field} does not meet minimum length of ${length.min} characters`
+            LoggingService.logError(errorMessage)
+            throw new Error(errorMessage)
+          }
+        }
         if (bind) {
-          if (this[field]) {
-            dynamicsData[`${bind.id}@odata.bind`] = `${bind.entity}(${this[field]})`
+          if (value) {
+            dynamicsData[`${bind.id}@odata.bind`] = `${bind.entity}(${value})`
           }
         } else {
-          if (this[field] === undefined && constant !== undefined) {
+          if (value === undefined && constant !== undefined) {
             dynamicsData[dynamics] = constant
           } else {
-            if (this[field] !== undefined || field !== 'id') {
+            if (value !== undefined || field !== 'id') {
               dynamicsData[dynamics] = ObjectPath.get(this, field)
             }
           }
@@ -200,7 +225,7 @@ module.exports = class BaseModel {
     const className = this.constructor.name
 
     // Properties
-    const model = Object.assign({}, this, {_entity: undefined}) // ignore the private _entity property
+    const model = Object.assign({}, this)
     let properties = JSON.stringify(model).replace(/{/g, '{\n  ')
     properties = properties.replace(/}/g, '\n}')
     properties = properties.replace(/,/g, ', ')
@@ -234,13 +259,14 @@ module.exports = class BaseModel {
     // Then the deleteQuery that is generated within the code below will be:
     // 'contacts(10b88e9b-abaa-e711-8114-5065f38a3b21)/defra_contact_defra_application_primarycontactid(43acb872-19ca-e711-8112-5065f38a5b01)/$ref'
     //
-    const boundMapping = this.constructor.mapping()
+    const {entity, mapping} = this.constructor
+    const boundMapping = mapping
       .filter(({bind}) => bind && bind.relationship) // only those fields that have a relationship with another entity
       .filter(({field}) => !this[field]) // only those where the value of the field has been cleared
     if (boundMapping.length) {
       // select all the cleared references of entities bound to this entity and get their original values
       const selectedFields = boundMapping.map(({dynamics}) => dynamics).join(',')
-      const entityQuery = `${this._entity}(${this.id})?$select=${selectedFields}`
+      const entityQuery = `${entity}(${this.id})?$select=${selectedFields}`
       const result = await dynamicsDal.search(entityQuery)
       // using the original value of each reference, build the query and delete the bound reference
       boundMapping.forEach(async ({dynamics, bind: {relationship, entity}}) => {
@@ -254,8 +280,14 @@ module.exports = class BaseModel {
   }
 
   async save (authToken = undefined, dataObject) {
+    const {entity, readOnly} = this.constructor
+    if (readOnly) {
+      const errorMessage = `Unable to save ${entity}: Read only!`
+      LoggingService.logError(errorMessage)
+      throw new Error(errorMessage)
+    }
     if (!authToken) {
-      const errorMessage = `Unable to save ${this._entity}: Auth Token not supplied`
+      const errorMessage = `Unable to save ${entity}: Auth Token not supplied`
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }
@@ -264,34 +296,38 @@ module.exports = class BaseModel {
       let query
       if (this.isNew()) {
         // New Entity
-        query = this._entity
+        query = entity
         this.id = await dynamicsDal.create(query, dataObject)
       } else {
-        if (this.constructor.mapping) {
-          await this._deleteBoundReferences(dynamicsDal)
-        }
+        await this._deleteBoundReferences(dynamicsDal)
         // Update Entity
-        query = `${this._entity}(${this.id})`
+        query = `${entity}(${this.id})`
         await dynamicsDal.update(query, dataObject)
       }
     } catch (error) {
-      LoggingService.logError(`Unable to save ${this._entity}: ${error}`)
+      LoggingService.logError(`Unable to save ${entity}: ${error}`)
       throw error
     }
   }
 
   async delete (authToken = undefined, id) {
+    const {entity, readOnly} = this.constructor
+    if (readOnly) {
+      const errorMessage = `Unable to delete ${entity}: Read only!`
+      LoggingService.logError(errorMessage)
+      throw new Error(errorMessage)
+    }
     if (!authToken) {
-      const errorMessage = `Unable to delete ${this._entity}: Auth Token not supplied`
+      const errorMessage = `Unable to delete ${entity}: Auth Token not supplied`
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }
     const dynamicsDal = new DynamicsDalService(authToken)
     try {
-      let query = `${this._entity}(${id})`
+      let query = `${entity}(${id})`
       await dynamicsDal.delete(query)
     } catch (error) {
-      LoggingService.logError(`Unable to delete ${this._entity} with id ${id}: ${error}`)
+      LoggingService.logError(`Unable to delete ${entity} with id ${id}: ${error}`)
       throw error
     }
   }

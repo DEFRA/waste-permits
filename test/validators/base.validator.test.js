@@ -39,9 +39,7 @@ const checkErrorMessages = (fieldName, errorMessages) => {
   const pageContext = {}
 
   const validationErrors = {
-    data: {
-      details: errorMessages.map(({type}) => ({path: [fieldName], type: type}))
-    }
+    details: errorMessages.map(({type}) => ({path: [fieldName], type: type}))
   }
 
   validator.addErrorsToPageContext(validationErrors, pageContext)
@@ -105,16 +103,14 @@ lab.experiment('Base Validator tests:', () => {
         }
       }
       const errors = [{path: ['telephone'], type: 'min', message: 'Too small'}]
-      const updatedErrors = await validator.customValidate(request, {data: {details: errors}})
+      const updatedErrors = await validator.customValidate(request, {details: errors})
       Code.expect(updatedErrors).to.equal({
-        data: {
-          details: [
-            {path: ['telephone'], type: 'min', message: 'Too small'},
-            {path: ['telephone'], type: 'custom.invalid', message: 'Telephone number is invalid'},
-            {path: ['telephone'], type: 'custom.test', message: 'Telephone Test failed'},
-            {path: ['telephone'], type: 'custom.async.test', message: 'Telephone Test failed asynchronously'}
-          ]
-        }
+        details: [
+          {path: ['telephone'], type: 'min', message: 'Too small'},
+          {path: ['telephone'], type: 'custom.invalid', message: 'Telephone number is invalid'},
+          {path: ['telephone'], type: 'custom.test', message: 'Telephone Test failed'},
+          {path: ['telephone'], type: 'custom.async.test', message: 'Telephone Test failed asynchronously'}
+        ]
       })
     })
 
@@ -126,8 +122,8 @@ lab.experiment('Base Validator tests:', () => {
         }
       }
       const errors = [{path: ['telephone'], type: 'any.required', message: 'Telephone required'}]
-      const updatedErrors = await validator.customValidate(request, {data: {details: errors}})
-      Code.expect(updatedErrors).to.equal({data: {details: errors}})
+      const updatedErrors = await validator.customValidate(request, {details: errors})
+      Code.expect(updatedErrors).to.equal({details: errors})
     })
   })
 })

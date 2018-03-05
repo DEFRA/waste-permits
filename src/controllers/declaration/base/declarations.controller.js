@@ -14,6 +14,15 @@ module.exports = class DeclarationsController extends BaseController {
 
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const application = await Application.getById(authToken, applicationId)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
 
     switch (this.route) {
       case Constants.Routes.COMPANY_DECLARE_OFFENCES:
@@ -26,13 +35,9 @@ module.exports = class DeclarationsController extends BaseController {
         throw new Error(`Unexpected route (${this.route.path})`)
     }
 
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
-
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const application = await Application.getById(authToken, applicationId)
       pageContext.formValues = this.getFormData(application, pageContext)
     }
 
@@ -42,23 +47,27 @@ module.exports = class DeclarationsController extends BaseController {
 
     Object.assign(pageContext, this.getSpecificPageContext())
 
-    return reply.view(this.view, pageContext)
+    return reply
+      .view(this.view, pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
       const application = await Application.getById(authToken, applicationId)
       Object.assign(application, this.getRequestData(request))
       await application.save(authToken)
       if (this.updateCompleteness) {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
       }
-      return reply.redirect(this.nextPath)
+      return reply
+        .redirect(this.nextPath)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 

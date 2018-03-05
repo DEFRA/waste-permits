@@ -59,7 +59,7 @@ lab.afterEach(() => {
 
 const testCompleteness = async (contact, expectedResult) => {
   testContact = Object.assign({}, fakeContact, contact)
-  const result = await ContactDetails._isComplete(authToken, applicationId)
+  const result = await ContactDetails.isComplete(authToken, applicationId)
   Code.expect(result).to.equal(expectedResult)
 }
 

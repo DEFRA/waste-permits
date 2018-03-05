@@ -10,14 +10,11 @@ const GeneralTestHelper = require('../../../routes/generalTestHelper.test')
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
+const Application = require('../../../../src/models/application.model')
 const SiteNameAndLocation = require('../../../../src/models/taskList/siteNameAndLocation.model')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
-let validateCookieStub
-let cookieServiceGetStub
-let addressListByPostcodeStub
-let siteNameAndLocationGetAddressStub
-let siteNameAndLocationSaveManualAddressStub
+let sandbox
 
 const pageHeading = `Enter the site address`
 const routePath = '/site/address/address-manual'
@@ -41,6 +38,11 @@ const getRequest = {
 }
 let postRequest
 
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
+
 const fakeAddress1 = {
   id: 'ADDRESS_ID_1',
   buildingNameOrNumber: '101',
@@ -50,8 +52,7 @@ const fakeAddress1 = {
   postcode: 'AB12 1AA',
   uprn: 'UPRN1',
   fromAddressLookup: true,
-  fullAddress: 'FULL_ADDRESS_1',
-  _entity: 'defra_addresses'
+  fullAddress: 'FULL_ADDRESS_1'
 }
 
 const fakeAddress2 = {
@@ -63,8 +64,7 @@ const fakeAddress2 = {
   postcode: 'AB12 2AA',
   uprn: 'UPRN2',
   fromAddressLookup: true,
-  fullAddress: 'FULL_ADDRESS_2',
-  _entity: 'defra_addresses'
+  fullAddress: 'FULL_ADDRESS_2'
 }
 
 const fakeAddress3 = {
@@ -76,8 +76,7 @@ const fakeAddress3 = {
   postcode: 'AB12 3AA',
   uprn: 'UPRN3',
   fromAddressLookup: true,
-  fullAddress: 'FULL_ADDRESS_3',
-  _entity: 'defra_addresses'
+  fullAddress: 'FULL_ADDRESS_3'
 }
 
 lab.beforeEach(() => {
@@ -88,34 +87,26 @@ lab.beforeEach(() => {
     payload: {}
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  cookieServiceGetStub = CookieService.get
-  CookieService.get = () => undefined
-
-  addressListByPostcodeStub = Address.listByPostcode
-  Address.listByPostcode = () => [
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(CookieService, 'get').value(() => undefined)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Address, 'listByPostcode').value(() => [
     new Address(fakeAddress1),
     new Address(fakeAddress2),
     new Address(fakeAddress3)
-  ]
-
-  siteNameAndLocationGetAddressStub = SiteNameAndLocation.getAddress
-  SiteNameAndLocation.getAddress = () => new Address(fakeAddress1)
-
-  siteNameAndLocationSaveManualAddressStub = SiteNameAndLocation.saveManualAddress
-  SiteNameAndLocation.saveManualAddress = () => undefined
+  ])
+  sandbox.stub(SiteNameAndLocation, 'getAddress').value(() => new Address(fakeAddress1))
+  sandbox.stub(SiteNameAndLocation, 'saveManualAddress').value(() => undefined)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  CookieService.get = cookieServiceGetStub
-  Address.listByPostcode = addressListByPostcodeStub
-  SiteNameAndLocation.getAddress = siteNameAndLocationGetAddressStub
-  SiteNameAndLocation.saveManualAddress = siteNameAndLocationSaveManualAddressStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const checkPageElements = async (request, expectedValue) => {
@@ -289,15 +280,16 @@ lab.experiment('Address select page tests:', () => {
       })
 
       lab.test(`POST ${routePath} shows an error message when the maximum field length has been exceeded`, async () => {
-        let longValue, longTownOrCity, longPostcode
-        for (let i = 0; i <= 170; i++) {
-          longValue += 'X'
-        }
-        for (let i = 0; i <= 70; i++) {
-          longTownOrCity += 'X'
-        }
-        for (let i = 0; i <= 8; i++) {
-          longPostcode += 'X'
+        const longValue = 'X'.repeat(171)
+        const longTownOrCity = 'X'.repeat(71)
+        const longPostcode = 'X'.repeat(9)
+
+        postRequest.payload = {
+          [FORM_FIELD_ID.buildingNameOrNumber]: longValue,
+          [FORM_FIELD_ID.addressLine1]: longValue,
+          [FORM_FIELD_ID.addressLine2]: longValue,
+          [FORM_FIELD_ID.townOrCity]: longTownOrCity,
+          [FORM_FIELD_ID.postcode]: longPostcode
         }
         postRequest.payload = {
           [FORM_FIELD_ID.buildingNameOrNumber]: longValue,
@@ -306,9 +298,9 @@ lab.experiment('Address select page tests:', () => {
           [FORM_FIELD_ID.townOrCity]: longTownOrCity,
           [FORM_FIELD_ID.postcode]: longPostcode
         }
-        await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Enter a shorter building name or number with no more than 170 characters`, 0)
-        await checkValidationError(FORM_FIELD_ID.addressLine1, `Enter a shorter address line 1 with no more than 170 characters`, 1)
-        await checkValidationError(FORM_FIELD_ID.addressLine2, `Enter a shorter address line 2 with no more than 170 characters`, 2)
+        await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Enter a shorter building name or number with no more than 50 characters`, 0)
+        await checkValidationError(FORM_FIELD_ID.addressLine1, `Enter a shorter address line 1 with no more than 100 characters`, 1)
+        await checkValidationError(FORM_FIELD_ID.addressLine2, `Enter a shorter address line 2 with no more than 100 characters`, 2)
         await checkValidationError(FORM_FIELD_ID.townOrCity, `Enter a shorter town or city with no more than 70 characters`, 3)
         await checkValidationError(FORM_FIELD_ID.postcode, `Enter a shorter postcode with no more than 8 characters`, 4)
       })

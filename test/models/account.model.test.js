@@ -17,8 +17,8 @@ let applicationGetByIdStub
 
 let testAccount
 const fakeAccountData = {
-  companyNumber: 'COMPANY_NUMBER',
-  name: 'COMPANY_NAME',
+  companyNumber: '01234567',
+  accountName: 'COMPANY_NAME',
   isDraft: true
 }
 
@@ -65,7 +65,7 @@ lab.experiment('Account Model tests:', () => {
       return {
         '@odata.etag': 'W/"1039178"',
         accountid: fakeAccountData.id,
-        name: fakeAccountData.name,
+        name: fakeAccountData.accountName,
         defra_companyhouseid: fakeAccountData.companyNumber,
         defra_draft: true
       }
@@ -75,7 +75,7 @@ lab.experiment('Account Model tests:', () => {
     Code.expect(emptyAccount.id).to.be.equal(undefined)
 
     Code.expect(testAccount.companyNumber).to.equal(fakeAccountData.companyNumber)
-    Code.expect(testAccount.name).to.equal(fakeAccountData.name)
+    Code.expect(testAccount.accountName).to.equal(fakeAccountData.accountName)
 
     // Should have been converted from null to undefined
     Code.expect(testAccount.tradingName).to.equal(undefined)
@@ -87,7 +87,7 @@ lab.experiment('Account Model tests:', () => {
       return {
         '@odata.etag': 'W/"1039178"',
         accountid: fakeAccountData.id,
-        name: fakeAccountData.name,
+        name: fakeAccountData.accountName,
         defra_companyhouseid: fakeAccountData.companyNumber,
         defra_draft: true
       }
@@ -106,7 +106,7 @@ lab.experiment('Account Model tests:', () => {
         value: [{
           '@odata.etag': 'W/"1039178"',
           accountid: fakeAccountData.id,
-          name: fakeAccountData.name,
+          name: fakeAccountData.accountName,
           defra_companyhouseid: fakeAccountData.companyNumber,
           defra_draft: true
         }]

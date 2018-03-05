@@ -7,6 +7,9 @@ const nock = require('nock')
 
 const config = require('../../src/config/config')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
+const COMPANY_TYPES = {
+  'uk-establishment': 'UK_ESTABLISHMENT'
+}
 const COMPANY_STATUSES = {
   active: 'ACTIVE',
   dissolved: 'DISSOLVED',
@@ -21,7 +24,7 @@ const DEFAULT_COMPANY_STATUS = 'NOT_ACTIVE'
 
 const serviceResponse = {
   jurisdiction: 'england-wales',
-  type: 'ltd',
+  type: 'uk-establishment',
   company_name: 'VIRIDOR NEW ENGLAND (EFW) LIMITED',
   company_number: '07421224',
   registered_office_address: {
@@ -115,6 +118,7 @@ lab.experiment('Company Lookup Service tests:', () => {
       mockResponse(serviceResponse)
       const company = await CompanyLookupService.getCompany('07421224')
       Code.expect(company.name).to.equal(serviceResponse.company_name)
+      Code.expect(company.type).to.equal(COMPANY_TYPES[serviceResponse.type])
       Code.expect(company.address).to.equal(formattedAddress)
       Code.expect(company.status).to.equal(COMPANY_STATUSES[serviceResponse.company_status])
       Code.expect(company.isActive).to.equal(true)

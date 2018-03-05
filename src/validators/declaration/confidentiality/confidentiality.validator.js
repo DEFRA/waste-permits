@@ -2,8 +2,7 @@
 
 const Joi = require('joi')
 const BaseValidator = require('../../base.validator')
-
-const DECLARED_DETAILS_MAX_LENGTH = 2000
+const Application = require('../../../models/application.model')
 
 module.exports = class ConfidentialityValidator extends BaseValidator {
   constructor () {
@@ -17,13 +16,13 @@ module.exports = class ConfidentialityValidator extends BaseValidator {
       'declaration-details': {
         'any.empty': `Explain what information is confidential and why`,
         'any.required': `Explain what information is confidential and why`,
-        'string.max': `You can only enter ${DECLARED_DETAILS_MAX_LENGTH.toLocaleString()} characters - please shorten what you’ve written`
+        'string.max': `You can only enter ${Application.confidentialityDetails.length.max.toLocaleString()} characters - please shorten what you’ve written`
       }
     }
   }
 
   getDeclaredDetailsMaxLength () {
-    return DECLARED_DETAILS_MAX_LENGTH
+    return Application.confidentialityDetails.length.max
   }
 
   getFormValidators () {
@@ -32,7 +31,7 @@ module.exports = class ConfidentialityValidator extends BaseValidator {
         .required(),
       'declaration-details': Joi
         .string()
-        .max(DECLARED_DETAILS_MAX_LENGTH)
+        .max(Application.confidentialityDetails.length.max)
         .when('declared', {
           is: 'yes',
           then: Joi.required() })

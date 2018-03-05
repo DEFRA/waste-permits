@@ -4,13 +4,21 @@ const Constants = require('../../../constants')
 const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
 const Address = require('../../../models/address.model')
+const Application = require('../../../models/application.model')
 
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
-    const applicationLineId = CookieService.getApplicationLineId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
+    const application = await Application.getById(authToken, applicationId)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
@@ -40,11 +48,13 @@ module.exports = class PostcodeController extends BaseController {
     this.customisePageContext(pageContext)
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return reply.view('address/postcode', pageContext)
+    return reply
+      .view('address/postcode', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
-    const authToken = CookieService.getAuthToken(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
     const postcode = request.payload['postcode']
     const errorPath = 'postcode'
 
@@ -66,26 +76,24 @@ module.exports = class PostcodeController extends BaseController {
       errors = this._addCustomError(errorPath, `"${errorPath}" is required`, 'none.found')
     }
 
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      return reply.redirect(this.getAddressSelectionPath())
-        // Add the updated cookie
-        .state(Constants.COOKIE_KEY, request.state[Constants.COOKIE_KEY], Constants.COOKIE_PATH)
+      return reply
+        .redirect(this.getAddressSelectionPath())
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 
   _addCustomError (errorPath, message, type) {
     return {
-      data: {
-        details: [
-          {
-            message: message,
-            path: [errorPath],
-            type: type,
-            context: { key: errorPath, label: errorPath }
-          }]
-      }
+      details: [
+        {
+          message: message,
+          path: [errorPath],
+          type: type,
+          context: { key: errorPath, label: errorPath }
+        }]
     }
   }
 }

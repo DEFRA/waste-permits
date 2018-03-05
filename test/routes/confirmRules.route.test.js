@@ -5,8 +5,10 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
+const Application = require('../../src/models/application.model')
 const CookieService = require('../../src/services/cookie.service')
 const ConfirmRules = require('../../src/models/confirmRules.model')
 const StandardRule = require('../../src/models/standardRule.model')
@@ -17,20 +19,32 @@ let validateCookieStub
 let confirmRulesSaveStub
 let getByApplicationIdStub
 let getByApplicationLineIdStub
+let applicationGetByIdStub
+let applicationIsSubmittedStub
 let logErrorStub
+
+let fakeApplication
 let fakeConfirmRules
 let fakeStandardRule
 
 const routePath = '/confirm-rules'
+const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
+  fakeApplication = {
+    id: 'APPLICATION_ID',
+    applicationName: 'APPLICATION_NAME'
+  }
+
   fakeConfirmRules = {
     applicationId: 'APPLICATION_ID',
     applicationLineId: 'APPLICATION_LINE_ID'
   }
+
   fakeStandardRule = {
     applicationLineId: 'APPLICATION_LINE_ID'
   }
+
   // Stub methods
   validateCookieStub = CookieService.validateCookie
   CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
@@ -43,6 +57,12 @@ lab.beforeEach(() => {
 
   getByApplicationLineIdStub = StandardRule.getByApplicationLineId
   StandardRule.getByApplicationLineId = () => fakeStandardRule
+
+  applicationGetByIdStub = Application.getById
+  Application.getById = () => new Application(fakeApplication)
+
+  applicationIsSubmittedStub = Application.prototype.isSubmitted
+  Application.prototype.isSubmitted = () => false
 })
 
 lab.afterEach(() => {
@@ -51,10 +71,14 @@ lab.afterEach(() => {
   LoggingService.logError = logErrorStub
   ConfirmRules.getByApplicationId = getByApplicationIdStub
   StandardRule.getByApplicationLineId = getByApplicationLineIdStub
+  Application.getById = applicationGetByIdStub
+  Application.prototype.isSubmitted = applicationIsSubmittedStub
 })
 
 lab.experiment('Confirm that your operation meets the rules page tests:', () => {
-  lab.experiment('GET /confirm-rules', () => {
+  new GeneralTestHelper(lab, routePath).test()
+
+  lab.experiment(`GET ${routePath}`, () => {
     let doc
     let getRequest
 
@@ -109,22 +133,16 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.getByApplicationId = () => undefined
+        ConfirmRules.getByApplicationId = () => {
+          throw new Error('read failed')
+        }
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })
@@ -168,22 +186,16 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to timeout screen when the user token is invalid', async () => {
-        CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_EXPIRED
-
-        const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/errors/timeout')
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.getByApplicationId = () => Promise.reject(new Error('read failed'))
+        ConfirmRules.getByApplicationId = () => {
+          throw new Error('read failed')
+        }
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
 
       lab.test('redirects to error screen when save fails', async () => {
@@ -193,7 +205,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })

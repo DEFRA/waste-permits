@@ -34,7 +34,7 @@ const fakeAddress = {
 
 const fakeLocation = {
   id: 'LOCATION_ID',
-  name: 'THE SITE NAME',
+  siteName: 'THE SITE NAME',
   applicationId: 'APPLICATION_ID',
   applicationLineId: 'APPLICATION_LINE_ID'
 }
@@ -94,10 +94,10 @@ lab.afterEach(() => {
 })
 
 const testCompleteness = async (obj, expectedResult) => {
-  fakeLocation.name = obj.name
+  fakeLocation.siteName = obj.siteName
   fakeLocationDetail.gridReference = obj.gridReference
   fakeAddress.postcode = obj.postcode
-  const result = await SiteNameAndLocation._isComplete(authToken, applicationId, applicationLineId)
+  const result = await SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId)
   Code.expect(result).to.equal(expectedResult)
 }
 
@@ -113,7 +113,7 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
 
   lab.test('getSiteName() method correctly retrieves a site name when there is a saved Location', async () => {
     const result = await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
-    Code.expect(result).to.be.equal(fakeLocation.name)
+    Code.expect(result).to.be.equal(fakeLocation.siteName)
   })
 
   lab.test('saveSiteName() method correctly saves a site name', async () => {
@@ -151,28 +151,28 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
-    const result = await SiteNameAndLocation._isComplete(authToken, applicationId, applicationLineId)
+    const result = await SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId)
     Code.expect(result).to.be.true()
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete', async () => {
     await testCompleteness({
-      name: undefined,
+      siteName: undefined,
       gridReference: 'AB1234567890'
     }, false)
 
     await testCompleteness({
-      name: '',
+      siteName: '',
       gridReference: 'AB1234567890'
     }, false)
 
     await testCompleteness({
-      name: 'THE SITE NAME',
+      siteName: 'THE SITE NAME',
       gridReference: undefined
     }, false)
 
     await testCompleteness({
-      name: 'THE SITE NAME',
+      siteName: 'THE SITE NAME',
       gridReference: ''
     }, false)
   })

@@ -4,13 +4,21 @@ const Constants = require('../../../constants')
 const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
 const Address = require('../../../models/address.model')
+const Application = require('../../../models/application.model')
 
 module.exports = class AddressSelectController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
-    const applicationLineId = CookieService.getApplicationLineId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
+    const application = await Application.getById(authToken, applicationId)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
 
     let addresses, address
     let postcode = CookieService.get(request, this.getPostcodeCookieKey())
@@ -46,16 +54,18 @@ module.exports = class AddressSelectController extends BaseController {
     pageContext.changePostcodeLink = this.getPostcodeRoute()
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return reply.view('address/selectAddress', pageContext)
+    return reply
+      .view('address/selectAddress', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.getAuthToken(request)
-      const applicationId = CookieService.getApplicationId(request)
-      const applicationLineId = CookieService.getApplicationLineId(request)
+      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
 
       const addressDto = {
         uprn: request.payload['select-address'],
@@ -63,7 +73,9 @@ module.exports = class AddressSelectController extends BaseController {
       }
       await this.getModel().saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
 
-      return reply.redirect(Constants.Routes.TASK_LIST.path)
+      return reply
+        .redirect(Constants.Routes.TASK_LIST.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 }

@@ -5,11 +5,13 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
+const TaskList = require('../../src/models/taskList/taskList.model')
 const LoggingService = require('../../src/services/logging.service')
 const BaseCheck = require('../../src/models/checkYourAnswers/base.check')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
@@ -22,6 +24,8 @@ let fakeInvalidRulesetId
 let fakeLineData
 
 const routePath = '/check-before-sending'
+const nextRoutePath = '/done'
+const notCompleteRoutePath = '/errors/order/task-list-not-complete'
 
 let sandbox
 
@@ -74,6 +78,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(ApplicationLine, 'getValidRulesetIds').value(() => [fakeValidRulesetId])
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
+  sandbox.stub(TaskList, 'isComplete').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -82,6 +87,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Check your answers before sending your application page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test(true, true, true)
+
   lab.experiment(`GET ${routePath}`, () => {
     let request
     lab.beforeEach(() => {
@@ -103,7 +110,7 @@ lab.experiment('Check your answers before sending your application page tests:',
       Code.expect(doc.getElementById('back-link')).to.exist()
     })
 
-    lab.test('returns the check before sending page correctly', async () => {
+    lab.test('returns the check before sending page static content correctly', async () => {
       const res = await server.inject(request)
       Code.expect(res.statusCode).to.equal(200)
 
@@ -112,6 +119,28 @@ lab.experiment('Check your answers before sending your application page tests:',
 
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Check your answers before sending your application')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Confirm and pay')
+      Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
+
+      // Test for the existence of expected static content
+      GeneralTestHelper.checkElementsExist(doc, [
+        'declaration-warning-heading',
+        'declaration-warning-notice-hidden',
+        'declaration-warning-notice-content',
+        'declaration-confirmation-list-heading',
+        'declaration-confirmation-list-item-1',
+        'declaration-confirmation-list-item-2',
+        'declaration-confirmation-list-item-3',
+        'managment-system-link',
+        'managment-system-link-text'
+      ])
+    })
+
+    lab.test('returns the check before sending page dynamic content correctly', async () => {
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(200)
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(res.payload, 'text/html')
 
       const {heading, answers, links} = fakeLineData
       Code.expect(doc.getElementById('section-test-heading').firstChild.nodeValue.trim()).to.equal(heading)
@@ -125,6 +154,14 @@ lab.experiment('Check your answers before sending your application page tests:',
         Code.expect(doc.getElementById(id).firstChild.nodeValue.trim()).to.equal('Change')
         Code.expect(doc.getElementById(`${id}-type`).firstChild.nodeValue.trim()).to.equal(type)
       })
+    })
+
+    lab.test('Redirects to the Not Complete screen if the application has not been completed', async () => {
+      sandbox.stub(TaskList, 'isComplete').value(() => false)
+
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(notCompleteRoutePath)
     })
   })
 
@@ -143,7 +180,7 @@ lab.experiment('Check your answers before sending your application page tests:',
       lab.test('redirects to the Application Received route after an UPDATE', async () => {
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/done')
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
     })
   })

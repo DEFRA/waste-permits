@@ -6,6 +6,17 @@ const DynamicsDalService = require('../../services/dynamicsDal.service')
 const BaseModel = require('../base.model')
 const LoggingService = require('../../services/logging.service')
 
+// Task List related models used to check for application completeness
+const CompanyDetails = require('./companyDetails.model')
+const Confidentiality = require('./confidentiality.model')
+const ConfirmRules = require('../../controllers/confirmRules.controller')
+const ContactDetails = require('./siteNameAndLocation.model')
+const FirePreventionPlan = require('./firePreventionPlan.model')
+const InvoiceAddress = require('./invoiceAddress.model')
+const SiteNameAndLocation = require('./siteNameAndLocation.model')
+const SitePlan = require('./sitePlan.model')
+const TechnicalQualification = require('./technicalQualification.model')
+
 module.exports = class TaskList extends BaseModel {
   static async getByApplicationLineId (authToken, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
@@ -203,5 +214,24 @@ module.exports = class TaskList extends BaseModel {
     const finalSection = this.sections[this.sections.length - 1]
     const finalItem = finalSection.sectionItems[finalSection.sectionItems.length - 1]
     finalItem.available = true
+  }
+
+  static async isComplete (authToken, applicationId, applicationLineId) {
+    return Promise.all([
+      CompanyDetails.isComplete(authToken, applicationId),
+      Confidentiality.isComplete(authToken, applicationId),
+      ConfirmRules.isComplete(authToken, applicationId, applicationLineId),
+      ContactDetails.isComplete(authToken, applicationId, applicationLineId),
+      FirePreventionPlan.isComplete(authToken, applicationId),
+      InvoiceAddress.isComplete(authToken, applicationId, applicationLineId),
+      SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId),
+      SitePlan.isComplete(authToken, applicationId),
+      TechnicalQualification.isComplete(authToken, applicationId)
+    ]).then((values) => {
+      return values.reduce((isComplete, value) => isComplete && value)
+    }).catch((err) => {
+      console.error('Error calculating completeness:', err.message)
+      throw err
+    })
   }
 }

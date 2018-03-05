@@ -15,7 +15,10 @@ module.exports = class BaseController {
     if (validator) {
       this.validator = validator
     }
-    this.failAction = (...args) => this.handler.apply(this, args)
+    this.failAction = async (...args) => {
+      const failActionReply = await this.handler.apply(this, args)
+      return failActionReply.takeover()
+    }
     this.cookieValidationRequired = cookieValidationRequired
   }
 
@@ -28,7 +31,7 @@ module.exports = class BaseController {
       formAction: this.path
     }
 
-    if (validator && errors && errors.data && errors.data.details) {
+    if (validator && errors && errors.details) {
       validator.addErrorsToPageContext(errors, pageContext)
 
       // Add the error prefix to the page title
@@ -41,27 +44,27 @@ module.exports = class BaseController {
   async _handler (request, reply, errors) {
     switch (request.method.toUpperCase()) {
       case 'GET':
-        await this.doGet(request, reply, errors)
-        break
+        return this.doGet(request, reply, errors)
       case 'POST':
         if (this.validator && this.validator.customValidators) {
           // Apply custom validation if required
           errors = await this.validator.customValidate(request.payload, errors)
         }
-        await this.doPost(request, reply, errors)
-        break
+        return this.doPost(request, reply, errors)
     }
   }
 
-  async handler (request, reply, source, errors) {
+  async handler (request, reply, errors) {
     if (this.cookieValidationRequired) {
       // Validate the cookie
       const cookieValidationResult = await CookieService.validateCookie(request)
 
-      if (cookieValidationResult === COOKIE_RESULT.COOKIE_NOT_FOUND || cookieValidationResult === COOKIE_RESULT.COOKIE_EXPIRED) {
-        return reply.redirect(Constants.Routes.TIMEOUT.path)
+      if (cookieValidationResult === COOKIE_RESULT.COOKIE_NOT_FOUND) {
+        return reply.redirect(Constants.Routes.ERROR.START_AT_BEGINNING.path)
+      } else if (cookieValidationResult === COOKIE_RESULT.COOKIE_EXPIRED) {
+        return reply.redirect(Constants.Routes.ERROR.TIMEOUT.path)
       } else if (cookieValidationResult === COOKIE_RESULT.APPLICATION_NOT_FOUND) {
-        return reply.redirect(Constants.Routes.ERROR.path)
+        return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
       }
     }
     switch (this.route) {
@@ -70,10 +73,11 @@ module.exports = class BaseController {
         return this._handler(request, reply, errors)
       default:
         try {
-          await this._handler(request, reply, errors)
+          const response = await this._handler(request, reply, errors)
+          return response
         } catch (error) {
           LoggingService.logError(error, request)
-          await reply.redirect(Constants.Routes.ERROR.path)
+          return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
         }
     }
   }

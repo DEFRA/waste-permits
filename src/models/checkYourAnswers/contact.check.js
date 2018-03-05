@@ -34,12 +34,12 @@ module.exports = class ContactCheck extends BaseCheck {
   }
 
   async getAgentLine () {
-    const {name = ''} = await this.getAgentAccount()
-    const description = name ? 'This person is an agent or consultant' : 'This person is not an agent or consultant'
+    const {accountName = ''} = await this.getAgentAccount()
+    const description = accountName ? 'This person is an agent or consultant' : 'This person is not an agent or consultant'
     return this.buildLine({
       heading: 'Agent or consultant',
       prefix: 'agent',
-      answers: [description, name],
+      answers: [description, accountName],
       links: [{path, type: 'agent details'}]
     })
   }

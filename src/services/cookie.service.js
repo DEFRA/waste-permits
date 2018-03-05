@@ -19,20 +19,20 @@ module.exports = class CookieService {
 
       // Create the cookie and set the cookie Time to Live (TTL)
       return {
-        applicationId: undefined,
-        authToken: authToken,
-        expiry: this._calculateExpiryDate()
+        [Constants.COOKIE_KEY.APPLICATION_ID]: undefined,
+        [Constants.COOKIE_KEY.AUTH_TOKEN]: authToken,
+        [Constants.COOKIE_KEY.EXPIRY]: this._calculateExpiryDate()
       }
     } catch (error) {
       LoggingService.logError(error)
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
   }
 
   static async validateCookie (request) {
     let isValid = true
     let result
-    const cookie = request.state[Constants.COOKIE_KEY]
+    const cookie = request.state[Constants.DEFRA_COOKIE_KEY]
 
     // Ensure that the cookie exists
     if (isValid && !cookie) {
@@ -62,54 +62,24 @@ module.exports = class CookieService {
       result = COOKIE_RESULT.VALID_COOKIE
 
       // Update the cookie TTL and generate a new CRM token
-      request.state[Constants.COOKIE_KEY].authToken = await authService.getToken()
-      request.state[Constants.COOKIE_KEY].expiry = this._calculateExpiryDate()
+      CookieService.set(request, Constants.COOKIE_KEY.AUTH_TOKEN, await authService.getToken())
+      CookieService.set(request, Constants.COOKIE_KEY.EXPIRY, await CookieService._calculateExpiryDate())
     }
 
     return result
   }
 
-  static getAuthToken (request) {
-    let authToken
-    if (request.state[Constants.COOKIE_KEY]) {
-      authToken = request.state[Constants.COOKIE_KEY].authToken
-    }
-    return authToken
-  }
-
-  static getApplicationId (request) {
-    let applicationId
-    if (request.state[Constants.COOKIE_KEY]) {
-      applicationId = request.state[Constants.COOKIE_KEY].applicationId
-    }
-    return applicationId
-  }
-
-  static getApplicationLineId (request) {
-    let applicationLineId
-    if (request.state[Constants.COOKIE_KEY]) {
-      applicationLineId = request.state[Constants.COOKIE_KEY].applicationLineId
-    }
-    return applicationLineId
-  }
-
-  static setApplicationLineId (request, applicationLineId) {
-    if (request.state[Constants.COOKIE_KEY]) {
-      request.state[Constants.COOKIE_KEY].applicationLineId = applicationLineId
-    }
-  }
-
   static get (request, key) {
     let value
-    if (request.state[Constants.COOKIE_KEY]) {
-      value = request.state[Constants.COOKIE_KEY][key]
+    if (request.state[Constants.DEFRA_COOKIE_KEY]) {
+      value = request.state[Constants.DEFRA_COOKIE_KEY][key]
     }
     return value
   }
 
   static set (request, key, value) {
-    if (request.state[Constants.COOKIE_KEY]) {
-      request.state[Constants.COOKIE_KEY][key] = value
+    if (request.state[Constants.DEFRA_COOKIE_KEY]) {
+      request.state[Constants.DEFRA_COOKIE_KEY][key] = value
     }
   }
 }

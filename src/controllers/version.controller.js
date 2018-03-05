@@ -12,7 +12,7 @@ module.exports = class VersionController extends BaseController {
   async doGet (request, reply) {
     const pageContext = this.createPageContext()
 
-    let authToken = CookieService.getAuthToken(request)
+    let authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
 
     // If we didn't get an Auth token from the cookie then create a new one
     if (!authToken) {
@@ -29,5 +29,6 @@ module.exports = class VersionController extends BaseController {
 
     return reply
       .view('version', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 }

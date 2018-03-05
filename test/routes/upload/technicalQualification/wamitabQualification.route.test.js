@@ -26,7 +26,9 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
+
   sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
+
   helper.setStubs(sandbox)
 })
 
@@ -36,19 +38,32 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Upload Wamitab tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(true)
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true, false)
 
   const {uploadPath, removePath} = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'wamitab-qualification-description',
-      pageHeading: 'Upload the WAMITAB certificate',
+      pageHeading: 'WAMITAB or EPOC: upload evidence',
       submitButton: 'Continue'
     }
 
     // Perform general get tests
-    helper.getSuccess(options)
+    helper.getSuccess(options, [
+      // Additional tests
+      {
+        title: 'displays expected static content',
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'wamitab-qualification-description-paragraph-1',
+          'wamitab-qualification-description-paragraph-2',
+          'wamitab-qualification-description-paragraph-3',
+          'wamitab-qualification-operator-competence-link',
+          'wamitab-qualification-operator-competence-link',
+          'wamitab-qualification-operator-competence-link-abbr',
+          'wamitab-qualification-operator-competence-abbr'])
+      }
+    ])
     helper.getFailure()
   })
 

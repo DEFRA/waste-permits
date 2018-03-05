@@ -47,6 +47,11 @@ let fakeAnnotation
 let getRequest
 let fakeAnnotationId = 'ANNOTATION_ID'
 
+const fakeApplication = {
+  id: 'APPLICATION_ID',
+  applicationName: 'APPLICATION_NAME'
+}
+
 module.exports = class UploadTestHelper {
   constructor (lab, {routePath, uploadPath, removePath, nextRoutePath}) {
     this.lab = lab
@@ -54,6 +59,7 @@ module.exports = class UploadTestHelper {
     this.uploadPath = uploadPath
     this.removePath = removePath
     this.nextRoutePath = nextRoutePath
+    this.errorPath = '/errors/technical-problem'
   }
 
   setStubs (sandbox) {
@@ -65,12 +71,14 @@ module.exports = class UploadTestHelper {
     sandbox.stub(Annotation, 'getById').value(() => Promise.resolve(new Annotation(fakeAnnotation)))
     sandbox.stub(Annotation.prototype, 'delete').value(() => Promise.resolve({}))
     sandbox.stub(Annotation.prototype, 'save').value(() => Promise.resolve({}))
-    sandbox.stub(Application, 'getById').value(() => Promise.resolve({name: 'APPLICATION_REFERENCE'}))
+    sandbox.stub(Application, 'getById').value(() => Promise.resolve({applicationName: 'APPLICATION_REFERENCE'}))
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+    sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+    sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(LoggingService, 'logError').value(() => {})
   }
 
-  getSuccess (options) {
+  getSuccess (options, additionalTests = []) {
     const {lab, routePath} = this
     lab.experiment('success', () => {
       lab.beforeEach(() => {
@@ -110,6 +118,14 @@ module.exports = class UploadTestHelper {
         Code.expect(doc.getElementById('has-no-annotations')).to.not.exist()
         Code.expect(doc.getElementById(options.descriptionId)).to.not.exist()
       })
+
+      additionalTests.forEach(({title, stubs, test}) => lab.test(title, async () => {
+        if (stubs) {
+          stubs()
+        }
+        const doc = await getDoc(options)
+        test(doc)
+      }))
     })
   }
 
@@ -123,7 +139,7 @@ module.exports = class UploadTestHelper {
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(this.errorPath)
       })
     })
   }
@@ -209,11 +225,19 @@ module.exports = class UploadTestHelper {
         Code.expect(res.statusCode).to.equal(200)
         checkExpectedErrors(res, 'That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.')
       })
+
+      lab.test('when the filename is too long', async () => {
+        Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
+        const req = this._uploadRequest({filename: `${'a'.repeat(252)}.jpg`})
+        const res = await server.inject(req)
+        Code.expect(res.statusCode).to.equal(200)
+        checkExpectedErrors(res, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
+      })
     })
   }
 
   uploadFailure () {
-    const {lab} = this
+    const {lab, errorPath} = this
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
@@ -222,7 +246,7 @@ module.exports = class UploadTestHelper {
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/error')
+        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   }

@@ -57,7 +57,7 @@ lab.afterEach(() => {
 
 const testCompleteness = async (obj, expectedResult) => {
   fakeApplication.confidentiality = obj.confidentiality
-  const result = await Confidentiality._isComplete(authToken, applicationId)
+  const result = await Confidentiality.isComplete(authToken, applicationId)
   Code.expect(result).to.equal(expectedResult)
 }
 

@@ -8,18 +8,26 @@ const DirectorDateOfBirthValidator = require('../validators/directorDateOfBirth.
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const Account = require('../models/account.model')
+const Application = require('../models/application.model')
 const ApplicationContact = require('../models/applicationContact.model')
 const Contact = require('../models/contact.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
   async doGet (request, reply, errors) {
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const application = await Application.getById(authToken, applicationId)
+
+    if (application.isSubmitted()) {
+      return reply
+        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    }
 
     let account = await Account.getByApplicationId(authToken, applicationId)
     if (!account) {
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
 
     // Get the directors that relate to this application
@@ -44,7 +52,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       pageContext.pageTitle = Constants.buildPageTitle(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate)
 
       // Change page title if there is an error using the following
-      if (errors && errors.data.details) {
+      if (errors && errors.details) {
         pageContext.pageTitle = `${Constants.PAGE_TITLE_ERROR_PREFIX} ${pageContext.pageTitle}`
       }
     }
@@ -55,17 +63,19 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         pageContext.directors[i].dob.day = field || ''
       }
     }
-    return reply.view('directorDateOfBirth', pageContext)
+    return reply
+      .view('directorDateOfBirth', pageContext)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   async doPost (request, reply, errors) {
-    const authToken = CookieService.getAuthToken(request)
-    const applicationId = CookieService.getApplicationId(request)
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
 
     let account = await Account.getByApplicationId(authToken, applicationId)
     if (!account) {
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-      return reply.redirect(Constants.Routes.ERROR.path)
+      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
 
     const directors = await this._getDirectors(authToken, applicationId, account.id)
@@ -73,7 +83,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     // Perform manual (non-Joi) validation of dynamic form content
     errors = await this._validateDynamicFormContent(request, directors)
 
-    if (errors && errors.data.details) {
+    if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
       // Save Director dates of birth in their corresponding ApplicationContact record
@@ -97,7 +107,9 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         await applicationContact.save(authToken)
       }
 
-      return reply.redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
+      return reply
+        .redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
+        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
     }
   }
 
@@ -120,22 +132,18 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (Object.keys(request.payload).length === 0) {
       const errorPath = 'director-dobs-not-entered'
       errors = {
-        data: {
-          details: [
-            {
-              message: `"${errorPath}" is required`,
-              path: [errorPath],
-              type: 'any.required',
-              context: { key: errorPath, label: errorPath }
-            }]
-        }
+        details: [
+          {
+            message: `"${errorPath}" is required`,
+            path: [errorPath],
+            type: 'any.required',
+            context: { key: errorPath, label: errorPath }
+          }]
       }
     } else {
       // Clear errors
       errors = {
-        data: {
-          details: []
-        }
+        details: []
       }
 
       // Validate the entered DOB for each director
@@ -146,7 +154,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
         if (dobDay === undefined) {
           // DOB day has not been entered
-          errors.data.details.push({
+          errors.details.push({
             message: `"${directorDobField}" is required`,
             path: [directorDobField],
             type: 'any.required',
@@ -159,7 +167,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
           dobDay = parseInt(dobDay)
           if (isNaN(dobDay) || dobDay < 1 || dobDay > daysInBirthMonth) {
             // DOB day is invalid
-            errors.data.details.push({
+            errors.details.push({
               message: `"${directorDobField}" is invalid`,
               path: [directorDobField],
               type: 'invalid',
@@ -170,7 +178,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       }
     }
 
-    if (errors.data.details.length === 0) {
+    if (errors && errors.details.length === 0) {
       errors = undefined
     }
 

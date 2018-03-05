@@ -18,7 +18,7 @@ module.exports = class CompanyDetails extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await CompanyDetails._isComplete(authToken, applicationId)
+      const isComplete = await CompanyDetails.isComplete(authToken, applicationId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.PERMIT_HOLDER_DETAILS]: isComplete
@@ -31,15 +31,15 @@ module.exports = class CompanyDetails extends BaseModel {
     }
   }
 
-  static async _isComplete (authToken, applicationId) {
+  static async isComplete (authToken, applicationId) {
     let isComplete = false
     try {
       // Get the Account for this application
       const account = await Account.getByApplicationId(authToken, applicationId)
 
-      if (account.name) {
+      if (account && account.accountName) {
         isComplete =
-          account.name !== undefined && account.name.length > 0
+          account.accountName !== undefined && account.accountName.length > 0
       }
     } catch (error) {
       LoggingService.logError(`Unable to calculate CompanyDetails completeness: ${error}`)

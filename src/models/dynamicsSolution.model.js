@@ -4,7 +4,11 @@ const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
 
-module.exports = class DynamicsSolution extends BaseModel {
+class DynamicsSolution extends BaseModel {
+  static get entity () {
+    return 'solutions'
+  }
+
   static async get (authToken) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
@@ -35,3 +39,7 @@ module.exports = class DynamicsSolution extends BaseModel {
     }
   }
 }
+
+DynamicsSolution.setDefinitions()
+
+module.exports = DynamicsSolution

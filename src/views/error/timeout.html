@@ -1,9 +1,18 @@
 <main id="content" role="main">
-  {{> common/pageHeading pageHeading }}
-  <p id="timeout-message-para-1">
-    You hadn’t submitted anything for {{cookieTimeout}} hours so we closed your application to keep your data secure.
-  </p>
-  <p id="timeout-message-para-2">
-    Sorry, you can’t get back to your application so you’ll have to <a id="start-again-link" href="{{startAgainLink}}">start the application again</a>.
-  </p>
+
+  {{> common/betaBanner }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/pageHeading pageHeading }}
+
+      <p id="timeout-message-para-1">
+        You hadn’t submitted anything for {{cookieTimeout}} hours so we closed your application to keep your data secure.
+      </p>
+      <p id="timeout-message-para-2">
+        Sorry, you can’t get back to your application so you’ll have to <a id="start-again-link" href="{{startAgainLink}}">start the application again</a>.
+      </p>
+    </div>
+  </div>
 </main>

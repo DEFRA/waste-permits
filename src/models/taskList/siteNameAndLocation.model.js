@@ -18,7 +18,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       // Get the Location for this application (if we have one)
       const location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
       if (location) {
-        siteName = location.name
+        siteName = location.siteName
       }
     } catch (error) {
       LoggingService.logError(error, request)
@@ -34,13 +34,13 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       if (!location) {
         // Create a Location in Dynamics
         location = new Location({
-          name: siteName,
+          siteName: siteName,
           applicationId: applicationId,
           applicationLineId: applicationLineId
         })
       } else {
         // Update existing Site
-        location.name = siteName
+        location.siteName = siteName
       }
       await location.save(authToken)
       await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
@@ -71,7 +71,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
   }
 
   static async saveGridReference (request, gridReference, authToken, applicationId, applicationLineId) {
-      // Strip out whitespace from the grid reference, convert to upper case and save it
+    // Strip out whitespace from the grid reference, convert to upper case and save it
     gridReference = Utilities.stripWhitespace(gridReference).toUpperCase()
     try {
       // Get the Location for this application
@@ -79,7 +79,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       if (!location) {
         // Create a Location in Dynamics
         location = new Location({
-          name: 'Unknown site name',
+          siteName: 'Unknown site name',
           applicationId: applicationId,
           applicationLineId: applicationLineId
         })
@@ -91,7 +91,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
       if (!locationDetail) {
         // Create new LocationDetail
         locationDetail = new LocationDetail({
-          name: location.name,
+          siteName: location.siteName,
           gridReference: gridReference,
           locationId: location.id
         })
@@ -146,7 +146,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     if (!location) {
       // Create a Location in Dynamics
       location = new Location({
-        name: 'Unknown site name',
+        siteName: 'Unknown site name',
         applicationId: applicationId,
         applicationLineId: applicationLineId
       })
@@ -158,7 +158,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     if (!locationDetail) {
       // Create new LocationDetail
       locationDetail = new LocationDetail({
-        name: location.name,
+        siteName: location.siteName,
         gridReference: undefined,
         locationId: location.id
       })
@@ -195,7 +195,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     if (!location) {
       // Create a Location in Dynamics
       location = new Location({
-        name: 'Unknown site name',
+        siteName: 'Unknown site name',
         applicationId: applicationId,
         applicationLineId: applicationLineId
       })
@@ -207,7 +207,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     if (!locationDetail) {
       // Create new LocationDetail
       locationDetail = new LocationDetail({
-        name: location.name,
+        siteName: location.siteName,
         gridReference: undefined,
         locationId: location.id
       })
@@ -238,7 +238,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await SiteNameAndLocation._isComplete(authToken, applicationId, applicationLineId)
+      const isComplete = await SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION]: isComplete
@@ -251,7 +251,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     }
   }
 
-  static async _isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (authToken, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the Location for this application
@@ -270,7 +270,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
 
       if (location && locationDetail && address) {
         isComplete =
-          location.name !== undefined && location.name.length > 0 &&
+          location.siteName !== undefined && location.siteName.length > 0 &&
           locationDetail.gridReference !== undefined && locationDetail.gridReference.length > 0
       }
     } catch (error) {

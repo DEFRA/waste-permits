@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const server = require('../../server')
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const DOMParser = require('xmldom').DOMParser
 const Application = require('../../src/models/application.model')
@@ -55,6 +56,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Start or Open Saved page tests:', () => {
+  new GeneralTestHelper(lab, routePath).test(true, true, true)
+
   lab.experiment('General page tests:', () => {
     lab.test('The page should NOT have a back link', async () => {
       const res = await server.inject(getRequest)

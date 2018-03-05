@@ -7,20 +7,28 @@ const BaseModel = require('./base.model')
 const ApplicationLine = require('./applicationLine.model')
 const LoggingService = require('../services/logging.service')
 
-module.exports = class StandardRule extends BaseModel {
-  static mapping () {
+class StandardRule extends BaseModel {
+  static get entity () {
+    return 'defra_standardrules'
+  }
+
+  static get readOnly () {
+    return true
+  }
+
+  static get mapping () {
     return [
       {field: 'id', dynamics: 'defra_standardruleid'},
-      {field: 'name', dynamics: 'defra_rulesnamegovuk'},
+      {field: 'permitName', dynamics: 'defra_rulesnamegovuk'},
       {field: 'limits', dynamics: 'defra_limits'},
       {field: 'code', dynamics: 'defra_code'},
+      {field: 'wamitabRiskLevel', dynamics: 'defra_wamitabrisklevel'},
       {field: 'guidanceUrl', dynamics: 'defra_guidanceurl'}
     ]
   }
 
   constructor (...args) {
     super(...args)
-    this._entity = 'defra_standardrules'
     const [standardRule] = args
     this.codeForId = StandardRule.transformPermitCode(standardRule.code)
   }
@@ -88,3 +96,7 @@ module.exports = class StandardRule extends BaseModel {
     return code.replace(/\s+/g, '-').toLowerCase()
   }
 }
+
+StandardRule.setDefinitions()
+
+module.exports = StandardRule
