@@ -85,7 +85,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     await application.save(authToken)
 
     return reply
-      .redirect(Constants.Routes.APPLICATION_RECEIVED.path)
+      .redirect(Constants.Routes.PAY_TYPE.path)
       .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 }

@@ -89,9 +89,17 @@ Constants.Routes = {
     path: '/done',
     pageHeading: `Application received`
   },
+  BACS_PAYMENT: {
+    path: '/pay/bacs',
+    pageHeading: 'You’ve chosen to pay by bank transfer using Bacs'
+  },
+  CARD_PAYMENT: {
+    path: '/pay/card',
+    pageHeading: '*******************'
+  },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',
-    pageHeading: 'Check your answers before sending your application',
+    pageHeading: 'Check your answers',
     taskListHeading: 'Send application and pay'
   },
   CHECK_YOUR_EMAIL: {
@@ -210,6 +218,10 @@ Constants.Routes = {
     pageHeading: 'Which management system will you use?',
     taskListHeading: 'Tell us which management system you use'
   },
+  PAY_TYPE: {
+    path: '/pay/type',
+    pageHeading: 'How do you want to pay?'
+  },
   PERMIT_CATEGORY: {
     path: '/permit/category',
     pageHeading: 'What do you want the permit for?'
@@ -317,6 +329,10 @@ Constants.Dynamics = {
   },
   COMPANY_DIRECTOR: 910400000,
   DIGITAL_SOURCE: 910400000,
+  PaymentTypes: {
+    CARD_PAYMENT: 910400000,
+    BACS_PAYMENT: 910400001
+  },
   PermitTypes: {
     STANDARD: 910400000,
     BESPOKE: 910400001

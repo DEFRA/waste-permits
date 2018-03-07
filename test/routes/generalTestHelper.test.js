@@ -28,6 +28,17 @@ module.exports = class GeneralTestHelper {
     elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.not.exist())
   }
 
+  static checkValidationMessage (doc, fieldId, expectedErrorMessage, shouldHaveErrorClass) {
+    // Panel summary error item
+    Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
+
+    // Relevant bankruptcy details field error
+    if (shouldHaveErrorClass) {
+      Code.expect(doc.getElementById(`${fieldId}`).getAttribute('class')).contains('form-control-error')
+    }
+    Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
+  }
+
   test (excludeCookieGetTests = false, excludeCookiePostTests = false, excludeAlreadySubnmittedTest = false) {
     const {lab, routePath} = this
 
