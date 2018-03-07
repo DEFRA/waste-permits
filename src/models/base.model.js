@@ -279,7 +279,7 @@ module.exports = class BaseModel {
     }
   }
 
-  async save (authToken = undefined, dataObject) {
+  async save (authToken = undefined, dataObject = this.modelToDynamics()) {
     const {entity, readOnly} = this.constructor
     if (readOnly) {
       const errorMessage = `Unable to save ${entity}: Read only!`

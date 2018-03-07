@@ -23,7 +23,6 @@ class Application extends BaseModel {
       {field: 'contactId', dynamics: '_defra_primarycontactid_value', bind: {id: 'defra_primarycontactid', relationship: 'defra_contact_defra_application_primarycontactid', entity: 'contacts'}},
       {field: 'declaration', dynamics: 'defra_applicationdeclaration'},
       {field: 'paymentReceived', dynamics: 'defra_paymentreceived'},
-      {field: 'outstandingBalance', dynamics: 'defra_outstandingbalance', readOnly: true},
       {field: 'regime', dynamics: 'defra_regime', constant: Constants.Dynamics.WASTE_REGIME},
       {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},
       {field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails', length: {max: 2000}},
