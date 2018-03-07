@@ -4,6 +4,7 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const Application = require('../models/application.model')
+const ApplicationLine = require('../models/applicationLine.model')
 const {CARD_PAYMENT, BACS_PAYMENT} = Constants.Dynamics.PaymentTypes
 
 module.exports = class PaymentTypeController extends BaseController {
@@ -11,6 +12,7 @@ module.exports = class PaymentTypeController extends BaseController {
     const pageContext = this.createPageContext(errors)
     const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
     const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
@@ -30,10 +32,11 @@ module.exports = class PaymentTypeController extends BaseController {
       'bacs-payment': BACS_PAYMENT
     })
 
-    // Default to 0 when the outstanding balance hasn't been set
-    const {outstandingBalance = 0} = application
+    // Default to 0 when the balance hasn't been set
+    const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
+    const {value = 0} = applicationLine
 
-    pageContext.cost = outstandingBalance.toLocaleString()
+    pageContext.cost = value.toLocaleString()
 
     return reply
       .view('paymentType', pageContext)
