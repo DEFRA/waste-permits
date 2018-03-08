@@ -19,15 +19,13 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     let account = await Account.getByApplicationId(authToken, applicationId)
     if (!account) {
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
 
     // Get the directors that relate to this application
@@ -63,9 +61,8 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         pageContext.directors[i].dob.day = field || ''
       }
     }
-    return reply
-      .view('directorDateOfBirth', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+
+    return this.showView(request, reply, 'directorDateOfBirth', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -75,7 +72,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     let account = await Account.getByApplicationId(authToken, applicationId)
     if (!account) {
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
 
     const directors = await this._getDirectors(authToken, applicationId, account.id)
@@ -107,9 +104,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         await applicationContact.save(authToken)
       }
 
-      return reply
-        .redirect(Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
     }
   }
 

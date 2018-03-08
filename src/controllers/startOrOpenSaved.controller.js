@@ -16,11 +16,10 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    return reply
     // For MVP we are only supporting the mobile plant standard rules waste permit
-    //   .view('startOrOpenSaved', pageContext)
-      .view('startOrOpenSavedMobile', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    // return this.showView(request, reply, 'startOrOpenSaved', pageContext)
+
+    return this.showView(request, reply, 'startOrOpenSavedMobile', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -45,8 +44,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       nextPage = Constants.Routes.CHECK_YOUR_EMAIL
     }
 
-    return reply
-      .redirect(nextPage.path)
-      .state(Constants.DEFRA_COOKIE_KEY, cookie, Constants.COOKIE_PATH)
+    return this.redirect(request, reply, nextPage.path)
   }
 }

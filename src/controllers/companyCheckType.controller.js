@@ -21,9 +21,7 @@ module.exports = class CompanyTypeController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     const account = await Account.getByApplicationId(authToken, applicationId)
@@ -32,7 +30,7 @@ module.exports = class CompanyTypeController extends BaseController {
     const companyType = company ? Constants.Company.Type[company.type] : undefined
 
     if (!companyType) {
-      return reply.redirect(Constants.Routes.COMPANY_CHECK_STATUS.path)
+      return this.redirect(request, reply, Constants.Routes.COMPANY_CHECK_STATUS.path)
     }
 
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({
@@ -46,7 +44,6 @@ module.exports = class CompanyTypeController extends BaseController {
     pageContext.companyType = companyType
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return reply
-      .view('companyCheckType', pageContext)
+    return this.showView(request, reply, 'companyCheckType', pageContext)
   }
 }

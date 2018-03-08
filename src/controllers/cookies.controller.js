@@ -1,6 +1,5 @@
 'use strict'
 
-const Constants = require('../constants')
 const BaseController = require('./base.controller')
 
 const sections = [
@@ -70,8 +69,6 @@ module.exports = class CookiesController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
     pageContext.sections = sections
-    return reply
-      .view('cookies', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'cookies', pageContext)
   }
 }

@@ -33,14 +33,10 @@ module.exports = class ApplicationReceivedController extends BaseController {
     }
 
     if (bacsPayment || application.isPaidFor()) {
-      return reply
-        .view('applicationReceived', pageContext)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.showView(request, reply, 'applicationReceived', pageContext)
     } else {
       // If bacs has not been selected for payment and the application has not been paid for
-      return reply
-        .redirect(Constants.Routes.ERROR.NOT_PAID.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.NOT_PAID.path)
     }
   }
 }
