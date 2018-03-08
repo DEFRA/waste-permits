@@ -9,13 +9,14 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/models/application.model')
+const ApplicationLine = require('../../src/models/applicationLine.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 const PaymentTypes = {
   CARD_PAYMENT: 910400000,
-  BACS_PAYMENT: 910400001
+  BACS_PAYMENT: 910400005
 }
 
 let sandbox
@@ -24,8 +25,11 @@ const routePath = '/pay/type'
 const errorPath = '/errors/technical-problem'
 
 const fakeApplication = {
-  id: 'APPLICATION_ID',
-  applicationName: 'APPLICATION_NAME'
+  id: 'APPLICATION_ID'
+}
+
+const fakeApplicationLine = {
+  id: 'APPLICATION_LINE_ID'
 }
 
 lab.beforeEach(() => {
@@ -33,8 +37,9 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(ApplicationLine, 'getById').value(() => new Application(fakeApplicationLine))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(LoggingService, 'logError').value(() => {})
 })
@@ -86,22 +91,21 @@ lab.experiment(`How do you want to pay?:`, () => {
         Code.expect(doc.getElementById('payment-cost').firstChild.nodeValue).to.equal('0')
       })
 
-      lab.test('outstanding balance is formated correctly including pence', async () => {
-        const testApplication = Object.assign({}, fakeApplication, {outstandingBalance: 10000.25})
-        Application.getById = () => new Application(testApplication)
+      lab.test('value is formated correctly including pence', async () => {
+        const testApplicationLine = Object.assign({}, fakeApplicationLine, {value: 10000.25})
+        ApplicationLine.getById = () => new ApplicationLine(testApplicationLine)
         const doc = await getDoc(getRequest)
 
         Code.expect(doc.getElementById('payment-cost').firstChild.nodeValue).to.equal('10,000.25')
       })
 
-      lab.test('outstanding balance is formated without pence', async () => {
-        const testApplication = Object.assign({}, fakeApplication, {outstandingBalance: 1000})
-        Application.getById = () => new Application(testApplication)
+      lab.test('value is formated without pence', async () => {
+        const testApplicationLine = Object.assign({}, fakeApplicationLine, {value: 1000})
+        ApplicationLine.getById = () => new ApplicationLine(testApplicationLine)
         const doc = await getDoc(getRequest)
 
         Code.expect(doc.getElementById('payment-cost').firstChild.nodeValue).to.equal('1,000')
       })
-
     })
 
     lab.experiment('failure', () => {
@@ -116,8 +120,21 @@ lab.experiment(`How do you want to pay?:`, () => {
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)
       })
+
+      lab.test('redirects to error screen when failing to get the applicationLine ID', async () => {
+        const spy = sinon.spy(LoggingService, 'logError')
+        ApplicationLine.getById = () => {
+          throw new Error('read failed')
+        }
+
+        const res = await server.inject(getRequest)
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(errorPath)
+      })
     })
   })
+
   lab.experiment(`POST ${routePath}`, () => {
     let postRequest
 
