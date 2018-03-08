@@ -53,6 +53,14 @@ Constants.COOKIE_KEY = {
   EXPIRY: 'expiry'
 }
 
+Constants.BankAccountDetails = {
+  SORT_CODE: '60-70-80',
+  ACCOUNT_NUMBER: '1001 4411',
+  IBAN_NUMBER: 'GB23NWK60708010014411',
+  SWIFT_NUMBER: 'NWBKGB2L',
+  PAYMENT_EMAIL: 'psc-bacs@environment-agency.gov.uk'
+}
+
 Constants.Routes = {
   ROOT: {
     path: '/',

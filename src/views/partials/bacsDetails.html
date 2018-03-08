@@ -1,0 +1,39 @@
+<p id="application-processing-payment-message">We won’t start processing your application until we get your payment.</p>
+
+<h2 id="pay-using-bacs-heading" class="heading-medium">Pay using these Bacs details</h2>
+
+<dl class="govuk-check-your-answers cya-questions-short">
+  <div>
+    <dt id="payment-reference-heading" class="cya-question">Payment reference</dt>
+    <dd id="payment-reference" class="cya-answer">{{bacs.paymentReference}}</dd>
+  </div>
+  <div>
+    <dt id="amount-heading" class="cya-question">Amount</dt>
+    <dd class="cya-answer">£<span id="amount">{{bacs.amount}}</span></dd>
+  </div>
+  <div>
+    <dt id="sort-code-heading" class="cya-question">Sort code</dt>
+    <dd id="sort-code" class="cya-answer">{{bacs.sortCode}}</dd>
+  </div>
+  <div>
+    <dt id="account-number-heading" class="cya-question">Account number</dt>
+    <dd id="account-number" class="cya-answer">{{bacs.accountNumber}}</dd>
+  </div>
+</dl>
+
+<details role="group" class="form-hint-details">
+  <summary role="button" aria-controls="details-content-0" aria-expanded="false"><span id="overseas-account-hint" class="summary">Overseas accounts</span></summary>
+  <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true">
+    <p id="overseas-account-hint-paragraph-1">Use these details to pay from an overseas account.</p>
+    <p id="overseas-account-hint-paragraph-2">
+      <span id="iban-number-text">International bank account number (IBAN):</span>
+      <span id="iban-number">{{bacs.ibanNumber}}</span><br>
+      <span id="swift-number-text">SWIFT bank identifier code (BIC):</span>
+      <span id="swift-number">{{bacs.swiftNumber}}</span><br>
+      <span id="payment-ref-text">Use the payment reference above.</span>
+    </p>
+    <p id="overseas-account-hint-paragraph-3">The payment must be in sterling.</p>
+  </div>
+</details>
+
+<p id="confirm-your-payment-message">After you’ve paid, send an email confirming your payment to <a id="payments-email-link" href="mailto:{{bacs.paymentEmail}}"><span id="payments-email">{{bacs.paymentEmail}}</span></a>. Include the reference number, amount and the date you expect the payment to arrive.</p>

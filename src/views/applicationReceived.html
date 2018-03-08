@@ -7,25 +7,36 @@
 
       <div class="govuk-box-highlight">
         <h1 id="page-heading" class="heading-xlarge">{{pageHeading}}</h1>
+        {{#if bacs}}
+          <p id="bacs-paragraph" class="font-large">You should now pay by bank transfer</p>
+        {{/if}}
         <p id="reference-number-paragraph" class="font-large">
           Your reference number is <br>
           <strong id="application-name" class="bold">{{applicationName}}</strong>
         </p>
       </div>
 
-      <h2 id="page-sub-heading" class="heading-medium">What happens next</h2>
+      <p>
+        <span id="confirmation-email-message-prefix">We've sent a confirmation to </span>
+        <span id="contact-email">{{contactEmail}}</span>
+        {{#if bacs}}
+          <span id="confirmation-email-message-suffix">. The email includes the Bacs payment details.</span>
+        {{/if}}
+      </p>
+
+      {{#if bacs}}
+        {{> bacsDetails}}
+      {{/if}}
+
+      {{#if bacs}}
+        <h2 id="when-we-get-your-payment-heading" class="heading-medium">When we get your payment</h2>
+      {{else}}
+        <h2 id="what-happens-next-heading" class="heading-medium">What happens next</h2>
+      {{/if}}
 
       <div class="form-group">
         <p id="application-received-info">We’ll check the documents you’ve uploaded, your technical qualification and any site location. We’ll also run checks on the permit holder and any other relevant people.</p>
-      </div>
-
-      <div class="panel panel-border-wide">
-        <p id="application-received-hint" class="text font-small">
-          It takes up to 13 weeks to issue a permit. It may take longer if the information you gave us does not meet our requirements.
-        </p>
-      </div>
-
-      <div class="form-group">
+        <p id="application-received-hint">It takes up to 13 weeks to issue a permit. It may take longer if the information you gave us does not meet our requirements.</p>
         <p id="application-received-warning">We won’t issue a permit if we believe that your operation will pollute the environment or harm human health.</p>
       </div>
 
