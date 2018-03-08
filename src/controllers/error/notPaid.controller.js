@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../../constants')
+// const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 
 module.exports = class NotPaidController extends BaseController {
@@ -11,8 +11,6 @@ module.exports = class NotPaidController extends BaseController {
     pageContext.payForApplicationRoute = 'UNKNOWN ROUTE'
     // pageContext.payForApplicationRoute = Constants.Routes.PAY_FOR_APPLICATION.path
 
-    return reply
-      .view('error/notPaid', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'error/notPaid', pageContext)
   }
 }

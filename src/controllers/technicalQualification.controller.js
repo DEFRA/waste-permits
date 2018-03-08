@@ -15,9 +15,7 @@ module.exports = class TechnicalQualificationController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -50,9 +48,7 @@ module.exports = class TechnicalQualificationController extends BaseController {
         break
     }
 
-    return reply
-      .view('technicalQualification', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'technicalQualification', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -65,9 +61,7 @@ module.exports = class TechnicalQualificationController extends BaseController {
       application.technicalQualification = request.payload['technical-qualification']
       await application.save(authToken)
 
-      return reply
-        .redirect(await TechnicalQualificationController._getPath(application.technicalQualification))
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, await TechnicalQualificationController._getPath(application.technicalQualification))
     }
   }
 

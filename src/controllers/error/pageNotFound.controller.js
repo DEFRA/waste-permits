@@ -19,9 +19,7 @@ module.exports = class PageNotFoundController extends BaseController {
     pageContext.taskListRoute = Constants.Routes.TASK_LIST.path
     pageContext.startOpenOrSavedRoute = Constants.Routes.START_OR_OPEN_SAVED.path
 
-    return reply
-      .view('error/pageNotFound', pageContext).code(404)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'error/pageNotFound', pageContext, 404)
   }
 
   static hasApplication (application, applicationLine) {
@@ -31,7 +29,7 @@ module.exports = class PageNotFoundController extends BaseController {
   handler (request, reply, errors) {
     if (!CookieService.validateCookie(request)) {
       // Re-direct to the start page if they don't have a valid cookie
-      reply.redirect(Constants.Routes.START_OR_OPEN_SAVED.path)
+      return this.redirect(request, reply, Constants.Routes.START_OR_OPEN_SAVED.path)
     } else {
       return super.handler(request, reply, errors)
     }

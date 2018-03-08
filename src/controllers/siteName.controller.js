@@ -15,9 +15,7 @@ module.exports = class SiteNameController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -28,9 +26,8 @@ module.exports = class SiteNameController extends BaseController {
         'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
       }
     }
-    return reply
-      .view('siteName', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+
+    return this.showView(request, reply, 'siteName', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -44,9 +41,7 @@ module.exports = class SiteNameController extends BaseController {
       await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'],
         authToken, applicationId, applicationLineId)
 
-      return reply
-        .redirect(Constants.Routes.SITE_GRID_REFERENCE.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.SITE_GRID_REFERENCE.path)
     }
   }
 }

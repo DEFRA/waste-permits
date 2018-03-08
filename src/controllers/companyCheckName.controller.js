@@ -19,13 +19,11 @@ module.exports = class CompanyCheckNameController extends BaseController {
     ])
 
     if (!application || !account) {
-      return reply.redirect(Constants.Routes.TASK_LIST.path)
+      return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
     }
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -49,9 +47,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return reply
-      .view('companyCheckName', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'companyCheckName', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -85,9 +81,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         await application.save(authToken)
       }
-      return reply
-        .redirect(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
     }
   }
 }

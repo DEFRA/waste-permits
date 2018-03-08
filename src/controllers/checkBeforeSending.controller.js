@@ -67,13 +67,9 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
     // If all the task list items are not complete
     if (!TaskList.isComplete(authToken, application.id)) {
-      return reply
-        .redirect(Constants.Routes.ERROR.NOT_COMPLETE.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.NOT_COMPLETE.path)
     } else {
-      return reply
-        .view('checkBeforeSending', pageContext)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.showView(request, reply, 'checkBeforeSending', pageContext)
     }
   }
 
@@ -84,8 +80,6 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     application.declaration = true
     await application.save(authToken)
 
-    return reply
-      .redirect(Constants.Routes.PAY_TYPE.path)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.redirect(request, reply, Constants.Routes.PAY_TYPE.path)
   }
 }

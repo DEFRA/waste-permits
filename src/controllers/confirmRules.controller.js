@@ -21,9 +21,7 @@ module.exports = class ConfirmRulesController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     const standardRule = await StandardRule.getByApplicationLineId(authToken, applicationLineId)
@@ -32,9 +30,7 @@ module.exports = class ConfirmRulesController extends BaseController {
     pageContext.code = standardRule.code
     pageContext.complete = await this.isComplete(authToken, applicationId, applicationLineId)
 
-    return reply
-      .view('confirmRules', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'confirmRules', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -47,7 +43,7 @@ module.exports = class ConfirmRulesController extends BaseController {
     } else {
       const complete = await this.isComplete(authToken, applicationId, applicationLineId)
       if (complete) {
-        return reply.redirect(Constants.Routes.TASK_LIST.path)
+        return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
       }
 
       const confirmRules = new ConfirmRules({
@@ -56,9 +52,7 @@ module.exports = class ConfirmRulesController extends BaseController {
 
       await confirmRules.save(authToken)
 
-      return reply
-        .redirect(Constants.Routes.TASK_LIST.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
     }
   }
 }

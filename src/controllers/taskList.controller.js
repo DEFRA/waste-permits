@@ -19,13 +19,9 @@ module.exports = class TaskListController extends BaseController {
     if (application.isSubmitted()) {
       // If the application has not been paid for
       if (!application.isPaidFor()) {
-        return reply
-          .redirect(Constants.Routes.ERROR.NOT_PAID.path)
-          .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+        return this.redirect(request, reply, Constants.Routes.ERROR.NOT_PAID.path)
       } else {
-        return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+        return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
       }
     }
 
@@ -38,9 +34,7 @@ module.exports = class TaskListController extends BaseController {
     // pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
     pageContext.permitCategoryRoute = Constants.Routes.PERMIT_SELECT.path
 
-    return reply
-      .view('taskList', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'taskList', pageContext)
   }
 
   async doPost (request, reply, errors) {

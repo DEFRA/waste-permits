@@ -13,24 +13,19 @@ module.exports = class PermitCategoryController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     pageContext.formValues = request.payload
 
-    return reply
-      .view('permitCategory', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'permitCategory', pageContext)
   }
 
   async doPost (request, reply, errors) {
     if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      // TODO persist the data here if required using the applicationId from the cookie
-      return reply.redirect(Constants.Routes.PERMIT_SELECT.path)
+      return this.redirect(request, reply, Constants.Routes.PERMIT_SELECT.path)
     }
   }
 }

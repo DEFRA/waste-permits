@@ -15,9 +15,7 @@ module.exports = class PermitSelectController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     pageContext.formValues = request.payload
@@ -25,9 +23,7 @@ module.exports = class PermitSelectController extends BaseController {
     pageContext.standardRules = await StandardRule.list(authToken)
     pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
-    return reply
-      .view('permitSelect', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'permitSelect', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -51,9 +47,7 @@ module.exports = class PermitSelectController extends BaseController {
       // Set the application ID in the cookie
       CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)
 
-      return reply
-        .redirect(Constants.Routes.TASK_LIST.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
     }
   }
 }
