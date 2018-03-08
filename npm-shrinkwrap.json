@@ -1719,9 +1719,9 @@
       "dev": true
     },
     "content": {
-      "version": "4.0.3",
-      "resolved": "https://registry.npmjs.org/content/-/content-4.0.3.tgz",
-      "integrity": "sha512-BrMfT1xXZHaXyPT/sneXc3IQzh8uL15JWV1R5tU0xo4sBGjF7BN+IRi9WoQLSbfNEs7bJ3E69rjxBKg/RL7lOQ==",
+      "version": "4.0.4",
+      "resolved": "https://registry.npmjs.org/content/-/content-4.0.4.tgz",
+      "integrity": "sha512-h0r6/VHlhrLVFrTj612v5EPwqyMs3L79Uf4vEw0zFmywodU8TveiIuINp0//3/GRnAWrQbgSnazSosNkyAeVNA==",
       "requires": {
         "boom": "7.2.0"
       }
@@ -2440,9 +2440,9 @@
       "dev": true
     },
     "deepmerge": {
-      "version": "2.0.1",
-      "resolved": "https://registry.npmjs.org/deepmerge/-/deepmerge-2.0.1.tgz",
-      "integrity": "sha512-VIPwiMJqJ13ZQfaCsIFnp5Me9tnjURiaIFxfz7EH0Ci0dTSQpZtSLrqOicXqEd/z2r+z+Klk9GzmnRsgpgbOsQ=="
+      "version": "2.1.0",
+      "resolved": "https://registry.npmjs.org/deepmerge/-/deepmerge-2.1.0.tgz",
+      "integrity": "sha512-Q89Z26KAfA3lpPGhbF6XMfYAm3jIV3avViy6KOJ2JLzFbeWHOvPQUu5aSJIWXap3gDZC2y1eF5HXEPI2wGqgvw=="
     },
     "defaults": {
       "version": "1.0.3",
@@ -5629,6 +5629,12 @@
             "topo": "2.0.2"
           }
         },
+        "moment": {
+          "version": "2.20.1",
+          "resolved": "https://registry.npmjs.org/moment/-/moment-2.20.1.tgz",
+          "integrity": "sha512-Yh9y73JRljxW5QxN08Fner68eFLxM5ynNOAw2LbIB1YAGeQzZT8QFSUvkAz609Zf+IHhhaUxqZK8dG3W/+HEvg==",
+          "dev": true
+        },
         "topo": {
           "version": "2.0.2",
           "resolved": "https://registry.npmjs.org/topo/-/topo-2.0.2.tgz",
@@ -6451,9 +6457,9 @@
       }
     },
     "hapi": {
-      "version": "17.2.0",
-      "resolved": "https://registry.npmjs.org/hapi/-/hapi-17.2.0.tgz",
-      "integrity": "sha512-zw2tqNimjT+qglgUNGNpeweHJ5To1xUcJcfGKsG5dWiTzwkEZtmtHJ8mBIvxuuZ3Buu4xkAGj0yWrrR95FVqQQ==",
+      "version": "17.2.2",
+      "resolved": "https://registry.npmjs.org/hapi/-/hapi-17.2.2.tgz",
+      "integrity": "sha512-LFEpibG2iIggfN/5M+EDeTzNUN/JNxUjH6WSpn4+uz2/Aj+Pd6ElxyCOrKAh4/hdh+6gKWYnGBZt03LJ66TYTA==",
       "requires": {
         "accept": "3.0.2",
         "ammo": "3.0.0",
@@ -6535,7 +6541,9 @@
       }
     },
     "hapi-sanitize-payload": {
-      "version": "git+https://github.com/DEFRA/hapi-sanitize-payload.git#45ac77881623cdb4e107fe8179e14359bfdd3ba2",
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/hapi-sanitize-payload/-/hapi-sanitize-payload-2.0.0.tgz",
+      "integrity": "sha512-/crevybwm3+Tn9BBTM/zSeEqXrc82r0oWbqCNdTLwnITDQ58a+UhSIj1cev1nl0eRv+AJMrNWmx3pU/M6gUfaQ==",
       "requires": {
         "joi": "13.1.2",
         "lodash.clonedeep": "4.5.0",
@@ -6914,9 +6922,9 @@
       }
     },
     "https-proxy-agent": {
-      "version": "2.1.1",
-      "resolved": "https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-2.1.1.tgz",
-      "integrity": "sha512-LK6tQUR/VOkTI6ygAfWUKKP95I+e6M1h7N3PncGu1CATHCnex+CAv9ttR0lbHu1Uk2PXm/WoAHFo6JCGwMjVMw==",
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-2.2.0.tgz",
+      "integrity": "sha512-uUWcfXHvy/dwfM9bqa6AozvAjS32dZSTUYd/4SEpYKRg6LEcPLshksnQYRudM9AyNvUARMfAg5TLjUDyX/K4vA==",
       "requires": {
         "agent-base": "4.2.0",
         "debug": "3.1.0"
@@ -9223,9 +9231,9 @@
       }
     },
     "moment": {
-      "version": "2.20.1",
-      "resolved": "https://registry.npmjs.org/moment/-/moment-2.20.1.tgz",
-      "integrity": "sha512-Yh9y73JRljxW5QxN08Fner68eFLxM5ynNOAw2LbIB1YAGeQzZT8QFSUvkAz609Zf+IHhhaUxqZK8dG3W/+HEvg=="
+      "version": "2.21.0",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.21.0.tgz",
+      "integrity": "sha512-TCZ36BjURTeFTM/CwRcViQlfkMvL1/vFISuNLO5GkcVm1+QHfbSiNqZuWeMFjj1/3+uAjXswgRk30j1kkLYJBQ=="
     },
     "ms": {
       "version": "2.0.0",
@@ -10784,7 +10792,7 @@
       "requires": {
         "b64": "4.0.0",
         "boom": "7.2.0",
-        "content": "4.0.3",
+        "content": "4.0.4",
         "hoek": "5.0.3",
         "nigel": "3.0.0"
       }
@@ -13286,7 +13294,7 @@
       "integrity": "sha512-IcJUvRjeR+NB437Iq+LORFNJW4L6Knqkj3oQrBrkdhIaS2VKJvx/9aYEq7vi+PEx5/OuehOL/40SkSZotLi/MA==",
       "requires": {
         "boom": "7.2.0",
-        "content": "4.0.3",
+        "content": "4.0.4",
         "hoek": "5.0.3",
         "pez": "4.0.1",
         "wreck": "14.0.2"
