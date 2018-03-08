@@ -17,9 +17,7 @@ module.exports = class ContactDetailsController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -44,9 +42,7 @@ module.exports = class ContactDetailsController extends BaseController {
       }
     }
 
-    return reply
-      .view('contactDetails', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'contactDetails', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -108,9 +104,7 @@ module.exports = class ContactDetailsController extends BaseController {
       const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
       await ContactDetails.updateCompleteness(authToken, applicationId, applicationLineId)
 
-      return reply
-        .redirect(Constants.Routes.TASK_LIST.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
     }
   }
 }

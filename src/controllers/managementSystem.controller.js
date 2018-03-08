@@ -13,14 +13,10 @@ module.exports = class ManagementSystemController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
-    return reply
-      .view('managementSystem', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'managementSystem', pageContext)
   }
 
   async doPost (request, reply, errors) {

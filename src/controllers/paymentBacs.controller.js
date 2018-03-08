@@ -15,14 +15,10 @@ module.exports = class PaymentBacsController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
-    return reply
-      .view('paymentBacs', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'paymentBacs', pageContext)
   }
 
   async doPost (request, reply) {
@@ -35,8 +31,6 @@ module.exports = class PaymentBacsController extends BaseController {
     payment.statusCode = Constants.Dynamics.PaymentStatusCodes.ISSUED
     await payment.save(authToken)
 
-    return reply
-      .redirect(Constants.Routes.APPLICATION_RECEIVED.path)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.redirect(request, reply, Constants.Routes.APPLICATION_RECEIVED.path)
   }
 }

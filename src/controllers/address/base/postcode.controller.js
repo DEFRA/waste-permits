@@ -15,9 +15,7 @@ module.exports = class PostcodeController extends BaseController {
     const application = await Application.getById(authToken, applicationId)
 
     if (application.isSubmitted()) {
-      return reply
-        .redirect(Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -28,7 +26,7 @@ module.exports = class PostcodeController extends BaseController {
       if (address) {
         // If the manual entry flag is set then redirect off to the mamual address entry page instead
         if (!address.fromAddressLookup) {
-          return reply.redirect(this.getManualEntryRoute())
+          return this.redirect(request, reply, this.getManualEntryRoute())
         }
         pageContext.formValues = {
           postcode: address.postcode
@@ -48,9 +46,7 @@ module.exports = class PostcodeController extends BaseController {
     this.customisePageContext(pageContext)
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return reply
-      .view('address/postcode', pageContext)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+    return this.showView(request, reply, 'address/postcode', pageContext)
   }
 
   async doPost (request, reply, errors) {
@@ -79,9 +75,7 @@ module.exports = class PostcodeController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      return reply
-        .redirect(this.getAddressSelectionPath())
-        .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      return this.redirect(request, reply, this.getAddressSelectionPath())
     }
   }
 

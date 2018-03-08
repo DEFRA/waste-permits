@@ -41,6 +41,19 @@ module.exports = class BaseController {
     return pageContext
   }
 
+  redirect (request, reply, viewPath) {
+    return reply
+      .redirect(viewPath)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+  }
+
+  showView (request, reply, viewPath, pageContext, code = 200) {
+    return reply
+      .view(viewPath, pageContext)
+      .code(code)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+  }
+
   async _handler (request, reply, errors) {
     switch (request.method.toUpperCase()) {
       case 'GET':
