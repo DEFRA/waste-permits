@@ -44,6 +44,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       nextPage = Constants.Routes.CHECK_YOUR_EMAIL
     }
 
-    return this.redirect(request, reply, nextPage.path)
+    return this.redirect(request, reply, nextPage.path, cookie)
   }
 }
