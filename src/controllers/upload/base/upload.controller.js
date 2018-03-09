@@ -9,7 +9,6 @@ const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
 const LoggingService = require('../../../services/logging.service')
 const Annotation = require('../../../models/annotation.model')
-const Application = require('../../../models/application.model')
 
 const UPLOAD_PATH = path.resolve(`${process.cwd()}/temp`)
 
@@ -22,9 +21,8 @@ module.exports = class UploadController extends BaseController {
 
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const application = await Application.getById(authToken, applicationId)
+    const {authToken, applicationId, application} = await this.createApplicationContext(request, {application: true})
+
     const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
     if (application.isSubmitted()) {
@@ -52,9 +50,8 @@ module.exports = class UploadController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
+      const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
+
       const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
       if (!list.length) {
         return this.handler(request, reply, undefined, UploadController._customError('noFilesUploaded'))
@@ -87,9 +84,9 @@ module.exports = class UploadController extends BaseController {
         return this.doGet(request, reply, errors)
       }
 
-      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-      const {applicationName: applicationReference} = await Application.getById(authToken, applicationId)
+      const {authToken, applicationId, application} = await this.createApplicationContext(request, {application: true})
+      const {applicationName: applicationReference} = application
+
       const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
       // create temporary uploads directory
@@ -126,9 +123,8 @@ module.exports = class UploadController extends BaseController {
     if (!CookieService.validateCookie(request)) {
       return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
-    // const result = this.getRequestData(request)
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+
+    const {authToken, applicationId} = await this.createApplicationContext(request)
     const annotationId = request.params.id
     const annotation = await Annotation.getById(authToken, annotationId)
 

@@ -7,9 +7,9 @@ const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.mode
 module.exports = class SiteNameController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const appContext = await this.createApplicationContext(request, {application: true})
+    const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
 
-    if (appContext.application.isSubmitted()) {
+    if (application.isSubmitted()) {
       return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
@@ -18,7 +18,7 @@ module.exports = class SiteNameController extends BaseController {
       pageContext.formValues = request.payload
     } else {
       pageContext.formValues = {
-        'site-name': await SiteNameAndLocation.getSiteName(request, appContext.authToken, appContext.applicationId, appContext.applicationLineId)
+        'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
       }
     }
 
@@ -29,9 +29,9 @@ module.exports = class SiteNameController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const appContext = await this.createApplicationContext(request)
+      const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
 
-      await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'], appContext)
+      await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'], authToken, applicationId, applicationLineId)
 
       return this.redirect(request, reply, Constants.Routes.SITE_GRID_REFERENCE.path)
     }

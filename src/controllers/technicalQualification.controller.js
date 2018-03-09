@@ -2,17 +2,12 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const CookieService = require('../services/cookie.service')
-const Application = require('../models/application.model')
 const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.Dynamics.TechnicalQualification
 
 module.exports = class TechnicalQualificationController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const application = await Application.getById(authToken, applicationId)
+    const {application} = await this.createApplicationContext(request, {application: true})
 
     if (application.isSubmitted()) {
       return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
@@ -55,9 +50,8 @@ module.exports = class TechnicalQualificationController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-      const application = await Application.getById(authToken, applicationId)
+      const {authToken, application} = await this.createApplicationContext(request, {application: true})
+
       application.technicalQualification = request.payload['technical-qualification']
       await application.save(authToken)
 

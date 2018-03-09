@@ -27,38 +27,38 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     return siteName
   }
 
-  static async saveSiteName (request, siteName, appContext) {
+  static async saveSiteName (request, siteName, authToken, applicationId, applicationLineId) {
     try {
       // Get the Location for this application
-      let location = await Location.getByApplicationId(appContext.authToken, appContext.applicationId, appContext.applicationLineId)
+      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
       if (!location) {
         // Create a Location in Dynamics
         location = new Location({
           siteName: siteName,
-          applicationId: appContext.applicationId,
-          applicationLineId: appContext.applicationLineId
+          applicationId: applicationId,
+          applicationLineId: applicationLineId
         })
       } else {
         // Update existing Site
         location.siteName = siteName
       }
-      await location.save(appContext.authToken)
-      await SiteNameAndLocation.updateCompleteness(appContext.authToken, appContext.applicationId, appContext.applicationLineId)
+      await location.save(authToken)
+      await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
     }
   }
 
-  static async getGridReference (request, appContext) {
+  static async getGridReference (request, authToken, applicationId, applicationLineId) {
     let gridReference
     try {
       // Get the Location for this application
-      let location = await Location.getByApplicationId(appContext.authToken, appContext.applicationId, appContext.applicationLineId)
+      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
 
       if (location) {
         // Get the LocationDetail for this application (if there is one)
-        let locationDetail = await LocationDetail.getByLocationId(appContext.authToken, location.id)
+        let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
         if (locationDetail) {
           gridReference = locationDetail.gridReference
         }

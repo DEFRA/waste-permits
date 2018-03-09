@@ -7,9 +7,9 @@ const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.mode
 module.exports = class SiteGridReferenceController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const appContext = await this.createApplicationContext(request, {application: true})
+    const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
 
-    if (appContext.application.isSubmitted()) {
+    if (application.isSubmitted()) {
       return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
@@ -18,7 +18,7 @@ module.exports = class SiteGridReferenceController extends BaseController {
       pageContext.formValues = request.payload
     } else {
       pageContext.formValues = {
-        'site-grid-reference': await SiteNameAndLocation.getGridReference(request, appContext)
+        'site-grid-reference': await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
       }
     }
     return this.showView(request, reply, 'siteGridReference', pageContext)
@@ -28,10 +28,10 @@ module.exports = class SiteGridReferenceController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const appContext = await this.createApplicationContext(request)
+      const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
 
       await SiteNameAndLocation.saveGridReference(request, request.payload['site-grid-reference'],
-        appContext.authToken, appContext.applicationId, appContext.applicationLineId)
+        authToken, applicationId, applicationLineId)
 
       return this.redirect(request, reply, Constants.Routes.ADDRESS.POSTCODE_SITE.path)
     }

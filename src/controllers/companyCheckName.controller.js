@@ -2,21 +2,12 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const CookieService = require('../services/cookie.service')
 const CompanyLookupService = require('../services/companyLookup.service')
-const Application = require('../models/application.model')
-const Account = require('../models/account.model')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-
-    const [application, account] = await Promise.all([
-      Application.getById(authToken, applicationId),
-      Account.getByApplicationId(authToken, applicationId)
-    ])
+    const {application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
     if (!application || !account) {
       return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
@@ -54,13 +45,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-
-      const [application, account] = await Promise.all([
-        Application.getById(authToken, applicationId),
-        Account.getByApplicationId(authToken, applicationId)
-      ])
+      const {authToken, application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
       if (application && account) {
         const company = await CompanyLookupService.getCompany(account.companyNumber)

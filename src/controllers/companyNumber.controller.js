@@ -2,17 +2,13 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const CookieService = require('../services/cookie.service')
-const Application = require('../models/application.model')
 const Account = require('../models/account.model')
 const Utilities = require('../utilities/utilities')
 
 module.exports = class CompanyNumberController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const application = await Application.getById(authToken, applicationId)
+    const {application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
     if (application.isSubmitted()) {
       return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
@@ -21,7 +17,6 @@ module.exports = class CompanyNumberController extends BaseController {
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const account = await Account.getByApplicationId(authToken, applicationId)
       if (account) {
         pageContext.formValues = {
           'company-number': account.companyNumber
@@ -35,8 +30,8 @@ module.exports = class CompanyNumberController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+      const {authToken, application} = await this.createApplicationContext(request, {application: true})
+
       const companyNumber = Utilities.stripWhitespace(request.payload['company-number'])
 
       // See if there is an existing account with this company number. If not, create one.
@@ -48,7 +43,6 @@ module.exports = class CompanyNumberController extends BaseController {
       }
 
       // Update the Application with the Account (if it has changed)
-      const application = await Application.getById(authToken, applicationId)
       if (application && application.accountId !== account.id) {
         application.accountId = account.id
         await application.save(authToken)

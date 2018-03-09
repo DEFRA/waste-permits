@@ -5,24 +5,18 @@ const Constants = require('../constants')
 const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
 const DirectorDateOfBirthValidator = require('../validators/directorDateOfBirth.validator')
-const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
-const Account = require('../models/account.model')
-const Application = require('../models/application.model')
 const ApplicationContact = require('../models/applicationContact.model')
 const Contact = require('../models/contact.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
   async doGet (request, reply, errors) {
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const application = await Application.getById(authToken, applicationId)
+    const {authToken, applicationId, application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
     if (application.isSubmitted()) {
       return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
-    let account = await Account.getByApplicationId(authToken, applicationId)
     if (!account) {
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
       return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
@@ -66,10 +60,8 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   }
 
   async doPost (request, reply, errors) {
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const {authToken, applicationId, account} = await this.createApplicationContext(request, {account: true})
 
-    let account = await Account.getByApplicationId(authToken, applicationId)
     if (!account) {
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
       return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)

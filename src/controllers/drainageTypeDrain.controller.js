@@ -6,9 +6,9 @@ const BaseController = require('./base.controller')
 module.exports = class DrainageTypeDrainController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const appContext = await this.createApplicationContext(request, {application: true})
+    const {application} = await this.createApplicationContext(request, {application: true})
 
-    if (appContext.application.isSubmitted()) {
+    if (application.isSubmitted()) {
       return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 

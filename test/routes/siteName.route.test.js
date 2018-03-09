@@ -109,7 +109,7 @@ lab.experiment('Site Name page tests:', () => {
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the site page correctly when it is a new application`, async () => {
       // Empty site name response
-      SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
+      SiteNameAndLocation.getSiteName = () => {
         return undefined
       }
       checkPageElements(getRequest, '')
@@ -122,11 +122,11 @@ lab.experiment('Site Name page tests:', () => {
 
   lab.experiment('POST:', () => {
     lab.experiment('Success:', () => {
-      lab.test(`POST ${routePath} (new Site) redirects to the Site Grid Reference route`, async () => {
+      lab.test(`POST ${routePath} (new Site) redirects to the next route ${nextRoutePath}`, async () => {
         postRequest.payload['site-name'] = 'My Site'
 
-      // Empty site name response
-        SiteNameAndLocation.getSiteName = (request, authToken, applicationId, applicationLineId) => {
+        // Empty site name response
+        SiteNameAndLocation.getSiteName = () => {
           return undefined
         }
 
@@ -138,6 +138,7 @@ lab.experiment('Site Name page tests:', () => {
       lab.test(`POST ${routePath} (existing Site) redirects to the next route ${nextRoutePath}`, async () => {
         postRequest.payload['site-name'] = 'My Site'
         const res = await server.inject(postRequest)
+
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
