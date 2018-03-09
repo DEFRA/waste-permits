@@ -56,23 +56,15 @@ module.exports = class BaseController {
     const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
     const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
-    let application, applicationLine, account, contact, standardRule
 
-    if (options.application) {
-      application = await Application.getById(authToken, applicationId)
-    }
-    if (options.applicationLine) {
-      applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-    }
-    if (options.account) {
-      account = await Account.getByApplicationId(authToken, applicationId)
-    }
-    if (options.contact) {
-      contact = await Contact.getByApplicationId(authToken, applicationId)
-    }
-    if (options.standardRule) {
-      standardRule = await StandardRule.getByApplicationLineId(authToken, applicationLineId)
-    }
+    // Query in parallel for optional entities
+    const [application, applicationLine, account, contact, standardRule] = await Promise.all([
+      options.application ? Application.getById(authToken, applicationId) : Promise.resolve(undefined),
+      options.applicationLine ? ApplicationLine.getById(authToken, applicationLineId) : Promise.resolve(undefined),
+      options.account ? Account.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
+      options.contact ? Contact.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
+      options.standardRule ? StandardRule.getByApplicationLineId(authToken, applicationLineId) : Promise.resolve(undefined)
+    ])
 
     return {
       authToken: authToken,
