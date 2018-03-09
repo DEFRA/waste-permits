@@ -4,6 +4,7 @@ const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const {COOKIE_RESULT} = require('../constants')
+const Application = require('../models/application.model')
 
 module.exports = class BaseController {
   constructor (route, validator, cookieValidationRequired = true) {
@@ -41,10 +42,25 @@ module.exports = class BaseController {
     return pageContext
   }
 
-  redirect (request, reply, viewPath) {
+  async createApplicationContext (request, options = {application: false}) {
+    const appContext = {
+      authToken: CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN),
+      applicationId: CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID),
+      applicationLineId: CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
+    }
+    if (options.application) {
+      appContext.application = await Application.getById(appContext.authToken, appContext.applicationId)
+    }
+    return appContext
+  }
+
+  redirect (request, reply, viewPath, cookie) {
+    if (!cookie) {
+      cookie = request.state[Constants.DEFRA_COOKIE_KEY]
+    }
     return reply
       .redirect(viewPath)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      .state(Constants.DEFRA_COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 
   showView (request, reply, viewPath, pageContext, code = 200) {
