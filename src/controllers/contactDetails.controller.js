@@ -5,16 +5,12 @@ const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
 const AddressDetail = require('../models/addressDetail.model')
 const Account = require('../models/account.model')
-const Application = require('../models/application.model')
 const ContactDetails = require('../models/taskList/contactDetails.model')
-const CookieService = require('../services/cookie.service')
 
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, reply, errors) {
     const pageContext = this.createPageContext(errors)
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const application = await Application.getById(authToken, applicationId)
+    const {authToken, applicationId, application} = await this.createApplicationContext(request, {application: true})
 
     if (application.isSubmitted()) {
       return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
@@ -49,9 +45,7 @@ module.exports = class ContactDetailsController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, reply, errors)
     } else {
-      const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-      const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-      const application = await Application.getById(authToken, applicationId)
+      const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
       const {
         'first-name': firstName,
         'last-name': lastName,
@@ -101,7 +95,6 @@ module.exports = class ContactDetailsController extends BaseController {
       primaryContactDetails.telephone = telephone
       await primaryContactDetails.save(authToken)
 
-      const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
       await ContactDetails.updateCompleteness(authToken, applicationId, applicationLineId)
 
       return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)

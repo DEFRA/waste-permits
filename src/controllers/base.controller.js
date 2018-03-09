@@ -4,6 +4,11 @@ const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const {COOKIE_RESULT} = require('../constants')
+const Application = require('../models/application.model')
+const ApplicationLine = require('../models/applicationLine.model')
+const Account = require('../models/account.model')
+const Contact = require('../models/contact.model')
+const StandardRule = require('../models/standardRule.model')
 
 module.exports = class BaseController {
   constructor (route, validator, cookieValidationRequired = true) {
@@ -39,6 +44,38 @@ module.exports = class BaseController {
     }
 
     return pageContext
+  }
+
+  async createApplicationContext (request,
+    options = {
+      application: false,
+      applicationLine: false,
+      account: false,
+      contact: false,
+      standardRule: false}) {
+    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
+    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
+
+    // Query in parallel for optional entities
+    const [application, applicationLine, account, contact, standardRule] = await Promise.all([
+      options.application ? Application.getById(authToken, applicationId) : Promise.resolve(undefined),
+      options.applicationLine ? ApplicationLine.getById(authToken, applicationLineId) : Promise.resolve(undefined),
+      options.account ? Account.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
+      options.contact ? Contact.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
+      options.standardRule ? StandardRule.getByApplicationLineId(authToken, applicationLineId) : Promise.resolve(undefined)
+    ])
+
+    return {
+      authToken,
+      applicationId,
+      applicationLineId,
+      application,
+      applicationLine,
+      account,
+      contact,
+      standardRule
+    }
   }
 
   redirect (request, reply, viewPath, cookie) {

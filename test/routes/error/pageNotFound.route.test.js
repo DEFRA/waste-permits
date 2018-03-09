@@ -10,6 +10,7 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const CookieService = require('../../../src/services/cookie.service')
 const Application = require('../../../src/models/application.model')
+const ApplicationLine = require('../../../src/models/applicationLine.model')
 const PageNotFoundController = require('../../../src/controllers/error/pageNotFound.controller')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
@@ -34,6 +35,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application({}))
+  sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine({}))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(PageNotFoundController, 'hasApplication').value(() => false)
 })

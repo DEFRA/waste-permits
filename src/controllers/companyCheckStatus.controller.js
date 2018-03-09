@@ -3,10 +3,7 @@
 const Handlebars = require('handlebars')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const CookieService = require('../services/cookie.service')
 const CompanyLookupService = require('../services/companyLookup.service')
-const Account = require('../models/account.model')
-const Application = require('../models/application.model')
 
 module.exports = class CompanyStatusController extends BaseController {
   constructor (...args) {
@@ -16,15 +13,12 @@ module.exports = class CompanyStatusController extends BaseController {
   }
 
   async doGet (request, reply, errors) {
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const application = await Application.getById(authToken, applicationId)
+    const {application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
     if (application.isSubmitted()) {
       return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
-    const account = await Account.getByApplicationId(authToken, applicationId)
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
     if (!company) {

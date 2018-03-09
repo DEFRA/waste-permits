@@ -1,7 +1,6 @@
 'use strict'
 
 const Constants = require('../constants')
-const Application = require('../models/application.model')
 const ApplicationLine = require('../models/applicationLine.model')
 const BaseController = require('./base.controller')
 const TaskList = require('../models/taskList/taskList.model')
@@ -14,7 +13,6 @@ const ContactCheck = require('../models/checkYourAnswers/contact.check')
 const PermitHolderCheck = require('../models/checkYourAnswers/permitHolder.check')
 const ConfidentialityCheck = require('../models/checkYourAnswers/confidentiality.check')
 const InvoiceCheck = require('../models/checkYourAnswers/invoice.check')
-const CookieService = require('../services/cookie.service')
 
 module.exports = class CheckBeforeSendingController extends BaseController {
   constructor (...args) {
@@ -58,10 +56,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
   async doGet (request, reply) {
     const pageContext = this.createPageContext()
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
-    const application = await Application.getById(authToken, applicationId)
+    const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
 
     pageContext.sections = await this._buildSections(authToken, applicationId, applicationLineId)
 
@@ -74,9 +69,8 @@ module.exports = class CheckBeforeSendingController extends BaseController {
   }
 
   async doPost (request, reply) {
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const application = await Application.getById(authToken, applicationId)
+    const {authToken, application} = await this.createApplicationContext(request, {application: true})
+
     application.declaration = true
     await application.save(authToken)
 

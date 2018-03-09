@@ -118,7 +118,8 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
 
   lab.test('saveSiteName() method correctly saves a site name', async () => {
     const spy = sinon.spy(Location.prototype, 'save')
-    await SiteNameAndLocation.saveSiteName(request, fakeLocation.siteName, authToken, applicationId, applicationLineId)
+    const appContext = {}
+    await SiteNameAndLocation.saveSiteName(request, fakeLocation.siteName, appContext)
     Code.expect(spy.callCount).to.equal(1)
   })
 
@@ -129,12 +130,14 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
     LocationDetail.getByLocationId = (authToken, locationId) => {
       return undefined
     }
-    const result = await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
+    const appContext = {}
+    const result = await SiteNameAndLocation.getGridReference(request, appContext)
     Code.expect(result).to.be.equal(undefined)
   })
 
   lab.test('getGridReference() method correctly retrieves a site name when there is a saved Location and LocationDetail', async () => {
-    const result = await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
+    const appContext = {}
+    const result = await SiteNameAndLocation.getGridReference(request, appContext)
     Code.expect(result).to.be.equal(fakeLocationDetail.gridReference)
   })
 
