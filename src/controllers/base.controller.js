@@ -67,14 +67,14 @@ module.exports = class BaseController {
     ])
 
     return {
-      authToken: authToken,
-      applicationId: applicationId,
-      applicationLineId: applicationLineId,
-      application: application,
-      applicationLine: applicationLine,
-      account: account,
-      contact: contact,
-      standardRule: standardRule
+      authToken,
+      applicationId,
+      applicationLineId,
+      application,
+      applicationLine,
+      account,
+      contact,
+      standardRule
     }
   }
 
