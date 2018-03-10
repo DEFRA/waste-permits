@@ -20,7 +20,7 @@ module.exports = class DrainageTypeDrainController extends BaseController {
     return this.showView(request, reply, 'drainageTypeDrain', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, reply) {
     const {authToken, applicationLineId} = await this.createApplicationContext(request)
 
     await DrainageTypeDrain.updateCompleteness(authToken, applicationLineId)

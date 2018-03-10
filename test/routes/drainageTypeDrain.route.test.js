@@ -17,6 +17,7 @@ const {COOKIE_RESULT} = require('../../src/constants')
 
 const routePath = '/drainage-type/drain'
 const nextRoutePath = '/task-list'
+const errorPath = '/errors/technical-problem'
 
 let fakeApplication
 let fakeStandardRule
@@ -108,6 +109,20 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
         Code.expect(doc.getElementById('confirm-result-message')).to.exist()
       })
     })
+
+    lab.experiment('failure', () => {
+      lab.test('redirects to error screen when failing to get the application ID', async () => {
+        const spy = sinon.spy(LoggingService, 'logError')
+        DrainageTypeDrain.isComplete = () => {
+          throw new Error('read failed')
+        }
+
+        const res = await server.inject(request)
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(errorPath)
+      })
+    })
   })
 
   lab.experiment(`POST ${routePath}`, () => {
@@ -126,6 +141,32 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
+    })
+
+    lab.experiment('failure', () => {
+      lab.test('redirects to error screen when failing to get the application ID', async () => {
+        const spy = sinon.spy(LoggingService, 'logError')
+        DrainageTypeDrain.updateCompleteness = () => {
+          throw new Error('read failed')
+        }
+
+        const res = await server.inject(postRequest)
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(errorPath)
+      })
+
+      lab.test('redirects to error screen when save fails', async () => {
+        const spy = sinon.spy(LoggingService, 'logError')
+        DrainageTypeDrain.updateCompleteness = () => {
+          throw new Error('update failed')
+        }
+
+        const res = await server.inject(postRequest)
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(errorPath)
+      })
     })
   })
 })

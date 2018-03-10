@@ -9,28 +9,26 @@
 
       {{> common/pageHeading pageHeading }}
 
-      {{#if complete}}
-        <div id="confirm-result-message" class="panel panel-border-wide">
-          <p>You confirmed that your operation meets the rules.</p>
+      {{#if isComplete}}
+        <div class="panel panel-border-wide">
+          <p id="confirm-result-message">You confirmed that your operation meets the rules.</p>
         </div>
       {{/if}}
 
-      <div id="rules-and-risk-hint" class="form-group">
-        <p>Read the
-          <a target="_blank" rel="noopener noreferrer" href="{{guidanceUrl}}">
-            <span>rules and risk assessment for permit {{code}} on GOV.UK  (opens new tab).</span>
-          </a>
+      <div class="form-group">
+        <p id="rules-and-risk-hint">Read the
+          <a id="standard-rule-link" target="_blank" rel="noopener noreferrer" href="{{guidanceUrl}}">rules and risk assessment for permit <span id="standard-rule-code">{{code}}</span> on GOV.UK  (opens new tab).</a>
         </p>
       </div>
 
-      {{#unless complete}}
+      {{#unless isComplete}}
         <p id="confirm-rules-paragraph-1">If your operation doesn't meet these rules, you may need a different standard rules permit or a bespoke permit instead.</p>
       {{/unless}}
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
         <div class="form-group">
-          {{#if complete}}
+          {{#if isComplete}}
             <button id="return-to-task-list-button" type="submit" class="button" name="Return to task list">Return to task list</button>
           {{else}}
             <button id="operation-meets-rules-button" type="submit" class="button" name="Our operation meets these rules">Our operation meets these rules</button>
