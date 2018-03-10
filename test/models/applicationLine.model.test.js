@@ -9,6 +9,8 @@ const ApplicationLine = require('../../src/models/applicationLine.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let fakeApplicationLine
+let fakeParameterId
+let fakeRulesId
 let dynamicsCreateStub
 let dynamicsSearchStub
 
@@ -16,11 +18,15 @@ const authToken = 'THE_AUTH_TOKEN'
 const applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {
-  // testApplication = new ApplicationLine()
+  fakeParameterId = 'PARAMETER_ID'
+  fakeRulesId = 'defra_allowpermitstartdate'
   fakeApplicationLine = new ApplicationLine({
     applicationId: 'APPLICATION_ID',
     standardRuleId: 'STANDARD_RULE_ID',
-    parametersId: 'PARAMTERS_ID'
+    parametersId: {
+      [fakeParameterId]: true,
+      [fakeRulesId]: true
+    }
   })
 
   // Stub methods
@@ -57,7 +63,8 @@ lab.beforeEach(() => {
       'createdon@OData.Community.Display.V1.FormattedValue': '11/3/2017 2:40 PM',
       createdon: '2017-11-03T14:40:32Z',
       '_defra_parametersid_value@OData.Community.Display.V1.FormattedValue': 'Application Completion',
-      _defra_parametersid_value: fakeApplicationLine.parametersId,
+      _defra_parametersid_value: fakeParameterId,
+      defra_parametersId: fakeApplicationLine.parametersId,
       '_defra_applicationid_value@OData.Community.Display.V1.FormattedValue': 'AB139CD',
       _defra_applicationid_value: fakeApplicationLine.applicationId,
       utcconversiontimezonecode: null,
@@ -84,17 +91,31 @@ lab.afterEach(() => {
 })
 
 lab.experiment('ApplicationLine Model tests:', () => {
-  lab.test('getById() method correctly retrieves an ApplicationLine object', async() => {
+  lab.test('getById() method correctly retrieves an ApplicationLine object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const applicationLine = await ApplicationLine.getById('AUTH_TOKEN', applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(applicationLine.applicationId).to.equal(fakeApplicationLine.applicationId)
     Code.expect(applicationLine.standardRuleId).to.equal(fakeApplicationLine.standardRuleId)
-    Code.expect(applicationLine.parametersId).to.equal(fakeApplicationLine.parametersId)
+    Code.expect(applicationLine.parametersId).to.equal(fakeParameterId)
     Code.expect(applicationLine.id).to.equal(applicationLineId)
   })
 
-  lab.test('save() method saves a new ApplicationLine object', async() => {
+  lab.test('getCompleted() method correctly retrieves the completed flag from the ApplicationLine object for the specified parameter', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const completed = await ApplicationLine.getCompleted('AUTH_TOKEN', applicationLineId, fakeParameterId)
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(completed).to.equal(true)
+  })
+
+  lab.test('getValidRulesetIds() method correctly retrieves the completed flag from the ApplicationLine object for the specified parameter', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const ruleSetIds = await ApplicationLine.getValidRulesetIds('AUTH_TOKEN', applicationLineId)
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(ruleSetIds).to.equal([fakeRulesId])
+  })
+
+  lab.test('save() method saves a new ApplicationLine object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     await fakeApplicationLine.save(authToken)
     Code.expect(spy.callCount).to.equal(1)

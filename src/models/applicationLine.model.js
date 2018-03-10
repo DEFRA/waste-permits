@@ -53,6 +53,23 @@ class ApplicationLine extends BaseModel {
     return validRuleIds
   }
 
+  static async getCompleted (authToken, applicationLineId, completedId) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const query = encodeURI(`defra_applicationlines(${applicationLineId})?$expand=defra_parametersId($select=${completedId})`)
+    let completed
+    try {
+      const result = await dynamicsDal.search(query)
+
+      if (result && result.defra_parametersId) {
+        completed = result.defra_parametersId[completedId]
+      }
+    } catch (error) {
+      LoggingService.logError(`Unable to get completed by ${completedId}: ${error}`)
+      throw error
+    }
+    return completed
+  }
+
   async save (authToken) {
     const dataObject = this.modelToDynamics()
     await super.save(authToken, dataObject)

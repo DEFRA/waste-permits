@@ -58,9 +58,6 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox = sinon.createSandbox()
-
-  // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompany)

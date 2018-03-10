@@ -4,6 +4,53 @@
 
   {{> common/backLink }}
 
-  {{> common/pageHeading pageHeading }}
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if isComplete}}
+      <div class="panel panel-border-wide">
+        <p id="confirm-result-message">You confirmed that your storage areas meet the rules.</p>
+      </div>
+      {{/if}}
+
+      <div class="form-group">
+        <p id="storage-confirmation-paragraph-1">The area where you store undamaged vehicles before dismantling must prevent water running off and causing pollution.</p>
+        <p id="storage-confirmation-paragraph-2">The surface must be impermeable. This means it must not allow liquids through. For example, it could be tarmac, concrete or asphalt, with no cracks.</p>
+        <p id="storage-confirmation-paragraph-3">And it must use a sealed drainage system or an oil separator. This means that the only acceptable drainage for the surface is to:</p>
+        <ul id="deemed-evidence-description-list" class="list list-bullet">
+          <li id="deemed-evidence-description-list-item-1">drain into a sewer, but only if the water company gives you a formal consent</li>
+          <li id="deemed-evidence-description-list-item-2">collect in a sump for disposal by tanker</li>
+          <li id="deemed-evidence-description-list-item-3">use an oil separator (interceptor)</li>
+        </ul>
+        <div id="declaration-warning-notice" class="notice">
+          <i class="icon icon-important">
+            <span id="declaration-warning-notice-hidden" class="visually-hidden">Warning</span>
+          </i>
+          <strong id="declaration-warning-notice-content" class="bold-small">If your storage area is not like this, then you can’t get a permit.</strong>
+        </div>
+      </div>
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        {{#if isComplete}}
+        {{> common/submitButton text="Return to task list"}}
+        {{else}}
+        {{> common/submitButton text="Our storage meets these rules"}}
+        {{/if}}
+
+      </form>
+
+      <div class="form-group">
+        <p id="legal-wording-paragraph">This is a summary of the rules about drainage. The legal wording of the rules you must meet are in the <a id="standard-rule-link" target="_blank" rel="noopener noreferrer" href="{{guidanceUrl}}">standard rules for <span id="standard-rule-code">{{code}}</span> (opens new window)</a>.</p>
+      </div>
+
+    </div>
+  </div>
 
 </main>

@@ -171,8 +171,8 @@ Constants.Routes = {
   },
   DRAINAGE_TYPE_DRAIN: {
     path: '/drainage-type/drain',
-    pageHeading: 'Declaration for vehicle storage, depolution and dismantling facilities',
-    taskListHeading: 'Confirm the drainage system for your site'
+    pageHeading: 'Confirm you have suitable vehicle storage areas',
+    taskListHeading: 'Confirm you have suitable vehicle storage areas'
   },
   ERROR: {
     ALREADY_SUBMITTED: {
