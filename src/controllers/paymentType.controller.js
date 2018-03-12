@@ -9,8 +9,8 @@ module.exports = class PaymentTypeController extends BaseController {
     const pageContext = this.createPageContext(errors)
     const {application, applicationLine} = await this.createApplicationContext(request, {application: true, applicationLine: true})
 
-    if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+    if (!application.isSubmitted()) {
+      return this.redirect(request, reply, Constants.Routes.ERROR.NOT_SUBMITTED.path)
     }
 
     if (request.payload) {

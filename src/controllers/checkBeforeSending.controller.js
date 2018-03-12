@@ -72,6 +72,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     const {authToken, application} = await this.createApplicationContext(request, {application: true})
 
     application.declaration = true
+    application.statusCode = Constants.Dynamics.StatusCode.APPLICATION_RECEIVED
     await application.save(authToken)
 
     return this.redirect(request, reply, Constants.Routes.PAY_TYPE.path)

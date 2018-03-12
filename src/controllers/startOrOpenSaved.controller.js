@@ -33,6 +33,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
     if (request.payload['started-application'] === 'new') {
       // Create new application in Dynamics and set the applicationId in the cookie
       const application = new Application()
+      application.statusCode = Constants.Dynamics.StatusCode.DRAFT
       await application.save(cookie.authToken)
 
       // Set the application ID in the cookie

@@ -9,9 +9,17 @@ module.exports = class PaymentBacsController extends BaseController {
     const pageContext = this.createPageContext()
     const {application} = await this.createApplicationContext(request, {application: true})
 
-    if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+    if (!application.isSubmitted()) {
+      return this.redirect(request, reply, Constants.Routes.ERROR.NOT_SUBMITTED.path)
     }
+
+    // TODO confirm if this is needed for BACS screen
+    // returns Boolean(this.paymentReceived)
+
+    // Needs alreadypaid screen??????
+    // if (application.isPaidFor()) {
+    //   return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_PAID.path)
+    // }
 
     return this.showView(request, reply, 'paymentBacs', pageContext)
   }
