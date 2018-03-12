@@ -9,137 +9,122 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/models/application.model')
-const CookieService = require('../../src/services/cookie.service')
-const ConfirmRules = require('../../src/models/confirmRules.model')
 const StandardRule = require('../../src/models/standardRule.model')
+const ConfirmRules = require('../../src/models/taskList/confirmRules.model')
 const LoggingService = require('../../src/services/logging.service')
+const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let validateCookieStub
-let confirmRulesSaveStub
-let getByApplicationIdStub
-let getByApplicationLineIdStub
-let applicationGetByIdStub
-let applicationIsSubmittedStub
-let logErrorStub
+const routePath = '/confirm-rules'
+const nextRoutePath = '/task-list'
+const errorPath = '/errors/technical-problem'
 
 let fakeApplication
-let fakeConfirmRules
 let fakeStandardRule
-
-const routePath = '/confirm-rules'
-const errorPath = '/errors/technical-problem'
+let sandbox
 
 lab.beforeEach(() => {
   fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationName: 'APPLICATION_NAME'
-  }
-
-  fakeConfirmRules = {
-    applicationId: 'APPLICATION_ID',
-    applicationLineId: 'APPLICATION_LINE_ID'
+    id: 'APPLICATION_ID'
   }
 
   fakeStandardRule = {
-    applicationLineId: 'APPLICATION_LINE_ID'
+    code: 'STANDARD_RULE_CODE',
+    guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL'
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  getByApplicationIdStub = ConfirmRules.getByApplicationId
-  ConfirmRules.getByApplicationId = () => fakeConfirmRules
-
-  getByApplicationLineIdStub = StandardRule.getByApplicationLineId
-  StandardRule.getByApplicationLineId = () => fakeStandardRule
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(ConfirmRules, 'isComplete').value(() => false)
+  sandbox.stub(ConfirmRules, 'updateCompleteness').value(() => {})
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  ConfirmRules.getByApplicationId = getByApplicationIdStub
-  StandardRule.getByApplicationLineId = getByApplicationLineIdStub
-  Application.getById = applicationGetByIdStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
-lab.experiment('Confirm that your operation meets the rules page tests:', () => {
+lab.experiment('Confirm your operation meets the rules page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
   lab.experiment(`GET ${routePath}`, () => {
-    let doc
-    let getRequest
+    let request
 
-    const getDoc = async () => {
-      const res = await server.inject(getRequest)
+    const checkCommonElements = async (doc) => {
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Confirm your operation meets the rules')
+      Code.expect(doc.getElementById('standard-rule-code').firstChild.nodeValue).to.equal(fakeStandardRule.code)
+      Code.expect(doc.getElementById('standard-rule-link').getAttribute('href')).to.equal(fakeStandardRule.guidanceUrl)
+      Code.expect(doc.getElementById('rules-and-risk-hint').firstChild.nodeValue).to.exist()
+    }
+
+    const getDoc = async (request) => {
+      const res = await server.inject(request)
       Code.expect(res.statusCode).to.equal(200)
-
       const parser = new DOMParser()
       const doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Confirm your operation meets the rules')
-      Code.expect(doc.getElementById('rules-and-risk-hint')).to.exist()
       return doc
     }
 
     lab.beforeEach(() => {
-      getRequest = {
+      request = {
         method: 'GET',
         url: routePath,
-        headers: {},
-        payload: {}
+        headers: {}
       }
-
-      confirmRulesSaveStub = ConfirmRules.prototype.save
-      ConfirmRules.prototype.save = () => {}
-    })
-
-    lab.test('should have a back link', async () => {
-      const doc = await getDoc()
-      const element = doc.getElementById('back-link')
-      Code.expect(element).to.exist()
     })
 
     lab.experiment('success', () => {
-      lab.test('when incomplete', async () => {
-        doc = await getDoc()
+      lab.test('when not completed', async () => {
+        const doc = await getDoc(request)
+        checkCommonElements(doc)
 
-        Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.exist()
+        GeneralTestHelper.checkElementsExist(doc, [
+          'confirm-rules-paragraph-1',
+          'operation-meets-rules-button'
+        ])
+
+        GeneralTestHelper.checkElementsDoNotExist(doc, [
+          'confirm-result-message',
+          'return-to-task-list-button'
+        ])
+
         Code.expect(doc.getElementById('confirm-result-message')).to.not.exist()
-        Code.expect(doc.getElementById('return-to-task-list-button')).to.not.exist()
-        Code.expect(doc.getElementById('operation-meets-rules-button').firstChild.nodeValue).to.equal('Our operation meets these rules')
+        Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.exist()
+        Code.expect(doc.getElementById('operation-meets-rules-button')).to.exist()
       })
 
-      lab.test('when complete', async () => {
-        fakeConfirmRules.complete = true
-        doc = await getDoc()
+      lab.test('when completed', async () => {
+        ConfirmRules.isComplete = () => true
+        const doc = await getDoc(request)
+        checkCommonElements(doc)
 
-        Code.expect(doc.getElementById('confirm-rules-paragraph-1')).to.not.exist()
-        Code.expect(doc.getElementById('confirm-result-message')).to.exist()
-        Code.expect(doc.getElementById('return-to-task-list-button').firstChild.nodeValue).to.equal('Return to task list')
-        Code.expect(doc.getElementById('operation-meets-rules-button')).to.not.exist()
+        GeneralTestHelper.checkElementsExist(doc, [
+          'confirm-result-message',
+          'return-to-task-list-button'
+        ])
+
+        GeneralTestHelper.checkElementsDoNotExist(doc, [
+          'confirm-rules-paragraph-1',
+          'operation-meets-rules-button'
+        ])
       })
     })
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.getByApplicationId = () => {
+        ConfirmRules.isComplete = () => {
           throw new Error('read failed')
         }
 
-        const res = await server.inject(getRequest)
+        const res = await server.inject(request)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)
@@ -147,7 +132,7 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
     })
   })
 
-  lab.experiment('POST /confirm-rules', () => {
+  lab.experiment(`POST ${routePath}`, () => {
     let postRequest
 
     lab.beforeEach(() => {
@@ -157,38 +142,18 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
         headers: {},
         payload: {}
       }
-
-      confirmRulesSaveStub = ConfirmRules.prototype.save
-      ConfirmRules.prototype.save = () => {}
     })
 
-    lab.afterEach(() => {
-      // Restore stubbed methods
-      ConfirmRules.prototype.save = confirmRulesSaveStub
-    })
-
-    lab.experiment('success', () => {
-      lab.test('when incomplete', async () => {
-        ConfirmRules.getByApplicationId = () => ({complete: false})
-
-        const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/task-list')
-      })
-
-      lab.test('when complete', async () => {
-        ConfirmRules.getByApplicationId = () => ({complete: true})
-
-        const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/task-list')
-      })
+    lab.test('success', async () => {
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(nextRoutePath)
     })
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.getByApplicationId = () => {
+        ConfirmRules.updateCompleteness = () => {
           throw new Error('read failed')
         }
 
@@ -200,7 +165,9 @@ lab.experiment('Confirm that your operation meets the rules page tests:', () => 
 
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.prototype.save = () => Promise.reject(new Error('save failed'))
+        ConfirmRules.updateCompleteness = () => {
+          throw new Error('update failed')
+        }
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
