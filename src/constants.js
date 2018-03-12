@@ -35,6 +35,24 @@ Constants.ALLOWED_PERMITS = [
   // 'SR2015 No 18'
 ]
 
+Constants.OFFLINE_CATEGORIES = {
+  FLOOD_RISK_ACTIVITIES: {
+    id: 'offline-category-flood',
+    name: 'Flood',
+    category: 'Flood risk activities'
+  },
+  RADIOACTIVE_SUBSTANCES_FOR_NON_NUCLEAR_SITES: {
+    id: 'offline-category-radioactive',
+    name: 'Radioactive',
+    category: 'Radioactive substances for non-nuclear sites'
+  },
+  WATER_DISCHARGES: {
+    id: 'offline-category-water',
+    name: 'Water',
+    category: 'Water discharges'
+  }
+}
+
 Constants.DEFRA_COOKIE_KEY = 'DefraSession'
 
 Constants.COOKIE_RESULT = {
@@ -50,6 +68,7 @@ Constants.COOKIE_KEY = {
   AUTH_TOKEN: 'authToken',
   APPLICATION_ID: 'applicationId',
   APPLICATION_LINE_ID: 'applicationLineId',
+  STANDARD_RULE_TYPE_ID: 'standardRuleTypeId',
   EXPIRY: 'expiry'
 }
 
@@ -96,6 +115,10 @@ Constants.Routes = {
   APPLICATION_RECEIVED: {
     path: '/done',
     pageHeading: `Application received`
+  },
+  APPLY_OFFLINE: {
+    path: '/start/apply-offline',
+    pageHeading: 'Download and fill in these forms to apply for that permit'
   },
   BACS_PAYMENT: {
     path: '/pay/bacs',

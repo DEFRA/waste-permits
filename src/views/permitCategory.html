@@ -12,6 +12,50 @@
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
+        <fieldset aria-labelledby="permit-select-heading">
+          <legend class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div id="chosen-category" class="form-group {{#getFormErrorGroupClass errors.chosen-category}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='chosen-category-error' message=errors.chosen-category }}
+
+            {{#each categories}}
+            <div class="multiple-choice">
+              <input id="chosen-category-{{this.categoryName}}-input" type="radio" name="chosen-category" value="{{this.id}}">
+              <label id="chosen-category-{{this.categoryName}}-label" class="selection-button-radio" for="chosen-category-{{this.categoryName}}-input">
+                <span id="chosen-category-{{this.categoryName}}-category">
+                  {{this.category}}
+                  {{#if this.hint}}
+                  <br>
+                  <span class="text-secondary" id="chosen-category-{{this.categoryName}}-hint">
+                    {{this.hint}}
+                  </span>
+                  {{/if}}
+                </span>
+              </label>
+            </div>
+            {{/each}}
+          </div>
+
+        </fieldset>
+
+        <div class="form-group">
+          <details role="group" class="form-hint-details">
+            <summary role="button" aria-controls="details-content-0" aria-expanded="false">
+              <span id="summary" class="summary">I can’t find the permit I need</span>
+            </summary>
+            <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true">
+              <p id="hint-paragraph-1"><a id="hint-link" href="https://www.gov.uk/topic/environmental-management/environmental-permits">Read more about waste environmental permits on GOV.UK</a> or contact the Environment Agency.</p>
+              <p id="hint-paragraph-2">We’re open Monday to Friday, 8am to 6pm.</p>
+              <p>
+                <span id="hint-email">Email <a id="hint-mail-link" href="mailto:enquiries@environment-agency.gov.uk">enquiries@environment-agency.gov.uk</a></span><br>
+                <span id="hint-telephone">Telephone 03708 506 506</span><br>
+                <span id="hint-outside-uk-telephone">Telephone from outside the UK +44 (0) 114 282 5312</span><br>
+                <span id="hint-minicom">Minicom (for the hard of hearing) 03702 422 549</span>
+              </p>
+            </div>
+          </details>
+        </div>
+
         {{> common/submitButton }}
 
       </form>
