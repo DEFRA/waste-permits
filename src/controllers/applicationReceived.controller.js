@@ -3,17 +3,23 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const Payment = require('../models/payment.model')
+const LoggingService = require('../services/logging.service')
 
 module.exports = class ApplicationReceivedController extends BaseController {
   async doGet (request, reply) {
     const pageContext = this.createPageContext()
 
-    const {authToken, applicationLineId, application, contact} = await this.createApplicationContext(request, {application: true, contact: true})
+    const {authToken, applicationId, applicationLineId, application, contact} = await this.createApplicationContext(request, {application: true, contact: true})
 
     const bacsPayment = await Payment.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.BACS_PAYMENT)
 
     pageContext.applicationName = application.applicationName
-    pageContext.contactEmail = contact ? contact.email : 'UNKNOWN EMAIL ADDRESS'
+    if (contact && contact.email) {
+      pageContext.contactEmail = contact.email
+    } else {
+      LoggingService.logError(`Unable to get Contact email address for application ID: ${applicationId}`)
+      pageContext.contactEmail = 'UNKNOWN EMAIL ADDRESS'
+    }
 
     if (bacsPayment) {
       pageContext.bacs = {
