@@ -13,7 +13,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
     const bacsPayment = await Payment.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.BACS_PAYMENT)
 
     pageContext.applicationName = application.applicationName
-    pageContext.contactEmail = contact.email
+    pageContext.contactEmail = contact ? contact.email : 'UNKNOWN EMAIL ADDRESS'
 
     if (bacsPayment) {
       pageContext.bacs = {
