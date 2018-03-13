@@ -10,16 +10,16 @@ const ApplicationContact = require('../models/applicationContact.model')
 const Contact = require('../models/contact.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const {authToken, applicationId, application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (!account) {
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-      return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
 
     // Get the directors that relate to this application
@@ -56,15 +56,15 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       }
     }
 
-    return this.showView(request, reply, 'directorDateOfBirth', pageContext)
+    return this.showView(request, h, 'directorDateOfBirth', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     const {authToken, applicationId, account} = await this.createApplicationContext(request, {account: true})
 
     if (!account) {
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-      return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
 
     const directors = await this._getDirectors(authToken, applicationId, account.id)
@@ -73,7 +73,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     errors = await this._validateDynamicFormContent(request, directors)
 
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       // Save Director dates of birth in their corresponding ApplicationContact record
       for (let i = 0; i < directors.length; i++) {
@@ -96,7 +96,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         await applicationContact.save(authToken)
       }
 
-      return this.redirect(request, reply, Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
+      return this.redirect(request, h, Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
     }
   }
 

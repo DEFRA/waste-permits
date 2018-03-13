@@ -27,7 +27,10 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Timeout page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(true, true, true)
+  new GeneralTestHelper(lab, routePath).test({
+    excludeCookieGetTests: true,
+    excludeCookiePostTests: true,
+    excludeAlreadySubnmittedTest: true})
 
   lab.test('The page should NOT have a back link', async () => {
     const res = await server.inject(getRequest)

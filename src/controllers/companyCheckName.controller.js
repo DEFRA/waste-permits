@@ -5,16 +5,16 @@ const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
 
 module.exports = class CompanyCheckNameController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
     if (!application || !account) {
-      return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
+      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
     }
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -38,12 +38,12 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return this.showView(request, reply, 'companyCheckName', pageContext)
+    return this.showView(request, h, 'companyCheckName', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       const {authToken, application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
@@ -66,7 +66,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         await application.save(authToken)
       }
-      return this.redirect(request, reply, Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
+      return this.redirect(request, h, Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
     }
   }
 }

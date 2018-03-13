@@ -38,7 +38,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true, false)
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
+    excludeCookiePostTests: true})
 
   const {uploadPath, removePath} = paths
 

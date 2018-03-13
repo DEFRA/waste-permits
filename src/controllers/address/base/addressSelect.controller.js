@@ -6,12 +6,12 @@ const CookieService = require('../../../services/cookie.service')
 const Address = require('../../../models/address.model')
 
 module.exports = class AddressSelectController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     let addresses, address
@@ -48,12 +48,12 @@ module.exports = class AddressSelectController extends BaseController {
     pageContext.changePostcodeLink = this.getPostcodeRoute()
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return this.showView(request, reply, 'address/selectAddress', pageContext)
+    return this.showView(request, h, 'address/selectAddress', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
 
@@ -63,7 +63,7 @@ module.exports = class AddressSelectController extends BaseController {
       }
       await this.getModel().saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
 
-      return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
+      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
     }
   }
 }

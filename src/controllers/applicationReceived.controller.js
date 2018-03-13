@@ -6,7 +6,7 @@ const Payment = require('../models/payment.model')
 const LoggingService = require('../services/logging.service')
 
 module.exports = class ApplicationReceivedController extends BaseController {
-  async doGet (request, reply) {
+  async doGet (request, h) {
     const pageContext = this.createPageContext()
 
     const {authToken, applicationId, applicationLineId, application, contact} = await this.createApplicationContext(request, {application: true, contact: true})
@@ -34,10 +34,10 @@ module.exports = class ApplicationReceivedController extends BaseController {
     }
 
     if (bacsPayment || application.isPaidFor()) {
-      return this.showView(request, reply, 'applicationReceived', pageContext)
+      return this.showView(request, h, 'applicationReceived', pageContext)
     } else {
       // If bacs has not been selected for payment and the application has not been paid for
-      return this.redirect(request, reply, Constants.Routes.ERROR.NOT_PAID.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.NOT_PAID.path)
     }
   }
 }

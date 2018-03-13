@@ -6,7 +6,7 @@ const CookieService = require('../services/cookie.service')
 const Application = require('../models/application.model')
 
 module.exports = class StartOrOpenSavedController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
 
     pageContext.cost = {
@@ -17,22 +17,23 @@ module.exports = class StartOrOpenSavedController extends BaseController {
     pageContext.formValues = request.payload
 
     // For MVP we are only supporting the mobile plant standard rules waste permit
-    // return this.showView(request, reply, 'startOrOpenSaved', pageContext)
+    // return this.showView(request, h, 'startOrOpenSaved', pageContext)
 
-    return this.showView(request, reply, 'startOrOpenSavedMobile', pageContext)
+    return this.showView(request, h, 'startOrOpenSavedMobile', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     }
 
-    const cookie = await CookieService.generateCookie(reply)
+    const cookie = await CookieService.generateCookie(h)
 
     let nextPage
     if (request.payload['started-application'] === 'new') {
       // Create new application in Dynamics and set the applicationId in the cookie
       const application = new Application()
+      application.statusCode = Constants.Dynamics.StatusCode.DRAFT
       await application.save(cookie.authToken)
 
       // Set the application ID in the cookie
@@ -44,6 +45,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       nextPage = Constants.Routes.CHECK_YOUR_EMAIL
     }
 
-    return this.redirect(request, reply, nextPage.path, cookie)
+    return this.redirect(request, h, nextPage.path, cookie)
   }
 }

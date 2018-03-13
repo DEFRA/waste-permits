@@ -90,7 +90,9 @@ lab.afterEach(() => {
 
 lab.experiment('Check company type page tests:', () => {
   // There is no POST for this route
-  new GeneralTestHelper(lab, routePath).test(false, true, false)
+  new GeneralTestHelper(lab, routePath).test({
+    excludeCookiePostTests: true,
+    excludeAlreadySubnmittedTest: true})
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc

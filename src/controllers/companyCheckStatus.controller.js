@@ -12,17 +12,17 @@ module.exports = class CompanyStatusController extends BaseController {
     this.orginalPageHeading = route.pageHeading
   }
 
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const {application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
     if (!company) {
-      return this.redirect(request, reply, Constants.Routes.COMPANY_CHECK_NAME.path)
+      return this.redirect(request, h, Constants.Routes.COMPANY_CHECK_NAME.path)
     }
 
     let companyStatus
@@ -32,7 +32,7 @@ module.exports = class CompanyStatusController extends BaseController {
     } else {
       const activeDirectors = await CompanyLookupService.getActiveDirectors(account.companyNumber)
       if (activeDirectors.length) {
-        return this.redirect(request, reply, Constants.Routes.COMPANY_CHECK_NAME.path)
+        return this.redirect(request, h, Constants.Routes.COMPANY_CHECK_NAME.path)
       } else {
         companyStatus = Constants.Company.Status.NO_DIRECTORS
       }
@@ -48,6 +48,6 @@ module.exports = class CompanyStatusController extends BaseController {
     pageContext.companyStatus = companyStatus
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return this.showView(request, reply, 'companyCheckStatus', pageContext)
+    return this.showView(request, h, 'companyCheckStatus', pageContext)
   }
 }

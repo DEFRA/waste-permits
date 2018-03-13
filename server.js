@@ -152,14 +152,16 @@ const start = async () => {
   // Load views
   server.views(require('./src/views'))
 
-  server.ext('onPreResponse', (request, reply) => {
+  server.ext('onPreResponse', (request, h) => {
+    const response = request.response
+
     // if the response is a Boom error object and the status code is 404
-    if (request.response.isBoom && request.response.output.statusCode === 404) {
-      return reply.redirect(Constants.Routes.ERROR.PAGE_NOT_FOUND.path)
-    } else if (request.response.isBoom && request.response.output.statusCode === 403) {
-      return reply.redirect(Constants.Routes.ERROR.COOKIES_DISABLED.path)
+    if (response.isBoom && response.output.statusCode === 404) {
+      return h.redirect(Constants.Routes.ERROR.PAGE_NOT_FOUND.path)
+    } else if (response.isBoom && response.output.statusCode === 403) {
+      return h.redirect(Constants.Routes.ERROR.COOKIES_DISABLED.path)
     } else {
-      return reply.continue
+      return h.continue
     }
   })
 

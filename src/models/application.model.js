@@ -27,7 +27,7 @@ class Application extends BaseModel {
       {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},
       {field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails', length: {max: 2000}},
       {field: 'source', dynamics: 'defra_source', constant: Constants.Dynamics.DIGITAL_SOURCE},
-      {field: 'statusCode', dynamics: 'statuscode', constant: Constants.Dynamics.StatusCode.DRAFT},
+      {field: 'statusCode', dynamics: 'statuscode'},
       {field: 'technicalQualification', dynamics: 'defra_technicalability'},
       {field: 'tradingName', dynamics: 'defra_tradingname', length: {max: 170}}
     ]
@@ -55,7 +55,7 @@ class Application extends BaseModel {
   }
 
   isSubmitted () {
-    return this.statusCode && (this.statusCode === Constants.Dynamics.APPLICATION_RECEIVED)
+    return this.statusCode && (this.statusCode === Constants.Dynamics.StatusCode.APPLICATION_RECEIVED)
   }
 
   isPaidFor () {

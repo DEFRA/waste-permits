@@ -9,14 +9,14 @@ const CookieService = require('../services/cookie.service')
 const DynamicsSolution = require('../models/dynamicsSolution.model')
 
 module.exports = class VersionController extends BaseController {
-  async doGet (request, reply) {
+  async doGet (request, h) {
     const pageContext = this.createPageContext()
 
     let authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
 
     // If we didn't get an Auth token from the cookie then create a new one
     if (!authToken) {
-      const cookie = await CookieService.generateCookie(reply)
+      const cookie = await CookieService.generateCookie(h)
       authToken = cookie.authToken
     }
 
@@ -27,6 +27,6 @@ module.exports = class VersionController extends BaseController {
     pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`
     pageContext.renderTimestamp = moment().format(Constants.TIMESTAMP_FORMAT)
 
-    return this.showView(request, reply, 'version', pageContext)
+    return this.showView(request, h, 'version', pageContext)
   }
 }

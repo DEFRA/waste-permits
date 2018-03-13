@@ -23,6 +23,7 @@ let sandbox
 
 const routePath = '/pay/type'
 const errorPath = '/errors/technical-problem'
+const notSubmittedRoutePath = '/errors/order/check-answers-not-complete'
 
 const fakeApplication = {
   id: 'APPLICATION_ID'
@@ -32,12 +33,19 @@ const fakeApplicationLine = {
   id: 'APPLICATION_LINE_ID'
 }
 
+const getRequest = {
+  method: 'GET',
+  url: routePath,
+  headers: {},
+  payload: {}
+}
+
 lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(ApplicationLine, 'getById').value(() => new Application(fakeApplicationLine))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
@@ -50,7 +58,9 @@ lab.afterEach(() => {
 })
 
 lab.experiment(`How do you want to pay?:`, () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper(lab, routePath).test({
+    excludeAlreadySubnmittedTest: true
+  })
 
   const getDoc = async (request) => {
     const res = await server.inject(request)
@@ -64,16 +74,7 @@ lab.experiment(`How do you want to pay?:`, () => {
   }
 
   lab.experiment(`GET ${routePath}`, () => {
-    let getRequest
-
-    lab.beforeEach(() => {
-      getRequest = {
-        method: 'GET',
-        url: routePath,
-        headers: {},
-        payload: {}
-      }
-    })
+    lab.beforeEach(() => {})
 
     lab.experiment('success', () => {
       lab.test('static content exists', async () => {
@@ -180,6 +181,14 @@ lab.experiment(`How do you want to pay?:`, () => {
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)
+      })
+
+      lab.test('Redirects to the Not Submitted screen if the application has not been submitted', async () => {
+        sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+
+        const res = await server.inject(getRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
       })
     })
   })

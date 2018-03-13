@@ -8,12 +8,12 @@ const Account = require('../models/account.model')
 const ContactDetails = require('../models/taskList/contactDetails.model')
 
 module.exports = class ContactDetailsController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {authToken, applicationId, application} = await this.createApplicationContext(request, {application: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -38,12 +38,12 @@ module.exports = class ContactDetailsController extends BaseController {
       }
     }
 
-    return this.showView(request, reply, 'contactDetails', pageContext)
+    return this.showView(request, h, 'contactDetails', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
       const {
@@ -97,7 +97,7 @@ module.exports = class ContactDetailsController extends BaseController {
 
       await ContactDetails.updateCompleteness(authToken, applicationId, applicationLineId)
 
-      return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
+      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
     }
   }
 }

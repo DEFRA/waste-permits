@@ -5,12 +5,12 @@ const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
 
 module.exports = class AddressManualController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -38,12 +38,12 @@ module.exports = class AddressManualController extends BaseController {
       }
     }
 
-    return this.showView(request, reply, 'address/manualEntry', pageContext)
+    return this.showView(request, h, 'address/manualEntry', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
 
@@ -57,7 +57,7 @@ module.exports = class AddressManualController extends BaseController {
 
       await this.getModel().saveManualAddress(request, authToken, applicationId, applicationLineId, addressDto)
 
-      return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
+      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
     }
   }
 }

@@ -5,12 +5,12 @@ const BaseController = require('./base.controller')
 const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.Dynamics.TechnicalQualification
 
 module.exports = class TechnicalQualificationController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {application} = await this.createApplicationContext(request, {application: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -43,19 +43,19 @@ module.exports = class TechnicalQualificationController extends BaseController {
         break
     }
 
-    return this.showView(request, reply, 'technicalQualification', pageContext)
+    return this.showView(request, h, 'technicalQualification', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       const {authToken, application} = await this.createApplicationContext(request, {application: true})
 
       application.technicalQualification = request.payload['technical-qualification']
       await application.save(authToken)
 
-      return this.redirect(request, reply, await TechnicalQualificationController._getPath(application.technicalQualification))
+      return this.redirect(request, h, await TechnicalQualificationController._getPath(application.technicalQualification))
     }
   }
 

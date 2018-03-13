@@ -54,7 +54,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     return sections.reduce((acc, cur) => acc.concat(cur), [])
   }
 
-  async doGet (request, reply) {
+  async doGet (request, h) {
     const pageContext = this.createPageContext()
     const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
 
@@ -62,18 +62,19 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
     // If all the task list items are not complete
     if (!TaskList.isComplete(authToken, application.id)) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.NOT_COMPLETE.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.NOT_COMPLETE.path)
     } else {
-      return this.showView(request, reply, 'checkBeforeSending', pageContext)
+      return this.showView(request, h, 'checkBeforeSending', pageContext)
     }
   }
 
-  async doPost (request, reply) {
+  async doPost (request, h) {
     const {authToken, application} = await this.createApplicationContext(request, {application: true})
 
     application.declaration = true
+    application.statusCode = Constants.Dynamics.StatusCode.APPLICATION_RECEIVED
     await application.save(authToken)
 
-    return this.redirect(request, reply, Constants.Routes.PAY_TYPE.path)
+    return this.redirect(request, h, Constants.Routes.PAY_TYPE.path)
   }
 }

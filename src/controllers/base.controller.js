@@ -78,59 +78,59 @@ module.exports = class BaseController {
     }
   }
 
-  redirect (request, reply, viewPath, cookie) {
+  redirect (request, h, viewPath, cookie) {
     if (!cookie) {
       cookie = request.state[Constants.DEFRA_COOKIE_KEY]
     }
-    return reply
+    return h
       .redirect(viewPath)
       .state(Constants.DEFRA_COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 
-  showView (request, reply, viewPath, pageContext, code = 200) {
-    return reply
+  showView (request, h, viewPath, pageContext, code = 200) {
+    return h
       .view(viewPath, pageContext)
       .code(code)
       .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
-  async _handler (request, reply, errors) {
+  async _handler (request, h, errors) {
     switch (request.method.toUpperCase()) {
       case 'GET':
-        return this.doGet(request, reply, errors)
+        return this.doGet(request, h, errors)
       case 'POST':
         if (this.validator && this.validator.customValidators) {
           // Apply custom validation if required
           errors = await this.validator.customValidate(request.payload, errors)
         }
-        return this.doPost(request, reply, errors)
+        return this.doPost(request, h, errors)
     }
   }
 
-  async handler (request, reply, errors) {
+  async handler (request, h, errors) {
     if (this.cookieValidationRequired) {
       // Validate the cookie
       const cookieValidationResult = await CookieService.validateCookie(request)
 
       if (cookieValidationResult === COOKIE_RESULT.COOKIE_NOT_FOUND) {
-        return reply.redirect(Constants.Routes.ERROR.START_AT_BEGINNING.path)
+        return h.redirect(Constants.Routes.ERROR.START_AT_BEGINNING.path)
       } else if (cookieValidationResult === COOKIE_RESULT.COOKIE_EXPIRED) {
-        return reply.redirect(Constants.Routes.ERROR.TIMEOUT.path)
+        return h.redirect(Constants.Routes.ERROR.TIMEOUT.path)
       } else if (cookieValidationResult === COOKIE_RESULT.APPLICATION_NOT_FOUND) {
-        return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+        return h.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
       }
     }
     switch (this.route) {
       case Constants.Routes.ERROR:
       case Constants.Routes.PAGE_NOT_FOUND:
-        return this._handler(request, reply, errors)
+        return this._handler(request, h, errors)
       default:
         try {
-          const response = await this._handler(request, reply, errors)
+          const response = await this._handler(request, h, errors)
           return response
         } catch (error) {
           LoggingService.logError(error, request)
-          return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+          return h.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
         }
     }
   }
