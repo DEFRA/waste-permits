@@ -13,14 +13,6 @@ module.exports = class PaymentBacsController extends BaseController {
       return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
     }
 
-    // TODO confirm if this is needed for BACS screen
-    // returns Boolean(this.paymentReceived)
-
-    // Needs alreadypaid screen??????
-    // if (application.isPaidFor()) {
-    //   return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_PAID.path)
-    // }
-
     return this.showView(request, h, 'paymentBacs', pageContext)
   }
 
