@@ -10,12 +10,12 @@ module.exports = class DeclarationsController extends BaseController {
     this.nextPath = nextRoute.path
   }
 
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {application} = await this.createApplicationContext(request, {application: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     switch (this.route) {
@@ -41,12 +41,12 @@ module.exports = class DeclarationsController extends BaseController {
 
     Object.assign(pageContext, this.getSpecificPageContext())
 
-    return this.showView(request, reply, this.view, pageContext)
+    return this.showView(request, h, this.view, pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
 
@@ -56,7 +56,7 @@ module.exports = class DeclarationsController extends BaseController {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
       }
 
-      return this.redirect(request, reply, this.nextPath)
+      return this.redirect(request, h, this.nextPath)
     }
   }
 

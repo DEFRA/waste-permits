@@ -12,7 +12,7 @@ module.exports = class CookieService {
     return Date.now() + config.cookieTimeout
   }
 
-  static async generateCookie (reply) {
+  static async generateCookie (h) {
     try {
       // Generate a CRM token
       const authToken = await authService.getToken()
@@ -25,7 +25,7 @@ module.exports = class CookieService {
       }
     } catch (error) {
       LoggingService.logError(error)
-      return reply.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return h.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
   }
 

@@ -7,12 +7,12 @@ const StandardRule = require('../models/standardRule.model')
 const ApplicationLine = require('../models/applicationLine.model')
 
 module.exports = class PermitSelectController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {authToken, application} = await this.createApplicationContext(request, {application: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     pageContext.formValues = request.payload
@@ -20,12 +20,12 @@ module.exports = class PermitSelectController extends BaseController {
     pageContext.standardRules = await StandardRule.list(authToken)
     pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
-    return this.showView(request, reply, 'permitSelect', pageContext)
+    return this.showView(request, h, 'permitSelect', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       const {authToken, applicationId} = await this.createApplicationContext(request)
 
@@ -44,7 +44,7 @@ module.exports = class PermitSelectController extends BaseController {
       // Set the application ID in the cookie
       CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)
 
-      return this.redirect(request, reply, Constants.Routes.TASK_LIST.path)
+      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
     }
   }
 }

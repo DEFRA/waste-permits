@@ -39,7 +39,10 @@ module.exports = class GeneralTestHelper {
     Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
   }
 
-  test (excludeCookieGetTests = false, excludeCookiePostTests = false, excludeAlreadySubnmittedTest = false) {
+  test (options = {
+          excludeCookieGetTests: false,
+          excludeCookiePostTests: false,
+          excludeAlreadySubnmittedTest: false}) {
     const {lab, routePath} = this
 
     lab.beforeEach(() => {
@@ -60,7 +63,7 @@ module.exports = class GeneralTestHelper {
     lab.afterEach(() => { })
 
     lab.experiment('General tests:', () => {
-      if (!excludeCookieGetTests) {
+      if (!options.excludeCookieGetTests) {
         lab.test(`GET ${routePath} redirects to timeout screen when the cookie is not found`, async () => {
           CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_NOT_FOUND
 
@@ -78,7 +81,7 @@ module.exports = class GeneralTestHelper {
         })
       }
 
-      if (!excludeCookiePostTests) {
+      if (!options.excludeCookiePostTests) {
         lab.test(`POST ${routePath} redirects to timeout screen when the cookie is not found`, async () => {
           CookieService.validateCookie = () => COOKIE_RESULT.COOKIE_NOT_FOUND
 
@@ -96,7 +99,7 @@ module.exports = class GeneralTestHelper {
         })
       }
 
-      if (!excludeAlreadySubnmittedTest) {
+      if (!options.excludeAlreadySubnmittedTest) {
         lab.test('Redirects to the Already Submitted screen if the application has already been submitted', async () => {
           Application.prototype.isSubmitted = () => true
 

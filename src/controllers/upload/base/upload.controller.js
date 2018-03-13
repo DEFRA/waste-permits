@@ -19,14 +19,14 @@ module.exports = class UploadController extends BaseController {
     this.nextPath = nextRoute.path
   }
 
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {authToken, applicationId, application} = await this.createApplicationContext(request, {application: true})
 
     const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -43,36 +43,36 @@ module.exports = class UploadController extends BaseController {
       Object.assign(pageContext, await this.getSpecificPageContext(request))
     }
 
-    return this.showView(request, reply, this.view, pageContext)
+    return this.showView(request, h, this.view, pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
 
       const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
       if (!list.length) {
-        return this.handler(request, reply, undefined, UploadController._customError('noFilesUploaded'))
+        return this.handler(request, h, undefined, UploadController._customError('noFilesUploaded'))
       }
       if (this.updateCompleteness) {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
       }
-      return this.redirect(request, reply, this.nextPath)
+      return this.redirect(request, h, this.nextPath)
     }
   }
 
-  async upload (request, reply, errors) {
+  async upload (request, h, errors) {
     try {
       // Validate the cookie
       if (!CookieService.validateCookie(request)) {
-        return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+        return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
       }
 
       // Post if it's not an attempt to upload a file
       if (!request.payload['is-upload-file']) {
-        return this.doPost(request, reply, errors)
+        return this.doPost(request, h, errors)
       }
 
       // Apply custom validation if required
@@ -81,7 +81,7 @@ module.exports = class UploadController extends BaseController {
       }
 
       if (errors && errors.details) {
-        return this.doGet(request, reply, errors)
+        return this.doGet(request, h, errors)
       }
 
       const {authToken, applicationId, application} = await this.createApplicationContext(request, {application: true})
@@ -97,7 +97,7 @@ module.exports = class UploadController extends BaseController {
 
       // Make sure no duplicate files are uploaded
       if (this._haveDuplicateFiles(fileData, annotationsList)) {
-        return this.handler(request, reply, UploadController._customError('duplicateFile'))
+        return this.handler(request, h, UploadController._customError('duplicateFile'))
       }
 
       // Save each file as an attachment to an annotation
@@ -111,17 +111,17 @@ module.exports = class UploadController extends BaseController {
 
       // Remove temporary uploads directory
       await this._removeTempUploadDirectory(uploadPath)
-      return this.redirect(request, reply, this.path)
+      return this.redirect(request, h, this.path)
     } catch (error) {
       LoggingService.logError(error, request)
-      return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
   }
 
-  async remove (request, reply) {
+  async remove (request, h) {
     // Validate the cookie
     if (!CookieService.validateCookie(request)) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
 
     const {authToken, applicationId} = await this.createApplicationContext(request)
@@ -130,17 +130,17 @@ module.exports = class UploadController extends BaseController {
 
     // make sure this annotation belongs to this application
     if (annotation.applicationId !== applicationId) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
     }
     await annotation.delete(authToken, annotationId)
-    return this.redirect(request, reply, this.path)
+    return this.redirect(request, h, this.path)
   }
 
-  async uploadFailAction (request, reply, errors) {
+  async uploadFailAction (request, h, errors) {
     if (errors && errors.output && errors.output.statusCode === Constants.Errors.REQUEST_ENTITY_TOO_LARGE) {
       errors = UploadController._customError('fileTooBig')
     }
-    return this.doGet(request, reply, errors).takeover()
+    return this.doGet(request, h, errors).takeover()
   }
 
   _containsFilename (filename, fileList) {

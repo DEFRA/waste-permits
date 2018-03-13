@@ -12,12 +12,12 @@ module.exports = class CompanyTypeController extends BaseController {
     this.orginalPageHeading = route.pageHeading
   }
 
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -25,7 +25,7 @@ module.exports = class CompanyTypeController extends BaseController {
     const companyType = company ? Constants.Company.Type[company.type] : undefined
 
     if (!companyType) {
-      return this.redirect(request, reply, Constants.Routes.COMPANY_CHECK_STATUS.path)
+      return this.redirect(request, h, Constants.Routes.COMPANY_CHECK_STATUS.path)
     }
 
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({
@@ -37,6 +37,6 @@ module.exports = class CompanyTypeController extends BaseController {
     pageContext.companyType = companyType
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return this.showView(request, reply, 'companyCheckType', pageContext)
+    return this.showView(request, h, 'companyCheckType', pageContext)
   }
 }

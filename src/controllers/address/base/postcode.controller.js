@@ -6,12 +6,12 @@ const CookieService = require('../../../services/cookie.service')
 const Address = require('../../../models/address.model')
 
 module.exports = class PostcodeController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -22,7 +22,7 @@ module.exports = class PostcodeController extends BaseController {
       if (address) {
         // If the manual entry flag is set then redirect off to the mamual address entry page instead
         if (!address.fromAddressLookup) {
-          return this.redirect(request, reply, this.getManualEntryRoute())
+          return this.redirect(request, h, this.getManualEntryRoute())
         }
         pageContext.formValues = {
           postcode: address.postcode
@@ -42,10 +42,10 @@ module.exports = class PostcodeController extends BaseController {
     this.customisePageContext(pageContext)
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return this.showView(request, reply, 'address/postcode', pageContext)
+    return this.showView(request, h, 'address/postcode', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     const {authToken} = await this.createApplicationContext(request)
     const postcode = request.payload['postcode']
     const errorPath = 'postcode'
@@ -69,9 +69,9 @@ module.exports = class PostcodeController extends BaseController {
     }
 
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
-      return this.redirect(request, reply, this.getAddressSelectionPath())
+      return this.redirect(request, h, this.getAddressSelectionPath())
     }
   }
 

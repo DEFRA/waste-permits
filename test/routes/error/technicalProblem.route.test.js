@@ -26,7 +26,10 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Technical Problem page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(true, true, true)
+  new GeneralTestHelper(lab, routePath).test({
+    excludeCookieGetTests: true,
+    excludeCookiePostTests: true,
+    excludeAlreadySubnmittedTest: true})
 
   lab.test(`GET ${routePath} returns the technical problem page correctly`, async () => {
     const res = await server.inject(getRequest)

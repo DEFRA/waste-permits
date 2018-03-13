@@ -38,7 +38,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Site Upload Site plan tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test(false, true, false)
+  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
+    excludeCookiePostTests: true})
 
   const {uploadPath, removePath} = paths
 

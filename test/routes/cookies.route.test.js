@@ -29,7 +29,10 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Cookies page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test(true, true, true)
+  new GeneralTestHelper(lab, routePath).test({
+    excludeCookieGetTests: true,
+    excludeCookiePostTests: true,
+    excludeAlreadySubnmittedTest: true})
 
   lab.test(`GET ${routePath} success`, async () => {
     const request = {

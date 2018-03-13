@@ -6,12 +6,12 @@ const Account = require('../models/account.model')
 const Utilities = require('../utilities/utilities')
 
 module.exports = class CompanyNumberController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {application, account} = await this.createApplicationContext(request, {application: true, account: true})
 
     if (application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -23,12 +23,12 @@ module.exports = class CompanyNumberController extends BaseController {
         }
       }
     }
-    return this.showView(request, reply, 'companyNumber', pageContext)
+    return this.showView(request, h, 'companyNumber', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       const {authToken, application} = await this.createApplicationContext(request, {application: true})
 
@@ -48,7 +48,7 @@ module.exports = class CompanyNumberController extends BaseController {
         await application.save(authToken)
       }
 
-      return this.redirect(request, reply, Constants.Routes.COMPANY_CHECK_TYPE.path)
+      return this.redirect(request, h, Constants.Routes.COMPANY_CHECK_TYPE.path)
     }
   }
 }

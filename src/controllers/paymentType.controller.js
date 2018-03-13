@@ -5,12 +5,12 @@ const BaseController = require('./base.controller')
 const {CARD_PAYMENT, BACS_PAYMENT} = Constants.Dynamics.PaymentTypes
 
 module.exports = class PaymentTypeController extends BaseController {
-  async doGet (request, reply, errors) {
+  async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {application, applicationLine} = await this.createApplicationContext(request, {application: true, applicationLine: true})
 
     if (!application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.NOT_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
     }
 
     if (request.payload) {
@@ -29,14 +29,14 @@ module.exports = class PaymentTypeController extends BaseController {
 
     pageContext.cost = value.toLocaleString()
 
-    return this.showView(request, reply, 'paymentType', pageContext)
+    return this.showView(request, h, 'paymentType', pageContext)
   }
 
-  async doPost (request, reply, errors) {
+  async doPost (request, h, errors) {
     // Not implemented yet
     let nextPath
     if (errors && errors.details) {
-      return this.doGet(request, reply, errors)
+      return this.doGet(request, h, errors)
     } else {
       const paymentType = parseInt(request.payload['payment-type'])
       switch (paymentType) {
@@ -49,7 +49,7 @@ module.exports = class PaymentTypeController extends BaseController {
         default:
           throw new Error(`Unexpected payment type (${paymentType})`)
       }
-      return this.redirect(request, reply, nextPath)
+      return this.redirect(request, h, nextPath)
     }
   }
 }

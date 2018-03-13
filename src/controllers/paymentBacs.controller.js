@@ -5,12 +5,12 @@ const BaseController = require('./base.controller')
 const Payment = require('../models/payment.model')
 
 module.exports = class PaymentBacsController extends BaseController {
-  async doGet (request, reply) {
+  async doGet (request, h) {
     const pageContext = this.createPageContext()
     const {application} = await this.createApplicationContext(request, {application: true})
 
     if (!application.isSubmitted()) {
-      return this.redirect(request, reply, Constants.Routes.ERROR.NOT_SUBMITTED.path)
+      return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
     }
 
     // TODO confirm if this is needed for BACS screen
@@ -18,13 +18,13 @@ module.exports = class PaymentBacsController extends BaseController {
 
     // Needs alreadypaid screen??????
     // if (application.isPaidFor()) {
-    //   return this.redirect(request, reply, Constants.Routes.ERROR.ALREADY_PAID.path)
+    //   return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_PAID.path)
     // }
 
-    return this.showView(request, reply, 'paymentBacs', pageContext)
+    return this.showView(request, h, 'paymentBacs', pageContext)
   }
 
-  async doPost (request, reply) {
+  async doPost (request, h) {
     const {authToken, applicationLine} = await this.createApplicationContext(request, {application: false, applicationLine: true})
 
     const {value = 0} = applicationLine
@@ -35,6 +35,6 @@ module.exports = class PaymentBacsController extends BaseController {
     payment.statusCode = Constants.Dynamics.PaymentStatusCodes.ISSUED
     await payment.save(authToken)
 
-    return this.redirect(request, reply, Constants.Routes.APPLICATION_RECEIVED.path)
+    return this.redirect(request, h, Constants.Routes.APPLICATION_RECEIVED.path)
   }
 }
