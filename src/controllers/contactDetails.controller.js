@@ -10,10 +10,11 @@ const ContactDetails = require('../models/taskList/contactDetails.model')
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, application} = await this.createApplicationContext(request, {application: true})
+    const {authToken, applicationId, application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
 
-    if (application.isSubmitted()) {
-      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+    const redirectPath = await this.checkRouteAccess(application, payment)
+    if (redirectPath) {
+      return this.redirect(request, h, redirectPath)
     }
 
     if (request.payload) {

@@ -12,6 +12,7 @@ const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
 const Location = require('../../src/models/location.model')
 const LocationDetail = require('../../src/models/locationDetail.model')
+const Payment = require('../../src/models/payment.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
@@ -55,12 +56,14 @@ lab.beforeEach(() => {
     payload: {}
   }
 
-    // Create a sinon sandbox to stub methods
+  // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
-    // Stub methods
+  // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Location.prototype, 'save').value(() => {})
   sandbox.stub(LocationDetail.prototype, 'save').value(() => {})

@@ -11,16 +11,12 @@ const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Application = require('../../../../src/models/application.model')
 const Confidentiality = require('../../../../src/models/taskList/confidentiality.model')
+const Payment = require('../../../../src/models/payment.model')
 const LoggingService = require('../../../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
-let validateCookieStub
-let applicationGetByIdStub
-let applicationIsSubmittedStub
-let applicationSaveStub
-let confidentialityUpdateCompletenessStub
-let getByIdStub
-let logErrorStub
+let sandbox
+
 let fakeApplication
 
 const routePath = '/confidentiality'
@@ -34,30 +30,23 @@ lab.beforeEach(() => {
     confidentiality: true
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  getByIdStub = Application.getById
-  Application.getById = () => Promise.resolve(new Application(fakeApplication))
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => false)
+  sandbox.stub(Confidentiality, 'updateCompleteness').value(() => {})
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  Application.getById = applicationGetByIdStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
-  LoggingService.logError = logErrorStub
-  Application.getById = getByIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Is part of your application commercially confidential? page tests:', () => {
@@ -137,20 +126,9 @@ lab.experiment('Is part of your application commercially confidential? page test
           'declaration-details': fakeApplication.confidentialityDetails
         }
       }
-
-      // Stub methods
-      applicationSaveStub = Application.prototype.save
-      Application.prototype.save = () => {}
-
-      confidentialityUpdateCompletenessStub = Confidentiality.updateCompleteness
-      Confidentiality.updateCompleteness = () => {}
     })
 
-    lab.afterEach(() => {
-      // Restore stubbed methods
-      Application.prototype.save = applicationSaveStub
-      Confidentiality.updateCompleteness = confidentialityUpdateCompletenessStub
-    })
+    lab.afterEach(() => {})
 
     lab.experiment('success', () => {
       lab.test('when application is saved', async () => {

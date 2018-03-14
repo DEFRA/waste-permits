@@ -1,15 +1,13 @@
 'use strict'
 
-// const Constants = require('../../constants')
+const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 
 module.exports = class NotPaidController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
 
-    // TODO: We don't know that the payment route is yet
-    pageContext.payForApplicationRoute = 'UNKNOWN ROUTE'
-    // pageContext.payForApplicationRoute = Constants.Routes.PAY_FOR_APPLICATION.path
+    pageContext.payForApplicationRoute = Constants.Routes.PAY_TYPE.path
 
     return this.showView(request, h, 'error/notPaid', pageContext)
   }

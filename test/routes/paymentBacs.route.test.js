@@ -68,7 +68,7 @@ lab.afterEach(() => {
 
 lab.experiment(`You’ve chosen to pay by bank transfer using Bacs:`, () => {
   new GeneralTestHelper(lab, routePath).test({
-    excludeAlreadySubnmittedTest: true})
+    excludeAlreadySubmittedTest: true})
 
   const getDoc = async (request) => {
     const res = await server.inject(request)

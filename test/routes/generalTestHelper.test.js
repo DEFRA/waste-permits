@@ -5,12 +5,14 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 
 const Application = require('../../src/models/application.model')
+const Payment = require('../../src/models/payment.model')
 const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 const cookieTimeoutPath = '/errors/timeout'
 const startAtBeginningRoutePath = '/errors/order/start-at-beginning'
 const alreadySubmittedRoutePath = '/errors/order/done-cant-go-back'
+const notPaidRoutePath = '/errors/order/card-payment-not-complete'
 
 let getRequest, postRequest
 
@@ -40,9 +42,9 @@ module.exports = class GeneralTestHelper {
   }
 
   test (options = {
-          excludeCookieGetTests: false,
-          excludeCookiePostTests: false,
-          excludeAlreadySubnmittedTest: false}) {
+    excludeCookieGetTests: false,
+    excludeCookiePostTests: false,
+    excludeAlreadySubmittedTest: false}) {
     const {lab, routePath} = this
 
     lab.beforeEach(() => {
@@ -99,13 +101,23 @@ module.exports = class GeneralTestHelper {
         })
       }
 
-      if (!options.excludeAlreadySubnmittedTest) {
-        lab.test('Redirects to the Already Submitted screen if the application has already been submitted', async () => {
+      if (!options.excludeAlreadySubmittedTest) {
+        lab.test('Redirects to the Already Submitted screen if the application has already been submitted and paid for', async () => {
           Application.prototype.isSubmitted = () => true
+          Payment.prototype.isPaid = () => true
 
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(alreadySubmittedRoutePath)
+        })
+
+        lab.test('Redirects to the Not Paid screen if the application has been submitted but not paid for', async () => {
+          Application.prototype.isSubmitted = () => true
+          Payment.prototype.isPaid = () => false
+
+          const res = await server.inject(getRequest)
+          Code.expect(res.statusCode).to.equal(302)
+          Code.expect(res.headers['location']).to.equal(notPaidRoutePath)
         })
       }
 

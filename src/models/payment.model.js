@@ -22,6 +22,10 @@ class Payment extends BaseModel {
     ]
   }
 
+  isPaid () {
+    return Boolean(this.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED)
+  }
+
   static async getByApplicationLineIdAndType (authToken, applicationLineId, type) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const filter = `_defra_applicationlineid_value eq ${applicationLineId} and defra_type eq ${type}`
@@ -33,7 +37,7 @@ class Payment extends BaseModel {
         return Payment.dynamicsToModel(result)
       }
     } catch (error) {
-      LoggingService.logError(`Unable to get Payment by Type(${type}): ${error}`)
+      LoggingService.logError(`Unable to get Payment by Application Line ID and Type(${type}): ${error}`)
       throw error
     }
   }

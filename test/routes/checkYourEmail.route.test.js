@@ -9,6 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/models/application.model')
+const Payment = require('../../src/models/payment.model')
 const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
@@ -36,6 +37,8 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -43,7 +46,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment(`Search for 'standard rules permit application' in your email page tests:`, () => {
+lab.experiment(`Check your email: Search for 'standard rules permit application' in your email page tests:`, () => {
   new GeneralTestHelper(lab, routePath).test()
 
   lab.test('The page should have a back link', async () => {

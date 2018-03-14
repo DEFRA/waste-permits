@@ -11,16 +11,11 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
 const Account = require('../../src/models/account.model')
+const Payment = require('../../src/models/payment.model')
 const LoggingService = require('../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let validateCookieStub
-let accountSaveStub
-let getByApplicationIdStub
-let applicationGetByIdStub
-let accountGetByCompanyNumberStub
-let applicationIsSubmittedStub
-let logErrorStub
+let sandbox
 
 let fakeAccount
 let fakeApplication
@@ -39,33 +34,43 @@ lab.beforeEach(() => {
   }
 
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
+  // validateCookieStub = CookieService.validateCookie
+  // CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
 
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
+  // logErrorStub = LoggingService.logError
+  // LoggingService.logError = () => {}
 
-  getByApplicationIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => undefined
+  // getByApplicationIdStub = Account.getByApplicationId
+  // Account.getByApplicationId = () => undefined
 
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
+  // applicationGetByIdStub = Application.getById
+  // Application.getById = () => new Application(fakeApplication)
 
-  accountGetByCompanyNumberStub = Account.getByCompanyNumber
-  Account.getByCompanyNumber = () => new Account(fakeAccount)
+  // accountGetByCompanyNumberStub = Account.getByCompanyNumber
+  // Account.getByCompanyNumber = () => new Account(fakeAccount)
 
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
+  // applicationIsSubmittedStub = Application.prototype.isSubmitted
+  // Application.prototype.isSubmitted = () => false
+})
+
+lab.beforeEach(() => {
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
+  // Stub methods
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Account, 'getByApplicationId').value(() => Promise.resolve(new Account(fakeAccount)))
+  sandbox.stub(Account, 'getByCompanyNumber').value(() => new Account(fakeAccount))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  Account.getByApplicationId = getByApplicationIdStub
-  Application.getById = applicationGetByIdStub
-  Account.getByCompanyNumber = accountGetByCompanyNumberStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Get company number page tests:', () => {
@@ -93,11 +98,6 @@ lab.experiment('Get company number page tests:', () => {
         headers: {},
         payload: {}
       }
-
-      Account.getByApplicationId = () => Promise.resolve(new Account(fakeAccount))
-
-      accountSaveStub = Account.prototype.save
-      Account.prototype.save = () => new Account(fakeAccount)
     })
 
     lab.test('should have a back link', async () => {
@@ -138,17 +138,9 @@ lab.experiment('Get company number page tests:', () => {
         headers: {},
         payload: {'company-number': fakeAccount.companyNumber}
       }
-
-      accountSaveStub = Account.prototype.save
-      Account.prototype.save = () => {
-        return fakeAccount.id
-      }
     })
 
-    lab.afterEach(() => {
-      // Restore stubbed methods
-      Account.prototype.save = accountSaveStub
-    })
+    lab.afterEach(() => {})
 
     lab.experiment('success', () => {
       lab.test('when account is saved', async () => {
@@ -158,7 +150,7 @@ lab.experiment('Get company number page tests:', () => {
       })
 
       lab.test('when account is updated', async () => {
-        Account.getByApplicationId = () => Promise.resolve(new Account(fakeAccount))
+        // Account.getByApplicationId = () => Promise.resolve(new Account(fakeAccount))
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)

@@ -10,6 +10,7 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
+const Payment = require('../../src/models/payment.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const TaskList = require('../../src/models/taskList/taskList.model')
 const {COOKIE_RESULT} = require('../../src/constants')
@@ -18,7 +19,8 @@ let generateCookieStub
 let validateCookieStub
 let applicationGetByIdStub
 let applicationIsSubmittedStub
-let applicationIsPaidForStub
+let applicationIsPaidStub
+let paymentGetBacsPaymentDetailsStub
 let standardRuleGetByCodeStub
 let taskListGetByApplicationLineIdStub
 let applicationLineGetByIdStub
@@ -244,8 +246,11 @@ lab.beforeEach(() => {
   applicationIsSubmittedStub = Application.prototype.isSubmitted
   Application.prototype.isSubmitted = () => false
 
-  applicationIsPaidForStub = Application.prototype.isPaidFor
-  Application.prototype.isPaidFor = () => false
+  applicationIsPaidStub = Application.prototype.isPaid
+  Application.prototype.isPaid = () => false
+
+  paymentGetBacsPaymentDetailsStub = Payment.getBacsPaymentDetails
+  Payment.getBacsPaymentDetails = () => new Payment({})
 
   standardRuleGetByCodeStub = StandardRule.getByCode
   StandardRule.getByCode = async () => fakeStandardRule
@@ -266,7 +271,8 @@ lab.afterEach(() => {
   CookieService.validateCookie = validateCookieStub
   Application.getById = applicationGetByIdStub
   Application.prototype.isSubmitted = applicationIsSubmittedStub
-  Application.prototype.isPaidFor = applicationIsPaidForStub
+  Application.prototype.isPaid = applicationIsPaidStub
+  Payment.getBacsPaymentDetails = paymentGetBacsPaymentDetailsStub
   StandardRule.getByCode = standardRuleGetByCodeStub
   TaskList.getByApplicationLineId = taskListGetByApplicationLineIdStub
   ApplicationLine.getById = applicationLineGetByIdStub
@@ -276,7 +282,7 @@ lab.afterEach(() => {
 lab.experiment('Task List page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookiePostTests: true,
-    excludeAlreadySubnmittedTest: true})
+    excludeAlreadySubmittedTest: true})
 
   lab.test('The page should NOT have a back link', async () => {
     const res = await server.inject(getRequest)
@@ -310,7 +316,7 @@ lab.experiment('Task List page tests:', () => {
 
   lab.test(`GET ${routePath} redirects to the Not Paid route ${notPaidForRoute} if the applicaiton has been submitted but not paid for yet`, async () => {
     Application.prototype.isSubmitted = () => true
-    Application.prototype.isPaidFor = () => false
+    Application.prototype.isPaid = () => false
 
     const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(302)
@@ -319,7 +325,7 @@ lab.experiment('Task List page tests:', () => {
 
   lab.test(`GET ${routePath} redirects to the Already Submitted route ${alreadySubmittedRoutePath} if the application has been submitted and paid for`, async () => {
     Application.prototype.isSubmitted = () => true
-    Application.prototype.isPaidFor = () => true
+    Application.prototype.isPaid = () => true
 
     const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(302)

@@ -40,7 +40,7 @@ lab.afterEach(() => {
 lab.experiment('FirePrevention Upload FirePrevention plan tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookiePostTests: true,
-    excludeAlreadySubnmittedTest: true})
+    excludeAlreadySubmittedTest: true})
 
   const {uploadPath, removePath} = paths
 

@@ -10,8 +10,9 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
-const Account = require('../../src/models/account.model')
 const Application = require('../../src/models/application.model')
+const Account = require('../../src/models/account.model')
+const Payment = require('../../src/models/payment.model')
 const LoggingService = require('../../src/services/logging.service')
 
 const {COOKIE_RESULT} = require('../../src/constants')
@@ -21,13 +22,7 @@ const COMPANY_TYPES = {
 
 const VALID_TYPE = 'valid type'
 
-let validateCookieStub
-let companyLookupGetCompanyStub
-let companyLookupGetActiveDirectors
-let accountGetByApplicationIdStub
-let applicationGetByIdStub
-let applicationIsSubmittedStub
-let logErrorStub
+let sandbox
 
 let fakeApplication
 let fakeAccount
@@ -54,45 +49,31 @@ lab.beforeEach(() => {
     type: 'UK_ESTABLISHMENT'
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  companyLookupGetCompanyStub = CompanyLookupService.getCompany
-  CompanyLookupService.getCompany = () => fakeCompany
-
-  companyLookupGetActiveDirectors = CompanyLookupService.getActiveDirectors
-  CompanyLookupService.getActiveDirectors = () => [{}]
-
-  accountGetByApplicationIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => fakeAccount
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompany)
+  sandbox.stub(CompanyLookupService, 'getActiveDirectors').value(() => [{}])
+  sandbox.stub(Account, 'getByApplicationId').value(() => fakeAccount)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  CompanyLookupService.getActiveDirectors = companyLookupGetActiveDirectors
-  CompanyLookupService.getCompany = companyLookupGetCompanyStub
-  Account.getByApplicationId = accountGetByApplicationIdStub
-  Application.getById = applicationGetByIdStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
+
 
 lab.experiment('Check company type page tests:', () => {
   // There is no POST for this route
   new GeneralTestHelper(lab, routePath).test({
-    excludeCookiePostTests: true,
-    excludeAlreadySubnmittedTest: true})
+    excludeCookiePostTests: true})
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc

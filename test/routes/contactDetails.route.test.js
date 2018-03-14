@@ -3,6 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
@@ -12,29 +13,19 @@ const Application = require('../../src/models/application.model')
 const Account = require('../../src/models/account.model')
 const AddressDetail = require('../../src/models/addressDetail.model')
 const Contact = require('../../src/models/contact.model')
+const Payment = require('../../src/models/payment.model')
 const ContactDetails = require('../../src/models/taskList/contactDetails.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
+
+let sandbox
 
 let fakeApplication
 let fakeAccount
 let fakeContact
 let fakeCompanySecretaryDetails
 let fakePrimaryContactDetails
-
-let validateCookieStub
-let logErrorStub
-let contactSaveStub
-let contactGetByIdStub
-let contactDetailsUpdateCompletenessStub
-let applicationGetByIdStub
-let applicationIsSubmittedStub
-let applicationSaveStub
-let accountGetByIdStub
-let addressDetailGetCompanySecretaryDetailsStub
-let addressDetailGetPrimaryContactDetailsStub
-let addressDetailSaveStub
 
 let fakeApplicationId = 'APPLICATION_ID'
 let fakeContactId = 'CONTACT_ID'
@@ -79,59 +70,29 @@ lab.beforeEach(() => {
     'email': fakeContact.email,
     'company-secretary-email': fakeCompanySecretaryDetails.email
   }
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
 
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  accountGetByIdStub = Account.getById
-  Account.getById = () => new Account(fakeAccount)
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
-
-  applicationSaveStub = Application.prototype.save
-  Application.prototype.save = () => {}
-
-  addressDetailGetCompanySecretaryDetailsStub = AddressDetail.getCompanySecretaryDetails
-  AddressDetail.getCompanySecretaryDetails = () => new AddressDetail(fakeCompanySecretaryDetails)
-
-  addressDetailGetPrimaryContactDetailsStub = AddressDetail.getPrimaryContactDetails
-  AddressDetail.getPrimaryContactDetails = () => new AddressDetail(fakePrimaryContactDetails)
-
-  addressDetailSaveStub = AddressDetail.save
-  AddressDetail.prototype.save = () => {}
-
-  contactGetByIdStub = Contact.getById
-  Contact.getById = () => new Contact(fakeContact)
-
-  contactSaveStub = Contact.prototype.save
-  Contact.prototype.save = () => {}
-
-  contactDetailsUpdateCompletenessStub = ContactDetails.updateCompleteness
-  ContactDetails.updateCompleteness = () => {}
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(AddressDetail, 'getCompanySecretaryDetails').value(() => new AddressDetail(fakeCompanySecretaryDetails))
+  sandbox.stub(AddressDetail, 'getPrimaryContactDetails').value(() => new AddressDetail(fakePrimaryContactDetails))
+  sandbox.stub(AddressDetail.prototype, 'save').value(() => {})
+  sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
+  sandbox.stub(Contact.prototype, 'save').value(() => {})
+  sandbox.stub(ContactDetails, 'updateCompleteness').value(() => {})
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  LoggingService.logError = logErrorStub
-  Account.getById = accountGetByIdStub
-  AddressDetail.getCompanySecretaryDetails = addressDetailGetCompanySecretaryDetailsStub
-  AddressDetail.getPrimaryContactDetails = addressDetailGetPrimaryContactDetailsStub
-  AddressDetail.save = addressDetailSaveStub
-  Application.getById = applicationGetByIdStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
-  Application.save = applicationSaveStub
-  Contact.getById = contactGetByIdStub
-  Contact.save = contactSaveStub
-  ContactDetails.updateCompleteness = contactDetailsUpdateCompletenessStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Contact details page tests:', () => {

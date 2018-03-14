@@ -7,16 +7,11 @@ const TaskList = require('../models/taskList/taskList.model')
 module.exports = class TaskListController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationLineId, application, standardRule} = await this.createApplicationContext(request, {application: true, standardRule: true})
+    const {authToken, applicationLineId, application, payment, standardRule} = await this.createApplicationContext(request, {application: true, payment: true, standardRule: true})
 
-    // If the application has been submitted
-    if (application.isSubmitted()) {
-      // If the application has not been paid for
-      if (!application.isPaidFor()) {
-        return this.redirect(request, h, Constants.Routes.ERROR.NOT_PAID.path)
-      } else {
-        return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-      }
+    const redirectPath = await this.checkRouteAccess(application, payment)
+    if (redirectPath) {
+      return this.redirect(request, h, redirectPath)
     }
 
     pageContext.standardRule = standardRule

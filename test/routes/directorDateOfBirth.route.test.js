@@ -12,6 +12,7 @@ const Account = require('../../src/models/account.model')
 const Application = require('../../src/models/application.model')
 const ApplicationContact = require('../../src/models/applicationContact.model')
 const Contact = require('../../src/models/contact.model')
+const Payment = require('../../src/models/payment.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let validateCookieStub
@@ -22,6 +23,8 @@ let contactListStub
 let contactSaveStub
 let applicationContactGetStub
 let applicationContactSaveStub
+let paymentGetByApplicationLineIdAndTypeStub
+let paymentIsPaidStub
 
 const routePath = '/permit-holder/company/director-date-of-birth'
 const nextRoutePath = '/permit-holder/company/declare-offences'
@@ -125,6 +128,12 @@ lab.beforeEach(() => {
 
   applicationContactSaveStub = ApplicationContact.prototype.save
   ApplicationContact.prototype.save = () => undefined
+
+  paymentGetByApplicationLineIdAndTypeStub = Payment.getBacsPaymentDetails
+  Payment.getBacsPaymentDetails = () => new Payment({})
+
+  paymentIsPaidStub = Payment.prototype.isPaid
+  Payment.prototype.isPaid = () => false
 })
 
 lab.afterEach(() => {
@@ -137,6 +146,8 @@ lab.afterEach(() => {
   Contact.prototype.save = contactSaveStub
   ApplicationContact.get = applicationContactGetStub
   ApplicationContact.prototype.save = applicationContactSaveStub
+  Payment.getBacsPaymentDetails = paymentGetByApplicationLineIdAndTypeStub
+  Payment.prototype.isPaid = Payment.prototype.isPaid
 })
 
 const checkPageElements = async (request, expectedPageHeading, expectedValues) => {

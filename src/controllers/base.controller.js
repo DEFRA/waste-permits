@@ -8,6 +8,7 @@ const Application = require('../models/application.model')
 const ApplicationLine = require('../models/applicationLine.model')
 const Account = require('../models/account.model')
 const Contact = require('../models/contact.model')
+const Payment = require('../models/payment.model')
 const StandardRule = require('../models/standardRule.model')
 
 module.exports = class BaseController {
@@ -52,17 +53,19 @@ module.exports = class BaseController {
       applicationLine: false,
       account: false,
       contact: false,
+      payment: false,
       standardRule: false}) {
     const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
     const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
     const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
 
     // Query in parallel for optional entities
-    const [application, applicationLine, account, contact, standardRule] = await Promise.all([
+    const [application, applicationLine, account, contact, payment, standardRule] = await Promise.all([
       options.application ? Application.getById(authToken, applicationId) : Promise.resolve(undefined),
       options.applicationLine ? ApplicationLine.getById(authToken, applicationLineId) : Promise.resolve(undefined),
       options.account ? Account.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
       options.contact ? Contact.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
+      options.payment ? Payment.getBacsPaymentDetails(authToken, applicationLineId) : Promise.resolve(undefined),
       options.standardRule ? StandardRule.getByApplicationLineId(authToken, applicationLineId) : Promise.resolve(undefined)
     ])
 
@@ -74,7 +77,27 @@ module.exports = class BaseController {
       applicationLine,
       account,
       contact,
+      payment,
       standardRule
+    }
+  }
+
+  async checkRouteAccess (application, payment, options = undefined) {
+    if (options) {
+
+    } else {
+      // If the application has been submitted
+      if (application.isSubmitted()) {
+        if (application.isPaid() || (payment && payment.isPaid())) {
+          // The application has already been paid for
+          return Constants.Routes.ERROR.ALREADY_SUBMITTED.path
+          // return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+        } else {
+          // The application needs to be paid for
+          return Constants.Routes.ERROR.NOT_PAID.path
+          // return this.redirect(request, h, Constants.Routes.ERROR.NOT_PAID.path)
+        }
+      }
     }
   }
 

@@ -10,6 +10,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
+const Payment = require('../../src/models/payment.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
@@ -46,6 +47,9 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(SiteNameAndLocation, 'getSiteName').value(() => siteName)
   sandbox.stub(SiteNameAndLocation, 'saveSiteName').value(() => {})

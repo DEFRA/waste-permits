@@ -63,6 +63,8 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     // If all the task list items are not complete
     if (!TaskList.isComplete(authToken, application.id)) {
       return this.redirect(request, h, Constants.Routes.ERROR.NOT_COMPLETE.path)
+    } else if (application.isSubmitted()) {
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     } else {
       return this.showView(request, h, 'checkBeforeSending', pageContext)
     }

@@ -13,10 +13,11 @@ module.exports = class CompanyStatusController extends BaseController {
   }
 
   async doGet (request, h, errors) {
-    const {application, account} = await this.createApplicationContext(request, {application: true, account: true})
+    const {application, account, payment} = await this.createApplicationContext(request, {application: true, account: true, payment: true})
 
-    if (application.isSubmitted()) {
-      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+    const redirectPath = await this.checkRouteAccess(application, payment)
+    if (redirectPath) {
+      return this.redirect(request, h, redirectPath)
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)

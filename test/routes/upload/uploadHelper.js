@@ -7,6 +7,7 @@ const DOMParser = require('xmldom').DOMParser
 const fs = require('fs')
 const Annotation = require('../../../src/models/annotation.model')
 const Application = require('../../../src/models/application.model')
+const Payment = require('../../../src/models/payment.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../../src/constants')
@@ -76,6 +77,8 @@ module.exports = class UploadTestHelper {
     sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(LoggingService, 'logError').value(() => {})
+    sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+    sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   }
 
   getSuccess (options, additionalTests = []) {

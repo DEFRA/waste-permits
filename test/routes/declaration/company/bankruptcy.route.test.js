@@ -10,17 +10,13 @@ const GeneralTestHelper = require('../../generalTestHelper.test')
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Application = require('../../../../src/models/application.model')
+const Payment = require('../../../../src/models/payment.model')
 const CompanyDetails = require('../../../../src/models/taskList/companyDetails.model')
 const LoggingService = require('../../../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
-let validateCookieStub
-let applicationGetByIdStub
-let applicationIsSubmittedStub
-let applicationSaveStub
-let getByIdStub
-let logErrorStub
-let companyDetailsUpdateCompletenessStub
+let sandbox
+
 let fakeApplication
 
 const routePath = '/permit-holder/company/bankruptcy-insolvency'
@@ -34,30 +30,23 @@ lab.beforeEach(() => {
     bankruptcy: 'yes'
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
-
-  logErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
-
-  getByIdStub = Application.getById
-  Application.getById = () => Promise.resolve(new Application(fakeApplication))
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
+  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(CompanyDetails, 'updateCompleteness').value(() => {})
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  Application.getById = applicationGetByIdStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
-  LoggingService.logError = logErrorStub
-  Application.getById = getByIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Company Declare Bankruptcy tests:', () => {
@@ -140,20 +129,9 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
           'declaration-details': fakeApplication.bankruptcyDetails
         }
       }
-
-      // Stub methods
-      applicationSaveStub = Application.prototype.save
-      Application.prototype.save = () => {}
-
-      companyDetailsUpdateCompletenessStub = CompanyDetails.updateCompleteness
-      CompanyDetails.updateCompleteness = () => {}
     })
 
-    lab.afterEach(() => {
-      // Restore stubbed methods
-      Application.prototype.save = applicationSaveStub
-      CompanyDetails.updateCompleteness = companyDetailsUpdateCompletenessStub
-    })
+    lab.afterEach(() => {})
 
     lab.experiment('success', () => {
       lab.test('when application is saved', async () => {

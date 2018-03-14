@@ -59,7 +59,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
-    excludeAlreadySubnmittedTest: true})
+    excludeAlreadySubmittedTest: true})
 
   lab.experiment('General page tests:', () => {
     lab.test('The page should NOT have a back link', async () => {

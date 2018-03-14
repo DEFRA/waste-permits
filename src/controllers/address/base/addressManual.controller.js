@@ -7,10 +7,11 @@ const CookieService = require('../../../services/cookie.service')
 module.exports = class AddressManualController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
+    const {authToken, applicationId, applicationLineId, application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
 
-    if (application.isSubmitted()) {
-      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+    const redirectPath = await this.checkRouteAccess(application, payment)
+    if (redirectPath) {
+      return this.redirect(request, h, redirectPath)
     }
 
     if (request.payload) {
