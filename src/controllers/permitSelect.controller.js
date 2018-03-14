@@ -4,6 +4,7 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const StandardRule = require('../models/standardRule.model')
+const StandardRuleType = require('../models/standardRuleType.model')
 const ApplicationLine = require('../models/applicationLine.model')
 
 module.exports = class PermitSelectController extends BaseController {
@@ -18,7 +19,11 @@ module.exports = class PermitSelectController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    pageContext.standardRules = await StandardRule.list(authToken)
+    const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
+    const {category = 'all categories'} = await StandardRuleType.getById(authToken, standardRuleTypeId)
+    pageContext.category = category
+
+    pageContext.standardRules = await StandardRule.list(authToken, standardRuleTypeId)
     pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
     return this.showView(request, h, 'permitSelect', pageContext)
@@ -32,6 +37,10 @@ module.exports = class PermitSelectController extends BaseController {
 
       // Look up the Standard Rule based on the chosen permit type
       const standardRule = await StandardRule.getByCode(authToken, request.payload['chosen-permit'])
+
+      if (!standardRule.canApplyOnline) {
+        return this.redirect(request, h, Constants.Routes.APPLY_OFFLINE.path)
+      }
 
       // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
       const applicationLine = new ApplicationLine({

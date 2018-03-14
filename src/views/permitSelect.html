@@ -2,6 +2,8 @@
 
   {{> common/betaBanner }}
 
+  {{> common/backLink }}
+
   <div class="grid-row">
     <div class="column-two-thirds">
 
@@ -15,15 +17,7 @@
         <fieldset aria-labelledby="permit-select-heading">
           <legend class="visuallyhidden">{{ pageHeading }}</legend>
 
-          <!-- Not in use for MVP
-          <div class="panel panel-border-wide">
-            <p id="select-permit-hint-text">Showing permits for <span id="permit-type-description">DESCRIPTION HERE</span>.
-                <a id="back-to-all-permit-groups-link" href="/{{ permitCategoryRoute }}">
-                Back to all permit groups
-              </a>
-            </p>
-          </div>
-           -->
+          <p id="select-permit-hint-text">Showing permits for <span id="permit-type-description">{{category}}</span>.</p>
 
           <div id="chosen-permit" class="form-group {{#getFormErrorGroupClass errors.chosen-permit}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='chosen-permit-error' message=errors.chosen-permit }}
@@ -34,10 +28,12 @@
               <label id="chosen-permit-{{this.codeForId}}-label" class="selection-button-radio permit-item" for="chosen-permit-{{this.codeForId}}-input">
                 <span id="chosen-permit-{{this.codeForId}}-name" class="permit-name">
                   {{this.permitName}}
+                  {{#if this.limits}}
                   <br>
                   <span id="chosen-permit-{{this.codeForId}}-weight" class="permit-weight">
                     {{this.limits}}
                   </span>
+                  {{/if}}
                 </span>
                 <span id="chosen-permit-{{this.codeForId}}-code" class="permit-code">{{this.code}}</span>
               </label>

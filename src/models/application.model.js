@@ -1,7 +1,6 @@
 'use strict'
 
 const Constants = require('../constants')
-const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
 
@@ -37,21 +36,6 @@ class Application extends BaseModel {
     super(...args)
     const declaration = {args}
     this.declaration = Boolean(declaration)
-  }
-
-  static async getById (authToken, applicationId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const query = encodeURI(`defra_applications(${applicationId})?$select=${Application.selectedDynamicsFields()}`)
-    try {
-      const result = await dynamicsDal.search(query)
-      const application = Application.dynamicsToModel(result)
-      application.id = applicationId
-
-      return application
-    } catch (error) {
-      LoggingService.logError(`Unable to get Application by applicationId: ${error}`)
-      throw error
-    }
   }
 
   isSubmitted () {

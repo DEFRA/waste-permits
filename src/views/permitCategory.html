@@ -2,6 +2,8 @@
 
   {{> common/betaBanner }}
 
+  {{> common/backLink }}
+
   <div class="grid-row">
     <div class="column-two-thirds">
 
@@ -22,15 +24,10 @@
             <div class="multiple-choice">
               <input id="chosen-category-{{this.categoryName}}-input" type="radio" name="chosen-category" value="{{this.id}}">
               <label id="chosen-category-{{this.categoryName}}-label" class="selection-button-radio" for="chosen-category-{{this.categoryName}}-input">
-                <span id="chosen-category-{{this.categoryName}}-category">
-                  {{this.category}}
+                <span id="chosen-category-{{this.categoryName}}-category">{{this.category}}</span>
                   {{#if this.hint}}
-                  <br>
-                  <span class="text-secondary" id="chosen-category-{{this.categoryName}}-hint">
-                    {{this.hint}}
-                  </span>
+                  <span id="chosen-category-{{this.categoryName}}-hint">{{this.hint}}</span>
                   {{/if}}
-                </span>
               </label>
             </div>
             {{/each}}

@@ -19,18 +19,6 @@ class Annotation extends BaseModel {
     ]
   }
 
-  static async getById (authToken, id) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const query = `annotations(${id})?$select=${Annotation.selectedDynamicsFields()}`
-    try {
-      const result = await dynamicsDal.search(query)
-      return Annotation.dynamicsToModel(result)
-    } catch (error) {
-      LoggingService.logError(`Unable to get Annotation by ID: ${error}`)
-      throw error
-    }
-  }
-
   static async listByApplicationIdAndSubject (authToken, applicationId, subject) {
     if (applicationId) {
       const dynamicsDal = new DynamicsDalService(authToken)

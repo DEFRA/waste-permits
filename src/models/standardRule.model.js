@@ -1,7 +1,5 @@
 'use strict'
 
-const Constants = require('../constants')
-
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const ApplicationLine = require('./applicationLine.model')
@@ -19,6 +17,7 @@ class StandardRule extends BaseModel {
   static get mapping () {
     return [
       {field: 'id', dynamics: 'defra_standardruleid'},
+      {field: 'standardRuleTypeId', dynamics: '_defra_standardruletypeid_value'},
       {field: 'permitName', dynamics: 'defra_rulesnamegovuk'},
       {field: 'limits', dynamics: 'defra_limits'},
       {field: 'code', dynamics: 'defra_code'},
@@ -34,13 +33,6 @@ class StandardRule extends BaseModel {
     super(...args)
     const [standardRule] = args
     this.codeForId = StandardRule.transformPermitCode(standardRule.code)
-  }
-
-  // Map the allowed permits into a Dynamics filter that will retrieve the standard rules
-  static getAllowedPermitFilter () {
-    return Constants.ALLOWED_PERMITS
-      .map(permit => `defra_code eq '${permit}'`)
-      .join(' or ')
   }
 
   static async getByCode (authToken, code) {
@@ -72,15 +64,16 @@ class StandardRule extends BaseModel {
     }
   }
 
-  static async list (authToken) {
+  static async list (authToken, standardRuleTypeId) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
-    const filter =
+    let filter =
       // Must be open for applications
-      `defra_canapplyfor eq true` +
+      `defra_canapplyfor eq true`
 
-      // Must be one of the allowed permit types
-      ` and (${this.getAllowedPermitFilter()})`
+    if (standardRuleTypeId) {
+      filter += ` and _defra_standardruletypeid_value eq ${standardRuleTypeId}`
+    }
 
     const query = encodeURI(`defra_standardrules?$select=${StandardRule.selectedDynamicsFields()}&$filter=${filter}&$orderby=defra_nameinrulesetdocument asc`)
     try {
