@@ -19,7 +19,10 @@ const fakeStandardRule = {
   code: 'SR2015 No 18',
   wamitabRiskLevel: 'WAMITAB_RISK_LEVEL',
   codeForId: 'sr2015-no-18',
-  guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL'
+  guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL',
+  canApplyFor: 'STANDARD_RULE_CAN_APPLY_FOR',
+  canApplyOnline: 'STANDARD_RULE_CAN_APPLY_ONLINE',
+  standardRuleTypeId: 'STANDARD_RULE_TYPE_ID'
 }
 
 const fakeDynamicsRecord = (options = {}) => {
@@ -30,7 +33,10 @@ const fakeDynamicsRecord = (options = {}) => {
     defra_wamitabrisklevel: standardRule.wamitabRiskLevel,
     defra_rulesnamegovuk: standardRule.permitName,
     defra_standardruleid: standardRule.id,
-    defra_guidanceurl: standardRule.guidanceUrl
+    defra_guidanceurl: standardRule.guidanceUrl,
+    defra_canapplyfor: standardRule.canApplyFor,
+    defra_canapplyonline: standardRule.canApplyOnline,
+    defra_standardruletypeid: standardRule.standardRuleTypeId
   }
 }
 
@@ -95,5 +101,16 @@ lab.experiment('StandardRule Model tests:', () => {
   lab.test('transformPermitCode() method formats string for an ID correctly', () => {
     const string = 'SR2015 No 10'
     Code.expect(StandardRule.transformPermitCode(string)).to.equal('sr2015-no-10')
+  })
+
+  lab.test('save() method should fail as this entity is readOnly', async () => {
+    let error
+    try {
+      const standardRule = new StandardRule(fakeStandardRule)
+      await standardRule.save()
+    } catch (err) {
+      error = err
+    }
+    Code.expect(error.message).to.equal('Unable to save defra_standardrules: Read only!')
   })
 })

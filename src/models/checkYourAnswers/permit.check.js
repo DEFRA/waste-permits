@@ -1,9 +1,7 @@
 const Constants = require('../../constants')
 const BaseCheck = require('./base.check')
 
-// Not in use for MVP
-// const {path} = Constants.Routes.PERMIT_CATEGORY
-const {path} = Constants.Routes.PERMIT_SELECT
+const {path} = Constants.Routes.PERMIT_CATEGORY
 
 module.exports = class PermitCheck extends BaseCheck {
   get prefix () {

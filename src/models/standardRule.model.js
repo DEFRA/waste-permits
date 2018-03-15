@@ -23,7 +23,10 @@ class StandardRule extends BaseModel {
       {field: 'limits', dynamics: 'defra_limits'},
       {field: 'code', dynamics: 'defra_code'},
       {field: 'wamitabRiskLevel', dynamics: 'defra_wamitabrisklevel'},
-      {field: 'guidanceUrl', dynamics: 'defra_guidanceurl'}
+      {field: 'guidanceUrl', dynamics: 'defra_guidanceurl'},
+      {field: 'canApplyFor', dynamics: 'defra_canapplyfor'},
+      {field: 'canApplyOnline', dynamics: 'defra_canapplyonline'},
+      {field: 'standardRuleTypeId', dynamics: 'defra_standardruletypeid'}
     ]
   }
 

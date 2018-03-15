@@ -19,9 +19,7 @@ module.exports = class TaskListController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    // Not in use for MVP
-    // pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
-    pageContext.permitCategoryRoute = Constants.Routes.PERMIT_SELECT.path
+    pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
     return this.showView(request, h, 'taskList', pageContext)
   }

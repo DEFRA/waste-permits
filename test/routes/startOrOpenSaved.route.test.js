@@ -16,7 +16,7 @@ let validateCookieStub
 let applicationSaveStub
 
 const routePath = '/start/start-or-open-saved'
-const nextRoutePath = '/permit/select'
+const nextRoutePath = '/permit/category'
 
 const getRequest = {
   method: 'GET',
