@@ -91,11 +91,9 @@ module.exports = class BaseController {
         if (application.isPaid() || (payment && payment.isPaid())) {
           // The application has already been paid for
           return Constants.Routes.ERROR.ALREADY_SUBMITTED.path
-          // return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
         } else {
           // The application needs to be paid for
           return Constants.Routes.ERROR.NOT_PAID.path
-          // return this.redirect(request, h, Constants.Routes.ERROR.NOT_PAID.path)
         }
       }
     }
