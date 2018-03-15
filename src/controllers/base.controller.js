@@ -82,7 +82,7 @@ module.exports = class BaseController {
     }
   }
 
-  async checkRouteAccess (application, payment, options = undefined) {
+  async checkRouteAccess (application, payments) {
     if (options) {
 
     } else {
