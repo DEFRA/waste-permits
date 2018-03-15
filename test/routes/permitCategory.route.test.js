@@ -9,6 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/models/application.model')
+const Payment = require('../../src/models/payment.model')
 const StandardRuleType = require('../../src/models/standardRuleType.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
@@ -40,6 +41,8 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(CookieService, 'set').value(() => () => {})

@@ -9,6 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/models/application.model')
+const Payment = require('../../src/models/payment.model')
 const StandardRuleType = require('../../src/models/standardRuleType.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
@@ -48,6 +49,8 @@ lab.beforeEach(() => {
     }
   })
   sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -55,7 +58,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Download and fill in these forms to apply for that permit page tests:', () => {
+lab.experiment('Apply Offline: Download and fill in these forms to apply for that permit page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({excludeCookiePostTests: true})
 
   const getDoc = async (request) => {
