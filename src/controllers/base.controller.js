@@ -82,19 +82,15 @@ module.exports = class BaseController {
     }
   }
 
-  async checkRouteAccess (application, payments) {
-    if (options) {
-
-    } else {
-      // If the application has been submitted
-      if (application.isSubmitted()) {
-        if (application.isPaid() || (payment && payment.isPaid())) {
-          // The application has already been paid for
-          return Constants.Routes.ERROR.ALREADY_SUBMITTED.path
-        } else {
-          // The application needs to be paid for
-          return Constants.Routes.ERROR.NOT_PAID.path
-        }
+  async checkRouteAccess (application, payment) {
+    // If the application has been submitted
+    if (application.isSubmitted()) {
+      if (application.isPaid() || (payment && payment.isPaid())) {
+        // The application has already been paid for
+        return Constants.Routes.ERROR.ALREADY_SUBMITTED.path
+      } else {
+        // The application needs to be paid for
+        return Constants.Routes.ERROR.NOT_PAID.path
       }
     }
   }

@@ -3,6 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const server = require('../../server')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
@@ -11,9 +12,7 @@ const Application = require('../../src/models/application.model')
 const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let generateCookieStub
-let validateCookieStub
-let applicationSaveStub
+let sandbox
 
 const routePath = '/start/start-or-open-saved'
 const nextRoutePath = '/permit/category'
@@ -31,28 +30,24 @@ const fakeCookie = {
 }
 
 lab.beforeEach(() => {
-  // Stub methods
-  generateCookieStub = CookieService.generateCookie
-  CookieService.generateCookie = () => fakeCookie
-
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  applicationSaveStub = Application.prototype.save
-  Application.prototype.save = () => {}
-
   postRequest = {
     method: 'POST',
     url: routePath,
     headers: {}
   }
+
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
+  // Stub methods
+  sandbox.stub(CookieService, 'generateCookie').value(() => fakeCookie)
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Application.prototype, 'save').value(() => {})
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.generateCookie = generateCookieStub
-  CookieService.validateCookie = validateCookieStub
-  Application.prototype.save = applicationSaveStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Start or Open Saved page tests:', () => {
