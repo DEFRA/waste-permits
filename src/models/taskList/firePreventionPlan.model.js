@@ -13,7 +13,7 @@ module.exports = class FirePreventionPlan extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await FirePreventionPlan.isComplete(authToken, applicationId)
+      const isComplete = await FirePreventionPlan.isComplete(authToken, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.FIRE_PREVENTION_PLAN]: isComplete
@@ -26,7 +26,7 @@ module.exports = class FirePreventionPlan extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId) {
+  static async isComplete (authToken, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the Evidence for a fire prevention plan

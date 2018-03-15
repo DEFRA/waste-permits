@@ -12,11 +12,11 @@ module.exports = class DrainageTypeDrain extends BaseModel {
     this.applicationLineId = data.applicationLineId
   }
 
-  static async updateCompleteness (authToken, applicationLineId) {
+  static async updateCompleteness (authToken, applicationId, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
     try {
-      const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
+      const applicationLine = await ApplicationLine.getById(authToken, applicationId, applicationLineId)
 
       const query = `defra_wasteparamses(${applicationLine.parametersId})`
       await dynamicsDal.update(query, {[SURFACE_DRAINAGE]: true})
@@ -26,7 +26,7 @@ module.exports = class DrainageTypeDrain extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationLineId) {
+  static async isComplete (authToken, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the completed flag for surface drainage

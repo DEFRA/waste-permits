@@ -1,5 +1,8 @@
 'use strict'
 
+const Path = require('path')
+
+const config = require('../../config/config')
 const Constants = require('../../constants')
 
 const DynamicsDalService = require('../../services/dynamicsDal.service')
@@ -7,17 +10,26 @@ const BaseModel = require('../base.model')
 const LoggingService = require('../../services/logging.service')
 
 // Task List related models used to check for application completeness
-const CompanyDetails = require('./companyDetails.model')
-const Confidentiality = require('./confidentiality.model')
-const ConfirmRules = require('../../controllers/confirmRules.controller')
-const ContactDetails = require('./siteNameAndLocation.model')
-const FirePreventionPlan = require('./firePreventionPlan.model')
-const InvoiceAddress = require('./invoiceAddress.model')
-const SiteNameAndLocation = require('./siteNameAndLocation.model')
-const SitePlan = require('./sitePlan.model')
-const TechnicalQualification = require('./technicalQualification.model')
+// const CompanyDetails = require('./companyDetails.model')
+// const Confidentiality = require('./confidentiality.model')
+// const ConfirmRules = require('./confirmRules.model')
+// const ContactDetails = require('./siteNameAndLocation.model')
+// const DrainageTypeDrain = require('./drainageTypeDrain.model')
+// const FirePreventionPlan = require('./firePreventionPlan.model')
+// const InvoiceAddress = require('./invoiceAddress.model')
+// const SiteNameAndLocation = require('./siteNameAndLocation.model')
+// const SitePlan = require('./sitePlan.model')
+// const TechnicalQualification = require('./technicalQualification.model')
 
-module.exports = class TaskList extends BaseModel {
+let taskListItems = []
+require('fs').readdirSync('./src/models/taskList').forEach((file) => {
+  // If its the current file ignore it
+  if (file !== 'taskList.model.js') {
+    taskListItems.push(require(Path.join(__dirname, file)))
+  }
+})
+
+class TaskList extends BaseModel {
   static async getByApplicationLineId (authToken, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
@@ -216,22 +228,18 @@ module.exports = class TaskList extends BaseModel {
     finalItem.available = true
   }
 
+  // Iterates through all of the task list items and calls the isComplete() function of each one,
+  // combining the results into a single boolean value if all task list items are complete
   static async isComplete (authToken, applicationId, applicationLineId) {
-    return Promise.all([
-      CompanyDetails.isComplete(authToken, applicationId),
-      Confidentiality.isComplete(authToken, applicationId),
-      ConfirmRules.isComplete(authToken, applicationId, applicationLineId),
-      ContactDetails.isComplete(authToken, applicationId, applicationLineId),
-      FirePreventionPlan.isComplete(authToken, applicationId),
-      InvoiceAddress.isComplete(authToken, applicationId, applicationLineId),
-      SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId),
-      SitePlan.isComplete(authToken, applicationId),
-      TechnicalQualification.isComplete(authToken, applicationId)
-    ]).then((values) => {
-      return values.reduce((isComplete, value) => isComplete && value)
-    }).catch((err) => {
-      console.error('Error calculating completeness:', err.message)
-      throw err
-    })
+    return Promise.all(taskListItems.map((item) => item.isComplete(authToken, applicationId, applicationLineId)))
+      .then((values) => {
+        // Reduce all of the individual flags into a single flag (which can be overridden by the bypassCompletenessCheck flag, e.g. during development)
+        return config.bypassCompletenessCheck || values.reduce((isComplete, value) => isComplete && value)
+      }).catch((err) => {
+        console.error('Error calculating completeness:', err.message)
+        throw err
+      })
   }
 }
+
+module.exports = TaskList

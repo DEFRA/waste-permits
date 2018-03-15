@@ -18,7 +18,7 @@ module.exports = class ContactDetails extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await ContactDetails.isComplete(authToken, applicationId)
+      const isComplete = await ContactDetails.isComplete(authToken, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.CONTACT_DETAILS]: isComplete
@@ -31,13 +31,13 @@ module.exports = class ContactDetails extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId) {
+  static async isComplete (authToken, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the Contact for this application
       const contact = await Contact.getByApplicationId(authToken, applicationId)
 
-      isComplete = Boolean(contact.firstName)
+      isComplete = Boolean(contact && contact.firstName)
     } catch (error) {
       LoggingService.logError(`Unable to calculate ContactDetails completeness: ${error}`)
       throw error
