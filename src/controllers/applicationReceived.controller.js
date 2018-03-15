@@ -33,7 +33,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
       }
     }
 
-    if (bacsPayment || application.isPaidFor()) {
+    if (bacsPayment || application.isPaid()) {
       return this.showView(request, h, 'applicationReceived', pageContext)
     } else {
       // If bacs has not been selected for payment and the application has not been paid for

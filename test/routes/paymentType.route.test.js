@@ -59,7 +59,7 @@ lab.afterEach(() => {
 
 lab.experiment(`How do you want to pay?:`, () => {
   new GeneralTestHelper(lab, routePath).test({
-    excludeAlreadySubnmittedTest: true
+    excludeAlreadySubmittedTest: true
   })
 
   const getDoc = async (request) => {

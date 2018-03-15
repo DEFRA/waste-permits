@@ -7,10 +7,11 @@ const DrainageTypeDrain = require('../models/taskList/drainageTypeDrain.model')
 module.exports = class DrainageTypeDrainController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationLineId, application, standardRule} = await this.createApplicationContext(request, {application: true, standardRule: true})
+    const {authToken, applicationLineId, application, payment, standardRule} = await this.createApplicationContext(request, {application: true, payment: true, standardRule: true})
 
-    if (application.isSubmitted()) {
-      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+    const redirectPath = await this.checkRouteAccess(application, payment)
+    if (redirectPath) {
+      return this.redirect(request, h, redirectPath)
     }
 
     pageContext.guidanceUrl = standardRule.guidanceUrl

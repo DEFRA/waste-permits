@@ -58,7 +58,7 @@ class Application extends BaseModel {
     return this.statusCode && (this.statusCode === Constants.Dynamics.StatusCode.APPLICATION_RECEIVED)
   }
 
-  isPaidFor () {
+  isPaid () {
     return Boolean(this.paymentReceived)
   }
 

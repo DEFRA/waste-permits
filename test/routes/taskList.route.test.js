@@ -3,6 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
@@ -10,19 +11,12 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
+const Payment = require('../../src/models/payment.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const TaskList = require('../../src/models/taskList/taskList.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let generateCookieStub
-let validateCookieStub
-let applicationGetByIdStub
-let applicationIsSubmittedStub
-let applicationIsPaidForStub
-let standardRuleGetByCodeStub
-let taskListGetByApplicationLineIdStub
-let applicationLineGetByIdStub
-let standardRuleByApplicationIdStub
+let sandbox
 
 const routePath = '/task-list'
 const notPaidForRoute = '/errors/order/card-payment-not-complete'
@@ -231,52 +225,31 @@ const checkElement = (element, text, href) => {
 }
 
 lab.beforeEach(() => {
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  generateCookieStub = CookieService.generateCookie
-  CookieService.generateCookie = () => fakeCookie
-
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
-
-  applicationIsPaidForStub = Application.prototype.isPaidFor
-  Application.prototype.isPaidFor = () => false
-
-  standardRuleGetByCodeStub = StandardRule.getByCode
-  StandardRule.getByCode = async () => fakeStandardRule
-
-  taskListGetByApplicationLineIdStub = TaskList.getByApplicationLineId
-  TaskList.getByApplicationLineId = () => fakeTaskList
-
-  applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = () => ({ standardRuleId: 'STANDARD_RULE_ID' })
-
-  standardRuleByApplicationIdStub = StandardRule.getByApplicationLineId
-  StandardRule.getByApplicationLineId = () => fakeStandardRule
+  sandbox.stub(CookieService, 'generateCookie').value(() => fakeCookie)
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'isPaid').value(() => false)
+  sandbox.stub(ApplicationLine, 'getById').value(() => { standardRuleId: 'STANDARD_RULE_ID' })
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => fakeStandardRule)
+  sandbox.stub(StandardRule, 'getByCode').value(() => fakeStandardRule)
+  sandbox.stub(TaskList, 'getByApplicationLineId').value(() => fakeTaskList)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.generateCookie = generateCookieStub
-  CookieService.validateCookie = validateCookieStub
-  Application.getById = applicationGetByIdStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
-  Application.prototype.isPaidFor = applicationIsPaidForStub
-  StandardRule.getByCode = standardRuleGetByCodeStub
-  TaskList.getByApplicationLineId = taskListGetByApplicationLineIdStub
-  ApplicationLine.getById = applicationLineGetByIdStub
-  StandardRule.getByApplicationLineId = standardRuleByApplicationIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Task List page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookiePostTests: true,
-    excludeAlreadySubnmittedTest: true})
+    excludeAlreadySubmittedTest: true})
 
   lab.test('The page should NOT have a back link', async () => {
     const res = await server.inject(getRequest)
@@ -310,7 +283,7 @@ lab.experiment('Task List page tests:', () => {
 
   lab.test(`GET ${routePath} redirects to the Not Paid route ${notPaidForRoute} if the applicaiton has been submitted but not paid for yet`, async () => {
     Application.prototype.isSubmitted = () => true
-    Application.prototype.isPaidFor = () => false
+    Application.prototype.isPaid = () => false
 
     const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(302)
@@ -319,7 +292,7 @@ lab.experiment('Task List page tests:', () => {
 
   lab.test(`GET ${routePath} redirects to the Already Submitted route ${alreadySubmittedRoutePath} if the application has been submitted and paid for`, async () => {
     Application.prototype.isSubmitted = () => true
-    Application.prototype.isPaidFor = () => true
+    Application.prototype.isPaid = () => true
 
     const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(302)

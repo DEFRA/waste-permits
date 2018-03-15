@@ -10,6 +10,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
+const Payment = require('../../src/models/payment.model')
 const LoggingService = require('../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
@@ -55,6 +56,8 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(Application, 'getById').value(() => Promise.resolve(new Application(fakeApplication)))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {

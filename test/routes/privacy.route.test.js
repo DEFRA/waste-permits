@@ -32,7 +32,7 @@ lab.experiment('Privacy page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
-    excludeAlreadySubnmittedTest: true})
+    excludeAlreadySubmittedTest: true})
 
   lab.test(`GET ${routePath} success`, async () => {
     const request = {

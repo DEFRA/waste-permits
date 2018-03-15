@@ -8,7 +8,13 @@ class Route {
       handler: controller.handler,
       options: {
         description: `The GET ${controller.route.pageHeading} page`,
-        bind: controller
+        bind: controller,
+        cache: {
+          privacy: 'private',
+          statuses: [200],
+          expiresIn: 0,
+          otherwise: 'no-cache'
+        }
       }
     }
     if (validator) {

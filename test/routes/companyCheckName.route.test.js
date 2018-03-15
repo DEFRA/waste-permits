@@ -14,6 +14,7 @@ const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
 const Account = require('../../src/models/account.model')
+const Payment = require('../../src/models/payment.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let sandbox
@@ -65,6 +66,8 @@ lab.beforeEach(() => {
   sandbox.stub(Account.prototype, 'save').value(() => {})
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
 })
 
 lab.afterEach(() => {

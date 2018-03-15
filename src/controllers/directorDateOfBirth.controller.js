@@ -11,10 +11,11 @@ const Contact = require('../models/contact.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
-    const {authToken, applicationId, application, account} = await this.createApplicationContext(request, {application: true, account: true})
+    const {authToken, applicationId, application, account, payment} = await this.createApplicationContext(request, {application: true, account: true, payment: true})
 
-    if (application.isSubmitted()) {
-      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+    const redirectPath = await this.checkRouteAccess(application, payment)
+    if (redirectPath) {
+      return this.redirect(request, h, redirectPath)
     }
 
     if (!account) {

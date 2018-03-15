@@ -22,20 +22,28 @@ class Payment extends BaseModel {
     ]
   }
 
+  isPaid () {
+    return Boolean(this.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED)
+  }
+
   static async getByApplicationLineIdAndType (authToken, applicationLineId, type) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const filter = `_defra_applicationlineid_value eq ${applicationLineId} and defra_type eq ${type}`
-    const query = `defra_payments?$select=${Payment.selectedDynamicsFields()}&$filter=${filter}`
-    try {
-      const response = await dynamicsDal.search(query)
-      const result = response && response.value ? response.value.pop() : undefined
-      if (result) {
-        return Payment.dynamicsToModel(result)
+    let payment
+    if (applicationLineId) {
+      const dynamicsDal = new DynamicsDalService(authToken)
+      const filter = `_defra_applicationlineid_value eq ${applicationLineId} and defra_type eq ${type}`
+      const query = `defra_payments?$select=${Payment.selectedDynamicsFields()}&$filter=${filter}`
+      try {
+        const response = await dynamicsDal.search(query)
+        const result = response && response.value ? response.value.pop() : undefined
+        if (result) {
+          payment = Payment.dynamicsToModel(result)
+        }
+      } catch (error) {
+        LoggingService.logError(`Unable to get Payment by Application Line ID and Type(${type}): ${error}`)
+        throw error
       }
-    } catch (error) {
-      LoggingService.logError(`Unable to get Payment by Type(${type}): ${error}`)
-      throw error
     }
+    return payment
   }
 
   static async getBacsPaymentDetails (authToken, applicationLineId) {

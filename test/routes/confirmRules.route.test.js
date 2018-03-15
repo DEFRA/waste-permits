@@ -11,6 +11,7 @@ const server = require('../../server')
 const Application = require('../../src/models/application.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const ConfirmRules = require('../../src/models/taskList/confirmRules.model')
+const Payment = require('../../src/models/payment.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
@@ -44,6 +45,8 @@ lab.beforeEach(() => {
   sandbox.stub(ConfirmRules, 'isComplete').value(() => false)
   sandbox.stub(ConfirmRules, 'updateCompleteness').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {

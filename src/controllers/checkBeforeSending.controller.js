@@ -56,16 +56,21 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
   async doGet (request, h) {
     const pageContext = this.createPageContext()
-    const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
+    const {authToken, applicationId, applicationLineId, application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
 
     pageContext.sections = await this._buildSections(authToken, applicationId, applicationLineId)
 
     // If all the task list items are not complete
     if (!TaskList.isComplete(authToken, application.id)) {
       return this.redirect(request, h, Constants.Routes.ERROR.NOT_COMPLETE.path)
-    } else {
-      return this.showView(request, h, 'checkBeforeSending', pageContext)
     }
+
+    const redirectPath = await this.checkRouteAccess(application, payment)
+    if (redirectPath) {
+      return this.redirect(request, h, redirectPath)
+    }
+
+    return this.showView(request, h, 'checkBeforeSending', pageContext)
   }
 
   async doPost (request, h) {

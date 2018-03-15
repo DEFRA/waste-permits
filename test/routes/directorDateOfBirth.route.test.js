@@ -3,6 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
@@ -12,16 +13,10 @@ const Account = require('../../src/models/account.model')
 const Application = require('../../src/models/application.model')
 const ApplicationContact = require('../../src/models/applicationContact.model')
 const Contact = require('../../src/models/contact.model')
+const Payment = require('../../src/models/payment.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let validateCookieStub
-let accountGetByApplicationIdStub
-let applicationGetByIdStub
-let applicationIsSubmittedStub
-let contactListStub
-let contactSaveStub
-let applicationContactGetStub
-let applicationContactSaveStub
+let sandbox
 
 const routePath = '/permit-holder/company/director-date-of-birth'
 const nextRoutePath = '/permit-holder/company/declare-offences'
@@ -101,42 +96,25 @@ lab.beforeEach(() => {
     payload: {}
   }
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  accountGetByApplicationIdStub = Account.getByApplicationId
-  Account.getByApplicationId = () => new Account(fakeAccountData)
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
-
-  contactListStub = Contact.list
-  Contact.list = () => fakeContacts
-
-  contactSaveStub = Contact.prototype.save
-  Contact.prototype.save = () => undefined
-
-  applicationContactGetStub = ApplicationContact.get
-  ApplicationContact.get = () => undefined
-
-  applicationContactSaveStub = ApplicationContact.prototype.save
-  ApplicationContact.prototype.save = () => undefined
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Account, 'getByApplicationId').value(() => new Account(fakeAccountData))
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(ApplicationContact, 'get').value(() => undefined)
+  sandbox.stub(ApplicationContact.prototype, 'save').value(() => undefined)
+  sandbox.stub(Contact, 'list').value(() => fakeContacts)
+  sandbox.stub(Contact.prototype, 'save').value(() => undefined)
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.validateCookie = validateCookieStub
-  Account.getByApplicationId = accountGetByApplicationIdStub
-  Application.getById = applicationGetByIdStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
-  Contact.list = contactListStub
-  Contact.prototype.save = contactSaveStub
-  ApplicationContact.get = applicationContactGetStub
-  ApplicationContact.prototype.save = applicationContactSaveStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const checkPageElements = async (request, expectedPageHeading, expectedValues) => {

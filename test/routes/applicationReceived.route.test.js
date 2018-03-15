@@ -72,7 +72,7 @@ lab.afterEach(() => {
 lab.experiment('ApplicationReceived page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookiePostTests: true,
-    excludeAlreadySubnmittedTest: true})
+    excludeAlreadySubmittedTest: true})
 
   lab.experiment(`GET ${routePath}`, () => {
     let request
