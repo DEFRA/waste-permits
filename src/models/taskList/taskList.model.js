@@ -9,18 +9,6 @@ const DynamicsDalService = require('../../services/dynamicsDal.service')
 const BaseModel = require('../base.model')
 const LoggingService = require('../../services/logging.service')
 
-// Task List related models used to check for application completeness
-// const CompanyDetails = require('./companyDetails.model')
-// const Confidentiality = require('./confidentiality.model')
-// const ConfirmRules = require('./confirmRules.model')
-// const ContactDetails = require('./siteNameAndLocation.model')
-// const DrainageTypeDrain = require('./drainageTypeDrain.model')
-// const FirePreventionPlan = require('./firePreventionPlan.model')
-// const InvoiceAddress = require('./invoiceAddress.model')
-// const SiteNameAndLocation = require('./siteNameAndLocation.model')
-// const SitePlan = require('./sitePlan.model')
-// const TechnicalQualification = require('./technicalQualification.model')
-
 let taskListItems = []
 require('fs').readdirSync('./src/models/taskList').forEach((file) => {
   // If its the current file ignore it
