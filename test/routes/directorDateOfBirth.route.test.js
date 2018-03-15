@@ -116,6 +116,7 @@ lab.afterEach(() => {
   // Restore the sandbox to make sure the stubs are removed correctly
   sandbox.restore()
 })
+
 const checkPageElements = async (request, expectedPageHeading, expectedValues) => {
   const res = await server.inject(request)
   Code.expect(res.statusCode).to.equal(200)

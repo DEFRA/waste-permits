@@ -3,6 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
@@ -15,16 +16,7 @@ const StandardRule = require('../../src/models/standardRule.model')
 const TaskList = require('../../src/models/taskList/taskList.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-let generateCookieStub
-let validateCookieStub
-let applicationGetByIdStub
-let applicationIsSubmittedStub
-let applicationIsPaidStub
-let paymentGetBacsPaymentDetailsStub
-let standardRuleGetByCodeStub
-let taskListGetByApplicationLineIdStub
-let applicationLineGetByIdStub
-let standardRuleByApplicationIdStub
+let sandbox
 
 const routePath = '/task-list'
 const notPaidForRoute = '/errors/order/card-payment-not-complete'
@@ -233,50 +225,25 @@ const checkElement = (element, text, href) => {
 }
 
 lab.beforeEach(() => {
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  generateCookieStub = CookieService.generateCookie
-  CookieService.generateCookie = () => fakeCookie
-
-  validateCookieStub = CookieService.validateCookie
-  CookieService.validateCookie = () => COOKIE_RESULT.VALID_COOKIE
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplication)
-
-  applicationIsSubmittedStub = Application.prototype.isSubmitted
-  Application.prototype.isSubmitted = () => false
-
-  applicationIsPaidStub = Application.prototype.isPaid
-  Application.prototype.isPaid = () => false
-
-  paymentGetBacsPaymentDetailsStub = Payment.getBacsPaymentDetails
-  Payment.getBacsPaymentDetails = () => new Payment({})
-
-  standardRuleGetByCodeStub = StandardRule.getByCode
-  StandardRule.getByCode = async () => fakeStandardRule
-
-  taskListGetByApplicationLineIdStub = TaskList.getByApplicationLineId
-  TaskList.getByApplicationLineId = () => fakeTaskList
-
-  applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = () => ({ standardRuleId: 'STANDARD_RULE_ID' })
-
-  standardRuleByApplicationIdStub = StandardRule.getByApplicationLineId
-  StandardRule.getByApplicationLineId = () => fakeStandardRule
+  sandbox.stub(CookieService, 'generateCookie').value(() => fakeCookie)
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'isPaid').value(() => false)
+  sandbox.stub(ApplicationLine, 'getById').value(() => { standardRuleId: 'STANDARD_RULE_ID' })
+  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => fakeStandardRule)
+  sandbox.stub(StandardRule, 'getByCode').value(() => fakeStandardRule)
+  sandbox.stub(TaskList, 'getByApplicationLineId').value(() => fakeTaskList)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  CookieService.generateCookie = generateCookieStub
-  CookieService.validateCookie = validateCookieStub
-  Application.getById = applicationGetByIdStub
-  Application.prototype.isSubmitted = applicationIsSubmittedStub
-  Application.prototype.isPaid = applicationIsPaidStub
-  Payment.getBacsPaymentDetails = paymentGetBacsPaymentDetailsStub
-  StandardRule.getByCode = standardRuleGetByCodeStub
-  TaskList.getByApplicationLineId = taskListGetByApplicationLineIdStub
-  ApplicationLine.getById = applicationLineGetByIdStub
-  StandardRule.getByApplicationLineId = standardRuleByApplicationIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Task List page tests:', () => {
