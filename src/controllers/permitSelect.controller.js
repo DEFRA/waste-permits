@@ -38,6 +38,8 @@ module.exports = class PermitSelectController extends BaseController {
       // Look up the Standard Rule based on the chosen permit type
       const standardRule = await StandardRule.getByCode(authToken, request.payload['chosen-permit'])
 
+      CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_ID, standardRule.id)
+
       if (!standardRule.canApplyOnline) {
         return this.redirect(request, h, Constants.Routes.APPLY_OFFLINE.path)
       }
