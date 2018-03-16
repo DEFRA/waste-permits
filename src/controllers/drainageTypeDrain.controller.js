@@ -16,15 +16,15 @@ module.exports = class DrainageTypeDrainController extends BaseController {
 
     pageContext.guidanceUrl = standardRule.guidanceUrl
     pageContext.code = standardRule.code
-    pageContext.isComplete = await DrainageTypeDrain.isComplete(authToken, applicationLineId)
+    pageContext.isComplete = await DrainageTypeDrain.isComplete(authToken, application.id, applicationLineId)
 
     return this.showView(request, h, 'drainageTypeDrain', pageContext)
   }
 
   async doPost (request, h) {
-    const {authToken, applicationLineId} = await this.createApplicationContext(request)
+    const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
 
-    await DrainageTypeDrain.updateCompleteness(authToken, applicationLineId)
+    await DrainageTypeDrain.updateCompleteness(authToken, applicationId, applicationLineId)
 
     return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
   }

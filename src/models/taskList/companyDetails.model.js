@@ -18,7 +18,7 @@ module.exports = class CompanyDetails extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await CompanyDetails.isComplete(authToken, applicationId)
+      const isComplete = await CompanyDetails.isComplete(authToken, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.PERMIT_HOLDER_DETAILS]: isComplete
@@ -31,7 +31,7 @@ module.exports = class CompanyDetails extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId) {
+  static async isComplete (authToken, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the Account for this application

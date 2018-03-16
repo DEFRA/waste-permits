@@ -61,7 +61,9 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     pageContext.sections = await this._buildSections(authToken, applicationId, applicationLineId)
 
     // If all the task list items are not complete
-    if (!TaskList.isComplete(authToken, application.id)) {
+    const taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
+    const isComplete = await taskList.isComplete(authToken, applicationId, applicationLineId)
+    if (!isComplete) {
       return this.redirect(request, h, Constants.Routes.ERROR.NOT_COMPLETE.path)
     }
 

@@ -1,23 +1,24 @@
 'use strict'
 
+const Path = require('path')
+
+const config = require('../../config/config')
 const Constants = require('../../constants')
 
 const DynamicsDalService = require('../../services/dynamicsDal.service')
 const BaseModel = require('../base.model')
 const LoggingService = require('../../services/logging.service')
 
-// Task List related models used to check for application completeness
-const CompanyDetails = require('./companyDetails.model')
-const Confidentiality = require('./confidentiality.model')
-const ConfirmRules = require('../../controllers/confirmRules.controller')
-const ContactDetails = require('./siteNameAndLocation.model')
-const FirePreventionPlan = require('./firePreventionPlan.model')
-const InvoiceAddress = require('./invoiceAddress.model')
-const SiteNameAndLocation = require('./siteNameAndLocation.model')
-const SitePlan = require('./sitePlan.model')
-const TechnicalQualification = require('./technicalQualification.model')
+let taskListModels = []
+const currentFilename = Path.basename(__filename)
+require('fs').readdirSync('./src/models/taskList').forEach((file) => {
+  if (file !== currentFilename) {
+    // If it is not the current TaskList model
+    taskListModels.push(require(Path.join(__dirname, file)))
+  }
+})
 
-module.exports = class TaskList extends BaseModel {
+class TaskList extends BaseModel {
   static async getByApplicationLineId (authToken, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
@@ -52,6 +53,8 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.COST_TIME.path,
         completedLabelId: 'cost-and-time-completed',
         rulesetId: Constants.Dynamics.RulesetIds.SHOW_COST_AND_TIME,
+        // TODO Set model name
+        // taskListModelName: '',
         completedId: Constants.Dynamics.CompletedParamters.SHOW_COST_AND_TIME,
         available: false
       }, {
@@ -60,6 +63,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.CONFIRM_RULES.path,
         completedLabelId: 'operation-rules-completed',
         rulesetId: Constants.Dynamics.RulesetIds.CONFIRM_RULES,
+        taskListModelName: 'ConfirmRules',
         completedId: Constants.Dynamics.CompletedParamters.CONFIRM_RULES,
         available: false
       }, {
@@ -68,6 +72,8 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.WASTE_RECOVERY_PLAN.path,
         completedLabelId: 'waste-recovery-plan-completed',
         rulesetId: Constants.Dynamics.RulesetIds.WASTE_RECOVERY_PLAN,
+        // TODO Set model name
+        // taskListModelName: '',
         completedId: Constants.Dynamics.CompletedParamters.WASTE_RECOVERY_PLAN,
         available: false
       }, {
@@ -76,6 +82,8 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.PRE_APPLICATION.path,
         completedLabelId: 'preapp-completed',
         rulesetId: Constants.Dynamics.RulesetIds.PRE_APPLICATION,
+        // TODO Set model name
+        // taskListModelName: '',
         completedId: Constants.Dynamics.CompletedParamters.PRE_APPLICATION,
         available: false
       }, {
@@ -84,6 +92,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.CONTACT_DETAILS.path,
         completedLabelId: 'contact-details-completed',
         rulesetId: Constants.Dynamics.RulesetIds.CONTACT_DETAILS,
+        taskListModelName: 'ContactDetails',
         completedId: Constants.Dynamics.CompletedParamters.CONTACT_DETAILS,
         available: false
       }, {
@@ -95,6 +104,7 @@ module.exports = class TaskList extends BaseModel {
         // href: Constants.Routes.PERMIT_HOLDER_TYPE.path,
         completedLabelId: 'site-operator-completed',
         rulesetId: Constants.Dynamics.RulesetIds.PERMIT_HOLDER_DETAILS,
+        taskListModelName: 'CompanyDetails',
         completedId: Constants.Dynamics.CompletedParamters.PERMIT_HOLDER_DETAILS,
         available: false
       }, {
@@ -103,6 +113,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.SITE_NAME.path,
         completedLabelId: 'site-name-completed',
         rulesetId: Constants.Dynamics.RulesetIds.SITE_NAME_LOCATION,
+        taskListModelName: 'SiteNameAndLocation',
         completedId: Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION,
         available: false
       }, {
@@ -111,6 +122,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.SITE_PLAN.path,
         completedLabelId: 'site-plan-completed',
         rulesetId: Constants.Dynamics.RulesetIds.SITE_PLAN,
+        taskListModelName: 'SitePlan',
         completedId: Constants.Dynamics.CompletedParamters.SITE_PLAN,
         available: false
       }, {
@@ -119,6 +131,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.TECHNICAL_QUALIFICATION.path,
         completedLabelId: 'upload-completed',
         rulesetId: Constants.Dynamics.RulesetIds.TECHNICAL_QUALIFICATION,
+        taskListModelName: 'TechnicalQualification',
         completedId: Constants.Dynamics.CompletedParamters.TECHNICAL_QUALIFICATION,
         available: false
       }, {
@@ -127,6 +140,8 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.MANAGEMENT_SYSTEM.path,
         completedLabelId: 'management-system-completed',
         rulesetId: Constants.Dynamics.RulesetIds.MANAGEMENT_SYSTEM,
+        // TODO Set model name
+        // taskListModelName: '',
         completedId: Constants.Dynamics.CompletedParamters.MANAGEMENT_SYSTEM,
         available: false
       }, {
@@ -135,6 +150,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.FIRE_PREVENTION_PLAN.path,
         completedLabelId: 'firepp-completed',
         rulesetId: Constants.Dynamics.RulesetIds.FIRE_PREVENTION_PLAN,
+        taskListModelName: 'FirePreventionPlan',
         completedId: Constants.Dynamics.CompletedParamters.FIRE_PREVENTION_PLAN,
         available: true
       }, {
@@ -143,6 +159,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.DRAINAGE_TYPE_DRAIN.path,
         completedLabelId: 'confirm-drainage-completed',
         rulesetId: Constants.Dynamics.RulesetIds.SURFACE_DRAINAGE,
+        taskListModelName: 'DrainageTypeDrain',
         completedId: Constants.Dynamics.CompletedParamters.SURFACE_DRAINAGE,
         available: false
       }, {
@@ -151,6 +168,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.CONFIDENTIALITY.path,
         completedLabelId: 'confidentiality-completed',
         rulesetId: Constants.Dynamics.RulesetIds.CONFIRM_CONFIDENTIALLY,
+        taskListModelName: 'Confidentiality',
         completedId: Constants.Dynamics.CompletedParamters.CONFIRM_CONFIDENTIALLY,
         available: false
       }, {
@@ -159,6 +177,7 @@ module.exports = class TaskList extends BaseModel {
         href: Constants.Routes.ADDRESS.POSTCODE_INVOICE.path,
         completedLabelId: 'invoicing-details-completed',
         rulesetId: Constants.Dynamics.RulesetIds.INVOICING_DETAILS,
+        taskListModelName: 'InvoiceAddress',
         completedId: Constants.Dynamics.CompletedParamters.INVOICING_DETAILS,
         available: false
       }]
@@ -198,6 +217,8 @@ module.exports = class TaskList extends BaseModel {
   }
 
   _setRulesetAvailabilityAndCompleteness (rulesets) {
+    this.taskListModelNames = []
+
     // Iterate through the task list section items
     this.sections.forEach((section) => {
       section.sectionItems.forEach((sectionItem) => {
@@ -206,6 +227,11 @@ module.exports = class TaskList extends BaseModel {
 
         // Set completeness
         sectionItem.complete = rulesets[sectionItem.completedId]
+
+        // Add the Task List model for this section item
+        if (sectionItem.available) {
+          this.taskListModelNames.push(sectionItem.taskListModelName)
+        }
       })
     })
 
@@ -216,22 +242,26 @@ module.exports = class TaskList extends BaseModel {
     finalItem.available = true
   }
 
-  static async isComplete (authToken, applicationId, applicationLineId) {
-    return Promise.all([
-      CompanyDetails.isComplete(authToken, applicationId),
-      Confidentiality.isComplete(authToken, applicationId),
-      ConfirmRules.isComplete(authToken, applicationId, applicationLineId),
-      ContactDetails.isComplete(authToken, applicationId, applicationLineId),
-      FirePreventionPlan.isComplete(authToken, applicationId),
-      InvoiceAddress.isComplete(authToken, applicationId, applicationLineId),
-      SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId),
-      SitePlan.isComplete(authToken, applicationId),
-      TechnicalQualification.isComplete(authToken, applicationId)
-    ]).then((values) => {
-      return values.reduce((isComplete, value) => isComplete && value)
-    }).catch((err) => {
-      console.error('Error calculating completeness:', err.message)
-      throw err
-    })
+  // Iterates through all of the task list items and calls the isComplete() function of each one,
+  // combining the results into a single boolean value if all task list items are complete
+  async isComplete (authToken, applicationId, applicationLineId) {
+    return Promise.all(
+        // Exclude models that are not applicable to the current task list
+        taskListModels
+          .filter((item) => {
+            return (this.taskListModelNames.includes(item.name))
+          })
+          .map((item) => {
+            return item.isComplete(authToken, applicationId, applicationLineId)
+          })
+      ).then((values) => {
+        // Reduce all of the individual flags into a single flag (which can be overridden by the bypassCompletenessCheck flag, e.g. during development)
+        return config.bypassCompletenessCheck || values.reduce((acc, value) => acc && value)
+      }).catch((err) => {
+        console.error('Error calculating completeness:', err.message)
+        throw err
+      })
   }
 }
+
+module.exports = TaskList

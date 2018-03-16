@@ -78,7 +78,8 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(ApplicationLine, 'getValidRulesetIds').value(() => [fakeValidRulesetId])
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
-  sandbox.stub(TaskList, 'isComplete').value(() => true)
+  sandbox.stub(TaskList, 'getByApplicationLineId').value(() => new TaskList())
+  sandbox.stub(TaskList.prototype, 'isComplete').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -161,7 +162,7 @@ lab.experiment('Check your answers before sending your application page tests:',
     })
 
     lab.test('Redirects to the Not Complete screen if the application has not been completed', async () => {
-      sandbox.stub(TaskList, 'isComplete').value(() => false)
+      sandbox.stub(TaskList.prototype, 'isComplete').value(() => false)
 
       const res = await server.inject(request)
       Code.expect(res.statusCode).to.equal(302)

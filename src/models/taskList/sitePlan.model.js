@@ -13,7 +13,7 @@ module.exports = class SitePlan extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await SitePlan.isComplete(authToken, applicationId)
+      const isComplete = await SitePlan.isComplete(authToken, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.SITE_PLAN]: isComplete
@@ -26,7 +26,7 @@ module.exports = class SitePlan extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId) {
+  static async isComplete (authToken, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the Evidence for a site plan
