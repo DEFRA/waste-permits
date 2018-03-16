@@ -36,7 +36,7 @@ module.exports = class TechnicalQualification extends BaseModel {
     try {
       // Get the Evidence for a technical qualification
       const evidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, Constants.UploadSubject.TECHNICAL_QUALIFICATION)
-      isComplete = Boolean(evidence.length)
+      isComplete = Boolean(evidence && evidence.length)
     } catch (error) {
       LoggingService.logError(`Unable to calculate TechnicalQualification completeness: ${error}`)
       throw error
