@@ -259,7 +259,7 @@ class TaskList extends BaseModel {
   //     })
   // }
 
-  getVisibleItems() {
+  getVisibleItems () {
     let visibleItems = []
     this.sections.forEach((section) => {
       section.sectionItems.forEach((sectionItem) => {

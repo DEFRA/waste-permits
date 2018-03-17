@@ -88,7 +88,7 @@ module.exports = class TaskListController extends BaseController {
 
     for (let item of visibleItems) {
       const model = item.taskListModel
-      if (model && (! await model.isComplete(authToken, applicationId, applicationLineId))) {
+      if (model && (!await model.isComplete(authToken, applicationId, applicationLineId))) {
         console.log('##############xxx- not complete:', model)
 
         // TODO ******* add the error *********
@@ -99,14 +99,11 @@ module.exports = class TaskListController extends BaseController {
         //   type: 'invalid',
         //   context: { key: directorDobField, label: directorDobField }
         // })
-
       }
     }
 
     // for (let [index, model] of taskListModels.entries()) {
       // console.log('##############xxx:', await model.isComplete(authToken, applicationId, applicationLineId))
-
-
 
       // if (! await model.isComplete(authToken, applicationId, applicationLineId)) {
         // console.log('##############xxx1 not complete:', index)

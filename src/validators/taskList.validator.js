@@ -37,8 +37,7 @@ module.exports = class TaskListValidator extends BaseValidator {
     // </li>
     // {{/each}}
 
-
-    for (let [item, index] of taskList.getVisibleItems()) {
+    for (let item of taskList.getVisibleItems()) {
       if (item.available) {
         this.errorMessages[item.id] = {
           'any.required': `Complete this task`
