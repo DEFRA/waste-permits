@@ -9,16 +9,23 @@ const DynamicsDalService = require('../../services/dynamicsDal.service')
 const BaseModel = require('../base.model')
 const LoggingService = require('../../services/logging.service')
 
-let taskListModels = []
 const currentFilename = Path.basename(__filename)
-require('fs').readdirSync('./src/models/taskList').forEach((file) => {
-  if (file !== currentFilename) {
-    // If it is not the current TaskList model
-    taskListModels.push(require(Path.join(__dirname, file)))
-  }
-})
 
 class TaskList extends BaseModel {
+  constructor (...args) {
+    super(...args)
+
+    this.taskListModels = []
+    require('fs').readdirSync('./src/models/taskList').forEach((file) => {
+      if (file !== currentFilename) {
+        // If it is not the current TaskList model
+        let modelObject = require(Path.join(__dirname, file))
+        this.taskListModels.push(modelObject)
+        this.taskListModels[modelObject.name] = modelObject
+      }
+    })
+  }
+
   static async getByApplicationLineId (authToken, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
@@ -220,8 +227,8 @@ class TaskList extends BaseModel {
     this.taskListModelNames = []
 
     // Iterate through the task list section items
-    this.sections.forEach((section) => {
-      section.sectionItems.forEach((sectionItem) => {
+    for (let section of this.sections) {
+      for (let sectionItem of section.sectionItems) {
         // Set availability
         sectionItem.available = rulesets[sectionItem.rulesetId]
 
@@ -232,8 +239,10 @@ class TaskList extends BaseModel {
         if (sectionItem.available) {
           this.taskListModelNames.push(sectionItem.taskListModelName)
         }
-      })
-    })
+
+        sectionItem.taskListModel = this.taskListModels[sectionItem.taskListModelName]
+      }
+    }
 
     // Set the final item (Send application and pay) to be always available
     // Since this is always available this is currently not obtained from Dynamics
@@ -242,12 +251,32 @@ class TaskList extends BaseModel {
     finalItem.available = true
   }
 
+  // TODO confirm if this is required
+  // getTaskListModels() {
+  //   return this.taskListModels
+  //     .filter((item) => {
+  //       return (this.taskListModelNames.includes(item.name))
+  //     })
+  // }
+
+  getVisibleItems() {
+    let visibleItems = []
+    this.sections.forEach((section) => {
+      section.sectionItems.forEach((sectionItem) => {
+        if (sectionItem.available) {
+          visibleItems.push(sectionItem)
+        }
+      })
+    })
+    return visibleItems
+  }
+
   // Iterates through all of the task list items and calls the isComplete() function of each one,
   // combining the results into a single boolean value if all task list items are complete
-  async isComplete (authToken, applicationId, applicationLineId) {
+  isComplete (authToken, applicationId, applicationLineId) {
     return Promise.all(
         // Exclude models that are not applicable to the current task list
-        taskListModels
+        this.taskListModels
           .filter((item) => {
             return (this.taskListModelNames.includes(item.name))
           })
