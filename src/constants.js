@@ -107,6 +107,7 @@ Constants.COOKIE_KEY = {
   APPLICATION_ID: 'applicationId',
   APPLICATION_LINE_ID: 'applicationLineId',
   PERMIT_HOLDER_TYPE: 'permitHolderType',
+  STANDARD_RULE_ID: 'standardRuleId',
   STANDARD_RULE_TYPE_ID: 'standardRuleTypeId',
   EXPIRY: 'expiry'
 }

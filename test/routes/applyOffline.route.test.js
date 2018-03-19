@@ -10,6 +10,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const Application = require('../../src/models/application.model')
 const Payment = require('../../src/models/payment.model')
+const StandardRule = require('../../src/models/standardRule.model')
 const StandardRuleType = require('../../src/models/standardRuleType.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
@@ -21,6 +22,8 @@ const startPath = '/errors/order/start-at-beginning'
 
 let fakeApplication
 let fakePermitHolderType
+let fakeStandardRule
+let fakeStandardRuleId
 let fakeStandardRuleTypeId
 let sandbox
 
@@ -29,8 +32,17 @@ lab.beforeEach(() => {
     id: 'APPLICATION_ID'
   }
 
-  fakeStandardRuleTypeId = 'offline-category-flood'
-  fakePermitHolderType = {canApplyOnline: false}
+  fakePermitHolderType = {
+    canApplyOnline: false
+  }
+
+  fakeStandardRule = {
+    id: 'STANDARD_RULE_ID',
+    canApplyOnline: false
+  }
+
+  fakeStandardRuleTypeId = 'offline-category'
+  fakeStandardRuleId = 'offline-permit'
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -41,6 +53,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(StandardRule, 'getById').value(() => new Application(fakeStandardRule))
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(CookieService, 'get').value((request, cookieKey) => {
@@ -49,6 +62,8 @@ lab.beforeEach(() => {
         return fakePermitHolderType
       case 'standardRuleTypeId':
         return fakeStandardRuleTypeId
+      case 'standardRuleId':
+        return fakeStandardRuleId
       default:
         return cookieGet(request, cookieKey)
     }
@@ -119,6 +134,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
 
       lab.test('redirects to start screen when cookie does not contain an offline category id and the permit holder can apply online', async () => {
         fakeStandardRuleTypeId = undefined
+        fakeStandardRule.canApplyOnline = true
         fakePermitHolderType.canApplyOnline = true
         const spy = sinon.spy(LoggingService, 'logError')
 
