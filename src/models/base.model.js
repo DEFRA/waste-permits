@@ -239,6 +239,24 @@ module.exports = class BaseModel {
     return !this.id
   }
 
+  static async getById (authToken, id, customFilter = () => true) {
+    // See the explanation of a custom filter in the method selectedDynamicsFields above
+    let model
+    if (id) {
+      const dynamicsDal = new DynamicsDalService(authToken)
+      const query = `${this.entity}(${id})`
+      try {
+        const result = await dynamicsDal.search(query)
+        model = this.dynamicsToModel(result, customFilter)
+        model.id = id
+      } catch (error) {
+        LoggingService.logError(`Unable to get ${this.name} ID: ${error}`)
+        throw error
+      }
+    }
+    return model
+  }
+
   async _deleteBoundReferences (dynamicsDal) {
     // This method deletes any bound references as specified in the mapping method if the new value of any key is undefined.
     //

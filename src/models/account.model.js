@@ -21,18 +21,6 @@ class Account extends BaseModel {
     ]
   }
 
-  static async getById (authToken, id) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const query = `accounts(${id})?$select=${Account.selectedDynamicsFields()}`
-    try {
-      const result = await dynamicsDal.search(query)
-      return Account.dynamicsToModel(result)
-    } catch (error) {
-      LoggingService.logError(`Unable to get Account by ID: ${error}`)
-      throw error
-    }
-  }
-
   static async getByApplicationId (authToken, applicationId) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const application = await Application.getById(authToken, applicationId)

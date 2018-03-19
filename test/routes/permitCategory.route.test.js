@@ -93,12 +93,6 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       }
     })
 
-    lab.test('The page should NOT have a back link', async () => {
-      const doc = await getDoc(getRequest)
-      checkCommonElements(doc)
-      Code.expect(doc.getElementById('back-link')).to.not.exist()
-    })
-
     lab.experiment('success', () => {
       let categories
 
@@ -184,20 +178,10 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
     })
 
-    lab.experiment('invalid', () => {
-      const checkValidationMessage = async (fieldId, expectedErrorMessage) => {
-        const doc = await getDoc(postRequest)
-        // Panel summary error item
-        Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
-
-        // Chosen category field error
-        Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
-      }
-
-      lab.test('when category not selected', async () => {
-        postRequest.payload = {}
-        await checkValidationMessage('chosen-category', 'Select what you want the permit for')
-      })
+    lab.test('invalid when category not selected', async () => {
+      postRequest.payload = {}
+      const doc = await getDoc(postRequest)
+      await GeneralTestHelper.checkValidationMessage(doc, 'chosen-category', 'Select what you want the permit for')
     })
   })
 })

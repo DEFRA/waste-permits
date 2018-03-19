@@ -66,10 +66,10 @@ lab.experiment('Annotation Model tests:', () => {
   lab.test('getById() method correctly retrieves an Annotation object', async () => {
     DynamicsDalService.prototype.search = () => fakeDynamicsRecord()
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const annotation = await Annotation.getById('AUTH_TOKEN', fakeApplication.id)
+    const annotation = await Annotation.getById('AUTH_TOKEN', testAnnotationId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(annotation.applicationId).to.equal(fakeAnnotation.applicationId)
-    Code.expect(annotation.id).to.equal(fakeAnnotation.id)
+    Code.expect(annotation.id).to.equal(testAnnotationId)
   })
 
   lab.test('listByApplicationIdAndSubject() method returns a list of Annotation objects', async () => {

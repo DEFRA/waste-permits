@@ -2,9 +2,8 @@
 
 const {OFFLINE_CATEGORIES} = require('../constants')
 const BaseModel = require('./base.model')
-// TODO: Fake online categories until the crm contains them
-// const DynamicsDalService = require('../services/dynamicsDal.service')
-// const LoggingService = require('../services/logging.service')
+const DynamicsDalService = require('../services/dynamicsDal.service')
+const LoggingService = require('../services/logging.service')
 
 class StandardRuleType extends BaseModel {
   static get entity () {
@@ -25,27 +24,19 @@ class StandardRuleType extends BaseModel {
   }
 
   static async list (authToken) {
-    // TODO: Fake online categories until the crm contains them
-    return [new StandardRuleType({
-      id: 'dummy-category',
-      category: 'Dummy category',
-      hint: 'Select this to go to permit select page',
-      categoryName: 'Dummy'
-    })]
-    //
-    // const dynamicsDal = new DynamicsDalService(authToken)
-    // const orderBy = 'defra_category asc'
-    //
-    // const query = encodeURI(`defra_standardruletypes?$select=${StandardRuleType.selectedDynamicsFields()}&$orderby=${orderBy}`)
-    // try {
-    //   const response = await dynamicsDal.search(query)
-    //
-    //   // Parse response into Standard Rule Type objects
-    //   return response.value.map((standardRuleType) => StandardRuleType.dynamicsToModel(standardRuleType))
-    // } catch (error) {
-    //   LoggingService.logError(`Unable to list StandardRuleTypes: ${error}`)
-    //   throw error
-    // }
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const orderBy = 'defra_category asc'
+
+    const query = encodeURI(`defra_standardruletypes?$select=${StandardRuleType.selectedDynamicsFields()}&$orderby=${orderBy}`)
+    try {
+      const response = await dynamicsDal.search(query)
+
+      // Parse response into Standard Rule Type objects
+      return response.value.map((standardRuleType) => StandardRuleType.dynamicsToModel(standardRuleType))
+    } catch (error) {
+      LoggingService.logError(`Unable to list StandardRuleTypes: ${error}`)
+      throw error
+    }
   }
 
   static async getCategories (authToken) {
