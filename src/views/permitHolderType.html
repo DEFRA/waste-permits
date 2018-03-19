@@ -4,6 +4,41 @@
 
   {{> common/backLink }}
 
-  {{> common/pageHeading pageHeading }}
+  <div class="grid-row">
+    <div class="column-two-thirds">
 
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset aria-labelledby="permit-holder-type-heading">
+          <legend class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div id="chosen-holder-type" class="form-group {{#getFormErrorGroupClass errors.chosen-holder-type}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='chosen-holder-type-error' message=errors.chosen-holder-type }}
+
+            {{#each holderTypes}}
+            <div class="multiple-choice">
+              <input id="chosen-holder-{{this.id}}-input" type="radio" name="chosen-holder-type" value="{{this.id}}">
+              <label id="chosen-holder-{{this.id}}-label" class="selection-button-radio" for="chosen-holder-{{this.id}}-input">
+                <span id="chosen-holder-{{this.id}}-type">{{this.type}}</span>
+              </label>
+            </div>
+            {{/each}}
+          </div>
+
+        </fieldset>
+
+        <div class="form-group">
+          <p><span id="helpline-text">Not sure? Call our helpline on</span> <a id="helpline-number" href="tel:+443708506506">03708 506 506.</a></p>
+        </div>
+
+        {{> common/submitButton }}
+
+      </form>
+    </div>
+  </div>
 </main>

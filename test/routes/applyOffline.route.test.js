@@ -20,6 +20,7 @@ const errorPath = '/errors/technical-problem'
 const startPath = '/errors/order/start-at-beginning'
 
 let fakeApplication
+let fakePermitHolderType
 let fakeStandardRuleTypeId
 let sandbox
 
@@ -29,6 +30,7 @@ lab.beforeEach(() => {
   }
 
   fakeStandardRuleTypeId = 'offline-category-flood'
+  fakePermitHolderType = {canApplyOnline: false}
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -42,10 +44,13 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(CookieService, 'get').value((request, cookieKey) => {
-    if (cookieKey === 'standardRuleTypeId') {
-      return fakeStandardRuleTypeId
-    } else {
-      return cookieGet(request, cookieKey)
+    switch (cookieKey) {
+      case 'permitHolderType':
+        return fakePermitHolderType
+      case 'standardRuleTypeId':
+        return fakeStandardRuleTypeId
+      default:
+        return cookieGet(request, cookieKey)
     }
   })
   sandbox.stub(LoggingService, 'logError').value(() => {})
@@ -112,8 +117,9 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
         Code.expect(res.headers['location']).to.equal(errorPath)
       })
 
-      lab.test('redirects to start screen when cookie does not contain an offline category id', async () => {
+      lab.test('redirects to start screen when cookie does not contain an offline category id and the permit holder can apply online', async () => {
         fakeStandardRuleTypeId = undefined
+        fakePermitHolderType.canApplyOnline = true
         const spy = sinon.spy(LoggingService, 'logError')
 
         const res = await server.inject(getRequest)

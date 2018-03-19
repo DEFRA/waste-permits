@@ -24,12 +24,16 @@ module.exports = class ApplyOfflineController extends BaseController {
       return this.redirect(request, h, redirectPath)
     }
 
-    const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
+    let offlineCategory
 
-    const offlineCategory = ApplyOfflineController.getOfflineCategory(standardRuleTypeId)
-    if (!offlineCategory) {
-      LoggingService.logError(`Unable to get offline category for : ${standardRuleTypeId}`)
-      return this.redirect(request, h, Constants.Routes.ERROR.START_AT_BEGINNING.path)
+    const permitHolderType = CookieService.get(request, Constants.COOKIE_KEY.PERMIT_HOLDER_TYPE)
+    if (permitHolderType.canApplyOnline) {
+      const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
+      offlineCategory = ApplyOfflineController.getOfflineCategory(standardRuleTypeId)
+      if (!offlineCategory) {
+        LoggingService.logError(`Unable to get offline category for : ${standardRuleTypeId}`)
+        return this.redirect(request, h, Constants.Routes.ERROR.START_AT_BEGINNING.path)
+      }
     }
 
     // OfflineCategory will be used in later version of this page

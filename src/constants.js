@@ -53,6 +53,44 @@ Constants.OFFLINE_CATEGORIES = {
   }
 }
 
+Constants.PERMIT_HOLDER_TYPES = {
+  LIMITED_COMPANY: {
+    id: 'limited-company',
+    type: 'Limited company',
+    canApplyOnline: true
+  },
+  INDIVIDUAL: {
+    id: 'individual',
+    type: 'Individual or sole trader',
+    canApplyOnline: false
+  },
+  LOCAL_AUTHORITY: {
+    id: 'local-authority',
+    type: 'Local authority or public body',
+    canApplyOnline: false
+  },
+  PARTNERSHIP: {
+    id: 'partnership',
+    type: 'Partnership',
+    canApplyOnline: false
+  },
+  REGISTERED_CHARITY: {
+    id: 'registered-charity',
+    type: 'Registered charity',
+    canApplyOnline: false
+  },
+  LIMITED_LIABILITY_PARTNERSHIP: {
+    id: 'limited-liability-partnership',
+    type: 'Limited liability partnership',
+    canApplyOnline: false
+  },
+  OTHER_ORGANISATION: {
+    id: 'other-organisation',
+    type: 'Other organisation, for example a club or association',
+    canApplyOnline: false
+  }
+}
+
 Constants.DEFRA_COOKIE_KEY = 'DefraSession'
 
 Constants.COOKIE_RESULT = {
@@ -68,6 +106,7 @@ Constants.COOKIE_KEY = {
   AUTH_TOKEN: 'authToken',
   APPLICATION_ID: 'applicationId',
   APPLICATION_LINE_ID: 'applicationLineId',
+  PERMIT_HOLDER_TYPE: 'permitHolderType',
   STANDARD_RULE_TYPE_ID: 'standardRuleTypeId',
   EXPIRY: 'expiry'
 }
