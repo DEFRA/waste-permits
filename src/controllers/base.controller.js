@@ -60,6 +60,7 @@ module.exports = class BaseController {
     const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
     const standardRuleId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_ID)
     const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
+    const permitHolderType = CookieService.get(request, Constants.COOKIE_KEY.PERMIT_HOLDER_TYPE)
 
     // Query in parallel for optional entities
     const [application, applicationLine, account, contact, payment, standardRule] = await Promise.all([
@@ -82,7 +83,8 @@ module.exports = class BaseController {
       payment,
       standardRule,
       standardRuleId,
-      standardRuleTypeId
+      standardRuleTypeId,
+      permitHolderType
     }
   }
 

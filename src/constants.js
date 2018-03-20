@@ -158,7 +158,7 @@ Constants.Routes = {
   },
   APPLY_OFFLINE: {
     path: '/start/apply-offline',
-    pageHeading: 'Download and fill in these forms to apply for that permit'
+    pageHeading: `Apply for {{{chosenOption}}}`
   },
   BACS_PAYMENT: {
     path: '/pay/bacs',

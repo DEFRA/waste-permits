@@ -17,7 +17,26 @@ const {COOKIE_RESULT} = require('../../src/constants')
 
 const routePath = '/permit/category'
 const nextRoutePath = '/permit/select'
+const offlineRoutePath = '/start/apply-offline'
 const errorPath = '/errors/technical-problem'
+
+const offlineCategories = [
+  {
+    id: 'offline-category-flood',
+    name: 'Flood',
+    category: 'Flood risk activities'
+  },
+  {
+    id: 'offline-category-radioactive',
+    name: 'Radioactive',
+    category: 'Radioactive substances for non-nuclear sites'
+  },
+  {
+    id: 'offline-category-water',
+    name: 'Water',
+    category: 'Water discharges'
+  }
+]
 
 let fakeApplication
 let fakeStandardRuleType
@@ -164,18 +183,31 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       }
     })
 
-    lab.test('success', async () => {
-      const setCookieSpy = sinon.spy(CookieService, 'set')
-      postRequest.payload['chosen-category'] = fakeStandardRuleType.id
-      const res = await server.inject(postRequest)
+    lab.experiment('success', async () => {
+      const checkSuccessRoute = async (route) => {
+        const setCookieSpy = sinon.spy(CookieService, 'set')
+        postRequest.payload['chosen-category'] = fakeStandardRuleType.id
+        const res = await server.inject(postRequest)
 
-      // Make sure standard rule type is saved in a cookie
-      Code.expect(setCookieSpy.calledOnce).to.equal(true)
-      Code.expect(setCookieSpy.calledWith(res.request, 'standardRuleTypeId', fakeStandardRuleType.id)).to.equal(true)
+        // Make sure standard rule type is saved in a cookie
+        Code.expect(setCookieSpy.calledOnce).to.equal(true)
+        Code.expect(setCookieSpy.calledWith(res.request, 'standardRuleTypeId', fakeStandardRuleType.id)).to.equal(true)
 
-      // Make sure a redirection has taken place correctly
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        // Make sure a redirection has taken place correctly
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(route)
+      }
+
+      lab.test('when online category is selected', async () => {
+        await checkSuccessRoute(nextRoutePath)
+      })
+
+      offlineCategories.forEach((standardRuleType) => {
+        lab.test(`when offline ${standardRuleType.category} is selected`, async () => {
+          fakeStandardRuleType = standardRuleType
+          await checkSuccessRoute(offlineRoutePath)
+        })
+      })
     })
 
     lab.test('invalid when category not selected', async () => {
