@@ -32,8 +32,14 @@ module.exports = class PermitHolderTypeController extends BaseController {
         .filter(({id}) => request.payload['chosen-holder-type'] === id)
         .pop()
 
+      const {PERMIT_HOLDER_TYPE, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID} = Constants.COOKIE_KEY
+
+      CookieService.remove(request, PERMIT_HOLDER_TYPE)
+      CookieService.remove(request, STANDARD_RULE_ID)
+      CookieService.remove(request, STANDARD_RULE_TYPE_ID)
+
       if (permitHolder) {
-        CookieService.set(request, Constants.COOKIE_KEY.PERMIT_HOLDER_TYPE, permitHolder)
+        CookieService.set(request, PERMIT_HOLDER_TYPE, permitHolder)
         if (permitHolder.canApplyOnline) {
           return this.redirect(request, h, Constants.Routes.PERMIT_CATEGORY.path)
         }
