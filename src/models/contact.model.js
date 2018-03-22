@@ -35,7 +35,7 @@ class Contact extends BaseModel {
       filter += ` and parentcustomerid_account/accountid eq ${accountId}`
     }
     let orderBy = 'lastname asc,firstname asc'
-    const query = `contacts?$select=${Contact.selectedDynamicsFields((field) => field !== 'defra_dateofbirthdaycompanieshouse')}&$filter=${filter}&$orderby=${orderBy}`
+    const query = `contacts?$select=${Contact.selectedDynamicsFields(({dynamics}) => dynamics !== 'defra_dateofbirthdaycompanieshouse')}&$filter=${filter}&$orderby=${orderBy}`
 
     try {
       const response = await dynamicsDal.search(query)
