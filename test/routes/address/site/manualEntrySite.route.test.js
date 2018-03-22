@@ -90,9 +90,13 @@ lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
+  // Stub cookies
+  GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
+    'SITE_POSTCODE': () => undefined
+  })
+
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CookieService, 'get').value(() => undefined)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Address, 'listByPostcode').value(() => [

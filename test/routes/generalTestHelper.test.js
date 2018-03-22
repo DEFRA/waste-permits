@@ -51,6 +51,19 @@ module.exports = class GeneralTestHelper {
     return parser.parseFromString(res.payload, 'text/html')
   }
 
+  static stubGetCookies (sandbox, CookieService, cookies) {
+    // Save for use in stub
+    const cookieGet = CookieService.get
+
+    sandbox.stub(CookieService, 'get').value((request, cookieKey) => {
+      // Only stub the get for cookies we are stubbing
+      if (Object.keys(cookies).includes(cookieKey)) {
+        return cookies[cookieKey]()
+      }
+      return cookieGet(request, cookieKey)
+    })
+  }
+
   test (options = {
     excludeCookieGetTests: false,
     excludeCookiePostTests: false,
