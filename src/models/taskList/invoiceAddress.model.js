@@ -13,12 +13,11 @@ module.exports = class InvoiceAddress extends BaseModel {
   static async getAddress (request, authToken, applicationId, applicationLineId) {
     let address
     try {
-        // Get the AddressDetail for this application
-      const addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
-        Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
+      // Get the AddressDetail for this application
+      const addressDetail = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
 
       if (addressDetail && addressDetail.addressId !== undefined) {
-          // Get the Address for this AddressDetail
+        // Get the Address for this AddressDetail
         address = await Address.getById(authToken, addressDetail.addressId)
       }
     } catch (error) {
@@ -39,16 +38,8 @@ module.exports = class InvoiceAddress extends BaseModel {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    // Get the AddressDetail for this Application (if there is one)
-    let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
-      Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
-
-    if (!addressDetail) {
-      // Create new AddressDetail
-      addressDetail = new AddressDetail({
-        type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
-        applicationId: applicationId
-      })
+    let addressDetail = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
+    if (!addressDetail.addressId) {
       await addressDetail.save(authToken)
     }
 
@@ -78,15 +69,8 @@ module.exports = class InvoiceAddress extends BaseModel {
     }
 
     // Get the AddressDetail for this Application (if there is one)
-    let addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId,
-      Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
-
-    if (!addressDetail) {
-      // Create new AddressDetail
-      addressDetail = new AddressDetail({
-        type: Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE,
-        applicationId: applicationId
-      })
+    let addressDetail = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
+    if (!addressDetail.addressId) {
       await addressDetail.save(authToken)
     }
 
@@ -126,10 +110,10 @@ module.exports = class InvoiceAddress extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (authToken, applicationId) {
     let isComplete = false
     try {
-      const addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, Constants.Dynamics.AddressTypes.BILLING_INVOICING.TYPE)
+      const addressDetail = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
       if (addressDetail && addressDetail.addressId) {
         isComplete = Address.getById(addressDetail.addressId) !== undefined
       }

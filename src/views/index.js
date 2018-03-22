@@ -21,7 +21,7 @@ const defaultContext = {
   pageTitle: 'Generic Page',
   htmlLang: 'en',
   bodyClasses: '',
-  bodyStart: '',
+  bodyStart: loadCommonPartial('bodyStart'),
   skipLinkMessage: '',
   cookieMessage: '',
   headerClass: 'with-proposition',

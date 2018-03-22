@@ -16,7 +16,7 @@ class AddressDetail extends BaseModel {
       {field: 'id', dynamics: 'defra_addressdetailsid'},
       {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationId', relationship: 'defra_application_defra_addressdetails', entity: 'defra_applications'}},
       {field: 'addressId', dynamics: '_defra_address_value', bind: {id: 'defra_Address', relationship: 'defra_address_defra_addressdetails', entity: 'defra_addresses'}},
-      {field: 'defraName', dynamics: 'defra_name', constant: Constants.Dynamics.AddressTypes.BILLING_INVOICING.NAME},
+      {field: 'addressName', dynamics: 'defra_name'},
       {field: 'email', dynamics: 'emailaddress', length: {max: 100}},
       {field: 'telephone', dynamics: 'defra_phone', length: {min: 10, max: 15}},
       {field: 'type', dynamics: 'defra_addresstype'}
@@ -45,18 +45,18 @@ class AddressDetail extends BaseModel {
   }
 
   static async getCompanySecretaryDetails (authToken, applicationId) {
-    const {TYPE: type, NAME: name} = COMPANY_SECRETARY_EMAIL
-    return (await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)) || new AddressDetail({applicationId, name, type})
+    const {TYPE: type, NAME: addressName} = COMPANY_SECRETARY_EMAIL
+    return (await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)) || new AddressDetail({applicationId, addressName, type})
   }
 
   static async getPrimaryContactDetails (authToken, applicationId) {
-    const {TYPE: type, NAME: name} = PRIMARY_CONTACT_TELEPHONE_NUMBER
-    return (await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)) || new AddressDetail({applicationId, name, type})
+    const {TYPE: type, NAME: addressName} = PRIMARY_CONTACT_TELEPHONE_NUMBER
+    return (await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)) || new AddressDetail({applicationId, addressName, type})
   }
 
   static async getBillingInvoicingDetails (authToken, applicationId) {
-    const {TYPE: type, NAME: name} = BILLING_INVOICING
-    return (await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)) || new AddressDetail({applicationId, name, type})
+    const {TYPE: type, NAME: addressName} = BILLING_INVOICING
+    return (await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)) || new AddressDetail({applicationId, addressName, type})
   }
 }
 
