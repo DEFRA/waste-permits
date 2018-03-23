@@ -223,9 +223,9 @@ Constants.Routes = {
     pageHeading: 'Cookies'
   },
   COST_TIME: {
-    path: '/cost-time',
+    path: '/costs-times',
     pageHeading: 'Costs and processing time',
-    taskListHeading: 'Check costs and processing time'
+    taskListHeading: 'Check cost'
   },
   DIRECTOR_DATE_OF_BIRTH: {
     path: '/permit-holder/company/director-date-of-birth',
@@ -490,6 +490,7 @@ Constants.Dynamics = {
 
 Constants.TaskList = {
   SectionHeadings: {
+    BEFORE_YOU_APPLY: 'Before you apply',
     PREPARE_APPLICATION: 'Prepare application',
     APPLY: 'Apply'
   }

@@ -45,7 +45,7 @@ lab.beforeEach(() => {
 
   fakeStandardRuleType = {
     id: 'STANDARD_RULE_TYPE_ID',
-    category: 'category',
+    category: 'Category',
     hint: 'category_HINT',
     categoryName: 'category_NAME'
   }
@@ -86,7 +86,7 @@ lab.experiment('Select a permit page tests:', () => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Select a permit')
     Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
     Code.expect(doc.getElementById('select-permit-hint-text')).to.exist()
-    Code.expect(doc.getElementById('permit-type-description').firstChild.nodeValue).to.equal(fakeStandardRuleType.category)
+    Code.expect(doc.getElementById('permit-type-description').firstChild.nodeValue).to.equal(fakeStandardRuleType.category.toLowerCase())
   }
 
   lab.experiment(`GET ${routePath}`, () => {
