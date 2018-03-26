@@ -43,10 +43,10 @@ class TaskList extends BaseModel {
   _defineTaskListSections () {
     this.sections = []
 
-    const prepareApplicationSection = {
-      id: 'prepare-application-section',
+    const beforeYouApplySection = {
+      id: 'before-you-apply-section',
       sectionNumber: 1,
-      sectionName: Constants.TaskList.SectionHeadings.PREPARE_APPLICATION,
+      sectionName: Constants.TaskList.SectionHeadings.BEFORE_YOU_APPLY,
       sectionItems: [{
         id: 'check-permit-cost-and-time',
         label: Constants.Routes.COST_TIME.taskListHeading,
@@ -66,7 +66,14 @@ class TaskList extends BaseModel {
         taskListModelName: 'ConfirmRules',
         completedId: Constants.Dynamics.CompletedParamters.CONFIRM_RULES,
         available: false
-      }, {
+      }]
+    }
+
+    const prepareApplicationSection = {
+      id: 'prepare-application-section',
+      sectionNumber: 2,
+      sectionName: Constants.TaskList.SectionHeadings.PREPARE_APPLICATION,
+      sectionItems: [{
         id: 'waste-recovery-plan',
         label: Constants.Routes.WASTE_RECOVERY_PLAN.taskListHeading,
         href: Constants.Routes.WASTE_RECOVERY_PLAN.path,
@@ -185,7 +192,7 @@ class TaskList extends BaseModel {
 
     const sendAndPaySection = {
       id: 'send-and-pay-section',
-      sectionNumber: 2,
+      sectionNumber: 3,
       sectionName: Constants.TaskList.SectionHeadings.APPLY,
       sectionItems: [{
         id: 'submit-pay',
@@ -197,6 +204,7 @@ class TaskList extends BaseModel {
       }]
     }
 
+    this.sections.push(beforeYouApplySection)
     this.sections.push(prepareApplicationSection)
     this.sections.push(sendAndPaySection)
   }
@@ -246,21 +254,21 @@ class TaskList extends BaseModel {
   // combining the results into a single boolean value if all task list items are complete
   async isComplete (authToken, applicationId, applicationLineId) {
     return Promise.all(
-        // Exclude models that are not applicable to the current task list
-        taskListModels
-          .filter((item) => {
-            return (this.taskListModelNames.includes(item.name))
-          })
-          .map((item) => {
-            return item.isComplete(authToken, applicationId, applicationLineId)
-          })
-      ).then((values) => {
-        // Reduce all of the individual flags into a single flag (which can be overridden by the bypassCompletenessCheck flag, e.g. during development)
-        return config.bypassCompletenessCheck || values.reduce((acc, value) => acc && value)
-      }).catch((err) => {
-        console.error('Error calculating completeness:', err.message)
-        throw err
-      })
+      // Exclude models that are not applicable to the current task list
+      taskListModels
+        .filter((item) => {
+          return (this.taskListModelNames.includes(item.name))
+        })
+        .map((item) => {
+          return item.isComplete(authToken, applicationId, applicationLineId)
+        })
+    ).then((values) => {
+      // Reduce all of the individual flags into a single flag (which can be overridden by the bypassCompletenessCheck flag, e.g. during development)
+      return config.bypassCompletenessCheck || values.reduce((acc, value) => acc && value)
+    }).catch((err) => {
+      console.error('Error calculating completeness:', err.message)
+      throw err
+    })
   }
 }
 

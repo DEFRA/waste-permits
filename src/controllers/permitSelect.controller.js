@@ -21,7 +21,7 @@ module.exports = class PermitSelectController extends BaseController {
 
     const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
     const {category = 'all categories'} = await StandardRuleType.getById(authToken, standardRuleTypeId)
-    pageContext.category = category
+    pageContext.category = category.toLowerCase()
 
     pageContext.standardRules = await StandardRule.list(authToken, standardRuleTypeId)
     pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path

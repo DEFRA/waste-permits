@@ -41,6 +41,14 @@ module.exports = class GeneralTestHelper {
     Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
   }
 
+  static async getDoc (request) {
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(200)
+
+    const parser = new DOMParser()
+    return parser.parseFromString(res.payload, 'text/html')
+  }
+
   test (options = {
     excludeCookieGetTests: false,
     excludeCookiePostTests: false,
