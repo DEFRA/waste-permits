@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('../../generalTestHelper.test')
 
 const server = require('../../../../server')
@@ -56,17 +55,6 @@ lab.experiment('Is part of your application commercially confidential? page test
     let doc
     let getRequest
 
-    const getDoc = async () => {
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Is part of your application commercially confidential?')
-      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
-      return doc
-    }
-
     lab.beforeEach(() => {
       getRequest = {
         method: 'GET',
@@ -77,14 +65,16 @@ lab.experiment('Is part of your application commercially confidential? page test
     })
 
     lab.test('should have a back link', async () => {
-      const doc = await getDoc()
+      const doc = await GeneralTestHelper.getDoc(getRequest)
       const element = doc.getElementById('back-link')
       Code.expect(element).to.exist()
     })
 
     lab.test('success', async () => {
-      doc = await getDoc()
+      doc = await GeneralTestHelper.getDoc(getRequest)
 
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Is part of your application commercially confidential?')
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
       Code.expect(doc.getElementById('declaration-details').firstChild.nodeValue).to.equal(fakeApplication.confidentialityDetails)
       Code.expect(doc.getElementById('confidentiality-hint')).to.exist()
       Code.expect(doc.getElementById('declaration-notice')).to.not.exist()
@@ -107,14 +97,6 @@ lab.experiment('Is part of your application commercially confidential? page test
 
   lab.experiment(`POST ${routePath}`, () => {
     let postRequest
-
-    const getDoc = async () => {
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      return parser.parseFromString(res.payload, 'text/html')
-    }
 
     lab.beforeEach(() => {
       postRequest = {
@@ -140,7 +122,7 @@ lab.experiment('Is part of your application commercially confidential? page test
 
     lab.experiment('invalid', () => {
       const checkValidationMessage = async (fieldId, expectedErrorMessage, shouldHaveErrorClass) => {
-        const doc = await getDoc()
+        const doc = await GeneralTestHelper.getDoc(postRequest)
         // Panel summary error item
         Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 

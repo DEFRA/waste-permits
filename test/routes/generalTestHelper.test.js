@@ -34,16 +34,18 @@ module.exports = class GeneralTestHelper {
     // Panel summary error item
     Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 
-    // Relevant bankruptcy details field error
+    // Relevant field error
     if (shouldHaveErrorClass) {
       Code.expect(doc.getElementById(`${fieldId}`).getAttribute('class')).contains('form-control-error')
     }
     Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
   }
 
-  static async getDoc (request) {
+  static async getDoc (request, status = 200) {
+    // TODO Possibly call this executeRequest
+    // This executes a request and then returns the document view
     const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
+    Code.expect(res.statusCode).to.equal(status)
 
     const parser = new DOMParser()
     return parser.parseFromString(res.payload, 'text/html')

@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -61,11 +60,7 @@ lab.afterEach(() => {
 })
 
 const checkPageElements = async (request, expectedValue) => {
-  const res = await server.inject(request)
-  Code.expect(res.statusCode).to.equal(200)
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
+  const doc = await GeneralTestHelper.getDoc(request)
 
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(`What's the site name?`)
@@ -87,11 +82,7 @@ const checkPageElements = async (request, expectedValue) => {
 }
 
 const checkValidationErrors = async (expectedErrors) => {
-  const res = await server.inject(postRequest)
-  Code.expect(res.statusCode).to.equal(200)
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
+  const doc = await GeneralTestHelper.getDoc(postRequest)
 
   let element
 

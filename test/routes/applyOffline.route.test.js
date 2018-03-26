@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -138,14 +137,6 @@ lab.afterEach(() => {
 lab.experiment('Apply Offline: Download and fill in these forms to apply for that permit page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({excludeCookiePostTests: true})
 
-  const getDoc = async (request) => {
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    return parser.parseFromString(res.payload, 'text/html')
-  }
-
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('how-to-apply')).to.exist()
     Code.expect(doc.getElementById('submit-button')).to.not.exist()
@@ -175,7 +166,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
             lab.test(`"${standardRuleType.category}"`, async () => {
               fakeStandardRuleType = standardRuleType
 
-              const doc = await getDoc(getRequest)
+              const doc = await GeneralTestHelper.getDoc(getRequest)
               checkCommonElements(doc)
               Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`Apply for ${standardRuleType.category.toLowerCase()} permits`)
               Code.expect(doc.getElementById('change-selection-link').getAttribute('href')).to.equal(permitCategoryRoute)
@@ -192,7 +183,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
         lab.test(`"${onlineCategory.category}" for permit "${offlineStandardRule.permitName}"`, async () => {
           fakeStandardRule = offlineStandardRule
 
-          const doc = await getDoc(getRequest)
+          const doc = await GeneralTestHelper.getDoc(getRequest)
           checkCommonElements(doc)
           Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`Apply for ${offlineStandardRule.permitName.toLowerCase()} - ${offlineStandardRule.code}`)
           Code.expect(doc.getElementById('change-selection-link').getAttribute('href')).to.equal(permitSelectRoute)
@@ -209,7 +200,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
       lab.test('when the category other is selected', async () => {
         fakePermitHolderType = permitHolderTypes.other
 
-        const doc = await getDoc(getRequest)
+        const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
         Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a permit for an other organisation, for example a club or association')

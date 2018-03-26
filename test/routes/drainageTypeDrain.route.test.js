@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -78,14 +77,6 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
       ])
     }
 
-    const getDoc = async (request) => {
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(200)
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
-      return doc
-    }
-
     lab.beforeEach(() => {
       request = {
         method: 'GET',
@@ -96,7 +87,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
 
     lab.experiment('success', () => {
       lab.test('when not completed', async () => {
-        const doc = await getDoc(request)
+        const doc = await GeneralTestHelper.getDoc(request)
         checkCommonElements(doc)
 
         Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Our storage meets these rules')
@@ -105,7 +96,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
 
       lab.test('when completed', async () => {
         DrainageTypeDrain.isComplete = () => true
-        const doc = await getDoc(request)
+        const doc = await GeneralTestHelper.getDoc(request)
         checkCommonElements(doc)
 
         Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Return to task list')
