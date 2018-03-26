@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -62,23 +61,15 @@ lab.experiment(`How do you want to pay?:`, () => {
     excludeAlreadySubmittedTest: true
   })
 
-  const getDoc = async (request) => {
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-    Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('How do you want to pay?')
-    Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
-    return doc
-  }
-
   lab.experiment(`GET ${routePath}`, () => {
     lab.beforeEach(() => {})
 
     lab.experiment('success', () => {
       lab.test('static content exists', async () => {
-        const doc = await getDoc(getRequest)
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+
+        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('How do you want to pay?')
+        Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
 
         // Test for the existence of expected static content
         GeneralTestHelper.checkElementsExist(doc, [
@@ -95,7 +86,7 @@ lab.experiment(`How do you want to pay?:`, () => {
       lab.test('value is formated correctly including pence', async () => {
         const testApplicationLine = Object.assign({}, fakeApplicationLine, {value: 10000.25})
         ApplicationLine.getById = () => new ApplicationLine(testApplicationLine)
-        const doc = await getDoc(getRequest)
+        const doc = await GeneralTestHelper.getDoc(getRequest)
 
         Code.expect(doc.getElementById('payment-cost').firstChild.nodeValue).to.equal('10,000.25')
       })
@@ -103,7 +94,7 @@ lab.experiment(`How do you want to pay?:`, () => {
       lab.test('value is formated without pence', async () => {
         const testApplicationLine = Object.assign({}, fakeApplicationLine, {value: 1000})
         ApplicationLine.getById = () => new ApplicationLine(testApplicationLine)
-        const doc = await getDoc(getRequest)
+        const doc = await GeneralTestHelper.getDoc(getRequest)
 
         Code.expect(doc.getElementById('payment-cost').firstChild.nodeValue).to.equal('1,000')
       })
@@ -169,7 +160,7 @@ lab.experiment(`How do you want to pay?:`, () => {
     lab.experiment('invalid', () => {
       lab.test('when payment is not selected', async () => {
         postRequest.payload = {}
-        const doc = await getDoc(postRequest)
+        const doc = await GeneralTestHelper.getDoc(postRequest)
         GeneralTestHelper.checkValidationMessage(doc, 'payment-type', 'Select how you want to pay')
       })
 

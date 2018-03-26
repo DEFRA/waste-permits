@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -76,12 +75,7 @@ lab.afterEach(() => {
 })
 
 const checkPageElements = async (request, companyFound, expectedValue) => {
-  const res = await server.inject(request)
-  Code.expect(res.statusCode).to.equal(200)
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
-
+  const doc = await GeneralTestHelper.getDoc(request)
   let element
 
   if (companyFound) {
@@ -133,12 +127,7 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
 }
 
 const checkValidationError = async (expectedErrorMessage) => {
-  const res = await server.inject(postRequest)
-  Code.expect(res.statusCode).to.equal(200)
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
-
+  const doc = await GeneralTestHelper.getDoc(postRequest)
   let element
 
   // Panel summary error item

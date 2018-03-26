@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -82,17 +81,7 @@ lab.experiment('Check company status page tests:', () => {
     excludeCookiePostTests: true})
 
   lab.experiment(`GET ${routePath}`, () => {
-    let doc
     let getRequest
-
-    const getDoc = async () => {
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      doc = parser.parseFromString(res.payload, 'text/html')
-      return doc
-    }
 
     lab.beforeEach(() => {
       getRequest = {
@@ -105,7 +94,7 @@ lab.experiment('Check company status page tests:', () => {
 
     lab.experiment('success', () => {
       lab.test('should have a back link', async () => {
-        const doc = await getDoc()
+        const doc = await GeneralTestHelper.getDoc(getRequest)
         const element = doc.getElementById('back-link')
         Code.expect(element).to.exist()
       })
@@ -115,7 +104,7 @@ lab.experiment('Check company status page tests:', () => {
           lab.test(`${status}`, async () => {
             fakeCompany.status = status
             fakeCompany.isActive = (status === 'ACTIVE')
-            const doc = await getDoc()
+            const doc = await GeneralTestHelper.getDoc(getRequest)
             Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We can't issue a permit to that company because it ${COMPANY_STATUSES[status]}`)
             Code.expect(doc.getElementById('company-status-message')).to.exist()
             Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)
@@ -128,7 +117,7 @@ lab.experiment('Check company status page tests:', () => {
         lab.test('no directors', async () => {
           CompanyLookupService.getActiveDirectors = () => []
           fakeCompany.isActive = true
-          const doc = await getDoc()
+          const doc = await GeneralTestHelper.getDoc(getRequest)
           Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We can't issue a permit to that company because it has no directors`)
           Code.expect(doc.getElementById('company-status-message')).to.exist()
           Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)

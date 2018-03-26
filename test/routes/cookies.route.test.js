@@ -2,12 +2,9 @@
 
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
-const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
-const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
@@ -41,11 +38,7 @@ lab.experiment('Cookies page tests:', () => {
       headers: {}
     }
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+    const doc = await GeneralTestHelper.getDoc(request)
 
     // Test for the existence of expected static content
     GeneralTestHelper.checkElementsExist(doc, [
@@ -66,11 +59,7 @@ lab.experiment('Cookies page tests:', () => {
       headers: {}
     }
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+    const doc = await GeneralTestHelper.getDoc(request)
 
     // Test the tabular content exists
     GeneralTestHelper.checkElementsExist(doc, [
@@ -107,11 +96,7 @@ lab.experiment('Cookies page tests:', () => {
       headers: {}
     }
 
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+    const doc = await GeneralTestHelper.getDoc(request)
 
     // Test the tabular content does not exist
     GeneralTestHelper.checkElementsDoNotExist(doc, [

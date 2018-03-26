@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -72,12 +71,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
     let doc
     let getRequest
 
-    const getDoc = async () => {
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      doc = parser.parseFromString(res.payload, 'text/html')
+    const checkCommonElements = async (doc) => {
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What evidence of technical competence do you have?')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
       Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
@@ -118,14 +112,15 @@ lab.experiment('Technical Management Qualification tests:', () => {
     })
 
     lab.test('should have a back link', async () => {
-      const doc = await getDoc()
+      const doc = await GeneralTestHelper.getDoc(getRequest)
       const element = doc.getElementById('back-link')
       Code.expect(element).to.exist()
     })
 
     lab.experiment('success', () => {
       lab.test('when no qualification has been selected', async () => {
-        doc = await getDoc()
+        doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
         Code.expect(doc.getElementById('wamitab').getAttribute('checked')).to.not.equal('checked')
         Code.expect(doc.getElementById('getting-qualification').getAttribute('checked')).to.not.equal('checked')
         Code.expect(doc.getElementById('deemed').getAttribute('checked')).to.not.equal('checked')
@@ -134,25 +129,29 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
       lab.test('when wamitab has been selected', async () => {
         fakeApplication.technicalQualification = Qualification.WAMITAB_QUALIFICATION.TYPE
-        doc = await getDoc()
+        doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
         Code.expect(doc.getElementById('wamitab').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when getting-qualification has been selected', async () => {
         fakeApplication.technicalQualification = Qualification.REGISTERED_ON_A_COURSE.TYPE
-        doc = await getDoc()
+        doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
         Code.expect(doc.getElementById('getting-qualification').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when deemed has been selected', async () => {
         fakeApplication.technicalQualification = Qualification.DEEMED_COMPETENCE.TYPE
-        doc = await getDoc()
+        doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
         Code.expect(doc.getElementById('deemed').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when esa-eu has been selected', async () => {
         fakeApplication.technicalQualification = Qualification.ESA_EU_SKILLS.TYPE
-        doc = await getDoc()
+        doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
         Code.expect(doc.getElementById('esa-eu').getAttribute('checked')).to.equal('checked')
       })
     })
@@ -174,14 +173,6 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     let postRequest
-
-    const getDoc = async () => {
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      return parser.parseFromString(res.payload, 'text/html')
-    }
 
     lab.beforeEach(() => {
       postRequest = {
@@ -205,7 +196,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
     lab.experiment('invalid', () => {
       const checkValidationMessage = async (fieldId, expectedErrorMessage) => {
-        const doc = await getDoc()
+        const doc = await GeneralTestHelper.getDoc(postRequest)
         // Panel summary error item
         Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 

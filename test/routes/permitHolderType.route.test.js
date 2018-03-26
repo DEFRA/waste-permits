@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -57,14 +56,6 @@ lab.afterEach(() => {
 lab.experiment('Permit holder type: Who will be the permit holder? page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
-  const getDoc = async (request) => {
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    return parser.parseFromString(res.payload, 'text/html')
-  }
-
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who will be the permit holder?')
     Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
@@ -96,7 +87,7 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
       holderTypes.forEach(({id, type}) => {
         lab.test(`should include option for ${type}`, async () => {
-          const doc = await getDoc(getRequest)
+          const doc = await GeneralTestHelper.getDoc(getRequest)
           checkCommonElements(doc)
           const prefix = `chosen-holder-${id}`
           Code.expect(doc.getElementById(`${prefix}-input`).getAttribute('value')).to.equal(id)
@@ -165,7 +156,7 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
     lab.experiment('invalid', () => {
       lab.test('when type not selected', async () => {
         postRequest.payload = {}
-        const doc = await getDoc(postRequest)
+        const doc = await GeneralTestHelper.getDoc(postRequest)
         await GeneralTestHelper.checkValidationMessage(doc, 'chosen-holder-type', 'Select who will be the permit holder')
       })
     })

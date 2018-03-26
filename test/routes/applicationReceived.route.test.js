@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -77,14 +76,6 @@ lab.experiment('ApplicationReceived page tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     let request
 
-    const getDoc = async () => {
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      return parser.parseFromString(res.payload, 'text/html')
-    }
-
     const checkCommonElements = async (doc) => {
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Application received')
       Code.expect(doc.getElementById('application-name').firstChild.nodeValue).to.equal(fakeApplication.applicationName)
@@ -111,19 +102,14 @@ lab.experiment('ApplicationReceived page tests:', () => {
     })
 
     lab.test('The page should not have a back link', async () => {
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
-
+      const doc = await GeneralTestHelper.getDoc(request)
       Code.expect(doc.getElementById('back-link')).to.not.exist()
     })
 
     lab.test('returns the application received page correctly if bacs has been selected for payment eventhough the application has not been paid for yet', async () => {
       fakeApplication.paymentReceived = 0
 
-      const doc = await getDoc()
+      const doc = await GeneralTestHelper.getDoc(request)
 
       checkCommonElements(doc)
 
@@ -162,7 +148,7 @@ lab.experiment('ApplicationReceived page tests:', () => {
 
     lab.test('returns the application received page correctly if bacs has not been selected for payment but the application has been paid for', async () => {
       Payment.getByApplicationLineIdAndType = () => undefined
-      const doc = await getDoc()
+      const doc = await GeneralTestHelper.getDoc(request)
 
       checkCommonElements(doc)
 

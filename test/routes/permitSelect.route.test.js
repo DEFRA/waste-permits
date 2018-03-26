@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -74,14 +73,6 @@ lab.afterEach(() => {
 lab.experiment('Select a permit page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
-  const getDoc = async (request) => {
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    return parser.parseFromString(res.payload, 'text/html')
-  }
-
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Select a permit')
     Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
@@ -116,7 +107,7 @@ lab.experiment('Select a permit page tests:', () => {
       })
 
       lab.test('should include permits ', async () => {
-        const doc = await getDoc(getRequest)
+        const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
         permits.forEach(({id, permitName, code, limits, codeForId}) => {
@@ -208,7 +199,7 @@ lab.experiment('Select a permit page tests:', () => {
 
     lab.test('invalid when permit not selected', async () => {
       postRequest.payload = {}
-      const doc = await getDoc(postRequest)
+      const doc = await GeneralTestHelper.getDoc(postRequest)
       await GeneralTestHelper.checkValidationMessage(doc, 'chosen-permit', 'Select the permit you want')
     })
   })

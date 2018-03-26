@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -110,22 +109,14 @@ lab.experiment('Contact details page tests:', () => {
     })
 
     lab.test('The page should have a back link', async () => {
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+      const doc = await GeneralTestHelper.getDoc(request)
 
       const element = doc.getElementById('back-link')
       Code.expect(element).to.exist()
     })
 
     lab.test('returns the contact page correctly', async () => {
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+      const doc = await GeneralTestHelper.getDoc(request)
 
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who should we contact about this application?')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
@@ -152,13 +143,6 @@ lab.experiment('Contact details page tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     let request
-    const getDoc = async () => {
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      return parser.parseFromString(res.payload, 'text/html')
-    }
 
     lab.beforeEach(() => {
       request = {
@@ -332,7 +316,7 @@ lab.experiment('Contact details page tests:', () => {
           if (isAgent) {
             request.payload['is-contact-an-agent'] = 'on'
           }
-          const doc = await getDoc()
+          const doc = await GeneralTestHelper.getDoc(request)
           checkErrorMessages(doc, field, messages)
         })
       })

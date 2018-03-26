@@ -3,10 +3,7 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('../generalTestHelper.test')
-
-const server = require('../../../server')
 
 const routePath = '/errors/cookies-off'
 const pageHeading = 'You must switch on cookies to use this service'
@@ -33,11 +30,7 @@ lab.experiment('Cookies Disabled page tests:', () => {
     excludeAlreadySubmittedTest: true})
 
   lab.test(`GET ${routePath} returns the disabled cookies page correctly`, async () => {
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+    const doc = await GeneralTestHelper.getDoc(getRequest)
 
     let element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(pageHeading)

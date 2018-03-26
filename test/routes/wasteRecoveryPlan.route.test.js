@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -50,11 +49,7 @@ lab.experiment('Waste Recovery Plan page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
   lab.test('The page should have a back link', async () => {
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+    const doc = await GeneralTestHelper.getDoc(getRequest)
 
     const element = doc.getElementById('back-link')
     Code.expect(element).to.exist()

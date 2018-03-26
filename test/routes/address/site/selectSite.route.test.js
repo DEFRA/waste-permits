@@ -3,7 +3,6 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const DOMParser = require('xmldom').DOMParser
 const sinon = require('sinon')
 const GeneralTestHelper = require('../../../routes/generalTestHelper.test')
 
@@ -104,11 +103,7 @@ lab.afterEach(() => {
 })
 
 const checkPageElements = async (getRequest) => {
-  const res = await server.inject(getRequest)
-  Code.expect(res.statusCode).to.equal(200)
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
+  const doc = await GeneralTestHelper.getDoc(getRequest)
 
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(pageHeading)
@@ -132,12 +127,7 @@ const checkPageElements = async (getRequest) => {
 }
 
 const checkValidationError = async (expectedErrorMessage) => {
-  const res = await server.inject(postRequest)
-  Code.expect(res.statusCode).to.equal(200)
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
-
+  const doc = await GeneralTestHelper.getDoc(postRequest)
   // Panel summary error item
   let element = doc.getElementById('error-summary-list-item-0').firstChild
   Code.expect(element.nodeValue).to.equal(expectedErrorMessage)

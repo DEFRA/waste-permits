@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -105,21 +104,13 @@ lab.experiment('Check your answers before sending your application page tests:',
     })
 
     lab.test('The page should have a back link', async () => {
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+      const doc = await GeneralTestHelper.getDoc(request)
 
       Code.expect(doc.getElementById('back-link')).to.exist()
     })
 
     lab.test('returns the check before sending page static content correctly', async () => {
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+      const doc = await GeneralTestHelper.getDoc(request)
 
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Check your answers')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Confirm and continue')
@@ -141,11 +132,7 @@ lab.experiment('Check your answers before sending your application page tests:',
     })
 
     lab.test('returns the check before sending page dynamic content correctly', async () => {
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+      const doc = await GeneralTestHelper.getDoc(request)
 
       const {heading, answers, links} = fakeLineData
       Code.expect(doc.getElementById('section-test-heading').firstChild.nodeValue.trim()).to.equal(heading)

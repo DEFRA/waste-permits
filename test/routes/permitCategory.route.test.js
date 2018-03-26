@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -76,14 +75,6 @@ lab.afterEach(() => {
 lab.experiment('What do you want the permit for? (permit category) page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
-  const getDoc = async (request) => {
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    return parser.parseFromString(res.payload, 'text/html')
-  }
-
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What do you want the permit for?')
     Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
@@ -127,7 +118,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       })
 
       lab.test('should include categories ', async () => {
-        const doc = await getDoc(getRequest)
+        const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
         categories.forEach(({id, categoryName, category, hint}) => {
@@ -212,7 +203,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
     lab.test('invalid when category not selected', async () => {
       postRequest.payload = {}
-      const doc = await getDoc(postRequest)
+      const doc = await GeneralTestHelper.getDoc(postRequest)
       await GeneralTestHelper.checkValidationMessage(doc, 'chosen-category', 'Select what you want the permit for')
     })
   })
