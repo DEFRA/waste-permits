@@ -44,8 +44,8 @@ lab.beforeEach(() => {
   sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CookieService, 'set').value(() => () => {})
-  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(server, 'log').value(() => {})
+  sandbox.stub(console, 'error').value(() => {})
 })
 
 lab.afterEach(() => {
@@ -99,7 +99,7 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }
@@ -126,7 +126,7 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
     lab.experiment('success', () => {
       const checkRoute = async (route) => {
-        const setCookieSpy = sinon.spy(CookieService, 'set')
+        const setCookieSpy = sandbox.spy(CookieService, 'set')
         postRequest.payload['chosen-holder-type'] = fakePermitHolderType.id
         const res = await server.inject(postRequest)
 

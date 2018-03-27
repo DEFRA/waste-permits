@@ -63,8 +63,8 @@ lab.beforeEach(() => {
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CookieService, 'set').value(() => () => {})
-  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(server, 'log').value(() => {})
+  sandbox.stub(console, 'error').value(() => {})
 })
 
 lab.afterEach(() => {
@@ -137,7 +137,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }
@@ -149,7 +149,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       })
 
       lab.test('redirects to error screen when failing to get the list of categories', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         StandardRuleType.getCategories = () => {
           throw new Error('search failed')
         }
@@ -176,7 +176,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
     lab.experiment('success', async () => {
       const checkSuccessRoute = async (route) => {
-        const setCookieSpy = sinon.spy(CookieService, 'set')
+        const setCookieSpy = sandbox.spy(CookieService, 'set')
         postRequest.payload['chosen-category'] = fakeStandardRuleType.id
         const res = await server.inject(postRequest)
 

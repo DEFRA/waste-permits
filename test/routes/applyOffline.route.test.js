@@ -103,8 +103,12 @@ lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
-  // Save for use in stub
-  const cookieGet = CookieService.get
+  // Stub cookies
+  GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
+    permitHolderType: () => fakePermitHolderType,
+    standardRuleTypeId: () => fakeStandardRuleType.id,
+    standardRuleId: () => fakeStandardRuleId
+  })
 
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
@@ -112,18 +116,6 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRule, 'getById').value(() => new Application(fakeStandardRule))
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CookieService, 'get').value((request, cookieKey) => {
-    switch (cookieKey) {
-      case 'permitHolderType':
-        return fakePermitHolderType
-      case 'standardRuleTypeId':
-        return fakeStandardRuleType.id
-      case 'standardRuleId':
-        return fakeStandardRuleId
-      default:
-        return cookieGet(request, cookieKey)
-    }
-  })
   sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
