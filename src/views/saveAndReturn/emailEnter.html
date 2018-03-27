@@ -1,0 +1,36 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <div class="panel panel-border-wide">
+        <p id="save-and-return-description">We’ll email you a link you can use to get back to your saved application. Every time you complete a screen we’ll save your data automatically.</p>
+      </div>
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.save-and-return-email}}{{/getFormErrorGroupClass}}">
+          <label id="save-and-return-email-label" class="form-label" for="save-and-return-email">Your email address</label>
+          {{> common/fieldError fieldId='save-and-return-email-error' message=errors.save-and-return-email }}
+          <input type="text" class="form-control form-control-char-35 {{#if errors.save-and-return-email}}form-control-error{{/if}}" id="save-and-return-email" name="save-and-return-email" value="{{ formValues.save-and-return-email }}" />
+        </div>
+
+        <div class="form-group">
+          <a id="privacy-link" target="_blank" rel="noopener noreferrer" href="/information/privacy">Privacy: how we use your personal information (opens new tab)</a>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+    </div>
+  </div>
+
+</main>

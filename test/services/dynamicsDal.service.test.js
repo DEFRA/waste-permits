@@ -9,8 +9,12 @@ const nock = require('nock')
 
 const config = require('../../src/config/config')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
+const LoggingService = require('../../src/services/logging.service')
 
 let dynamicsDal
+let sandbox
+let dynamicsCallSpy
+let loggingSpy
 
 lab.beforeEach(() => {
   dynamicsDal = new DynamicsDalService('__CRM_TOKEN__')
@@ -74,76 +78,89 @@ lab.beforeEach(() => {
     })
 
   nock(`https://${config.dynamicsWebApiHost}`)
-    .get(`${config.dynamicsWebApiPath}__DYNAMICS_BAD_QUERY__`)
+    .get(`${config.dynamicsWebApiPath}__DYNAMICS_UNKNOWN_BAD_QUERY__`)
     .reply(500, {})
+
+  nock(`https://${config.dynamicsWebApiHost}`)
+    .get(`${config.dynamicsWebApiPath}__DYNAMICS_KNOWN_BAD_QUERY__`)
+    .reply(500, {
+      error: {
+        message: 'KNOWN_BAD_QUERY',
+        innererror: {
+          type: 'DYNAMICS_ERROR_TYPE',
+          message: 'KNOWN_BAD_QUERY',
+          stacktrace: 'DYNAMICS_STACKTRACE'
+        }
+      }
+    })
 
   nock(`https://${config.dynamicsWebApiHost}`)
     .get(`${config.dynamicsWebApiPath}__DYNAMICS_TIMEOUT_QUERY__`)
     .socketDelay(7000)
     .reply(200, {})
+
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+  dynamicsCallSpy = sandbox.spy(DynamicsDalService.prototype, '_call')
+  loggingSpy = sandbox.spy(LoggingService, 'logError')
+  sandbox.stub(console, 'error').value(() => {})
 })
 
 lab.afterEach(() => {
   nock.cleanAll()
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Dynamics Service tests:', () => {
   lab.test('create() can create a new record in Dynamics', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     const response = await dynamicsDal.create('__DYNAMICS_INSERT_QUERY__', {})
-    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(dynamicsCallSpy.callCount).to.equal(1)
     Code.expect(response).to.equal('7a8e4354-4f24-e711-80fd-5065f38a1b01')
-    DynamicsDalService.prototype._call.restore()
   })
 
   lab.test('update() can update a record in Dynamics', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     await dynamicsDal.update('__DYNAMICS_UPDATE_QUERY__', {})
-    Code.expect(spy.callCount).to.equal(1)
-    DynamicsDalService.prototype._call.restore()
+    Code.expect(dynamicsCallSpy.callCount).to.equal(1)
   })
 
   lab.test('delete() can delete a record in Dynamics', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     await dynamicsDal.delete('__DYNAMICS_DELETE_QUERY__')
-    Code.expect(spy.callCount).to.equal(1)
-    DynamicsDalService.prototype._call.restore()
+    Code.expect(dynamicsCallSpy.callCount).to.equal(1)
   })
 
   lab.test('search() can retrieve a list of records from Dynamics', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     await dynamicsDal.search('__DYNAMICS_LIST_QUERY__')
-    Code.expect(spy.callCount).to.equal(1)
-    DynamicsDalService.prototype._call.restore()
+    Code.expect(dynamicsCallSpy.callCount).to.equal(1)
   })
 
   lab.test('search() can retrieve a single record from Dynamics', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
     await dynamicsDal.search('__DYNAMICS_ID_QUERY__')
-    Code.expect(spy.callCount).to.equal(1)
-
-    DynamicsDalService.prototype._call.restore()
+    Code.expect(dynamicsCallSpy.callCount).to.equal(1)
   })
 
-  lab.test('service handles unknown result from Dynamics', () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
-    dynamicsDal.search('__DYNAMICS_BAD_QUERY__')
+  lab.test('service handles unknown result from Dynamics', async () => {
+    await dynamicsDal.search('__DYNAMICS_KNOWN_BAD_QUERY__')
       .catch((err) => {
-        Code.expect(spy.callCount).to.equal(1)
-        Code.expect(err).to.endWith('Code: 500 Message: null')
-
-        DynamicsDalService.prototype._call.restore()
+        Code.expect(dynamicsCallSpy.callCount).to.equal(1)
+        Code.expect(err).to.endWith('Code: 500, Message: KNOWN_BAD_QUERY')
+        Code.expect(loggingSpy.callCount).to.equal(1)
       })
   })
 
-  lab.test('search() times out based on app configuration', () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, '_call')
-    dynamicsDal.search('__DYNAMICS_TIMEOUT_QUERY__')
+  lab.test('service handles known bad result from Dynamics', async () => {
+    await dynamicsDal.search('__DYNAMICS_UNKNOWN_BAD_QUERY__')
       .catch((err) => {
-        Code.expect(spy.callCount).to.equal(1)
-        Code.expect(err.message).to.equal('socket hang up')
+        Code.expect(dynamicsCallSpy.callCount).to.equal(1)
+        Code.expect(err).to.endWith('Code: 500, Message: null')
+      })
+  })
 
-        DynamicsDalService.prototype._call.restore()
+  lab.test('search() times out based on app configuration', async () => {
+    await dynamicsDal.search('__DYNAMICS_TIMEOUT_QUERY__')
+      .catch((err) => {
+        Code.expect(dynamicsCallSpy.callCount).to.equal(1)
+        Code.expect(err.message).to.equal('socket hang up')
       })
   })
 })
