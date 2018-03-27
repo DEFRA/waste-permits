@@ -225,7 +225,7 @@ Constants.Routes = {
   COST_TIME: {
     path: '/costs-times',
     pageHeading: 'Costs and processing time',
-    taskListHeading: 'Check cost'
+    taskListHeading: 'Check costs and processing time'
   },
   DIRECTOR_DATE_OF_BIRTH: {
     path: '/permit-holder/company/director-date-of-birth',
