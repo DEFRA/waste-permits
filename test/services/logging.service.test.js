@@ -13,6 +13,7 @@ let sandbox
 lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
+  sandbox.stub(console, 'error').value(() => {})
 })
 
 lab.afterEach(() => {
