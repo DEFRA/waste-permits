@@ -11,22 +11,22 @@
       <dl class="govuk-check-your-answers cya-questions-short cost-time">
         <div>
           <dt>
-            <strong id="cost-to-apply-heading" class="bold">Cost to apply</strong>
-            <p id="cost-to-apply-description">You pay this when you send your application.<br>It’s not refundable, except in special circumstances.</p>
+            <h2 id="cost-to-apply-heading" class="bold">Cost to apply</h2>
+            <span id="cost-to-apply-description">You pay this when you send your application.</span>
           </dt>
           <dd class="bold-medium">£<span id="cost">{{cost}}</span></dd>
         </div>
         <div>
           <dt>
-            <strong id="time-to-wait-text" class="bold">Time to wait after applying</strong>
-            <p id="more-info-text">It may take longer if we need to ask you for more information.</p>
+            <h2 id="time-to-wait-text" class="bold">Time to wait after applying</h2>
+            <span id="more-info-text">It may take longer if we need to ask you for more information.</span>
           </dt>
           <dd id="length-of-time-text" class="bold-medium">up to 13 weeks</dd>
         </div>
       </dl>
 
       <div class="form-group">
-        <p id="no-vat-text">You don’t pay {{> abbreviations/VAT id="vat-abbr"}} on these costs.</p>
+        <span id="no-vat-text">You don’t pay {{> abbreviations/VAT id="vat-abbr"}} on these costs.</span>
       </div>
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate">

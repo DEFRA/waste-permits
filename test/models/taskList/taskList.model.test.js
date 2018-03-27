@@ -32,7 +32,8 @@ lab.experiment('Task List Model tests:', () => {
   const expectedSections = {
     'before-you-apply-section': [
       'check-permit-cost-and-time',
-      'confirm-that-your-operation-meets-the-rules'],
+      'confirm-that-your-operation-meets-the-rules',
+      'confirm-the-drainage-system-for-the-vehicle-storage-area'],
 
     'prepare-application-section': [
       'waste-recovery-plan',
@@ -44,7 +45,6 @@ lab.experiment('Task List Model tests:', () => {
       'upload-technical-management-qualifications',
       'tell-us-which-management-system-you-use',
       'upload-the-fire-prevention-plan',
-      'confirm-the-drainage-system-for-the-vehicle-storage-area',
       'confirm-confidentiality-needs',
       'invoicing-details'],
 

@@ -66,6 +66,15 @@ class TaskList extends BaseModel {
         taskListModelName: 'ConfirmRules',
         completedId: Constants.Dynamics.CompletedParamters.CONFIRM_RULES,
         available: false
+      }, {
+        id: 'confirm-the-drainage-system-for-the-vehicle-storage-area',
+        label: Constants.Routes.DRAINAGE_TYPE_DRAIN.taskListHeading,
+        href: Constants.Routes.DRAINAGE_TYPE_DRAIN.path,
+        completedLabelId: 'confirm-drainage-completed',
+        rulesetId: Constants.Dynamics.RulesetIds.SURFACE_DRAINAGE,
+        taskListModelName: 'DrainageTypeDrain',
+        completedId: Constants.Dynamics.CompletedParamters.SURFACE_DRAINAGE,
+        available: false
       }]
     }
 
@@ -160,15 +169,6 @@ class TaskList extends BaseModel {
         taskListModelName: 'FirePreventionPlan',
         completedId: Constants.Dynamics.CompletedParamters.FIRE_PREVENTION_PLAN,
         available: true
-      }, {
-        id: 'confirm-the-drainage-system-for-the-vehicle-storage-area',
-        label: Constants.Routes.DRAINAGE_TYPE_DRAIN.taskListHeading,
-        href: Constants.Routes.DRAINAGE_TYPE_DRAIN.path,
-        completedLabelId: 'confirm-drainage-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.SURFACE_DRAINAGE,
-        taskListModelName: 'DrainageTypeDrain',
-        completedId: Constants.Dynamics.CompletedParamters.SURFACE_DRAINAGE,
-        available: false
       }, {
         id: 'confirm-confidentiality-needs',
         label: Constants.Routes.CONFIDENTIALITY.taskListHeading,
