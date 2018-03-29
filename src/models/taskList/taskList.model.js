@@ -75,6 +75,15 @@ class TaskList extends BaseModel {
         taskListModelName: 'DrainageTypeDrain',
         completedId: Constants.Dynamics.CompletedParamters.SURFACE_DRAINAGE,
         available: false
+      }, {
+        id: 'set-up-save-and-return',
+        label: Constants.Routes.SAVE_AND_RETURN_EMAIL.taskListHeading,
+        href: Constants.Routes.SAVE_AND_RETURN_EMAIL.path,
+        completedLabelId: 'set-up-save-and-return-completed',
+        rulesetId: Constants.Dynamics.RulesetIds.SAVE_AND_RETURN_EMAIL,
+        taskListModelName: 'SaveAndReturn',
+        completedId: Constants.Dynamics.CompletedParamters.SAVE_AND_RETURN_EMAIL,
+        available: false
       }]
     }
 

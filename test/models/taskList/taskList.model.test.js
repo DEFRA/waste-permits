@@ -33,7 +33,9 @@ lab.experiment('Task List Model tests:', () => {
     'before-you-apply-section': [
       'check-permit-cost-and-time',
       'confirm-that-your-operation-meets-the-rules',
-      'confirm-the-drainage-system-for-the-vehicle-storage-area'],
+      'confirm-the-drainage-system-for-the-vehicle-storage-area',
+      'set-up-save-and-return'
+    ],
 
     'prepare-application-section': [
       'waste-recovery-plan',
@@ -46,7 +48,8 @@ lab.experiment('Task List Model tests:', () => {
       'tell-us-which-management-system-you-use',
       'upload-the-fire-prevention-plan',
       'confirm-confidentiality-needs',
-      'invoicing-details'],
+      'invoicing-details'
+    ],
 
     'send-and-pay-section': [
       'submit-pay'

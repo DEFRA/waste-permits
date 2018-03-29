@@ -12,6 +12,7 @@ Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
 Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 Constants.MAX_FILE_SIZE = 31457280 // 30MB
+Constants.SAVE_AND_RETURN_URL = '/save-return/start'
 
 Constants.Errors = {
   REQUEST_ENTITY_TOO_LARGE: 413
@@ -315,6 +316,27 @@ Constants.Routes = {
     path: '/information/privacy',
     pageHeading: 'Privacy: how we use your personal information'
   },
+  SAVE_AND_RETURN_SENT_CHECK: {
+    path: '/save-return/email-sent-check',
+    pageHeading: 'Check your email'
+  },
+  SAVE_AND_RETURN_CONFIRM: {
+    path: '/save-return/confirm',
+    pageHeading: 'Make sure this is right'
+  },
+  SAVE_AND_RETURN_SENT_RESENT: {
+    path: '/save-return/email-sent-resent',
+    pageHeading: 'We’ve resent the email - check again'
+  },
+  SAVE_AND_RETURN_COMPLETE: {
+    path: '/save-return/email-sent-task-check',
+    pageHeading: 'You’ve set up save and return for your application'
+  },
+  SAVE_AND_RETURN_EMAIL: {
+    path: '/save-return/email',
+    pageHeading: 'Save your application',
+    taskListHeading: 'Set up save and return for your application'
+  },
   SITE_GRID_REFERENCE: {
     path: '/site/grid-reference',
     pageHeading: `What's the grid reference for the centre of the site?`
@@ -456,6 +478,7 @@ Constants.Dynamics = {
     NHS_SCREENING: 'defra_nhscreeningrequired',
     PERMIT_HOLDER_DETAILS: 'defra_pholderdetailsrequired',
     PRE_APPLICATION: 'defra_preapprequired',
+    SAVE_AND_RETURN_EMAIL: 'defra_setupsaveandreturnrequired',
     SHOW_COST_AND_TIME: 'defra_showcostandtime',
     SITE_NAME_LOCATION: 'defra_locationrequired',
     SITE_PLAN: 'defra_siteplanrequired',
@@ -478,6 +501,7 @@ Constants.Dynamics = {
     NHS_SCREENING: 'defra_nhscreeningrequired_completed',
     PERMIT_HOLDER_DETAILS: 'defra_pholderdetailsrequired_completed',
     PRE_APPLICATION: 'defra_preapprequired_completed',
+    SAVE_AND_RETURN_EMAIL: 'defra_setupsaveandreturn_completed',
     SHOW_COST_AND_TIME: 'defra_showcostandtime_completed',
     SITE_NAME_LOCATION: 'defra_locationrequired_completed',
     SITE_PLAN: 'defra_siteplanrequired_completed',
