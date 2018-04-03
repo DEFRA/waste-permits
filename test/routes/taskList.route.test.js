@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -250,11 +249,7 @@ lab.experiment('Task List page tests:', () => {
     excludeAlreadySubmittedTest: true})
 
   lab.test('The page should NOT have a back link', async () => {
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+    const doc = await GeneralTestHelper.getDoc(getRequest)
 
     let element = doc.getElementById('back-link')
     Code.expect(element).to.not.exist()
@@ -266,11 +261,7 @@ lab.experiment('Task List page tests:', () => {
   })
 
   lab.test('Task list contains the correct heading and StandardRule info', async () => {
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
+    const doc = await GeneralTestHelper.getDoc(getRequest)
 
     // Check the existence of the page title and Standard Rule infos
     checkElement(doc.getElementById('page-heading'), 'Apply for a standard rules waste permit')
@@ -301,11 +292,7 @@ lab.experiment('Task List page tests:', () => {
     fakeTaskList.sections.forEach((section) => {
       section.sectionItems.forEach((sectionItem) => {
         lab.test(`for ${sectionItem.label}`, async () => {
-          const res = await server.inject(getRequest)
-          Code.expect(res.statusCode).to.equal(200)
-
-          const parser = new DOMParser()
-          const doc = parser.parseFromString(res.payload, 'text/html')
+          const doc = await GeneralTestHelper.getDoc(getRequest)
 
           // Check the existence of the correct task list sections
           checkElement(doc.getElementById(section.id))

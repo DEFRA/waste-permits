@@ -34,11 +34,34 @@ module.exports = class GeneralTestHelper {
     // Panel summary error item
     Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 
-    // Relevant bankruptcy details field error
+    // Relevant field error
     if (shouldHaveErrorClass) {
       Code.expect(doc.getElementById(`${fieldId}`).getAttribute('class')).contains('form-control-error')
     }
     Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
+  }
+
+  static async getDoc (request, status = 200) {
+    // TODO Possibly call this executeRequest
+    // This executes a request and then returns the document view
+    const res = await server.inject(request)
+    Code.expect(res.statusCode).to.equal(status)
+
+    const parser = new DOMParser()
+    return parser.parseFromString(res.payload, 'text/html')
+  }
+
+  static stubGetCookies (sandbox, CookieService, cookies) {
+    // Save for use in stub
+    const cookieGet = CookieService.get
+
+    sandbox.stub(CookieService, 'get').value((request, cookieKey) => {
+      // Only stub the get for cookies we are stubbing
+      if (Object.keys(cookies).includes(cookieKey)) {
+        return cookies[cookieKey]()
+      }
+      return cookieGet(request, cookieKey)
+    })
   }
 
   test (options = {

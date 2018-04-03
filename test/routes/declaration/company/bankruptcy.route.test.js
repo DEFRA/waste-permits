@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('../../generalTestHelper.test')
 
 const server = require('../../../../server')
@@ -56,17 +55,6 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
     let doc
     let getRequest
 
-    const getDoc = async () => {
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      doc = parser.parseFromString(res.payload, 'text/html')
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Do you have current or past bankruptcy or insolvency proceedings to declare?')
-      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
-      return doc
-    }
-
     lab.beforeEach(() => {
       getRequest = {
         method: 'GET',
@@ -77,14 +65,16 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
     })
 
     lab.test('should have a back link', async () => {
-      const doc = await getDoc()
+      const doc = await GeneralTestHelper.getDoc(getRequest)
       const element = doc.getElementById('back-link')
       Code.expect(element).to.exist()
     })
 
     lab.test('success', async () => {
-      doc = await getDoc()
+      doc = await GeneralTestHelper.getDoc(getRequest)
 
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Do you have current or past bankruptcy or insolvency proceedings to declare?')
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
       Code.expect(doc.getElementById('declaration-details').firstChild.nodeValue).to.equal(fakeApplication.bankruptcyDetails)
       Code.expect(doc.getElementById('declaration-hint')).to.not.exist()
       Code.expect(doc.getElementById('declaration-notice')).to.exist()
@@ -111,14 +101,6 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
   lab.experiment(`POST ${routePath}`, () => {
     let postRequest
 
-    const getDoc = async () => {
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      return parser.parseFromString(res.payload, 'text/html')
-    }
-
     lab.beforeEach(() => {
       postRequest = {
         method: 'POST',
@@ -143,7 +125,7 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
 
     lab.experiment('invalid', () => {
       const checkValidationMessage = async (fieldId, expectedErrorMessage, shouldHaveErrorClass) => {
-        const doc = await getDoc()
+        const doc = await GeneralTestHelper.getDoc(postRequest)
         // Panel summary error item
         Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 

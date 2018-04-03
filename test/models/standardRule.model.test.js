@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const LoggingService = require('../../src/services/logging.service')
 
 const StandardRule = require('../../src/models/standardRule.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
@@ -11,6 +12,7 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let dynamicsSearchStub
 let applicationLineGetByIdStub
+let loggingServiceLogErrorStub
 
 const fakeStandardRule = {
   id: 'STANDARD_RULE_ID',
@@ -46,12 +48,16 @@ lab.beforeEach(() => {
 
   applicationLineGetByIdStub = ApplicationLine.getById
   ApplicationLine.getById = () => ({standardRuleId: 'STANDARD_RULE_ID'})
+
+  loggingServiceLogErrorStub = LoggingService.logError
+  LoggingService.logError = () => {}
 })
 
 lab.afterEach(() => {
   // Restore stubbed methods
   DynamicsDalService.prototype.search = dynamicsSearchStub
   ApplicationLine.getById = applicationLineGetByIdStub
+  LoggingService.logError = loggingServiceLogErrorStub
 })
 
 lab.experiment('StandardRule Model tests:', () => {

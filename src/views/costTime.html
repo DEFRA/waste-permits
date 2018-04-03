@@ -4,6 +4,36 @@
 
   {{> common/backLink }}
 
-  {{> common/pageHeading pageHeading }}
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      {{> common/pageHeading pageHeading }}
+
+      <dl class="govuk-check-your-answers cya-questions-short cost-time">
+        <div>
+          <dt>
+            <h2 id="cost-to-apply-heading" class="bold">Cost to apply</h2>
+            <span id="cost-to-apply-description">You pay this when you send your application.</span>
+          </dt>
+          <dd class="bold-medium">£<span id="cost">{{cost}}</span></dd>
+        </div>
+        <div>
+          <dt>
+            <h2 id="time-to-wait-text" class="bold">Time to wait after applying</h2>
+            <span id="more-info-text">It may take longer if we need to ask you for more information.</span>
+          </dt>
+          <dd id="length-of-time-text" class="bold-medium">up to 13 weeks</dd>
+        </div>
+      </dl>
+
+      <div class="form-group">
+        <span id="no-vat-text">You don’t pay {{> abbreviations/VAT id="vat-abbr"}} on these costs.</span>
+      </div>
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+        {{> common/submitButton }}
+      </form>
+    </div>
+  </div>
 
 </main>

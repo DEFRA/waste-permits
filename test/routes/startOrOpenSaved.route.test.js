@@ -7,7 +7,6 @@ const sinon = require('sinon')
 const server = require('../../server')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
-const DOMParser = require('xmldom').DOMParser
 const Application = require('../../src/models/application.model')
 const CookieService = require('../../src/services/cookie.service')
 const {COOKIE_RESULT} = require('../../src/constants')
@@ -15,7 +14,7 @@ const {COOKIE_RESULT} = require('../../src/constants')
 let sandbox
 
 const routePath = '/start/start-or-open-saved'
-const nextRoutePath = '/permit/category'
+const nextRoutePath = '/permit-holder/type'
 
 const getRequest = {
   method: 'GET',
@@ -58,11 +57,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
 
   lab.experiment('General page tests:', () => {
     lab.test('The page should NOT have a back link', async () => {
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+      const doc = await GeneralTestHelper.getDoc(getRequest)
 
       let element = doc.getElementById('back-link')
       Code.expect(element).to.not.exist()
@@ -71,11 +66,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
 
   lab.experiment('GET:', () => {
     lab.test('GET returns the Start or Open Saved page correctly', async () => {
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
+      const doc = await GeneralTestHelper.getDoc(postRequest)
 
       let element = doc.getElementById('page-heading').firstChild
       // For MVP we are only supporting the mobile plant standard rules waste permit

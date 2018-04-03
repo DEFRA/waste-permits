@@ -37,6 +37,7 @@ module.exports = class PermitCategoryController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
+      CookieService.remove(request, Constants.COOKIE_KEY.STANDARD_RULE_ID)
       // Set the standard rule type ID in the cookie
       const standardRuleTypeId = request.payload['chosen-category']
       CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID, standardRuleTypeId)

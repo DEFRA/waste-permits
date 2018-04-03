@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -70,24 +69,16 @@ lab.experiment(`You’ve chosen to pay by bank transfer using Bacs:`, () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeAlreadySubmittedTest: true})
 
-  const getDoc = async (request) => {
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(res.payload, 'text/html')
-    Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('You’ve chosen to pay by bank transfer using Bacs')
-    Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Send application')
-    return doc
-  }
-
   lab.experiment(`GET ${routePath}`, () => {
     let doc
 
     lab.beforeEach(() => { })
 
     lab.test('success', async () => {
-      doc = await getDoc(getRequest)
+      doc = await GeneralTestHelper.getDoc(getRequest)
+
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('You’ve chosen to pay by bank transfer using Bacs')
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Send application')
 
       // Test for the existence of expected static content
       GeneralTestHelper.checkElementsExist(doc, [

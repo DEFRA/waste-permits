@@ -82,4 +82,10 @@ module.exports = class CookieService {
       request.state[Constants.DEFRA_COOKIE_KEY][key] = value
     }
   }
+
+  static remove (request, key) {
+    if (request.state[Constants.DEFRA_COOKIE_KEY]) {
+      delete request.state[Constants.DEFRA_COOKIE_KEY][key]
+    }
+  }
 }

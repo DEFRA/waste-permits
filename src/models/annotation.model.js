@@ -20,22 +20,14 @@ class Annotation extends BaseModel {
   }
 
   static async getById (authToken, id) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const query = `annotations(${id})?$select=${Annotation.selectedDynamicsFields()}`
-    try {
-      const result = await dynamicsDal.search(query)
-      return Annotation.dynamicsToModel(result)
-    } catch (error) {
-      LoggingService.logError(`Unable to get Annotation by ID: ${error}`)
-      throw error
-    }
+    return super.getById(authToken, id, ({dynamics}) => dynamics !== 'documentbody')
   }
 
   static async listByApplicationIdAndSubject (authToken, applicationId, subject) {
     if (applicationId) {
       const dynamicsDal = new DynamicsDalService(authToken)
       const filter = `_objectid_value eq ${applicationId} and  objecttypecode eq 'defra_application' and subject eq '${subject}'`
-      const query = encodeURI(`annotations?$select=${Annotation.selectedDynamicsFields()}&$filter=${filter}`)
+      const query = encodeURI(`annotations?$select=${Annotation.selectedDynamicsFields(({dynamics}) => dynamics !== 'documentbody')}&$filter=${filter}`)
       try {
         const response = await dynamicsDal.search(query)
         return response.value.map((result) => Annotation.dynamicsToModel(result))

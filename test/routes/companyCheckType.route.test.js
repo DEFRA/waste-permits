@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -75,17 +74,7 @@ lab.experiment('Check company type page tests:', () => {
     excludeCookiePostTests: true})
 
   lab.experiment(`GET ${routePath}`, () => {
-    let doc
     let getRequest
-
-    const getDoc = async () => {
-      const res = await server.inject(getRequest)
-      Code.expect(res.statusCode).to.equal(200)
-
-      const parser = new DOMParser()
-      doc = parser.parseFromString(res.payload, 'text/html')
-      return doc
-    }
 
     lab.beforeEach(() => {
       getRequest = {
@@ -102,7 +91,7 @@ lab.experiment('Check company type page tests:', () => {
 
     lab.experiment('success', () => {
       lab.test('should have a back link', async () => {
-        const doc = await getDoc()
+        const doc = await GeneralTestHelper.getDoc(getRequest)
         const element = doc.getElementById('back-link')
         Code.expect(element).to.exist()
       })
@@ -118,7 +107,7 @@ lab.experiment('Check company type page tests:', () => {
         Object.keys(COMPANY_TYPES).forEach((type) => {
           lab.test(`${type}`, async () => {
             fakeCompany.type = type
-            const doc = await getDoc()
+            const doc = await GeneralTestHelper.getDoc(getRequest)
             Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`That company can’t apply because it’s ${COMPANY_TYPES[type]}`)
             Code.expect(doc.getElementById('company-type-message')).to.exist()
             Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)

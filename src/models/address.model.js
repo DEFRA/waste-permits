@@ -23,22 +23,6 @@ class Address extends BaseModel {
     ]
   }
 
-  static async getById (authToken, id) {
-    let address
-    if (id) {
-      const dynamicsDal = new DynamicsDalService(authToken)
-      const query = `defra_addresses(${id})`
-      try {
-        const result = await dynamicsDal.search(query)
-        address = Address.dynamicsToModel(result)
-      } catch (error) {
-        LoggingService.logError(`Unable to get Address ID: ${error}`)
-        throw error
-      }
-    }
-    return address
-  }
-
   static async getByUprn (authToken, uprn) {
     if (!authToken) {
       const errorMessage = `Unable to get ${this._entity} by UPRN: Auth Token not supplied`

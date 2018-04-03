@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -17,7 +16,26 @@ const {COOKIE_RESULT} = require('../../src/constants')
 
 const routePath = '/permit/category'
 const nextRoutePath = '/permit/select'
+const offlineRoutePath = '/start/apply-offline'
 const errorPath = '/errors/technical-problem'
+
+const offlineCategories = [
+  {
+    id: 'offline-category-flood',
+    name: 'Flood',
+    category: 'Flood risk activities'
+  },
+  {
+    id: 'offline-category-radioactive',
+    name: 'Radioactive',
+    category: 'Radioactive substances for non-nuclear sites'
+  },
+  {
+    id: 'offline-category-water',
+    name: 'Water',
+    category: 'Water discharges'
+  }
+]
 
 let fakeApplication
 let fakeStandardRuleType
@@ -45,8 +63,8 @@ lab.beforeEach(() => {
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CookieService, 'set').value(() => () => {})
-  sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(server, 'log').value(() => {})
+  sandbox.stub(console, 'error').value(() => {})
 })
 
 lab.afterEach(() => {
@@ -56,14 +74,6 @@ lab.afterEach(() => {
 
 lab.experiment('What do you want the permit for? (permit category) page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
-
-  const getDoc = async (request) => {
-    const res = await server.inject(request)
-    Code.expect(res.statusCode).to.equal(200)
-
-    const parser = new DOMParser()
-    return parser.parseFromString(res.payload, 'text/html')
-  }
 
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What do you want the permit for?')
@@ -93,12 +103,6 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       }
     })
 
-    lab.test('The page should NOT have a back link', async () => {
-      const doc = await getDoc(getRequest)
-      checkCommonElements(doc)
-      Code.expect(doc.getElementById('back-link')).to.not.exist()
-    })
-
     lab.experiment('success', () => {
       let categories
 
@@ -114,7 +118,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       })
 
       lab.test('should include categories ', async () => {
-        const doc = await getDoc(getRequest)
+        const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
         categories.forEach(({id, categoryName, category, hint}) => {
@@ -133,7 +137,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }
@@ -145,7 +149,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       })
 
       lab.test('redirects to error screen when failing to get the list of categories', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         StandardRuleType.getCategories = () => {
           throw new Error('search failed')
         }
@@ -170,34 +174,37 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       }
     })
 
-    lab.test('success', async () => {
-      const setCookieSpy = sinon.spy(CookieService, 'set')
-      postRequest.payload['chosen-category'] = fakeStandardRuleType.id
-      const res = await server.inject(postRequest)
+    lab.experiment('success', async () => {
+      const checkSuccessRoute = async (route) => {
+        const setCookieSpy = sandbox.spy(CookieService, 'set')
+        postRequest.payload['chosen-category'] = fakeStandardRuleType.id
+        const res = await server.inject(postRequest)
 
-      // Make sure standard rule type is saved in a cookie
-      Code.expect(setCookieSpy.calledOnce).to.equal(true)
-      Code.expect(setCookieSpy.calledWith(res.request, 'standardRuleTypeId', fakeStandardRuleType.id)).to.equal(true)
+        // Make sure standard rule type is saved in a cookie
+        Code.expect(setCookieSpy.calledOnce).to.equal(true)
+        Code.expect(setCookieSpy.calledWith(res.request, 'standardRuleTypeId', fakeStandardRuleType.id)).to.equal(true)
 
-      // Make sure a redirection has taken place correctly
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
-    })
-
-    lab.experiment('invalid', () => {
-      const checkValidationMessage = async (fieldId, expectedErrorMessage) => {
-        const doc = await getDoc(postRequest)
-        // Panel summary error item
-        Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
-
-        // Chosen category field error
-        Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
+        // Make sure a redirection has taken place correctly
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(route)
       }
 
-      lab.test('when category not selected', async () => {
-        postRequest.payload = {}
-        await checkValidationMessage('chosen-category', 'Select what you want the permit for')
+      lab.test('when online category is selected', async () => {
+        await checkSuccessRoute(nextRoutePath)
       })
+
+      offlineCategories.forEach((standardRuleType) => {
+        lab.test(`when offline ${standardRuleType.category} is selected`, async () => {
+          fakeStandardRuleType = standardRuleType
+          await checkSuccessRoute(offlineRoutePath)
+        })
+      })
+    })
+
+    lab.test('invalid when category not selected', async () => {
+      postRequest.payload = {}
+      const doc = await GeneralTestHelper.getDoc(postRequest)
+      await GeneralTestHelper.checkValidationMessage(doc, 'chosen-category', 'Select what you want the permit for')
     })
   })
 })

@@ -1,0 +1,20 @@
+<div class="form-group">
+  <p id="email-sent-paragraph-1">We sent a secure link to <span id="email-sent" class="bold">{{ formValues.save-and-return-email }}</span> that allows you to return to your application at any time.</p>
+  <p id="email-sent-paragraph-2">Every time you complete a screen we’ll save your data automatically.</p>
+</div>
+
+<form method="POST" action="{{formAction}}" novalidate="novalidate">
+  {{> common/csrfToken token=DefraCsrfToken}}
+
+  <div class="form-group {{#getFormErrorGroupClass errors.save-and-return-email}}{{/getFormErrorGroupClass}}">
+    <label id="save-and-return-email-label" class="visually-hidden" for="save-and-return-email" aria-describedby="email-hint">Email address to check</label>
+    {{> common/fieldError fieldId='save-and-return-email-error' message=errors.save-and-return-email }}
+    <input type="text" class="form-control form-control-char-35 {{#if errors.save-and-return-email}}form-control-error{{/if}}" id="save-and-return-email" name="save-and-return-email" value="{{ formValues.save-and-return-email }}" />
+  </div>
+
+  {{#if isComplete}}
+  {{> common/submitButton text="Return to task list" }}
+  {{else}}
+  {{> common/submitButton }}
+  {{/if}}
+</form>

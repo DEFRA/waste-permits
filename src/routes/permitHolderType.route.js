@@ -3,6 +3,8 @@
 const Constants = require('../constants')
 const Route = require('./baseRoute')
 const PermitHolderTypeController = require('../controllers/permitHolderType.controller')
-const controller = new PermitHolderTypeController(Constants.Routes.PERMIT_HOLDER_TYPE)
+const PermitHolderTypeValidator = require('../validators/permitHolderType.validator')
+const validator = new PermitHolderTypeValidator()
+const controller = new PermitHolderTypeController(Constants.Routes.PERMIT_HOLDER_TYPE, validator)
 
-module.exports = Route.register('GET, POST', controller)
+module.exports = Route.register('GET, POST', controller, validator)

@@ -21,20 +21,6 @@ class ApplicationLine extends BaseModel {
     ]
   }
 
-  static async getById (authToken, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const query = encodeURI(`defra_applicationlines(${applicationLineId})`)
-    try {
-      const result = await dynamicsDal.search(query)
-      const applicationLine = ApplicationLine.dynamicsToModel(result)
-      applicationLine.id = applicationLineId
-      return applicationLine
-    } catch (error) {
-      LoggingService.logError(`Unable to get ApplicationLine by Id: ${error}`)
-      throw error
-    }
-  }
-
   static async getValidRulesetIds (authToken, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const rulesetIds = Object.keys(RulesetIds).map((prop) => RulesetIds[prop])

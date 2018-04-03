@@ -29,7 +29,8 @@ class Application extends BaseModel {
       {field: 'source', dynamics: 'defra_source', constant: Constants.Dynamics.DIGITAL_SOURCE},
       {field: 'statusCode', dynamics: 'statuscode'},
       {field: 'technicalQualification', dynamics: 'defra_technicalability'},
-      {field: 'tradingName', dynamics: 'defra_tradingname', length: {max: 170}}
+      {field: 'tradingName', dynamics: 'defra_tradingname', length: {max: 170}},
+      {field: 'saveAndReturnEmail', dynamics: 'defra_saveandreturnemail', length: {max: 100}}
     ]
   }
 
@@ -39,27 +40,27 @@ class Application extends BaseModel {
     this.declaration = Boolean(declaration)
   }
 
-  static async getById (authToken, applicationId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const query = encodeURI(`defra_applications(${applicationId})?$select=${Application.selectedDynamicsFields()}`)
-    try {
-      const result = await dynamicsDal.search(query)
-      const application = Application.dynamicsToModel(result)
-      application.id = applicationId
-
-      return application
-    } catch (error) {
-      LoggingService.logError(`Unable to get Application by applicationId: ${error}`)
-      throw error
-    }
-  }
-
   isSubmitted () {
     return this.statusCode && (this.statusCode === Constants.Dynamics.StatusCode.APPLICATION_RECEIVED)
   }
 
   isPaid () {
     return Boolean(this.paymentReceived)
+  }
+
+  async confirm (authToken) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const actionDataObject = {
+      saveAndReturnUrl: Constants.SAVE_AND_RETURN_URL
+    }
+    try {
+      // Call Dynamics save and return email action
+      let action = `${this.constructor.entity}(${this.id})/Microsoft.Dynamics.CRM.defra_saveandreturnemail`
+      await dynamicsDal.callAction(action, actionDataObject)
+    } catch (error) {
+      LoggingService.logError(`Unable to call Dynamics Save and Return action: ${error}`)
+      throw error
+    }
   }
 
   async save (authToken) {

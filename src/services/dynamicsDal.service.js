@@ -111,7 +111,18 @@ module.exports = class DynamicsDalService {
               resolve(response.headers['odata-entityid'])
               break
             default:
-              const message = `Unknown response from Dynamics. Code: ${response.statusCode} Message: ${response.statusMessage}`
+              let crmMessage = ''
+              if (responseParts.length) {
+                const crmResponse = JSON.parse(responseParts.join(''))
+                if (crmResponse && crmResponse.error && crmResponse.error.message) {
+                  crmMessage = crmResponse.error.message
+                  if (crmResponse.error.innererror) {
+                    const {message, stacktrace, type} = crmResponse.error.innererror
+                    LoggingService.logError(`${type}: ${message}\n${stacktrace}`)
+                  }
+                }
+              }
+              const message = crmMessage ? `Bad response from Dynamics. Code: ${response.statusCode}, Message: ${crmMessage}` : `Unknown response from Dynamics. Code: ${response.statusCode}, Message: ${response.statusMessage}`
               reject(message)
           }
         })

@@ -3,7 +3,6 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const DOMParser = require('xmldom').DOMParser
 const sinon = require('sinon')
 const GeneralTestHelper = require('../../../routes/generalTestHelper.test')
 
@@ -82,9 +81,13 @@ lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
+  // Stub cookies
+  GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
+    'INVOICE_POSTCODE': () => postcode
+  })
+
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CookieService, 'get').value(() => postcode)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Address, 'listByPostcode').value(() => [
@@ -104,11 +107,7 @@ lab.afterEach(() => {
 })
 
 const checkPageElements = async (getRequest) => {
-  const res = await server.inject(getRequest)
-  Code.expect(res.statusCode).to.equal(200)
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
+  const doc = await GeneralTestHelper.getDoc(getRequest)
 
   let element = doc.getElementById('page-heading').firstChild
   Code.expect(element.nodeValue).to.equal(pageHeading)
@@ -132,11 +131,7 @@ const checkPageElements = async (getRequest) => {
 }
 
 const checkValidationError = async (expectedErrorMessage) => {
-  const res = await server.inject(postRequest)
-  Code.expect(res.statusCode).to.equal(200)
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
+  const doc = await GeneralTestHelper.getDoc(postRequest)
 
   // Panel summary error item
   let element = doc.getElementById('error-summary-list-item-0').firstChild

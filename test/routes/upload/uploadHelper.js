@@ -2,7 +2,7 @@
 
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
+const GeneralTestHelper = require('../generalTestHelper.test')
 
 const fs = require('fs')
 const Annotation = require('../../../src/models/annotation.model')
@@ -15,20 +15,13 @@ const {COOKIE_RESULT} = require('../../../src/constants')
 const server = require('../../../server')
 
 const getDoc = async ({pageHeading, submitButton}) => {
-  const res = await server.inject(getRequest)
-  Code.expect(res.statusCode).to.equal(200)
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
+  const doc = await GeneralTestHelper.getDoc(getRequest)
   Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(pageHeading)
   Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal(submitButton)
   return doc
 }
 
-const checkExpectedErrors = (res, expectedErrorMessage) => {
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(res.payload, 'text/html')
-
+const checkExpectedErrors = (doc, expectedErrorMessage) => {
   // Panel summary error item
   Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
 
@@ -216,25 +209,22 @@ module.exports = class UploadTestHelper {
     lab.experiment('invalid', () => {
       lab.test('when invalid content type', async () => {
         const req = this._uploadRequest({contentType: 'application/octet-stream'})
-        const res = await server.inject(req)
-        Code.expect(res.statusCode).to.equal(200)
-        checkExpectedErrors(res, 'You can only upload PDF or JPG files')
+        const doc = await GeneralTestHelper.getDoc(req)
+        checkExpectedErrors(doc, 'You can only upload PDF or JPG files')
       })
 
       lab.test('when duplicate file', async () => {
         Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const req = this._uploadRequest({filename: fakeAnnotation.filename})
-        const res = await server.inject(req)
-        Code.expect(res.statusCode).to.equal(200)
-        checkExpectedErrors(res, 'That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.')
+        const doc = await GeneralTestHelper.getDoc(req)
+        checkExpectedErrors(doc, 'That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.')
       })
 
       lab.test('when the filename is too long', async () => {
         Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const req = this._uploadRequest({filename: `${'a'.repeat(252)}.jpg`})
-        const res = await server.inject(req)
-        Code.expect(res.statusCode).to.equal(200)
-        checkExpectedErrors(res, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
+        const doc = await GeneralTestHelper.getDoc(req)
+        checkExpectedErrors(doc, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
       })
     })
   }

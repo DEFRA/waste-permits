@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const DOMParser = require('xmldom').DOMParser
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -67,14 +66,6 @@ lab.experiment('Confirm your operation meets the rules page tests:', () => {
       Code.expect(doc.getElementById('rules-and-risk-hint').firstChild.nodeValue).to.exist()
     }
 
-    const getDoc = async (request) => {
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(200)
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(res.payload, 'text/html')
-      return doc
-    }
-
     lab.beforeEach(() => {
       request = {
         method: 'GET',
@@ -85,7 +76,7 @@ lab.experiment('Confirm your operation meets the rules page tests:', () => {
 
     lab.experiment('success', () => {
       lab.test('when not completed', async () => {
-        const doc = await getDoc(request)
+        const doc = await GeneralTestHelper.getDoc(request)
         checkCommonElements(doc)
 
         GeneralTestHelper.checkElementsExist(doc, [
@@ -105,7 +96,7 @@ lab.experiment('Confirm your operation meets the rules page tests:', () => {
 
       lab.test('when completed', async () => {
         ConfirmRules.isComplete = () => true
-        const doc = await getDoc(request)
+        const doc = await GeneralTestHelper.getDoc(request)
         checkCommonElements(doc)
 
         GeneralTestHelper.checkElementsExist(doc, [
@@ -121,7 +112,7 @@ lab.experiment('Confirm your operation meets the rules page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when isComplete fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         ConfirmRules.isComplete = () => {
           throw new Error('read failed')
@@ -154,19 +145,7 @@ lab.experiment('Confirm your operation meets the rules page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
-        ConfirmRules.updateCompleteness = () => {
-          throw new Error('read failed')
-        }
-
-        const res = await server.inject(postRequest)
-        Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
-      })
-
-      lab.test('redirects to error screen when save fails', async () => {
+      lab.test('redirects to error screen when updateCompletenesss fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         ConfirmRules.updateCompleteness = () => {
           throw new Error('update failed')

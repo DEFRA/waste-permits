@@ -91,23 +91,34 @@ lab.afterEach(() => {
 
 lab.experiment('Contact Model tests:', () => {
   lab.test('getById() method returns a single Contact object', async () => {
+    const dynamicsData = {
+      '@odata.etag': 'W/"1155486"',
+      contactid: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
+      firstname: 'Marlon',
+      lastname: 'Herzog',
+      telephone1: '055 8767 0835',
+      emailaddress1: 'Amparo.Abbott49@example.com',
+      defra_dateofbirthdaycompanieshouse: 1,
+      defra_dobmonthcompanieshouse: 2,
+      defra_dobyearcompanieshouse: 1970
+    }
     DynamicsDalService.prototype.search = () => {
       // Dynamics Contact objects
-      return {
-        '@odata.etag': 'W/"1155486"',
-        contactid: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
-        firstname: 'Marlon',
-        lastname: 'Herzog',
-        telephone1: '055 8767 0835',
-        emailaddress1: 'Amparo.Abbott49@example.com',
-        defra_dateofbirthdaycompanieshouse: 1,
-        defra_dobmonthcompanieshouse: 2,
-        defra_dobyearcompanieshouse: 1970
-      }
+      return dynamicsData
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    await Contact.getById()
+    const contact = await Contact.getById('AUTH_TOKEN', dynamicsData.contactid)
+    Code.expect(contact).to.equal({
+      id: dynamicsData.contactid,
+      firstName: dynamicsData.firstname,
+      lastName: dynamicsData.lastname,
+      email: dynamicsData.emailaddress1,
+      dob: {
+        month: dynamicsData.defra_dobmonthcompanieshouse,
+        year: dynamicsData.defra_dobyearcompanieshouse
+      }
+    })
     Code.expect(spy.callCount).to.equal(1)
   })
 

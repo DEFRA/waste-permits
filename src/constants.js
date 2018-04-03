@@ -12,6 +12,7 @@ Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
 Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 Constants.MAX_FILE_SIZE = 31457280 // 30MB
+Constants.SAVE_AND_RETURN_URL = '/save-return/start'
 
 Constants.Errors = {
   REQUEST_ENTITY_TOO_LARGE: 413
@@ -53,6 +54,44 @@ Constants.OFFLINE_CATEGORIES = {
   }
 }
 
+Constants.PERMIT_HOLDER_TYPES = {
+  LIMITED_COMPANY: {
+    id: 'limited-company',
+    type: 'Limited company',
+    canApplyOnline: true
+  },
+  INDIVIDUAL: {
+    id: 'individual',
+    type: 'Individual or sole trader',
+    canApplyOnline: false
+  },
+  LOCAL_AUTHORITY: {
+    id: 'local-authority',
+    type: 'Local authority or public body',
+    canApplyOnline: false
+  },
+  PARTNERSHIP: {
+    id: 'partnership',
+    type: 'Partnership',
+    canApplyOnline: false
+  },
+  REGISTERED_CHARITY: {
+    id: 'registered-charity',
+    type: 'Registered charity',
+    canApplyOnline: false
+  },
+  LIMITED_LIABILITY_PARTNERSHIP: {
+    id: 'limited-liability-partnership',
+    type: 'Limited liability partnership',
+    canApplyOnline: false
+  },
+  OTHER_ORGANISATION: {
+    id: 'other-organisation',
+    type: 'Other organisation, for example a club or association',
+    canApplyOnline: false
+  }
+}
+
 Constants.DEFRA_COOKIE_KEY = 'DefraSession'
 
 Constants.COOKIE_RESULT = {
@@ -68,6 +107,8 @@ Constants.COOKIE_KEY = {
   AUTH_TOKEN: 'authToken',
   APPLICATION_ID: 'applicationId',
   APPLICATION_LINE_ID: 'applicationLineId',
+  PERMIT_HOLDER_TYPE: 'permitHolderType',
+  STANDARD_RULE_ID: 'standardRuleId',
   STANDARD_RULE_TYPE_ID: 'standardRuleTypeId',
   EXPIRY: 'expiry'
 }
@@ -118,7 +159,7 @@ Constants.Routes = {
   },
   APPLY_OFFLINE: {
     path: '/start/apply-offline',
-    pageHeading: 'Download and fill in these forms to apply for that permit'
+    pageHeading: `Apply for {{{chosenOption}}}`
   },
   BACS_PAYMENT: {
     path: '/pay/bacs',
@@ -183,7 +224,7 @@ Constants.Routes = {
     pageHeading: 'Cookies'
   },
   COST_TIME: {
-    path: '/cost-time',
+    path: '/costs-times',
     pageHeading: 'Costs and processing time',
     taskListHeading: 'Check costs and processing time'
   },
@@ -274,6 +315,27 @@ Constants.Routes = {
   PRIVACY: {
     path: '/information/privacy',
     pageHeading: 'Privacy: how we use your personal information'
+  },
+  SAVE_AND_RETURN_SENT_CHECK: {
+    path: '/save-return/email-sent-check',
+    pageHeading: 'Check your email'
+  },
+  SAVE_AND_RETURN_CONFIRM: {
+    path: '/save-return/confirm',
+    pageHeading: 'Make sure this is right'
+  },
+  SAVE_AND_RETURN_SENT_RESENT: {
+    path: '/save-return/email-sent-resent',
+    pageHeading: 'We’ve resent the email - check again'
+  },
+  SAVE_AND_RETURN_COMPLETE: {
+    path: '/save-return/email-sent-task-check',
+    pageHeading: 'You’ve set up save and return for your application'
+  },
+  SAVE_AND_RETURN_EMAIL: {
+    path: '/save-return/email',
+    pageHeading: 'Save your application',
+    taskListHeading: 'Set up save and return for your application'
   },
   SITE_GRID_REFERENCE: {
     path: '/site/grid-reference',
@@ -416,6 +478,7 @@ Constants.Dynamics = {
     NHS_SCREENING: 'defra_nhscreeningrequired',
     PERMIT_HOLDER_DETAILS: 'defra_pholderdetailsrequired',
     PRE_APPLICATION: 'defra_preapprequired',
+    SAVE_AND_RETURN_EMAIL: 'defra_setupsaveandreturnrequired',
     SHOW_COST_AND_TIME: 'defra_showcostandtime',
     SITE_NAME_LOCATION: 'defra_locationrequired',
     SITE_PLAN: 'defra_siteplanrequired',
@@ -438,6 +501,7 @@ Constants.Dynamics = {
     NHS_SCREENING: 'defra_nhscreeningrequired_completed',
     PERMIT_HOLDER_DETAILS: 'defra_pholderdetailsrequired_completed',
     PRE_APPLICATION: 'defra_preapprequired_completed',
+    SAVE_AND_RETURN_EMAIL: 'defra_setupsaveandreturn_completed',
     SHOW_COST_AND_TIME: 'defra_showcostandtime_completed',
     SITE_NAME_LOCATION: 'defra_locationrequired_completed',
     SITE_PLAN: 'defra_siteplanrequired_completed',
@@ -450,6 +514,7 @@ Constants.Dynamics = {
 
 Constants.TaskList = {
   SectionHeadings: {
+    BEFORE_YOU_APPLY: 'Before you apply',
     PREPARE_APPLICATION: 'Prepare application',
     APPLY: 'Apply'
   }
