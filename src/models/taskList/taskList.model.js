@@ -251,26 +251,6 @@ class TaskList extends BaseModel {
     finalItem.available = true
   }
 
-  // TODO confirm if this is required
-  // getTaskListModels() {
-  //   return this.taskListModels
-  //     .filter((item) => {
-  //       return (this.taskListModelNames.includes(item.name))
-  //     })
-  // }
-
-  getVisibleItems () {
-    let visibleItems = []
-    this.sections.forEach((section) => {
-      section.sectionItems.forEach((sectionItem) => {
-        if (sectionItem.available) {
-          visibleItems.push(sectionItem)
-        }
-      })
-    })
-    return visibleItems
-  }
-
   // Iterates through all of the task list items and calls the isComplete() function of each one,
   // combining the results into a single boolean value if all task list items are complete
   isComplete (authToken, applicationId, applicationLineId) {
