@@ -11,7 +11,7 @@ module.exports = class EnterEmailController extends BaseController {
 
     const isComplete = await SaveAndReturn.isComplete(authToken, applicationId, applicationLineId)
     if (isComplete) {
-      return this.redirect(request, h, Constants.Routes.SAVE_AND_RETURN_SENT_CHECK.path)
+      return this.redirect(request, h, Constants.Routes.SAVE_AND_RETURN_COMPLETE.path)
     }
 
     const redirectPath = await this.checkRouteAccess(application, payment)
