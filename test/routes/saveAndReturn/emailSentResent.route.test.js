@@ -3,8 +3,8 @@ const lab = exports.lab = Lab.script()
 const emailSentTests = require('./emailSentTests')
 
 emailSentTests(lab, {
-  pageHeading: 'Check your email',
-  routePath: '/save-return/email-sent-check',
+  pageHeading: 'We’ve resent the email - check again',
+  routePath: '/save-return/email-sent-resent',
   nextRoutePath: '/task-list',
   errorPath: '/errors/technical-problem'
 })

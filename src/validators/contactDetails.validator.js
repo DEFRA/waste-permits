@@ -2,6 +2,7 @@
 
 const Joi = require('joi')
 const BaseValidator = require('./base.validator')
+const Constants = require('../constants')
 const Account = require('../models/account.model')
 const AddressDetail = require('../models/addressDetail.model')
 const Contact = require('../models/contact.model')
@@ -11,7 +12,7 @@ const PLUSES_SPACES_AND_NUMBERS_REGEX = /^[0-9 +]*$/
 const PLUSES_CANNOT_PRECEED_ZERO = /^(\+[1-9]+[0-9]*|[^+][0-9]*)$/
 const LEADING_AND_TRAILING_DASHES_REGEX = /(^-.*$|^.*-$)/
 const LETTERS_HYPHENS_AND_APOSTROPHES_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+$/
-const EMAIL_VALID_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const {EMAIL_VALID_REGEX} = Constants.Validation
 
 module.exports = class ContactDetailsValidator extends BaseValidator {
   constructor (options) {

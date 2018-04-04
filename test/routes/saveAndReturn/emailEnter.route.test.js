@@ -16,6 +16,7 @@ const {COOKIE_RESULT} = require('../../../src/constants')
 
 const routePath = '/save-return/email'
 const nextRoutePath = '/save-return/confirm'
+const emailSentPath = '/save-return/email-sent-task-check'
 const errorPath = '/errors/technical-problem'
 
 let fakeApplication
@@ -58,16 +59,25 @@ lab.experiment('Save and return email page tests:', () => {
       }
     })
 
-    lab.test(`GET ${routePath} success`, async () => {
-      const doc = await GeneralTestHelper.getDoc(getRequest)
-      GeneralTestHelper.checkElementsExist(doc, [
-        'back-link',
-        'submit-button',
-        'save-and-return-email-label',
-        'privacy-link'
-      ])
-      Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
-      Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
+    lab.experiment('success', () => {
+      lab.test('when complete', async () => {
+        SaveAndReturn.isComplete = () => true
+        const res = await server.inject(getRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(emailSentPath)
+      })
+
+      lab.test('when incomplete', async () => {
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        GeneralTestHelper.checkElementsExist(doc, [
+          'back-link',
+          'submit-button',
+          'save-and-return-email-label',
+          'privacy-link'
+        ])
+        Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
+        Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
+      })
     })
   })
 
