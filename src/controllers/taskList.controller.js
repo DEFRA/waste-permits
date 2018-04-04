@@ -5,7 +5,7 @@ const BaseController = require('./base.controller')
 const TaskList = require('../models/taskList/taskList.model')
 
 module.exports = class TaskListController extends BaseController {
-  async doGet (request, h, errors) {
+  async doGet (request, h, errors, firstTimeIn = true) {
     const pageContext = this.createPageContext(errors)
     const {authToken, applicationLineId, application, payment, standardRule} = await this.createApplicationContext(request, {application: true, payment: true, standardRule: true})
     const taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
@@ -13,6 +13,13 @@ module.exports = class TaskListController extends BaseController {
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
       return this.redirect(request, h, redirectPath)
+    }
+
+    const showError = Boolean(request.query.showError)
+    if (showError && firstTimeIn) {
+      errors = await this._buildError(request)
+      // We have to call the doGet() method again to make the error message appear in the page
+      return this.doGet(request, h, errors, false)
     }
 
     pageContext.standardRule = standardRule
@@ -25,38 +32,18 @@ module.exports = class TaskListController extends BaseController {
     return this.showView(request, h, 'taskList', pageContext)
   }
 
-  async doPost (request, h, errors) {
-    const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
-    const taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
-
-    const isComplete = await taskList.isComplete(authToken, applicationId, applicationLineId)
-
-    // Perform manual (non-Joi) validation of dynamic form content
-    errors = await this._validateDynamicFormContent(request, isComplete)
-
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      return this.redirect(request, h, Constants.Routes.CHECK_BEFORE_SENDING.path)
-    }
-  }
-
-  async _validateDynamicFormContent (request, isComplete) {
+  async _buildError (request) {
     let errors
-
-    if (!isComplete) {
-      const errorPath = 'task-list-not-complete'
-      errors = {
-        details: [
-          {
-            message: `"${errorPath}" is required`,
-            path: [errorPath],
-            type: 'any.required',
-            context: { key: errorPath, label: errorPath }
-          }]
-      }
+    const errorPath = 'task-list-not-complete'
+    errors = {
+      details: [
+        {
+          message: `"${errorPath}" is required`,
+          path: [errorPath],
+          type: 'any.required',
+          context: { key: errorPath, label: errorPath }
+        }]
     }
-
     return errors
   }
 }

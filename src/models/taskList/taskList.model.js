@@ -246,10 +246,8 @@ class TaskList extends BaseModel {
     // Iterate through the task list section items
     for (let section of this.sections) {
       for (let sectionItem of section.sectionItems) {
-        // Set availability
+        // Set availability and completeness
         sectionItem.available = rulesets[sectionItem.rulesetId]
-
-        // Set completeness
         sectionItem.complete = rulesets[sectionItem.completedId]
 
         // Add the Task List model for this section item

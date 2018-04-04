@@ -24,7 +24,7 @@ let fakeLineData
 
 const routePath = '/check-before-sending'
 const nextRoutePath = '/pay/type'
-const notCompleteRoutePath = '/errors/order/task-list-not-complete'
+const notCompleteRoutePath = '/task-list?showError=true'
 
 let sandbox
 
@@ -148,7 +148,7 @@ lab.experiment('Check your answers before sending your application page tests:',
       })
     })
 
-    lab.test('Redirects to the Not Complete screen if the application has not been completed', async () => {
+    lab.test('Redirects to the Task List screen showing a validation error if the application has not been completed', async () => {
       sandbox.stub(TaskList.prototype, 'isComplete').value(() => false)
 
       const res = await server.inject(request)

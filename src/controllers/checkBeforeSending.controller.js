@@ -63,8 +63,10 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     // If all the task list items are not complete
     const taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
     const isComplete = await taskList.isComplete(authToken, applicationId, applicationLineId)
+
+    // If the task list is not complete then redirect back to it and show a validation error
     if (!isComplete) {
-      return this.redirect(request, h, Constants.Routes.ERROR.NOT_COMPLETE.path)
+      return this.redirect(request, h, `${Constants.Routes.TASK_LIST.path}?showError=true`)
     }
 
     const redirectPath = await this.checkRouteAccess(application, payment)
