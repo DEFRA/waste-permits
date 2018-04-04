@@ -1,29 +1,34 @@
 'use strict'
 
-const Joi = require('joi')
+const Constants = require('../../constants')
 const BaseValidator = require('../base.validator')
 
-const EMAIL_VALID_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const {EMAIL_VALID_REGEX} = Constants.Validation
 
 module.exports = class SaveAndReturnConfirmValidator extends BaseValidator {
   constructor () {
     super()
 
     this.errorMessages = {
+      'got-email': {
+        'custom.required': `Select you got the email or can’t find it`
+      },
       'save-and-return-email': {
-        'any.empty': `Enter an email address`,
-        'any.required': `Enter an email address`,
-        'string.regex.base': `Enter a valid email address`
+        'custom.required': `Enter an email address`,
+        'custom.invalid': `Enter a valid email address`
       }
     }
   }
 
-  getFormValidators () {
+  customValidators () {
     return {
-      'save-and-return-email': Joi
-        .string()
-        .regex(EMAIL_VALID_REGEX)
-        .required()
+      'got-email': {
+        'custom.required': (value, {'is-complete': isComplete}) => isComplete !== 'true' && !value
+      },
+      'save-and-return-email': {
+        'custom.required': (value, {'got-email': gotEmail}) => gotEmail === 'false' ? !value : false,
+        'custom.invalid': (value, {'got-email': gotEmail}) => gotEmail === 'false' && Boolean(value) ? !(EMAIL_VALID_REGEX).test(value) : false
+      }
     }
   }
 }

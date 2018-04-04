@@ -58,16 +58,25 @@ lab.experiment('Save and return confirm page tests:', () => {
       }
     })
 
-    lab.test(`GET ${routePath} success`, async () => {
-      const doc = await GeneralTestHelper.getDoc(getRequest)
-      GeneralTestHelper.checkElementsExist(doc, [
-        'back-link',
-        'submit-button',
-        'save-and-return-email-label',
-        'email-hint'
-      ])
-      Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
-      Code.expect(doc.getElementById('save-and-return-email-label').getAttribute('aria-describedby')).to.equal('email-hint')
+    lab.experiment('success', () => {
+      lab.test('when complete', async () => {
+        SaveAndReturn.isComplete = () => true
+        const res = await server.inject(getRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      })
+
+      lab.test('when incomplete', async () => {
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        GeneralTestHelper.checkElementsExist(doc, [
+          'back-link',
+          'submit-button',
+          'save-and-return-email-label',
+          'email-hint'
+        ])
+        Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
+        Code.expect(doc.getElementById('save-and-return-email-label').getAttribute('aria-describedby')).to.equal('email-hint')
+      })
     })
   })
 

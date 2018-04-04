@@ -1,9 +1,10 @@
 'use strict'
 
 const Joi = require('joi')
+const Constants = require('../../constants')
 const BaseValidator = require('../base.validator')
 
-const EMAIL_VALID_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const {EMAIL_VALID_REGEX} = Constants.Validation
 
 module.exports = class EmailEnterValidator extends BaseValidator {
   constructor () {
