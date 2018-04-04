@@ -36,7 +36,7 @@ class Route {
         bind: controller
       }
     }
-    if (validator) {
+    if (validator && validator.getFormValidators) {
       route.options.validate = {
         options: {
           allowUnknown: true

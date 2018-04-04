@@ -8,11 +8,6 @@ const Application = require('../application.model')
 const ApplicationLine = require('../applicationLine.model')
 
 module.exports = class SaveAndReturn extends BaseModel {
-  constructor (data) {
-    super()
-    this.applicationLineId = data.applicationLineId
-  }
-
   static async updateCompleteness (authToken, applicationId, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(authToken)
 
