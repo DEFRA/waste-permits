@@ -1,13 +1,7 @@
 {{#if errors}}
 <div id="error-summary" class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1">
 
-  <h2 id="error-summary-heading" class="heading-medium error-summary-heading {{#if panelHeader}}no-margin-bottom{{/if}}">
-    {{#if panelHeader}}
-      {{panelHeader}}
-    {{else}}
-      A problem to fix
-    {{/if}}
-  </h2>
+  <h2 id="error-summary-heading" class="heading-medium error-summary-heading {{#if panelHeader}}no-margin-bottom{{/if}}">{{#if panelHeader}}{{panelHeader}}{{else}}A problem to fix{{/if}}</h2>
 
   {{#if excludeFieldErrors}}
   {{else}}

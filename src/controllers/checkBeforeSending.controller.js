@@ -72,9 +72,9 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
       return this.redirect(request, h, redirectPath)
+    } else {
+      return this.showView(request, h, 'checkBeforeSending', pageContext)
     }
-
-    return this.showView(request, h, 'checkBeforeSending', pageContext)
   }
 
   async doPost (request, h) {

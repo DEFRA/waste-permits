@@ -20,12 +20,7 @@ const routePath = '/task-list'
 const notPaidForRoute = '/errors/order/card-payment-not-complete'
 const alreadySubmittedRoutePath = '/errors/order/done-cant-go-back'
 
-const getRequest = {
-  method: 'GET',
-  url: routePath,
-  headers: {},
-  payload: {}
-}
+let getRequest
 
 const fakeApplication = {
   id: 'APPLICATION_ID',
@@ -223,6 +218,13 @@ const checkElement = (element, text, href) => {
 }
 
 lab.beforeEach(() => {
+  getRequest = {
+    method: 'GET',
+    url: routePath,
+    headers: {},
+    payload: {}
+  }
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
@@ -260,7 +262,7 @@ lab.experiment('Task List page tests:', () => {
     Code.expect(res.statusCode).to.equal(200)
   })
 
-  lab.test('Task list contains the correct heading and StandardRule info', async () => {
+  lab.test('Task list page contains the correct heading and StandardRule info', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
     // Check the existence of the page title and Standard Rule infos
@@ -288,7 +290,7 @@ lab.experiment('Task List page tests:', () => {
     Code.expect(res.headers['location']).to.equal(alreadySubmittedRoutePath)
   })
 
-  lab.experiment('Task list contains the correct section headings and correct task list items', () => {
+  lab.test('Task list page contains the correct section headings and correct task list items', () => {
     fakeTaskList.sections.forEach((section) => {
       section.sectionItems.forEach((sectionItem) => {
         lab.test(`for ${sectionItem.label}`, async () => {
@@ -317,5 +319,22 @@ lab.experiment('Task List page tests:', () => {
         })
       })
     })
+  })
+
+  lab.test('Task list page shows a validation error correctly', async () => {
+    // No error
+    getRequest.url = routePath
+    let doc = await GeneralTestHelper.getDoc(getRequest)
+
+    let element = doc.getElementById('error-summary-heading')
+    Code.expect(element).to.not.exist()
+
+    // Has error
+    getRequest.url = `${routePath}?showError=true`
+    doc = await GeneralTestHelper.getDoc(getRequest)
+
+    element = doc.getElementById('error-summary-heading')
+    Code.expect(element).to.exist()
+    Code.expect(element.firstChild.nodeValue).to.equal('You must complete all the tasks before you send your application')
   })
 })
