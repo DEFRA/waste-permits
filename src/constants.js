@@ -247,10 +247,6 @@ Constants.Routes = {
       path: '/errors/cookies-off',
       pageHeading: 'You must switch on cookies to use this service'
     },
-    NOT_COMPLETE: {
-      path: '/errors/order/task-list-not-complete',
-      pageHeading: 'You need to complete your application'
-    },
     NOT_PAID: {
       path: '/errors/order/card-payment-not-complete',
       pageHeading: 'You need to pay for your application'

@@ -5,17 +5,25 @@ const BaseController = require('./base.controller')
 const TaskList = require('../models/taskList/taskList.model')
 
 module.exports = class TaskListController extends BaseController {
-  async doGet (request, h, errors) {
+  async doGet (request, h, errors, firstTimeIn = true) {
     const pageContext = this.createPageContext(errors)
     const {authToken, applicationLineId, application, payment, standardRule} = await this.createApplicationContext(request, {application: true, payment: true, standardRule: true})
+    const taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
       return this.redirect(request, h, redirectPath)
     }
 
+    const showError = Boolean(request.query.showError)
+    if (showError && firstTimeIn) {
+      errors = await this._buildError(request)
+      // We have to call the doGet() method again to make the error message appear in the page
+      return this.doGet(request, h, errors, false)
+    }
+
     pageContext.standardRule = standardRule
-    pageContext.taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
+    pageContext.taskList = taskList
 
     pageContext.formValues = request.payload
 
@@ -24,8 +32,18 @@ module.exports = class TaskListController extends BaseController {
     return this.showView(request, h, 'taskList', pageContext)
   }
 
-  async doPost (request, h, errors) {
-    // Not implemented yet
-    return this.doGet(request, h, errors)
+  async _buildError (request) {
+    let errors
+    const errorPath = 'task-list-not-complete'
+    errors = {
+      details: [
+        {
+          message: `"${errorPath}" is required`,
+          path: [errorPath],
+          type: 'any.required',
+          context: { key: errorPath, label: errorPath }
+        }]
+    }
+    return errors
   }
 }
