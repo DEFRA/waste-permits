@@ -11,7 +11,7 @@
 
       {{#if isComplete}}
         <div class="panel panel-border-wide">
-          <p id="confirm-result-message">You confirmed that your operation meets the rules.</p>
+          <p id="confirm-result-message">You confirmed that your operation meets the rules and the risk assessment</p>
         </div>
       {{/if}}
 
@@ -22,7 +22,7 @@
       </div>
 
       {{#unless isComplete}}
-        <p id="confirm-rules-paragraph-1">If your operation doesn't meet these rules, you may need a different standard rules permit or a bespoke permit instead.</p>
+        <p id="confirm-rules-paragraph-1">If your operation doesn't meet these rules and the risk assessment, you may need a different standard rules permit or a bespoke permit instead.</p>
       {{/unless}}
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate">

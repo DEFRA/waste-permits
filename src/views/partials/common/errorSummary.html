@@ -3,13 +3,12 @@
 
   <h2 id="error-summary-heading" class="heading-medium error-summary-heading {{#if panelHeader}}no-margin-bottom{{/if}}">{{#if panelHeader}}{{panelHeader}}{{else}}A problem to fix{{/if}}</h2>
 
-  {{#if excludeFieldErrors}}
-  {{else}}
+  {{#unless excludeFieldErrors}}
     <ul id="error-summary-list" class="error-summary-list">
       {{#each errorList}}
       <li><a id="error-summary-list-item-{{@index}}" href="#{{this.fieldName}}">{{this.message}}</a></li>
       {{/each}}
     </ul>
-  {{/if}}
+  {{/unless}}
 </div>
 {{/if}}
