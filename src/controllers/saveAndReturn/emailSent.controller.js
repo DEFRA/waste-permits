@@ -22,6 +22,10 @@ module.exports = class EmailSentController extends BaseController {
         'save-and-return-email': application.saveAndReturnEmail
       }
     }
+    pageContext.isComplete = await SaveAndReturn.isComplete(authToken, applicationId, applicationLineId)
+    if (pageContext.isComplete) {
+      pageContext.gotEmail = true
+    }
     if (pageContext.formValues['got-email']) {
       if (pageContext.formValues['got-email'] === 'true') {
         pageContext.gotEmail = true
@@ -29,7 +33,6 @@ module.exports = class EmailSentController extends BaseController {
         pageContext.notGotEmail = true
       }
     }
-    pageContext.isComplete = await SaveAndReturn.isComplete(authToken, applicationId, applicationLineId)
     return this.showView(request, h, 'saveAndReturn/emailSent', pageContext)
   }
 
@@ -41,12 +44,15 @@ module.exports = class EmailSentController extends BaseController {
 
       if (request.payload['got-email']) {
         if (request.payload['got-email'] !== 'true') {
+          application.saveAndReturnEmail = request.payload['save-and-return-email']
+          await application.save(authToken)
+          try {
+            await application.sendSaveAndReturnEmail(authToken)
+          } catch (err) {
+            return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
+          }
           return this.redirect(request, h, Constants.Routes.SAVE_AND_RETURN_SENT_RESENT.path)
         } else {
-          application.saveAndReturnEmail = request.payload['save-and-return-email']
-
-          await application.save(authToken)
-
           await SaveAndReturn.updateCompleteness(authToken, applicationId, applicationLineId)
         }
       }
