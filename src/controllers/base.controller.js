@@ -36,6 +36,7 @@ module.exports = class BaseController {
       pageHeading: this.route.pageHeading,
       formAction: this.path
     }
+    pageContext.encodedPageTitle = encodeURI(pageContext.pageTitle)
 
     if (validator && errors && errors.details) {
       validator.addErrorsToPageContext(errors, pageContext)
