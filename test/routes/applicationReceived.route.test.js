@@ -140,7 +140,8 @@ lab.experiment('ApplicationReceived page tests:', () => {
         'overseas-account-hint-paragraph-2',
         'overseas-account-hint-paragraph-3',
         'payments-email-link',
-        'confirm-your-payment-message'
+        'confirm-your-payment-message',
+        'give-feedback-link'
       ])
 
       Code.expect(doc.getElementById('what-happens-next-heading')).to.not.exist()

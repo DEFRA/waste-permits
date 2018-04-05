@@ -150,7 +150,10 @@ module.exports = class GeneralTestHelper {
         const parser = new DOMParser()
         const doc = parser.parseFromString(res.payload, 'text/html')
 
-        const element = doc.getElementById('beta-banner')
+        let element = doc.getElementById('beta-banner')
+        Code.expect(element).to.exist()
+
+        element = doc.getElementById('beta-banner-give-feedback-link')
         Code.expect(element).to.exist()
       })
 
