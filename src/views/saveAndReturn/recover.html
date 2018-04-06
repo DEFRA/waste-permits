@@ -1,0 +1,30 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/pageHeading pageHeading }}
+      <div class="form-group">
+        <p id="reference-number">Reference number: <span id="application-number">{{applicationNumber}}</span></p>
+        <p id="permit-name-and-code"><span id="permit-name">{{permitName}}</span> <span id="code">{{code}}</span></p>
+      </div>
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset aria-labelledby="recover-application-heading">
+          <legend class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <input id="slug" type="hidden" name="slug" value="{{slug}}">
+
+        </fieldset>
+
+        {{> common/submitButton text="Go to your application"}}
+      </form>
+
+    </div>
+  </div>
+
+</main>
