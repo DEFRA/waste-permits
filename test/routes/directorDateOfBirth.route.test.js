@@ -26,7 +26,7 @@ const getRequest = {
 }
 let postRequest
 
-const singleDirectorPageHeading = `What is the director's date of birth?`
+const singleDirectorPageHeading = `What's the director's date of birth?`
 const multipleDirectorPageHeading = `What are the directors' dates of birth?`
 
 const fakeCompanyData = {
