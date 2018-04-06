@@ -27,6 +27,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
         amount: bacsPayment.value.toLocaleString(),
         sortCode: Constants.BankAccountDetails.SORT_CODE,
         accountNumber: Constants.BankAccountDetails.ACCOUNT_NUMBER,
+        accountName: Constants.BankAccountDetails.ACCOUNT_NAME,
         ibanNumber: Constants.BankAccountDetails.IBAN_NUMBER,
         swiftNumber: Constants.BankAccountDetails.SWIFT_NUMBER,
         paymentEmail: Constants.BankAccountDetails.PAYMENT_EMAIL
