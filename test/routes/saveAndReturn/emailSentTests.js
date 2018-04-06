@@ -29,6 +29,7 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(LoggingService, 'logError').value(() => {})
     sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+    sandbox.stub(Application.prototype, 'sendSaveAndReturnEmail').value(() => {})
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(Application.prototype, 'save').value(() => {})
     sandbox.stub(SaveAndReturn, 'isComplete').value(() => false)
@@ -47,10 +48,18 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
       GeneralTestHelper.checkElementsExist(doc, [
         'back-link',
         'email-sent-paragraph-1',
-        'email-sent-paragraph-2'
+        'email-sent-paragraph-2',
+        'save-and-return-email-label',
+        'find-email-list-item-1',
+        'find-email-list-item-2',
+        'find-email-list-item-3',
+        'find-email-list-item-4'
       ])
+      Code.expect(doc.getElementById('not-got-email').getAttribute('checked')).to.equal('')
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(pageHeading)
       Code.expect(doc.getElementById('email-sent').firstChild.nodeValue).to.equal(fakeApplication.saveAndReturnEmail)
+      Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
     }
 
     lab.experiment(`GET ${routePath}`, () => {
@@ -69,21 +78,13 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
           SaveAndReturn.isComplete = () => true
           const doc = await GeneralTestHelper.getDoc(getRequest)
           await checkCommonElements(doc)
-          Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Return to task list')
+          Code.expect(doc.getElementById('got-email').getAttribute('checked')).to.equal('checked')
         })
 
         lab.test('when not complete', async () => {
           const doc = await GeneralTestHelper.getDoc(getRequest)
           await checkCommonElements(doc)
-          GeneralTestHelper.checkElementsExist(doc, [
-            'save-and-return-email-label',
-            'find-email-list-item-1',
-            'find-email-list-item-2',
-            'find-email-list-item-3',
-            'find-email-list-item-4'
-          ])
-          Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
-          Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+          Code.expect(doc.getElementById('got-email').getAttribute('checked')).to.equal('')
         })
       })
     })
@@ -131,6 +132,19 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
           const doc = await GeneralTestHelper.getDoc(postRequest)
           await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Enter a valid email address')
         })
+
+        lab.test('when requesting an email to be sent fails', async () => {
+          postRequest.payload = {
+            'got-email': 'false',
+            'save-and-return-email': 'valid@email.com'
+          }
+          Application.prototype.sendSaveAndReturnEmail = () => {
+            throw new Error('sendSaveAndReturnEmail failed')
+          }
+
+          const doc = await GeneralTestHelper.getDoc(postRequest)
+          await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Sorry, we can’t send emails just now. This is a technical fault and we have been notified. Please try the service again later.')
+        })
       })
 
       lab.experiment('failure', () => {
@@ -147,8 +161,14 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
         })
 
         lab.test('redirects to error screen when save fails', async () => {
+          postRequest.payload = {
+            'got-email': 'false',
+            'save-and-return-email': 'valid@email.com'
+          }
           const spy = sinon.spy(LoggingService, 'logError')
-          Application.prototype.save = () => Promise.reject(new Error('save failed'))
+          Application.prototype.save = () => {
+            throw new Error('save failed')
+          }
 
           const res = await server.inject(postRequest)
           Code.expect(spy.callCount).to.equal(1)
