@@ -118,6 +118,15 @@ module.exports = class BaseController {
       .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
+  setCustomError (type, field) {
+    return {
+      details: [{
+        type,
+        path: field.split('.')
+      }]
+    }
+  }
+
   async _handler (request, h, errors) {
     switch (request.method.toUpperCase()) {
       case 'GET':

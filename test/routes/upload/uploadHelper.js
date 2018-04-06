@@ -10,6 +10,7 @@ const Application = require('../../../src/models/application.model')
 const Payment = require('../../../src/models/payment.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
+const UploadController = require('../../../src/controllers/upload/base/upload.controller')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
 const server = require('../../../server')
@@ -42,7 +43,7 @@ let getRequest
 let fakeAnnotationId = 'ANNOTATION_ID'
 
 const fakeApplication = {
-  id: 'APPLICATION_ID',
+  id: 'APPLICATION/ID', // Include a slash to prove creation and deletion of directories will work ok
   applicationName: 'APPLICATION_NAME'
 }
 
@@ -200,6 +201,18 @@ module.exports = class UploadTestHelper {
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(routePath)
+      })
+
+      lab.experiment('when building an upload dir name', () => {
+        lab.test('when application name has a forward slash in it, replace with underscore', async () => {
+          Code.expect(UploadController.prototype._buildUploadDir('application/name/dir')).to.equal('application_name_dir')
+        })
+        lab.test('when application name has a backward slash in it, replace with underscore', async () => {
+          Code.expect(UploadController.prototype._buildUploadDir('application\\name/dir')).to.equal('application_name_dir')
+        })
+        lab.test('when application name has no slash in it, should be the same', async () => {
+          Code.expect(UploadController.prototype._buildUploadDir('application_name')).to.equal('application_name')
+        })
       })
     })
   }

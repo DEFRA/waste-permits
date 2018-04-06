@@ -55,7 +55,7 @@ module.exports = class UploadController extends BaseController {
 
       const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
       if (!list.length) {
-        return this.handler(request, h, undefined, UploadController._customError('noFilesUploaded'))
+        return this.handler(request, h, undefined, this.setCustomError('noFilesUploaded', 'file'))
       }
       if (this.updateCompleteness) {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
@@ -91,14 +91,14 @@ module.exports = class UploadController extends BaseController {
       const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
       // create temporary uploads directory
-      const uploadPath = path.resolve(UPLOAD_PATH, applicationReference)
+      const uploadPath = path.resolve(UPLOAD_PATH, this._buildUploadDir(applicationReference))
       this._createTempUploadDirectory(uploadPath)
 
       const fileData = this._getFileData(request.payload.file, uploadPath)
 
       // Make sure no duplicate files are uploaded
       if (this._haveDuplicateFiles(fileData, annotationsList)) {
-        return this.handler(request, h, UploadController._customError('duplicateFile'))
+        return this.handler(request, h, this.setCustomError('duplicateFile', 'file'))
       }
 
       // Save each file as an attachment to an annotation
@@ -139,7 +139,7 @@ module.exports = class UploadController extends BaseController {
 
   async uploadFailAction (request, h, errors) {
     if (errors && errors.output && errors.output.statusCode === Constants.Errors.REQUEST_ENTITY_TOO_LARGE) {
-      errors = UploadController._customError('fileTooBig')
+      errors = this.setCustomError('fileTooBig', 'file')
     }
     return this.doGet(request, h, errors).takeover()
   }
@@ -161,6 +161,10 @@ module.exports = class UploadController extends BaseController {
         path: ['file']
       }]
     }
+  }
+
+  _buildUploadDir (applicationReference) {
+    return applicationReference.replace(/(\/|\\)/g, '_')
   }
 
   _createTempUploadDirectory (uploadPath) {
