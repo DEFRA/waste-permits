@@ -1,6 +1,6 @@
 <p id="application-processing-payment-message">We won’t start processing your application until we get your payment.</p>
 
-<h2 id="pay-using-bacs-heading" class="heading-medium">Pay using these Bacs details</h2>
+<h2 id="pay-using-bacs-heading-1" class="heading-medium">Step 1: pay using these Bacs details</h2>
 
 <dl class="govuk-check-your-answers cya-questions-short">
   <div>
@@ -19,6 +19,10 @@
     <dt id="account-number-heading" class="cya-question">Account number</dt>
     <dd id="account-number" class="cya-answer">{{bacs.accountNumber}}</dd>
   </div>
+  <div>
+    <dt id="account-name-heading" class="cya-question">Account name</dt>
+    <dd id="account-name" class="cya-answer">{{bacs.accountName}}</dd>
+  </div>
 </dl>
 
 <details role="group" class="form-hint-details">
@@ -28,7 +32,7 @@
     <p id="overseas-account-hint-paragraph-2">
       <span id="iban-number-text">International bank account number (IBAN):</span>
       <span id="iban-number">{{bacs.ibanNumber}}</span><br>
-      <span id="swift-number-text">SWIFT bank identifier code (BIC):</span>
+      <span id="swift-number-text">{{> abbreviations/SWIFT id="swift-abbr"}} bank identifier code (BIC):</span>
       <span id="swift-number">{{bacs.swiftNumber}}</span><br>
       <span id="payment-ref-text">Use the payment reference above.</span>
     </p>
@@ -36,4 +40,6 @@
   </div>
 </details>
 
-<p id="confirm-your-payment-message">After you’ve paid, send an email confirming your payment to <a id="payments-email-link" href="mailto:{{bacs.paymentEmail}}"><span id="payments-email">{{bacs.paymentEmail}}</span></a>. Include the reference number, amount and the date you expect the payment to arrive.</p>
+<h2 id="pay-using-bacs-heading-2" class="heading-medium">Step 2: send us an email to tell us you’ve paid</h2>
+
+<p id="confirm-your-payment-message">Email <a id="payments-email-link" href="mailto:{{bacs.paymentEmail}}"><span id="payments-email">{{bacs.paymentEmail}}</span></a>. Include the reference number, amount and the date you expect the payment to arrive.</p>
