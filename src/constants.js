@@ -146,7 +146,7 @@ Constants.Routes = {
     },
     SELECT_INVOICE: {
       path: '/invoice/address/select-address',
-      pageHeading: `What's the invoice address?`
+      pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`
     },
     SELECT_SITE: {
       path: '/site/address/select-address',
@@ -230,7 +230,7 @@ Constants.Routes = {
   },
   DIRECTOR_DATE_OF_BIRTH: {
     path: '/permit-holder/company/director-date-of-birth',
-    pageHeading: `What is the director's date of birth?`,
+    pageHeading: `What's the director's date of birth?`,
     pageHeadingAlternate: `What are the directors' dates of birth?`
   },
   DRAINAGE_TYPE_DRAIN: {
@@ -360,7 +360,7 @@ Constants.Routes = {
   TECHNICAL_QUALIFICATION: {
     path: '/technical-qualification',
     pageHeading: 'What evidence of technical competence do you have?',
-    taskListHeading: 'Give technical management details'
+    taskListHeading: 'Prove technical competence'
   },
   UPLOAD_COURSE_REGISTRATION: {
     path: '/technical-qualification/upload-course-registration',
