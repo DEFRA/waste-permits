@@ -16,7 +16,7 @@ const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let sandbox
 
-const pageHeading = `What's the invoice address?`
+const pageHeading = `Where should we send invoices for the annual costs after the permit has been issued?`
 const routePath = '/invoice/address/select-address'
 const nextRoutePath = '/task-list'
 
