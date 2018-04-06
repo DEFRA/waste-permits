@@ -39,6 +39,12 @@ module.exports = class EmailConfirmController extends BaseController {
 
       await application.save(authToken)
 
+      try {
+        await application.sendSaveAndReturnEmail(authToken, request.headers.origin)
+      } catch (err) {
+        return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
+      }
+
       return this.redirect(request, h, Constants.Routes.SAVE_AND_RETURN_SENT_CHECK.path)
     }
   }

@@ -48,17 +48,17 @@ class Application extends BaseModel {
     return Boolean(this.paymentReceived)
   }
 
-  async confirm (authToken) {
+  async sendSaveAndReturnEmail (authToken, origin) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const actionDataObject = {
-      saveAndReturnUrl: Constants.SAVE_AND_RETURN_URL
+      saveAndReturnUrl: `${origin}${Constants.SAVE_AND_RETURN_URL}`
     }
     try {
       // Call Dynamics save and return email action
       let action = `${this.constructor.entity}(${this.id})/Microsoft.Dynamics.CRM.defra_saveandreturnemail`
       await dynamicsDal.callAction(action, actionDataObject)
     } catch (error) {
-      LoggingService.logError(`Unable to call Dynamics Save and Return action: ${error}`)
+      LoggingService.logError(`Unable to call Dynamics Save and Return Email action: ${error}`)
       throw error
     }
   }

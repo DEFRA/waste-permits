@@ -22,7 +22,6 @@
 
         <div class="form-group {{#getFormErrorGroupClass errors.save-and-return-email}}{{/getFormErrorGroupClass}}">
 
-          {{#unless isComplete}}
           <div class="form-group {{#getFormErrorGroupClass errors.got-email}}{{/getFormErrorGroupClass}} {{#getFormErrorGroupClass errors.got-email}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='got-email-error' message=errors.got-email }}
 
@@ -33,7 +32,7 @@
 
             <div class="multiple-choice" data-target="gotEmailD">
               <input id="not-got-email" type="radio" name="got-email" value="false" {{#if notGotEmail}}checked{{/if}}>
-              <label id="not-got-email-label" for="not-got-email">I can't find the email</label>
+              <label id="not-got-email-label" for="not-got-email">I can't find the email - resend it</label>
             </div>
 
             <div class="panel panel-border-narrow js-hidden" id="gotEmailD">
@@ -49,14 +48,9 @@
               <input type="text" class="form-control form-control-char-35 {{#if errors.save-and-return-email}}form-control-error{{/if}}" id="save-and-return-email" name="save-and-return-email" value="{{ formValues.save-and-return-email }}" />
             </div>
           </div>
-          {{/unless}}
         </div>
 
-        {{#if isComplete}}
-        {{> common/submitButton text="Return to task list" }}
-        {{else}}
         {{> common/submitButton }}
-        {{/if}}
       </form>
 
     </div>

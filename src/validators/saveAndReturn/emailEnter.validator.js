@@ -14,7 +14,8 @@ module.exports = class EmailEnterValidator extends BaseValidator {
       'save-and-return-email': {
         'any.empty': `Enter an email address`,
         'any.required': `Enter an email address`,
-        'string.regex.base': `Enter a valid email address`
+        'string.regex.base': `Enter a valid email address`,
+        'custom.failed': `Sorry, we can’t send emails just now. This is a technical fault and we have been notified. Please try the service again later.`
       }
     }
   }

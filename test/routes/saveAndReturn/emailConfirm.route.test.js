@@ -24,7 +24,7 @@ let sandbox
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID',
-    saveAndReturnEmail: 'blah@blah.com'
+    saveAndReturnEmail: 'valid@email.com'
   }
 
   // Create a sinon sandbox to stub methods
@@ -34,6 +34,7 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'sendSaveAndReturnEmail').value(() => {})
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(SaveAndReturn, 'isComplete').value(() => false)
@@ -113,6 +114,19 @@ lab.experiment('Save and return confirm page tests:', () => {
         }
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Enter a valid email address')
+      })
+
+      lab.test('when requesting an email to be sent fails', async () => {
+        postRequest.payload = {
+          'got-email': 'false',
+          'save-and-return-email': 'valid@email.com'
+        }
+        Application.prototype.sendSaveAndReturnEmail = () => {
+          throw new Error('sendSaveAndReturnEmail failed')
+        }
+
+        const doc = await GeneralTestHelper.getDoc(postRequest)
+        await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Sorry, we can’t send emails just now. This is a technical fault and we have been notified. Please try the service again later.')
       })
     })
 
