@@ -91,7 +91,7 @@ module.exports = class UploadController extends BaseController {
       const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
 
       // create temporary uploads directory
-      const uploadPath = path.resolve(UPLOAD_PATH, applicationReference)
+      const uploadPath = path.resolve(UPLOAD_PATH, this._buildUploadDir(applicationReference))
       this._createTempUploadDirectory(uploadPath)
 
       const fileData = this._getFileData(request.payload.file, uploadPath)
@@ -152,6 +152,19 @@ module.exports = class UploadController extends BaseController {
   _haveDuplicateFiles (listA, listB) {
     const haveDuplicateFiles = listA.filter(({filename}) => this._containsFilename(filename, listB))
     return Boolean(haveDuplicateFiles.length)
+  }
+
+  static _customError (type) {
+    return {
+      details: [{
+        type,
+        path: ['file']
+      }]
+    }
+  }
+
+  _buildUploadDir (applicationReference) {
+    return applicationReference.replace(/(\/|\\)/g, '_')
   }
 
   _createTempUploadDirectory (uploadPath) {
