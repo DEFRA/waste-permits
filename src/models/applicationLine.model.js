@@ -13,12 +13,29 @@ class ApplicationLine extends BaseModel {
 
   static get mapping () {
     return [
+      {field: 'id', dynamics: 'defra_applicationlineid', readOnly: true},
       {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationId', entity: 'defra_applications'}},
       {field: 'standardRuleId', dynamics: '_defra_standardruleid_value', bind: {id: 'defra_standardruleId', entity: 'defra_standardrules'}},
       {field: 'parametersId', dynamics: '_defra_parametersid_value'},
       {field: 'value', dynamics: 'defra_value', readOnly: true},
       {field: 'permitType', dynamics: 'defra_permittype', constant: Constants.Dynamics.PermitTypes.STANDARD}
     ]
+  }
+
+  static async getByApplicationId (authToken, applicationId) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const filter = `_defra_applicationid_value eq ${applicationId}`
+    const query = `defra_applicationlines?$select=${ApplicationLine.selectedDynamicsFields()}&$filter=${filter}`
+    try {
+      const response = await dynamicsDal.search(query)
+      const result = response && response.value ? response.value.pop() : undefined
+      if (result) {
+        return ApplicationLine.dynamicsToModel(result)
+      }
+    } catch (error) {
+      LoggingService.logError(`Unable to get ApplicationLine by ApplicationId(${applicationId}): ${error}`)
+      throw error
+    }
   }
 
   static async getValidRulesetIds (authToken, applicationLineId) {

@@ -12,7 +12,7 @@ Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
 Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 Constants.MAX_FILE_SIZE = 31457280 // 30MB
-Constants.SAVE_AND_RETURN_URL = '/save-return/start'
+Constants.SAVE_AND_RETURN_URL = '/r'
 
 Constants.Errors = {
   REQUEST_ENTITY_TOO_LARGE: 413
@@ -260,6 +260,10 @@ Constants.Routes = {
       path: '/errors/page-not-found',
       pageHeading: `We can't find that page`
     },
+    RECOVERY_FAILED: {
+      path: '/errors/recovery-failed',
+      pageHeading: 'Sorry, we can’t find that application'
+    },
     START_AT_BEGINNING: {
       path: '/errors/order/start-at-beginning',
       pageHeading: 'Please start at the beginning of the application'
@@ -316,6 +320,10 @@ Constants.Routes = {
   SAVE_AND_RETURN_SENT_CHECK: {
     path: '/save-return/email-sent-check',
     pageHeading: 'Check your email'
+  },
+  SAVE_AND_RETURN_RECOVER: {
+    path: `${Constants.SAVE_AND_RETURN_URL}/{slug}`,
+    pageHeading: 'We found your application'
   },
   SAVE_AND_RETURN_CONFIRM: {
     path: '/save-return/confirm',

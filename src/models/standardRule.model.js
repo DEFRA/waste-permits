@@ -24,8 +24,7 @@ class StandardRule extends BaseModel {
       {field: 'wamitabRiskLevel', dynamics: 'defra_wamitabrisklevel'},
       {field: 'guidanceUrl', dynamics: 'defra_guidanceurl'},
       {field: 'canApplyFor', dynamics: 'defra_canapplyfor'},
-      {field: 'canApplyOnline', dynamics: 'defra_canapplyonline'},
-      {field: 'standardRuleTypeId', dynamics: 'defra_standardruletypeid'}
+      {field: 'canApplyOnline', dynamics: 'defra_canapplyonline'}
     ]
   }
 
@@ -39,7 +38,6 @@ class StandardRule extends BaseModel {
     const dynamicsDal = new DynamicsDalService(authToken)
     const filter = `defra_code eq '${code}'`
     const query = encodeURI(`defra_standardrules?$select=${StandardRule.selectedDynamicsFields()}&$filter=${filter}`)
-
     try {
       const response = await dynamicsDal.search(query)
       const result = response.value.pop()
