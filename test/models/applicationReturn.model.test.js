@@ -60,6 +60,19 @@ lab.experiment('ApplicationReturn Model tests:', () => {
     Code.expect(spy.callCount).to.equal(1)
   })
 
+  lab.test('getByApplicationId() method returns an ApplicationReturn object', async () => {
+    DynamicsDalService.prototype.search = () => {
+      return {
+        value: [fakeDynamicsRecord()]
+      }
+    }
+
+    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const applicationReturn = await ApplicationReturn.getByApplicationId()
+    Code.expect(applicationReturn).to.equal(fakeApplicationReturn)
+    Code.expect(spy.callCount).to.equal(1)
+  })
+
   lab.test('save() method should fail as this entity is readOnly', async () => {
     let error
     try {
