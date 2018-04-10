@@ -23,6 +23,7 @@ let sandbox
 lab.beforeEach(() => {
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
+
   // Stub the asynchronous model methods
   sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
   sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)

@@ -62,6 +62,7 @@ let sandbox
 lab.beforeEach(() => {
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
+
   // Stub the asynchronous model methods
   sandbox.stub(LoggingService, 'logError').value(() => {})
 })

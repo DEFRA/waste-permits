@@ -8,10 +8,8 @@ const sinon = require('sinon')
 const Annotation = require('../../src/models/annotation.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
-let dynamicsSearchStub
-let dynamicsCreateStub
-let dynamicsUpdateStub
-let dynamicsDeleteStub
+let sandbox
+
 let testAnnotation
 const testAnnotationId = 'ANNOTATION_ID'
 
@@ -41,25 +39,20 @@ const authToken = 'THE_AUTH_TOKEN'
 
 lab.beforeEach(() => {
   testAnnotation = new Annotation(fakeAnnotation)
+
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = () => testAnnotationId
-
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = () => testAnnotationId
-
-  dynamicsDeleteStub = DynamicsDalService.prototype.delete
-  DynamicsDalService.prototype.delete = () => testAnnotationId
-
-  dynamicsSearchStub = DynamicsDalService.prototype.search
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => testAnnotationId)
+  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => testAnnotationId)
+  sandbox.stub(DynamicsDalService.prototype, 'delete').value(() => testAnnotationId)
+  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.create = dynamicsCreateStub
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
-  DynamicsDalService.prototype.delete = dynamicsDeleteStub
-  DynamicsDalService.prototype.search = dynamicsSearchStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Annotation Model tests:', () => {

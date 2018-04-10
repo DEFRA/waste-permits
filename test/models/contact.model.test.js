@@ -9,9 +9,7 @@ const Contact = require('../../src/models/contact.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let testContact
-let dynamicsCreateStub
-let dynamicsSearchStub
-let dynamicsUpdateStub
+let sandbox
 const authToken = 'THE_AUTH_TOKEN'
 
 lab.beforeEach(() => {
@@ -27,66 +25,57 @@ lab.beforeEach(() => {
     }
   })
 
+  const searchResult = {
+    '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
+    value: [
+      {
+        '@odata.etag': 'W/"1155486"',
+        contactid: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
+        firstname: 'Marlon',
+        lastname: 'Herzog',
+        telephone1: '055 8767 0835',
+        emailaddress1: 'Amparo.Abbott49@example.com',
+        defra_dateofbirthdaycompanieshouse: 1,
+        defra_dobmonthcompanieshouse: 2,
+        defra_dobyearcompanieshouse: 1970
+      },
+      {
+        '@odata.etag': 'W/"1155506"',
+        contactid: '8e8e4354-4f24-e711-80fd-5065f38a1b01',
+        firstname: 'Kelvin',
+        lastname: 'Rice',
+        telephone1: '055 8301 2280',
+        emailaddress1: 'Mike9@example.com',
+        defra_dateofbirthdaycompanieshouse: 3,
+        defra_dobmonthcompanieshouse: 4,
+        defra_dobyearcompanieshouse: 1970
+      },
+      {
+        '@odata.etag': 'W/"1273787"',
+        contactid: '9d8e4354-4f24-e711-80fd-5065f38a1b01',
+        firstname: 'Maximo',
+        lastname: 'Wisoky',
+        telephone1: '01424 733336',
+        emailaddress1: 'Danielle.Howell@example.com',
+        defra_dateofbirthdaycompanieshouse: 5,
+        defra_dobmonthcompanieshouse: 6,
+        defra_dobyearcompanieshouse: 1970
+      }
+    ]
+  }
+
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = () => {
-    // Dynamics Contact objects
-    return {
-      '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
-      value: [
-        {
-          '@odata.etag': 'W/"1155486"',
-          contactid: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
-          firstname: 'Marlon',
-          lastname: 'Herzog',
-          telephone1: '055 8767 0835',
-          emailaddress1: 'Amparo.Abbott49@example.com',
-          defra_dateofbirthdaycompanieshouse: 1,
-          defra_dobmonthcompanieshouse: 2,
-          defra_dobyearcompanieshouse: 1970
-        },
-        {
-          '@odata.etag': 'W/"1155506"',
-          contactid: '8e8e4354-4f24-e711-80fd-5065f38a1b01',
-          firstname: 'Kelvin',
-          lastname: 'Rice',
-          telephone1: '055 8301 2280',
-          emailaddress1: 'Mike9@example.com',
-          defra_dateofbirthdaycompanieshouse: 3,
-          defra_dobmonthcompanieshouse: 4,
-          defra_dobyearcompanieshouse: 1970
-        },
-        {
-          '@odata.etag': 'W/"1273787"',
-          contactid: '9d8e4354-4f24-e711-80fd-5065f38a1b01',
-          firstname: 'Maximo',
-          lastname: 'Wisoky',
-          telephone1: '01424 733336',
-          emailaddress1: 'Danielle.Howell@example.com',
-          defra_dateofbirthdaycompanieshouse: 5,
-          defra_dobmonthcompanieshouse: 6,
-          defra_dobyearcompanieshouse: 1970
-        }
-      ]
-    }
-  }
-
-  dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = () => {
-    return '7a8e4354-4f24-e711-80fd-5065f38a1b01'
-  }
-
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject) => {
-    return dataObject.id
-  }
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => '7a8e4354-4f24-e711-80fd-5065f38a1b01')
+  sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
+  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => searchResult)
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.create = dynamicsCreateStub
-  DynamicsDalService.prototype.search = dynamicsSearchStub
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Contact Model tests:', () => {

@@ -9,11 +9,7 @@ const Account = require('../../src/models/account.model')
 const Application = require('../../src/models/application.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
-let dynamicsCallActionStub
-let dynamicsSearchStub
-let dynamicsCreateStub
-let dynamicsUpdateStub
-let applicationGetByIdStub
+let sandbox
 
 let testAccount
 const fakeAccountData = {
@@ -34,28 +30,20 @@ const applicationId = fakeApplicationData.id
 lab.beforeEach(() => {
   testAccount = new Account(fakeAccountData)
 
-  dynamicsCallActionStub = DynamicsDalService.prototype.callAction
-  DynamicsDalService.prototype.callAction = () => { }
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
 
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-
-  dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = () => fakeApplicationData.accountId
-
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = () => fakeApplicationData.accountId
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => new Application(fakeApplicationData)
+  // Stub methods
+  sandbox.stub(DynamicsDalService.prototype, 'callAction').value(() => {})
+  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => fakeApplicationData.accountId)
+  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => fakeApplicationData.accountId)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplicationData))
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.callAction = dynamicsCallActionStub
-  DynamicsDalService.prototype.create = dynamicsCreateStub
-  DynamicsDalService.prototype.search = dynamicsSearchStub
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
-  Application.getById = applicationGetByIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Account Model tests:', () => {

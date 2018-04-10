@@ -59,6 +59,7 @@ let sandbox
 lab.beforeEach(() => {
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
+
   // Stub the asynchronous base methods
   sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => Merge({}, fakeApplication))
   sandbox.stub(BaseCheck.prototype, 'getCompany').value(() => Merge({}, fakeCompany))

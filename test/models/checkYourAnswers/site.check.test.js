@@ -34,6 +34,7 @@ let sandbox
 lab.beforeEach(() => {
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
+
   // Stub the asynchronous base methods
   sandbox.stub(BaseCheck.prototype, 'getLocation').value(() => Object.assign({}, fakeLocation))
   sandbox.stub(BaseCheck.prototype, 'getLocationDetail').value(() => Object.assign({}, fakeLocationDetail))

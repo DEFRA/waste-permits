@@ -10,10 +10,7 @@ const ApplicationLine = require('../../../src/models/applicationLine.model')
 const Application = require('../../../src/models/application.model')
 const Confidentiality = require('../../../src/models/taskList/confidentiality.model')
 
-let dynamicsUpdateStub
-let applicationLineGetByIdStub
-let applicationGetByIdStub
-let applicationSaveStub
+let sandbox
 
 const fakeApplicationLine = {
   id: 'ca6b60f0-c1bf-e711-8111-5065f38adb81',
@@ -30,29 +27,19 @@ const applicationId = fakeApplicationLine.applicationId
 const applicationLineId = fakeApplicationLine.id
 
 lab.beforeEach(() => {
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject) => dataObject.id
-
-  applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = () => fakeApplicationLine
-
-  applicationGetByIdStub = Application.getById
-  Application.getById = () => {
-    return new Application(fakeApplication)
-  }
-
-  applicationSaveStub = Application.prototype.save
-  Application.prototype.save = () => {}
+  sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
+  sandbox.stub(Application.prototype, 'save').value(() => {})
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
-  ApplicationLine.getById = applicationLineGetByIdStub
-  Application.getById = applicationGetByIdStub
-  Application.prototype.save = applicationSaveStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const testCompleteness = async (obj, expectedResult) => {

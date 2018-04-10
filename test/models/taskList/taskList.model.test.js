@@ -8,24 +8,26 @@ const sinon = require('sinon')
 const TaskList = require('../../../src/models/taskList/taskList.model')
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 
-let dynamicsSearchStub
+let sandbox
 
 lab.beforeEach(() => {
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = () => {
+  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {
     return {
       // None of the other return values are required for the tests
       defra_parametersId: {
         // The actual waste parameters are not required for the tests
       }
     }
-  }
+  })
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.search = dynamicsSearchStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Task List Model tests:', () => {

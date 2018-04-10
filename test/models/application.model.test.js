@@ -9,9 +9,7 @@ const Application = require('../../src/models/application.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let testApplication
-let dynamicsCreateStub
-let dynamicsSearchStub
-let dynamicsUpdateStub
+let sandbox
 
 const fakeApplicationData = {
   accountId: 'ACCOUNT_ID'
@@ -23,28 +21,24 @@ lab.beforeEach(() => {
   testApplication = new Application(fakeApplicationData)
   testApplication.delay = 0
 
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = () => {
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => testApplicationId)
+  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => testApplicationId)
+  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {
     // Dynamics Application object
     return {
       '@odata.etag': 'W/"1039198"',
       _defra_customerid_value: fakeApplicationData.accountId
     }
-  }
-
-  dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = () => testApplicationId
-
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = () => testApplicationId
+  })
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.search = dynamicsSearchStub
-  DynamicsDalService.prototype.create = dynamicsCreateStub
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Application Model tests:', () => {

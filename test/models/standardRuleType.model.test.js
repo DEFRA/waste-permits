@@ -8,7 +8,7 @@ const sinon = require('sinon')
 const StandardRuleType = require('../../src/models/standardRuleType.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
-let dynamicsSearchStub
+let sandbox
 
 const fakeStandardRuleType = {
   id: 'STANDARD_RULE_TYPE_ID',
@@ -28,13 +28,16 @@ const fakeDynamicsRecord = (options = {}) => {
 }
 
 lab.beforeEach(() => {
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  dynamicsSearchStub = DynamicsDalService.prototype.search
+  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.search = dynamicsSearchStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('StandardRuleType Model tests:', () => {
