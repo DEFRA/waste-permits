@@ -11,13 +11,7 @@ const Address = require('../../../src/models/address.model')
 const AddressDetail = require('../../../src/models/addressDetail.model')
 const InvoiceAddress = require('../../../src/models/taskList/invoiceAddress.model')
 
-let dynamicsCreateStub
-let dynamicsUpdateStub
-let applicationLineGetByIdStub
-let addressDetailGetByApplicationIdAndTypeStub
-let addressGetByIdStub
-let addressGetByUprnStub
-let addressListByPostcodeStub
+let sandbox
 
 const request = undefined
 const authToken = 'THE_AUTH_TOKEN'
@@ -58,42 +52,26 @@ let fakeAddress3 = {
 }
 
 lab.beforeEach(() => {
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = () => fakeAddress1.id
-
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = () => fakeAddress1.id
-
-  applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = () => new ApplicationLine({ id: applicationLineId })
-
-  addressDetailGetByApplicationIdAndTypeStub = AddressDetail.getByApplicationIdAndType
-  AddressDetail.getByApplicationIdAndType = () => new AddressDetail({ addressId: 'ADDRESS_ID' })
-
-  addressGetByIdStub = Address.getById
-  Address.getById = () => new Address(fakeAddress1)
-
-  addressGetByUprnStub = Address.getByUprn
-  Address.getByUprn = () => new Address(fakeAddress1)
-
-  addressListByPostcodeStub = Address.listByPostcode
-  Address.listByPostcode = () => [
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => fakeAddress1.id)
+  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => fakeAddress1.id)
+  sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine({ id: applicationLineId }))
+  sandbox.stub(AddressDetail, 'getByApplicationIdAndType').value(() => new AddressDetail({ addressId: 'ADDRESS_ID' }))
+  sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress1))
+  sandbox.stub(Address, 'getByUprn').value(() => new Address(fakeAddress1))
+  sandbox.stub(Address, 'listByPostcode').value(() => [
     new Address(fakeAddress1),
     new Address(fakeAddress2),
     new Address(fakeAddress3)
-  ]
+  ])
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.create = dynamicsCreateStub
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
-  ApplicationLine.getById = applicationLineGetByIdStub
-  AddressDetail.getByApplicationIdAndType = addressDetailGetByApplicationIdAndTypeStub
-  Address.getById = addressGetByIdStub
-  Address.getByUprn = addressGetByUprnStub
-  Address.listByPostcode = addressListByPostcodeStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Task List: Invoice Address Model tests:', () => {

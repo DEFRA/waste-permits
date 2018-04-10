@@ -73,6 +73,7 @@ let sandbox
 lab.beforeEach(() => {
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
+
   // Stub the asynchronous model methods
   sandbox.stub(Account, 'getById').value(() => Merge({}, fakeAccount))
   sandbox.stub(Account, 'getByApplicationId').value(() => Merge({}, fakeAccount))

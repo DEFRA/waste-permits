@@ -8,9 +8,7 @@ const sinon = require('sinon')
 const Location = require('../../src/models/location.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
-let dynamicsCreateStub
-let dynamicsSearchStub
-let dynamicsUpdateStub
+let sandbox
 
 let testLocation
 const fakeLocationData = {
@@ -25,8 +23,14 @@ const applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {
   testLocation = new Location(fakeLocationData)
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = () => {
+
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
+  // Stub methods
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => testLocationId)
+  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => testLocationId)
+  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {
     // Dynamics Location object
     return {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
@@ -36,20 +40,12 @@ lab.beforeEach(() => {
         defra_locationid: fakeLocationData.applicationId
       }]
     }
-  }
-
-  dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = () => testLocationId
-
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = () => testLocationId
+  })
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.create = dynamicsCreateStub
-  DynamicsDalService.prototype.search = dynamicsSearchStub
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Location Model tests:', () => {

@@ -12,13 +12,7 @@ const LocationDetail = require('../../../src/models/locationDetail.model')
 const Address = require('../../../src/models/address.model')
 const SiteNameAndLocation = require('../../../src/models/taskList/siteNameAndLocation.model')
 
-let dynamicsUpdateStub
-let applicationLineGetByIdStub
-let locationGetByApplicationIdStub
-let locationDetailGetByLocationIdStub
-let locationSaveStub
-let locationDetailSaveStub
-let addressGetByIdStub
+let sandbox
 
 const fakeApplicationLine = {
   id: 'ca6b60f0-c1bf-e711-8111-5065f38adb81',
@@ -52,45 +46,22 @@ const applicationId = fakeApplicationLine.applicationId
 const applicationLineId = fakeApplicationLine.id
 
 lab.beforeEach(() => {
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject) => dataObject.id
-
-  applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = () => fakeApplicationLine
-
-  locationGetByApplicationIdStub = Location.getByApplicationId
-  Location.getByApplicationId = () => {
-    return new Location(fakeLocation)
-  }
-
-  locationDetailGetByLocationIdStub = LocationDetail.getByLocationId
-  LocationDetail.getByLocationId = (authToken, locationId) => {
-    return new LocationDetail(fakeLocationDetail)
-  }
-
-  locationSaveStub = Location.prototype.save
-  Location.prototype.save = () => {}
-
-  locationDetailSaveStub = LocationDetail.prototype.save
-  LocationDetail.prototype.save = () => {}
-
-  addressGetByIdStub = Address.getById
-  Address.getById = (authToken, id) => {
-    return new Address(fakeAddress)
-  }
+  sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
+  sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
+  sandbox.stub(Location, 'getByApplicationId').value(() => new Location(fakeLocation))
+  sandbox.stub(Location.prototype, 'save').value(() => {})
+  sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(fakeLocationDetail))
+  sandbox.stub(LocationDetail.prototype, 'save').value(() => {})
+  sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
-  ApplicationLine.getById = applicationLineGetByIdStub
-  Location.getByApplicationId = locationGetByApplicationIdStub
-  LocationDetail.getByLocationId = locationDetailGetByLocationIdStub
-  Location.prototype.save = locationSaveStub
-  LocationDetail.prototype.save = locationDetailSaveStub
-  Address.getById = addressGetByIdStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 const testCompleteness = async (obj, expectedResult) => {

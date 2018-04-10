@@ -10,9 +10,7 @@ const StandardRule = require('../../src/models/standardRule.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
-let dynamicsSearchStub
-let applicationLineGetByIdStub
-let loggingServiceLogErrorStub
+let sandbox
 
 const fakeStandardRule = {
   id: 'STANDARD_RULE_ID',
@@ -43,21 +41,19 @@ const fakeDynamicsRecord = (options = {}) => {
 }
 
 lab.beforeEach(() => {
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+
   // Stub methods
-  dynamicsSearchStub = DynamicsDalService.prototype.search
+  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
+  sandbox.stub(ApplicationLine, 'getById').value(() => ({standardRuleId: 'STANDARD_RULE_ID'}))
+  sandbox.stub(LoggingService, 'logError').value(() => {})
 
-  applicationLineGetByIdStub = ApplicationLine.getById
-  ApplicationLine.getById = () => ({standardRuleId: 'STANDARD_RULE_ID'})
-
-  loggingServiceLogErrorStub = LoggingService.logError
-  LoggingService.logError = () => {}
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  DynamicsDalService.prototype.search = dynamicsSearchStub
-  ApplicationLine.getById = applicationLineGetByIdStub
-  LoggingService.logError = loggingServiceLogErrorStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('StandardRule Model tests:', () => {
