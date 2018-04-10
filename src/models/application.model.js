@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
+const ApplicationReturn = require('./applicationReturn.model')
 const LoggingService = require('../services/logging.service')
 
 class Application extends BaseModel {
@@ -57,6 +58,8 @@ class Application extends BaseModel {
       // Call Dynamics save and return email action
       let action = `${this.constructor.entity}(${this.id})/Microsoft.Dynamics.CRM.defra_saveandreturnemail`
       await dynamicsDal.callAction(action, actionDataObject)
+      const applicationReturn = await ApplicationReturn.getByApplicationId(authToken, this.id)
+      LoggingService.logDebug(`Save and Return Url for Application "${this.applicationNumber}": ${origin}${Constants.SAVE_AND_RETURN_URL}/${applicationReturn.slug}`)
     } catch (error) {
       LoggingService.logError(`Unable to call Dynamics Save and Return Email action: ${error}`)
       throw error
