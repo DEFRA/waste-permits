@@ -1,0 +1,50 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+      <div class="form-group">
+        {{#if email}}
+        <p id="email-sent-paragraph">We sent a secure link to <span class="bold">{{email}}</span> that will allow you to return to your saved application.</p>
+        {{else}}
+        <p id="email-link-paragraph">The email has a link to get back to your saved application.</p>
+        {{/if}}
+      </div>
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <input id="got-email" type="hidden" name="got-email" value="false">
+
+        <details role="group" class="form-hint-details" {{#if errors.save-and-return-email}}open="open"{{/if}}>
+          <summary id="email-summary" role="button" aria-controls="details-content-0" aria-expanded="false">I can’t find the email</summary>
+          <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true">
+            <ol id="find-email-list" class="list list-number">
+              <li id="find-email-list-item-1">Check your spam folder.</li>
+              <li id="find-email-list-item-2">Search for 'standard rules permit application' in your emails.</li>
+              <li id="find-email-list-item-3">Wait for a few minutes - email can take a while to arrive.</li>
+              <li id="find-email-list-item-4">Resend the email.</li>
+            </ol>
+
+            <div class="form-group {{#getFormErrorGroupClass errors.save-and-return-email}}{{/getFormErrorGroupClass}}">
+              <label id="save-and-return-email-label" class="form-label" for="save-and-return-email">Email address you gave us </label>
+              <span id="email-hint" class="form-hint">This must be the email you used before</span>
+              {{> common/fieldError fieldId='save-and-return-email-error' message=errors.save-and-return-email }}
+              <input type="text" class="form-control form-control-char-35 {{#if errors.save-and-return-email}}form-control-error{{/if}}" id="save-and-return-email" name="save-and-return-email" value="{{ formValues.save-and-return-email }}" />
+            </div>
+            {{> common/submitButton text="Resend email"}}
+          </div>
+        </details>
+      </form>
+
+    </div>
+  </div>
+
+</main>

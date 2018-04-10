@@ -13,10 +13,11 @@ class Application extends BaseModel {
 
   static get mapping () {
     return [
+      {field: 'id', dynamics: 'defra_applicationid', readOnly: true},
       {field: 'accountId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_account', relationship: 'defra_account_defra_application_customerid', entity: 'accounts'}},
       {field: 'agentId', dynamics: '_defra_agentid_value', bind: {id: 'defra_agentid_account', relationship: 'defra_account_defra_application_agentid', entity: 'accounts'}},
       {field: 'applicationName', dynamics: 'defra_name', readOnly: true},
-      {field: 'applicationNumber', dynamics: 'defra_applicationnumber'},
+      {field: 'applicationNumber', dynamics: 'defra_applicationnumber', readOnly: true},
       {field: 'bankruptcy', dynamics: 'defra_bankruptcydeclaration'},
       {field: 'bankruptcyDetails', dynamics: 'defra_bankruptcydeclarationdetails', length: {max: 2000}},
       {field: 'confidentiality', dynamics: 'defra_confidentialitydeclaration'},
@@ -49,6 +50,21 @@ class Application extends BaseModel {
     return Boolean(this.paymentReceived)
   }
 
+  static async listBySaveAndReturnEmail (authToken, saveAndReturnEmail) {
+    if (saveAndReturnEmail) {
+      const dynamicsDal = new DynamicsDalService(authToken)
+      const filter = `defra_saveandreturnemail eq '${saveAndReturnEmail}' and  defra_submittedon eq null`
+      const query = encodeURI(`${this.entity}?$select=${Application.selectedDynamicsFields()}&$filter=${filter}`)
+      try {
+        const response = await dynamicsDal.search(query)
+        return response.value.map((result) => Application.dynamicsToModel(result))
+      } catch (error) {
+        LoggingService.logError(`Unable to get Applications by saveAndReturnEmail: ${error}`)
+        throw error
+      }
+    }
+  }
+
   async sendSaveAndReturnEmail (authToken, origin) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const actionDataObject = {
@@ -73,6 +89,15 @@ class Application extends BaseModel {
     if (isNew) {
       LoggingService.logInfo(`Created application with ID: ${this.id}`)
     }
+  }
+
+  static async sendAllRecoveryEmails (authToken, origin, saveAndReturnEmail) {
+    const applicationList = await this.listBySaveAndReturnEmail(authToken, saveAndReturnEmail)
+    if (Array.isArray(applicationList)) {
+      await Promise.all(applicationList.map((application) => application.sendSaveAndReturnEmail(authToken, origin)))
+      return applicationList.length
+    }
+    return 0
   }
 }
 

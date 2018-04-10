@@ -124,6 +124,7 @@ Constants.COOKIE_KEY = {
   PERMIT_HOLDER_TYPE: 'permitHolderType',
   STANDARD_RULE_ID: 'standardRuleId',
   STANDARD_RULE_TYPE_ID: 'standardRuleTypeId',
+  SAVE_AND_RETURN_EMAIL: 'saveAndReturnEmail',
   EXPIRY: 'expiry'
 }
 
@@ -190,9 +191,9 @@ Constants.Routes = {
     taskListHeading: 'Send application and pay'
   },
   CHECK_YOUR_EMAIL: {
-    path: '/save-and-return/check-your-email',
-    pageHeading: `Search for 'standard rules permit application' in your email`,
-    taskListHeading: `Search for 'standard rules permit application' in your email`
+    path: '/save-return/check-your-email',
+    pageHeading: 'Check your email',
+    taskListHeading: 'Check your email'
   },
   COMPANY_CHECK_NAME: {
     path: '/permit-holder/company/check-name',
@@ -356,6 +357,11 @@ Constants.Routes = {
     pageHeading: 'Save your application',
     taskListHeading: 'Set up save and return for your application'
   },
+  SEARCH_YOUR_EMAIL: {
+    path: '/save-return/search-your-email',
+    pageHeading: 'Search for ’standard rules permit application’ in your emails',
+    taskListHeading: 'Search for ’standard rules permit application’ in your emails'
+  },
   SITE_GRID_REFERENCE: {
     path: '/site/grid-reference',
     pageHeading: `What's the grid reference for the centre of the site?`
@@ -372,9 +378,7 @@ Constants.Routes = {
   },
   START_OR_OPEN_SAVED: {
     path: `/start/start-or-open-saved`,
-    // For MVP we are only supporting the mobile plant standard rules waste permit
-    // pageHeading: 'Apply for a standard rules waste permit'
-    pageHeading: 'Apply for a mobile plant standard rules waste permit'
+    pageHeading: 'Apply for a standard rules waste permit'
   },
   TASK_LIST: {
     path: '/task-list',
