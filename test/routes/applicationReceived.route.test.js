@@ -47,6 +47,7 @@ lab.beforeEach(() => {
     amount: '1,000.99',
     sortCode: '60-70-80',
     accountNumber: '1001 4411',
+    accountName: 'EA RECEIPTS',
     ibanNumber: 'GB23NWK60708010014411',
     swiftNumber: 'NWBKGB2L',
     paymentsEmail: 'psc-bacs@environment-agency.gov.uk'
@@ -79,7 +80,7 @@ lab.experiment('ApplicationReceived page tests:', () => {
     const checkCommonElements = async (doc) => {
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Application received')
       Code.expect(doc.getElementById('application-name').firstChild.nodeValue).to.equal(fakeApplication.applicationName)
-      Code.expect(doc.getElementById('contact-email').firstChild.nodeValue).to.equal(fakeContact.email)
+      Code.expect(doc.getElementById('contact-email').firstChild.nodeValue).to.equal(`${fakeContact.email}.`)
 
       GeneralTestHelper.checkElementsExist(doc, [
         'reference-number-paragraph',
@@ -117,6 +118,7 @@ lab.experiment('ApplicationReceived page tests:', () => {
       Code.expect(doc.getElementById('amount').firstChild.nodeValue).to.equal(fakeBacs.amount)
       Code.expect(doc.getElementById('sort-code').firstChild.nodeValue).to.equal(fakeBacs.sortCode)
       Code.expect(doc.getElementById('account-number').firstChild.nodeValue).to.equal(fakeBacs.accountNumber)
+      Code.expect(doc.getElementById('account-name').firstChild.nodeValue).to.equal(fakeBacs.accountName)
       Code.expect(doc.getElementById('iban-number').firstChild.nodeValue).to.equal(fakeBacs.ibanNumber)
       Code.expect(doc.getElementById('swift-number').firstChild.nodeValue).to.equal(fakeBacs.swiftNumber)
       Code.expect(doc.getElementById('payments-email').firstChild.nodeValue).to.equal(fakeBacs.paymentsEmail)
@@ -127,13 +129,16 @@ lab.experiment('ApplicationReceived page tests:', () => {
         'confirmation-email-message-suffix',
         'bacs-paragraph',
         'application-processing-payment-message',
-        'pay-using-bacs-heading',
+        'pay-using-bacs-heading-1',
+        'pay-using-bacs-heading-2',
         'payment-reference-heading',
         'amount-heading',
         'sort-code-heading',
         'account-number-heading',
+        'account-name-heading',
         'iban-number-text',
         'swift-number-text',
+        'swift-abbr',
         'payment-ref-text',
         'overseas-account-hint',
         'overseas-account-hint-paragraph-1',

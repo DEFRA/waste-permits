@@ -36,7 +36,7 @@ const fakeDynamicsRecord = (options = {}) => {
     defra_guidanceurl: standardRule.guidanceUrl,
     defra_canapplyfor: standardRule.canApplyFor,
     defra_canapplyonline: standardRule.canApplyOnline,
-    defra_standardruletypeid: standardRule.standardRuleTypeId
+    _defra_standardruletypeid_value: standardRule.standardRuleTypeId
   }
 }
 
