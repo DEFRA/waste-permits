@@ -555,6 +555,20 @@ Constants.CookieValue = {
   SITE_POSTCODE: 'SITE_POSTCODE'
 }
 
+Constants.CacheOptions = {
+  privacy: 'private',
+  statuses: [200],
+  expiresIn: 0,
+  otherwise: 'no-cache'
+}
+
+Constants.SecurityOptions = {
+  hsts: {
+    includeSubDomains: true,
+    preload: true
+  }
+}
+
 Constants.buildPageTitle = (pageHeading) => {
   return `${pageHeading} - ${Constants.SERVICE_NAME} - ${Constants.GDS_NAME}`
 }

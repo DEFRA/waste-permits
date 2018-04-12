@@ -17,7 +17,9 @@ class UploadRoute extends BaseRoute {
       handler: controller.remove,
       options: {
         description: `The REMOVE ${controller.route.pageHeading} page`,
-        bind: controller
+        bind: controller,
+        cache: Constants.CacheOptions,
+        security: Constants.SecurityOptions
       }
     }
   }
@@ -42,6 +44,8 @@ class UploadRoute extends BaseRoute {
           maxBytes: Constants.MAX_FILE_SIZE,
           failAction: controller.uploadFailAction.bind(controller)
         },
+        cache: Constants.CacheOptions,
+        security: Constants.SecurityOptions,
         validate: {
           options: {
             allowUnknown: true
