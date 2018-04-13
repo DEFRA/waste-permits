@@ -48,7 +48,6 @@ lab.beforeEach(() => {
   sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
   sandbox.stub(ApplicationLine, 'getById').value(() => ({standardRuleId: 'STANDARD_RULE_ID'}))
   sandbox.stub(LoggingService, 'logError').value(() => {})
-
 })
 
 lab.afterEach(() => {
