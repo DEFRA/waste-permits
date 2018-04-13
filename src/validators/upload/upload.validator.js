@@ -3,17 +3,13 @@
 const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 const Annotation = require('../../models/annotation.model')
+const Constants = require('../../constants')
 
 module.exports = class UploadValidator extends BaseValidator {
-  constructor (options) {
+  constructor (options = {}) {
     super()
-    if (!options || typeof options.maxSize !== 'string') {
-      throw new Error('Expected maxSize in validator options')
-    }
-    if (!options || !(options.fileTypes && options.fileTypes.length)) {
-      throw new Error('Expected fileTypes in validator options to contain an array')
-    }
-    this._validatorOptions = options
+
+    this._validatorOptions = {...Constants.DEFAULT_UPLOAD_OPTIONS, ...options}
 
     this.errorMessages = {
       'file': {

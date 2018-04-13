@@ -14,6 +14,20 @@ Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 Constants.MAX_FILE_SIZE = 31457280 // 30MB
 Constants.SAVE_AND_RETURN_URL = '/r'
 
+Constants.DEFAULT_UPLOAD_OPTIONS = {
+  maxSize: '30MB',
+  fileTypes: [
+    {type: 'PDF', mimeType: 'application/pdf'},
+    {type: 'DOC', mimeType: 'application/msword'},
+    {type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'},
+    {type: 'XLS', mimeType: 'application/vnd.ms-excel'},
+    {type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'},
+    {type: 'JPG', mimeType: 'image/jpeg'},
+    {type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text'},
+    {type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet'}
+  ]
+}
+
 Constants.Errors = {
   REQUEST_ENTITY_TOO_LARGE: 413
 }
