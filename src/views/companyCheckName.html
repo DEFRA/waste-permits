@@ -13,62 +13,72 @@
 
       <h1 id="page-heading" class="heading-large">{{pageHeading}}</h1>
 
+      <h2 id="company-name" class="heading-medium">{{ companyName }}</h2>
+
+      <div class="panel panel-border-wide form-group">
+        <p>
+          <span id="company-number-label">Company number</span> <span id="company-number-value">{{ formValues.company-number }}</span>.
+          <a id="enter-different-number-company-exists-link" href="{{ enterCompanyNumberRoute }}">Enter a different number</a>
+        </p>
+      </div>
+
+      <h2 id="check-company-address" class="heading-medium">Check the registered address</h2>
+
+      <p id="company-address">{{ companyAddress }}</p>
+
+      <details id="not-the-registered-office-details">
+        <summary>
+          <span class="summary">That’s not our registered office address</span>
+        </summary>
+        <div id="not-the-registered-office-panel" class="panel panel-border-narrow">
+          <span>We can only accept applications using the address that’s registered with Companies House. If your address has changed then you should </span>
+          <a id="not-the-registered-office-link" href="https://www.gov.uk/file-changes-to-a-company-with-companies-house" target="_blank">tell Companies House about the change (opens new tab)</a>
+          <span>before you complete this application.</span>
+        </div>
+      </details>
+
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
-        <div class="panel panel-border-wide form-group">
-          <p><span id="company-number-label">Company number</span> <span id="company-number-value">{{ formValues.company-number }}</span>.
-            <a id="enter-different-number-company-exists-link" href="{{ enterCompanyNumberRoute }}">Enter a different number</a></p>
-          </div>
+        <div class="form-group {{#getFormErrorGroupClass errors.business-trading-name}}{{/getFormErrorGroupClass}}">
 
-          <h2 id="company-name" class="heading-medium">{{ companyName }}</h2>
+          <fieldset>
 
-          <p id="company-address">{{ companyAddress }}</p>
+            <legend id="trading-name-visually-hidden" class="visually-hidden">
+              Trading name
+            </legend>
 
-          <details id="not-the-registered-office-details">
-            <summary>
-              <span class="summary">That’s not our registered office address</span>
-            </summary>
-            <div id="not-the-registered-office-panel" class="panel panel-border-narrow">
-                We can only accept applications using the address that’s registered with Companies House. If your address has changed then you should <a id="not-the-registered-office-link" href="https://www.gov.uk/file-changes-to-a-company-with-companies-house" target="_blank">tell Companies House about the change (opens new tab)</a> before you complete this application.
+            <div class="multiple-choice" data-target="give-business-trading-name">
+              <input id="use-business-trading-name" name="use-business-trading-name" type="checkbox" {{#if formValues.use-business-trading-name}}checked="checked"{{/if}}>
+              <label id="use-business-trading-name-label" for="use-business-trading-name">We use a different trading name</label>
             </div>
-          </details>
 
-          <div class="form-group {{#getFormErrorGroupClass errors.business-trading-name}}{{/getFormErrorGroupClass}}">
+            <div class="panel panel-border-narrow js-hidden" id="give-business-trading-name">
+              <label id="business-trading-name-label" class="form-label" for="business-trading-name">Business trading name</label>
+              {{> common/fieldError fieldId='business-trading-name-error' message=errors.business-trading-name }}
+              <input id="business-trading-name" class="form-control form-control-char-40 {{#if errors.business-trading-name}}form-control-error{{/if}}" type="text" name="business-trading-name"
+                value="{{ formValues.business-trading-name }}">
+            </div>
 
-            <fieldset>
+          </fieldset>
+        </div>
 
-              <legend id="trading-name-visually-hidden" class="visually-hidden">
-                Trading name
-              </legend>
-
-              <div class="multiple-choice" data-target="give-business-trading-name">
-                <input id="use-business-trading-name" name="use-business-trading-name" type="checkbox"
-                {{#if formValues.use-business-trading-name}}checked{{/if}}>
-                <label id="use-business-trading-name-label" for="use-business-trading-name">We use a different trading name</label>
-              </div>
-
-              <div class="panel panel-border-narrow js-hidden" id="give-business-trading-name">
-                <label id="business-trading-name-label" class="form-label" for="business-trading-name">Business trading name</label>
-                {{> common/fieldError fieldId='business-trading-name-error' message=errors.business-trading-name }}
-                <input id="business-trading-name" class="form-control form-control-char-40 {{#if errors.business-trading-name}}form-control-error{{/if}}" type="text" name="business-trading-name"
-                  value="{{ formValues.business-trading-name }}">
-              </div>
-
-            </fieldset>
-          </div>
-
-          {{> common/submitButton }}
+        {{> common/submitButton }}
       </form>
 
       {{else}}
 
       <h1 id="page-heading-company-not-found" class="heading-large">We can't find that company</h1>
-      {{> common/csrfToken token=DefraCsrfToken}}
 
-      <p id="search-term-text">We couldn't find a company with the number <b>{{ formValues.company-number }}</b> at Companies House.</p>
+      <p id="search-term-text">
+        <span>We couldn't find a company with the number </span>
+        <b>{{ formValues.company-number }}</b>
+        <span>at Companies House.</span>
+      </p>
 
-      <p><a id="enter-different-number-link" href="{{ enterCompanyNumberRoute }}">Enter a different number</a></p>
+      <p>
+        <a id="enter-different-number-link" href="{{ enterCompanyNumberRoute }}">Enter a different number</a>
+      </p>
 
       {{/if}}
 

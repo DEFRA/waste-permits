@@ -14,7 +14,7 @@
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
-        <fieldset aria-labelledby="permit-select-heading">
+        <fieldset>
           <legend class="visuallyhidden">{{ pageHeading }}</legend>
 
           <div id="chosen-category" class="form-group {{#getFormErrorGroupClass errors.chosen-category}}{{/getFormErrorGroupClass}}">
