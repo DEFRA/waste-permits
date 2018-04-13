@@ -46,7 +46,7 @@ lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'esa-eu-skills-description',
-      pageHeading: 'Energy & Utility Skills / ESA: upload evidence',
+      pageHeading: 'Energy & Utility Skills / ESA: upload your evidence',
       submitButton: 'Continue'
     }
 
