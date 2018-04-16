@@ -44,7 +44,7 @@ lab.beforeEach(() => {
   sandbox.stub(ConfirmRules, 'isComplete').value(() => false)
   sandbox.stub(ConfirmRules, 'updateCompleteness').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
-  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 

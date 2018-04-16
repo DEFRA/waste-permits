@@ -114,13 +114,21 @@ span.postcode {
     }
   }
 
-  .sr-company-dob {
-    width: 3em;
-  }
+.sr-company-dob {
+  width: 3em;
+}
 
-  .sr-dob-month-year{
-    margin-left:.25em;
-  }
+.sr-dob-month-year {
+  margin-left:.25em;
+}
+
+.card-problem-link {
+  padding: 7px 0;
+}
+
+.card-payment-technical-problem {
+  padding-top: 20px;
+}
 
 .no-margin-bottom {
   margin-bottom: 0px;

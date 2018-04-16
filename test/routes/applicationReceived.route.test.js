@@ -34,7 +34,8 @@ lab.beforeEach(() => {
   fakePayment = {
     applicationId: fakeApplication.id,
     applicationLineId: 'APPLICATION_LINE_ID',
-    value: 1000.99
+    value: 1000.99,
+    description: 'THE PAYMENT DESCRIPTION'
   }
 
   fakeContact = {
@@ -50,7 +51,8 @@ lab.beforeEach(() => {
     accountName: 'EA RECEIPTS',
     ibanNumber: 'GB23NWK60708010014411',
     swiftNumber: 'NWBKGB2L',
-    paymentsEmail: 'psc-bacs@environment-agency.gov.uk'
+    paymentsEmail: 'psc-bacs@environment-agency.gov.uk',
+    description: 'THE DESCRIPTION'
   }
 
   // Create a sinon sandbox to stub methods
@@ -61,7 +63,8 @@ lab.beforeEach(() => {
   sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
-  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => new Payment(fakePayment))
+  sandbox.stub(Payment, 'getBacsPayment').value(() => new Payment(fakePayment))
+  sandbox.stub(Payment, 'getCardPayment').value(() => undefined)
 })
 
 lab.afterEach(() => {
@@ -77,18 +80,9 @@ lab.experiment('ApplicationReceived page tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     let request
 
-    const checkCommonElements = async (doc) => {
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Application received')
+    const checkCommonElements = async (doc, heading = 'Application received') => {
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(heading)
       Code.expect(doc.getElementById('application-name').firstChild.nodeValue).to.equal(fakeApplication.applicationName)
-      Code.expect(doc.getElementById('contact-email').firstChild.nodeValue).to.equal(`${fakeContact.email}.`)
-
-      GeneralTestHelper.checkElementsExist(doc, [
-        'reference-number-paragraph',
-        'confirmation-email-message-prefix',
-        'application-received-info',
-        'application-received-hint',
-        'application-received-warning'
-      ])
 
       return doc
     }
@@ -107,13 +101,12 @@ lab.experiment('ApplicationReceived page tests:', () => {
       Code.expect(doc.getElementById('back-link')).to.not.exist()
     })
 
-    lab.test('returns the application received page correctly if bacs has been selected for payment eventhough the application has not been paid for yet', async () => {
-      fakeApplication.paymentReceived = 0
-
+    lab.test('returns the application received page correctly if bacs payment was selected', async () => {
       const doc = await GeneralTestHelper.getDoc(request)
 
       checkCommonElements(doc)
 
+      Code.expect(doc.getElementById('contact-email').firstChild.nodeValue).to.equal(`${fakeContact.email}.`)
       Code.expect(doc.getElementById('payment-reference').firstChild.nodeValue).to.equal(fakeBacs.paymentReference)
       Code.expect(doc.getElementById('amount').firstChild.nodeValue).to.equal(fakeBacs.amount)
       Code.expect(doc.getElementById('sort-code').firstChild.nodeValue).to.equal(fakeBacs.sortCode)
@@ -125,6 +118,11 @@ lab.experiment('ApplicationReceived page tests:', () => {
       Code.expect(doc.getElementById('payments-email-link').getAttribute('href')).to.equal(`mailto:${fakeBacs.paymentsEmail}`)
 
       GeneralTestHelper.checkElementsExist(doc, [
+        'reference-number-paragraph',
+        'confirmation-email-message-prefix',
+        'application-received-info',
+        'application-received-hint',
+        'application-received-warning',
         'when-we-get-your-payment-heading',
         'confirmation-email-message-suffix',
         'bacs-paragraph',
@@ -148,49 +146,34 @@ lab.experiment('ApplicationReceived page tests:', () => {
         'confirm-your-payment-message',
         'give-feedback-link'
       ])
-
-      Code.expect(doc.getElementById('what-happens-next-heading')).to.not.exist()
     })
 
-    lab.test('returns the application received page correctly if bacs has not been selected for payment but the application has been paid for', async () => {
-      Payment.getByApplicationLineIdAndType = () => undefined
+    lab.test('returns the application received page correctly if card payment was selected', async () => {
+      sandbox.stub(Payment, 'getBacsPayment').value(() => undefined)
+      sandbox.stub(Payment, 'getCardPayment').value(() => new Payment(fakePayment))
+
       const doc = await GeneralTestHelper.getDoc(request)
 
-      checkCommonElements(doc)
+      checkCommonElements(doc, 'Application and card payment received')
 
-      Code.expect(doc.getElementById('what-happens-next-heading')).to.exist()
+      Code.expect(doc.getElementById('payment-description').firstChild.nodeValue).to.equal(fakePayment.description)
+      Code.expect(doc.getElementById('amount').firstChild.nodeValue).to.equal(fakeBacs.amount)
 
-      GeneralTestHelper.checkElementsDoNotExist(doc, [
-        'when-we-get-your-payment-heading',
-        'confirmation-email-message-suffix',
-        'bacs-paragraph',
-        'application-processing-payment-message',
-        'pay-using-bacs-heading',
-        'payment-reference-heading',
-        'amount-heading',
-        'sort-code-heading',
-        'account-number-heading',
-        'payment-reference',
-        'payment-email',
-        'sort-code',
-        'account-number',
-        'iban-number-text',
-        'swift-number-text',
-        'payment-ref-text',
-        'iban-number',
-        'swift-number',
-        'payments-email',
-        'payments-email-link',
-        'overseas-account-hint',
-        'overseas-account-hint-paragraph-1',
-        'overseas-account-hint-paragraph-2',
-        'overseas-account-hint-paragraph-3',
-        'confirm-your-payment-message'
+      GeneralTestHelper.checkElementsExist(doc, [
+        'reference-number-paragraph',
+        'emailed-receipt',
+        'emailed-confirmation',
+        'what-happens-next-heading',
+        'application-received-info',
+        'application-received-hint',
+        'application-received-warning',
+        'give-feedback-link'
       ])
     })
 
     lab.test('Redirects to the Not Paid screen if bacs has not been selected for payment and the application has not been paid for yet', async () => {
-      Payment.getByApplicationLineIdAndType = () => undefined
+      Payment.getBacsPayment = () => undefined
+      Payment.getCardPayment = () => undefined
       fakeApplication.paymentReceived = 0
 
       const res = await server.inject(request)

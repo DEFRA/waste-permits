@@ -16,16 +16,18 @@
         </p>
       </div>
 
+      {{#if bacs}}
       <p>
         <span id="confirmation-email-message-prefix">We've sent a confirmation to </span>
         <span id="contact-email">{{contactEmail}}.</span>
-        {{#if bacs}}
-          <span id="confirmation-email-message-suffix"> The email includes the Bacs payment details.</span>
-        {{/if}}
+        <span id="confirmation-email-message-suffix"> The email includes the Bacs payment details.</span>
       </p>
+      {{/if}}
 
       {{#if bacs}}
-        {{> bacsDetails}}
+        {{> payment/bacsDetails}}
+      {{else}}
+        {{> payment/cardDetails}}
       {{/if}}
 
       {{#if bacs}}

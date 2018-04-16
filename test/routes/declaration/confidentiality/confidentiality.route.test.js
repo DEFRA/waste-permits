@@ -39,7 +39,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => {})
   sandbox.stub(Application.prototype, 'save').value(() => false)
   sandbox.stub(Confidentiality, 'updateCompleteness').value(() => {})
-  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 

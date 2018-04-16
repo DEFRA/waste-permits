@@ -1,8 +1,8 @@
 'use strict'
 
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
-const Payment = require('../models/payment.model')
+const Constants = require('../../constants')
+const BaseController = require('../base.controller')
+const Payment = require('../../models/payment.model')
 
 module.exports = class PaymentBacsController extends BaseController {
   async doGet (request, h) {
@@ -13,11 +13,11 @@ module.exports = class PaymentBacsController extends BaseController {
 
     if (!application.isSubmitted()) {
       return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
-    } else if (payment && payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED) {
+    } else if ((payment && payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED) || (application && application.paymentReceived)) {
       return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
-    return this.showView(request, h, 'paymentBacs', pageContext)
+    return this.showView(request, h, 'payment/paymentBacs', pageContext)
   }
 
   async doPost (request, h) {

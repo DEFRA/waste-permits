@@ -85,7 +85,7 @@ lab.beforeEach(() => {
   sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
   sandbox.stub(Contact.prototype, 'save').value(() => {})
   sandbox.stub(ContactDetails, 'updateCompleteness').value(() => {})
-  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 

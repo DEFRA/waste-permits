@@ -1,7 +1,7 @@
 'use strict'
 
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
+const Constants = require('../../constants')
+const BaseController = require('../base.controller')
 const {CARD_PAYMENT, BACS_PAYMENT} = Constants.Dynamics.PaymentTypes
 
 module.exports = class PaymentTypeController extends BaseController {
@@ -29,11 +29,10 @@ module.exports = class PaymentTypeController extends BaseController {
 
     pageContext.cost = value.toLocaleString()
 
-    return this.showView(request, h, 'paymentType', pageContext)
+    return this.showView(request, h, 'payment/paymentType', pageContext)
   }
 
   async doPost (request, h, errors) {
-    // Not implemented yet
     let nextPath
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
@@ -41,10 +40,10 @@ module.exports = class PaymentTypeController extends BaseController {
       const paymentType = parseInt(request.payload['payment-type'])
       switch (paymentType) {
         case CARD_PAYMENT:
-          nextPath = Constants.Routes.CARD_PAYMENT.path
+          nextPath = Constants.Routes.PAYMENT.CARD_PAYMENT.path
           break
         case BACS_PAYMENT:
-          nextPath = Constants.Routes.BACS_PAYMENT.path
+          nextPath = Constants.Routes.PAYMENT.BACS_PAYMENT.path
           break
         default:
           throw new Error(`Unexpected payment type (${paymentType})`)
