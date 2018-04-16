@@ -87,7 +87,7 @@ lab.beforeEach(() => {
     new Address(fakeAddress3)
   ])
   sandbox.stub(InvoiceAddress, 'saveSelectedAddress').value(() => undefined)
-  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 

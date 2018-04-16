@@ -171,7 +171,8 @@ Constants.Routes = {
   },
   APPLICATION_RECEIVED: {
     path: '/done',
-    pageHeading: `Application received`
+    pageHeading: `Application received`,
+    pageHeadingAlternate: `Application and card payment received`
   },
   APPLY_OFFLINE: {
     path: '/start/apply-offline',

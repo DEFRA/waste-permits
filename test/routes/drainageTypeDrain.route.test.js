@@ -43,7 +43,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(DrainageTypeDrain, 'isComplete').value(() => false)
   sandbox.stub(DrainageTypeDrain, 'updateCompleteness').value(() => {})
-  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
 })

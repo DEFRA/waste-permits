@@ -30,6 +30,16 @@ class Payment extends BaseModel {
     return Boolean(this.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED)
   }
 
+  static async getBacsPayment (authToken, applicationLineId) {
+    let payment = await this.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.BACS_PAYMENT)
+    return payment
+  }
+
+  static async getCardPayment (authToken, applicationLineId) {
+    let payment = await this.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.CARD_PAYMENT)
+    return payment
+  }
+
   static async getByApplicationLineIdAndType (authToken, applicationLineId, type) {
     let payment
     if (applicationLineId) {

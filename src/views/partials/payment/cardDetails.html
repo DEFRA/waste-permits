@@ -1,0 +1,13 @@
+<dl class="govuk-check-your-answers cya-questions-short">
+  <div>
+    <dt id="payment-description-heading" class="cya-question">Payment for</dt>
+    <dd id="payment-description" class="cya-answer">{{cardPayment.description}}</dd>
+  </div>
+  <div>
+    <dt id="amount-heading" class="cya-question">Amount paid</dt>
+    <dd class="cya-answer">£<span id="amount">{{cardPayment.amount}}</span></dd>
+  </div>
+</dl>
+
+<p id="emailed-receipt">We’ve emailed you a receipt for your payment.</p>
+<p id="emailed-confirmation">We've also sent a confirmation of your application to {{contactEmail}}.</p>

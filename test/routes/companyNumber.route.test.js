@@ -62,7 +62,7 @@ lab.beforeEach(() => {
   sandbox.stub(Account, 'getByApplicationId').value(() => Promise.resolve(new Account(fakeAccount)))
   sandbox.stub(Account, 'getByCompanyNumber').value(() => new Account(fakeAccount))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
+  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(LoggingService, 'logError').value(() => {})
 })

@@ -4,14 +4,14 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const GeneralTestHelper = require('./generalTestHelper.test')
+const GeneralTestHelper = require('../generalTestHelper.test')
 
-const server = require('../../server')
-const Application = require('../../src/models/application.model')
-const ApplicationLine = require('../../src/models/applicationLine.model')
-const CookieService = require('../../src/services/cookie.service')
-const LoggingService = require('../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const server = require('../../../server')
+const Application = require('../../../src/models/application.model')
+const ApplicationLine = require('../../../src/models/applicationLine.model')
+const CookieService = require('../../../src/services/cookie.service')
+const LoggingService = require('../../../src/services/logging.service')
+const {COOKIE_RESULT} = require('../../../src/constants')
 
 const PaymentTypes = {
   CARD_PAYMENT: 910400000,

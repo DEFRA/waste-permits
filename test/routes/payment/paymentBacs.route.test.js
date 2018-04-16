@@ -4,15 +4,15 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const GeneralTestHelper = require('./generalTestHelper.test')
+const GeneralTestHelper = require('../generalTestHelper.test')
 
-const server = require('../../server')
-const Application = require('../../src/models/application.model')
-const ApplicationLine = require('../../src/models/applicationLine.model')
-const Payment = require('../../src/models/payment.model')
-const CookieService = require('../../src/services/cookie.service')
-const LoggingService = require('../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const server = require('../../../server')
+const Application = require('../../../src/models/application.model')
+const ApplicationLine = require('../../../src/models/applicationLine.model')
+const Payment = require('../../../src/models/payment.model')
+const CookieService = require('../../../src/services/cookie.service')
+const LoggingService = require('../../../src/services/logging.service')
+const {COOKIE_RESULT} = require('../../../src/constants')
 
 let sandbox
 
@@ -56,7 +56,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
-  sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => new Payment(fakePayment))
+  sandbox.stub(Payment, 'getBacsPaymentDetails').value(() => new Payment(fakePayment))
   sandbox.stub(Payment.prototype, 'save').value(() => {})
 })
 
@@ -122,7 +122,7 @@ lab.experiment(`You’ve chosen to pay by bank transfer using Bacs:`, () => {
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the payment details', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Payment.getByApplicationLineIdAndType = () => Promise.reject(new Error('read failed'))
+        Payment.getBacsPaymentDetails = () => Promise.reject(new Error('read failed'))
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)

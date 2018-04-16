@@ -6,14 +6,19 @@ const Payment = require('../../models/payment.model')
 
 module.exports = class PaymentResultController extends BaseController {
   async doGet (request, h, errors) {
-    // const pageContext = this.createPageContext(errors)
     const {authToken, application, applicationLine} = await this.createApplicationContext(request, {application: true, applicationLine: true})
     const payment = await Payment.getCardPaymentDetails(authToken, applicationLine.id)
 
+    // if (!application.isSubmitted()) {
+    //   return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
+    // } else if (payment && (payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED || application.paymentReceived)) {
+    //   return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+    // }
+
     const paymentStatus = await payment.getCardPaymentResult(authToken)
 
+    // Look at the result of the payment and redirect off to the appropriate result screen
     if (paymentStatus === 'success') {
-      // TODO: Confirm if we need to set application.paymentReceived? Currently redirects to the 'not paid' screen
       application.paymentReceived = true
       await application.save(authToken)
 

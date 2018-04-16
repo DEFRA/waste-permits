@@ -11,7 +11,8 @@ module.exports = class ApplicationReceivedController extends BaseController {
 
     const {authToken, applicationId, applicationLineId, application, contact} = await this.createApplicationContext(request, {application: true, contact: true})
 
-    const bacsPayment = await Payment.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.BACS_PAYMENT)
+    const bacsPayment = await Payment.getBacsPayment(authToken, applicationLineId)
+    const cardPayment = await Payment.getCardPayment(authToken, applicationLineId)
 
     pageContext.applicationName = application.applicationName
     if (contact && contact.email) {
@@ -32,12 +33,18 @@ module.exports = class ApplicationReceivedController extends BaseController {
         swiftNumber: Constants.BankAccountDetails.SWIFT_NUMBER,
         paymentEmail: Constants.BankAccountDetails.PAYMENT_EMAIL
       }
+    } else if (cardPayment) {
+      pageContext.pageHeading = Constants.Routes.APPLICATION_RECEIVED.pageHeadingAlternate
+      pageContext.cardPayment = {
+        description: cardPayment.description,
+        amount: cardPayment.value.toLocaleString()
+      }
     }
 
-    if (bacsPayment || application.isPaid()) {
+    if (bacsPayment || cardPayment || application.isPaid()) {
       return this.showView(request, h, 'applicationReceived', pageContext)
     } else {
-      // If bacs has not been selected for payment and the application has not been paid for
+      // If the application has not been paid for
       return this.redirect(request, h, Constants.Routes.ERROR.NOT_PAID.path)
     }
   }
