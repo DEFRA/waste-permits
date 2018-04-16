@@ -25,7 +25,7 @@ module.exports = class CardPaymentController extends BaseController {
 
     // const returnUrl = 'https://defra.gov.uk'
 
-    const returnUrl = `${request.server.info.protocol}://${request.info.host}${Constants.Routes.PAYMENT.PAYMENT_RESULT.path`
+    const returnUrl = `${request.server.info.protocol}://${request.info.host}${Constants.Routes.PAYMENT.PAYMENT_RESULT.path}`
 
     const govPayUrl = await payment.makeCardPayment(authToken, payment.description, returnUrl)
 
