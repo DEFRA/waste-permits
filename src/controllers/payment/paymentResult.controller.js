@@ -6,14 +6,14 @@ const Payment = require('../../models/payment.model')
 
 module.exports = class PaymentResultController extends BaseController {
   async doGet (request, h, errors) {
-    const {authToken, application, applicationLine} = await this.createApplicationContext(request, {application: true, applicationLine: true})
-    const payment = await Payment.getCardPaymentDetails(authToken, applicationLine.id)
+    const {authToken, application, applicationLineId} = await this.createApplicationContext(request, {application: true})
+    const payment = await Payment.getCardPaymentDetails(authToken, applicationLineId)
 
-    // if (!application.isSubmitted()) {
-    //   return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
-    // } else if (payment && (payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED || application.paymentReceived)) {
-    //   return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
-    // }
+    if (!application.isSubmitted()) {
+      return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
+    } else if ((payment && payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED) || (application && application.paymentReceived)) {
+      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+    }
 
     const paymentStatus = await payment.getCardPaymentResult(authToken)
 

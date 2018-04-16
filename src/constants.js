@@ -461,7 +461,7 @@ Constants.Dynamics = {
     BACS_PAYMENT: 910400005
   },
   PaymentStatusCodes: {
-    ISSUED: 910400001
+    ISSUED: 910400004
   },
   PermitTypes: {
     STANDARD: 910400000,

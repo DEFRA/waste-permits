@@ -116,18 +116,6 @@ lab.experiment(`Your card payment failed page:`, () => {
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)
       })
-
-      lab.test('redirects to error screen when failing to get the applicationLine ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
-        ApplicationLine.getById = () => {
-          throw new Error('read failed')
-        }
-
-        const res = await server.inject(getRequest)
-        Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
-      })
     })
   })
 })
