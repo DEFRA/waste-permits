@@ -12,8 +12,6 @@ module.exports = class CardPaymentController extends BaseController {
 
     if (!application.isSubmitted()) {
       return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
-    } else if ((payment && payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED) || (application && application.paymentReceived)) {
-      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
     const {value = 0} = applicationLine
