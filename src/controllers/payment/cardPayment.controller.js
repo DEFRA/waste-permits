@@ -1,5 +1,6 @@
 'use strict'
 
+const config = require('../../config/config')
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const Payment = require('../../models/payment.model')
@@ -21,14 +22,8 @@ module.exports = class CardPaymentController extends BaseController {
     payment.category = Constants.Dynamics.PAYMENT_CATEGORY
     await payment.save(authToken)
 
-    // TODO remove this - only needed for local dev instead of the returnUrl specified below. This is because
-    // Gov Pay needs an https address to redirect to, otherwise it throws a runtime error
-
-    // let returnUrl = 'http://defra.gov.uk'
-    let returnUrl = `${request.server.info.protocol}://${request.info.host}${Constants.Routes.PAYMENT.PAYMENT_RESULT.path}`
-
-    // Ensure that it redirects back to an https address otherwise the payment will fail
-    returnUrl = returnUrl.replace('http://', 'https://')
+    // Note - Gov Pay needs an https address to redirect to, otherwise it throws a runtime error
+    let returnUrl = `${config.wastePermitsAppUrl}${Constants.Routes.PAYMENT.PAYMENT_RESULT.path}`
 
     LoggingService.logDebug(`Making Gov.UK Pay card payment. Will redirect back to: ${returnUrl}`)
 

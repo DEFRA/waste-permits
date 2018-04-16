@@ -7,6 +7,7 @@ const config = module.exports = {}
 
 config.LOG_LEVEL = process.env.LOG_LEVEL
 
+config.wastePermitsAppUrl = process.env.WASTE_PERMITS_APP_URL || 'https://www.gov.uk'
 config.port = process.env.PORT || 8000
 config.nodeEnvironment = process.env.NODE_ENV || 'PRODUCTION'
 
