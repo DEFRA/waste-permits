@@ -46,7 +46,7 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'deemed-evidence-description',
-      pageHeading: 'Deemed competence or an assessment: upload evidence',
+      pageHeading: 'Deemed competence or an assessment: upload your evidence',
       submitButton: 'Continue'
     }
 
