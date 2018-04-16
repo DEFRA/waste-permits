@@ -53,7 +53,7 @@ lab.experiment('Company Declare Upload Course registration tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'course-registration-description',
-      pageHeading: 'Getting a qualification: upload evidence',
+      pageHeading: 'Getting a qualification: upload your evidence',
       submitButton: 'Continue'
     }
 

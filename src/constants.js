@@ -401,19 +401,19 @@ Constants.Routes = {
   },
   UPLOAD_COURSE_REGISTRATION: {
     path: '/technical-qualification/upload-course-registration',
-    pageHeading: 'Getting a qualification: upload evidence'
+    pageHeading: 'Getting a qualification: upload your evidence'
   },
   UPLOAD_DEEMED_EVIDENCE: {
     path: '/technical-qualification/upload-deemed-evidence',
-    pageHeading: 'Deemed competence or an assessment: upload evidence'
+    pageHeading: 'Deemed competence or an assessment: upload your evidence'
   },
   UPLOAD_ESA_EU_SKILLS: {
     path: '/technical-qualification/upload-esa-eu-skills',
-    pageHeading: 'Energy & Utility Skills / ESA: upload evidence'
+    pageHeading: 'Energy & Utility Skills / ESA: upload your evidence'
   },
   UPLOAD_WAMITAB_QUALIFICATION: {
     path: '/technical-qualification/upload-wamitab-qualification',
-    pageHeading: 'WAMITAB or EPOC: upload evidence'
+    pageHeading: 'WAMITAB or EPOC: upload your evidence'
   },
   VERSION: {
     path: '/version',
