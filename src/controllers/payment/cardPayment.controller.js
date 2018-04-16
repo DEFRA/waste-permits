@@ -12,7 +12,7 @@ module.exports = class CardPaymentController extends BaseController {
 
     if (!application.isSubmitted()) {
       return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
-    } else if (payment && (payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED || application.paymentReceived)) {
+    } else if ((payment && payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED) || (application && application.paymentReceived)) {
       return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
     }
 
@@ -22,10 +22,12 @@ module.exports = class CardPaymentController extends BaseController {
     payment.category = Constants.Dynamics.PAYMENT_CATEGORY
     await payment.save(authToken)
 
-    // TODO remove this - only needed for local dev
-    const returnUrl = 'https://defra.gov.uk'
+    // TODO remove this - only needed for local dev instead of the returnUrl specified below. This is because
+    // Gov Pay needs an https address to redirect to, otherwise it throws a runtime error
 
-    // const returnUrl = `${request.server.info.protocol}://${request.info.host}/pay/result`
+    // const returnUrl = 'https://defra.gov.uk'
+
+    const returnUrl = `${request.server.info.protocol}://${request.info.host}/pay/result`
 
     const govPayUrl = await payment.makeCardPayment(authToken, payment.description, returnUrl)
 
