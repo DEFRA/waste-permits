@@ -3,6 +3,7 @@
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const Payment = require('../../models/payment.model')
+const LoggingService = require('../../services/logging.service')
 
 module.exports = class CardPaymentController extends BaseController {
   async doGet (request, h, errors) {
@@ -24,10 +25,13 @@ module.exports = class CardPaymentController extends BaseController {
     // Gov Pay needs an https address to redirect to, otherwise it throws a runtime error
 
     // const returnUrl = 'https://defra.gov.uk'
-
     const returnUrl = `${request.server.info.protocol}://${request.info.host}${Constants.Routes.PAYMENT.PAYMENT_RESULT.path}`
 
+    LoggingService.logDebug(`Making Gov.UK Pay card payment. Will redirect back to: ${returnUrl}`)
+
     const govPayUrl = await payment.makeCardPayment(authToken, payment.description, returnUrl)
+
+    LoggingService.logDebug(`Gov.UK Pay card payment URL: ${govPayUrl}`)
 
     // Re-direct off to Gov.UK Pay to take the payment
     return this.redirect(request, h, govPayUrl)
