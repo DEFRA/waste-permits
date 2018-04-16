@@ -18,37 +18,42 @@
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
-        <input id="is-complete" type="hidden" name="is-complete" value="{{isComplete}}">
+        <fieldset>
+          <legend class="visually-hidden">{{ pageHeading }}</legend>
 
-        <div class="form-group {{#getFormErrorGroupClass errors.save-and-return-email}}{{/getFormErrorGroupClass}}">
+          <input id="is-complete" type="hidden" name="is-complete" value="{{isComplete}}">
 
-          <div class="form-group {{#getFormErrorGroupClass errors.got-email}}{{/getFormErrorGroupClass}} {{#getFormErrorGroupClass errors.got-email}}{{/getFormErrorGroupClass}}">
-            {{> common/fieldError fieldId='got-email-error' message=errors.got-email }}
+          <div class="form-group {{#getFormErrorGroupClass errors.save-and-return-email}}{{/getFormErrorGroupClass}}">
 
-            <div class="multiple-choice">
-              <input id="got-email" type="radio" name="got-email" value="true" {{#if gotEmail}}checked{{/if}}>
-              <label id="got-email-label" for="got-email">I got the email</label>
-            </div>
+            <div class="form-group {{#getFormErrorGroupClass errors.got-email}}{{/getFormErrorGroupClass}} {{#getFormErrorGroupClass errors.got-email}}{{/getFormErrorGroupClass}}">
+              {{> common/fieldError fieldId='got-email-error' message=errors.got-email }}
 
-            <div class="multiple-choice" data-target="gotEmailD">
-              <input id="not-got-email" type="radio" name="got-email" value="false" {{#if notGotEmail}}checked{{/if}}>
-              <label id="not-got-email-label" for="not-got-email">I can't find the email - resend it</label>
-            </div>
+              <div class="multiple-choice">
+                <input id="got-email" type="radio" name="got-email" value="true" {{#if gotEmail}}checked{{/if}}>
+                <label id="got-email-label" for="got-email">I got the email</label>
+              </div>
 
-            <div class="panel panel-border-narrow js-hidden" id="gotEmailD">
-              <ol id="find-email-list" class="list list-number">
-                <li id="find-email-list-item-1">Check your spam folder.</li>
-                <li id="find-email-list-item-2">Search for 'standard rules permit application' in your emails.</li>
-                <li id="find-email-list-item-3">Wait for a few minutes - email can take a while to arrive.</li>
-                <li id="find-email-list-item-4">Select continue to resend the email.</li>
-              </ol>
+              <div class="multiple-choice" data-target="gotEmailD">
+                <input id="not-got-email" type="radio" name="got-email" value="false" {{#if notGotEmail}}checked{{/if}}>
+                <label id="not-got-email-label" for="not-got-email">I can't find the email - resend it</label>
+              </div>
 
-              <label id="save-and-return-email-label" class="visually-hidden" for="save-and-return-email">Email address to check</label>
-              {{> common/fieldError fieldId='save-and-return-email-error' message=errors.save-and-return-email }}
-              <input type="text" class="form-control form-control-char-35 {{#if errors.save-and-return-email}}form-control-error{{/if}}" id="save-and-return-email" name="save-and-return-email" value="{{ formValues.save-and-return-email }}" />
+              <div class="panel panel-border-narrow js-hidden" id="gotEmailD">
+                <ol id="find-email-list" class="list list-number">
+                  <li id="find-email-list-item-1">Check your spam folder.</li>
+                  <li id="find-email-list-item-2">Search for 'standard rules permit application' in your emails.</li>
+                  <li id="find-email-list-item-3">Wait for a few minutes - email can take a while to arrive.</li>
+                  <li id="find-email-list-item-4">Select continue to resend the email.</li>
+                </ol>
+
+                <label id="save-and-return-email-label" class="visually-hidden" for="save-and-return-email">Email address to check</label>
+                {{> common/fieldError fieldId='save-and-return-email-error' message=errors.save-and-return-email }}
+                <input type="text" class="form-control form-control-char-35 {{#if errors.save-and-return-email}}form-control-error{{/if}}" id="save-and-return-email" name="save-and-return-email" value="{{ formValues.save-and-return-email }}" />
+              </div>
             </div>
           </div>
-        </div>
+        </fieldset>
+
 
         {{> common/submitButton }}
       </form>

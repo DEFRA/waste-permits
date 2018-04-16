@@ -10,7 +10,7 @@
       {{> common/fieldError fieldId=(concat 'director-dob-day-' @index '-error') message=(getErrorMessage this.errors 'director-dob-day-' @index) }}
 
       <input class="form-control sr-company-dob {{getErrorFieldClass this.errors}}" id="{{ concat 'director-dob-day-' @index }}" name="{{ concat 'director-dob-day-' @index }}" type="number"
-        pattern="[0-9][0-9]" min="1" max="31" aria-describedby="sr-dob-month-year" value="{{this.dob.day}}">
+        pattern="[0-9][0-9]" min="1" max="31" aria-describedby="{{ concat 'dob-formatted-month-year-' @index }}" value="{{this.dob.day}}">
 
       <span id="{{ concat 'dob-formatted-month-year-' @index }}" class="sr-dob-month-year">
         {{this.dateOfBirthFormatted}}
