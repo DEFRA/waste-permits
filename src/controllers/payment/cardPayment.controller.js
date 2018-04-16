@@ -24,8 +24,11 @@ module.exports = class CardPaymentController extends BaseController {
     // TODO remove this - only needed for local dev instead of the returnUrl specified below. This is because
     // Gov Pay needs an https address to redirect to, otherwise it throws a runtime error
 
-    // const returnUrl = 'https://defra.gov.uk'
-    const returnUrl = `${request.server.info.protocol}://${request.info.host}${Constants.Routes.PAYMENT.PAYMENT_RESULT.path}`
+    // let returnUrl = 'http://defra.gov.uk'
+    let returnUrl = `${request.server.info.protocol}://${request.info.host}${Constants.Routes.PAYMENT.PAYMENT_RESULT.path}`
+
+    // Ensure that it redirects back to an https address otherwise the payment will fail
+    returnUrl = returnUrl.replace('http://', 'https://')
 
     LoggingService.logDebug(`Making Gov.UK Pay card payment. Will redirect back to: ${returnUrl}`)
 
