@@ -77,6 +77,7 @@ lab.experiment('Save and return confirm page tests:', () => {
         ])
         Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
         Code.expect(doc.getElementById('save-and-return-email-label').getAttribute('aria-describedby')).to.equal('email-hint')
+        Code.expect(doc.getElementById('got-email').getAttribute('value')).to.equal('false')
       })
     })
   })
@@ -90,6 +91,7 @@ lab.experiment('Save and return confirm page tests:', () => {
         url: routePath,
         headers: {},
         payload: {
+          'got-email': 'false',
           'save-and-return-email': fakeApplication.saveAndReturnEmail
         }
       }
@@ -103,24 +105,18 @@ lab.experiment('Save and return confirm page tests:', () => {
 
     lab.experiment('invalid', () => {
       lab.test('when email is not entered', async () => {
-        postRequest.payload = {}
+        delete postRequest.payload['save-and-return-email']
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Enter an email address')
       })
 
       lab.test('when email is not entered', async () => {
-        postRequest.payload = {
-          'save-and-return-email': 'invalid_email_address'
-        }
+        postRequest.payload['save-and-return-email'] = 'invalid_email_address'
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Enter a valid email address')
       })
 
       lab.test('when requesting an email to be sent fails', async () => {
-        postRequest.payload = {
-          'got-email': 'false',
-          'save-and-return-email': 'valid@email.com'
-        }
         Application.prototype.sendSaveAndReturnEmail = () => {
           throw new Error('sendSaveAndReturnEmail failed')
         }

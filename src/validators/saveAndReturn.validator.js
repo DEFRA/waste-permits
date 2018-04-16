@@ -1,7 +1,7 @@
 'use strict'
 
-const Constants = require('../../constants')
-const BaseValidator = require('../base.validator')
+const Constants = require('../constants')
+const BaseValidator = require('./base.validator')
 
 const {EMAIL_VALID_REGEX} = Constants.Validation
 
@@ -16,6 +16,7 @@ module.exports = class SaveAndReturnConfirmValidator extends BaseValidator {
       'save-and-return-email': {
         'custom.required': `Enter an email address`,
         'custom.invalid': `Enter a valid email address`,
+        'custom.missing': `We can’t find any current applications for that email. Please check the email address.`,
         'custom.failed': `Sorry, we can’t send emails just now. This is a technical fault and we have been notified. Please try the service again later.`
       }
     }

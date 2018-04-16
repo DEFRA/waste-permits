@@ -9,7 +9,7 @@ module.exports = [{
     handler: {
       directory: {
         path: 'public/',
-        listing: true
+        listing: false
       }
     },
     // Tag so we can suppress public assets in the log

@@ -15,6 +15,7 @@ let sandbox
 
 const routePath = '/start/start-or-open-saved'
 const nextRoutePath = '/permit-holder/type'
+const checkEmailRoutePath = '/save-return/search-your-email'
 
 const getRequest = {
   method: 'GET',
@@ -55,33 +56,31 @@ lab.experiment('Start or Open Saved page tests:', () => {
     excludeCookiePostTests: true,
     excludeAlreadySubmittedTest: true})
 
+  const checkCommonElements = async (doc) => {
+    Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a standard rules waste permit')
+    Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+    Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
+
+    // Test for the existence of expected static content
+    GeneralTestHelper.checkElementsExist(doc, [
+      'legend',
+      'start-application',
+      'start-application-label',
+      'open-application',
+      'open-application-label'])
+  }
+
   lab.experiment('General page tests:', () => {
     lab.test('The page should NOT have a back link', async () => {
       const doc = await GeneralTestHelper.getDoc(getRequest)
-
-      let element = doc.getElementById('back-link')
-      Code.expect(element).to.not.exist()
+      Code.expect(doc.getElementById('back-link')).to.not.exist()
     })
   })
 
   lab.experiment('GET:', () => {
     lab.test('GET returns the Start or Open Saved page correctly', async () => {
       const doc = await GeneralTestHelper.getDoc(postRequest)
-
-      let element = doc.getElementById('page-heading').firstChild
-      // For MVP we are only supporting the mobile plant standard rules waste permit
-      // Code.expect(element.nodeValue).to.equal('Apply for a standard rules waste permit')
-      Code.expect(element.nodeValue).to.equal('Apply for a mobile plant standard rules waste permit')
-
-      element = doc.getElementById('start-application')
-      Code.expect(element).to.exist()
-
-      // For MVP we will not be opening an existing application
-      // element = doc.getElementById('open-application')
-      // Code.expect(element).to.exist()
-
-      element = doc.getElementById('submit-button').firstChild
-      Code.expect(element.nodeValue).to.equal('Continue')
+      await checkCommonElements(doc)
     })
   })
 
@@ -101,28 +100,14 @@ lab.experiment('Start or Open Saved page tests:', () => {
       }
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/save-and-return/check-your-email')
+      Code.expect(res.headers['location']).to.equal(checkEmailRoutePath)
     })
 
-    // For MVP the validator will always pass
-    // lab.test('POST Start or Open Saved page shows the error message summary panel when new or open has not been selected', async () => {
-    //   postRequest.payload = {}
-    //   const res = await server.inject(postRequest)
-    //   Code.expect(res.statusCode).to.equal(200)
-    //
-    //   const parser = new DOMParser()
-    //   const doc = parser.parseFromString(res.payload, 'text/html')
-    //
-    //   let element
-    //   let errorMessage = 'Select start new or open a saved application'
-    //
-    //   // Panel summary error item
-    //   element = doc.getElementById('error-summary-list-item-0').firstChild
-    //   Code.expect(element.nodeValue).to.equal(errorMessage)
-    //
-    //   // Site name field error
-    //   element = doc.getElementById('started-application-error').firstChild
-    //   Code.expect(element.nodeValue).to.equal(errorMessage)
-    // })
+    lab.test('POST Start or Open Saved page shows the error message summary panel when new or open has not been selected', async () => {
+      postRequest.payload = {}
+      const doc = await GeneralTestHelper.getDoc(postRequest)
+      await checkCommonElements(doc)
+      await GeneralTestHelper.checkValidationMessage(doc, 'started-application', 'Select start new or open a saved application')
+    })
   })
 })

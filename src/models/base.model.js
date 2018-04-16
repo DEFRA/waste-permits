@@ -225,7 +225,7 @@ module.exports = class BaseModel {
     const className = this.constructor.name
 
     // Properties
-    const model = Object.assign({}, this)
+    const model = {...this}
     let properties = JSON.stringify(model).replace(/{/g, '{\n  ')
     properties = properties.replace(/}/g, '\n}')
     properties = properties.replace(/,/g, ', ')

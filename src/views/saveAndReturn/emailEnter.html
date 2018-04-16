@@ -18,6 +18,8 @@
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
+        <input id="got-email" type="hidden" name="got-email" value="false">
+
         <div class="form-group {{#getFormErrorGroupClass errors.save-and-return-email}}{{/getFormErrorGroupClass}}">
           <label id="save-and-return-email-label" class="form-label" for="save-and-return-email">Your email address</label>
           {{> common/fieldError fieldId='save-and-return-email-error' message=errors.save-and-return-email }}

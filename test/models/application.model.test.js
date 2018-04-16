@@ -20,12 +20,62 @@ const authToken = 'THE_AUTH_TOKEN'
 
 const fakeApplicationData = {
   accountId: 'ACCOUNT_ID',
-  applicationNumber: 'APPLICATION_NUMBER'
+  agentId: 'AGENT_ID',
+  applicationName: 'APPLICATION_NAME',
+  applicationNumber: 'APPLICATION_NUMBER',
+  bankruptcy: 'BANKRUPTCY',
+  bankruptcyDetails: 'BANKRUPTCY_DETAILS',
+  confidentiality: 'CONFIDENTIALITY',
+  confidentialityDetails: 'CONFIDENTIALITY_DETAILS',
+  contactId: 'CONTACT_ID',
+  declaration: true,
+  id: testApplicationId,
+  paymentReceived: 'PAYMENT_RECEIVED',
+  regime: 910400000,
+  relevantOffences: 'RELEVANT_OFFENCES',
+  relevantOffencesDetails: 'RELEVANT_OFFENCES_DETAILS',
+  source: 910400000,
+  statusCode: 'STATUS_CODE',
+  technicalQualification: 'TECHNICAL_QUALIFICATIONS',
+  tradingName: 'TRADING_NAME',
+  saveAndReturnEmail: 'fake@email.com'
 }
 const fakeApplicationReturnData = {
   applicationId: testApplicationId,
   slug: fakeSlug
 }
+
+const fakeApplicationDynamicsRecord = (options = {}) => {
+  const application = Object.assign({}, fakeApplicationData, options)
+  return {
+    _defra_customerid_value: application.accountId,
+    _defra_agentid_value: application.agentId,
+    defra_name: application.applicationName,
+    defra_applicationnumber: application.applicationNumber,
+    defra_bankruptcydeclaration: application.bankruptcy,
+    defra_bankruptcydeclarationdetails: application.bankruptcyDetails,
+    defra_confidentialitydeclaration: application.confidentiality,
+    defra_confidentialitydeclarationdetails: application.confidentialityDetails,
+    _defra_primarycontactid_value: application.contactId,
+    defra_applicationdeclaration: application.declaration,
+    defra_applicationid: application.id,
+    defra_paymentreceived: application.paymentReceived,
+    defra_regime: application.regime,
+    defra_convictionsdeclaration: application.relevantOffences,
+    defra_convictionsdeclarationdetails: application.relevantOffencesDetails,
+    defra_source: application.source,
+    statuscode: application.statusCode,
+    defra_technicalability: application.technicalQualification,
+    defra_tradingname: application.tradingName,
+    defra_saveandreturnemail: application.saveAndReturnEmail
+  }
+}
+
+const applicationNumbers = ['APPLICATION_NUMBER_1', 'APPLICATION_NUMBER_2', 'APPLICATION_NUMBER_3']
+const dynamicsApplicationList = [
+  fakeApplicationDynamicsRecord({applicationNumber: applicationNumbers[0]}),
+  fakeApplicationDynamicsRecord({applicationNumber: applicationNumbers[1]}),
+  fakeApplicationDynamicsRecord({applicationNumber: applicationNumbers[2]})]
 
 lab.beforeEach(() => {
   testApplication = new Application(fakeApplicationData)
@@ -63,6 +113,21 @@ lab.experiment('Application Model tests:', () => {
     Code.expect(application.id).to.equal(testApplicationId)
   })
 
+  lab.test('listBySaveAndReturnEmail() method correctly retrieves a list of unsubmitted applications Application objects filtered by ', async () => {
+    DynamicsDalService.prototype.search = () => {
+      return {
+        value: dynamicsApplicationList
+      }
+    }
+    const applicationList = await Application.listBySaveAndReturnEmail('AUTH_TOKEN', fakeApplicationData.saveAndReturnEmail)
+    Code.expect(Array.isArray(applicationList)).to.be.true()
+    Code.expect(applicationList.length).to.equal(3)
+    applicationList.forEach((application, index) => {
+      const testApplication = Object.assign({}, fakeApplicationData, {applicationNumber: applicationNumbers[index]})
+      Code.expect(application).to.equal(testApplication)
+    })
+  })
+
   lab.test('sendSaveAndReturnEmail() method correctly initiates an email call action', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
     const logSpy = sinon.spy(LoggingService, 'logDebug')
@@ -72,8 +137,20 @@ lab.experiment('Application Model tests:', () => {
     Code.expect(logSpy.calledWith(`Save and Return Url for Application "${fakeApplicationData.applicationNumber}": ${fakeOrigin}/r/${fakeSlug}`)).to.equal(true)
   })
 
+  lab.test('sendAllRecoveryEmails() method correctly initiates an email call action for each application', async () => {
+    DynamicsDalService.prototype.search = () => {
+      return {
+        value: dynamicsApplicationList
+      }
+    }
+    const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
+    await Application.sendAllRecoveryEmails('AUTH_TOKEN', fakeOrigin, fakeApplicationData.saveAndReturnEmail)
+    Code.expect(spy.callCount).to.equal(dynamicsApplicationList.length)
+  })
+
   lab.test('save() method saves a new Application object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    delete testApplication.id
     await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
@@ -81,7 +158,6 @@ lab.experiment('Application Model tests:', () => {
 
   lab.test('save() method updates an existing Application object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-    testApplication.id = testApplicationId
     await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
