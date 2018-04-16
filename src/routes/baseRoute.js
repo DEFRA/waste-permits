@@ -1,4 +1,5 @@
 const Merge = require('deepmerge')
+const Constants = require('../constants')
 
 class Route {
   static GET (controller, validator) {
@@ -9,12 +10,8 @@ class Route {
       options: {
         description: `The GET ${controller.route.pageHeading} page`,
         bind: controller,
-        cache: {
-          privacy: 'private',
-          statuses: [200],
-          expiresIn: 0,
-          otherwise: 'no-cache'
-        }
+        cache: Constants.CacheOptions,
+        security: Constants.SecurityOptions
       }
     }
     if (validator) {
@@ -33,7 +30,9 @@ class Route {
       handler: controller.handler,
       options: {
         description: `The POST ${controller.route.pageHeading} page`,
-        bind: controller
+        bind: controller,
+        cache: Constants.CacheOptions,
+        security: Constants.SecurityOptions
       }
     }
     if (validator && validator.getFormValidators) {

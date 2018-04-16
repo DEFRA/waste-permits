@@ -20,7 +20,8 @@ const crumbOptions = {
   // <input type="hidden" name="crumb" value="{{pageContext.crumbKey}}">  we'll
   // just get the string value 'DefraCsrfToken`.
   key: 'DefraCsrfToken',
-  cookieOptions: cookieConfig.options
+  cookieOptions: cookieConfig.options,
+  autoGenerate: true
 }
 
 // Don't require CSRF tokens when running tests

@@ -14,6 +14,20 @@ Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 Constants.MAX_FILE_SIZE = 31457280 // 30MB
 Constants.SAVE_AND_RETURN_URL = '/r'
 
+Constants.DEFAULT_UPLOAD_OPTIONS = {
+  maxSize: '30MB',
+  fileTypes: [
+    {type: 'PDF', mimeType: 'application/pdf'},
+    {type: 'DOC', mimeType: 'application/msword'},
+    {type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'},
+    {type: 'XLS', mimeType: 'application/vnd.ms-excel'},
+    {type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'},
+    {type: 'JPG', mimeType: 'image/jpeg'},
+    {type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text'},
+    {type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet'}
+  ]
+}
+
 Constants.Errors = {
   REQUEST_ENTITY_TOO_LARGE: 413
 }
@@ -110,6 +124,7 @@ Constants.COOKIE_KEY = {
   PERMIT_HOLDER_TYPE: 'permitHolderType',
   STANDARD_RULE_ID: 'standardRuleId',
   STANDARD_RULE_TYPE_ID: 'standardRuleTypeId',
+  SAVE_AND_RETURN_EMAIL: 'saveAndReturnEmail',
   EXPIRY: 'expiry'
 }
 
@@ -168,9 +183,9 @@ Constants.Routes = {
     taskListHeading: 'Send application and pay'
   },
   CHECK_YOUR_EMAIL: {
-    path: '/save-and-return/check-your-email',
-    pageHeading: `Search for 'standard rules permit application' in your email`,
-    taskListHeading: `Search for 'standard rules permit application' in your email`
+    path: '/save-return/check-your-email',
+    pageHeading: 'Check your email',
+    taskListHeading: 'Check your email'
   },
   COMPANY_CHECK_NAME: {
     path: '/permit-holder/company/check-name',
@@ -351,6 +366,11 @@ Constants.Routes = {
     pageHeading: 'Save your application',
     taskListHeading: 'Set up save and return for your application'
   },
+  SEARCH_YOUR_EMAIL: {
+    path: '/save-return/search-your-email',
+    pageHeading: 'Search for ’standard rules permit application’ in your emails',
+    taskListHeading: 'Search for ’standard rules permit application’ in your emails'
+  },
   SITE_GRID_REFERENCE: {
     path: '/site/grid-reference',
     pageHeading: `What's the grid reference for the centre of the site?`
@@ -367,9 +387,7 @@ Constants.Routes = {
   },
   START_OR_OPEN_SAVED: {
     path: `/start/start-or-open-saved`,
-    // For MVP we are only supporting the mobile plant standard rules waste permit
-    // pageHeading: 'Apply for a standard rules waste permit'
-    pageHeading: 'Apply for a mobile plant standard rules waste permit'
+    pageHeading: 'Apply for a standard rules waste permit'
   },
   TASK_LIST: {
     path: '/task-list',
@@ -562,6 +580,20 @@ Constants.UploadSubject = {
 Constants.CookieValue = {
   INVOICE_POSTCODE: 'INVOICE_POSTCODE',
   SITE_POSTCODE: 'SITE_POSTCODE'
+}
+
+Constants.CacheOptions = {
+  privacy: 'private',
+  statuses: [200],
+  expiresIn: 0,
+  otherwise: 'no-cache'
+}
+
+Constants.SecurityOptions = {
+  hsts: {
+    includeSubDomains: true,
+    preload: true
+  }
 }
 
 Constants.buildPageTitle = (pageHeading) => {

@@ -99,7 +99,7 @@ module.exports = class UploadTestHelper {
 
       lab.test('when there are no annotations', async () => {
         const doc = await getDoc(options)
-        Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal('PDF or JPG')
+        Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal('PDF, DOC, DOCX, XLS, XLSX, JPG, ODT or ODS')
         Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
         Code.expect(doc.getElementById('has-annotations')).to.not.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.exist()
@@ -223,7 +223,7 @@ module.exports = class UploadTestHelper {
       lab.test('when invalid content type', async () => {
         const req = this._uploadRequest({contentType: 'application/octet-stream'})
         const doc = await GeneralTestHelper.getDoc(req)
-        checkExpectedErrors(doc, 'You can only upload PDF or JPG files')
+        checkExpectedErrors(doc, 'You can only upload PDF, DOC, DOCX, XLS, XLSX, JPG, ODT or ODS files')
       })
 
       lab.test('when duplicate file', async () => {

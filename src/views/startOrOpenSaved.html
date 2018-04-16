@@ -9,31 +9,22 @@
 
       {{> common/pageHeading pageHeading }}
 
-      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <fieldset>
-          <legend class="visuallyhidden">{{ pageHeading }}</legend>
-
-          <div class="panel panel-border-wide form-group">
-            <p>You'll need a debit or credit card to pay the application cost. This is between £{{ cost.lower }} and £{{ cost.upper }}, depending on the permit.</p>
-          </div>
+          <legend id="legend" class="visuallyhidden">Start new or open a saved application</legend>
 
           <div id="started-application" class="form-group {{#getFormErrorGroupClass errors.started-application}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='started-application-error' message=errors.started-application }}
 
             <div class="multiple-choice">
               <input id="start-application" type="radio" name="started-application" value="new">
-              <label for="start-application">
-              Start a new application
-              <span class="form-hint">We'll send you a link so you can save and return later</span>
-              </label>
+              <label id="start-application-label" for="start-application">Start a new application</label>
             </div>
             <div class="multiple-choice">
               <input id="open-application" type="radio" name="started-application" value="open">
-              <label for="open-application">
-              Open a saved application
-              </label>
+              <label id="open-application-label" for="open-application">Open a saved application</label>
             </div>
           </div>
         </fieldset>

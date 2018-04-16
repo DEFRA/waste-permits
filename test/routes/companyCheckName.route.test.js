@@ -91,6 +91,7 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
       'enter-different-number-company-exists-link',
       'company-name',
       'company-address',
+      'check-company-address',
       'not-the-registered-office-details',
       'not-the-registered-office-panel',
       'not-the-registered-office-link',

@@ -20,6 +20,22 @@ class ApplicationReturn extends BaseModel {
     ]
   }
 
+  static async getByApplicationId (authToken, applicationId) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const filter = `_defra_application_value eq ${applicationId}`
+    const query = `defra_saveandreturns?$select=${ApplicationReturn.selectedDynamicsFields()}&$filter=${filter}`
+    try {
+      const response = await dynamicsDal.search(query)
+      const result = response && response.value ? response.value.pop() : undefined
+      if (result) {
+        return ApplicationReturn.dynamicsToModel(result)
+      }
+    } catch (error) {
+      LoggingService.logError(`Unable to get ApplicationReturn by Application ID(${applicationId}): ${error}`)
+      throw error
+    }
+  }
+
   static async getBySlug (authToken, slug) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const filter = `defra_suffix eq '${slug}'`

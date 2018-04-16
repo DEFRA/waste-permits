@@ -47,7 +47,7 @@ module.exports = class EmailSentController extends BaseController {
           application.saveAndReturnEmail = request.payload['save-and-return-email']
           await application.save(authToken)
           try {
-            await application.sendSaveAndReturnEmail(authToken)
+            await application.sendSaveAndReturnEmail(authToken, request.headers.origin)
           } catch (err) {
             return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
           }

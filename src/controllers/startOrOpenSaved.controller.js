@@ -16,10 +16,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    // For MVP we are only supporting the mobile plant standard rules waste permit
-    // return this.showView(request, h, 'startOrOpenSaved', pageContext)
-
-    return this.showView(request, h, 'startOrOpenSavedMobile', pageContext)
+    return this.showView(request, h, 'startOrOpenSaved', pageContext)
   }
 
   async doPost (request, h, errors) {
@@ -41,7 +38,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
       nextPage = Constants.Routes.PERMIT_HOLDER_TYPE
     } else {
-      nextPage = Constants.Routes.CHECK_YOUR_EMAIL
+      nextPage = Constants.Routes.SEARCH_YOUR_EMAIL
     }
 
     return this.redirect(request, h, nextPage.path, cookie)

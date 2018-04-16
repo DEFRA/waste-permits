@@ -7,33 +7,40 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 const server = require('../../../server')
 
 const Application = require('../../../src/models/application.model')
-const SaveAndReturn = require('../../../src/models/taskList/saveAndReturn.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
+let fakeEmail
 let fakeApplication
+let numberOfMatchingEmails
 let sandbox
 
-module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
+module.exports = (lab, {routePath, nextPath, errorPath, pageHeading}) => {
   lab.beforeEach(() => {
+    fakeEmail = 'valid@email.com'
+
     fakeApplication = {
       id: 'APPLICATION_ID',
-      saveAndReturnEmail: 'valid@email.com'
+      saveAndReturnEmail: fakeEmail
     }
+
+    numberOfMatchingEmails = 10
 
     // Create a sinon sandbox to stub methods
     sandbox = sinon.createSandbox()
+
+    // Stub cookies
+    GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
+      'saveAndReturnEmail': () => fakeEmail
+    })
 
     // Stub methods
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(LoggingService, 'logError').value(() => {})
     sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-    sandbox.stub(Application.prototype, 'sendSaveAndReturnEmail').value(() => {})
+    sandbox.stub(Application, 'sendAllRecoveryEmails').value(() => numberOfMatchingEmails)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(Application.prototype, 'save').value(() => {})
-    sandbox.stub(SaveAndReturn, 'isComplete').value(() => false)
-    sandbox.stub(SaveAndReturn, 'updateCompleteness').value(() => {})
   })
 
   lab.afterEach(() => {
@@ -41,25 +48,27 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
     sandbox.restore()
   })
 
-  lab.experiment('Save and return email sent check page tests:', () => {
-    new GeneralTestHelper(lab, routePath).test()
+  lab.experiment(`Check your email: Search for 'standard rules permit application' in your email page tests:`, () => {
+    new GeneralTestHelper(lab, routePath).test({
+      excludeCookieGetTests: true,
+      excludeCookiePostTests: true,
+      excludeAlreadySubmittedTest: true
+    })
 
     const checkCommonElements = async (doc) => {
       GeneralTestHelper.checkElementsExist(doc, [
         'back-link',
-        'email-sent-paragraph-1',
-        'email-sent-paragraph-2',
+        'email-hint',
+        'email-summary',
         'save-and-return-email-label',
         'find-email-list-item-1',
         'find-email-list-item-2',
         'find-email-list-item-3',
         'find-email-list-item-4'
       ])
-      Code.expect(doc.getElementById('not-got-email').getAttribute('checked')).to.equal('')
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(pageHeading)
-      Code.expect(doc.getElementById('email-sent').firstChild.nodeValue).to.equal(fakeApplication.saveAndReturnEmail)
-      Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
-      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Resend email')
+      Code.expect(doc.getElementById('got-email').getAttribute('value')).to.equal('false')
     }
 
     lab.experiment(`GET ${routePath}`, () => {
@@ -74,17 +83,17 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
       })
 
       lab.experiment('success', () => {
-        lab.test('when complete', async () => {
-          SaveAndReturn.isComplete = () => true
+        lab.test('when email is saved in the cookie', async () => {
           const doc = await GeneralTestHelper.getDoc(getRequest)
           await checkCommonElements(doc)
-          Code.expect(doc.getElementById('got-email').getAttribute('checked')).to.equal('checked')
+          Code.expect(doc.getElementById('email-sent-paragraph')).to.exist()
         })
 
-        lab.test('when not complete', async () => {
+        lab.test('when email is not saved in the cookie', async () => {
+          fakeEmail = ''
           const doc = await GeneralTestHelper.getDoc(getRequest)
           await checkCommonElements(doc)
-          Code.expect(doc.getElementById('got-email').getAttribute('checked')).to.equal('')
+          Code.expect(doc.getElementById('email-link-paragraph')).to.exist()
         })
       })
     })
@@ -106,16 +115,10 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
       lab.test('success', async () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers['location']).to.equal(nextPath)
       })
 
       lab.experiment('invalid', () => {
-        lab.test('when either got email or email is missing are not selected', async () => {
-          postRequest.payload = {}
-          const doc = await GeneralTestHelper.getDoc(postRequest)
-          await GeneralTestHelper.checkValidationMessage(doc, 'got-email', 'Select you got the email or can’t find it')
-        })
-
         lab.test('when email is not entered', async () => {
           postRequest.payload = {
             'got-email': 'false'
@@ -138,54 +141,24 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
             'got-email': 'false',
             'save-and-return-email': 'valid@email.com'
           }
-          Application.prototype.sendSaveAndReturnEmail = () => {
-            throw new Error('sendSaveAndReturnEmail failed')
+          Application.sendAllRecoveryEmails = () => {
+            throw new Error('sendAllRecoveryEmails failed')
           }
 
           const doc = await GeneralTestHelper.getDoc(postRequest)
           await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Sorry, we can’t send emails just now. This is a technical fault and we have been notified. Please try the service again later.')
         })
-      })
 
-      lab.experiment('failure', () => {
-        lab.test('redirects to error screen when failing to get the application ID', async () => {
-          const spy = sinon.spy(LoggingService, 'logError')
-          Application.getById = () => {
-            throw new Error('read failed')
-          }
-
-          const res = await server.inject(postRequest)
-          Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
-        })
-
-        lab.test('redirects to error screen when save fails', async () => {
+        lab.test('when no matching applications are found for the entered email', async () => {
           postRequest.payload = {
             'got-email': 'false',
             'save-and-return-email': 'valid@email.com'
           }
-          const spy = sinon.spy(LoggingService, 'logError')
-          Application.prototype.save = () => {
-            throw new Error('save failed')
-          }
 
-          const res = await server.inject(postRequest)
-          Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
-        })
+          numberOfMatchingEmails = 0
 
-        lab.test('redirects to error screen when updateCompletenesss fails', async () => {
-          const spy = sinon.spy(LoggingService, 'logError')
-          SaveAndReturn.updateCompleteness = () => {
-            throw new Error('update failed')
-          }
-
-          const res = await server.inject(postRequest)
-          Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
+          const doc = await GeneralTestHelper.getDoc(postRequest)
+          await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'We can’t find any current applications for that email. Please check the email address.')
         })
       })
     })
