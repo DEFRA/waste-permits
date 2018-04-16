@@ -162,14 +162,6 @@ Constants.Routes = {
     path: '/start/apply-offline',
     pageHeading: `Apply for {{{chosenOption}}}`
   },
-  BACS_PAYMENT: {
-    path: '/pay/bacs',
-    pageHeading: 'You’ve chosen to pay by bank transfer using Bacs'
-  },
-  CARD_PAYMENT: {
-    path: '/pay/card',
-    pageHeading: '*******************'
-  },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',
     pageHeading: 'Check your answers',
@@ -291,9 +283,26 @@ Constants.Routes = {
     pageHeading: 'Which management system will you use?',
     taskListHeading: 'Tell us which management system you use'
   },
-  PAY_TYPE: {
-    path: '/pay/type',
-    pageHeading: 'How do you want to pay?'
+  PAYMENT: {
+    BACS_PAYMENT: {
+      path: '/pay/bacs',
+      pageHeading: 'You’ve chosen to pay by bank transfer using Bacs'
+    },
+    CARD_PAYMENT: {
+      path: '/pay/card'
+    },
+    CARD_PROBLEM: {
+      path: '/pay/card-problem',
+      pageHeading: 'Your card payment failed'
+    },
+    PAYMENT_RESULT: {
+      path: '/pay/result',
+      pageHeading: 'Your card payment failed'
+    },
+    PAYMENT_TYPE: {
+      path: '/pay/type',
+      pageHeading: 'How do you want to pay?'
+    }
   },
   PERMIT_CATEGORY: {
     path: '/permit/category',
