@@ -11,14 +11,14 @@ module.exports = class ConfirmRulesController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     pageContext.guidanceUrl = standardRule.guidanceUrl
     pageContext.code = standardRule.code
     pageContext.isComplete = await ConfirmRules.isComplete(authToken, application.id, applicationLineId)
 
-    return this.showView(request, h, 'confirmRules', pageContext)
+    return this.showView({request, h, viewPath: 'confirmRules', pageContext})
   }
 
   async doPost (request, h) {
@@ -26,6 +26,6 @@ module.exports = class ConfirmRulesController extends BaseController {
 
     await ConfirmRules.updateCompleteness(authToken, applicationId, applicationLineId)
 
-    return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
+    return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
   }
 }

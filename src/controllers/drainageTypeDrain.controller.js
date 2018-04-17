@@ -11,14 +11,14 @@ module.exports = class DrainageTypeDrainController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     pageContext.guidanceUrl = standardRule.guidanceUrl
     pageContext.code = standardRule.code
     pageContext.isComplete = await DrainageTypeDrain.isComplete(authToken, application.id, applicationLineId)
 
-    return this.showView(request, h, 'drainageTypeDrain', pageContext)
+    return this.showView({request, h, viewPath: 'drainageTypeDrain', pageContext})
   }
 
   async doPost (request, h) {
@@ -26,6 +26,6 @@ module.exports = class DrainageTypeDrainController extends BaseController {
 
     await DrainageTypeDrain.updateCompleteness(authToken, applicationId, applicationLineId)
 
-    return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
+    return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
   }
 }

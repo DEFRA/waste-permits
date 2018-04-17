@@ -9,11 +9,11 @@ module.exports = class WasteRecoveryPlanController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     pageContext.formValues = request.payload
-    return this.showView(request, h, 'wasteRecoveryPlan', pageContext)
+    return this.showView({request, h, viewPath: 'wasteRecoveryPlan', pageContext})
   }
 
   async doPost (request, h, errors) {

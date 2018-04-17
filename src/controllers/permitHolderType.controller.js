@@ -16,12 +16,12 @@ module.exports = class PermitHolderTypeController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     pageContext.holderTypes = PermitHolderTypeController.getHolderTypes()
 
-    return this.showView(request, h, 'permitHolderType', pageContext)
+    return this.showView({request, h, viewPath: 'permitHolderType', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -41,11 +41,11 @@ module.exports = class PermitHolderTypeController extends BaseController {
       if (permitHolder) {
         CookieService.set(request, PERMIT_HOLDER_TYPE, permitHolder)
         if (permitHolder.canApplyOnline) {
-          return this.redirect(request, h, Constants.Routes.PERMIT_CATEGORY.path)
+          return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_CATEGORY.path})
         }
       }
 
-      return this.redirect(request, h, Constants.Routes.APPLY_OFFLINE.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.APPLY_OFFLINE.path})
     }
   }
 }

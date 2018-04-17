@@ -18,7 +18,7 @@ module.exports = class CompanyTypeController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -26,7 +26,7 @@ module.exports = class CompanyTypeController extends BaseController {
     const companyType = company ? Constants.Company.Type[company.type] : undefined
 
     if (!companyType) {
-      return this.redirect(request, h, Constants.Routes.COMPANY_CHECK_STATUS.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_CHECK_STATUS.path})
     }
 
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({
@@ -38,6 +38,6 @@ module.exports = class CompanyTypeController extends BaseController {
     pageContext.companyType = companyType
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return this.showView(request, h, 'companyCheckType', pageContext)
+    return this.showView({request, h, viewPath: 'companyCheckType', pageContext})
   }
 }

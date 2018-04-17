@@ -11,7 +11,7 @@ module.exports = class SiteGridReferenceController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -22,7 +22,7 @@ module.exports = class SiteGridReferenceController extends BaseController {
         'site-grid-reference': await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
       }
     }
-    return this.showView(request, h, 'siteGridReference', pageContext)
+    return this.showView({request, h, viewPath: 'siteGridReference', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -34,7 +34,7 @@ module.exports = class SiteGridReferenceController extends BaseController {
       await SiteNameAndLocation.saveGridReference(request, request.payload['site-grid-reference'],
         authToken, applicationId, applicationLineId)
 
-      return this.redirect(request, h, Constants.Routes.ADDRESS.POSTCODE_SITE.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ADDRESS.POSTCODE_SITE.path})
     }
   }
 }

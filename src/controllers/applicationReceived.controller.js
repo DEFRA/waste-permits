@@ -42,10 +42,10 @@ module.exports = class ApplicationReceivedController extends BaseController {
     }
 
     if (bacsPayment || cardPayment || application.isPaid()) {
-      return this.showView(request, h, 'applicationReceived', pageContext)
+      return this.showView({request, h, viewPath: 'applicationReceived', pageContext})
     } else {
       // If the application has not been paid for
-      return this.redirect(request, h, Constants.Routes.ERROR.NOT_PAID.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_PAID.path})
     }
   }
 }

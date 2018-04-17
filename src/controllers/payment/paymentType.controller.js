@@ -10,7 +10,7 @@ module.exports = class PaymentTypeController extends BaseController {
     const {application, applicationLine} = await this.createApplicationContext(request, {application: true, applicationLine: true})
 
     if (!application.isSubmitted()) {
-      return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_SUBMITTED.path})
     }
 
     if (request.payload) {
@@ -29,7 +29,7 @@ module.exports = class PaymentTypeController extends BaseController {
 
     pageContext.cost = value.toLocaleString()
 
-    return this.showView(request, h, 'payment/paymentType', pageContext)
+    return this.showView({request, h, viewPath: 'payment/paymentType', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -48,7 +48,7 @@ module.exports = class PaymentTypeController extends BaseController {
         default:
           throw new Error(`Unexpected payment type (${paymentType})`)
       }
-      return this.redirect(request, h, nextPath)
+      return this.redirect({request, h, redirectPath: nextPath})
     }
   }
 }

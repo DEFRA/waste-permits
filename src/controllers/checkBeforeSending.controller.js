@@ -66,14 +66,14 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
     // If the task list is not complete then redirect back to it and show a validation error
     if (!isComplete) {
-      return this.redirect(request, h, `${Constants.Routes.TASK_LIST.path}?showError=true`)
+      return this.redirect({request, h, redirectPath: `${Constants.Routes.TASK_LIST.path}?showError=true`})
     }
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     } else {
-      return this.showView(request, h, 'checkBeforeSending', pageContext)
+      return this.showView({request, h, viewPath: 'checkBeforeSending', pageContext})
     }
   }
 
@@ -84,6 +84,6 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     application.statusCode = Constants.Dynamics.StatusCode.APPLICATION_RECEIVED
     await application.save(authToken)
 
-    return this.redirect(request, h, Constants.Routes.PAYMENT.PAYMENT_TYPE.path)
+    return this.redirect({request, h, redirectPath: Constants.Routes.PAYMENT.PAYMENT_TYPE.path})
   }
 }

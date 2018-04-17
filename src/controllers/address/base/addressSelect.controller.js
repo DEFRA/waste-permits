@@ -12,7 +12,7 @@ module.exports = class AddressSelectController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     let addresses, address
@@ -49,7 +49,7 @@ module.exports = class AddressSelectController extends BaseController {
     pageContext.changePostcodeLink = this.getPostcodeRoute()
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return this.showView(request, h, 'address/selectAddress', pageContext)
+    return this.showView({request, h, viewPath: 'address/selectAddress', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -64,7 +64,7 @@ module.exports = class AddressSelectController extends BaseController {
       }
       await this.getModel().saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
 
-      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
     }
   }
 }

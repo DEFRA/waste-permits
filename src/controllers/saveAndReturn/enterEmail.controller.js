@@ -11,12 +11,12 @@ module.exports = class EnterEmailController extends BaseController {
 
     const isComplete = await SaveAndReturn.isComplete(authToken, applicationId, applicationLineId)
     if (isComplete) {
-      return this.redirect(request, h, Constants.Routes.SAVE_AND_RETURN_COMPLETE.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.SAVE_AND_RETURN_COMPLETE.path})
     }
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -27,7 +27,7 @@ module.exports = class EnterEmailController extends BaseController {
         'save-and-return-email': application.saveAndReturnEmail
       }
     }
-    return this.showView(request, h, 'saveAndReturn/emailEnter', pageContext)
+    return this.showView({request, h, viewPath: 'saveAndReturn/emailEnter', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -39,7 +39,7 @@ module.exports = class EnterEmailController extends BaseController {
 
       await application.save(authToken)
 
-      return this.redirect(request, h, Constants.Routes.SAVE_AND_RETURN_CONFIRM.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.SAVE_AND_RETURN_CONFIRM.path})
     }
   }
 }

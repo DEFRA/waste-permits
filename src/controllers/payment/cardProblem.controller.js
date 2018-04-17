@@ -10,7 +10,7 @@ module.exports = class CardProblemController extends BaseController {
     const {application} = await this.createApplicationContext(request, {application: true})
 
     if (!application.isSubmitted()) {
-      return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_SUBMITTED.path})
     }
 
     pageContext.urls = {
@@ -18,6 +18,6 @@ module.exports = class CardProblemController extends BaseController {
       bacsPayment: Constants.Routes.PAYMENT.BACS_PAYMENT.path
     }
 
-    return this.showView(request, h, 'payment/cardProblem', pageContext)
+    return this.showView({request, h, viewPath: 'payment/cardProblem', pageContext})
   }
 }

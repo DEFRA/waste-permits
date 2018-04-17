@@ -11,7 +11,7 @@ module.exports = class AddressManualController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -39,7 +39,7 @@ module.exports = class AddressManualController extends BaseController {
       }
     }
 
-    return this.showView(request, h, 'address/manualEntry', pageContext)
+    return this.showView({request, h, viewPath: 'address/manualEntry', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -58,7 +58,7 @@ module.exports = class AddressManualController extends BaseController {
 
       await this.getModel().saveManualAddress(request, authToken, applicationId, applicationLineId, addressDto)
 
-      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
     }
   }
 }

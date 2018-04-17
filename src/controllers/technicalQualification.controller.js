@@ -11,7 +11,7 @@ module.exports = class TechnicalQualificationController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -44,7 +44,7 @@ module.exports = class TechnicalQualificationController extends BaseController {
         break
     }
 
-    return this.showView(request, h, 'technicalQualification', pageContext)
+    return this.showView({request, h, viewPath: 'technicalQualification', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -56,7 +56,7 @@ module.exports = class TechnicalQualificationController extends BaseController {
       application.technicalQualification = request.payload['technical-qualification']
       await application.save(authToken)
 
-      return this.redirect(request, h, await TechnicalQualificationController._getPath(application.technicalQualification))
+      return this.redirect({request, h, redirectPath: await TechnicalQualificationController._getPath(application.technicalQualification)})
     }
   }
 

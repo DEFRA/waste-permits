@@ -14,7 +14,7 @@ module.exports = class PermitSelectController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     pageContext.formValues = request.payload
@@ -26,7 +26,7 @@ module.exports = class PermitSelectController extends BaseController {
     pageContext.standardRules = await StandardRule.list(authToken, standardRuleTypeId)
     pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
-    return this.showView(request, h, 'permitSelect', pageContext)
+    return this.showView({request, h, viewPath: 'permitSelect', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -41,7 +41,7 @@ module.exports = class PermitSelectController extends BaseController {
       CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_ID, standardRule.id)
 
       if (!standardRule.canApplyOnline) {
-        return this.redirect(request, h, Constants.Routes.APPLY_OFFLINE.path)
+        return this.redirect({request, h, redirectPath: Constants.Routes.APPLY_OFFLINE.path})
       }
 
       // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
@@ -56,7 +56,7 @@ module.exports = class PermitSelectController extends BaseController {
       // Set the application ID in the cookie
       CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)
 
-      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
     }
   }
 }

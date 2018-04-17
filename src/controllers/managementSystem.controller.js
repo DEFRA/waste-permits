@@ -9,10 +9,10 @@ module.exports = class ManagementSystemController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
-    return this.showView(request, h, 'managementSystem', pageContext)
+    return this.showView({request, h, viewPath: 'managementSystem', pageContext})
   }
 
   async doPost (request, h, errors) {

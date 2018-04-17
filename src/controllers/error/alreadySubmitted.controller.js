@@ -11,6 +11,6 @@ module.exports = class AlreadySubmittedController extends BaseController {
     pageContext.startOpenOrSavedRoute = Constants.Routes.START_OR_OPEN_SAVED.path
     pageContext.applicationRef = application.applicationNumber
 
-    return this.showView(request, h, 'error/alreadySubmitted', pageContext)
+    return this.showView({request, h, viewPath: 'error/alreadySubmitted', pageContext})
   }
 }

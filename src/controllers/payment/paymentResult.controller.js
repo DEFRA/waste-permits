@@ -10,7 +10,7 @@ module.exports = class PaymentResultController extends BaseController {
     const payment = await Payment.getCardPaymentDetails(authToken, applicationLineId)
 
     if (!application.isSubmitted()) {
-      return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_SUBMITTED.path})
     }
 
     const paymentStatus = await payment.getCardPaymentResult(authToken)
@@ -20,9 +20,9 @@ module.exports = class PaymentResultController extends BaseController {
       application.paymentReceived = true
       await application.save(authToken)
 
-      return this.redirect(request, h, Constants.Routes.APPLICATION_RECEIVED.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.APPLICATION_RECEIVED.path})
     } else {
-      return this.redirect(request, h, Constants.Routes.PAYMENT.CARD_PROBLEM.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.PAYMENT.CARD_PROBLEM.path})
     }
   }
 }

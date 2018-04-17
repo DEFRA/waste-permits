@@ -25,7 +25,7 @@ module.exports = class CookieService {
       }
     } catch (error) {
       LoggingService.logError(error)
-      return h.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect({h, redirectPath: Constants.Routes.SAVE_AND_RETURN_COMPLETE.path, error})
     }
   }
 

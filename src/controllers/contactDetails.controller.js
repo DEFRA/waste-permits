@@ -14,7 +14,7 @@ module.exports = class ContactDetailsController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -39,7 +39,7 @@ module.exports = class ContactDetailsController extends BaseController {
       }
     }
 
-    return this.showView(request, h, 'contactDetails', pageContext)
+    return this.showView({request, h, viewPath: 'contactDetails', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -98,7 +98,7 @@ module.exports = class ContactDetailsController extends BaseController {
 
       await ContactDetails.updateCompleteness(authToken, applicationId, applicationLineId)
 
-      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
     }
   }
 }

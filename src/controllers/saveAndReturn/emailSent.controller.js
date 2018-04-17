@@ -11,7 +11,7 @@ module.exports = class EmailSentController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -33,7 +33,7 @@ module.exports = class EmailSentController extends BaseController {
         pageContext.notGotEmail = true
       }
     }
-    return this.showView(request, h, 'saveAndReturn/emailSent', pageContext)
+    return this.showView({request, h, viewPath: 'saveAndReturn/emailSent', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -51,13 +51,13 @@ module.exports = class EmailSentController extends BaseController {
           } catch (err) {
             return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
           }
-          return this.redirect(request, h, Constants.Routes.SAVE_AND_RETURN_SENT_RESENT.path)
+          return this.redirect({request, h, redirectPath: Constants.Routes.SAVE_AND_RETURN_SENT_RESENT.path})
         } else {
           await SaveAndReturn.updateCompleteness(authToken, applicationId, applicationLineId)
         }
       }
 
-      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
     }
   }
 }

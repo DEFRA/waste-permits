@@ -11,7 +11,7 @@ module.exports = class CostTimeController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     // Default to 0 when the balance hasn't been set
@@ -19,7 +19,7 @@ module.exports = class CostTimeController extends BaseController {
 
     pageContext.cost = value.toLocaleString()
 
-    return this.showView(request, h, 'costTime', pageContext)
+    return this.showView({request, h, viewPath: 'costTime', pageContext})
   }
 
   async doPost (request, h) {
@@ -27,6 +27,6 @@ module.exports = class CostTimeController extends BaseController {
 
     await CostTime.updateCompleteness(authToken, applicationId, applicationLineId)
 
-    return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
+    return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
   }
 }

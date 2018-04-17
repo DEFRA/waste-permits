@@ -12,7 +12,7 @@ module.exports = class TaskListController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     const showError = Boolean(request.query.showError)
@@ -29,7 +29,7 @@ module.exports = class TaskListController extends BaseController {
 
     pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
-    return this.showView(request, h, 'taskList', pageContext)
+    return this.showView({request, h, viewPath: 'taskList', pageContext})
   }
 
   async _buildError (request) {

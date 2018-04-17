@@ -16,7 +16,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    return this.showView(request, h, 'startOrOpenSaved', pageContext)
+    return this.showView({request, h, viewPath: 'startOrOpenSaved', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -41,6 +41,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       nextPage = Constants.Routes.SEARCH_YOUR_EMAIL
     }
 
-    return this.redirect(request, h, nextPage.path, cookie)
+    return this.redirect({request, h, redirectPath: nextPage.path, cookie})
   }
 }

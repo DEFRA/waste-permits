@@ -18,7 +18,7 @@ module.exports = class PermitCategoryController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     const categories = await StandardRuleType.getCategories(authToken)
@@ -30,7 +30,7 @@ module.exports = class PermitCategoryController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    return this.showView(request, h, 'permitCategory', pageContext)
+    return this.showView({request, h, viewPath: 'permitCategory', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -43,9 +43,9 @@ module.exports = class PermitCategoryController extends BaseController {
       CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID, standardRuleTypeId)
 
       if (PermitCategoryController.isOfflineCategory(standardRuleTypeId)) {
-        return this.redirect(request, h, Constants.Routes.APPLY_OFFLINE.path)
+        return this.redirect({request, h, redirectPath: Constants.Routes.APPLY_OFFLINE.path})
       } else {
-        return this.redirect(request, h, Constants.Routes.PERMIT_SELECT.path)
+        return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_SELECT.path})
       }
     }
   }

@@ -9,6 +9,6 @@ module.exports = class NotPaidController extends BaseController {
 
     pageContext.payForApplicationRoute = Constants.Routes.PAYMENT.PAYMENT_TYPE.path
 
-    return this.showView(request, h, 'error/notPaid', pageContext)
+    return this.showView({request, h, viewPath: 'error/notPaid', pageContext})
   }
 }

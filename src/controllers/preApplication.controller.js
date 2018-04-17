@@ -9,10 +9,10 @@ module.exports = class PreApplicationController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
-    return this.showView(request, h, 'preApplication', pageContext)
+    return this.showView({request, h, viewPath: 'preApplication', pageContext})
   }
 
   async doPost (request, h, errors) {
