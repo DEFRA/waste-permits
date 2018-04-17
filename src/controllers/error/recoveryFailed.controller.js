@@ -6,6 +6,6 @@ module.exports = class RecoveryFailedController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
 
-    return this.showView(request, h, 'error/recoveryFailed', pageContext)
+    return this.showView({request, h, viewPath: 'error/recoveryFailed', pageContext})
   }
 }

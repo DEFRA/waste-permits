@@ -53,7 +53,7 @@ module.exports = class ApplyOfflineController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     let offlineCategory
@@ -67,7 +67,7 @@ module.exports = class ApplyOfflineController extends BaseController {
       }
       if ((!standardRule && !offlineCategory) || (standardRule && standardRule.canApplyOnline)) {
         LoggingService.logError(`Unable to get offline category for : ${standardRuleTypeId}`)
-        return this.redirect(request, h, Constants.Routes.ERROR.START_AT_BEGINNING.path)
+        return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.START_AT_BEGINNING.path})
       }
     }
 
@@ -96,6 +96,6 @@ module.exports = class ApplyOfflineController extends BaseController {
       pageContext.offlineCategoryOther = true
     }
 
-    return this.showView(request, h, 'applyOffline', pageContext)
+    return this.showView({request, h, viewPath: 'applyOffline', pageContext})
   }
 }

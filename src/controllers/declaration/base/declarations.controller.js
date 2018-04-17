@@ -16,7 +16,7 @@ module.exports = class DeclarationsController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     switch (this.route) {
@@ -42,7 +42,7 @@ module.exports = class DeclarationsController extends BaseController {
 
     Object.assign(pageContext, this.getSpecificPageContext())
 
-    return this.showView(request, h, this.view, pageContext)
+    return this.showView({request, h, viewPath: this.view, pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -57,7 +57,7 @@ module.exports = class DeclarationsController extends BaseController {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
       }
 
-      return this.redirect(request, h, this.nextPath)
+      return this.redirect({request, h, redirectPath: this.nextPath})
     }
   }
 

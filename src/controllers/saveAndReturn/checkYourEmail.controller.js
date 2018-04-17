@@ -11,7 +11,7 @@ module.exports = class CheckYourEmailController extends BaseController {
 
     pageContext.formValues = request.payload || {}
     pageContext.email = CookieService.get(request, Constants.COOKIE_KEY.SAVE_AND_RETURN_EMAIL)
-    return this.showView(request, h, 'saveAndReturn/checkYourEmail', pageContext)
+    return this.showView({request, h, viewPath: 'saveAndReturn/checkYourEmail', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -29,7 +29,7 @@ module.exports = class CheckYourEmailController extends BaseController {
         return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
       }
       CookieService.set(request, Constants.COOKIE_KEY.SAVE_AND_RETURN_EMAIL, saveAndReturnEmail)
-      return this.redirect(request, h, Constants.Routes.CHECK_YOUR_EMAIL.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.CHECK_YOUR_EMAIL.path})
     }
   }
 }

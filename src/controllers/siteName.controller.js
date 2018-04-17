@@ -11,7 +11,7 @@ module.exports = class SiteNameController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -23,7 +23,7 @@ module.exports = class SiteNameController extends BaseController {
       }
     }
 
-    return this.showView(request, h, 'siteName', pageContext)
+    return this.showView({request, h, viewPath: 'siteName', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -34,7 +34,7 @@ module.exports = class SiteNameController extends BaseController {
 
       await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'], authToken, applicationId, applicationLineId)
 
-      return this.redirect(request, h, Constants.Routes.SITE_GRID_REFERENCE.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.SITE_GRID_REFERENCE.path})
     }
   }
 }

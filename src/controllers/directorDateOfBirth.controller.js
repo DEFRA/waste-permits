@@ -15,12 +15,12 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (!account) {
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-      return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
     }
 
     // Get the directors that relate to this application
@@ -57,7 +57,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       }
     }
 
-    return this.showView(request, h, 'directorDateOfBirth', pageContext)
+    return this.showView({request, h, viewPath: 'directorDateOfBirth', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -65,7 +65,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     if (!account) {
       LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-      return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
     }
 
     const directors = await this._getDirectors(authToken, applicationId, account.id)
@@ -97,7 +97,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         await applicationContact.save(authToken)
       }
 
-      return this.redirect(request, h, Constants.Routes.COMPANY_DECLARE_OFFENCES.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path})
     }
   }
 

@@ -3,7 +3,7 @@
 const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
-const {COOKIE_RESULT} = require('../constants')
+const {COOKIE_RESULT} = Constants
 const Application = require('../models/application.model')
 const ApplicationLine = require('../models/applicationLine.model')
 const Account = require('../models/account.model')
@@ -102,16 +102,16 @@ module.exports = class BaseController {
     }
   }
 
-  redirect (request, h, viewPath, cookie) {
+  redirect ({request, h, redirectPath, cookie}) {
     if (!cookie) {
       cookie = request.state[Constants.DEFRA_COOKIE_KEY]
     }
     return h
-      .redirect(viewPath)
+      .redirect(redirectPath)
       .state(Constants.DEFRA_COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 
-  showView (request, h, viewPath, pageContext, code = 200) {
+  showView ({request, h, viewPath, pageContext, code = 200}) {
     return h
       .view(viewPath, pageContext)
       .code(code)
@@ -141,16 +141,26 @@ module.exports = class BaseController {
   }
 
   async handler (request, h, errors) {
+    const {START_AT_BEGINNING, TECHNICAL_PROBLEM, TIMEOUT} = Constants.Routes.ERROR
     if (this.cookieValidationRequired) {
       // Validate the cookie
       const cookieValidationResult = await CookieService.validateCookie(request)
+      let redirectPath
 
-      if (cookieValidationResult === COOKIE_RESULT.COOKIE_NOT_FOUND) {
-        return h.redirect(Constants.Routes.ERROR.START_AT_BEGINNING.path)
-      } else if (cookieValidationResult === COOKIE_RESULT.COOKIE_EXPIRED) {
-        return h.redirect(Constants.Routes.ERROR.TIMEOUT.path)
-      } else if (cookieValidationResult === COOKIE_RESULT.APPLICATION_NOT_FOUND) {
-        return h.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      switch (cookieValidationResult) {
+        case COOKIE_RESULT.COOKIE_NOT_FOUND:
+          redirectPath = START_AT_BEGINNING.path
+          break
+        case COOKIE_RESULT.COOKIE_EXPIRED:
+          redirectPath = TIMEOUT.path
+          break
+        case COOKIE_RESULT.APPLICATION_NOT_FOUND:
+          redirectPath = TECHNICAL_PROBLEM.path
+          break
+      }
+
+      if (redirectPath) {
+        return this.redirect({request, h, redirectPath})
       }
     }
     switch (this.route) {
@@ -163,7 +173,7 @@ module.exports = class BaseController {
           return response
         } catch (error) {
           LoggingService.logError(error, request)
-          return h.redirect(Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+          return this.redirect({request, h, redirectPath: TECHNICAL_PROBLEM.path})
         }
     }
   }

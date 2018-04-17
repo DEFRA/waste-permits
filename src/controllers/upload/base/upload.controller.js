@@ -27,7 +27,7 @@ module.exports = class UploadController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -44,7 +44,7 @@ module.exports = class UploadController extends BaseController {
       Object.assign(pageContext, await this.getSpecificPageContext(request))
     }
 
-    return this.showView(request, h, this.view, pageContext)
+    return this.showView({request, h, viewPath: this.view, pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -60,7 +60,7 @@ module.exports = class UploadController extends BaseController {
       if (this.updateCompleteness) {
         await this.updateCompleteness(authToken, applicationId, applicationLineId)
       }
-      return this.redirect(request, h, this.nextPath)
+      return this.redirect({request, h, redirectPath: this.nextPath})
     }
   }
 
@@ -68,7 +68,7 @@ module.exports = class UploadController extends BaseController {
     try {
       // Validate the cookie
       if (!CookieService.validateCookie(request)) {
-        return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+        return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
       }
 
       // Post if it's not an attempt to upload a file
@@ -112,17 +112,17 @@ module.exports = class UploadController extends BaseController {
 
       // Remove temporary uploads directory
       await this._removeTempUploadDirectory(uploadPath)
-      return this.redirect(request, h, this.path)
+      return this.redirect({request, h, redirectPath: this.path})
     } catch (error) {
       LoggingService.logError(error, request)
-      return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
     }
   }
 
   async remove (request, h) {
     // Validate the cookie
     if (!CookieService.validateCookie(request)) {
-      return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
     }
 
     const {authToken, applicationId} = await this.createApplicationContext(request)
@@ -131,10 +131,10 @@ module.exports = class UploadController extends BaseController {
 
     // make sure this annotation belongs to this application
     if (annotation.applicationId !== applicationId) {
-      return this.redirect(request, h, Constants.Routes.ERROR.TECHNICAL_PROBLEM.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
     }
     await annotation.delete(authToken, annotationId)
-    return this.redirect(request, h, this.path)
+    return this.redirect({request, h, redirectPath: this.path})
   }
 
   async uploadFailAction (request, h, errors) {

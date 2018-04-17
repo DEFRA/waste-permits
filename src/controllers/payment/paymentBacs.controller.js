@@ -12,12 +12,12 @@ module.exports = class PaymentBacsController extends BaseController {
     const payment = await Payment.getBacsPaymentDetails(authToken, applicationLineId)
 
     if (!application.isSubmitted()) {
-      return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_SUBMITTED.path})
     } else if ((payment && payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED) || (application && application.paymentReceived)) {
-      return this.redirect(request, h, Constants.Routes.ERROR.ALREADY_SUBMITTED.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.ALREADY_SUBMITTED.path})
     }
 
-    return this.showView(request, h, 'payment/paymentBacs', pageContext)
+    return this.showView({request, h, viewPath: 'payment/paymentBacs', pageContext})
   }
 
   async doPost (request, h) {
@@ -33,6 +33,6 @@ module.exports = class PaymentBacsController extends BaseController {
     payment.title = `${Constants.Dynamics.PaymentTitle.BACS_PAYMENT} ${application.applicationNumber}`
     await payment.save(authToken)
 
-    return this.redirect(request, h, Constants.Routes.APPLICATION_RECEIVED.path)
+    return this.redirect({request, h, redirectPath: Constants.Routes.APPLICATION_RECEIVED.path})
   }
 }

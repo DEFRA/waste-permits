@@ -10,12 +10,12 @@ module.exports = class CompanyCheckNameController extends BaseController {
     const {application, account, payment} = await this.createApplicationContext(request, {application: true, account: true, payment: true})
 
     if (!application || !account) {
-      return this.redirect(request, h, Constants.Routes.TASK_LIST.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
     }
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -39,7 +39,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return this.showView(request, h, 'companyCheckName', pageContext)
+    return this.showView({request, h, viewPath: 'companyCheckName', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -67,7 +67,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         await application.save(authToken)
       }
-      return this.redirect(request, h, Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path})
     }
   }
 }

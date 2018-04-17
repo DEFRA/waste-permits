@@ -11,7 +11,7 @@ module.exports = class PostcodeController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -22,7 +22,7 @@ module.exports = class PostcodeController extends BaseController {
       if (address) {
         // If the manual entry flag is set then redirect off to the mamual address entry page instead
         if (!address.fromAddressLookup) {
-          return this.redirect(request, h, this.getManualEntryRoute())
+          return this.redirect({request, h, redirectPath: this.getManualEntryRoute()})
         }
         pageContext.formValues = {
           postcode: address.postcode
@@ -42,7 +42,7 @@ module.exports = class PostcodeController extends BaseController {
     this.customisePageContext(pageContext)
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return this.showView(request, h, 'address/postcode', pageContext)
+    return this.showView({request, h, viewPath: 'address/postcode', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -71,7 +71,7 @@ module.exports = class PostcodeController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      return this.redirect(request, h, this.getAddressSelectionPath())
+      return this.redirect({request, h, redirectPath: this.getAddressSelectionPath()})
     }
   }
 

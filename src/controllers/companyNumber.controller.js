@@ -12,7 +12,7 @@ module.exports = class CompanyNumberController extends BaseController {
 
     const redirectPath = await this.checkRouteAccess(application, payment)
     if (redirectPath) {
-      return this.redirect(request, h, redirectPath)
+      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -24,7 +24,7 @@ module.exports = class CompanyNumberController extends BaseController {
         }
       }
     }
-    return this.showView(request, h, 'companyNumber', pageContext)
+    return this.showView({request, h, viewPath: 'companyNumber', pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -49,7 +49,7 @@ module.exports = class CompanyNumberController extends BaseController {
         await application.save(authToken)
       }
 
-      return this.redirect(request, h, Constants.Routes.COMPANY_CHECK_TYPE.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_CHECK_TYPE.path})
     }
   }
 }

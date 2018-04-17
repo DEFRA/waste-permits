@@ -13,7 +13,7 @@ module.exports = class CardPaymentController extends BaseController {
     let payment = await Payment.getCardPaymentDetails(authToken, applicationLine.id)
 
     if (!application.isSubmitted()) {
-      return this.redirect(request, h, Constants.Routes.ERROR.NOT_SUBMITTED.path)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_SUBMITTED.path})
     }
 
     const {value = 0} = applicationLine
@@ -34,6 +34,6 @@ module.exports = class CardPaymentController extends BaseController {
     LoggingService.logDebug(`Gov.UK Pay card payment URL: ${govPayUrl}`)
 
     // Re-direct off to Gov.UK Pay to take the payment
-    return this.redirect(request, h, govPayUrl)
+    return this.redirect({request, h, redirectPath: govPayUrl})
   }
 }
