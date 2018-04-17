@@ -34,7 +34,7 @@ module.exports = class DrainageTypeDrain extends BaseModel {
 
       isComplete = Boolean(completed)
     } catch (error) {
-      LoggingService.logError(`Unable to retrieve DrainageTypeDrain completeness: ${error}`)
+      LoggingService.logError(`Unable to retrieve DrainageTypeDrain completeness: ${error.message}`)
       throw error
     }
     return isComplete

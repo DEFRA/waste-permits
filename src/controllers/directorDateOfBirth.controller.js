@@ -19,8 +19,9 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     }
 
     if (!account) {
-      LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
+      const message = `Application ${applicationId} does not have an Account`
+      LoggingService.logError(message, request)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path, error: {message}})
     }
 
     // Get the directors that relate to this application
@@ -64,8 +65,9 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     const {authToken, applicationId, account} = await this.createApplicationContext(request, {account: true})
 
     if (!account) {
-      LoggingService.logError(`Application ${applicationId} does not have an Account`, request)
-      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
+      const message = `Application ${applicationId} does not have an Account`
+      LoggingService.logError(message, request)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path, error: {message}})
     }
 
     const directors = await this._getDirectors(authToken, applicationId, account.id)

@@ -10,6 +10,7 @@ config.LOG_LEVEL = process.env.LOG_LEVEL
 config.wastePermitsAppUrl = process.env.WASTE_PERMITS_APP_URL || 'https://www.gov.uk'
 config.port = process.env.PORT || 8000
 config.nodeEnvironment = process.env.NODE_ENV || 'PRODUCTION'
+config.isDevelopment = process.env.NODE_ENV === 'DEVELOPMENT'
 
 // This flag can be set to bypass the completeness checking (e.g. during development). Defaults to false.
 config.bypassCompletenessCheck = process.env.BYPASS_COMPLETENESS_CHECK === 'TRUE' || false
