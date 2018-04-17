@@ -15,13 +15,14 @@ class Payment extends BaseModel {
   static get mapping () {
     return [
       {field: 'id', dynamics: 'defra_paymentid'},
-      {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationId', entity: 'defra_applications'}},
+      {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationid', entity: 'defra_applications'}},
       {field: 'applicationLineId', dynamics: '_defra_applicationlineid_value', bind: {id: 'defra_applicationlineid', entity: 'defra_applicationlines'}},
       {field: 'category', dynamics: 'defra_paymentcategory'},
       {field: 'description', dynamics: 'defra_description'},
       {field: 'referenceNumber', dynamics: 'defra_reference_number', readOnly: true},
       {field: 'statusCode', dynamics: 'statuscode'},
       {field: 'type', dynamics: 'defra_type'},
+      {field: 'title', dynamics: 'defra_title'},
       {field: 'value', dynamics: 'defra_paymentvalue'}
     ]
   }
@@ -31,13 +32,11 @@ class Payment extends BaseModel {
   }
 
   static async getBacsPayment (authToken, applicationLineId) {
-    let payment = await this.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.BACS_PAYMENT)
-    return payment
+    return this.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.BACS_PAYMENT)
   }
 
   static async getCardPayment (authToken, applicationLineId) {
-    let payment = await this.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.CARD_PAYMENT)
-    return payment
+    return this.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.CARD_PAYMENT)
   }
 
   static async getByApplicationLineIdAndType (authToken, applicationLineId, type) {

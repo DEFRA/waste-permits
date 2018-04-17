@@ -16,35 +16,38 @@ let dynamicsUpdateStub
 let sandbox
 
 let testPayment
-const fakePaymentData = {
-  applicationId: 'APPLICATION_ID',
-  applicationLineId: 'APPLICATION_LINE_ID',
-  category: 'CATEGORY',
-  statusCode: 'STATUS_CODE',
-  type: 'TYPE',
-  value: 'VALUE'
-}
+let fakePaymentData
+
 const testPaymentId = 'PAYMENT_ID'
 
 const authToken = 'THE_AUTH_TOKEN'
 
 lab.beforeEach(() => {
+  fakePaymentData = {
+    applicationId: 'APPLICATION_ID',
+    applicationLineId: 'APPLICATION_LINE_ID',
+    category: 'CATEGORY',
+    statusCode: 'STATUS_CODE',
+    type: 'TYPE',
+    title: 'TITLE',
+    value: 'VALUE'
+  }
   testPayment = new Payment(fakePaymentData)
 
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = () => {
-    // Dynamics Payment object
-    return {
-      value: [{
-        _defra_applicationid_value: testPayment.applicationId,
-        _defra_applicationlineid_value: testPayment.applicationLineId,
-        defra_paymentcategory: testPayment.category,
-        statuscode: testPayment.statusCode,
-        defra_type: testPayment.type,
-        defra_paymentvalue: testPayment.value
-      }]
-    }
+  const searchResult = {
+    value: [{
+      _defra_applicationid_value: testPayment.applicationId,
+      _defra_applicationlineid_value: testPayment.applicationLineId,
+      defra_paymentcategory: testPayment.category,
+      statuscode: testPayment.statusCode,
+      defra_type: testPayment.type,
+      defra_title: testPayment.title,
+      defra_paymentvalue: testPayment.value
+    }]
   }
+
+  dynamicsSearchStub = DynamicsDalService.prototype.search
+  DynamicsDalService.prototype.search = () => searchResult
 
   dynamicsCreateStub = DynamicsDalService.prototype.create
   DynamicsDalService.prototype.create = () => testPaymentId
@@ -86,7 +89,7 @@ lab.experiment('Payment Model tests:', () => {
 
   lab.test(`getCardPaymentDetails() method calls getByApplicationLineIdAndType() method with type of ${CARD_PAYMENT}`, async () => {
     const spy = sandbox.spy(Payment, 'getByApplicationLineIdAndType')
-    const {applicationId, applicationLineId, category, statusCode, type, value} = fakePaymentData
+    const {applicationId, applicationLineId, category, statusCode, type, title, value} = fakePaymentData
     const payment = await Payment.getCardPaymentDetails(authToken, applicationLineId)
     Code.expect(spy.calledWith(authToken, applicationLineId, CARD_PAYMENT)).to.equal(true)
     Code.expect(payment.applicationId).to.equal(applicationId)
@@ -94,6 +97,7 @@ lab.experiment('Payment Model tests:', () => {
     Code.expect(payment.category).to.equal(category)
     Code.expect(payment.statusCode).to.equal(statusCode)
     Code.expect(payment.type).to.equal(type)
+    Code.expect(payment.title).to.equal(title)
     Code.expect(payment.value).to.equal(value)
   })
 
@@ -107,7 +111,7 @@ lab.experiment('Payment Model tests:', () => {
 
   lab.test(`getBacsPaymentDetails() method calls getByApplicationLineIdAndType() method with type of ${BACS_PAYMENT}`, async () => {
     const spy = sandbox.spy(Payment, 'getByApplicationLineIdAndType')
-    const {applicationId, applicationLineId, category, statusCode, type, value} = fakePaymentData
+    const {applicationId, applicationLineId, category, statusCode, type, title, value} = fakePaymentData
     const payment = await Payment.getBacsPaymentDetails(authToken, applicationLineId)
     Code.expect(spy.calledWith(authToken, applicationLineId, BACS_PAYMENT)).to.equal(true)
     Code.expect(payment.applicationId).to.equal(applicationId)
@@ -115,6 +119,7 @@ lab.experiment('Payment Model tests:', () => {
     Code.expect(payment.category).to.equal(category)
     Code.expect(payment.statusCode).to.equal(statusCode)
     Code.expect(payment.type).to.equal(type)
+    Code.expect(payment.title).to.equal(title)
     Code.expect(payment.value).to.equal(value)
   })
 
