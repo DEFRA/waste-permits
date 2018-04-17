@@ -21,7 +21,7 @@ module.exports = class PaymentBacsController extends BaseController {
   }
 
   async doPost (request, h) {
-    const {authToken, applicationLine} = await this.createApplicationContext(request, {application: false, applicationLine: true})
+    const {authToken, application, applicationLine} = await this.createApplicationContext(request, {application: true, applicationLine: true})
 
     const {value = 0} = applicationLine
     const payment = await Payment.getBacsPaymentDetails(authToken, applicationLine.id)
@@ -29,6 +29,8 @@ module.exports = class PaymentBacsController extends BaseController {
     payment.value = value
     payment.category = Constants.Dynamics.PAYMENT_CATEGORY
     payment.statusCode = Constants.Dynamics.PaymentStatusCodes.ISSUED
+    payment.applicationId = application.id
+    payment.title = `${Constants.Dynamics.PaymentTitle.BACS_PAYMENT} ${application.applicationNumber}`
     await payment.save(authToken)
 
     return this.redirect(request, h, Constants.Routes.APPLICATION_RECEIVED.path)

@@ -460,6 +460,10 @@ Constants.Dynamics = {
     CARD_PAYMENT: 910400000,
     BACS_PAYMENT: 910400005
   },
+  PaymentTitle: {
+    CARD_PAYMENT: 'Inbound online payment for application',
+    BACS_PAYMENT: 'Inbound BACS payment for application'
+  },
   PaymentStatusCodes: {
     ISSUED: 910400004
   },
