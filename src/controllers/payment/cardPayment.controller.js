@@ -1,6 +1,5 @@
 'use strict'
 
-const config = require('../../config/config')
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const Payment = require('../../models/payment.model')
@@ -9,6 +8,8 @@ const LoggingService = require('../../services/logging.service')
 module.exports = class CardPaymentController extends BaseController {
   async doGet (request, h) {
     const {authToken, application, applicationLine, standardRule} = await this.createApplicationContext(request, {application: true, applicationLine: true, standardRule: true})
+
+    let {returnUrl} = request.query
 
     let payment = await Payment.getCardPaymentDetails(authToken, applicationLine.id)
 
@@ -25,7 +26,7 @@ module.exports = class CardPaymentController extends BaseController {
     await payment.save(authToken)
 
     // Note - Gov Pay needs an https address to redirect to, otherwise it throws a runtime error
-    let returnUrl = `${config.wastePermitsAppUrl}${Constants.Routes.PAYMENT.PAYMENT_RESULT.path}`
+    returnUrl = `${returnUrl}?id=${payment.id}`
 
     LoggingService.logDebug(`Making Gov.UK Pay card payment. Will redirect back to: ${returnUrl}`)
 
