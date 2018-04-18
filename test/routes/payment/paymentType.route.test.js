@@ -153,7 +153,7 @@ lab.experiment(`How do you want to pay?:`, () => {
         postRequest.payload = {'payment-type': PaymentTypes.CARD_PAYMENT}
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/pay/card')
+        Code.expect(res.headers['location']).to.startWith('/pay/card')
       })
     })
 

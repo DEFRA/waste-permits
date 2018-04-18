@@ -1,5 +1,6 @@
 'use strict'
 
+const config = require('../../config/config')
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const {CARD_PAYMENT, BACS_PAYMENT} = Constants.Dynamics.PaymentTypes
@@ -40,7 +41,9 @@ module.exports = class PaymentTypeController extends BaseController {
       const paymentType = parseInt(request.payload['payment-type'])
       switch (paymentType) {
         case CARD_PAYMENT:
-          nextPath = Constants.Routes.PAYMENT.CARD_PAYMENT.path
+          let origin = config.wastePermitsAppUrl || request.headers.origin
+          let returnUrl = `${origin}${Constants.Routes.PAYMENT.PAYMENT_RESULT.path}`
+          nextPath = `${Constants.Routes.PAYMENT.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
           break
         case BACS_PAYMENT:
           nextPath = Constants.Routes.PAYMENT.BACS_PAYMENT.path
