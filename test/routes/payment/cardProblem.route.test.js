@@ -14,44 +14,35 @@ const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
-const PaymentTypes = {
-  CARD_PAYMENT: 910400000,
-  BACS_PAYMENT: 910400005
-}
-
 let sandbox
 
 const routePath = '/pay/card-problem'
 const errorPath = '/errors/technical-problem'
 const notSubmittedRoutePath = '/errors/order/check-answers-not-complete'
 
-const fakeApplication = {
-  id: 'APPLICATION_ID'
-}
-
-const fakeApplicationLine = {
-  id: 'APPLICATION_LINE_ID'
-}
-
-const fakePayment = {
-  id: '41536963-5041-e811-a95e-000d3a233e06',
-  applicationLineId: 'APPLICATION_LINE_ID',
-  category: 910400000,
-  description: 'Application charge for a standard rules waste permit: Mobile plant for land-spreading SR2010 No 4',
-  referenceNumber: 'P00001036-P1M',
-  statusCode: 910400004,
-  type: 910400000,
-  value: 2641
-}
-
-const getRequest = {
-  method: 'GET',
-  url: routePath,
-  headers: {},
-  payload: {}
-}
-
+let fakeApplication
+let fakeApplicationLine
+let fakePayment
 lab.beforeEach(() => {
+  fakeApplication = {
+    id: 'APPLICATION_ID'
+  }
+
+  fakeApplicationLine = {
+    id: 'APPLICATION_LINE_ID'
+  }
+
+  fakePayment = {
+    id: '41536963-5041-e811-a95e-000d3a233e06',
+    applicationLineId: 'APPLICATION_LINE_ID',
+    category: 910400000,
+    description: 'Application charge for a standard rules waste permit: Mobile plant for land-spreading SR2010 No 4',
+    referenceNumber: 'P00001036-P1M',
+    statusCode: 910400004,
+    type: 910400000,
+    value: 2641
+  }
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
@@ -76,23 +67,43 @@ lab.experiment(`Your card payment failed page:`, () => {
   })
 
   lab.experiment(`GET ${routePath}`, () => {
-    lab.beforeEach(() => {})
+    let getRequest
+
+    const checkCommonElements = async (doc) => {
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Your card payment failed')
+      Code.expect(doc.getElementById('submit-button')).to.not.exist()
+
+      // Test for the existence of expected static content
+      GeneralTestHelper.checkElementsExist(doc, [
+        'no-money-taken',
+        'app-not-sent',
+        'retry-card-link',
+        'bacs-payment-link'
+      ])
+    }
+
+    lab.beforeEach(() => {
+      getRequest = {
+        method: 'GET',
+        url: routePath,
+        headers: {},
+        payload: {}
+      }
+    })
 
     lab.experiment('success', () => {
-      lab.test('static content exists', async () => {
+      lab.test('error content exists when status param is error', async () => {
+        getRequest.url += '?status=error'
         const doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
+        Code.expect(doc.getElementById('try-again-later')).to.exist()
+      })
 
-        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Your card payment failed')
-        Code.expect(doc.getElementById('submit-button')).to.not.exist()
-
-        // Test for the existence of expected static content
-        GeneralTestHelper.checkElementsExist(doc, [
-          'no-money-taken',
-          'app-not-sent',
-          'retry-card-link',
-          'bacs-payment-link',
-          'try-again-later'
-        ])
+      lab.test('error content does not exist when status param is failure', async () => {
+        getRequest.url += '?status=failure'
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
+        Code.expect(doc.getElementById('try-again-later')).to.not.exist()
       })
     })
 
