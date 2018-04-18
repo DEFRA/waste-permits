@@ -3,6 +3,6 @@
 const Constants = require('../constants')
 const Route = require('./baseRoute')
 const CheckBeforeSendingController = require('../controllers/checkBeforeSending.controller')
-const controller = new CheckBeforeSendingController(Constants.Routes.CHECK_BEFORE_SENDING)
+const controller = new CheckBeforeSendingController({route: Constants.Routes.CHECK_BEFORE_SENDING})
 
-module.exports = Route.register('GET, POST', controller, undefined)
+module.exports = Route.register('GET, POST', controller, false)

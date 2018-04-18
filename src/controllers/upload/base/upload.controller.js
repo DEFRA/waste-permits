@@ -13,12 +13,6 @@ const Annotation = require('../../../models/annotation.model')
 const UPLOAD_PATH = path.resolve(`${process.cwd()}/temp`)
 
 module.exports = class UploadController extends BaseController {
-  constructor (...args) {
-    const nextRoute = args[3]
-    super(...args)
-    this.nextPath = nextRoute.path
-  }
-
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const {authToken, applicationId, application, payment} = await this.createApplicationContext(request, {application: true, payment: true})

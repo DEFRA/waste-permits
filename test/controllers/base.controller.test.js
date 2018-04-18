@@ -23,7 +23,7 @@ lab.experiment('Base Controller tests:', () => {
       path: 'THE_ROUTE_PATH'
     }
 
-    controller = new BaseController(route)
+    controller = new BaseController({route})
 
     const pageContext = controller.createPageContext(route)
 

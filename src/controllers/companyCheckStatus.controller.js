@@ -6,12 +6,6 @@ const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
 
 module.exports = class CompanyStatusController extends BaseController {
-  constructor (...args) {
-    const [route] = args
-    super(...args)
-    this.orginalPageHeading = route.pageHeading
-  }
-
   async doGet (request, h, errors) {
     const {application, account, payment} = await this.createApplicationContext(request, {application: true, account: true, payment: true})
 

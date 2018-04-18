@@ -5,6 +5,6 @@ const Route = require('../baseRoute')
 const CheckYourEmailController = require('../../controllers/saveAndReturn/checkYourEmail.controller')
 const SaveAndReturnValidator = require('../../validators/saveAndReturn.validator')
 const validator = new SaveAndReturnValidator()
-const controller = new CheckYourEmailController(Constants.Routes.CHECK_YOUR_EMAIL, validator, false)
+const controller = new CheckYourEmailController({route: Constants.Routes.CHECK_YOUR_EMAIL, validator, cookieValidationRequired: false})
 
 module.exports = Route.register('GET, POST', controller, validator)

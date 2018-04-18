@@ -12,15 +12,19 @@ const Payment = require('../models/payment.model')
 const StandardRule = require('../models/standardRule.model')
 
 module.exports = class BaseController {
-  constructor (route, validator, cookieValidationRequired = true) {
+  constructor ({route, validator, cookieValidationRequired = true, nextRoute}) {
     if (!route) {
       console.error(`Error - Unable to find Constants.Routes for: ${Object.getPrototypeOf(this).constructor.name}`)
     }
     this.route = route
     this.path = route.path
+    if (nextRoute) {
+      this.nextPath = nextRoute.path
+    }
     if (validator) {
       this.validator = validator
     }
+    this.orginalPageHeading = route.pageHeading
     this.failAction = async (...args) => {
       const failActionReply = await this.handler.apply(this, args)
       return failActionReply.takeover()

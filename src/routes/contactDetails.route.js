@@ -7,6 +7,6 @@ const ContactDetailsValidator = require('../validators/contactDetails.validator'
 
 const validator = new ContactDetailsValidator()
 
-const controller = new ContactDetailsController(Constants.Routes.CONTACT_DETAILS, validator)
+const controller = new ContactDetailsController({route: Constants.Routes.CONTACT_DETAILS, validator})
 
 module.exports = Route.register('GET, POST', controller, validator)

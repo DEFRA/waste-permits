@@ -7,6 +7,6 @@ const DeemedEvidenceController = require('../../../controllers/upload/technicalQ
 const UploadValidator = require('../../../validators/upload/upload.validator')
 
 const validator = new UploadValidator()
-const controller = new DeemedEvidenceController(UPLOAD_DEEMED_EVIDENCE, validator, true, TASK_LIST)
+const controller = new DeemedEvidenceController({route: UPLOAD_DEEMED_EVIDENCE, validator, nextRoute: TASK_LIST})
 
 module.exports = Route.register('GET, REMOVE, UPLOAD', controller)
