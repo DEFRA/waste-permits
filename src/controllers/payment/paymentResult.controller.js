@@ -14,15 +14,16 @@ module.exports = class PaymentResultController extends BaseController {
     }
 
     const paymentStatus = await payment.getCardPaymentResult(authToken)
+    let redirectPath = Constants.Routes.APPLICATION_RECEIVED.path
 
     // Look at the result of the payment and redirect off to the appropriate result screen
     if (paymentStatus === 'success') {
       application.paymentReceived = true
       await application.save(authToken)
-
-      return this.redirect({request, h, redirectPath: Constants.Routes.APPLICATION_RECEIVED.path})
     } else {
-      return this.redirect({request, h, redirectPath: Constants.Routes.PAYMENT.CARD_PROBLEM.path})
+      redirectPath = `${Constants.Routes.PAYMENT.CARD_PROBLEM.path}?status=${encodeURIComponent(paymentStatus)}`
     }
+
+    return this.redirect({request, h, redirectPath})
   }
 }

@@ -17,7 +17,9 @@
 
       <div class="card-problem-link"><a id="bacs-payment-link" href="{{urls.bacsPayment}}">Pay later by bank transfer using Bacs</a></div>
 
+      {{#if error}}
       <p class="card-payment-technical-problem" id="try-again-later">If the technical problem happens again, you could use your save link email to come back in a couple of hours and try again or pay by Bacs.</p>
+      {{/if}}
     </div>
   </div>
 

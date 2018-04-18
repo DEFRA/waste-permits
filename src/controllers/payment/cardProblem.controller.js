@@ -7,6 +7,11 @@ module.exports = class CardProblemController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
 
+    const {status} = request.query || {}
+    if (status === 'error') {
+      pageContext.error = true
+    }
+
     const {application} = await this.createApplicationContext(request, {application: true})
 
     if (!application.isSubmitted()) {
