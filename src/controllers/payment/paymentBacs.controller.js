@@ -33,6 +33,6 @@ module.exports = class PaymentBacsController extends BaseController {
     payment.title = `${Constants.Dynamics.PaymentTitle.BACS_PAYMENT} ${application.applicationNumber}`
     await payment.save(authToken)
 
-    return this.redirect({request, h, redirectPath: Constants.Routes.APPLICATION_RECEIVED.path})
+    return this.redirect({request, h, redirectPath: Constants.APPLICATION_RECEIVED_URL})
   }
 }

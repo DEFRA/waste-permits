@@ -13,6 +13,9 @@ Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
 Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 Constants.MAX_FILE_SIZE = 31457280 // 30MB
 Constants.SAVE_AND_RETURN_URL = '/r'
+Constants.PAYMENT_RESULT_URL = '/pay/result'
+Constants.APPLICATION_RECEIVED_URL = '/done'
+Constants.PAYMENT_CARD_PROBLEM_URL = '/pay/card-problem'
 
 Constants.DEFAULT_UPLOAD_OPTIONS = {
   maxSize: '30MB',
@@ -170,7 +173,7 @@ Constants.Routes = {
     }
   },
   APPLICATION_RECEIVED: {
-    path: '/done',
+    path: `${Constants.APPLICATION_RECEIVED_URL}/{slug?}`,
     pageHeading: `Application received`,
     pageHeadingAlternate: `Application and card payment received`
   },
@@ -308,11 +311,11 @@ Constants.Routes = {
       path: '/pay/card'
     },
     CARD_PROBLEM: {
-      path: '/pay/card-problem',
+      path: `${Constants.PAYMENT_CARD_PROBLEM_URL}/{slug?}`,
       pageHeading: 'Your card payment failed'
     },
     PAYMENT_RESULT: {
-      path: '/pay/result',
+      path: `${Constants.PAYMENT_RESULT_URL}/{slug?}`,
       pageHeading: 'Your card payment failed'
     },
     PAYMENT_TYPE: {

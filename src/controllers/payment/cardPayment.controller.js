@@ -2,6 +2,7 @@
 
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
+const ApplicationReturn = require('../../models/applicationReturn.model')
 const Payment = require('../../models/payment.model')
 const LoggingService = require('../../services/logging.service')
 
@@ -25,10 +26,12 @@ module.exports = class CardPaymentController extends BaseController {
     payment.title = `${Constants.Dynamics.PaymentTitle.CARD_PAYMENT} ${application.applicationNumber}`
     await payment.save(authToken)
 
-    // Note - Gov Pay needs an https address to redirect to, otherwise it throws a runtime error
-    returnUrl = `${returnUrl}?id=${payment.id}`
+    const applicationReturn = await ApplicationReturn.getByApplicationId(authToken, application.id)
 
-    LoggingService.logDebug(`Making Gov.UK Pay card payment. Will redirect back to: ${returnUrl}`)
+    // Note - Gov Pay needs an https address to redirect to, otherwise it throws a runtime error
+    returnUrl = `${returnUrl}/${applicationReturn.slug}`
+
+    LoggingService.logDebug(`Making Gov.UK Pay card payment for Application "${this.applicationNumber}. Will redirect back to: ${returnUrl}`)
 
     const govPayUrl = await payment.makeCardPayment(authToken, payment.description, returnUrl)
 

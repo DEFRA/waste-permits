@@ -2,33 +2,13 @@
 
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
-const CookieService = require('../../services/cookie.service')
-const Application = require('../../models/application.model')
-const ApplicationLine = require('../../models/applicationLine.model')
-const ApplicationReturn = require('../../models/applicationReturn.model')
-const StandardRule = require('../../models/standardRule.model')
+const RecoveryService = require('../../services/recovery.service')
 const {APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID, PERMIT_HOLDER_TYPE} = Constants.COOKIE_KEY
 
 module.exports = class RecoverController extends BaseController {
-  static async recoverApplication (slug, h) {
-    let recoveredApplication
-    const cookie = await CookieService.generateCookie(h)
-    let authToken = cookie.authToken
-    const applicationReturn = await ApplicationReturn.getBySlug(authToken, slug)
-    if (applicationReturn) {
-      const {applicationId} = applicationReturn
-      const {applicationNumber} = await Application.getById(authToken, applicationId)
-      const {id: applicationLineId} = await ApplicationLine.getByApplicationId(authToken, applicationId)
-      const {id: standardRuleId, standardRuleTypeId, code, permitName} = await StandardRule.getByApplicationLineId(authToken, applicationLineId)
-
-      recoveredApplication = {slug, cookie, applicationId, applicationLineId, applicationNumber, code, permitName, standardRuleId, standardRuleTypeId}
-    }
-    return recoveredApplication
-  }
-
   async doGet (request, h) {
     const {slug} = request.params
-    const recoveredApplication = await RecoverController.recoverApplication(slug, h)
+    const recoveredApplication = await RecoveryService.recoverApplication(slug, h)
     if (!recoveredApplication) {
       return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.RECOVERY_FAILED.path})
     }
@@ -39,7 +19,7 @@ module.exports = class RecoverController extends BaseController {
 
   async doPost (request, h) {
     const {slug} = request.payload
-    const {cookie, applicationId, applicationLineId, standardRuleId, standardRuleTypeId} = await RecoverController.recoverApplication(slug, h)
+    const {cookie, applicationId, applicationLineId, standardRuleId, standardRuleTypeId} = await RecoveryService.recoverApplication(slug, h)
 
     // Setup all the cookies as if the user hadn't left
     cookie[APPLICATION_ID] = applicationId

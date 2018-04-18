@@ -13,22 +13,30 @@ const Payment = require('../../src/models/payment.model')
 const Contact = require('../../src/models/contact.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
+const RecoveryService = require('../../src/services/recovery.service')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let sandbox
+const fakeSlug = 'SLUG'
 
 let fakeApplication
+let fakeApplicationLine
 let fakePayment
 let fakeContact
 let fakeBacs
+let fakeRecovery
 
-const routePath = '/done'
+const routePath = `/done/${fakeSlug}`
 
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID',
     applicationName: 'APPLICATION_NAME',
     paymentReceived: 1
+  }
+
+  fakeApplicationLine = {
+    id: 'APPLICATION_LINE_ID'
   }
 
   fakePayment = {
@@ -55,12 +63,21 @@ lab.beforeEach(() => {
     description: 'THE DESCRIPTION'
   }
 
+  fakeRecovery = {
+    authToken: 'AUTH_TOKEN',
+    applicationId: fakeApplication.id,
+    applicationLineId: fakeApplicationLine.id,
+    application: fakeApplication,
+    contact: fakeContact
+  }
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(RecoveryService, 'recoverApplication').value(() => fakeRecovery)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
   sandbox.stub(Payment, 'getBacsPayment').value(() => new Payment(fakePayment))
@@ -74,6 +91,7 @@ lab.afterEach(() => {
 
 lab.experiment('ApplicationReceived page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
+    excludeCookieGetTests: true,
     excludeCookiePostTests: true,
     excludeAlreadySubmittedTest: true})
 
@@ -175,6 +193,7 @@ lab.experiment('ApplicationReceived page tests:', () => {
       Payment.getBacsPayment = () => undefined
       Payment.getCardPayment = () => undefined
       fakeApplication.paymentReceived = 0
+      request.url = '/done'
 
       const res = await server.inject(request)
       Code.expect(res.statusCode).to.equal(302)

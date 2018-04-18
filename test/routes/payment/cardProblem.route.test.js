@@ -9,20 +9,28 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 const server = require('../../../server')
 const Application = require('../../../src/models/application.model')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
-const Payment = require('../../../src/models/payment.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
+const RecoveryService = require('../../../src/services/recovery.service')
 const {COOKIE_RESULT} = require('../../../src/constants')
+
+const PaymentTypes = {
+  CARD_PAYMENT: 910400000,
+  BACS_PAYMENT: 910400005
+}
 
 let sandbox
 
-const routePath = '/pay/card-problem'
+const fakeSlug = 'SLUG'
+
+const routePath = `/pay/card-problem/${fakeSlug}`
 const errorPath = '/errors/technical-problem'
 const notSubmittedRoutePath = '/errors/order/check-answers-not-complete'
 
 let fakeApplication
 let fakeApplicationLine
-let fakePayment
+let fakeRecovery
+
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID'
@@ -32,27 +40,25 @@ lab.beforeEach(() => {
     id: 'APPLICATION_LINE_ID'
   }
 
-  fakePayment = {
-    id: '41536963-5041-e811-a95e-000d3a233e06',
-    applicationLineId: 'APPLICATION_LINE_ID',
-    category: 910400000,
-    description: 'Application charge for a standard rules waste permit: Mobile plant for land-spreading SR2010 No 4',
-    referenceNumber: 'P00001036-P1M',
-    statusCode: 910400004,
-    type: 910400000,
-    value: 2641
+  fakeRecovery = {
+    authToken: 'AUTH_TOKEN',
+    applicationId: fakeApplication.id,
+    applicationLineId: fakeApplicationLine.id,
+    application: fakeApplication
   }
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
+  // sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(CookieService, 'generateCookie').value(() => ({authToken: 'AUTH_TOKEN'}))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(ApplicationLine, 'getById').value(() => new Application(fakeApplicationLine))
+  sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(LoggingService, 'logError').value(() => {})
-  sandbox.stub(Payment, 'getCardPaymentDetails').value(() => new Payment(fakePayment))
+  sandbox.stub(RecoveryService, 'recoverApplication').value(() => fakeRecovery)
 })
 
 lab.afterEach(() => {
@@ -60,8 +66,9 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment(`Your card payment failed page:`, () => {
+lab.experiment(`Your card payment failed:`, () => {
   new GeneralTestHelper(lab, routePath).test({
+    excludeCookieGetTests: true,
     excludeCookiePostTests: true,
     excludeAlreadySubmittedTest: true
   })
@@ -71,14 +78,15 @@ lab.experiment(`Your card payment failed page:`, () => {
 
     const checkCommonElements = async (doc) => {
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Your card payment failed')
-      Code.expect(doc.getElementById('submit-button')).to.not.exist()
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
 
       // Test for the existence of expected static content
       GeneralTestHelper.checkElementsExist(doc, [
         'no-money-taken',
         'app-not-sent',
-        'retry-card-link',
-        'bacs-payment-link'
+        'card-payment-label',
+        'bacs-payment-label',
+        'bacs-payment-label-abbr'
       ])
     }
 
@@ -108,14 +116,6 @@ lab.experiment(`Your card payment failed page:`, () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('Redirects to the Not Submitted screen if the application has not been submitted', async () => {
-        sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
-      })
-
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Application.getById = () => {
@@ -123,6 +123,77 @@ lab.experiment(`Your card payment failed page:`, () => {
         }
 
         const res = await server.inject(getRequest)
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(errorPath)
+      })
+
+      lab.test('redirects to error screen when failing to get the applicationLine ID', async () => {
+        const spy = sinon.spy(LoggingService, 'logError')
+        ApplicationLine.getById = () => {
+          throw new Error('read failed')
+        }
+
+        const res = await server.inject(getRequest)
+        Code.expect(spy.callCount).to.equal(1)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(errorPath)
+      })
+    })
+
+    lab.experiment('invalid', () => {
+      lab.test('redirects to the Not Submitted screen if the application has not been submitted', async () => {
+        sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+
+        const res = await server.inject(getRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
+      })
+    })
+  })
+
+  lab.experiment(`POST ${routePath}`, () => {
+    let postRequest
+
+    lab.beforeEach(() => {
+      postRequest = {
+        method: 'POST',
+        url: routePath,
+        headers: {},
+        payload: {
+          'payment-type': PaymentTypes.BACS_PAYMENT
+        }
+      }
+    })
+
+    lab.experiment('success', () => {
+      lab.test('when payment is selected as bacs', async () => {
+        postRequest.payload = {'payment-type': PaymentTypes.BACS_PAYMENT}
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal('/pay/bacs')
+      })
+
+      lab.test('when payment is selected as card', async () => {
+        postRequest.payload = {'payment-type': PaymentTypes.CARD_PAYMENT}
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.startWith('/pay/card')
+      })
+    })
+
+    lab.experiment('invalid', () => {
+      lab.test('when payment is not selected', async () => {
+        postRequest.payload = {}
+        const doc = await GeneralTestHelper.getDoc(postRequest)
+        GeneralTestHelper.checkValidationMessage(doc, 'payment-type', 'Select how you want to pay')
+      })
+
+      lab.test('redirects to error screen when an unexpected payment type is selected', async () => {
+        const spy = sinon.spy(LoggingService, 'logError')
+        postRequest.payload['payment-type'] = '99999999'
+
+        const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)

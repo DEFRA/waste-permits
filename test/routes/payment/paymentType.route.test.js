@@ -24,22 +24,18 @@ const routePath = '/pay/type'
 const errorPath = '/errors/technical-problem'
 const notSubmittedRoutePath = '/errors/order/check-answers-not-complete'
 
-const fakeApplication = {
-  id: 'APPLICATION_ID'
-}
-
-const fakeApplicationLine = {
-  id: 'APPLICATION_LINE_ID'
-}
-
-const getRequest = {
-  method: 'GET',
-  url: routePath,
-  headers: {},
-  payload: {}
-}
+let fakeApplication
+let fakeApplicationLine
 
 lab.beforeEach(() => {
+  fakeApplication = {
+    id: 'APPLICATION_ID'
+  }
+
+  fakeApplicationLine = {
+    id: 'APPLICATION_LINE_ID'
+  }
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
@@ -62,31 +58,37 @@ lab.experiment(`How do you want to pay?:`, () => {
   })
 
   lab.experiment(`GET ${routePath}`, () => {
-    lab.beforeEach(() => {})
+    let getRequest
+
+    const checkCommonElements = async (doc) => {
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('How do you want to pay?')
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+
+      // Test for the existence of expected static content
+      GeneralTestHelper.checkElementsExist(doc, [
+        'card-payment-label',
+        'card-payment-label-hint',
+        'bacs-payment-label',
+        'bacs-payment-label-abbr',
+        'bacs-payment-label-hint'
+      ])
+    }
+
+    lab.beforeEach(() => {
+      getRequest = {
+        method: 'GET',
+        url: routePath,
+        headers: {},
+        payload: {}
+      }
+    })
 
     lab.experiment('success', () => {
-      lab.test('static content exists', async () => {
-        const doc = await GeneralTestHelper.getDoc(getRequest)
-
-        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('How do you want to pay?')
-        Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
-
-        // Test for the existence of expected static content
-        GeneralTestHelper.checkElementsExist(doc, [
-          'card-payment-label',
-          'card-payment-label-hint',
-          'bacs-payment-label',
-          'bacs-payment-label-abbr',
-          'bacs-payment-label-hint'
-        ])
-        // payment cost should default to 0
-        Code.expect(doc.getElementById('payment-cost').firstChild.nodeValue).to.equal('0')
-      })
-
       lab.test('value is formated correctly including pence', async () => {
         const testApplicationLine = Object.assign({}, fakeApplicationLine, {value: 10000.25})
         ApplicationLine.getById = () => new ApplicationLine(testApplicationLine)
         const doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
 
         Code.expect(doc.getElementById('payment-cost').firstChild.nodeValue).to.equal('10,000.25')
       })
@@ -95,6 +97,7 @@ lab.experiment(`How do you want to pay?:`, () => {
         const testApplicationLine = Object.assign({}, fakeApplicationLine, {value: 1000})
         ApplicationLine.getById = () => new ApplicationLine(testApplicationLine)
         const doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
 
         Code.expect(doc.getElementById('payment-cost').firstChild.nodeValue).to.equal('1,000')
       })
@@ -123,6 +126,16 @@ lab.experiment(`How do you want to pay?:`, () => {
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)
+      })
+    })
+
+    lab.experiment('invalid', () => {
+      lab.test('redirects to the Not Submitted screen if the application has not been submitted', async () => {
+        sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+
+        const res = await server.inject(getRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
       })
     })
   })
@@ -172,14 +185,6 @@ lab.experiment(`How do you want to pay?:`, () => {
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)
-      })
-
-      lab.test('Redirects to the Not Submitted screen if the application has not been submitted', async () => {
-        sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
       })
     })
   })
