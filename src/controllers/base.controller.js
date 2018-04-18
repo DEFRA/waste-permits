@@ -1,5 +1,5 @@
 'use strict'
-
+const Config = require('../config/config')
 const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
@@ -102,9 +102,12 @@ module.exports = class BaseController {
     }
   }
 
-  redirect ({request, h, redirectPath, cookie}) {
+  redirect ({request, h, redirectPath, cookie, error}) {
     if (!cookie) {
       cookie = request.state[Constants.DEFRA_COOKIE_KEY]
+    }
+    if (Config.isDevelopment && error) {
+      redirectPath = `${redirectPath}?error=${JSON.stringify(error)}`
     }
     return h
       .redirect(redirectPath)
@@ -160,7 +163,7 @@ module.exports = class BaseController {
       }
 
       if (redirectPath) {
-        return this.redirect({request, h, redirectPath})
+        return this.redirect({request, h, redirectPath, error: {message: cookieValidationResult}})
       }
     }
     switch (this.route) {
@@ -173,7 +176,7 @@ module.exports = class BaseController {
           return response
         } catch (error) {
           LoggingService.logError(error, request)
-          return this.redirect({request, h, redirectPath: TECHNICAL_PROBLEM.path})
+          return this.redirect({request, h, redirectPath: TECHNICAL_PROBLEM.path, error})
         }
     }
   }

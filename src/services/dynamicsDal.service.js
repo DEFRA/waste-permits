@@ -9,6 +9,25 @@ const config = require('../config/config')
 const LoggingService = require('../services/logging.service')
 const Utilities = require('../utilities/utilities')
 
+class DalError extends Error {
+  constructor (message = '', query = '', dataObject, dynamicsStack, ...params) {
+    // Pass remaining arguments (including vendor specific ones) to parent constructor
+    super(...params)
+
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, DalError)
+    }
+
+    // Custom debugging information
+    this.query = query
+    this.dataObject = dataObject
+    this.message = message
+    this.dynamicsStack = dynamicsStack
+    this.date = new Date()
+  }
+}
+
 module.exports = class DynamicsDalService {
   constructor (authToken) {
     this.authToken = authToken
@@ -119,11 +138,12 @@ module.exports = class DynamicsDalService {
                   if (crmResponse.error.innererror) {
                     const {message, stacktrace, type} = crmResponse.error.innererror
                     LoggingService.logError(`${type}: ${message}\n${stacktrace}`)
+                    reject(new DalError(message, options.path, dataObject, stacktrace))
                   }
                 }
               }
               const message = crmMessage ? `Bad response from Dynamics. Code: ${response.statusCode}, Message: ${crmMessage}` : `Unknown response from Dynamics. Code: ${response.statusCode}, Message: ${response.statusMessage}`
-              reject(message)
+              reject(new Error(message))
           }
         })
       })

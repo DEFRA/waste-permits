@@ -139,20 +139,22 @@ lab.experiment('Dynamics Service tests:', () => {
     Code.expect(dynamicsCallSpy.callCount).to.equal(1)
   })
 
-  lab.test('service handles unknown result from Dynamics', async () => {
+  lab.test('search() handles unknown result from Dynamics', async () => {
     await dynamicsDal.search('__DYNAMICS_KNOWN_BAD_QUERY__')
       .catch((err) => {
         Code.expect(dynamicsCallSpy.callCount).to.equal(1)
-        Code.expect(err).to.endWith('Code: 500, Message: KNOWN_BAD_QUERY')
+        Code.expect(err.query).to.endWith('/__DYNAMICS_KNOWN_BAD_QUERY__')
+        Code.expect(err.dataObject).to.equal(undefined)
+        Code.expect(err.message).to.endWith('KNOWN_BAD_QUERY')
         Code.expect(loggingSpy.callCount).to.equal(1)
       })
   })
 
-  lab.test('service handles known bad result from Dynamics', async () => {
+  lab.test('search() handles known bad result from Dynamics', async () => {
     await dynamicsDal.search('__DYNAMICS_UNKNOWN_BAD_QUERY__')
       .catch((err) => {
         Code.expect(dynamicsCallSpy.callCount).to.equal(1)
-        Code.expect(err).to.endWith('Code: 500, Message: null')
+        Code.expect(err.message).to.endWith('Code: 500, Message: null')
       })
   })
 

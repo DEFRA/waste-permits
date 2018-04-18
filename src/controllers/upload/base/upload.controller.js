@@ -68,7 +68,9 @@ module.exports = class UploadController extends BaseController {
     try {
       // Validate the cookie
       if (!CookieService.validateCookie(request)) {
-        return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
+        const message = 'Upload failed validating cookie'
+        LoggingService.logError(message, request)
+        return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path, error: {message}})
       }
 
       // Post if it's not an attempt to upload a file
@@ -115,14 +117,16 @@ module.exports = class UploadController extends BaseController {
       return this.redirect({request, h, redirectPath: this.path})
     } catch (error) {
       LoggingService.logError(error, request)
-      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path, error})
     }
   }
 
   async remove (request, h) {
     // Validate the cookie
     if (!CookieService.validateCookie(request)) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
+      const message = 'Remove failed validating cookie'
+      LoggingService.logError(message, request)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path, error: {message}})
     }
 
     const {authToken, applicationId} = await this.createApplicationContext(request)
@@ -131,7 +135,9 @@ module.exports = class UploadController extends BaseController {
 
     // make sure this annotation belongs to this application
     if (annotation.applicationId !== applicationId) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path})
+      const message = 'Annotation and application mismatch'
+      LoggingService.logError(message, request)
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path, error: {message}})
     }
     await annotation.delete(authToken, annotationId)
     return this.redirect({request, h, redirectPath: this.path})
