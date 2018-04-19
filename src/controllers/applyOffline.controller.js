@@ -42,12 +42,6 @@ module.exports = class ApplyOfflineController extends BaseController {
     }
   }
 
-  constructor (...args) {
-    const [route] = args
-    super(...args)
-    this.orginalPageHeading = route.pageHeading
-  }
-
   async doGet (request, h, errors) {
     const {authToken, application, payment, standardRuleId, permitHolderType} = await this.createApplicationContext(request, {application: true, payment: true})
 

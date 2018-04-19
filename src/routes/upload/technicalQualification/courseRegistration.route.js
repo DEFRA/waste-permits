@@ -7,6 +7,6 @@ const CourseRegistrationController = require('../../../controllers/upload/techni
 const UploadValidator = require('../../../validators/upload/upload.validator')
 
 const validator = new UploadValidator()
-const controller = new CourseRegistrationController(UPLOAD_COURSE_REGISTRATION, validator, true, TASK_LIST)
+const controller = new CourseRegistrationController({route: UPLOAD_COURSE_REGISTRATION, validator, nextRoute: TASK_LIST})
 
 module.exports = Route.register('GET, REMOVE, UPLOAD', controller)

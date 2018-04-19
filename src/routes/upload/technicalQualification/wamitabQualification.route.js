@@ -7,6 +7,6 @@ const WamitabQualificationController = require('../../../controllers/upload/tech
 const UploadValidator = require('../../../validators/upload/upload.validator')
 
 const validator = new UploadValidator()
-const controller = new WamitabQualificationController(UPLOAD_WAMITAB_QUALIFICATION, validator, true, TASK_LIST)
+const controller = new WamitabQualificationController({route: UPLOAD_WAMITAB_QUALIFICATION, validator, nextRoute: TASK_LIST})
 
 module.exports = Route.register('GET, REMOVE, UPLOAD', controller)

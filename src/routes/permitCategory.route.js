@@ -5,6 +5,6 @@ const Route = require('./baseRoute')
 const PermitCategoryController = require('../controllers/permitCategory.controller')
 const PermitCategoryValidator = require('../validators/permitCategory.validator')
 const validator = new PermitCategoryValidator()
-const controller = new PermitCategoryController(Constants.Routes.PERMIT_CATEGORY, validator)
+const controller = new PermitCategoryController({route: Constants.Routes.PERMIT_CATEGORY, validator})
 
 module.exports = Route.register('GET, POST', controller, validator)
