@@ -12,14 +12,39 @@
       <p id="no-money-taken">No money has been taken from your account.</p>
 
       <p id="app-not-sent">Your application has not been sent yet. You must choose at least one payment method before your application can be sent.</p>
-
-      <div class="card-problem-link"><a id="retry-card-link" href="{{urls.cardPayment}}">Try the card payment again</a></div>
-
-      <div class="card-problem-link"><a id="bacs-payment-link" href="{{urls.bacsPayment}}">Pay later by bank transfer using Bacs</a></div>
-
       {{#if error}}
       <p class="card-payment-technical-problem" id="try-again-later">If the technical problem happens again, you could use your save link email to come back in a couple of hours and try again or pay by Bacs.</p>
       {{/if}}
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.payment-type}}{{/getFormErrorGroupClass}}">
+          <fieldset>
+
+            <legend id="payment-type-legend" class="visually-hidden">{{pageHeading}}</legend>
+
+            {{> common/fieldError fieldId='payment-type-error' message=errors.payment-type }}
+            <div class="multiple-choice">
+              <input id="card-payment" type="radio" name="payment-type" value="{{formValues.card-payment}}">
+              <label for="card-payment">
+                <span id="card-payment-label">Try the card payment again</span>
+              </label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="bacs-payment" type="radio" name="payment-type" value="{{formValues.bacs-payment}}">
+              <label for="bacs-payment">
+                <span id="bacs-payment-label">Pay later by bank transfer using {{> abbreviations/BACS id="bacs-payment-label-abbr"}}</span>
+              </label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+
+      </form>
     </div>
   </div>
 

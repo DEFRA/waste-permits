@@ -11,6 +11,7 @@ const server = require('../../../server')
 const Application = require('../../../src/models/application.model')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const ApplicationReturn = require('../../../src/models/applicationReturn.model')
+const Contact = require('../../../src/models/contact.model')
 const StandardRule = require('../../../src/models/standardRule.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
@@ -26,6 +27,7 @@ const errorPath = '/errors/technical-problem'
 let fakeApplication
 let fakeApplicationLine
 let fakeApplicationReturn
+let fakeContact
 let fakeStandardRule
 let sandbox
 
@@ -44,6 +46,11 @@ lab.beforeEach(() => {
     slug: fakeSlug
   }
 
+  fakeContact = {
+    applicationId: fakeApplication.id,
+    email: 'CONTACT_EMAIL'
+  }
+
   fakeStandardRule = {
     id: 'STANDARD_RULE_ID',
     standardRuleTypeId: 'STANDARD_RULE_TYPE_ID',
@@ -59,9 +66,10 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'generateCookie').value(() => ({authToken: 'AUTH_TOKEN'}))
   sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(ApplicationLine, 'getByApplicationId').value(() => new Application(fakeApplicationLine))
-  sandbox.stub(ApplicationReturn, 'getBySlug').value(() => new Application(fakeApplicationReturn))
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
+  sandbox.stub(ApplicationLine, 'getByApplicationId').value(() => new ApplicationLine(fakeApplicationLine))
+  sandbox.stub(ApplicationReturn, 'getBySlug').value(() => new ApplicationReturn(fakeApplicationReturn))
+  sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
 })
 
 lab.afterEach(() => {

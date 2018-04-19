@@ -8,6 +8,12 @@ const {CARD_PAYMENT, BACS_PAYMENT} = Constants.Dynamics.PaymentTypes
 module.exports = class PaymentTypeController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
+
+    const {status} = request.query || {}
+    if (status === 'error') {
+      pageContext.error = true
+    }
+
     const {application, applicationLine} = await this.createApplicationContext(request, {application: true, applicationLine: true})
 
     if (!application.isSubmitted()) {
@@ -30,7 +36,7 @@ module.exports = class PaymentTypeController extends BaseController {
 
     pageContext.cost = value.toLocaleString()
 
-    return this.showView({request, h, viewPath: 'payment/paymentType', pageContext})
+    return this.showView({request, h, viewPath: this.viewPath, pageContext})
   }
 
   async doPost (request, h, errors) {
@@ -42,7 +48,7 @@ module.exports = class PaymentTypeController extends BaseController {
       switch (paymentType) {
         case CARD_PAYMENT:
           let origin = config.wastePermitsAppUrl || request.headers.origin
-          let returnUrl = `${origin}${Constants.Routes.PAYMENT.PAYMENT_RESULT.path}`
+          let returnUrl = `${origin}${Constants.PAYMENT_RESULT_URL}`
           nextPath = `${Constants.Routes.PAYMENT.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
           break
         case BACS_PAYMENT:
