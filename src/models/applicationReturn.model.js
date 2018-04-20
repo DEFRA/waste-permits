@@ -45,6 +45,8 @@ class ApplicationReturn extends BaseModel {
       const result = response && response.value ? response.value.pop() : undefined
       if (result) {
         return ApplicationReturn.dynamicsToModel(result)
+      } else {
+        throw new Error('No matching application found')
       }
     } catch (error) {
       LoggingService.logError(`Unable to get ApplicationReturn by Slug(${slug}): ${error}`)

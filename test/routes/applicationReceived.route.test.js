@@ -77,7 +77,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(LoggingService, 'logError').value(() => {})
-  sandbox.stub(RecoveryService, 'recoverApplication').value(() => fakeRecovery)
+  sandbox.stub(RecoveryService, 'recoverFromSlug').value(() => fakeRecovery)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
   sandbox.stub(Payment, 'getBacsPayment').value(() => new Payment(fakePayment))
