@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const RecoveryService = require('../services/recovery.service')
 const ApplicationLine = require('../models/applicationLine.model')
 const BaseController = require('./base.controller')
 const TaskList = require('../models/taskList/taskList.model')
@@ -56,7 +57,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
   async doGet (request, h) {
     const pageContext = this.createPageContext()
-    const {authToken, applicationId, applicationLineId, application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
+    const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
     pageContext.sections = await this._buildSections(authToken, applicationId, applicationLineId)
 
@@ -69,16 +70,11 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       return this.redirect({request, h, redirectPath: `${Constants.Routes.TASK_LIST.path}?showError=true`})
     }
 
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    } else {
-      return this.showView({request, h, viewPath: 'checkBeforeSending', pageContext})
-    }
+    return this.showView({request, h, viewPath: 'checkBeforeSending', pageContext})
   }
 
   async doPost (request, h) {
-    const {authToken, application} = await this.createApplicationContext(request, {application: true})
+    const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
 
     application.declaration = true
     application.statusCode = Constants.Dynamics.StatusCode.APPLICATION_RECEIVED

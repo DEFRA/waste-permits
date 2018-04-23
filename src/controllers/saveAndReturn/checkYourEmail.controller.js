@@ -3,6 +3,7 @@
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const CookieService = require('../../services/cookie.service')
+const RecoveryService = require('../../services/recovery.service')
 const Application = require('../../models/application.model')
 
 module.exports = class CheckYourEmailController extends BaseController {
@@ -18,7 +19,7 @@ module.exports = class CheckYourEmailController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken} = await this.createApplicationContext(request)
+      const {authToken} = await RecoveryService.createApplicationContext(h)
       const saveAndReturnEmail = request.payload['save-and-return-email']
       try {
         const totalSent = await Application.sendAllRecoveryEmails(authToken, request.headers.origin, saveAndReturnEmail)

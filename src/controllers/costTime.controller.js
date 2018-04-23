@@ -3,16 +3,12 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CostTime = require('../models/taskList/costTime.model')
+const RecoveryService = require('../services/recovery.service')
 
 module.exports = class CostTimeController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext()
-    const {application, applicationLine = {}, payment} = await this.createApplicationContext(request, {application: true, applicationLine: true, payment: true})
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
+    const {applicationLine = {}} = await RecoveryService.createApplicationContext(h, {applicationLine: true})
 
     // Default to 0 when the balance hasn't been set
     const {value = 0} = applicationLine
@@ -23,7 +19,7 @@ module.exports = class CostTimeController extends BaseController {
   }
 
   async doPost (request, h) {
-    const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
+    const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
     await CostTime.updateCompleteness(authToken, applicationId, applicationLineId)
 

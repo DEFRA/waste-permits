@@ -2,17 +2,13 @@
 
 const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
+const RecoveryService = require('../../../services/recovery.service')
 const Address = require('../../../models/address.model')
 
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, applicationLineId, application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
+    const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
@@ -46,7 +42,7 @@ module.exports = class PostcodeController extends BaseController {
   }
 
   async doPost (request, h, errors) {
-    const {authToken} = await this.createApplicationContext(request)
+    const {authToken} = await RecoveryService.createApplicationContext(h)
     const postcode = request.payload['postcode']
     const errorPath = 'postcode'
 

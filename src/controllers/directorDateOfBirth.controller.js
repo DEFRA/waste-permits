@@ -6,17 +6,13 @@ const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
 const DirectorDateOfBirthValidator = require('../validators/directorDateOfBirth.validator')
 const LoggingService = require('../services/logging.service')
+const RecoveryService = require('../services/recovery.service')
 const ApplicationContact = require('../models/applicationContact.model')
 const Contact = require('../models/contact.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
-    const {authToken, applicationId, application, account, payment} = await this.createApplicationContext(request, {application: true, account: true, payment: true})
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
+    const {authToken, applicationId, account} = await RecoveryService.createApplicationContext(h, {account: true})
 
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
@@ -62,7 +58,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   }
 
   async doPost (request, h, errors) {
-    const {authToken, applicationId, account} = await this.createApplicationContext(request, {account: true})
+    const {authToken, applicationId, account} = await RecoveryService.createApplicationContext(h, {account: true})
 
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`

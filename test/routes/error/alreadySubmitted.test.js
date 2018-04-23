@@ -46,6 +46,7 @@ lab.afterEach(() => {
 
 lab.experiment('Already Submitted page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
+    excludeCookieGetTests: true,
     excludeCookiePostTests: true,
     excludeAlreadySubmittedTest: true})
 

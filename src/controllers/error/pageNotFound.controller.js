@@ -3,12 +3,13 @@
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const CookieService = require('../../services/cookie.service')
+const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class PageNotFoundController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
 
-    const {application, applicationLine} = await this.createApplicationContext(request, {application: true, applicationLine: true})
+    const {application, applicationLine} = await RecoveryService.createApplicationContext(h, {application: true, applicationLine: true})
 
     pageContext.hasApplication = PageNotFoundController.hasApplication(application, applicationLine)
     pageContext.taskListRoute = Constants.Routes.TASK_LIST.path

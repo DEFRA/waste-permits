@@ -4,16 +4,12 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const Account = require('../models/account.model')
 const Utilities = require('../utilities/utilities')
+const RecoveryService = require('../services/recovery.service')
 
 module.exports = class CompanyNumberController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {application, account, payment} = await this.createApplicationContext(request, {application: true, account: true, payment: true})
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
+    const {account} = await RecoveryService.createApplicationContext(h, {account: true})
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -31,7 +27,7 @@ module.exports = class CompanyNumberController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, application} = await this.createApplicationContext(request, {application: true})
+      const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
 
       const companyNumber = Utilities.stripWhitespace(request.payload['company-number'])
 

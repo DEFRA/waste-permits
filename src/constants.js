@@ -16,6 +16,7 @@ Constants.SAVE_AND_RETURN_URL = '/r'
 Constants.PAYMENT_RESULT_URL = '/pay/result'
 Constants.APPLICATION_RECEIVED_URL = '/done'
 Constants.PAYMENT_CARD_PROBLEM_URL = '/pay/card-problem'
+Constants.ALREADY_SUBMITTED_URL = '/errors/order/done-cant-go-back'
 
 Constants.DEFAULT_UPLOAD_OPTIONS = {
   maxSize: '30MB',
@@ -252,7 +253,7 @@ Constants.Routes = {
   },
   ERROR: {
     ALREADY_SUBMITTED: {
-      path: '/errors/order/done-cant-go-back',
+      path: `${Constants.ALREADY_SUBMITTED_URL}/{slug?}`,
       pageHeading: `You’ve sent your application so you can't go back and change it`
     },
     COOKIES_DISABLED: {

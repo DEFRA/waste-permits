@@ -3,17 +3,13 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const TaskList = require('../models/taskList/taskList.model')
+const RecoveryService = require('../services/recovery.service')
 
 module.exports = class TaskListController extends BaseController {
   async doGet (request, h, errors, firstTimeIn = true) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationLineId, application, payment, standardRule} = await this.createApplicationContext(request, {application: true, payment: true, standardRule: true})
+    const {authToken, applicationLineId, standardRule} = await RecoveryService.createApplicationContext(h, {standardRule: true})
     const taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
 
     const showError = Boolean(request.query.showError)
     if (showError && firstTimeIn) {

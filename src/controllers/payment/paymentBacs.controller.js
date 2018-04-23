@@ -3,11 +3,12 @@
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const Payment = require('../../models/payment.model')
+const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class PaymentBacsController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext()
-    const {authToken, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
+    const {authToken, applicationLineId, application} = await RecoveryService.createApplicationContext(h, {application: true})
 
     const payment = await Payment.getBacsPaymentDetails(authToken, applicationLineId)
 
@@ -21,7 +22,7 @@ module.exports = class PaymentBacsController extends BaseController {
   }
 
   async doPost (request, h) {
-    const {authToken, application, applicationLine} = await this.createApplicationContext(request, {application: true, applicationLine: true})
+    const {authToken, application, applicationLine} = await RecoveryService.createApplicationContext(h, {application: true, applicationLine: true})
 
     const {value = 0} = applicationLine
     const payment = await Payment.getBacsPaymentDetails(authToken, applicationLine.id)
