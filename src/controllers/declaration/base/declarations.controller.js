@@ -2,16 +2,12 @@
 
 const Constants = require('../../../constants')
 const BaseController = require('../../base.controller')
+const RecoveryService = require('../../../services/recovery.service')
 
 module.exports = class DeclarationsController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
+    const {application} = await RecoveryService.createApplicationContext(h, {application: true})
 
     switch (this.route) {
       case Constants.Routes.COMPANY_DECLARE_OFFENCES:
@@ -43,7 +39,7 @@ module.exports = class DeclarationsController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId, application} = await this.createApplicationContext(request, {application: true})
+      const {authToken, applicationId, applicationLineId, application} = await RecoveryService.createApplicationContext(h, {application: true})
 
       Object.assign(application, this.getRequestData(request))
       await application.save(authToken)

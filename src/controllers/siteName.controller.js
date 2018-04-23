@@ -3,16 +3,12 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
+const RecoveryService = require('../services/recovery.service')
 
 module.exports = class SiteNameController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, applicationLineId, application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
+    const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       // If we have Location name in the payload then display them in the form
@@ -30,7 +26,7 @@ module.exports = class SiteNameController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
+      const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
       await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'], authToken, applicationId, applicationLineId)
 

@@ -68,7 +68,7 @@ module.exports = class RecoveryService {
 
       const permitHolderType = Constants.PERMIT_HOLDER_TYPES.LIMITED_COMPANY.id
 
-      recoveredApplication = {cookie, authToken, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType}
+      recoveredApplication = {slug, cookie, authToken, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType}
 
       // Setup all the cookies as if the user hadn't left
       cookie[AUTH_TOKEN] = authToken

@@ -20,62 +20,60 @@ const pageHeading = `What's the site address?`
 const routePath = '/site/address/select-address'
 const nextRoutePath = '/task-list'
 
-const getRequest = {
-  method: 'GET',
-  url: routePath,
-  headers: {}
-}
-let postRequest
+let fakeApplication
+let fakeAddress1
+let fakeAddress2
+let fakeAddress3
+let getRequest
 
 const postcode = 'BS1 4AH'
 
-const fakeApplication = {
-  id: 'APPLICATION_ID',
-  applicationName: 'APPLICATION_NAME'
-}
-
-const fakeAddress1 = {
-  id: 'ADDRESS_ID_1',
-  buildingNameOrNumber: '101',
-  addressLine1: 'FIRST_ADDRESS_LINE_1',
-  addressLine2: undefined,
-  townOrCity: 'CITY1',
-  postcode: 'AB12 1AA',
-  uprn: 'UPRN1',
-  fromAddressLookup: true,
-  fullAddress: 'FULL_ADDRESS_1'
-}
-
-const fakeAddress2 = {
-  id: 'ADDRESS_ID_2',
-  buildingNameOrNumber: '102',
-  addressLine1: 'SECOND_ADDRESS_LINE_1',
-  addressLine2: undefined,
-  townOrCity: 'CITY2',
-  postcode: 'AB12 2AA',
-  uprn: 'UPRN2',
-  fromAddressLookup: true,
-  fullAddress: 'FULL_ADDRESS_2'
-}
-
-const fakeAddress3 = {
-  id: 'ADDRESS_ID_3',
-  buildingNameOrNumber: '103',
-  addressLine1: 'THIRD_ADDRESS_LINE_1',
-  addressLine2: undefined,
-  townOrCity: 'CITY3',
-  postcode: 'AB12 3AA',
-  uprn: 'UPRN3',
-  fromAddressLookup: true,
-  fullAddress: 'FULL_ADDRESS_3'
-}
-
 lab.beforeEach(() => {
-  postRequest = {
-    method: 'POST',
+  getRequest = {
+    method: 'GET',
     url: routePath,
-    headers: {},
-    payload: {}
+    headers: {}
+  }
+
+  fakeApplication = {
+    id: 'APPLICATION_ID',
+    applicationName: 'APPLICATION_NAME'
+  }
+
+  fakeAddress1 = {
+    id: 'ADDRESS_ID_1',
+    buildingNameOrNumber: '101',
+    addressLine1: 'FIRST_ADDRESS_LINE_1',
+    addressLine2: undefined,
+    townOrCity: 'CITY1',
+    postcode: 'AB12 1AA',
+    uprn: 'UPRN1',
+    fromAddressLookup: true,
+    fullAddress: 'FULL_ADDRESS_1'
+  }
+
+  fakeAddress2 = {
+    id: 'ADDRESS_ID_2',
+    buildingNameOrNumber: '102',
+    addressLine1: 'SECOND_ADDRESS_LINE_1',
+    addressLine2: undefined,
+    townOrCity: 'CITY2',
+    postcode: 'AB12 2AA',
+    uprn: 'UPRN2',
+    fromAddressLookup: true,
+    fullAddress: 'FULL_ADDRESS_2'
+  }
+
+  fakeAddress3 = {
+    id: 'ADDRESS_ID_3',
+    buildingNameOrNumber: '103',
+    addressLine1: 'THIRD_ADDRESS_LINE_1',
+    addressLine2: undefined,
+    townOrCity: 'CITY3',
+    postcode: 'AB12 3AA',
+    uprn: 'UPRN3',
+    fromAddressLookup: true,
+    fullAddress: 'FULL_ADDRESS_3'
   }
 
   // Create a sinon sandbox to stub methods
@@ -130,17 +128,6 @@ const checkPageElements = async (getRequest) => {
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 
-const checkValidationError = async (expectedErrorMessage) => {
-  const doc = await GeneralTestHelper.getDoc(postRequest)
-  // Panel summary error item
-  let element = doc.getElementById('error-summary-list-item-0').firstChild
-  Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
-
-  // Field error
-  element = doc.getElementById('select-address-error').firstChild.firstChild
-  Code.expect(element.nodeValue).to.equal(expectedErrorMessage)
-}
-
 lab.experiment('Site address select page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
@@ -151,6 +138,17 @@ lab.experiment('Site address select page tests:', () => {
   })
 
   lab.experiment('POST:', () => {
+    let postRequest
+
+    lab.beforeEach(() => {
+      postRequest = {
+        method: 'POST',
+        url: routePath,
+        headers: {},
+        payload: {}
+      }
+    })
+
     lab.experiment('Success:', () => {
       lab.test(`POST ${routePath} success redirects to the Task List route: ${nextRoutePath}`, async () => {
         postRequest.payload['select-address'] = fakeAddress1.uprn
@@ -166,7 +164,8 @@ lab.experiment('Site address select page tests:', () => {
 
     lab.experiment('Failure:', () => {
       lab.test(`POST ${routePath} shows an error message when an address has not been selected`, async () => {
-        await checkValidationError('Select an address')
+        const doc = await GeneralTestHelper.getDoc(postRequest)
+        await GeneralTestHelper.checkValidationMessage(doc, 'select-address', 'Select an address')
       })
     })
   })

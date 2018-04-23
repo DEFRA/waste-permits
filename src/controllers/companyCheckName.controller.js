@@ -3,19 +3,15 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
+const RecoveryService = require('../services/recovery.service')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {application, account, payment} = await this.createApplicationContext(request, {application: true, account: true, payment: true})
+    const {application, account} = await RecoveryService.createApplicationContext(h, {application: true, account: true})
 
     if (!application || !account) {
       return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
-    }
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -46,7 +42,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, application, account} = await this.createApplicationContext(request, {application: true, account: true})
+      const {authToken, application, account} = await RecoveryService.createApplicationContext(h, {application: true, account: true})
 
       if (application && account) {
         const company = await CompanyLookupService.getCompany(account.companyNumber)

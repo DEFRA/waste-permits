@@ -6,6 +6,7 @@ const BaseController = require('./base.controller')
 const StandardRule = require('../models/standardRule.model')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
+const RecoveryService = require('../services/recovery.service')
 const {OFFLINE_CATEGORIES} = Constants
 
 module.exports = class ApplyOfflineController extends BaseController {
@@ -43,12 +44,7 @@ module.exports = class ApplyOfflineController extends BaseController {
   }
 
   async doGet (request, h, errors) {
-    const {authToken, application, payment, standardRuleId, permitHolderType} = await this.createApplicationContext(request, {application: true, payment: true})
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
+    const {authToken, standardRuleId, permitHolderType} = await RecoveryService.createApplicationContext(h)
 
     let offlineCategory
     let standardRule

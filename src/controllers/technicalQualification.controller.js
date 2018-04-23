@@ -2,17 +2,13 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
+const RecoveryService = require('../services/recovery.service')
 const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.Dynamics.TechnicalQualification
 
 module.exports = class TechnicalQualificationController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
+    const {application} = await RecoveryService.createApplicationContext(h, {application: true})
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -51,7 +47,7 @@ module.exports = class TechnicalQualificationController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, application} = await this.createApplicationContext(request, {application: true})
+      const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
 
       application.technicalQualification = request.payload['technical-qualification']
       await application.save(authToken)

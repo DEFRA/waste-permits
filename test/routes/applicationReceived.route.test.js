@@ -63,13 +63,13 @@ lab.beforeEach(() => {
     description: 'THE DESCRIPTION'
   }
 
-  fakeRecovery = {
+  fakeRecovery = () => ({
     authToken: 'AUTH_TOKEN',
     applicationId: fakeApplication.id,
     applicationLineId: fakeApplicationLine.id,
-    application: fakeApplication,
-    contact: fakeContact
-  }
+    application: new Application(fakeApplication),
+    contact: new Contact(fakeContact)
+  })
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -77,8 +77,9 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(LoggingService, 'logError').value(() => {})
-  sandbox.stub(RecoveryService, 'recoverFromSlug').value(() => fakeRecovery)
+  sandbox.stub(RecoveryService, 'recoverFromSlug').value(() => fakeRecovery())
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
   sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
   sandbox.stub(Payment, 'getBacsPayment').value(() => new Payment(fakePayment))
   sandbox.stub(Payment, 'getCardPayment').value(() => undefined)

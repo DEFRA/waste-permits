@@ -3,20 +3,16 @@
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const SaveAndReturn = require('../../models/taskList/saveAndReturn.model')
+const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class EnterEmailController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, applicationLineId, application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
+    const {authToken, applicationId, applicationLineId, application} = await RecoveryService.createApplicationContext(h, {application: true})
 
     const isComplete = await SaveAndReturn.isComplete(authToken, applicationId, applicationLineId)
     if (isComplete) {
       return this.redirect({request, h, redirectPath: Constants.Routes.SAVE_AND_RETURN_COMPLETE.path})
-    }
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
     }
 
     if (request.payload) {
@@ -34,7 +30,7 @@ module.exports = class EnterEmailController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, application} = await this.createApplicationContext(request, {application: true})
+      const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
       application.saveAndReturnEmail = request.payload['save-and-return-email']
 
       await application.save(authToken)

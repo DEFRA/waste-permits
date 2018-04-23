@@ -3,36 +3,41 @@ const Config = require('../config/config')
 const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
+const RecoveryService = require('../services/recovery.service')
 const {COOKIE_RESULT} = Constants
-const Application = require('../models/application.model')
-const ApplicationLine = require('../models/applicationLine.model')
-const Account = require('../models/account.model')
-const Contact = require('../models/contact.model')
-const Payment = require('../models/payment.model')
-const StandardRule = require('../models/standardRule.model')
 
 module.exports = class BaseController {
-  constructor ({route, validator, cookieValidationRequired = true, viewPath, nextRoute}) {
+  constructor ({route, validator, cookieValidationRequired = true, applicationRequired = true, submittedRequired = false, paymentRequired = false, viewPath, nextRoute}) {
     if (!route) {
       console.error(`Error - Unable to find Constants.Routes for: ${Object.getPrototypeOf(this).constructor.name}`)
     }
+
     this.route = route
     this.path = route.path
+
     if (nextRoute) {
       this.nextPath = nextRoute.path
     }
+
     if (validator) {
       this.validator = validator
     }
+
     if (viewPath) {
       this.viewPath = viewPath
     }
+
     this.orginalPageHeading = route.pageHeading
+
     this.failAction = async (...args) => {
       const failActionReply = await this.handler.apply(this, args)
       return failActionReply.takeover()
     }
+
     this.cookieValidationRequired = cookieValidationRequired
+    this.submittedRequired = submittedRequired
+    this.paymentRequired = paymentRequired
+    this.applicationRequired = applicationRequired
   }
 
   createPageContext (errors, validator) {
@@ -55,56 +60,31 @@ module.exports = class BaseController {
     return pageContext
   }
 
-  async createApplicationContext (request,
-    options = {
-      application: false,
-      applicationLine: false,
-      account: false,
-      contact: false,
-      payment: false,
-      standardRule: false}) {
-    const authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-    const applicationId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_ID)
-    const applicationLineId = CookieService.get(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID)
-    const standardRuleId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_ID)
-    const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
-    const permitHolderType = CookieService.get(request, Constants.COOKIE_KEY.PERMIT_HOLDER_TYPE)
-
-    // Query in parallel for optional entities
-    const [application, applicationLine, account, contact, payment, standardRule] = await Promise.all([
-      options.application ? Application.getById(authToken, applicationId) : Promise.resolve(undefined),
-      options.applicationLine ? ApplicationLine.getById(authToken, applicationLineId) : Promise.resolve(undefined),
-      options.account ? Account.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
-      options.contact ? Contact.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
-      options.payment ? Payment.getBacsPaymentDetails(authToken, applicationLineId) : Promise.resolve(undefined),
-      options.standardRule ? StandardRule.getByApplicationLineId(authToken, applicationLineId) : Promise.resolve(undefined)
-    ])
-
-    return {
-      authToken,
-      applicationId,
-      applicationLineId,
-      application,
-      applicationLine,
-      account,
-      contact,
-      payment,
-      standardRule,
-      standardRuleId,
-      standardRuleTypeId,
-      permitHolderType
+  async checkRouteAccess (slug, application, payment) {
+    const {ALREADY_SUBMITTED, NOT_SUBMITTED, NOT_PAID, RECOVERY_FAILED} = Constants.Routes.ERROR
+    if (!application) {
+      return RECOVERY_FAILED.path
     }
-  }
-
-  async checkRouteAccess (application, payment) {
-    // If the application has been submitted
-    if (application.isSubmitted()) {
-      if (application.isPaid() || (payment && payment.isPaid())) {
-        // The application has already been paid for
-        return Constants.Routes.ERROR.ALREADY_SUBMITTED.path
-      } else {
-        // The application needs to be paid for
-        return Constants.Routes.ERROR.NOT_PAID.path
+    if (this.submittedRequired) {
+      if (!application.isSubmitted()) {
+        return NOT_SUBMITTED.path
+      }
+      if (this.paymentRequired) {
+        if (!(application.isPaid() || (payment && payment.isPaid()))) {
+          // The application needs to be paid for
+          return NOT_PAID.path
+        }
+      }
+    } else {
+      // If the application has been submitted
+      if (application.isSubmitted()) {
+        if (!(application.isPaid() || (payment && payment.isPaid()))) {
+          // The application needs to be paid for
+          return NOT_PAID.path
+        }
+        if (this.route !== ALREADY_SUBMITTED) {
+          return `${Constants.ALREADY_SUBMITTED_URL}${slug ? '/' + slug : ''}`
+        }
       }
     }
   }
@@ -173,6 +153,20 @@ module.exports = class BaseController {
         return this.redirect({request, h, redirectPath, error: {message: cookieValidationResult}})
       }
     }
+
+    if (this.applicationRequired) {
+      try {
+        const {slug, application, payment} = await RecoveryService.createApplicationContext(h, {application: true, payment: true}) || {}
+        const redirectPath = await this.checkRouteAccess(slug, application, payment)
+        if (redirectPath) {
+          return this.redirect({request, h, redirectPath})
+        }
+      } catch (error) {
+        LoggingService.logError(error, request)
+        return this.redirect({request, h, redirectPath: TECHNICAL_PROBLEM.path, error})
+      }
+    }
+
     switch (this.route) {
       case Constants.Routes.ERROR:
       case Constants.Routes.PAGE_NOT_FOUND:

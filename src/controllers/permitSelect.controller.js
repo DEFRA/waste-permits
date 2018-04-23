@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
+const RecoveryService = require('../services/recovery.service')
 const StandardRule = require('../models/standardRule.model')
 const StandardRuleType = require('../models/standardRuleType.model')
 const ApplicationLine = require('../models/applicationLine.model')
@@ -10,12 +11,7 @@ const ApplicationLine = require('../models/applicationLine.model')
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
+    const {authToken} = await RecoveryService.createApplicationContext(h)
 
     pageContext.formValues = request.payload
 
@@ -33,7 +29,7 @@ module.exports = class PermitSelectController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId} = await this.createApplicationContext(request)
+      const {authToken, applicationId} = await RecoveryService.createApplicationContext(h)
 
       // Look up the Standard Rule based on the chosen permit type
       const standardRule = await StandardRule.getByCode(authToken, request.payload['chosen-permit'])

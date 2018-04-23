@@ -8,6 +8,7 @@ const Constants = require('../../../constants')
 const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
 const LoggingService = require('../../../services/logging.service')
+const RecoveryService = require('../../../services/recovery.service')
 const Annotation = require('../../../models/annotation.model')
 
 const UPLOAD_PATH = path.resolve(`${process.cwd()}/temp`)
@@ -15,14 +16,9 @@ const UPLOAD_PATH = path.resolve(`${process.cwd()}/temp`)
 module.exports = class UploadController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, application, payment} = await this.createApplicationContext(request, {application: true, payment: true})
+    const {authToken, applicationId} = await RecoveryService.createApplicationContext(h)
 
     const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -35,7 +31,7 @@ module.exports = class UploadController extends BaseController {
     pageContext.subject = this.subject
 
     if (this.getSpecificPageContext) {
-      Object.assign(pageContext, await this.getSpecificPageContext(request))
+      Object.assign(pageContext, await this.getSpecificPageContext(h))
     }
 
     return this.showView({request, h, viewPath: this.view, pageContext})
@@ -45,7 +41,7 @@ module.exports = class UploadController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId} = await this.createApplicationContext(request)
+      const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
       const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
       if (!list.length) {
@@ -81,7 +77,7 @@ module.exports = class UploadController extends BaseController {
         return this.doGet(request, h, errors)
       }
 
-      const {authToken, applicationId, application} = await this.createApplicationContext(request, {application: true})
+      const {authToken, applicationId, application} = await RecoveryService.createApplicationContext(h, {application: true})
       const {applicationName: applicationReference} = application
 
       const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
@@ -123,7 +119,7 @@ module.exports = class UploadController extends BaseController {
       return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path, error: {message}})
     }
 
-    const {authToken, applicationId} = await this.createApplicationContext(request)
+    const {authToken, applicationId} = await RecoveryService.createApplicationContext(h)
     const annotationId = request.params.id
     const annotation = await Annotation.getById(authToken, annotationId)
 

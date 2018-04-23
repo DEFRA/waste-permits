@@ -4,16 +4,12 @@ const Handlebars = require('handlebars')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
+const RecoveryService = require('../services/recovery.service')
 
 module.exports = class CompanyTypeController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {application, account, payment} = await this.createApplicationContext(request, {application: true, account: true, payment: true})
-
-    const redirectPath = await this.checkRouteAccess(application, payment)
-    if (redirectPath) {
-      return this.redirect({request, h, redirectPath})
-    }
+    const {account} = await RecoveryService.createApplicationContext(h, {account: true})
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 

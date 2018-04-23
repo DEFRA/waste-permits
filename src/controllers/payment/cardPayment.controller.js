@@ -4,10 +4,11 @@ const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const Payment = require('../../models/payment.model')
 const LoggingService = require('../../services/logging.service')
+const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class CardPaymentController extends BaseController {
   async doGet (request, h) {
-    const {authToken, application, applicationLine, standardRule} = await this.createApplicationContext(request, {application: true, applicationLine: true, standardRule: true})
+    const {authToken, application, applicationLine, standardRule} = await RecoveryService.createApplicationContext(h, {application: true, applicationLine: true, standardRule: true})
 
     let {returnUrl} = request.query
 
