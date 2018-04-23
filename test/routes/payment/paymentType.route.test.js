@@ -9,8 +9,10 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 const server = require('../../../server')
 const Application = require('../../../src/models/application.model')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
+const ApplicationReturn = require('../../../src/models/applicationReturn.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
+const RecoveryService = require('../../../src/services/recovery.service')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
 const PaymentTypes = {
@@ -20,12 +22,16 @@ const PaymentTypes = {
 
 let sandbox
 
-const routePath = '/pay/type'
+const fakeSlug = 'SLUG'
+
+const routePath = `/pay/type`
 const errorPath = '/errors/technical-problem'
 const notSubmittedRoutePath = '/errors/order/check-answers-not-complete'
 
 let fakeApplication
 let fakeApplicationLine
+let fakeApplicationReturn
+let fakeRecovery
 
 lab.beforeEach(() => {
   fakeApplication = {
@@ -36,15 +42,30 @@ lab.beforeEach(() => {
     id: 'APPLICATION_LINE_ID'
   }
 
+  fakeApplicationReturn = {
+    applicationId: fakeApplication.id,
+    slug: fakeSlug
+  }
+
+  fakeRecovery = () => ({
+    authToken: 'AUTH_TOKEN',
+    applicationId: fakeApplication.id,
+    applicationLineId: fakeApplicationLine.id,
+    application: new Application(fakeApplication),
+    applicationLine: new ApplicationLine(fakeApplicationLine),
+    applicationReturn: new ApplicationReturn(fakeApplicationReturn)
+  })
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(ApplicationLine, 'getById').value(() => new Application(fakeApplicationLine))
+  sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(LoggingService, 'logError').value(() => {})
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
 })
 
 lab.afterEach(() => {
@@ -85,8 +106,7 @@ lab.experiment(`How do you want to pay?:`, () => {
 
     lab.experiment('success', () => {
       lab.test('value is formated correctly including pence', async () => {
-        const testApplicationLine = Object.assign({}, fakeApplicationLine, {value: 10000.25})
-        ApplicationLine.getById = () => new ApplicationLine(testApplicationLine)
+        fakeApplicationLine.value = 10000.25
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
@@ -94,8 +114,7 @@ lab.experiment(`How do you want to pay?:`, () => {
       })
 
       lab.test('value is formated without pence', async () => {
-        const testApplicationLine = Object.assign({}, fakeApplicationLine, {value: 1000})
-        ApplicationLine.getById = () => new ApplicationLine(testApplicationLine)
+        fakeApplicationLine.value = 1000
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
@@ -104,22 +123,10 @@ lab.experiment(`How do you want to pay?:`, () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to get the applicationContext', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Application.getById = () => {
-          throw new Error('read failed')
-        }
-
-        const res = await server.inject(getRequest)
-        Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
-      })
-
-      lab.test('redirects to error screen when failing to get the applicationLine ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
-        ApplicationLine.getById = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('recovery failed')
         }
 
         const res = await server.inject(getRequest)

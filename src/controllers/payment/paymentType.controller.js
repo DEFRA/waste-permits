@@ -3,21 +3,23 @@
 const config = require('../../config/config')
 const Constants = require('../../constants')
 const BaseController = require('../base.controller')
+const RecoveryService = require('../../services/recovery.service')
 const {CARD_PAYMENT, BACS_PAYMENT} = Constants.Dynamics.PaymentTypes
 
 module.exports = class PaymentTypeController extends BaseController {
   async doGet (request, h, errors) {
+    const {application, applicationLine, applicationReturn} = await RecoveryService.createApplicationContext(h, {application: true, applicationReturn: true})
+
+    if (!application.isSubmitted()) {
+      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_SUBMITTED.path})
+    }
+
+    this.path = this.path.replace('{slug?}', applicationReturn.slug)
     const pageContext = this.createPageContext(errors)
 
     const {status} = request.query || {}
     if (status === 'error') {
       pageContext.error = true
-    }
-
-    const {application, applicationLine} = await this.createApplicationContext(request, {application: true, applicationLine: true})
-
-    if (!application.isSubmitted()) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_SUBMITTED.path})
     }
 
     if (request.payload) {
@@ -32,7 +34,7 @@ module.exports = class PaymentTypeController extends BaseController {
     })
 
     // Default to 0 when the balance hasn't been set
-    const {value = 0} = applicationLine
+    const {value = 0} = applicationLine || {}
 
     pageContext.cost = value.toLocaleString()
 
@@ -44,11 +46,12 @@ module.exports = class PaymentTypeController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
+      const {cookie, applicationReturn} = await RecoveryService.createApplicationContext(h, {applicationReturn: true})
       const paymentType = parseInt(request.payload['payment-type'])
       switch (paymentType) {
         case CARD_PAYMENT:
           let origin = config.wastePermitsAppUrl || request.headers.origin
-          let returnUrl = `${origin}${Constants.PAYMENT_RESULT_URL}`
+          let returnUrl = `${origin}${Constants.PAYMENT_RESULT_URL}/${applicationReturn.slug}`
           nextPath = `${Constants.Routes.PAYMENT.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
           break
         case BACS_PAYMENT:
@@ -57,7 +60,7 @@ module.exports = class PaymentTypeController extends BaseController {
         default:
           throw new Error(`Unexpected payment type (${paymentType})`)
       }
-      return this.redirect({request, h, redirectPath: nextPath})
+      return this.redirect({request, h, redirectPath: nextPath, cookie})
     }
   }
 }
