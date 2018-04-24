@@ -8,7 +8,7 @@ const {CARD_PAYMENT, BACS_PAYMENT} = Constants.Dynamics.PaymentTypes
 
 module.exports = class PaymentTypeController extends BaseController {
   async doGet (request, h, errors) {
-    const {application, applicationLine, applicationReturn} = await RecoveryService.createApplicationContext(h, {application: true, applicationReturn: true})
+    const {application, applicationLine, applicationReturn} = await RecoveryService.createApplicationContext(h, {application: true, applicationLine: true, applicationReturn: true})
 
     if (!application.isSubmitted()) {
       return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_SUBMITTED.path})

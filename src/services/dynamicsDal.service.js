@@ -148,8 +148,9 @@ module.exports = class DynamicsDalService {
         })
       })
       crmRequest.on('error', (error) => {
-        LoggingService.logError('Dynamics error: ' + error)
-        reject(error)
+        const {message, stack, code} = error
+        LoggingService.logError(`${code}: ${message}\n${stack}`)
+        reject(new DalError(message, options.path, dataObject, stack))
       })
 
       if (dataObject && dataObject.documentbody) {
