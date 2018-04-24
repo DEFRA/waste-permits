@@ -364,12 +364,12 @@ Constants.Routes = {
   },
   SAVE_AND_RETURN_COMPLETE: {
     path: '/save-return/email-sent-task-check',
-    pageHeading: 'You’ve set up save and return for your application'
+    pageHeading: 'You’ve saved your application'
   },
   SAVE_AND_RETURN_EMAIL: {
     path: '/save-return/email',
     pageHeading: 'Save your application',
-    taskListHeading: 'Set up save and return for your application'
+    taskListHeading: 'Save your application'
   },
   SEARCH_YOUR_EMAIL: {
     path: '/save-return/search-your-email',
