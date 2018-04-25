@@ -130,7 +130,7 @@ const fakeTaskList = {
         {
           id: 'upload-technical-management-qualifications',
           label: 'Upload technical management qualifications',
-          href: '/technical-qualification',
+          href: '/technical-competence',
           completedLabelId: 'technical-qualification-completed',
           rulesetId: 'defra_techcompetenceevreq',
           completedId: 'defra_techcompetenceevreq_completed',

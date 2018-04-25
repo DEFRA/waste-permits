@@ -11,13 +11,15 @@
     </div>
   </div>
   {{else}}
-  <div>
-    <input id="is-upload-file" name="is-upload-file" type="hidden" value="on">
+  <input id="is-upload-file" name="is-upload-file" type="hidden" value="on">
+  {{#unless fileTypesHidden}}
+  <div id="file-types-hint">
     <label class="form-label" for="file">
       <span class="bold-small">Upload files one at a time</span>
       <span class="text form-hint">{{#if fileTypes.length}}<span id="file-types">{{fileTypes}}</span> files<br>{{/if}}<span id="max-size">{{maxSize}}</span> maximum file size</span>
     </label>
   </div>
+  {{/unless}}
   {{/if}}
 
   <div class="{{#if annotations.length}}panel panel-border-narrow js-hidden{{/if}}" id="upload-file-yes">

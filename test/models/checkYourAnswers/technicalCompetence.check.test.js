@@ -92,7 +92,7 @@ lab.experiment('TechnicalCompetence Check tests:', () => {
         })
 
         const {link, linkId, linkType} = links.pop()
-        Code.expect(link).to.equal('/technical-qualification')
+        Code.expect(link).to.equal('/technical-competence')
         Code.expect(linkType).to.equal('technical management qualification')
         Code.expect(linkId).to.equal(`${prefix}-link`)
       })

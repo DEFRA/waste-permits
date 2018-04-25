@@ -7,6 +7,6 @@ const SitePlanController = require('../../../controllers/upload/sitePlan/sitePla
 const UploadValidator = require('../../../validators/upload/upload.validator')
 
 const validator = new UploadValidator()
-const controller = new SitePlanController({route: SITE_PLAN, validator, nextRoute: TASK_LIST})
+const controller = new SitePlanController({route: SITE_PLAN, validator, nextRoute: TASK_LIST, viewPath: 'upload/sitePlan/sitePlan'})
 
 module.exports = Route.register('GET, REMOVE, UPLOAD', controller)

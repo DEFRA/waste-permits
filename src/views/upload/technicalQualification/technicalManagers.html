@@ -1,0 +1,54 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+      <div id="has-no-annotations" class="form-group">
+        <div id="technical-managers-description">
+          <ol class="list list-number">
+            <li>
+              <p>
+                <span id="item-heading-1" class="bold-small">Download this form and save on your computer</span><br>
+                <a id="tcm-form-link" href="/public/images/tcm-form/technically-competent-manager-details-form.pdf"
+                   download="technically-competent-manager-details-form.pdf">
+                  <span id="tcm-form-link-text">Technically competent manager details form (pdf)</span>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <span id="item-heading-2" class="bold-small">Complete the form and save it again</span><br>
+                <span id="item-description-2" >You’ll need to give name, date of birth, email and phone numbers for each manager and the permit numbers and addresses for the operations they manage. We won't include dates of birth in the public permit register.</span>
+              </p>
+            </li>
+            <li>
+              <p>
+                <span id="item-heading-3" class="bold-small">Upload the completed form</span><br>
+                <span id="item-description-3" class="text form-hint">{{#if fileTypes.length}}<span id="file-types">{{fileTypes}}</span> files<br>{{/if}}<span id="max-size">{{maxSize}}</span> maximum file size</span>
+              </p>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

@@ -13,6 +13,8 @@ const LoggingService = require('../../../src/services/logging.service')
 const UploadController = require('../../../src/controllers/upload/base/upload.controller')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
+const defaultFileTypes = 'PDF,DOC,DOCX,XLS,XLSX,JPG,ODT,ODS'
+
 const server = require('../../../server')
 
 const getDoc = async ({pageHeading, submitButton}) => {
@@ -75,8 +77,10 @@ module.exports = class UploadTestHelper {
     sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   }
 
-  getSuccess (options, additionalTests = []) {
+  getSuccess (options = {}, additionalTests = []) {
     const {lab, routePath} = this
+    options = Object.assign({}, {fileTypes: defaultFileTypes.split(',')}, options)
+    const lastFileType = options.fileTypes.pop()
     lab.experiment('success', () => {
       lab.beforeEach(() => {
         fakeAnnotation = {
@@ -99,7 +103,7 @@ module.exports = class UploadTestHelper {
 
       lab.test('when there are no annotations', async () => {
         const doc = await getDoc(options)
-        Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal('PDF, DOC, DOCX, XLS, XLSX, JPG, ODT or ODS')
+        Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal(`${options.fileTypes.join(', ')} or ${lastFileType}`)
         Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
         Code.expect(doc.getElementById('has-annotations')).to.not.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.exist()
@@ -217,13 +221,15 @@ module.exports = class UploadTestHelper {
     })
   }
 
-  uploadInvalid () {
+  uploadInvalid (options = {}) {
     const {lab} = this
+    options = Object.assign({}, {fileTypes: defaultFileTypes.split(',')}, options)
+    const lastFileType = options.fileTypes.pop()
     lab.experiment('invalid', () => {
       lab.test('when invalid content type', async () => {
         const req = this._uploadRequest({contentType: 'application/octet-stream'})
         const doc = await GeneralTestHelper.getDoc(req)
-        checkExpectedErrors(doc, 'You can only upload PDF, DOC, DOCX, XLS, XLSX, JPG, ODT or ODS files')
+        checkExpectedErrors(doc, `You can only upload ${options.fileTypes.join(', ')} or ${lastFileType} files`)
       })
 
       lab.test('when duplicate file', async () => {
