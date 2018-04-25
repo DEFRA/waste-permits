@@ -63,6 +63,7 @@
     "hapi": "^17.3.1",
     "hapi-alive": "^2.0.0",
     "hapi-dev-errors": "^2.1.0",
+    "hapi-robots": "^3.0.0",
     "hapi-router": "^4.0.0",
     "hapi-sanitize-payload": "^2.0.0",
     "https-proxy-agent": "^2.2.1",

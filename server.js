@@ -13,6 +13,7 @@ const Hapi = require('hapi')
 const Inert = require('inert')
 const Vision = require('vision')
 const HapiRouter = require('hapi-router')
+const HapiRobots = require('hapi-robots')
 const Blipp = require('blipp')
 const Disinfect = require('disinfect')
 const SanitizePayload = require('hapi-sanitize-payload')
@@ -75,6 +76,16 @@ const registerPlugins = async () => server.register([
     plugin: HapiRouter,
     options: {
       routes: './src/routes/**/*.route.js'
+    }
+  },
+
+  // Plugin for serving up robots.txt
+  // See https://www.npmjs.com/package/hapi-robots
+  {
+    plugin: HapiRobots,
+    options: {
+      // will disallow everyone from every path:
+      '*': ['/']
     }
   },
 
