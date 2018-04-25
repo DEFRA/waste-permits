@@ -19,7 +19,7 @@ lab.experiment('Base Controller tests:', () => {
   lab.test('createPageContext() method builds page context object correctly', () => {
     const route = {
       pageHeading: 'THE_PAGE_HEADING',
-      pageTitle: 'THE_PAGE_HEADING - Waste Permits - GOV.UK',
+      pageTitle: 'THE_PAGE_HEADING - Apply for a standard rules environmental permit - GOV.UK',
       path: 'THE_ROUTE_PATH'
     }
 

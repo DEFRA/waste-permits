@@ -266,7 +266,7 @@ lab.experiment('Task List page tests:', () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
     // Check the existence of the page title and Standard Rule infos
-    checkElement(doc.getElementById('page-heading'), 'Apply for a standard rules waste permit')
+    checkElement(doc.getElementById('page-heading'), 'Apply for a standard rules environmental permit')
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
     checkElement(doc.getElementById('standard-rule-name-and-code'), `${fakeStandardRule.permitName} - ${fakeStandardRule.code}`)
     checkElement(doc.getElementById('select-a-different-permit'))

@@ -19,7 +19,7 @@ module.exports = class BankruptcyController extends DeclarationsController {
   getSpecificPageContext () {
     return {
       isBankruptcy: true,
-      declaredLabel: 'Yes, there are bankruptcy or insolvency proceedings',
+      declaredLabel: 'Yes, there are or were bankruptcy or insolvency proceedings',
       noneDeclaredLabel: 'No',
       declarationDetailsLabel: 'Give details of the bankruptcy or insolvency',
       declarationDetailsHint: 'Include the dates for the proceedings',

@@ -60,7 +60,11 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who will be the permit holder?')
     Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
 
-    GeneralTestHelper.checkElementsExist(doc, ['helpline-text'])
+    GeneralTestHelper.checkElementsExist(doc, [
+      'permit-holder-message',
+      'permit-holder-requirements-link',
+      'helpline-text'
+    ])
   }
 
   lab.experiment(`GET ${routePath}`, () => {
