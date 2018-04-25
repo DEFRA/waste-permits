@@ -6,6 +6,7 @@ const logConfig = require('./src/config/logConfig')
 const cookieConfig = require('./src/config/cookieConfig')
 const crumbConfig = require('./src/config/crumbConfig')
 const LoggingService = require('./src/services/logging.service')
+const PollingService = require('./src/services/polling.service')
 
 const fs = require('fs')
 const Path = require('path')
@@ -190,6 +191,7 @@ const start = async () => {
     LoggingService.logInfo('Stopping hapi server')
     let state = 0
     try {
+      PollingService.stop()
       await server.stop()
     } catch (err) {
       state = 1
@@ -197,6 +199,9 @@ const start = async () => {
     console.log('Hapi server stopped')
     process.exit(state)
   })
+
+  // Start polling the CRM to keep it awake
+  PollingService.start(config.dynamicsPollingInterval)
 }
 
 registerPlugins().then(start)
