@@ -6642,6 +6642,14 @@
       "integrity": "sha512-kk2xyyTzI+eQ/oA1rO4eVdCpYsrPHVERHa6+mTHD08XXFLaAkkaEs6reMg1VyqGh2o5xPt//DO4EhCacLx/cRA==",
       "dev": true
     },
+    "hapi-robots": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/hapi-robots/-/hapi-robots-3.0.0.tgz",
+      "integrity": "sha512-7/+7e9ln2qOqxjbp/7cVkp1kw6NKuoqX4IrMDLQfAnQQz3+awbNotEJ9Po4u8iZzQbNrM7+frTnBIGWY1F7zhQ==",
+      "requires": {
+        "lodash": "4.17.5"
+      }
+    },
     "hapi-router": {
       "version": "4.0.0",
       "resolved": "https://registry.npmjs.org/hapi-router/-/hapi-router-4.0.0.tgz",
