@@ -7,6 +7,7 @@ const authService = new ActiveDirectoryAuthService()
 
 let timeout
 let timeoutId
+let delayStart = 30000
 
 module.exports = class PollingService {
   static async poll () {
@@ -25,7 +26,12 @@ module.exports = class PollingService {
 
   static async start (delay) {
     timeout = delay
-    await PollingService.poll()
+    return new Promise((resolve) => {
+      setTimeout(async () => {
+        await PollingService.poll()
+        resolve()
+      }, delayStart)
+    })
   }
 
   static stop () {
