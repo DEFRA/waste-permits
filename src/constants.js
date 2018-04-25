@@ -4,7 +4,7 @@ const fs = require('fs')
 
 const Constants = module.exports = {}
 
-Constants.SERVICE_NAME = 'Waste Permits'
+Constants.SERVICE_NAME = 'Apply for a standard rules environmental permit'
 Constants.GDS_NAME = 'GOV.UK'
 Constants.COOKIE_PATH = { path: '/' }
 Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
@@ -392,11 +392,11 @@ Constants.Routes = {
   },
   START_OR_OPEN_SAVED: {
     path: `/start/start-or-open-saved`,
-    pageHeading: 'Apply for a standard rules waste permit'
+    pageHeading: 'Apply for a standard rules environmental permit'
   },
   TASK_LIST: {
     path: '/task-list',
-    pageHeading: 'Apply for a standard rules waste permit'
+    pageHeading: 'Apply for a standard rules environmental permit'
   },
   TECHNICAL_QUALIFICATION: {
     path: '/technical-qualification',

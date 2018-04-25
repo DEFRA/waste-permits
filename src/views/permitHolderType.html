@@ -11,6 +11,18 @@
 
       {{> common/pageHeading pageHeading }}
 
+      <div class="panel panel-border-wide">
+        <p id="permit-holder-message">
+          <span>The permit holder must be the</span>
+          <a id="permit-holder-requirements-link"
+             href="https://www.gov.uk/guidance/legal-operator-and-competence-requirements-environmental-permits#what-a-legal-operator-is"
+             target="_blank"
+             rel="noopener noreferrer">
+            <span>legal operator of the facility (opens new tab).</span>
+          </a>
+        </p>
+      </div>
+
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 

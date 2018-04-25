@@ -57,7 +57,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
     excludeAlreadySubmittedTest: true})
 
   const checkCommonElements = async (doc) => {
-    Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a standard rules waste permit')
+    Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a standard rules environmental permit')
     Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
     Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
 
