@@ -10,10 +10,6 @@ module.exports = class SitePlanController extends UploadController {
     return SITE_PLAN
   }
 
-  get view () {
-    return 'upload/sitePlan/sitePlan'
-  }
-
   async updateCompleteness (...args) {
     await SitePlan.updateCompleteness(...args)
   }

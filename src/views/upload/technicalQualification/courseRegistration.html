@@ -19,12 +19,12 @@
 
       <div id="has-no-annotations" class="form-group">
         <div id="course-registration-description">
-          <span id="course-registration-description-heading" class="bold-small">Upload the {{> abbreviations/WAMITAB id="course-registration-description-heading-abbr-1"}} or {{> abbreviations/EPOC id="course-registration-description-heading-abbr-2"}} course registration email or letter.</span>
+          <p id="course-registration-description-heading" class="bold-small">Upload the {{> abbreviations/WAMITAB id="course-registration-description-heading-abbr-1"}} or {{> abbreviations/EPOC id="course-registration-description-heading-abbr-2"}} course registration email or letter.</p>
           {{#if wamitabRiskIsMediumOrHigh}}
-          <p id="wamitab-risk-is-medium-or-high">
-            You must complete the EPOC course or 4 units of the {{> abbreviations/WAMITAB id="wamitab-risk-is-medium-or-high-abbr"}} qualification within 4 weeks of starting operating.
-            You must get a full qualification within 12 months of starting operating.
-          </p>
+          <div id="wamitab-risk-is-medium-or-high">
+            <p>You must complete the EPOC course or 4 units of the {{> abbreviations/WAMITAB id="wamitab-risk-is-medium-or-high-abbr"}} qualification within 4 weeks of starting operations.</p>
+            <p>You must then get a full qualification within 12 months of starting operations.</p>
+          </div>
           {{else}}
           <p id="wamitab-risk-is-low">
             You must complete the qualification within 4 weeks of starting operating.

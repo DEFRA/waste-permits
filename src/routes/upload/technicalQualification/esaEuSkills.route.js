@@ -7,6 +7,6 @@ const EsaEuSkillsController = require('../../../controllers/upload/technicalQual
 const UploadValidator = require('../../../validators/upload/upload.validator')
 
 const validator = new UploadValidator()
-const controller = new EsaEuSkillsController({route: UPLOAD_ESA_EU_SKILLS, validator, nextRoute: TASK_LIST})
+const controller = new EsaEuSkillsController({route: UPLOAD_ESA_EU_SKILLS, validator, nextRoute: TASK_LIST, viewPath: 'upload/technicalQualification/esaEuSkills'})
 
 module.exports = Route.register('GET, REMOVE, UPLOAD', controller)

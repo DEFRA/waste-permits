@@ -34,7 +34,7 @@ module.exports = class UploadController extends BaseController {
       Object.assign(pageContext, await this.getSpecificPageContext(h))
     }
 
-    return this.showView({request, h, viewPath: this.view, pageContext})
+    return this.showView({request, h, viewPath: this.viewPath, pageContext})
   }
 
   async doPost (request, h, errors) {

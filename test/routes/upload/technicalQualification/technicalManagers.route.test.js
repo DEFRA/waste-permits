@@ -4,17 +4,19 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
+const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
+
 const GeneralTestHelper = require('../../generalTestHelper.test')
 const UploadTestHelper = require('../uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-competence/upload-deemed-evidence'
+const routePath = '/technical-competence/technical-managers'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
   removePath: `${routePath}/remove/${fakeAnnotationId}`,
-  nextRoutePath: '/technical-competence/technical-managers'
+  nextRoutePath: '/task-list'
 }
 
 const helper = new UploadTestHelper(lab, paths)
@@ -25,6 +27,8 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
 
+  sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
+
   helper.setStubs(sandbox)
 })
 
@@ -33,7 +37,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
+lab.experiment('Upload details for all technically competent managers tests:', () => {
   new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
     excludeCookiePostTests: true})
 
@@ -41,9 +45,10 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'deemed-evidence-description',
-      pageHeading: 'Deemed competence or an assessment: upload your evidence',
-      submitButton: 'Continue'
+      descriptionId: 'technical-managers-description',
+      pageHeading: 'Upload details for all technically competent managers',
+      submitButton: 'Continue',
+      fileTypes: ['PDF', 'JPG']
     }
 
     // Perform general get tests
@@ -52,14 +57,14 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
       {
         title: 'displays expected static content',
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'deemed-evidence-description-list-heading',
-          'deemed-evidence-description-list',
-          'deemed-evidence-description-list-item-1',
-          'deemed-evidence-description-list-item-2',
-          'deemed-evidence-description-list-item-3',
-          'deemed-evidence-description-important-info',
-          'deemed-evidence-description-important-info-abbr',
-          'deemed-evidence-description-last-paragraph'])
+          'item-heading-1',
+          'item-heading-2',
+          'item-heading-3',
+          'item-description-2',
+          'item-description-3',
+          'tcm-form-link',
+          'tcm-form-link-text'
+        ])
       }
     ])
     helper.getFailure()
@@ -73,12 +78,12 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
     helper.uploadSuccess()
-    helper.uploadInvalid()
+    helper.uploadInvalid({fileTypes: ['PDF', 'JPG']})
     helper.uploadFailure()
   })
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'technical-qualification': 'deemed-evidence'}})
+    helper.postSuccess({payload: {'technical-qualification': 'technical-managers'}})
   })
 })

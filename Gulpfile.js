@@ -100,7 +100,7 @@ gulp.task('scripts', ['copy-scripts'], (done) => {
 
 // Copy and minify the images
 gulp.task('images', () =>
-  gulp.src(paths.assets + 'images/*')
+  gulp.src(paths.assets + 'images/**/*.*')
     .pipe(imagemin({
       progressive: true,
       interlaced: true,
@@ -215,7 +215,7 @@ gulp.task('nodemon', (done) => {
 
 gulp.task('watch', () => {
   gulp.watch(paths.assets + 'javascripts/**/*.js', ['scripts'])
-  gulp.watch(paths.assets + 'images/*', ['images'])
+  gulp.watch(paths.assets + 'images/**/*.*', ['images'])
   gulp.watch(paths.assets + 'sass/**/*.scss', ['sass'])
   gulp.watch(paths.public + '**/*.*').on('change', reload)
   gulp.watch(paths.src + '**/*.*').on('change', reload)

@@ -4,19 +4,17 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
-
 const GeneralTestHelper = require('../../generalTestHelper.test')
 const UploadTestHelper = require('../uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-qualification/upload-wamitab-qualification'
+const routePath = '/technical-competence/upload-wamitab-qualification'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
   removePath: `${routePath}/remove/${fakeAnnotationId}`,
-  nextRoutePath: '/task-list'
+  nextRoutePath: '/technical-competence/technical-managers'
 }
 
 const helper = new UploadTestHelper(lab, paths)
@@ -26,8 +24,6 @@ let sandbox
 lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
-
-  sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
 
   helper.setStubs(sandbox)
 })

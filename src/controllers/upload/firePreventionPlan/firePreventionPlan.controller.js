@@ -10,10 +10,6 @@ module.exports = class FirePlanController extends UploadController {
     return FIRE_PREVENTION_PLAN
   }
 
-  get view () {
-    return 'upload/firePreventionPlan/firePreventionPlan'
-  }
-
   async updateCompleteness (...args) {
     await FirePreventionPlan.updateCompleteness(...args)
   }

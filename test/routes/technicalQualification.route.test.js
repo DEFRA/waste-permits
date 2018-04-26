@@ -15,12 +15,12 @@ const {COOKIE_RESULT} = require('../../src/constants')
 
 let fakeApplication
 
-const routePath = '/technical-qualification'
+const routePath = '/technical-competence'
 const nextRoutePath = {
-  WAMITAB_QUALIFICATION: '/technical-qualification/upload-wamitab-qualification',
-  REGISTERED_ON_A_COURSE: '/technical-qualification/upload-course-registration',
-  DEEMED_COMPETENCE: '/technical-qualification/upload-deemed-evidence',
-  ESA_EU_SKILLS: '/technical-qualification/upload-esa-eu-skills'
+  WAMITAB_QUALIFICATION: '/technical-competence/upload-wamitab-qualification',
+  REGISTERED_ON_A_COURSE: '/technical-competence/upload-course-registration',
+  DEEMED_COMPETENCE: '/technical-competence/upload-deemed-evidence',
+  ESA_EU_SKILLS: '/technical-competence/upload-esa-eu-skills'
 }
 const errorPath = '/errors/technical-problem'
 

@@ -11,7 +11,7 @@ const UploadTestHelper = require('../uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-qualification/upload-esa-eu-skills'
+const routePath = '/technical-competence/upload-esa-eu-skills'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,

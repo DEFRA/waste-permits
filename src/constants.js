@@ -399,24 +399,28 @@ Constants.Routes = {
     pageHeading: 'Apply for a standard rules environmental permit'
   },
   TECHNICAL_QUALIFICATION: {
-    path: '/technical-qualification',
+    path: '/technical-competence',
     pageHeading: 'What evidence of technical competence do you have?',
     taskListHeading: 'Prove technical competence'
   },
+  TECHNICAL_MANAGERS: {
+    path: '/technical-competence/technical-managers',
+    pageHeading: 'Upload details for all technically competent managers'
+  },
   UPLOAD_COURSE_REGISTRATION: {
-    path: '/technical-qualification/upload-course-registration',
+    path: '/technical-competence/upload-course-registration',
     pageHeading: 'Getting a qualification: upload your evidence'
   },
   UPLOAD_DEEMED_EVIDENCE: {
-    path: '/technical-qualification/upload-deemed-evidence',
+    path: '/technical-competence/upload-deemed-evidence',
     pageHeading: 'Deemed competence or an assessment: upload your evidence'
   },
   UPLOAD_ESA_EU_SKILLS: {
-    path: '/technical-qualification/upload-esa-eu-skills',
+    path: '/technical-competence/upload-esa-eu-skills',
     pageHeading: 'Energy & Utility Skills / ESA: upload your evidence'
   },
   UPLOAD_WAMITAB_QUALIFICATION: {
-    path: '/technical-qualification/upload-wamitab-qualification',
+    path: '/technical-competence/upload-wamitab-qualification',
     pageHeading: 'WAMITAB or EPOC: upload your evidence'
   },
   VERSION: {
@@ -583,7 +587,8 @@ Constants.Company = {
 Constants.UploadSubject = {
   TECHNICAL_QUALIFICATION: 'technical qualification',
   SITE_PLAN: 'site plan',
-  FIRE_PREVENTION_PLAN: 'fire prevention plan'
+  FIRE_PREVENTION_PLAN: 'fire prevention plan',
+  TECHNICAL_MANAGERS: 'technical managers'
 }
 
 Constants.CookieValue = {
