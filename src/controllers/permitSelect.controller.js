@@ -22,7 +22,7 @@ module.exports = class PermitSelectController extends BaseController {
     pageContext.standardRules = await StandardRule.list(authToken, standardRuleTypeId)
     pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
-    return this.showView({request, h, viewPath: 'permitSelect', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

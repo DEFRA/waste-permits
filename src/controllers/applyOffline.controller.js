@@ -86,6 +86,6 @@ module.exports = class ApplyOfflineController extends BaseController {
       pageContext.offlineCategoryOther = true
     }
 
-    return this.showView({request, h, viewPath: 'applyOffline', pageContext})
+    return this.showView({request, h, pageContext})
   }
 }

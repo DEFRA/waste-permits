@@ -5,7 +5,7 @@ const BaseController = require('./base.controller')
 module.exports = class ManagementSystemController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext()
-    return this.showView({request, h, viewPath: 'managementSystem', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

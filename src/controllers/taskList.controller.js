@@ -25,7 +25,7 @@ module.exports = class TaskListController extends BaseController {
 
     pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
-    return this.showView({request, h, viewPath: 'taskList', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async _buildError (request) {

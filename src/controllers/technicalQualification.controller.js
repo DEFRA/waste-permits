@@ -40,7 +40,7 @@ module.exports = class TechnicalQualificationController extends BaseController {
         break
     }
 
-    return this.showView({request, h, viewPath: 'technicalQualification', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

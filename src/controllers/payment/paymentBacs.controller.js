@@ -18,7 +18,7 @@ module.exports = class PaymentBacsController extends BaseController {
       return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.ALREADY_SUBMITTED.path})
     }
 
-    return this.showView({request, h, viewPath: 'payment/paymentBacs', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h) {

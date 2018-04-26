@@ -23,7 +23,7 @@ module.exports = class EnterEmailController extends BaseController {
         'save-and-return-email': application.saveAndReturnEmail
       }
     }
-    return this.showView({request, h, viewPath: 'saveAndReturn/emailEnter', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

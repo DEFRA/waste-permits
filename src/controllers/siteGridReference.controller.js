@@ -18,7 +18,7 @@ module.exports = class SiteGridReferenceController extends BaseController {
         'site-grid-reference': await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
       }
     }
-    return this.showView({request, h, viewPath: 'siteGridReference', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

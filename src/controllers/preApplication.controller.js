@@ -6,7 +6,7 @@ module.exports = class PreApplicationController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
 
-    return this.showView({request, h, viewPath: 'preApplication', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {
