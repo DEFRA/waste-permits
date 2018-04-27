@@ -4,10 +4,6 @@ const DeclarationsController = require('../base/declarations.controller')
 const CompanyDetails = require('../../../models/taskList/companyDetails.model')
 
 module.exports = class BankruptcyController extends DeclarationsController {
-  get view () {
-    return 'declaration/company/bankruptcy'
-  }
-
   getFormData (data) {
     return super.getFormData(data, 'bankruptcy', 'bankruptcyDetails')
   }

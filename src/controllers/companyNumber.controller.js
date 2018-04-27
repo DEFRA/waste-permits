@@ -20,7 +20,7 @@ module.exports = class CompanyNumberController extends BaseController {
         }
       }
     }
-    return this.showView({request, h, viewPath: 'companyNumber', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

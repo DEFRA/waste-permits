@@ -16,7 +16,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    return this.showView({request, h, viewPath: 'startOrOpenSaved', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

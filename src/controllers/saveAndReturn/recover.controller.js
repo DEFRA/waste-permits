@@ -17,7 +17,7 @@ module.exports = class RecoverController extends BaseController {
     this.path = `${Constants.SAVE_AND_RETURN_URL}/${slug}`
     const pageContext = this.createPageContext()
     Object.assign(pageContext, {slug, applicationNumber, standardRuleId, standardRuleTypeId, code, permitName})
-    return this.showView({request, h, viewPath: 'saveAndReturn/recover', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h) {

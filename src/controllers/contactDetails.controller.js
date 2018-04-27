@@ -35,7 +35,7 @@ module.exports = class ContactDetailsController extends BaseController {
       }
     }
 
-    return this.showView({request, h, viewPath: 'contactDetails', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

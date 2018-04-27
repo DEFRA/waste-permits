@@ -14,7 +14,7 @@ module.exports = class ConfirmRulesController extends BaseController {
     pageContext.code = standardRule.code
     pageContext.isComplete = await ConfirmRules.isComplete(authToken, application.id, applicationLineId)
 
-    return this.showView({request, h, viewPath: 'confirmRules', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h) {

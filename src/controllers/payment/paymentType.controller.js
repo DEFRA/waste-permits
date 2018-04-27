@@ -38,7 +38,7 @@ module.exports = class PaymentTypeController extends BaseController {
 
     pageContext.cost = value.toLocaleString()
 
-    return this.showView({request, h, viewPath: this.viewPath, pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

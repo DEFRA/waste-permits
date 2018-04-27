@@ -14,7 +14,7 @@ module.exports = class DrainageTypeDrainController extends BaseController {
     pageContext.code = standardRule.code
     pageContext.isComplete = await DrainageTypeDrain.isComplete(authToken, application.id, applicationLineId)
 
-    return this.showView({request, h, viewPath: 'drainageTypeDrain', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h) {

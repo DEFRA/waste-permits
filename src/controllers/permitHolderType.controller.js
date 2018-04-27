@@ -15,7 +15,7 @@ module.exports = class PermitHolderTypeController extends BaseController {
 
     pageContext.holderTypes = PermitHolderTypeController.getHolderTypes()
 
-    return this.showView({request, h, viewPath: 'permitHolderType', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

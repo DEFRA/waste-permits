@@ -35,7 +35,7 @@ module.exports = class AddressManualController extends BaseController {
       }
     }
 
-    return this.showView({request, h, viewPath: 'address/manualEntry', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

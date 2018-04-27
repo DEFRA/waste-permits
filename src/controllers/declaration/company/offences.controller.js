@@ -3,10 +3,6 @@
 const DeclarationsController = require('../base/declarations.controller')
 
 module.exports = class OffencesController extends DeclarationsController {
-  get view () {
-    return 'declaration/company/offences'
-  }
-
   getFormData (data) {
     return super.getFormData(data, 'relevantOffences', 'relevantOffencesDetails')
   }
