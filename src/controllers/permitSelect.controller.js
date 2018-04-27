@@ -29,7 +29,7 @@ module.exports = class PermitSelectController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId} = await RecoveryService.createApplicationContext(h)
+      let {authToken, applicationId, applicationLine} = await RecoveryService.createApplicationContext(h, {applicationLine: true})
 
       // Look up the Standard Rule based on the chosen permit type
       const standardRule = await StandardRule.getByCode(authToken, request.payload['chosen-permit'])
@@ -40,8 +40,13 @@ module.exports = class PermitSelectController extends BaseController {
         return this.redirect({request, h, redirectPath: Constants.Routes.APPLY_OFFLINE.path})
       }
 
+      // Delete if it already exists
+      if (applicationLine) {
+        await applicationLine.delete(authToken, applicationLine.id)
+      }
+
       // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
-      const applicationLine = new ApplicationLine({
+      applicationLine = new ApplicationLine({
         applicationId: applicationId,
         standardRuleId: standardRule.id,
         parametersId: undefined

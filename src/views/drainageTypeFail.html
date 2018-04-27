@@ -1,0 +1,35 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/pageHeading pageHeading }}
+
+      <div class="panel panel-border-wide">
+        <p id="drainage-fail-paragraph-1">You said that your vehicle storage area drains to {{drainageType.description}}.</p>
+        {{#if drainageType.isWatercourse}}
+        <p id="drainage-fail-paragraph-2">If you discharge to a water body but do not have a suitable system to prevent pollution then you do not meet the standard rules and cannot get a permit.</p>
+        {{else}}
+        <p id="drainage-fail-paragraph-3">This does not meet the standard rules so you cannot get a permit.</p>
+        {{/if}}
+      </div>
+
+      <p id="drainage-fail-paragraph-4">Please contact us to discuss your options.</p>
+
+      <div class="form-group">
+        <h2 id="drainage-contact-heading" class="heading-medium">Contact the Environment Agency</h2>
+        <span id="drainage-contact-email">Email <a id="drainage-contact-email-link" href="mailto:enquiries@environment-agency.gov.uk">enquiries@environment-agency.gov.uk</a></span><br>
+        <span id="drainage-contact-telephone">Telephone <a id="drainage-contact-telephone-link" href="tel:+443708506506">03708 506 506</a></span><br>
+        <span id="drainage-contact-telephone-outside-uk">Telephone from outside the UK (Monday to Friday, 8am to 6pm GMT) <a id="drainage-contact-telephone-outside-uk-link" href="tel:+441142825312">+44 (0) 114 282 5312 </a></span><br>
+        <span id="drainage-contact-minicom">Minicom (for the hard of hearing) <a id="drainage-contact-minicom-link" href="tel:+443702422549">03702 422 549</a></span><br>
+        <span id="drainage-contact-availability">Monday to Friday, 8am to 6pm</span>
+      </div>
+
+    </div>
+  </div>
+
+</main>

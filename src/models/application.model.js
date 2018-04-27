@@ -24,6 +24,7 @@ class Application extends BaseModel {
       {field: 'confidentialityDetails', dynamics: 'defra_confidentialitydeclarationdetails', length: {max: 2000}},
       {field: 'contactId', dynamics: '_defra_primarycontactid_value', bind: {id: 'defra_primarycontactid', relationship: 'defra_contact_defra_application_primarycontactid', entity: 'contacts'}},
       {field: 'declaration', dynamics: 'defra_applicationdeclaration'},
+      {field: 'drainageType', dynamics: 'defra_drainagetype'},
       {field: 'paymentReceived', dynamics: 'defra_paymentreceived'},
       {field: 'regime', dynamics: 'defra_regime', constant: Constants.Dynamics.WASTE_REGIME},
       {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},

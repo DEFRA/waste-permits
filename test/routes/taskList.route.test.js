@@ -290,7 +290,7 @@ lab.experiment('Task List page tests:', () => {
     Code.expect(res.headers['location']).to.equal(alreadySubmittedRoutePath)
   })
 
-  lab.test('Task list page contains the correct section headings and correct task list items', () => {
+  lab.experiment('Task list page contains the correct section headings and correct task list items', () => {
     fakeTaskList.sections.forEach((section) => {
       section.sectionItems.forEach((sectionItem) => {
         lab.test(`for ${sectionItem.label}`, async () => {

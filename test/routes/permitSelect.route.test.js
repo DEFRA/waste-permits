@@ -56,6 +56,7 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(ApplicationLine, 'getById').value(() => undefined)
   sandbox.stub(ApplicationLine.prototype, 'save').value(() => {})
   sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Payment, 'getBacsPayment').value(() => {})
