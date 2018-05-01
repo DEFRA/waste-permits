@@ -58,7 +58,7 @@
     "dotenv": "^5.0.1",
     "govuk-elements-sass": "^3.1.2",
     "govuk_frontend_toolkit": "^7.4.2",
-    "govuk_template_mustache": "^0.23.0",
+    "govuk_template_mustache": "^0.24.0",
     "handlebars": "^4.0.11",
     "hapi": "^17.3.1",
     "hapi-alive": "^2.0.0",
