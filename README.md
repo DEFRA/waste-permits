@@ -20,7 +20,7 @@ This service is currently beta and has been developed in accordance with the [Di
 Please make sure the following are installed:
 
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [Node.js v8.*](https://nodejs.org/en/)
+- [Node.js v8.*](https://nodejs.org/en/) recommend installing nvm and using `nvm install --lts`
 - [Gulp](https://gulpjs.com/) using `npm install -g gulp`
 - [StandardJS](https://standardjs.com/) using `npm install -g standard`
 - [Chrome](https://www.google.com/chrome/index.html) our default `gulp` task assumes **Chrome** is installed
@@ -34,28 +34,36 @@ git clone https://github.com/DEFRA/waste-permits.git && cd waste-permits
 npm install
 ```
 
+# Setting up .env
+
+Copy the .env.example file to .env and set it up for your environment
+
+```bash
+cp .env.example .env
+```
+
 ## Building the app
 
 Once you have the repo cloned you'll need to build it.
 
-```sh
-$ gulp clean build
+```bash
+gulp clean build
 ```
 
 ## Running the app
 
 Run the app in **Google Chrome** using [Browsersync](https://browsersync.io/docs/gulp). This will first launch/create a new tab in Chrome set to the app's start page. Any changes to the project's SCSS, JS and HTML files will cause the browser to automatically reload.
 
-```sh
-$ gulp
+```bash
+gulp
 ```
 
 ## Testing the app
 
 Use the following **Gulp** task. This runs the **StandardJS** linting as well as the unit tests to produce a `coverage.html` report
 
-```sh
-$ gulp test
+```bash
+gulp test
 ```
 
 ## Contributing to this project
