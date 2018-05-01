@@ -23,7 +23,7 @@ module.exports = class EmailConfirmController extends BaseController {
         'save-and-return-email': application.saveAndReturnEmail
       }
     }
-    return this.showView({request, h, viewPath: 'saveAndReturn/emailConfirm', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

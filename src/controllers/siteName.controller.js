@@ -19,7 +19,7 @@ module.exports = class SiteNameController extends BaseController {
       }
     }
 
-    return this.showView({request, h, viewPath: 'siteName', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

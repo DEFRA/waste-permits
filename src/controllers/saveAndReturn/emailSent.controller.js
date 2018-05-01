@@ -29,7 +29,7 @@ module.exports = class EmailSentController extends BaseController {
         pageContext.notGotEmail = true
       }
     }
-    return this.showView({request, h, viewPath: 'saveAndReturn/emailSent', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

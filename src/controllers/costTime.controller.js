@@ -15,7 +15,7 @@ module.exports = class CostTimeController extends BaseController {
 
     pageContext.cost = value.toLocaleString()
 
-    return this.showView({request, h, viewPath: 'costTime', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h) {

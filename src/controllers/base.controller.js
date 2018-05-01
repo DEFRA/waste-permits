@@ -7,7 +7,15 @@ const RecoveryService = require('../services/recovery.service')
 const {COOKIE_RESULT} = Constants
 
 module.exports = class BaseController {
-  constructor ({route, validator, cookieValidationRequired = true, applicationRequired = true, submittedRequired = false, paymentRequired = false, viewPath, nextRoute}) {
+  constructor ({
+    route,
+    nextRoute,
+    validator,
+    cookieValidationRequired = true,
+    applicationRequired = true,
+    submittedRequired = false,
+    paymentRequired = false
+  }) {
     if (!route) {
       console.error(`Error - Unable to find Constants.Routes for: ${Object.getPrototypeOf(this).constructor.name}`)
     }
@@ -21,10 +29,6 @@ module.exports = class BaseController {
 
     if (validator) {
       this.validator = validator
-    }
-
-    if (viewPath) {
-      this.viewPath = viewPath
     }
 
     this.orginalPageHeading = route.pageHeading
@@ -101,9 +105,9 @@ module.exports = class BaseController {
       .state(Constants.DEFRA_COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 
-  showView ({request, h, viewPath, pageContext, code = 200}) {
+  showView ({request, h, pageContext, code = 200}) {
     return h
-      .view(viewPath, pageContext)
+      .view(this.route.view, pageContext)
       .code(code)
       .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }

@@ -11,6 +11,6 @@ module.exports = class TechnicalProblemController extends BaseController {
       pageContext.error = error
     }
 
-    return this.showView({request, h, viewPath: 'error/technicalProblem', pageContext})
+    return this.showView({request, h, pageContext})
   }
 }

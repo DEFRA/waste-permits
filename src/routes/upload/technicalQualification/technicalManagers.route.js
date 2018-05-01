@@ -11,6 +11,6 @@ const validator = new UploadValidator({
     {type: 'PDF', mimeType: 'application/pdf'},
     {type: 'JPG', mimeType: 'image/jpeg'}
   ]})
-const controller = new TechnicalManagersController({route: TECHNICAL_MANAGERS, validator, nextRoute: TASK_LIST, viewPath: 'upload/technicalQualification/technicalManagers'})
+const controller = new TechnicalManagersController({route: TECHNICAL_MANAGERS, validator, nextRoute: TASK_LIST})
 
 module.exports = Route.register('GET, REMOVE, UPLOAD', controller)

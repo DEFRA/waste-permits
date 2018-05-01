@@ -4,10 +4,6 @@ const DeclarationsController = require('../base/declarations.controller')
 const Confidentiality = require('../../../models/taskList/confidentiality.model')
 
 module.exports = class ConfidentialityController extends DeclarationsController {
-  get view () {
-    return 'declaration/confidentiality/confidentiality'
-  }
-
   getFormData (data) {
     return super.getFormData(data, 'confidentiality', 'confidentialityDetails')
   }

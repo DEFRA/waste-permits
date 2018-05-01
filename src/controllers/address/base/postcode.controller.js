@@ -38,7 +38,7 @@ module.exports = class PostcodeController extends BaseController {
     this.customisePageContext(pageContext)
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return this.showView({request, h, viewPath: 'address/postcode', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

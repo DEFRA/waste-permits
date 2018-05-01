@@ -12,7 +12,7 @@ module.exports = class CheckYourEmailController extends BaseController {
 
     pageContext.formValues = request.payload || {}
     pageContext.email = CookieService.get(request, Constants.COOKIE_KEY.SAVE_AND_RETURN_EMAIL)
-    return this.showView({request, h, viewPath: 'saveAndReturn/checkYourEmail', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

@@ -32,7 +32,7 @@ module.exports = class DeclarationsController extends BaseController {
 
     Object.assign(pageContext, this.getSpecificPageContext())
 
-    return this.showView({request, h, viewPath: this.view, pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {

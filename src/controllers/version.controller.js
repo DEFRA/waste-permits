@@ -27,6 +27,6 @@ module.exports = class VersionController extends BaseController {
     pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`
     pageContext.renderTimestamp = moment().format(Constants.TIMESTAMP_FORMAT)
 
-    return this.showView({request, h, viewPath: 'version', pageContext})
+    return this.showView({request, h, pageContext})
   }
 }

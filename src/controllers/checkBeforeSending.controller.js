@@ -70,7 +70,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       return this.redirect({request, h, redirectPath: `${Constants.Routes.TASK_LIST.path}?showError=true`})
     }
 
-    return this.showView({request, h, viewPath: 'checkBeforeSending', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h) {

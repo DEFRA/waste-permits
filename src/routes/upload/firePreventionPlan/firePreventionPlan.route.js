@@ -7,6 +7,6 @@ const FirePreventionPlanController = require('../../../controllers/upload/firePr
 const UploadValidator = require('../../../validators/upload/upload.validator')
 
 const validator = new UploadValidator()
-const controller = new FirePreventionPlanController({route: FIRE_PREVENTION_PLAN, validator, nextRoute: TASK_LIST, viewPath: 'upload/firePreventionPlan/firePreventionPlan'})
+const controller = new FirePreventionPlanController({route: FIRE_PREVENTION_PLAN, validator, nextRoute: TASK_LIST})
 
 module.exports = Route.register('GET, REMOVE, UPLOAD', controller)

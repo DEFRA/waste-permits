@@ -28,6 +28,6 @@ module.exports = class CompanyTypeController extends BaseController {
     pageContext.companyType = companyType
     pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
 
-    return this.showView({request, h, viewPath: 'companyCheckType', pageContext})
+    return this.showView({request, h, pageContext})
   }
 }

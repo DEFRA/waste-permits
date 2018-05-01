@@ -15,7 +15,7 @@ module.exports = class PageNotFoundController extends BaseController {
     pageContext.taskListRoute = Constants.Routes.TASK_LIST.path
     pageContext.startOpenOrSavedRoute = Constants.Routes.START_OR_OPEN_SAVED.path
 
-    return this.showView({request, h, viewPath: 'error/pageNotFound', pageContext, code: 404})
+    return this.showView({request, h, pageContext, code: 404})
   }
 
   static hasApplication (application, applicationLine) {

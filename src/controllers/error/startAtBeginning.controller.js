@@ -8,6 +8,6 @@ module.exports = class StartAtBeginningController extends BaseController {
     const pageContext = this.createPageContext(errors)
     pageContext.applyForPermitLink = Constants.Routes.START_OR_OPEN_SAVED.path
 
-    return this.showView({request, h, viewPath: 'error/startAtBeginning', pageContext})
+    return this.showView({request, h, pageContext})
   }
 }

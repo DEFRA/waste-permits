@@ -26,7 +26,7 @@ module.exports = class PermitCategoryController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    return this.showView({request, h, viewPath: 'permitCategory', pageContext})
+    return this.showView({request, h, pageContext})
   }
 
   async doPost (request, h, errors) {
