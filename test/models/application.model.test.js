@@ -17,6 +17,7 @@ let sandbox
 
 const testApplicationId = 'APPLICATION_ID'
 const authToken = 'THE_AUTH_TOKEN'
+const submittedOn = '05/01/2018 04:00:00'
 
 const fakeApplicationData = {
   accountId: 'ACCOUNT_ID',
@@ -37,6 +38,7 @@ const fakeApplicationData = {
   relevantOffencesDetails: 'RELEVANT_OFFENCES_DETAILS',
   source: 910400000,
   statusCode: 'STATUS_CODE',
+  submittedOn: new Date(submittedOn),
   technicalQualification: 'TECHNICAL_QUALIFICATIONS',
   tradingName: 'TRADING_NAME',
   saveAndReturnEmail: 'fake@email.com'
@@ -67,6 +69,7 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
     defra_convictionsdeclarationdetails: application.relevantOffencesDetails,
     defra_source: application.source,
     statuscode: application.statusCode,
+    defra_submittedon: application.submittedOn.toISOString(),
     defra_technicalability: application.technicalQualification,
     defra_tradingname: application.tradingName,
     defra_saveandreturnemail: application.saveAndReturnEmail

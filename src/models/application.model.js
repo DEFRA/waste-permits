@@ -31,6 +31,7 @@ class Application extends BaseModel {
       {field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails', length: {max: 2000}},
       {field: 'source', dynamics: 'defra_source', constant: Constants.Dynamics.DIGITAL_SOURCE},
       {field: 'statusCode', dynamics: 'statuscode'},
+      {field: 'submittedOn', dynamics: 'defra_submittedon', isDate: true},
       {field: 'technicalQualification', dynamics: 'defra_technicalability'},
       {field: 'tradingName', dynamics: 'defra_tradingname', length: {max: 170}},
       {field: 'saveAndReturnEmail', dynamics: 'defra_saveandreturnemail', length: {max: 100}}
