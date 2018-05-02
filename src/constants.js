@@ -268,11 +268,16 @@ Constants.Routes = {
     pageHeading: `What's the director's date of birth?`,
     pageHeadingAlternate: `What are the directors' dates of birth?`
   },
+  DRAINAGE_TYPE_FAIL: {
+    path: '/drainage-type/contact-us',
+    view: 'drainageTypeFail',
+    pageHeading: 'Your drainage system is not suitable - please contact us'
+  },
   DRAINAGE_TYPE_DRAIN: {
     path: '/drainage-type/drain',
     view: 'drainageTypeDrain',
-    pageHeading: 'Confirm you have suitable vehicle storage areas',
-    taskListHeading: 'Confirm you have suitable vehicle storage areas'
+    pageHeading: 'Where does the vehicle storage area drain to?',
+    taskListHeading: 'Confirm you have a suitable vehicle storage area'
   },
   ERROR: {
     ALREADY_SUBMITTED: {
@@ -525,6 +530,34 @@ Constants.Dynamics = {
   },
   COMPANY_DIRECTOR: 910400000,
   DIGITAL_SOURCE: 910400000,
+  DrainageTypes: {
+    SEWER: {
+      id: 'sewer',
+      type: 910400000,
+      description: 'A sewer under a consent from the local water company',
+      allowed: true
+    },
+    BLIND_SUMP: {
+      id: 'blind-sump',
+      type: 910400001,
+      description: 'A blind sump to be taken off-site in a tanker for disposal or recovery',
+      allowed: true
+    },
+    OIL_SEPARATOR: {
+      id: 'oil-separator',
+      type: 910400002,
+      description: 'An oil separator, interceptor or other drainage system that is appropriately designed, operated and maintained',
+      hint: 'If you use this system you can only store undamaged vehicles on the area. The drainage system must be designed, constructed and maintained to ensure the discharge does not adversely impact the water quality of the receiving water body.',
+      allowed: true,
+      exceptions: ['SR2015 No 13']
+    },
+    WATERCOURSE: {
+      id: 'watercourse',
+      type: 910400003,
+      description: 'Surface water drains, a watercourse, the ground or a water body',
+      allowed: false
+    }
+  },
   PAYMENT_CATEGORY: 910400000,
   PaymentTypes: {
     CARD_PAYMENT: 910400000,

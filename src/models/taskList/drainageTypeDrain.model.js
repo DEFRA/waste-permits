@@ -6,24 +6,32 @@ const BaseModel = require('../base.model')
 const LoggingService = require('../../services/logging.service')
 const ApplicationLine = require('../applicationLine.model')
 
+const updateCompleteness = async (authToken, applicationId, applicationLineId, value) => {
+  const dynamicsDal = new DynamicsDalService(authToken)
+
+  try {
+    const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
+
+    const query = `defra_wasteparamses(${applicationLine.parametersId})`
+    await dynamicsDal.update(query, {[SURFACE_DRAINAGE]: value})
+  } catch (error) {
+    LoggingService.logError(`Unable set DrainageTypeDrain completeness to ${value}: ${error}`)
+    throw error
+  }
+}
+
 module.exports = class DrainageTypeDrain extends BaseModel {
   constructor (data) {
     super()
     this.applicationLineId = data.applicationLineId
   }
 
-  static async updateCompleteness (authToken, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async updateCompleteness (...args) {
+    await updateCompleteness(...args, true)
+  }
 
-    try {
-      const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-
-      const query = `defra_wasteparamses(${applicationLine.parametersId})`
-      await dynamicsDal.update(query, {[SURFACE_DRAINAGE]: true})
-    } catch (error) {
-      LoggingService.logError(`Unable to update DrainageTypeDrain completeness: ${error}`)
-      throw error
-    }
+  static async clearCompleteness (...args) {
+    await updateCompleteness(...args, false)
   }
 
   static async isComplete (authToken, applicationId, applicationLineId) {

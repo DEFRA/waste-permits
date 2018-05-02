@@ -6,6 +6,7 @@ const ApplicationLine = require('../models/applicationLine.model')
 const BaseController = require('./base.controller')
 const TaskList = require('../models/taskList/taskList.model')
 const PermitCheck = require('../models/checkYourAnswers/permit.check')
+const DrainageCheck = require('../models/checkYourAnswers/drainage.check')
 const SiteCheck = require('../models/checkYourAnswers/site.check')
 const SitePlanCheck = require('../models/checkYourAnswers/sitePlan.check')
 const FirePreventionPlanCheck = require('../models/checkYourAnswers/firePreventionPlan.check')
@@ -22,6 +23,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     // Please note order is display order.
     this._checks = [
       PermitCheck,
+      DrainageCheck,
       ContactCheck,
       PermitHolderCheck,
       SiteCheck,
