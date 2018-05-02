@@ -128,10 +128,11 @@ module.exports = class BaseModel {
     this.mapping
     // See the explanation of a custom filter in the method selectedDynamicsFields above.
       .filter(customFilter)
-      .forEach(({field, dynamics, constant}) => {
+      .forEach(({field, dynamics, constant, isDate}) => {
         // set values in javascript objects by specifying a path eg 'dob.month'.
         // if the path doesn't exist yet, it will be created.
-        ObjectPath.set(modelData, field, constant || dynamicsData[dynamics])
+        const val = dynamicsData[dynamics]
+        ObjectPath.set(modelData, field, isDate ? new Date(val) : constant || val)
       })
     return new this(modelData)
   }
@@ -188,7 +189,7 @@ module.exports = class BaseModel {
       .filter(customFilter)
       // ignore readonly values as they will only be set when reading from dynamics
       .filter(({readOnly}) => !readOnly)
-      .forEach(({field, dynamics, constant, bind, length}) => {
+      .forEach(({field, dynamics, constant, bind, isDate, length}) => {
         const value = this[field]
         // check the value in the field meets the length constraints if applicable
         if (length && typeof value === 'string') {
@@ -212,7 +213,10 @@ module.exports = class BaseModel {
             dynamicsData[dynamics] = constant
           } else {
             if (value !== undefined || field !== 'id') {
-              dynamicsData[dynamics] = ObjectPath.get(this, field)
+              const val = ObjectPath.get(this, field)
+              if (val !== undefined) {
+                dynamicsData[dynamics] = isDate ? new Date(val).toISOString() : val
+              }
             }
           }
         }

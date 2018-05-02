@@ -14,7 +14,7 @@ module.exports = class PaymentTypeController extends BaseController {
       return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_SUBMITTED.path})
     }
 
-    this.path = this.path.replace('{slug?}', applicationReturn.slug)
+    this.path = this.path.replace('{slug?}', applicationReturn ? applicationReturn.slug : '')
     const pageContext = this.createPageContext(errors)
 
     const {status} = request.query || {}
