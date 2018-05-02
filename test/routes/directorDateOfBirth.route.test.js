@@ -140,7 +140,7 @@ const checkPageElements = async (request, expectedPageHeading, expectedValues) =
     element = doc.getElementById(`director-name-${index}`)
     Code.expect(element).to.exist()
 
-    element = doc.getElementById(`visually-hidden-label-${index}`)
+    element = doc.getElementById(`label-${index}`)
     Code.expect(element).to.exist()
 
     element = doc.getElementById(`dob-formatted-month-year-${index}`)
