@@ -6,6 +6,7 @@
 /log/
 /public/
 temp
+govuk_template_mustache
 
 # Test coverage output files
 coverage.html
@@ -13,4 +14,3 @@ lcov.info
 
 # IDE
 .idea
-govuk_template.html
