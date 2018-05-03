@@ -69,8 +69,11 @@ const fakeAnnotation = {
   id: 'ANNOTATION_ID'
 }
 let sandbox
+let context
 
 lab.beforeEach(() => {
+  context = {}
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
@@ -99,7 +102,7 @@ lab.afterEach(() => {
 
 lab.experiment('Base Check tests:', () => {
   lab.test('buildline works correctly', () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const prefix = 'check-test'
     const heading = 'SECTION_HEADING'
     const answers = ['ANSWER-1', 'ANSWER-2']
@@ -124,97 +127,97 @@ lab.experiment('Base Check tests:', () => {
   })
 
   lab.test('getApplication works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const application = await check.getApplication()
     Code.expect(application).to.equal(fakeApplication)
   })
 
   lab.test('getAgentAccount works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const account = await check.getAgentAccount()
     Code.expect(account).to.equal(fakeAccount)
   })
 
   lab.test('getContact works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const contact = await check.getContact()
     Code.expect(contact).to.equal(fakeContact)
   })
 
   lab.test('getCompany works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const company = await check.getCompany()
     Code.expect(company).to.equal(fakeCompany)
   })
 
   lab.test('getCompanySecretaryDetails works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const companySecretary = await check.getCompanySecretaryDetails()
     Code.expect(companySecretary).to.equal(fakeCompanySecretary)
   })
 
   lab.test('getPrimaryContactDetails works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const primaryContact = await check.getPrimaryContactDetails()
     Code.expect(primaryContact).to.equal(fakePrimaryContact)
   })
 
   lab.test('getBillingInvoicingDetails works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const billingInvoicing = await check.getBillingInvoicingDetails()
     Code.expect(billingInvoicing).to.equal(fakeBillingInvoicing)
   })
 
   lab.test('getDirectors works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const directors = await check.getDirectors()
     Code.expect(directors).to.equal([Merge({dob: {day}}, fakeDirector)])
   })
 
   lab.test('getLocation works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const location = await check.getLocation()
     Code.expect(location).to.equal(fakeLocation)
   })
 
   lab.test('getLocationDetail works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const locationDetail = await check.getLocationDetail()
     Code.expect(locationDetail).to.equal(fakeLocationDetail)
   })
 
   lab.test('getLocationAddress works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const locationAddress = await check.getLocationAddress()
     Code.expect(locationAddress).to.equal(fakeAddress)
   })
 
   lab.test('getInvoiceAddress works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const invoiceAddress = await check.getInvoiceAddress()
     Code.expect(invoiceAddress).to.equal(fakeAddress)
   })
 
   lab.test('getStandardRule works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const standardRule = await check.getStandardRule()
     Code.expect(standardRule).to.equal(fakeStandardRule)
   })
 
   lab.test('getTechnicalCompetenceEvidence works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const technicalCompetenceEvidence = await check.getTechnicalCompetenceEvidence()
     Code.expect(technicalCompetenceEvidence).to.equal([fakeAnnotation])
   })
 
   lab.test('getSitePlan works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const sitePlan = await check.getSitePlan()
     Code.expect(sitePlan).to.equal([fakeAnnotation])
   })
 
   lab.test('getFirePreventionPlan works correctly', async () => {
-    const check = new BaseCheck()
+    const check = new BaseCheck(context)
     const sitePlan = await check.getFirePreventionPlan()
     Code.expect(sitePlan).to.equal([fakeAnnotation])
   })
