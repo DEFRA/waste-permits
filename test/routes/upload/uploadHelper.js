@@ -197,11 +197,11 @@ module.exports = class UploadTestHelper {
     }
   }
 
-  uploadSuccess () {
+  uploadSuccess (contentType = 'image/jpeg') {
     const {lab, routePath} = this
     lab.experiment('success', () => {
       lab.test('when annotation is saved', async () => {
-        const req = this._uploadRequest({})
+        const req = this._uploadRequest({contentType})
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(routePath)
@@ -221,7 +221,7 @@ module.exports = class UploadTestHelper {
     })
   }
 
-  uploadInvalid (options = {}) {
+  uploadInvalid (options = {}, contentType = 'image/jpeg') {
     const {lab} = this
     options = Object.assign({}, {fileTypes: defaultFileTypes.split(',')}, options)
     const lastFileType = options.fileTypes.pop()
@@ -234,27 +234,27 @@ module.exports = class UploadTestHelper {
 
       lab.test('when duplicate file', async () => {
         Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
-        const req = this._uploadRequest({filename: fakeAnnotation.filename})
+        const req = this._uploadRequest({filename: fakeAnnotation.filename, contentType})
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, 'That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.')
       })
 
       lab.test('when the filename is too long', async () => {
         Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
-        const req = this._uploadRequest({filename: `${'a'.repeat(252)}.jpg`})
+        const req = this._uploadRequest({filename: `${'a'.repeat(252)}.jpg`, contentType})
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
       })
     })
   }
 
-  uploadFailure () {
+  uploadFailure (contentType = 'image/jpeg') {
     const {lab, errorPath} = this
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Annotation.prototype.save = () => Promise.reject(new Error('save failed'))
-        const req = this._uploadRequest({})
+        const req = this._uploadRequest({contentType})
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
