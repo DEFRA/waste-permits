@@ -8,8 +8,10 @@ const UploadValidator = require('../../../validators/upload/upload.validator')
 
 const validator = new UploadValidator({
   fileTypes: [
+    {type: 'DOC', mimeType: 'application/msword'},
+    {type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'},
     {type: 'PDF', mimeType: 'application/pdf'},
-    {type: 'JPG', mimeType: 'image/jpeg'}
+    {type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text'}
   ]})
 const controller = new TechnicalManagersController({route: TECHNICAL_MANAGERS, validator, nextRoute: TASK_LIST})
 
