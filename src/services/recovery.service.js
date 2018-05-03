@@ -89,11 +89,18 @@ module.exports = class RecoveryService {
   static async createApplicationContext (h, options = {}) {
     let {request} = h
     let {slug = ''} = request.params
+    let data = {}
 
     if (slug) {
-      return RecoveryService.recoverFromSlug(slug, h, options)
+      data = await RecoveryService.recoverFromSlug(slug, h, options)
     } else {
-      return RecoveryService.recoverFromCookies(slug, request, options)
+      data = await RecoveryService.recoverFromCookies(slug, request, options)
     }
+
+    request.app.data = request.app.data || {}
+
+    Object.assign(request.app.data, data)
+
+    return request.app.data
   }
 }

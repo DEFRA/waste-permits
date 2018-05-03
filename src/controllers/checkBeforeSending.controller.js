@@ -39,7 +39,8 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     return this._checks
   }
 
-  async _buildSections (authToken, applicationId, applicationLineId) {
+  async _buildSections (data) {
+    const {authToken, applicationLineId} = data
     const applicableRuleSetIds = await ApplicationLine.getValidRulesetIds(authToken, applicationLineId)
     const sections = await Promise.all(
       this.Checks
@@ -49,7 +50,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
           return Check.name === 'PermitCheck' || applicableRuleSetIds.includes(Check.rulesetId)
         })
         .map((Check) => {
-          const check = new Check(authToken, applicationId, applicationLineId)
+          const check = new Check(data)
           return check.buildLines()
         })
     )
@@ -59,9 +60,11 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
   async doGet (request, h) {
     const pageContext = this.createPageContext()
-    const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+    const data = request.app.data
+    await RecoveryService.createApplicationContext(h, {application: true, applicationLine: true, contact: true})
+    const {authToken, applicationId, applicationLineId} = data
 
-    pageContext.sections = await this._buildSections(authToken, applicationId, applicationLineId)
+    pageContext.sections = await this._buildSections(data)
 
     // If all the task list items are not complete
     const taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)

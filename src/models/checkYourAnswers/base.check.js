@@ -15,10 +15,8 @@ const {COMPANY_DIRECTOR} = Constants.Dynamics
 const {TECHNICAL_QUALIFICATION, SITE_PLAN, FIRE_PREVENTION_PLAN} = Constants.UploadSubject
 
 module.exports = class BaseCheck {
-  constructor (authToken, applicationId, applicationLineId) {
-    this.authToken = authToken
-    this.applicationId = applicationId
-    this.applicationLineId = applicationLineId
+  constructor (data) {
+    this.data = data
   }
 
   get prefix () {
@@ -36,80 +34,80 @@ module.exports = class BaseCheck {
   }
 
   async getApplication () {
-    const {authToken, applicationId} = this
-    if (!this._application) {
-      this._application = await Application.getById(authToken, applicationId)
+    const {authToken, applicationId, application} = this.data
+    if (!application) {
+      this.data.application = await Application.getById(authToken, applicationId)
     }
-    return this._application || {}
+    return this.data.application || {}
   }
 
   async getContact () {
-    const {authToken} = this
+    const {authToken, contact} = this.data
     const {contactId} = await this.getApplication()
-    if (!this._contact) {
-      this._contact = contactId ? await Contact.getById(authToken, contactId) : new Contact()
+    if (!contact) {
+      this.data.contact = contactId ? await Contact.getById(authToken, contactId) : new Contact()
     }
-    return this._contact || {}
+    return this.data.contact || {}
   }
 
   async getAgentAccount () {
-    const {authToken} = this
+    const {authToken, agentAccount} = this.data
     const {agentId} = await this.getApplication()
-    if (!this._agentAccount) {
-      this._agentAccount = agentId ? await Account.getById(authToken, agentId) : new Account()
+    if (!agentAccount) {
+      this.data.agentAccount = agentId ? await Account.getById(authToken, agentId) : new Account()
     }
-    return this._agentAccount || {}
+    return this.data.agentAccount || {}
   }
 
   async getCompany () {
-    const {companyNumber} = await this.getCompanyAccount()
-    if (!this._company) {
-      this._company = await CompanyLookupService.getCompany(companyNumber)
+    const {companyNumber, company} = await this.getCompanyAccount()
+    if (!company) {
+      this.data.company = await CompanyLookupService.getCompany(companyNumber)
     }
-    return this._company || {}
+    return this.data.company || {}
   }
 
   async getCompanyAccount () {
-    const {authToken, applicationId} = this
-    if (!this._companyAccount) {
-      this._companyAccount = await Account.getByApplicationId(authToken, applicationId)
+    const {authToken, applicationId, companyAccount} = this.data
+    if (!companyAccount) {
+      this.data.companyAccount = await Account.getByApplicationId(authToken, applicationId)
     }
-    return this._companyAccount || {}
+    return this.data.companyAccount || {}
   }
 
   async getCompanySecretaryDetails () {
-    const {authToken, applicationId} = this
-    if (!this._companySecretaryDetails) {
-      this._companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
+    const {authToken, applicationId, companySecretaryDetails} = this.data
+    if (!companySecretaryDetails) {
+      this.data.companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
     }
-    return this._companySecretaryDetails || {}
+    return this.data.companySecretaryDetails || {}
   }
 
   async getDirectors () {
-    const {authToken, applicationId} = this
+    const {authToken, applicationId, directors} = this.data
     const {id} = await this.getCompanyAccount()
-    if (!this._directors) {
-      this._directors = await Contact.list(authToken, id, COMPANY_DIRECTOR)
-      await Promise.all(this._directors.map(async (director) => {
+    if (!directors) {
+      this.data.directors = await Contact.list(authToken, id, COMPANY_DIRECTOR)
+      await Promise.all(this.data.directors.map(async (director) => {
         let applicationContact = await ApplicationContact.get(authToken, applicationId, director.id)
         if (applicationContact && applicationContact.directorDob) {
           director.dob.day = Utilities.extractDayFromDate(applicationContact.directorDob)
         }
       }))
     }
-    return this._directors || []
+    return this.data.directors || []
   }
 
   async getPrimaryContactDetails () {
-    const {authToken, applicationId} = this
-    if (!this._primaryContactDetails) {
-      this._primaryContactDetails = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
+    const {authToken, applicationId, primaryContactDetails} = this.data
+    if (!primaryContactDetails) {
+      this.data.primaryContactDetails = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
     }
-    return this._primaryContactDetails || {}
+    return this.data.primaryContactDetails || {}
   }
 
   async getBillingInvoicingDetails () {
-    const {authToken, applicationId} = this
+    const {authToken, applicationId} = this.data
     if (!this._billingInvoicingDetails) {
       this._billingInvoicingDetails = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
     }
@@ -117,69 +115,69 @@ module.exports = class BaseCheck {
   }
 
   async getStandardRule () {
-    const {authToken, applicationLineId} = this
-    if (!this._standardRule) {
-      this._standardRule = await StandardRule.getByApplicationLineId(authToken, applicationLineId)
+    const {authToken, applicationLineId, standardRule} = this.data
+    if (!standardRule) {
+      this.data.standardRule = await StandardRule.getByApplicationLineId(authToken, applicationLineId)
     }
-    return this._standardRule || {}
+    return this.data.standardRule || {}
   }
 
   async getLocation () {
-    const {authToken, applicationId, applicationLineId} = this
-    if (!this._location) {
-      this._location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+    const {authToken, applicationId, applicationLineId, location} = this.data
+    if (!location) {
+      this.data.location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
     }
-    return this._location || {}
+    return this.data.location || {}
   }
 
   async getLocationDetail () {
-    const {authToken} = this
+    const {authToken, locationDetail} = this.data
     const {id} = await this.getLocation()
-    if (!this._locationDetail) {
-      this._locationDetail = await LocationDetail.getByLocationId(authToken, id)
+    if (!locationDetail) {
+      this.data.locationDetail = await LocationDetail.getByLocationId(authToken, id)
     }
-    return this._locationDetail || {}
+    return this.data.locationDetail || {}
   }
 
   async getLocationAddress () {
-    const {authToken} = this
+    const {authToken, locationAddress} = this.data
     const {addressId} = await this.getLocationDetail()
-    if (!this._locationAddress) {
-      this._locationAddress = await Address.getById(authToken, addressId)
+    if (!locationAddress) {
+      this.data.locationAddress = await Address.getById(authToken, addressId)
     }
-    return this._locationAddress || {}
+    return this.data.locationAddress || {}
   }
 
   async getInvoiceAddress () {
-    const {authToken} = this
+    const {authToken, invoiceAddress} = this.data
     const {addressId} = await this.getBillingInvoicingDetails()
-    if (!this._invoiceAddress) {
-      this._invoiceAddress = await Address.getById(authToken, addressId)
+    if (!invoiceAddress) {
+      this.data.invoiceAddress = await Address.getById(authToken, addressId)
     }
-    return this._invoiceAddress || {}
+    return this.data.invoiceAddress || {}
   }
 
   async getTechnicalCompetenceEvidence () {
-    const {authToken, applicationId} = this
-    if (!this._technicalCompetenceEvidence) {
-      this._technicalCompetenceEvidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, TECHNICAL_QUALIFICATION)
+    const {authToken, applicationId, technicalCompetenceEvidence} = this.data
+    if (!technicalCompetenceEvidence) {
+      this.data.technicalCompetenceEvidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, TECHNICAL_QUALIFICATION)
     }
-    return this._technicalCompetenceEvidence || {}
+    return this.data.technicalCompetenceEvidence || {}
   }
 
   async getSitePlan () {
-    const {authToken, applicationId} = this
-    if (!this._sitePlan) {
-      this._sitePlan = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, SITE_PLAN)
+    const {authToken, applicationId, sitePlan} = this.data
+    if (!sitePlan) {
+      this.data.sitePlan = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, SITE_PLAN)
     }
-    return this._sitePlan || {}
+    return this.data.sitePlan || {}
   }
 
   async getFirePreventionPlan () {
-    const {authToken, applicationId} = this
-    if (!this._firePreventionPlan) {
-      this._firePreventionPlan = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, FIRE_PREVENTION_PLAN)
+    const {authToken, applicationId, firePreventionPlan} = this.data
+    if (!firePreventionPlan) {
+      this.data.firePreventionPlan = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, FIRE_PREVENTION_PLAN)
     }
-    return this._firePreventionPlan || {}
+    return this.data.firePreventionPlan || {}
   }
 }
