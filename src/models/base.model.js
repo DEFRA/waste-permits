@@ -131,8 +131,11 @@ module.exports = class BaseModel {
       .forEach(({field, dynamics, constant, isDate}) => {
         // set values in javascript objects by specifying a path eg 'dob.month'.
         // if the path doesn't exist yet, it will be created.
-        const val = dynamicsData[dynamics]
-        ObjectPath.set(modelData, field, isDate ? new Date(val) : constant || val)
+        let val = dynamicsData[dynamics]
+        if (isDate && val) {
+          val = new Date(val)
+        }
+        ObjectPath.set(modelData, field, constant || val)
       })
     return new this(modelData)
   }
