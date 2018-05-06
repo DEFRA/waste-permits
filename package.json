@@ -38,7 +38,7 @@
     "gulp-nodemon": "^2.2.1",
     "gulp-sass": "^4.0.1",
     "gulp-sourcemaps": "^2.6.4",
-    "gulp-standard": "^10.1.2",
+    "gulp-standard": "^11.0.0",
     "gulp-uglify": "^3.0.0",
     "gulp-watch": "^4.3.11",
     "htmlhint": "^0.9.13",
