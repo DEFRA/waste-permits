@@ -76,12 +76,14 @@ Constants.PERMIT_HOLDER_TYPES = {
   LIMITED_COMPANY: {
     id: 'limited-company',
     type: 'Limited company',
-    canApplyOnline: true
+    canApplyOnline: true,
+    dynamicsApplicantTypeId: 910400001
   },
   INDIVIDUAL: {
     id: 'individual',
     type: 'Individual',
-    canApplyOnline: true
+    canApplyOnline: true,
+    dynamicsApplicantTypeId: 910400000
   },
   SOLE_TRADER: {
     id: 'sole-trader',

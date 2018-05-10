@@ -22,6 +22,7 @@ const submittedOn = '05/01/2018 04:00:00'
 const fakeApplicationData = {
   accountId: 'ACCOUNT_ID',
   agentId: 'AGENT_ID',
+  applicantType: 'APPLICANT_TYPE',
   applicationName: 'APPLICATION_NAME',
   applicationNumber: 'APPLICATION_NUMBER',
   bankruptcy: 'BANKRUPTCY',
@@ -54,6 +55,7 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
     _defra_customerid_value: application.accountId,
     _defra_agentid_value: application.agentId,
     defra_name: application.applicationName,
+    defra_applicant_type: application.applicantType,
     defra_applicationnumber: application.applicationNumber,
     defra_bankruptcydeclaration: application.bankruptcy,
     defra_bankruptcydeclarationdetails: application.bankruptcyDetails,
