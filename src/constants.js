@@ -80,7 +80,12 @@ Constants.PERMIT_HOLDER_TYPES = {
   },
   INDIVIDUAL: {
     id: 'individual',
-    type: 'Individual or sole trader',
+    type: 'Individual',
+    canApplyOnline: true
+  },
+  SOLE_TRADER: {
+    id: 'sole-trader',
+    type: 'Sole trader',
     canApplyOnline: false
   },
   LOCAL_AUTHORITY: {
