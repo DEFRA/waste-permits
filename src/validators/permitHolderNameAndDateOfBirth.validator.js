@@ -35,6 +35,9 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         'custom.invalid': `Last name can only include letters, hyphens and apostrophes - delete any other characters`,
         'custom.no-leading-and-trailing-dashes': `Last name can’t start or end with a dash - delete the dash`,
         'string.max': `Enter a shorter last name with no more than ${Contact.lastName.length.max} characters`
+      },
+      'dob-day': {
+        'invalid': 'Enter a valid date of birth'
       }
     }
   }

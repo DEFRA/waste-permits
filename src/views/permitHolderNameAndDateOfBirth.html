@@ -43,15 +43,18 @@
             <div class="form-date">
               <div class="form-group form-group-day">
                 <label class="form-label" for="dob-day">Day</label>
-                <input class="form-control" id="dob-day" name="dob-day" type="number" pattern="[0-9]*" min="0" max="31" aria-describedby="dob-hint">
+                <input class="form-control {{#if errors.dob-day}}form-control-error{{/if}}" id="dob-day" name="dob-day" type="number" min="0" max="31" 
+                  aria-describedby="dob-hint" value="{{formValues.dob-day}}">
               </div>
               <div class="form-group form-group-month">
                 <label class="form-label" for="dob-month">Month</label>
-                <input class="form-control" id="dob-month" name="dob-month" type="number" pattern="[0-9]*" min="0" max="12">
+                <input class="form-control {{#if errors.dob-day}}form-control-error{{/if}}" id="dob-month" name="dob-month" type="number" min="0" max="12" 
+                  value="{{formValues.dob-month}}">
               </div>
               <div class="form-group form-group-year">
                 <label class="form-label" for="dob-year">Year</label>
-                <input class="form-control" id="dob-year" name="dob-year" type="number" pattern="[0-9]*" min="0" max="2016">
+                <input class="form-control {{#if errors.dob-day}}form-control-error{{/if}}" id="dob-year" name="dob-year" type="number" 
+                  value="{{formValues.dob-year}}">
               </div>
             </div>
           </fieldset>
