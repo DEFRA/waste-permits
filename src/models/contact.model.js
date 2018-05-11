@@ -48,7 +48,7 @@ class Contact extends BaseModel {
     }
   }
 
-  static async getIndividualPermitHolderByApplicationId(authToken, applicationId) {
+  static async getIndividualPermitHolderByApplicationId (authToken, applicationId) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const application = await Application.getById(authToken, applicationId)
     if (application.accountId) {

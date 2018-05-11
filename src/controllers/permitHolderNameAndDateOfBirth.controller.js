@@ -11,10 +11,10 @@ const Contact = require('../models/contact.model')
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})    
-    
+    const { authToken, application } = await RecoveryService.createApplicationContext(h, { application: true })
+
     if (request.payload) {
-        pageContext.formValues = request.payload
+      pageContext.formValues = request.payload
     } else {
       const contact = application.individualPermitHolderId() ? await Contact.getIndividualPermitHolderByApplicationId(authToken, application.individualPermitHolderId()) : new Contact()
       if (contact) {
@@ -25,11 +25,10 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       }
     }
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
-
     // Perform manual (non-Joi) validation of date of birth
     var dobError = await this._validateDateOfBirth(request)
     if (dobError) {
@@ -39,7 +38,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const { authToken, application } = await RecoveryService.createApplicationContext(h, { application: true })
       const {
         'first-name': firstName,
         'last-name': lastName
@@ -54,16 +53,15 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       }
 
       if (!contact) {
-        contact = new Contact({firstName, lastName})
+        contact = new Contact({ firstName, lastName })
       }
 
       await contact.save(authToken)
 
-
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path})
+      return this.redirect({ request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path })
     }
   }
-  
+
   // This is required because the date of birth is split across three fields
   async _validateDateOfBirth (request) {
     const dobDayFieldId = 'dob-day'
@@ -84,7 +82,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       return null
     } else {
       const errorPath = 'dob-day'
-      
+
       return {
         message: 'Enter a valid date',
         path: [errorPath],

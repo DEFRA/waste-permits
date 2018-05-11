@@ -14,7 +14,7 @@ const {COOKIE_RESULT} = require('../../src/constants')
 
 const routePath = '/permit-holder/details'
 const companyNumberPath = '/permit-holder/company/number'
-const convictionsPath = '/permit-holder/company/declare-offences'
+const permitHolderName = '/permit-holder/name'
 
 let fakeApplication
 let fakePermitHolder
@@ -74,12 +74,12 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
         Code.expect(res.headers['location']).to.equal(companyNumberPath)
       })
 
-      lab.test('redirects to convictions screen if permit holder type is individual', async () => {
+      lab.test('redirects to permit holder name screen if permit holder type is individual', async () => {
         fakePermitHolder.id = 'individual'
         
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(convictionsPath)
+        Code.expect(res.headers['location']).to.equal(permitHolderName)
       })
     })
   })
