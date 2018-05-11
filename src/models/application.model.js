@@ -53,6 +53,10 @@ class Application extends BaseModel {
     return Boolean(this.paymentReceived)
   }
 
+  individualPermitHolderId () {
+    return this.applicantType === Constants.PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId ? this.accountId : null
+  }
+
   static async listBySaveAndReturnEmail (authToken, saveAndReturnEmail) {
     if (saveAndReturnEmail) {
       const dynamicsDal = new DynamicsDalService(authToken)

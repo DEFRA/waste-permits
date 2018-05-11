@@ -48,6 +48,23 @@ class Contact extends BaseModel {
     }
   }
 
+  static async getIndividualPermitHolderByApplicationId(authToken, applicationId) {
+    const dynamicsDal = new DynamicsDalService(authToken)
+    const application = await Application.getById(authToken, applicationId)
+    if (application.accountId) {
+      try {
+        const query = encodeURI(`contacts(${application.accountId})?$select=${Contact.selectedDynamicsFields()}`)
+        const result = await dynamicsDal.search(query)
+        if (result) {
+          return Contact.dynamicsToModel(result)
+        }
+      } catch (error) {
+        LoggingService.logError(`Unable to get Individual Permit Holder by application ID: ${error}`)
+        throw error
+      }
+    }
+  }
+
   static async getByApplicationId (authToken, applicationId) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const application = await Application.getById(authToken, applicationId)

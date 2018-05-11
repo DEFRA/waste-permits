@@ -4,13 +4,25 @@ const moment = require('moment')
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
+const RecoveryService = require('../services/recovery.service')
+
+const Contact = require('../models/contact.model')
 
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
+    const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})    
     
     if (request.payload) {
         pageContext.formValues = request.payload
+    } else {
+      const contact = application.individualPermitHolderId() ? await Contact.getIndividualPermitHolderByApplicationId(authToken, application.individualPermitHolderId()) : new Contact()
+      if (contact) {
+        pageContext.formValues = {
+          'first-name': contact.firstName,
+          'last-name': contact.lastName
+        }
+      }
     }
 
     return this.showView({request, h, pageContext})
@@ -27,7 +39,26 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      // TODO: Save details
+      const {authToken, applicationId, applicationLineId, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const {
+        'first-name': firstName,
+        'last-name': lastName
+      } = request.payload
+      let contact
+
+      if (application.individualPermitHolderId()) {
+        contact = await Contact.getIndividualPermitHolderByApplicationId(authToken, application.individualPermitHolderId())
+        if (contact.firstName !== firstName || contact.lastName !== lastName) {
+          application.contactId = undefined
+        }
+      }
+
+      if (!contact) {
+        contact = new Contact({firstName, lastName})
+      }
+
+      await contact.save(authToken)
+
 
       return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path})
     }
