@@ -23,7 +23,7 @@ const defaultContext = {
   bodyClasses: '',
   bodyStart: loadCommonPartial('bodyStart'),
   skipLinkMessage: '',
-  cookieMessage: '',
+  cookieMessage: '<p>We use cookies to store an encrypted reference number, remember choices and help count visits. <a href="/information/cookies">Find out more about these cookies</a>.</p>',
   headerClass: 'with-proposition',
   homepageUrl: 'https://www.gov.uk',
   logoLinkTitle: 'Go to the GOV.UK homepage',
