@@ -14,7 +14,7 @@ module.exports = class PermitHolderDetailsController extends BaseController {
       return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_NUMBER.path})
     } else {
       // Skip company details and go straight to convictions
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH.path})
     }
   }
 }
