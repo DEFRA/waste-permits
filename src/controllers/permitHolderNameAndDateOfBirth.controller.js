@@ -32,6 +32,9 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
     // Perform manual (non-Joi) validation of date of birth
     var dobError = await this._validateDateOfBirth(request)
     if (dobError) {
+      if (!errors) {
+        errors = { details: [] }
+      }
       errors.details.push(dobError)
     }
 

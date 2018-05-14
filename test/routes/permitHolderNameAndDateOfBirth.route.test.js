@@ -221,7 +221,7 @@ lab.experiment('Permit Holder Name page tests:', () => {
         await checkValidationErrors('last-name', ['Last name can only include letters, hyphens and apostrophes - delete any other characters'])
       })
 
-      lab.test(`POST ${routePath} shows multiple error messages on the sanme field`, async () => {
+      lab.test(`POST ${routePath} shows multiple error messages on the same field`, async () => {
         postRequest.payload['last-name'] = '_01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
         const expectedErrors = [
           'Enter a shorter last name with no more than 50 characters',
@@ -229,27 +229,27 @@ lab.experiment('Permit Holder Name page tests:', () => {
         ]
         await checkValidationErrors('last-name', expectedErrors)
       })
-/*
+
       lab.test(`POST ${routePath} shows an error message when the day of birth is blank`, async () => {
         postRequest.payload['dob-day'] = ''
-        await checkValidationErrors(['Enter a valid date of birth'])
+        await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
       })
 
       lab.test(`POST ${routePath} shows an error message when the month of birth is blank`, async () => {
         postRequest.payload['dob-month'] = ''
-        await checkValidationErrors(['Enter a valid date of birth'])
+        await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
       })
 
       lab.test(`POST ${routePath} shows an error message when the year of birth is blank`, async () => {
         postRequest.payload['dob-year'] = ''
-        await checkValidationErrors(['Enter a valid date of birth'])
+        await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
       })
 
       lab.test(`POST ${routePath} shows an error message when the date of birth is not a real date`, async () => {
         postRequest.payload['dob-month'] = '15'
-        await checkValidationErrors(['Enter a valid date of birth'])
+        await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
       })
-      */
+      
     })
 
   })

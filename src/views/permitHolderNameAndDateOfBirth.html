@@ -32,12 +32,14 @@
           </p>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="date-of-birth">Date of birth</label>
+        <div class="form-group {{#getFormErrorGroupClass errors.dob-day}}{{/getFormErrorGroupClass}}">
+          <label class="form-label" for="dob-day">Date of birth</label>
 
-          <span class="form-hint">
+          <span class="form-hint" id="dob-hint">
             For example, 26 5 1971
           </span>
+
+          {{> common/fieldError fieldId='dob-day-error' message=errors.dob-day }}
 
           <fieldset>
             <div class="form-date">
