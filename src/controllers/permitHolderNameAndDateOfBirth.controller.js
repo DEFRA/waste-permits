@@ -16,7 +16,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const contact = application.individualPermitHolderId() ? await Contact.getIndividualPermitHolderByApplicationId(authToken, application.individualPermitHolderId()) : new Contact()
+      const contact = application.individualPermitHolderId() ? await Contact.getIndividualPermitHolderByApplicationId(authToken, application.id) : new Contact()
       if (contact) {
         pageContext.formValues = {
           'first-name': contact.firstName,
@@ -45,10 +45,11 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       } = request.payload
       let contact
 
+      // Get an existing contact if we have it, but use a new contact if any details have changed
       if (application.individualPermitHolderId()) {
-        contact = await Contact.getIndividualPermitHolderByApplicationId(authToken, application.individualPermitHolderId())
+        contact = await Contact.getIndividualPermitHolderByApplicationId(authToken, application.id)
         if (contact.firstName !== firstName || contact.lastName !== lastName) {
-          application.contactId = undefined
+          contact = null
         }
       }
 
@@ -57,6 +58,9 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       }
 
       await contact.save(authToken)
+
+      application.accountId = contact.id
+      await application.save(authToken)
 
       return this.redirect({ request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path })
     }
