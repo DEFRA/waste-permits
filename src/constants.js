@@ -378,6 +378,11 @@ Constants.Routes = {
     view: 'permitCategory',
     pageHeading: 'What do you want the permit for?'
   },
+  PERMIT_HOLDER_CONTACT_DETAILS: {
+    path: '/permit-holder/contact-details',
+    view: 'permitHolderContactDetails',
+    pageHeading: 'What are the permit holder\'s contact details?'
+  },
   PERMIT_HOLDER_DETAILS: {
     path: '/permit-holder/details',
     taskListHeading: 'Give permit holder details'

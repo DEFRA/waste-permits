@@ -63,11 +63,11 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       await contact.save(authToken)
 
       application.accountId = contact.id
-      
-      // Not saving this until we have a way of handling the dual use foreign key field
-      //await application.save(authToken)
 
-      return this.redirect({ request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path })
+      // Not saving this until we have a way of handling the dual use foreign key field
+      // await application.save(authToken)
+
+      return this.redirect({ request, h, redirectPath: Constants.Routes.PERMIT_HOLDER_CONTACT_DETAILS.path })
     }
   }
 

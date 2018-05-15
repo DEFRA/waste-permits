@@ -16,7 +16,7 @@ const {COOKIE_RESULT} = require('../../src/constants')
 let sandbox
 
 const routePath = '/permit-holder/name'
-const nextRoutePath = '/permit-holder/company/declare-offences'
+const nextRoutePath = '/permit-holder/contact-details'
 
 const getRequest = {
   method: 'GET',
@@ -202,7 +202,7 @@ lab.experiment('Permit Holder Name page tests:', () => {
         await checkValidationErrors('first-name', ['First name can only include letters, hyphens and apostrophes - delete any other characters'])
       })
 
-      lab.test(`POST ${routePath} shows multiple error messages on the sanme field`, async () => {
+      lab.test(`POST ${routePath} shows multiple error messages on the first name field`, async () => {
         postRequest.payload['first-name'] = '_01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
         const expectedErrors = [
           'Enter a shorter first name with no more than 50 characters',
@@ -221,7 +221,7 @@ lab.experiment('Permit Holder Name page tests:', () => {
         await checkValidationErrors('last-name', ['Last name can only include letters, hyphens and apostrophes - delete any other characters'])
       })
 
-      lab.test(`POST ${routePath} shows multiple error messages on the same field`, async () => {
+      lab.test(`POST ${routePath} shows multiple error messages on the last name field`, async () => {
         postRequest.payload['last-name'] = '_01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
         const expectedErrors = [
           'Enter a shorter last name with no more than 50 characters',
