@@ -19,6 +19,11 @@ const testApplicationId = 'APPLICATION_ID'
 const authToken = 'THE_AUTH_TOKEN'
 const submittedOn = '05/01/2018 04:00:00'
 
+const PERMIT_HOLDER_TYPES = {
+  LIMITED_COMPANY: 910400001,
+  INDIVIDUAL: 910400000
+}
+
 const fakeApplicationData = {
   accountId: 'ACCOUNT_ID',
   agentId: 'AGENT_ID',
@@ -34,6 +39,7 @@ const fakeApplicationData = {
   drainageType: 'DRAINAGE_TYPE',
   id: testApplicationId,
   paymentReceived: 'PAYMENT_RECEIVED',
+  permitHolderIndividualId: 'PERMIT_HOLDER_INDIVIDUAL_ID',
   regime: 910400000,
   relevantOffences: 'RELEVANT_OFFENCES',
   relevantOffencesDetails: 'RELEVANT_OFFENCES_DETAILS',
@@ -50,9 +56,9 @@ const fakeApplicationReturnData = {
 }
 
 const fakeApplicationDynamicsRecord = (options = {}) => {
-  const application = Object.assign({}, fakeApplicationData, options)
+  const application = new Application(Object.assign({}, fakeApplicationData, options))
   return {
-    _defra_customerid_value: application.accountId,
+    _defra_customerid_value: application.applicantType === PERMIT_HOLDER_TYPES.LIMITED_COMPANY ? application.accountId : application.permitHolderIndividualId,
     _defra_agentid_value: application.agentId,
     defra_name: application.applicationName,
     defra_applicant_type: application.applicantType,
@@ -78,11 +84,27 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
   }
 }
 
-const applicationNumbers = ['APPLICATION_NUMBER_1', 'APPLICATION_NUMBER_2', 'APPLICATION_NUMBER_3']
+const listData = [
+  {
+    permitHolderIndividualId: undefined,
+    applicationNumber: 'APPLICATION_NUMBER_1',
+    applicantType: PERMIT_HOLDER_TYPES.LIMITED_COMPANY
+  },
+  {
+    accountId: undefined,
+    applicationNumber: 'APPLICATION_NUMBER_2',
+    applicantType: PERMIT_HOLDER_TYPES.INDIVIDUAL
+  },
+  {
+    permitHolderIndividualId: undefined,
+    applicationNumber: 'APPLICATION_NUMBER_3',
+    applicantType: PERMIT_HOLDER_TYPES.LIMITED_COMPANY
+  }
+]
 const dynamicsApplicationList = [
-  fakeApplicationDynamicsRecord({applicationNumber: applicationNumbers[0]}),
-  fakeApplicationDynamicsRecord({applicationNumber: applicationNumbers[1]}),
-  fakeApplicationDynamicsRecord({applicationNumber: applicationNumbers[2]})]
+  fakeApplicationDynamicsRecord(listData[0]),
+  fakeApplicationDynamicsRecord(listData[1]),
+  fakeApplicationDynamicsRecord(listData[2])]
 
 lab.beforeEach(() => {
   testApplication = new Application(fakeApplicationData)
@@ -93,6 +115,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(DynamicsDalService.prototype, 'create').value(() => testApplicationId)
+  sandbox.stub(DynamicsDalService.prototype, 'delete').value(() => {})
   sandbox.stub(DynamicsDalService.prototype, 'update').value(() => testApplicationId)
   sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {
     // Dynamics Application object
@@ -129,7 +152,7 @@ lab.experiment('Application Model tests:', () => {
     Code.expect(Array.isArray(applicationList)).to.be.true()
     Code.expect(applicationList.length).to.equal(3)
     applicationList.forEach((application, index) => {
-      const testApplication = Object.assign({}, fakeApplicationData, {applicationNumber: applicationNumbers[index]})
+      const testApplication = Object.assign({}, fakeApplicationData, listData[index])
       Code.expect(application).to.equal(testApplication)
     })
   })
@@ -154,18 +177,63 @@ lab.experiment('Application Model tests:', () => {
     Code.expect(spy.callCount).to.equal(dynamicsApplicationList.length)
   })
 
-  lab.test('save() method saves a new Application object', async () => {
+  lab.test('save() method saves a new Application object for a company', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    delete testApplication.id
+    testApplication.id = undefined
+    testApplication.permitHolderIndividualId = undefined
+    testApplication.applicantType = PERMIT_HOLDER_TYPES.LIMITED_COMPANY
     await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
   })
 
-  lab.test('save() method updates an existing Application object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+  lab.test('save() method saves a new Application object for an individual', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    testApplication.id = undefined
+    testApplication.accountId = undefined
+    testApplication.applicantType = PERMIT_HOLDER_TYPES.INDIVIDUAL
     await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
+  })
+
+  lab.test('save() method updates an existing Application object for a company', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    testApplication.permitHolderIndividualId = undefined
+    testApplication.applicantType = PERMIT_HOLDER_TYPES.LIMITED_COMPANY
+    await testApplication.save(authToken)
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(testApplication.id).to.equal(testApplicationId)
+  })
+
+  lab.test('save() method updates an existing Application object for an individual', async () => {
+    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    testApplication.accountId = undefined
+    testApplication.applicantType = PERMIT_HOLDER_TYPES.INDIVIDUAL
+    await testApplication.save(authToken)
+    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(testApplication.id).to.equal(testApplicationId)
+  })
+
+  lab.test('save() method fails for a company', async () => {
+    let error
+    try {
+      testApplication.applicantType = PERMIT_HOLDER_TYPES.LIMITED_COMPANY
+      await testApplication.save(authToken)
+    } catch (err) {
+      error = err
+    }
+    Code.expect(error.message).to.equal('Application cannot have a permitHolderIndividualId when the permit holder is a company')
+  })
+
+  lab.test('save() method fails for an individual', async () => {
+    let error
+    try {
+      testApplication.applicantType = PERMIT_HOLDER_TYPES.INDIVIDUAL
+      await testApplication.save(authToken)
+    } catch (err) {
+      error = err
+    }
+    Code.expect(error.message).to.equal('Application cannot have an accountId when the permit holder is an individual')
   })
 })
