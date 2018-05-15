@@ -21,7 +21,7 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
       return this.doGet(request, h, errors)
     } else {
       // TODO: Save contact details
-      return this.redirect({ request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path })
+      return this.redirect({ request, h, redirectPath: Constants.Routes.ADDRESS.POSTCODE_PERMIT_HOLDER.path })
     }
   }
 }

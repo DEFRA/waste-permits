@@ -15,7 +15,7 @@ const {COOKIE_RESULT} = require('../../src/constants')
 let sandbox
 
 const routePath = '/permit-holder/contact-details'
-const nextRoutePath = '/permit-holder/company/declare-offences'
+const nextRoutePath = '/permit-holder/address/postcode'
 
 const getRequest = {
   method: 'GET',

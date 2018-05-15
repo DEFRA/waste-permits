@@ -159,6 +159,11 @@ Constants.Routes = {
       view: 'address/manualEntry',
       pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`
     },
+    MANUAL_PERMIT_HOLDER: {
+      path: '/permit-holder/address/address-manual',
+      view: 'address/manualEntry',
+      pageHeading: `What's their address?`
+    },
     MANUAL_SITE: {
       path: '/site/address/address-manual',
       view: 'address/manualEntry',
@@ -170,6 +175,11 @@ Constants.Routes = {
       pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`,
       taskListHeading: 'Give invoicing details'
     },
+    POSTCODE_PERMIT_HOLDER: {
+      path: '/permit-holder/address/postcode',
+      view: 'address/postcode',
+      pageHeading: `What's their address?`
+    },
     POSTCODE_SITE: {
       path: '/site/address/postcode',
       view: 'address/postcode',
@@ -179,6 +189,11 @@ Constants.Routes = {
       path: '/invoice/address/select-address',
       view: 'address/selectAddress',
       pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`
+    },
+    SELECT_PERMIT_HOLDER: {
+      path: '/permit-holder/address/select-address',
+      view: 'address/selectAddress',
+      pageHeading: `What's their address?`
     },
     SELECT_SITE: {
       path: '/site/address/select-address',
@@ -708,6 +723,7 @@ Constants.UploadSubject = {
 
 Constants.CookieValue = {
   INVOICE_POSTCODE: 'INVOICE_POSTCODE',
+  PERMIT_HOLDER_POSTCODE: 'PERMIT_HOLDER_POSTCODE',
   SITE_POSTCODE: 'SITE_POSTCODE'
 }
 
