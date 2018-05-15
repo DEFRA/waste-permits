@@ -53,7 +53,7 @@ lab.beforeEach(() => {
   }
   fakePrimaryContactDetails = {
     id: fakePrimaryContactDetailsId,
-    telephone: '01234567890'
+    telephone: '+ 12  012 3456 7890'
   }
   fakeContact = {
     id: fakeContactId,
