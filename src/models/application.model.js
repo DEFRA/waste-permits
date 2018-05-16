@@ -59,7 +59,7 @@ class Application extends BaseModel {
   }
 
   individualPermitHolderId () {
-    return this.isIndividual ? this.accountId : null
+    return this.isIndividual ? this.permitHolderIndividualId : undefined
   }
 
   modelToDynamics (...args) {

@@ -51,9 +51,9 @@ class Contact extends BaseModel {
   static async getIndividualPermitHolderByApplicationId (authToken, applicationId) {
     const dynamicsDal = new DynamicsDalService(authToken)
     const application = await Application.getById(authToken, applicationId)
-    if (application.accountId) {
+    if (application.individualPermitHolderId()) {
       try {
-        const query = encodeURI(`contacts(${application.accountId})?$select=${Contact.selectedDynamicsFields()}`)
+        const query = encodeURI(`contacts(${application.individualPermitHolderId()})?$select=${Contact.selectedDynamicsFields()}`)
         const result = await dynamicsDal.search(query)
         if (result) {
           return Contact.dynamicsToModel(result)

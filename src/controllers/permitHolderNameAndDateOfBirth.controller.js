@@ -52,7 +52,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       if (application.individualPermitHolderId()) {
         contact = await Contact.getIndividualPermitHolderByApplicationId(authToken, application.id)
         if (contact.firstName !== firstName || contact.lastName !== lastName) {
-          contact = null
+          contact = undefined
         }
       }
 
@@ -62,10 +62,9 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
 
       await contact.save(authToken)
 
-      application.accountId = contact.id
+      application.permitHolderIndividualId = contact.id
 
-      // Not saving this until we have a way of handling the dual use foreign key field
-      // await application.save(authToken)
+      await application.save(authToken)
 
       return this.redirect({ request, h, redirectPath: Constants.Routes.PERMIT_HOLDER_CONTACT_DETAILS.path })
     }
