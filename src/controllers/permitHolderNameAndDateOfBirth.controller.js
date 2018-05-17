@@ -21,6 +21,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
         pageContext.formValues = {
           'first-name': contact.firstName,
           'last-name': contact.lastName
+          // TODO: Add date of birth
         }
       }
     }
@@ -45,6 +46,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       const {
         'first-name': firstName,
         'last-name': lastName
+        // TODO: Add date of birth
       } = request.payload
       let contact
 
