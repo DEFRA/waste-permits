@@ -10,7 +10,7 @@ const Application = require('../../../src/models/application.model')
 const Payment = require('../../../src/models/payment.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
-const UploadController = require('../../../src/controllers/upload/base/upload.controller')
+const UploadService = require('../../../src/services/upload.service')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
 const defaultFileTypes = 'PDF,DOC,DOCX,XLS,XLSX,JPG,ODT,ODS'
@@ -66,6 +66,7 @@ module.exports = class UploadTestHelper {
     sandbox.stub(fs, 'createReadStream').value(() => mockStream())
     sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => Promise.resolve([]))
     sandbox.stub(Annotation, 'getById').value(() => Promise.resolve(new Annotation(fakeAnnotation)))
+    sandbox.stub(Annotation, 'getByApplicationIdSubjectAndFilename').value(() => Promise.resolve(new Annotation(fakeAnnotation)))
     sandbox.stub(Annotation.prototype, 'delete').value(() => Promise.resolve({}))
     sandbox.stub(Annotation.prototype, 'save').value(() => Promise.resolve({}))
     sandbox.stub(Application, 'getById').value(() => Promise.resolve({applicationName: 'APPLICATION_REFERENCE'}))
@@ -209,13 +210,13 @@ module.exports = class UploadTestHelper {
 
       lab.experiment('when building an upload dir name', () => {
         lab.test('when application name has a forward slash in it, replace with underscore', async () => {
-          Code.expect(UploadController.prototype._buildUploadDir('application/name/dir')).to.equal('application_name_dir')
+          Code.expect(UploadService._buildUploadDir('application/name/dir')).to.equal('application_name_dir')
         })
         lab.test('when application name has a backward slash in it, replace with underscore', async () => {
-          Code.expect(UploadController.prototype._buildUploadDir('application\\name/dir')).to.equal('application_name_dir')
+          Code.expect(UploadService._buildUploadDir('application\\name/dir')).to.equal('application_name_dir')
         })
         lab.test('when application name has no slash in it, should be the same', async () => {
-          Code.expect(UploadController.prototype._buildUploadDir('application_name')).to.equal('application_name')
+          Code.expect(UploadService._buildUploadDir('application_name')).to.equal('application_name')
         })
       })
     })

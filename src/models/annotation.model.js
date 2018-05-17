@@ -23,10 +23,30 @@ class Annotation extends BaseModel {
     return super.getById(authToken, id, ({dynamics}) => dynamics !== 'documentbody')
   }
 
+  static async getByApplicationIdSubjectAndFilename (authToken, applicationId, subject, filename) {
+    let payment
+    if (applicationId) {
+      const dynamicsDal = new DynamicsDalService(authToken)
+      const filter = `_objectid_value eq ${applicationId} and filename eq '${filename}' and subject eq '${subject}'`
+      const query = `annotations?$select=${Annotation.selectedDynamicsFields()}&$filter=${filter}`
+      try {
+        const response = await dynamicsDal.search(query)
+        const result = response && response.value ? response.value.pop() : undefined
+        if (result) {
+          payment = Annotation.dynamicsToModel(result)
+        }
+      } catch (error) {
+        LoggingService.logError(`Unable to get Annotation by Application ID(${applicationId}), Filename(${filename}) and Subject(${subject}): ${error}`)
+        throw error
+      }
+    }
+    return payment
+  }
+
   static async listByApplicationIdAndSubject (authToken, applicationId, subject) {
     if (applicationId) {
       const dynamicsDal = new DynamicsDalService(authToken)
-      const filter = `_objectid_value eq ${applicationId} and  objecttypecode eq 'defra_application' and subject eq '${subject}'`
+      const filter = `_objectid_value eq ${applicationId} and objecttypecode eq 'defra_application' and subject eq '${subject}'`
       const query = encodeURI(`annotations?$select=${Annotation.selectedDynamicsFields(({dynamics}) => dynamics !== 'documentbody')}&$filter=${filter}`)
       try {
         const response = await dynamicsDal.search(query)
