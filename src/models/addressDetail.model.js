@@ -18,7 +18,7 @@ class AddressDetail extends BaseModel {
       {field: 'addressId', dynamics: '_defra_address_value', bind: {id: 'defra_Address', relationship: 'defra_address_defra_addressdetails', entity: 'defra_addresses'}},
       {field: 'addressName', dynamics: 'defra_name'},
       {field: 'email', dynamics: 'emailaddress', length: {max: 100}},
-      {field: 'telephone', dynamics: 'defra_phone', length: {min: 10, max: 15}},
+      {field: 'telephone', dynamics: 'defra_phone', length: {min: 10, max: 30, maxDigits: 17}}, // Max digits is the maximum length when spaces have been stripped out
       {field: 'type', dynamics: 'defra_addresstype'}
     ]
   }
