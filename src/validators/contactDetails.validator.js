@@ -47,7 +47,8 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
         'custom.invalid': `Telephone number can only include numbers, spaces and the + sign. Please remove any other characters.`,
         'custom.plus-zero': `The + sign for international numbers should be at the start of the number, followed by a number 1 to 9, not a 0`,
         'custom.min': `That telephone number is too short. It should have at least ${AddressDetail.telephone.length.min} characters. Make sure you include the area code.`,
-        'custom.max': `That telephone number is too long. It should have no more than ${AddressDetail.telephone.length.max} characters.`
+        'custom.max': `That telephone number is too long. It should have no more than ${AddressDetail.telephone.length.maxDigits} digits.`,
+        'string.max': `That telephone number is too long. It should have no more than ${AddressDetail.telephone.length.max} characters.`
       },
       'email': {
         'any.empty': `Enter an email address for the main contact`,
@@ -85,6 +86,7 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
           otherwise: Joi.optional() }),
       'telephone': Joi
         .string()
+        .max(AddressDetail.telephone.length.max)
         .required(),
       'email': Joi
         .string()
@@ -113,7 +115,7 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
         'custom.invalid': (value) => !(PLUSES_SPACES_AND_NUMBERS_REGEX).test(value),
         'custom.plus-zero': (value) => !(PLUSES_CANNOT_PRECEED_ZERO).test(value),
         'custom.min': (value) => value.replace(PLUSES_AND_SPACES_REGEX, '').length < AddressDetail.telephone.length.min,
-        'custom.max': (value) => value.replace(PLUSES_AND_SPACES_REGEX, '').length > AddressDetail.telephone.length.max
+        'custom.max': (value) => value.replace(PLUSES_AND_SPACES_REGEX, '').length > AddressDetail.telephone.length.maxDigits
       }
     }
   }

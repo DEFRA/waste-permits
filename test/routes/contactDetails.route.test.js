@@ -269,7 +269,13 @@ lab.experiment('Contact details page tests:', () => {
           field: 'telephone',
           value: '+145600050560450640000004044',
           messages: [
-            'That telephone number is too long. It should have no more than 15 characters.']
+            'That telephone number is too long. It should have no more than 17 digits.']
+        },
+        {
+          field: 'telephone',
+          value: '+1456123                                                            4044',
+          messages: [
+            'That telephone number is too long. It should have no more than 30 characters.']
         },
         {
           field: 'telephone',
