@@ -32,7 +32,6 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'sendSaveAndReturnEmail').value(() => {})
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
@@ -128,7 +127,7 @@ lab.experiment('Save and return confirm page tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }
@@ -140,7 +139,7 @@ lab.experiment('Save and return confirm page tests:', () => {
       })
 
       lab.test('redirects to error screen when save fails', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.prototype.save = () => Promise.reject(new Error('save failed'))
 
         const res = await server.inject(postRequest)

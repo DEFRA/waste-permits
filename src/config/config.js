@@ -10,7 +10,8 @@ config.LOG_LEVEL = process.env.LOG_LEVEL
 config.wastePermitsAppUrl = process.env.WASTE_PERMITS_APP_URL
 config.port = process.env.PORT || 8000
 config.nodeEnvironment = process.env.NODE_ENV || 'PRODUCTION'
-config.isDevelopment = process.env.NODE_ENV === 'DEVELOPMENT'
+config.isDevelopment = process.env.NODE_ENV.toUpperCase() === 'DEVELOPMENT'
+config.isTest = process.env.NODE_ENV.toUpperCase() === 'TEST'
 
 // This flag can be set to bypass the completeness checking (e.g. during development). Defaults to false.
 config.bypassCompletenessCheck = process.env.BYPASS_COMPLETENESS_CHECK === 'TRUE' || false

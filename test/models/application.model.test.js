@@ -101,7 +101,6 @@ lab.beforeEach(() => {
   })
   sandbox.stub(DynamicsDalService.prototype, 'callAction').value(() => {})
   sandbox.stub(ApplicationReturn, 'getByApplicationId').value(() => new ApplicationReturn(fakeApplicationReturnData))
-  sandbox.stub(LoggingService, 'logDebug').value((text) => {})
 })
 
 lab.afterEach(() => {
@@ -135,7 +134,7 @@ lab.experiment('Application Model tests:', () => {
 
   lab.test('sendSaveAndReturnEmail() method correctly initiates an email call action', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
-    const logSpy = sinon.spy(LoggingService, 'logDebug')
+    const logSpy = sandbox.spy(LoggingService, 'logDebug')
     await testApplication.sendSaveAndReturnEmail('AUTH_TOKEN', fakeOrigin)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(logSpy.callCount).to.equal(1)

@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const LoggingService = require('../../src/services/logging.service')
 
 const StandardRule = require('../../src/models/standardRule.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
@@ -47,7 +46,6 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
   sandbox.stub(ApplicationLine, 'getById').value(() => ({standardRuleId: 'STANDARD_RULE_ID'}))
-  sandbox.stub(LoggingService, 'logError').value(() => {})
 })
 
 lab.afterEach(() => {

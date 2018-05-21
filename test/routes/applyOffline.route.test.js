@@ -116,7 +116,6 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRule, 'getById').value(() => new Application(fakeStandardRule))
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
@@ -208,7 +207,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }
@@ -223,7 +222,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
         fakeStandardRuleType = offlineStandardRule
         fakeStandardRule.canApplyOnline = true
         fakePermitHolderType.canApplyOnline = true
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)

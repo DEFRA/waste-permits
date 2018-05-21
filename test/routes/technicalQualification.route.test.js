@@ -51,7 +51,6 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
   // Stub the asynchronous model methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(Application, 'getById').value(() => Promise.resolve(new Application(fakeApplication)))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
@@ -158,7 +157,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }
@@ -212,7 +211,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => Promise.reject(new Error('read failed'))
 
         const res = await server.inject(postRequest)
@@ -222,7 +221,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
       })
 
       lab.test('redirects to error screen when save fails', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.prototype.save = () => Promise.reject(new Error('save failed'))
 
         const res = await server.inject(postRequest)
@@ -232,7 +231,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
       })
 
       lab.test('redirects to error screen when an unexpected qualification is selected', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         postRequest.payload['technical-qualification'] = '99999999'
 
         const res = await server.inject(postRequest)

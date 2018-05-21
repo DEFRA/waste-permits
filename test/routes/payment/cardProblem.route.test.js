@@ -64,7 +64,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
 })
 
@@ -124,7 +123,7 @@ lab.experiment(`Your card payment failed:`, () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the applicationContext', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         RecoveryService.createApplicationContext = () => {
           throw new Error('recovery failed')
         }
@@ -185,7 +184,7 @@ lab.experiment(`Your card payment failed:`, () => {
       })
 
       lab.test('redirects to error screen when an unexpected payment type is selected', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         postRequest.payload['payment-type'] = '99999999'
 
         const res = await server.inject(postRequest)
