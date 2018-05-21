@@ -24,7 +24,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('LoggingService tests:', () => {
-  lab.test('Error messages are logged', () => {
+  lab.test('When LOG_LEVEL is ERROR', () => {
     sandbox.stub(config, 'LOG_LEVEL').value('ERROR')
 
     LoggingService.logError('An error has occurred')
@@ -39,29 +39,14 @@ lab.experiment('LoggingService tests:', () => {
     Code.expect(spy.threw()).to.equal(false)
   })
 
-  lab.test('Info messages are logged', () => {
-    sandbox.stub(config, 'LOG_LEVEL').value('INFO')
-
-    LoggingService.logError('An error has occurred')
-    Code.expect(spy.calledWith('ERROR', 'An error has occurred')).to.equal(true)
-
-    LoggingService.logInfo('Something has happened')
-    Code.expect(spy.calledWith('INFO', 'Something has happened')).to.equal(true)
-
-    LoggingService.logDebug('Need a closer look')
-    Code.expect(spy.calledWith('DEBUG', 'Need a closer look')).to.equal(false)
-
-    Code.expect(spy.threw()).to.equal(false)
-  })
-
-  lab.test('Debug messages are logged', () => {
+  lab.test('When LOG_LEVEL is DEBUG', () => {
     sandbox.stub(config, 'LOG_LEVEL').value('DEBUG')
 
     LoggingService.logError('An error has occurred')
     Code.expect(spy.calledWith('ERROR', 'An error has occurred')).to.equal(true)
 
     LoggingService.logInfo('Something has happened')
-    Code.expect(spy.calledWith('INFO', 'Something has happened')).to.equal(false)
+    Code.expect(spy.calledWith('INFO', 'Something has happened')).to.equal(true)
 
     LoggingService.logDebug('Need a closer look')
     Code.expect(spy.calledWith('DEBUG', 'Need a closer look')).to.equal(true)

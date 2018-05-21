@@ -10,9 +10,7 @@ module.exports = class LoggingService {
   }
 
   static logInfo (message, request) {
-    if (Config.LOG_LEVEL !== DEBUG) {
-      LoggingService._log(INFO, message, request)
-    }
+    LoggingService._log(INFO, message, request)
   }
 
   static logDebug (message, data, request) {
