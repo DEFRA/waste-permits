@@ -63,8 +63,6 @@ lab.beforeEach(() => {
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(server, 'log').value(() => {})
-  sandbox.stub(console, 'error').value(() => {})
 })
 
 lab.afterEach(() => {

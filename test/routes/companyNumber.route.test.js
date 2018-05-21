@@ -64,7 +64,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
 })
 
 lab.afterEach(() => {
@@ -105,7 +104,7 @@ lab.experiment('Get company number page tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Account.getByApplicationId = () => {
           throw new Error('read failed')
         }
@@ -178,7 +177,7 @@ lab.experiment('Get company number page tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Account.getByCompanyNumber = () => {
           throw new Error('read failed')
         }
@@ -190,7 +189,7 @@ lab.experiment('Get company number page tests:', () => {
       })
 
       lab.test('redirects to error screen when save fails', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Account.prototype.save = () => Promise.reject(new Error('save failed'))
 
         Account.getByCompanyNumber = () => new Account()

@@ -53,7 +53,6 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompany)
   sandbox.stub(CompanyLookupService, 'getActiveDirectors').value(() => [{}])
   sandbox.stub(Account, 'getByApplicationId').value(() => fakeAccount)
@@ -127,7 +126,7 @@ lab.experiment('Check company type page tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Account.getByApplicationId = () => {
           throw new Error('read failed')
         }

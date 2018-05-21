@@ -58,7 +58,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(ApplicationLine, 'getById').value(() => undefined)
   sandbox.stub(ApplicationLine.prototype, 'save').value(() => {})
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(StandardRule, 'list').value(() => [fakeStandardRule])
@@ -128,7 +127,7 @@ lab.experiment('Select a permit page tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }
@@ -140,7 +139,7 @@ lab.experiment('Select a permit page tests:', () => {
       })
 
       lab.test('redirects to error screen when failing to get the permits', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         StandardRule.list = () => {
           throw new Error('search failed')
         }
@@ -152,7 +151,7 @@ lab.experiment('Select a permit page tests:', () => {
       })
 
       lab.test('redirects to error screen when failing to get the category', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         StandardRuleType.getById = () => {
           throw new Error('read failed')
         }

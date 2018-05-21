@@ -76,7 +76,6 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => {})
@@ -114,7 +113,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }
@@ -200,7 +199,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when save fails', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         DrainageTypeDrain.updateCompleteness = () => {
           throw new Error('update failed')
         }
@@ -213,7 +212,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
 
       lab.test('redirects to error screen when unknown drainage-type is selected', async () => {
         postRequest.payload['drainage-type'] = '999999999'
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)

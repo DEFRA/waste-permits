@@ -103,7 +103,6 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
   dynamicsCallSpy = sandbox.spy(DynamicsDalService.prototype, '_call')
   loggingSpy = sandbox.spy(LoggingService, 'logError')
-  sandbox.stub(console, 'error').value(() => {})
 })
 
 lab.afterEach(() => {

@@ -8,7 +8,6 @@ const server = require('../../../server')
 
 const Application = require('../../../src/models/application.model')
 const CookieService = require('../../../src/services/cookie.service')
-const LoggingService = require('../../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
 let fakeEmail
@@ -37,7 +36,6 @@ module.exports = (lab, {routePath, nextPath, errorPath, pageHeading}) => {
 
     // Stub methods
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-    sandbox.stub(LoggingService, 'logError').value(() => {})
     sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
     sandbox.stub(Application, 'sendAllRecoveryEmails').value(() => numberOfMatchingEmails)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
