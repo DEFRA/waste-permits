@@ -1,3 +1,4 @@
+/* eslint-disable no-multi-spaces */
 const config = require('./config')
 
 const cookieOptions = {
