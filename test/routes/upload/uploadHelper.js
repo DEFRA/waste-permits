@@ -11,6 +11,7 @@ const Payment = require('../../../src/models/payment.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const UploadService = require('../../../src/services/upload.service')
+const ClamWrapper = require('../../../src/utilities/clamWrapper')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
 const defaultFileTypes = 'PDF,DOC,DOCX,XLS,XLSX,JPG,ODT,ODS'
@@ -73,6 +74,7 @@ module.exports = class UploadTestHelper {
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+    sandbox.stub(ClamWrapper, 'isInfected').value(() => Promise.resolve({isInfected: false}))
     sandbox.stub(LoggingService, 'logError').value(() => {})
     sandbox.stub(Payment, 'getBacsPayment').value(() => {})
     sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
@@ -245,6 +247,13 @@ module.exports = class UploadTestHelper {
         const req = this._uploadRequest({filename: `${'a'.repeat(252)}.jpg`, contentType})
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
+      })
+
+      lab.test('when the file has a virus', async () => {
+        ClamWrapper.isInfected = () => Promise.resolve({isInfected: true})
+        const req = this._uploadRequest({filename: `virus.pdf`, contentType})
+        const doc = await GeneralTestHelper.getDoc(req)
+        checkExpectedErrors(doc, `Our scanner detected a virus in that file. It has not been uploaded. Please use your own virus scanner to check and clean the file. You should either upload a clean copy of the file or contact us if you think that the file does not have a virus.`)
       })
     })
   }

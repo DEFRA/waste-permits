@@ -79,6 +79,8 @@ module.exports = class UploadController extends BaseController {
       } catch (err) {
         if (err.message === UploadService.DUPLICATE) {
           return this.handler(request, h, this.setCustomError(err.message, 'file'))
+        } else if (err.message === UploadService.VIRUS) {
+          return this.handler(request, h, this.setCustomError(err.message, 'file'))
         } else {
           throw err
         }

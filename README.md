@@ -24,6 +24,7 @@ Please make sure the following are installed:
 - [Gulp](https://gulpjs.com/) using `npm install -g gulp`
 - [StandardJS](https://standardjs.com/) using `npm install -g standard`
 - [Chrome](https://www.google.com/chrome/index.html) our default `gulp` task assumes **Chrome** is installed
+- ClamAV Daemon. You will need to install clamdscan and clamav-daemon then run clamav-daemon as a service
 
 ## Installation
 
