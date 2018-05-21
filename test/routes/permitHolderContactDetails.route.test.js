@@ -116,7 +116,7 @@ lab.experiment('Permit Holder Contact Details page tests:', () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
-      })      
+      })
     })
 
     lab.experiment('Failure:', () => {
@@ -147,7 +147,7 @@ lab.experiment('Permit Holder Contact Details page tests:', () => {
           'The + sign for international numbers should be at the start of the number, followed by a number 1 to 9, not a 0'
         ]
         await checkValidationErrors('telephone', expectedErrors)
-      })      
+      })
     })
   })
 })

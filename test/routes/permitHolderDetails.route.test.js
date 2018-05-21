@@ -76,7 +76,7 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
 
       lab.test('redirects to permit holder name screen if permit holder type is individual', async () => {
         fakePermitHolder.id = 'individual'
-        
+
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(permitHolderName)

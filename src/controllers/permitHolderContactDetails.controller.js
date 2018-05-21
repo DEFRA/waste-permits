@@ -17,11 +17,11 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
 
       // If we don't have a permit holder at this point something has gone wrong
       if (!application.individualPermitHolderId()) {
-        throw Error("Application does not have a permit holder")
+        throw Error('Application does not have a permit holder')
       }
 
       let contact = await Contact.getIndividualPermitHolderByApplicationId(authToken, application.id)
-      
+
       if (contact) {
         pageContext.formValues = {
           'email': contact.email
@@ -39,14 +39,14 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
     } else {
       const { authToken, application } = await RecoveryService.createApplicationContext(h, { application: true })
       const {
-        'email': email
+        email
         // TODO: Add telephone
       } = request.payload
       let contact
 
       // If we don't have a permit holder at this point something has gone wrong
       if (!application.individualPermitHolderId()) {
-        throw Error("Application does not have a permit holder")
+        throw Error('Application does not have a permit holder')
       }
 
       // Get an existing contact if we have it, but use a new contact if the email address has changed

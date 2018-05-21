@@ -59,7 +59,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save')
   sandbox.stub(Contact.prototype, 'save')
-  
 })
 
 lab.afterEach(() => {
@@ -116,7 +115,6 @@ lab.experiment('Permit Holder Name page tests:', () => {
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the permit holder name page correctly when it is a new application`, async () => {
-      
       // No current permit holder
       fakeApplication.individualPermitHolderId = () => {
         return undefined
@@ -137,7 +135,6 @@ lab.experiment('Permit Holder Name page tests:', () => {
 
       checkPageElements(getRequest, 'First Name', 'Last Name')
     })
-
   })
 
   lab.experiment('POST:', () => {
@@ -188,7 +185,6 @@ lab.experiment('Permit Holder Name page tests:', () => {
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
-      
     })
 
     lab.experiment('Failure:', () => {
@@ -249,9 +245,6 @@ lab.experiment('Permit Holder Name page tests:', () => {
         postRequest.payload['dob-month'] = '15'
         await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
       })
-      
     })
-
   })
-
 })
