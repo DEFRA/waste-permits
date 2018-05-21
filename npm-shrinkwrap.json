@@ -104,6 +104,16 @@
       "integrity": "sha512-c+R/U5X+2zz2+UCrCFv6odQzJdoqI+YecuhnAJLa1zYaMc13zPfwMwZrr91Pd1DYNo/yPRbiM4WVf9whgwFsIg==",
       "requires": {
         "es6-promisify": "5.0.0"
+      },
+      "dependencies": {
+        "es6-promisify": {
+          "version": "5.0.0",
+          "resolved": "https://registry.npmjs.org/es6-promisify/-/es6-promisify-5.0.0.tgz",
+          "integrity": "sha1-UQnWLz5W6pZ8S2NQWu8IKRyKUgM=",
+          "requires": {
+            "es6-promise": "4.2.4"
+          }
+        }
       }
     },
     "ajv": {
@@ -1363,6 +1373,14 @@
       "resolved": "https://registry.npmjs.org/circular-json/-/circular-json-0.3.3.tgz",
       "integrity": "sha512-UZK3NBx2Mca+b5LsG7bY183pHWt5Y1xts4P3Pz7ENTwGVnJOUWbRb3ocjvX7hx9tq/yTAdclXm9sZ38gNuem4A==",
       "dev": true
+    },
+    "clamscan": {
+      "version": "0.8.4",
+      "resolved": "https://registry.npmjs.org/clamscan/-/clamscan-0.8.4.tgz",
+      "integrity": "sha1-teySvXg59xDogguS0ZtkniLLeQ4=",
+      "requires": {
+        "underscore": "1.5.2"
+      }
     },
     "class-utils": {
       "version": "0.3.6",
@@ -3085,12 +3103,9 @@
       "integrity": "sha512-/NdNZVJg+uZgtm9eS3O6lrOLYmQag2DjdEXuPaHlZ6RuVqgqaVZfgYCepEIKsLqwdQArOPtC3XzRLqGGfT8KQQ=="
     },
     "es6-promisify": {
-      "version": "5.0.0",
-      "resolved": "https://registry.npmjs.org/es6-promisify/-/es6-promisify-5.0.0.tgz",
-      "integrity": "sha1-UQnWLz5W6pZ8S2NQWu8IKRyKUgM=",
-      "requires": {
-        "es6-promise": "4.2.4"
-      }
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/es6-promisify/-/es6-promisify-6.0.0.tgz",
+      "integrity": "sha512-8Tbqjrb8lC85dd81haajYwuRmiU2rkqNAFnlvQOJeeKqdUloIlI+JcUqeJruV4rCm5Y7oNU7jfs2FbmxhRR/2g=="
     },
     "es6-set": {
       "version": "0.1.5",
@@ -13147,6 +13162,11 @@
           }
         }
       }
+    },
+    "underscore": {
+      "version": "1.5.2",
+      "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.5.2.tgz",
+      "integrity": "sha1-EzXF5PXm0zu7SwBrqMhqAPVW3gg="
     },
     "union-value": {
       "version": "1.0.0",

@@ -2,15 +2,24 @@
 
 const fs = require('fs')
 const path = require('path')
-// const del = require('del')
+
 const { Stream } = require('stream')
 const UPLOAD_PATH = path.resolve(`${process.cwd()}/temp`)
 const Annotation = require('../models/annotation.model')
 const LoggingService = require('./logging.service')
+const ClamWrapper = require('../utilities/clamWrapper')
 
 module.exports = class UploadService {
   static get DUPLICATE () {
     return 'duplicateFile'
+  }
+
+  static get VIRUS () {
+    return 'virusFile'
+  }
+
+  static get VIRUS_SCAN_ERROR () {
+    return 'virusScanError'
   }
 
   static async upload (authToken, application, file, subject) {
@@ -24,20 +33,14 @@ module.exports = class UploadService {
 
     // Make sure no duplicate files are uploaded
     if (UploadService._haveDuplicateFiles(fileData, annotationsList)) {
-      throw new Error('duplicateFile')
+      throw new Error(this.DUPLICATE)
     }
 
-    // Save each file as an attachment to an annotation
-    const uploadPromises = fileData.map(async ({file, filename, path}) => {
-      const annotation = new Annotation({subject, filename, applicationId: application.id})
-      await annotation.save(authToken)
-      UploadService._uploadToDynamics(authToken, file, path, application.applicationName, annotation)
-      return Promise.resolve(annotation)
-    })
-    await Promise.all(uploadPromises)
+    await UploadService._saveFilesToDisk(fileData)
 
-    // Remove temporary uploads directory
-    // await UploadService._removeTempUploadDirectory(uploadPath)
+    await UploadService._scanFiles(fileData)
+
+    await UploadService._uploadFilestoDynamics(authToken, application, subject, fileData)
   }
 
   static _buildUploadDir (applicationReference) {
@@ -53,13 +56,6 @@ module.exports = class UploadService {
     }
     return uploadPath
   }
-
-  // static _removeTempUploadDirectory (uploadPath) {
-  //   if (fs.existsSync(uploadPath)) {
-  //     del(uploadPath)
-  //   }
-  //   return uploadPath
-  // }
 
   static _getFileData (file, uploadPath) {
     const files = file.hapi ? [file] : file
@@ -78,17 +74,6 @@ module.exports = class UploadService {
   }
 
   static async _streamFile (file, filename, path) {
-    // Upload the file to the server
-    await new Promise((resolve, reject) => {
-      const fileStream = fs.createWriteStream(path)
-      fileStream.on('error', (err) => reject(err))
-      fileStream.on('finish', () => resolve('ok'))
-
-      if (fileStream instanceof Stream) {
-        file.pipe(fileStream)
-      }
-    })
-
     // Stream the file from the node server into a base24 string as required by the CRM
     return new Promise((resolve, reject) => {
       const stream = fs.createReadStream(path)
@@ -99,7 +84,52 @@ module.exports = class UploadService {
     })
   }
 
-  static _uploadToDynamics (authToken, file, path, applicationName, {applicationId, subject, filename}) {
+  static async _saveFilesToDisk (fileData) {
+    // Save each file as an attachment to an annotation
+    const fileSavePromises = fileData.map(async ({file, path}) => {
+      return new Promise((resolve, reject) => {
+        const fileStream = fs.createWriteStream(path)
+        fileStream.on('error', (err) => reject(err))
+        fileStream.on('finish', () => resolve('ok'))
+
+        if (fileStream instanceof Stream) {
+          file.pipe(fileStream)
+        }
+      })
+    })
+    await Promise.all(fileSavePromises)
+  }
+
+  static async _scanFiles (fileData) {
+    const isInfectedPromises = fileData.map(async ({path}) => ClamWrapper.isInfected(path).then(results => {
+      LoggingService.logInfo(`Scanned ${path} and found that it is ${results.isInfected ? 'infected' : 'not infected'}`)
+      return Promise.resolve(results.isInfected)
+    }).catch(error => {
+      LoggingService.logError(`Error while scanning: ${error}`)
+      return Promise.resolve(this.VIRUS_SCAN_ERROR)
+    })
+    )
+    const results = await Promise.all(isInfectedPromises)
+
+    if (results.includes(true)) {
+      throw Error(this.VIRUS)
+    } else if (results.includes(this.VIRUS_SCAN_ERROR)) {
+      throw Error(this.VIRUS_SCAN_ERROR)
+    }
+  }
+
+  static async _uploadFilestoDynamics (authToken, application, subject, fileData) {
+    // Save each file as an attachment to an annotation
+    const uploadPromises = fileData.map(async ({file, filename, path}) => {
+      const annotation = new Annotation({subject, filename, applicationId: application.id})
+      await annotation.save(authToken)
+      UploadService._uploadFileDataToDynamics(authToken, file, path, application.applicationName, annotation)
+      return Promise.resolve(annotation)
+    })
+    await Promise.all(uploadPromises)
+  }
+
+  static _uploadFileDataToDynamics (authToken, file, path, applicationName, {applicationId, subject, filename}) {
     setImmediate(async () => {
       try {
         const annotation = await Annotation.getByApplicationIdSubjectAndFilename(authToken, applicationId, subject, filename)
