@@ -4,7 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const LoggingService = require('../../src/services/logging.service')
 
 const ApplicationLine = require('../../src/models/applicationLine.model')
 const ApplicationReturn = require('../../src/models/applicationReturn.model')
@@ -38,7 +37,6 @@ lab.beforeEach(() => {
   // Stub the asynchronous model methods
   sandbox.stub(DynamicsDalService.prototype, 'search').value((dataObject) => dataObject.id)
   sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
 })
 
 lab.afterEach(() => {

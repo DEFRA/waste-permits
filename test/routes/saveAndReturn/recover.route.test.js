@@ -65,7 +65,6 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(CookieService, 'generateCookie').value(() => ({authToken: 'AUTH_TOKEN'}))
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(ApplicationLine, 'getByApplicationId').value(() => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(ApplicationReturn, 'getBySlug').value(() => new ApplicationReturn(fakeApplicationReturn))
@@ -144,7 +143,7 @@ lab.experiment('We found your application:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }

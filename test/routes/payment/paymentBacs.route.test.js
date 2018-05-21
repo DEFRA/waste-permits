@@ -52,7 +52,6 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
@@ -89,7 +88,7 @@ lab.experiment(`You’ve chosen to pay by bank transfer using Bacs:`, () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }
@@ -121,7 +120,7 @@ lab.experiment(`You’ve chosen to pay by bank transfer using Bacs:`, () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the payment details', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Payment.getBacsPaymentDetails = () => Promise.reject(new Error('read failed'))
 
         const res = await server.inject(postRequest)
@@ -131,7 +130,7 @@ lab.experiment(`You’ve chosen to pay by bank transfer using Bacs:`, () => {
       })
 
       lab.test('redirects to error screen when save fails', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Payment.prototype.save = () => Promise.reject(new Error('save failed'))
 
         const res = await server.inject(postRequest)

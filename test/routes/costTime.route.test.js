@@ -38,7 +38,6 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(CostTime, 'isComplete').value(() => false)
@@ -101,7 +100,7 @@ lab.experiment('Cost and time for this permit page tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when updateCompletenesss fails', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         CostTime.updateCompleteness = () => {
           throw new Error('update failed')
         }

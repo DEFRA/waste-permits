@@ -3,8 +3,6 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const sinon = require('sinon')
-const LoggingService = require('../../src/services/logging.service')
 
 const BaseModel = require('../../src/models/base.model')
 
@@ -57,20 +55,6 @@ const dynamicsReplyData = {
   dynamicsDobYear: 'YEAR',
   dynamicsRef: 'REF'
 }
-let sandbox
-
-lab.beforeEach(() => {
-  // Create a sinon sandbox
-  sandbox = sinon.createSandbox()
-
-  // Stub the asynchronous model methods
-  sandbox.stub(LoggingService, 'logError').value(() => {})
-})
-
-lab.afterEach(() => {
-  // Restore the sandbox to make sure the stubs are removed correctly
-  sandbox.restore()
-})
 
 lab.experiment('Base Model tests:', () => {
   lab.test('toString() method serialises the base model object correctly', () => {

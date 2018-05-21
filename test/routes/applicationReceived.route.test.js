@@ -11,7 +11,6 @@ const server = require('../../server')
 const Application = require('../../src/models/application.model')
 const Payment = require('../../src/models/payment.model')
 const Contact = require('../../src/models/contact.model')
-const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const {COOKIE_RESULT} = require('../../src/constants')
@@ -76,7 +75,6 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(RecoveryService, 'recoverFromSlug').value(() => fakeRecovery())
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)

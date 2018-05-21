@@ -38,7 +38,6 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(ConfirmRules, 'isComplete').value(() => false)
@@ -113,7 +112,7 @@ lab.experiment('Confirm your operation meets the rules page tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when isComplete fails', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         ConfirmRules.isComplete = () => {
           throw new Error('read failed')
         }
@@ -146,7 +145,7 @@ lab.experiment('Confirm your operation meets the rules page tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when updateCompletenesss fails', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         ConfirmRules.updateCompleteness = () => {
           throw new Error('update failed')
         }

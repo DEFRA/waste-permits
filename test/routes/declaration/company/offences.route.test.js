@@ -38,7 +38,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
-  sandbox.stub(LoggingService, 'logError').value(() => {})
 })
 
 lab.afterEach(() => {
@@ -83,7 +82,7 @@ lab.experiment('Company Declare Offences tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => {
           throw new Error('read failed')
         }
@@ -152,7 +151,7 @@ lab.experiment('Company Declare Offences tests:', () => {
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.getById = () => Promise.reject(new Error('read failed'))
 
         const res = await server.inject(postRequest)
@@ -162,7 +161,7 @@ lab.experiment('Company Declare Offences tests:', () => {
       })
 
       lab.test('redirects to error screen when save fails', async () => {
-        const spy = sinon.spy(LoggingService, 'logError')
+        const spy = sandbox.spy(LoggingService, 'logError')
         Application.prototype.save = () => Promise.reject(new Error('save failed'))
 
         const res = await server.inject(postRequest)
