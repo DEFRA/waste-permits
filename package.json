@@ -50,6 +50,7 @@
     "xmldom": "^0.1.27"
   },
   "dependencies": {
+    "airbrake-js": "^1.1.0",
     "blipp": "^3.0.0",
     "clamscan": "^0.8.4",
     "crumb": "^7.1.0",

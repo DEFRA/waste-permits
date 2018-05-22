@@ -2,6 +2,8 @@
 
 const Config = require('../config/config')
 const Constants = require('../constants')
+const AirbrakeClient = require('airbrake-js')
+const airbrake = new AirbrakeClient({projectId: true, projectKey: Config.ERRBIT_API_KEY, host: Config.ERRBIT_HOST})
 const {ERROR, INFO, DEBUG} = Constants.LogLevels
 
 module.exports = class LoggingService {
@@ -24,9 +26,12 @@ module.exports = class LoggingService {
     }
   }
 
-  static _log (level, message, request) {
+  static async _log (level, message, request) {
     if (Config.isTest) {
       return
+    }
+    if (level === ERROR) {
+      await airbrake.notify(message)
     }
     if (request && request.log) {
       request.log(level, message)

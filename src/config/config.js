@@ -83,3 +83,10 @@ config.ADDRESS_LOOKUP_SERVICE = process.env.ADDRESS_LOOKUP_SERVICE || 'http://ad
 config.ADDRESS_LOOKUP_SERVICE_KEY = process.env.ADDRESS_LOOKUP_SERVICE_KEY || 'ADDRESS_LOOKUP_SERVICE_KEY'
 
 config.COMPANIES_HOUSE_SERVICE = process.env.COMPANIES_HOUSE_SERVICE || 'http://companieshouselookupservice'
+
+// ERRBIT config
+config.ERRBIT_PROJECT_ID = process.env.ERRBIT_PROJECT_ID || 'ERRBIT_PROJECT_ID'
+config.ERRBIT_HOST = process.env.ERRBIT_HOST || 'ERRBIT_HOST'
+config.ERRBIT_API_KEY = process.env.ERRBIT_API_KEY || 'ERRBIT_API_KEY'
+config.ERRBIT_ENABLED = process.env.ERRBIT_ENABLED ? Boolean(process.env.ERRBIT_ENABLED.toLowerCase() === 'true') : false
+config.ERRBIT_LEVEL = process.env.ERRBIT_LEVEL || 'error'
