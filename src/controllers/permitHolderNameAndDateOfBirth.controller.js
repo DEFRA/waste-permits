@@ -21,7 +21,12 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
         pageContext.formValues = {
           'first-name': contact.firstName,
           'last-name': contact.lastName
-          // TODO: Add date of birth
+        }
+
+        if (contact.dateOfBirth) {
+          pageContext.formValues['dob-day'] = contact.dateOfBirth.getDate()
+          pageContext.formValues['dob-month'] = contact.dateOfBirth.getMonth() + 1
+          pageContext.formValues['dob-year'] = contact.dateOfBirth.getFullYear()
         }
       }
     }
@@ -45,8 +50,10 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       const { authToken, application } = await RecoveryService.createApplicationContext(h, { application: true })
       const {
         'first-name': firstName,
-        'last-name': lastName
-        // TODO: Add date of birth
+        'last-name': lastName,
+        'dob-day': dobDay,
+        'dob-month': dobMonth,
+        'dob-year': dobYear
       } = request.payload
       let contact
 
@@ -59,7 +66,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       }
 
       if (!contact) {
-        contact = new Contact({ firstName, lastName })
+        contact = new Contact({ firstName, lastName, dateOfBirth: new Date(dobYear, dobMonth - 1, dobDay) })
       }
 
       await contact.save(authToken)

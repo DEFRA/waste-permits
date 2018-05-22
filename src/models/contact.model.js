@@ -17,6 +17,7 @@ class Contact extends BaseModel {
       {field: 'firstName', dynamics: 'firstname', length: {max: 50}},
       {field: 'lastName', dynamics: 'lastname', length: {max: 50}},
       {field: 'email', dynamics: 'emailaddress1', length: {max: 100}},
+      {field: 'dateOfBirth', dynamics: 'birthdate', isDate: true},
       {field: 'dob.day', dynamics: 'defra_dateofbirthdaycompanieshouse', readOnly: true},
       {field: 'dob.month', dynamics: 'defra_dobmonthcompanieshouse', readOnly: true},
       {field: 'dob.year', dynamics: 'defra_dobyearcompanieshouse', readOnly: true}
