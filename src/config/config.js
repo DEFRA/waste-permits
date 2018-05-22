@@ -46,10 +46,19 @@ config.https_proxy = process.env.https_proxy
 // call
 config.azureAuthHost = process.env.AZURE_ACTIVE_DIRECTORY_HOST || 'login.microsoftonline.com'
 
+// Azure AD tenant
+config.azureAuthTenant = process.env.AZURE_ACTIVE_DIRECTORY_TENANT || 'defradev.onmicrosoft.com'
+
 // OAuth token endpoint for App registered with Azure AD.
 // This appended to AZURE_ACTIVE_DIRECTORY_HOST gives the full url.
 // Passed in as value for `path:` option when we make the https.request() call
 config.azureAuthPath = process.env.AZURE_ACTIVE_DIRECTORY_PATH || '/12345678-oi98-4321-8y8o-8y9456987123/oauth2/token'
+
+// Server to Server Client ID for this app registered with Azure AD
+config.serverToServerClientId = process.env.SERVER_TO_SERVER_CLIENT_ID || 'SERVER_TO_SERVER_CLIENT_ID'
+
+// Server to Server Client Secret for this app registered with Azure AD
+config.serverToServerClientSecret = process.env.SERVER_TO_SERVER_CLIENT_SECRET || 'SERVER_TO_SERVER_CLIENT_SECRET'
 
 // Client ID for this app registered with Azure AD
 config.clientId = process.env.DYNAMICS_CLIENT_ID
