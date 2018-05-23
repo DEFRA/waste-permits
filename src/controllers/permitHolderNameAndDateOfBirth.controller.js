@@ -24,9 +24,10 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
         }
 
         if (contact.dateOfBirth) {
-          pageContext.formValues['dob-day'] = contact.dateOfBirth.getDate()
-          pageContext.formValues['dob-month'] = contact.dateOfBirth.getMonth() + 1
-          pageContext.formValues['dob-year'] = contact.dateOfBirth.getFullYear()
+          const [year, month, date] = contact.dateOfBirth.split('-')
+          pageContext.formValues['dob-day'] = date
+          pageContext.formValues['dob-month'] = month
+          pageContext.formValues['dob-year'] = year
         }
       }
     }
@@ -66,8 +67,10 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       }
 
       if (!contact) {
-        contact = new Contact({ firstName, lastName, dateOfBirth: new Date(dobYear, dobMonth - 1, dobDay) })
+        contact = new Contact({ firstName, lastName })
       }
+
+      contact.dateOfBirth = `${dobYear}-${dobMonth}-${dobDay}`
 
       await contact.save(authToken)
 
