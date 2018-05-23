@@ -3,10 +3,34 @@
 const Config = require('../config/config')
 const Constants = require('../constants')
 const AirbrakeClient = require('airbrake-js')
-const airbrake = new AirbrakeClient({projectId: true, projectKey: Config.ERRBIT_API_KEY, host: Config.ERRBIT_HOST})
 const {ERROR, INFO, DEBUG} = Constants.LogLevels
 
+let airbrake
+let log = (level, message, request) => {
+  if (request && request.log) {
+    request.log(level, message)
+  } else {
+    const server = require('../../server')
+    server.log(level, message)
+  }
+}
+
 module.exports = class LoggingService {
+  static get airbrake () {
+    if (!airbrake) {
+      if (Config.ERRBIT_ENABLED) {
+        airbrake = new AirbrakeClient({projectId: true, projectKey: Config.ERRBIT_API_KEY, host: Config.ERRBIT_HOST})
+      } else {
+        airbrake = {
+          notify: (message) => {
+            log(ERROR, `airbrake: ${message}`)
+          }
+        }
+      }
+    }
+    return airbrake
+  }
+
   static logError (message, request) {
     LoggingService._log(ERROR, message, request)
   }
@@ -31,13 +55,8 @@ module.exports = class LoggingService {
       return
     }
     if (level === ERROR) {
-      await airbrake.notify(message)
+      await LoggingService.airbrake.notify(message)
     }
-    if (request && request.log) {
-      request.log(level, message)
-    } else {
-      const server = require('../../server')
-      server.log(level, message)
-    }
+    log(level, message, request)
   }
 }
