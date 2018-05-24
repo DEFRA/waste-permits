@@ -1,64 +1,94 @@
 'use strict'
 
-const config = require('../../src/config/config')
-
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
-const nock = require('nock')
+const sinon = require('sinon')
 
+const AdalNode = require('adal-node')
 const ActiveDirectoryAuthService = require('../../src/services/activeDirectoryAuth.service')
+const config = require('../../src/config/config')
 
-let authService
+let AuthenticationContext
 
-let authTokenResponse = {
-  token_type: 'Bearer',
-  scope: 'user_impersonation',
-  expires_in: '3600',
-  ext_expires_in: '0',
-  expires_on: '1503328515',
-  not_before: '1503324615',
-  resource: config.resourceAddr,
-  access_token: '__ACCESS_TOKEN__'
-}
+let sandbox
+let fakeConfig
+let fakeAccessToken = 'FAKE_ACCESS_TOKEN'
+let err
+let tokenResponse
 
 lab.beforeEach(() => {
-  authService = new ActiveDirectoryAuthService()
+  err = ''
+
+  tokenResponse = {
+    accessToken: fakeAccessToken
+  }
+
+  fakeConfig = {
+    host: 'HOST',
+    tenant: 'TENANT',
+    clientId: 'CLIENT_ID',
+    clientSecret: 'CLIENT_SECRET',
+    resource: 'RESOURCE'
+  }
+
+  AuthenticationContext = class {
+    constructor (authorityUrl) {
+      Code.expect(authorityUrl).to.equal(`https://${fakeConfig.host}/${fakeConfig.tenant}`)
+    }
+
+    async acquireTokenWithClientCredentials (resource, clientId, clientSecret, callback) {
+      Code.expect(resource).to.equal(fakeConfig.resource)
+      Code.expect(clientId).to.equal(fakeConfig.clientId)
+      Code.expect(clientSecret).to.equal(fakeConfig.clientSecret)
+      return callback(err, tokenResponse)
+    }
+  }
+
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+  sandbox.stub(AdalNode, 'AuthenticationContext').value(AuthenticationContext)
+  sandbox.stub(config, 'azureAuthHost').value(fakeConfig.host)
+  sandbox.stub(config, 'azureAuthTenant').value(fakeConfig.tenant)
+  sandbox.stub(config, 'serverToServerClientId').value(fakeConfig.clientId)
+  sandbox.stub(config, 'serverToServerClientSecret').value(fakeConfig.clientSecret)
+  sandbox.stub(config, 'resourceAddr').value(fakeConfig.resource)
 })
 
 lab.afterEach(() => {
-  nock.cleanAll()
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Active Directory Auth Service tests:', () => {
-  lab.test('getToken() should return the correct authentication token', async () => {
-    // Mock the CRM token endpoint
-    setHttpMock()
+  lab.experiment('getToken():', () => {
+    lab.beforeEach(() => {
+    })
 
-    const authToken = await authService.getToken()
-    Code.expect(authToken).to.equal(authTokenResponse.access_token)
-  })
+    lab.test('should return the correct authentication token', async () => {
+      const authService = new ActiveDirectoryAuthService()
+      const authToken = await authService.getToken()
+      Code.expect(authToken).to.equal(fakeAccessToken)
+    })
 
-  lab.test('getToken() times out based on app configuration', async () => {
-    // Mock the CRM token endpoint
-    setHttpMock(7000)
-
-    await authService.getToken()
-      .catch((error) => {
-        Code.expect(error.message).to.equal('socket hang up')
+    lab.test('should fail to return authentication token', async () => {
+      const authService = new ActiveDirectoryAuthService()
+      err = new Error('Failed')
+      let msg
+      await authService.getToken().catch(({message}) => {
+        msg = message
       })
+      Code.expect(msg).to.equal('Failed')
+    })
+
+    lab.test('should return invalid authentication token', async () => {
+      const authService = new ActiveDirectoryAuthService()
+      tokenResponse = {broken: true}
+      let msg
+      await authService.getToken().catch(({message}) => {
+        msg = message
+      })
+      Code.expect(msg).to.equal(`Error obtaining Active Directory auth token: ${JSON.stringify(tokenResponse)}`)
+    })
   })
 })
-
-const setHttpMock = (delay) => {
-  if (delay) {
-    return nock(`https://${config.azureAuthHost}`)
-      .post(config.azureAuthPath)
-      .socketDelay(delay)
-      .reply(200, authTokenResponse)
-  } else {
-    return nock(`https://${config.azureAuthHost}`)
-      .post(config.azureAuthPath)
-      .reply(200, authTokenResponse)
-  }
-}

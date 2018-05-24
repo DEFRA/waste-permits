@@ -1,86 +1,40 @@
 'use strict'
 
-const url = require('url')
-const https = require('https')
-const HttpsProxyAgent = require('https-proxy-agent')
+const AdalNode = require('adal-node')
 
 const config = require('../config/config')
 const LoggingService = require('../services/logging.service')
 
 module.exports = class ActiveDirectoryAuthService {
-  constructor () {
-    // Build the authorization query request parameters
-    // To learn more about how tokens work, see IETF RFC 6749 - https://tools.ietf.org/html/rfc6749
-    this.queryParams =
-      `client_id=${config.clientId}` +
-      `&resource=${encodeURIComponent(config.resourceAddr)}` +
-      `&username=${encodeURIComponent(config.dynamicsUsername)}` +
-      `&password=${encodeURIComponent(config.dynamicsPassword)}` +
-      `&grant_type=password`
-  }
-
   getToken () {
     return new Promise((resolve, reject) => {
       // Make the token request
-      const tokenRequest = https.request(this._requestOptions(), (response) => {
-        // Create an array to hold the response parts if we get multiple parts
-        const responseParts = []
 
-        response.setEncoding('utf8')
-        response.on('data', (chunk) => {
-          LoggingService.logDebug(undefined, chunk)
+      const authorityHostUrl = `https://${config.azureAuthHost}`
+      const tenant = config.azureAuthTenant // AAD Tenant name.
+      const authorityUrl = authorityHostUrl + '/' + tenant
+      const clientId = config.serverToServerClientId // Application Id of app registered under AAD.
+      const clientSecret = config.serverToServerClientSecret // Secret generated for app. Read this environment constiable.
+      const resource = config.resourceAddr // URI that identifies the resource for which the token is valid.
 
-          // Add each response chunk to the responseParts array
-          responseParts.push(chunk)
-        })
+      const AuthenticationContext = AdalNode.AuthenticationContext
+      const context = new AuthenticationContext(authorityUrl)
 
-        response.on('end', () => {
-          // Once we have all the response parts, concatenate the parts into a single string
-          const completeResponse = responseParts.join('')
-
-          // Parse the response JSON and extract the CRM access token
-          const tokenResponse = JSON.parse(completeResponse)
-
-          const token = tokenResponse.access_token
+      context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, function (err, tokenResponse) {
+        if (err) {
+          LoggingService.logError(err.message)
+          reject(err)
+        } else {
+          const token = tokenResponse.accessToken
           if (token) {
             resolve(token)
           } else {
-            reject(new Error('Error obtaining Active Directory auth token: ' + completeResponse))
+            const error = new Error(`Error obtaining Active Directory auth token: ${JSON.stringify(tokenResponse)}`)
+            LoggingService.logError(error.message)
+            reject(error)
           }
-        })
+        }
       })
-
-      tokenRequest.on('error', (error) => {
-        LoggingService.logError(error)
-        reject(error)
-      })
-
-      tokenRequest.setTimeout(config.requestTimeout, () => {
-        LoggingService.logError('Active directory auth request timed out')
-        tokenRequest.abort()
-      })
-
-      // Post the token request data
-      tokenRequest.write(this.queryParams)
-
-      // Close the token request
-      tokenRequest.end()
     })
-  }
-
-  _requestOptions () {
-    const options = url.parse(`https://${config.azureAuthHost}${config.azureAuthPath}`)
-    options.method = 'POST'
-    options.headers = {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(this.queryParams)
-    }
-    if (config.http_proxy) {
-      options.agent = new HttpsProxyAgent(config.http_proxy)
-    }
-
-    LoggingService.logDebug('ActiveDirectoryAuthService request options:', options)
-
-    return options
   }
 }
