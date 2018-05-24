@@ -8,7 +8,7 @@ const sinon = require('sinon')
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const Account = require('../../../src/models/account.model')
-const CompanyDetails = require('../../../src/models/taskList/companyDetails.model')
+const CompanyDetails = require('../../../src/models/taskList/permitHolderDetails.model')
 
 let sandbox
 

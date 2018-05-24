@@ -5,9 +5,11 @@ const DynamicsDalService = require('../../services/dynamicsDal.service')
 const BaseModel = require('../base.model')
 const LoggingService = require('../../services/logging.service')
 const Account = require('../account.model')
+const Application = require('../application.model')
 const ApplicationLine = require('../applicationLine.model')
+const Contact = require('../contact.model')
 
-module.exports = class CompanyDetails extends BaseModel {
+module.exports = class PermitHolderDetails extends BaseModel {
   constructor (data) {
     super()
     this.applicationLineId = data.applicationLineId
@@ -18,7 +20,7 @@ module.exports = class CompanyDetails extends BaseModel {
 
     try {
       const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await CompanyDetails.isComplete(authToken, applicationId, applicationLineId)
+      const isComplete = await PermitHolderDetails.isComplete(authToken, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.PERMIT_HOLDER_DETAILS]: isComplete
@@ -31,18 +33,22 @@ module.exports = class CompanyDetails extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (authToken, applicationId) {
     let isComplete = false
     try {
-      // Get the Account for this application
-      const account = await Account.getByApplicationId(authToken, applicationId)
+      const {accountId, permitHolderIndividualId} = await Application.getById(authToken, applicationId)
 
-      if (account && account.accountName) {
-        isComplete =
-          account.accountName !== undefined && account.accountName.length > 0
+      if (accountId) {
+        // Get the Account for this application
+        const account = await Account.getByApplicationId(authToken, applicationId)
+        isComplete = Boolean(account && account.accountName)
+      } else if (permitHolderIndividualId) {
+        // Get the Contact for this application
+        const contact = await Contact.getById(authToken, permitHolderIndividualId)
+        isComplete = Boolean(contact && contact.firstName && contact.lastName && contact.dateOfBirth)
       }
     } catch (error) {
-      LoggingService.logError(`Unable to calculate CompanyDetails completeness: ${error}`)
+      LoggingService.logError(`Unable to calculate PermitHolderDetails completeness: ${error}`)
       throw error
     }
     return isComplete

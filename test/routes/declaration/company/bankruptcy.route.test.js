@@ -10,7 +10,7 @@ const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Application = require('../../../../src/models/application.model')
 const Payment = require('../../../../src/models/payment.model')
-const CompanyDetails = require('../../../../src/models/taskList/companyDetails.model')
+const CompanyDetails = require('../../../../src/models/taskList/permitHolderDetails.model')
 const LoggingService = require('../../../../src/services/logging.service')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 

@@ -1,7 +1,7 @@
 'use strict'
 
 const DeclarationsController = require('../base/declarations.controller')
-const CompanyDetails = require('../../../models/taskList/companyDetails.model')
+const PermitHolderDetails = require('../../../models/taskList/permitHolderDetails.model')
 
 module.exports = class BankruptcyController extends DeclarationsController {
   getFormData (data) {
@@ -24,6 +24,6 @@ module.exports = class BankruptcyController extends DeclarationsController {
   }
 
   async updateCompleteness (...args) {
-    await CompanyDetails.updateCompleteness(...args)
+    await PermitHolderDetails.updateCompleteness(...args)
   }
 }
