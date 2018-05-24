@@ -24,8 +24,8 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
         }
 
         if (contact.dateOfBirth) {
-          const [year, month, date] = contact.dateOfBirth.split('-')
-          pageContext.formValues['dob-day'] = date
+          const [year, month, day] = contact.dateOfBirth.split('-')
+          pageContext.formValues['dob-day'] = day
           pageContext.formValues['dob-month'] = month
           pageContext.formValues['dob-year'] = year
         }

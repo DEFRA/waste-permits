@@ -9,6 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
+const Contact = require('../../src/models/contact.model')
 const Payment = require('../../src/models/payment.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
@@ -24,13 +25,23 @@ const getRequest = {
 }
 let postRequest
 let validContactDetails
-
-const fakeApplication = {
-  id: 'APPLICATION_ID',
-  applicationName: 'APPLICATION_NAME'
-}
+let fakeContact
+let fakeApplication
 
 lab.beforeEach(() => {
+  fakeContact = {
+    id: 'CONTACT_ID',
+    firstName: 'FIRSTNAME',
+    lastName: 'LASTNAME'
+  }
+
+  fakeApplication = {
+    id: 'APPLICATION_ID',
+    applicationName: 'APPLICATION_NAME',
+    applicantType: 910400000,
+    permitHolderIndividualId: fakeContact.id
+  }
+
   validContactDetails = {
     'email': 'test@test.com',
     'telephone': '01234567890'
@@ -49,10 +60,14 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Contact, 'getIndividualPermitHolderByApplicationId').value(() => new Contact(fakeContact))
+  sandbox.stub(Contact, 'getByFirstnameLastnameEmail').value(() => new Contact(fakeContact))
+  sandbox.stub(Contact.prototype, 'save').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
-  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
 })
 
 lab.afterEach(() => {

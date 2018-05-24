@@ -36,16 +36,16 @@ module.exports = class PermitHolderDetails extends BaseModel {
   static async isComplete (authToken, applicationId) {
     let isComplete = false
     try {
-      const {accountId, permitHolderIndividualId} = await Application.getById(authToken, applicationId)
+      const {isIndividual, accountId, permitHolderIndividualId} = await Application.getById(authToken, applicationId)
 
-      if (accountId) {
-        // Get the Account for this application
-        const account = await Account.getByApplicationId(authToken, applicationId)
-        isComplete = Boolean(account && account.accountName)
-      } else if (permitHolderIndividualId) {
+      if (isIndividual) {
         // Get the Contact for this application
         const contact = await Contact.getById(authToken, permitHolderIndividualId)
         isComplete = Boolean(contact && contact.firstName && contact.lastName && contact.dateOfBirth)
+      } else {
+        // Get the Account for this application
+        const account = await Account.getById(authToken, accountId)
+        isComplete = Boolean(account && account.accountName)
       }
     } catch (error) {
       LoggingService.logError(`Unable to calculate PermitHolderDetails completeness: ${error}`)
