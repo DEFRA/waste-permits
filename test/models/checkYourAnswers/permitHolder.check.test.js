@@ -9,34 +9,12 @@ const sinon = require('sinon')
 const BaseCheck = require('../../../src/models/checkYourAnswers/base.check')
 const PermitHolderCheck = require('../../../src/models/checkYourAnswers/permitHolder.check')
 
-const COMPANY_LINE = 0
-const DIRECTORS_LINE = 1
-const CONVICTIONS_LINE = 2
-const BANKRUPTCY_LINE = 3
+const PERMIT_HOLDER_TYPE_LINE = 0
+const PERMIT_HOLDER_LINE = 1
+const DIRECTORS_LINE = 2
+const CONVICTIONS_LINE = 3
+const BANKRUPTCY_LINE = 4
 
-const fakeApplication = {
-  tradingName: 'TRADING_NAME',
-  relevantOffences: true,
-  relevantOffencesDetails: 'CONVICTION DETAILS 1\nCONVICTION DETAILS 2',
-  bankruptcy: true,
-  bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS'
-}
-const fakeCompany = {
-  name: 'NAME',
-  address: 'ADDRESS'
-}
-const fakeCompanyAccount = {
-  companyNumber: 'COMPANY_NUMBER'
-}
-const fakeDirector = {
-  firstName: 'FIRSTNAME',
-  lastName: 'LASTNAME',
-  dob: {
-    day: 1,
-    month: 2,
-    year: 2003
-  }
-}
 const prefix = 'section-permit-holder'
 
 const getMonth = (month) => [
@@ -54,9 +32,51 @@ const getMonth = (month) => [
   'December'
 ][month - 1]
 
+let fakeApplication
+let fakeCompany
+let fakeCompanyAccount
+let fakeDirector
+let fakeIndividualPermitHolder
+
 let sandbox
 
 lab.beforeEach(() => {
+  fakeApplication = {
+    tradingName: 'TRADING_NAME',
+    applicantType: 910400001,
+    relevantOffences: true,
+    relevantOffencesDetails: 'CONVICTION DETAILS 1\nCONVICTION DETAILS 2',
+    bankruptcy: true,
+    bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS'
+  }
+
+  fakeCompany = {
+    name: 'NAME',
+    address: 'ADDRESS'
+  }
+
+  fakeCompanyAccount = {
+    companyNumber: 'COMPANY_NUMBER'
+  }
+
+  fakeDirector = {
+    firstName: 'FIRSTNAME',
+    lastName: 'LASTNAME',
+    dob: {
+      day: 1,
+      month: 2,
+      year: 2003
+    }
+  }
+
+  fakeIndividualPermitHolder = {
+    firstName: 'FIRSTNAME',
+    lastName: 'LASTNAME',
+    telephone: 'TELEPHONE',
+    dateOfBirth: '1999-11-23',
+    email: 'EMAIL'
+  }
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
@@ -65,6 +85,7 @@ lab.beforeEach(() => {
   sandbox.stub(BaseCheck.prototype, 'getCompany').value(() => Merge({}, fakeCompany))
   sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(() => Merge({}, fakeCompanyAccount))
   sandbox.stub(BaseCheck.prototype, 'getDirectors').value(() => [Merge({}, fakeDirector)])
+  sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolder').value(() => Merge({}, fakeIndividualPermitHolder))
 })
 
 lab.afterEach(() => {
@@ -78,16 +99,31 @@ lab.experiment('PermitHolder Check tests:', () => {
   })
 
   lab.experiment('buildlines', () => {
-    let check
-    let lines
+    const buildLines = async () => {
+      const check = new PermitHolderCheck()
+      return check.buildLines()
+    }
 
-    lab.beforeEach(async () => {
-      check = new PermitHolderCheck()
-      lines = await check.buildLines()
+    lab.test('(permit holder type) works correctly', async () => {
+      const lines = await buildLines()
+      const {heading, headingId, answers, links} = lines[PERMIT_HOLDER_TYPE_LINE]
+      const linePrefix = `${prefix}-type`
+      Code.expect(heading).to.equal(heading)
+      Code.expect(headingId).to.equal(`${linePrefix}-heading`)
+
+      const {answer, answerId} = answers.pop()
+      Code.expect(answer).to.equal('Limited company')
+      Code.expect(answerId).to.equal(`${linePrefix}-answer`)
+
+      const {link, linkId, linkType} = links.pop()
+      Code.expect(link).to.equal('/permit-holder/type')
+      Code.expect(linkType).to.equal(`permit holder`)
+      Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
     lab.test('(company line) works correctly', async () => {
-      const {heading, headingId, answers, links} = lines[COMPANY_LINE]
+      const lines = await buildLines()
+      const {heading, headingId, answers, links} = lines[PERMIT_HOLDER_LINE]
       const linePrefix = `${prefix}-company`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
@@ -113,12 +149,46 @@ lab.experiment('PermitHolder Check tests:', () => {
         }
       })
       const {link, linkId, linkType} = links.pop()
-      Code.expect(link).to.equal('/permit-holder/company/number')
-      Code.expect(linkType).to.equal('permit holder')
+      Code.expect(link).to.equal('/permit-holder/details')
+      Code.expect(linkType).to.equal('company details')
+      Code.expect(linkId).to.equal(`${linePrefix}-link`)
+    })
+
+    lab.test('(individual line) works correctly', async () => {
+      fakeApplication.isIndividual = true
+      const lines = await buildLines()
+      const {heading, headingId, answers, links} = lines[PERMIT_HOLDER_LINE]
+      const linePrefix = `${prefix}-individual`
+      Code.expect(heading).to.equal(heading)
+      Code.expect(headingId).to.equal(`${linePrefix}-heading`)
+
+      const {firstName, lastName, email, telephone, dateOfBirth} = fakeIndividualPermitHolder
+      const [year, month, day] = dateOfBirth.split('-')
+      answers.forEach(({answer, answerId}, answerIndex) => {
+        Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
+        switch (answerIndex) {
+          case 0:
+            Code.expect(answer).to.equal(`${firstName} ${lastName}`)
+            break
+          case 1:
+            Code.expect(answer).to.equal(email)
+            break
+          case 2:
+            Code.expect(answer).to.equal(`Telephone: ${telephone}`)
+            break
+          case 3:
+            Code.expect(answer).to.equal(`Date of birth: ${day} ${getMonth(month)} ${year}`)
+            break
+        }
+      })
+      const {link, linkId, linkType} = links.pop()
+      Code.expect(link).to.equal('/permit-holder/details')
+      Code.expect(linkType).to.equal('individual details')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
     lab.test('(directors line) works correctly', async () => {
+      const lines = await buildLines()
       const {heading, headingId, answers, links} = lines[DIRECTORS_LINE]
       const linePrefix = `${prefix}-director`
       Code.expect(heading).to.equal(heading)
@@ -136,6 +206,7 @@ lab.experiment('PermitHolder Check tests:', () => {
     })
 
     lab.test('(convictions line) works correctly', async () => {
+      const lines = await buildLines()
       const {heading, headingId, answers, links} = lines[CONVICTIONS_LINE]
       const linePrefix = `${prefix}-convictions`
       Code.expect(heading).to.equal(heading)
@@ -163,6 +234,7 @@ lab.experiment('PermitHolder Check tests:', () => {
     })
 
     lab.test('(bankruptcy line) works correctly', async () => {
+      const lines = await buildLines()
       const {heading, headingId, answers, links} = lines[BANKRUPTCY_LINE]
       const linePrefix = `${prefix}-bankruptcy-or-insolvency`
       Code.expect(heading).to.equal(heading)

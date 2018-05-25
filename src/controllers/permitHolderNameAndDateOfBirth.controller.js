@@ -37,7 +37,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
 
   async doPost (request, h, errors) {
     // Perform manual (non-Joi) validation of date of birth
-    var dobError = await this._validateDateOfBirth(request)
+    const dobError = await this._validateDateOfBirth(request)
     if (dobError) {
       if (!errors) {
         errors = { details: [] }
