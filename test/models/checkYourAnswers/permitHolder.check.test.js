@@ -37,6 +37,7 @@ let fakeCompany
 let fakeCompanyAccount
 let fakeDirector
 let fakeIndividualPermitHolder
+let fakeIndividualPermitHolderDetails
 
 let sandbox
 
@@ -77,6 +78,10 @@ lab.beforeEach(() => {
     email: 'EMAIL'
   }
 
+  fakeIndividualPermitHolderDetails = {
+    dateOfBirth: '1999-11-23'
+  }
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
@@ -86,6 +91,7 @@ lab.beforeEach(() => {
   sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(() => Merge({}, fakeCompanyAccount))
   sandbox.stub(BaseCheck.prototype, 'getDirectors').value(() => [Merge({}, fakeDirector)])
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolder').value(() => Merge({}, fakeIndividualPermitHolder))
+  sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderDetails').value(() => Merge({}, fakeIndividualPermitHolderDetails))
 })
 
 lab.afterEach(() => {

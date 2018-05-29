@@ -53,6 +53,9 @@ const fakePrimaryContact = {
 const fakeIndividualPermitHolder = {
   id: 'PERMIT_HOLDER_ID'
 }
+const fakeIndividualPermitHolderDetails = {
+  id: 'PERMIT_HOLDER_DETAILS_ID'
+}
 const fakeBillingInvoicing = {
   id: 'BILLING_INVOICING_ID'
 }
@@ -87,6 +90,7 @@ lab.beforeEach(() => {
   sandbox.stub(AddressDetail, 'getCompanySecretaryDetails').value(() => Merge({}, fakeCompanySecretary))
   sandbox.stub(AddressDetail, 'getPrimaryContactDetails').value(() => Merge({}, fakePrimaryContact))
   sandbox.stub(AddressDetail, 'getBillingInvoicingDetails').value(() => Merge({}, fakeBillingInvoicing))
+  sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => Merge({}, fakeIndividualPermitHolderDetails))
   sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [Merge({}, fakeAnnotation)])
   sandbox.stub(Application, 'getById').value(() => Merge({}, fakeApplication))
   sandbox.stub(ApplicationContact, 'get').value(() => Merge({}, fakeApplicationContact))
@@ -170,6 +174,12 @@ lab.experiment('Base Check tests:', () => {
     const check = new BaseCheck(context)
     const individualPermitHolder = await check.getIndividualPermitHolder()
     Code.expect(individualPermitHolder).to.equal(fakeIndividualPermitHolder)
+  })
+
+  lab.test('getIndividualPermitHolderDetails works correctly', async () => {
+    const check = new BaseCheck(context)
+    const individualPermitHolderDetails = await check.getIndividualPermitHolderDetails()
+    Code.expect(individualPermitHolderDetails).to.equal(fakeIndividualPermitHolderDetails)
   })
 
   lab.test('getBillingInvoicingDetails works correctly', async () => {

@@ -8,6 +8,7 @@ const Account = require('../account.model')
 const Application = require('../application.model')
 const ApplicationLine = require('../applicationLine.model')
 const Contact = require('../contact.model')
+const AddressDetail = require('../addressDetail.model')
 
 module.exports = class PermitHolderDetails extends BaseModel {
   constructor (data) {
@@ -41,7 +42,8 @@ module.exports = class PermitHolderDetails extends BaseModel {
       if (isIndividual) {
         // Get the Contact for this application
         const contact = await Contact.getById(authToken, permitHolderIndividualId)
-        isComplete = Boolean(contact && contact.firstName && contact.lastName && contact.dateOfBirth)
+        const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+        isComplete = Boolean(contact && contact.firstName && contact.lastName && addressDetail.dateOfBirth)
       } else {
         // Get the Account for this application
         const account = await Account.getById(authToken, accountId)

@@ -10,6 +10,7 @@ const Application = require('../../../src/models/application.model')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const Account = require('../../../src/models/account.model')
 const Contact = require('../../../src/models/contact.model')
+const AddressDetail = require('../../../src/models/addressDetail.model')
 const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.model')
 
 let sandbox
@@ -17,6 +18,7 @@ let fakeApplication
 let fakeApplicationLine
 let fakeAccount
 let fakeContact
+let fakeAddressDetails
 
 const authToken = 'THE_AUTH_TOKEN'
 
@@ -32,7 +34,10 @@ lab.beforeEach(() => {
   fakeContact = {
     id: 'CONTACT_ID',
     firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME',
+    lastName: 'LASTNAME'
+  }
+
+  fakeAddressDetails = {
     dateOfBirth: 'DATE-OF-BIRTH'
   }
 
@@ -56,6 +61,7 @@ lab.beforeEach(() => {
   sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
   sandbox.stub(Account.prototype, 'save').value(() => {})
   sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
+  sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeAddressDetails))
 })
 
 lab.afterEach(() => {

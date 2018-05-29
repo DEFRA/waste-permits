@@ -114,6 +114,14 @@ module.exports = class BaseCheck {
     return this.data.individualPermitHolder || {}
   }
 
+  async getIndividualPermitHolderDetails () {
+    const {authToken, applicationId, individualPermitHolderDetails} = this.data
+    if (!individualPermitHolderDetails) {
+      this.data.individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+    }
+    return this.data.individualPermitHolderDetails || {}
+  }
+
   async getBillingInvoicingDetails () {
     const {authToken, applicationId} = this.data
     if (!this.data.billingInvoicingDetails) {
