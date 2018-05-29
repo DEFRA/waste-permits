@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const INDIVIDUAL_PERMIT_HOLDER_TYPE = 910400002
 const BILLING_INVOICING_ADDRESS_TYPE = 910400004
 const COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE = 910400006
 const PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE = 910400007
@@ -129,6 +130,20 @@ lab.experiment('AddressDetail Model tests:', () => {
     const {applicationId} = fakeAddressDetailData
     const addressDetail = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
     Code.expect(addressDetail.type).to.equal(BILLING_INVOICING_ADDRESS_TYPE)
+  })
+
+  lab.test(`getIndividualPermitHolderDetails() method calls getByApplicationIdAndType() method with type of ${INDIVIDUAL_PERMIT_HOLDER_TYPE}`, async () => {
+    const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
+    const {applicationId} = fakeAddressDetailData
+    await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+    Code.expect(spy.calledWith(authToken, applicationId, INDIVIDUAL_PERMIT_HOLDER_TYPE)).to.equal(true)
+  })
+
+  lab.test(`getIndividualPermitHolderDetails() method creates a new AddressDetail with type of ${INDIVIDUAL_PERMIT_HOLDER_TYPE}`, async () => {
+    sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
+    const {applicationId} = fakeAddressDetailData
+    const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+    Code.expect(addressDetail.type).to.equal(INDIVIDUAL_PERMIT_HOLDER_TYPE)
   })
 
   lab.test('save() method saves a new AddressDetail object', async () => {

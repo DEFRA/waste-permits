@@ -550,6 +550,10 @@ Constants.Dynamics = {
     AGENT: 910400000
   },
   AddressTypes: {
+    INDIVIDUAL_PERMIT_HOLDER: {
+      TYPE: 910400002,
+      NAME: 'Individual Permit Holder'
+    },
     BILLING_INVOICING: {
       TYPE: 910400004,
       NAME: 'Billing Invoicing Address'

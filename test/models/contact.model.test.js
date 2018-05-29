@@ -18,7 +18,6 @@ lab.beforeEach(() => {
     lastName: 'Smith,',
     telephone: '01234567890',
     email: 'john.smith@email.com',
-    dateOfBirth: '1999-12-22',
     dob: {
       day: 1,
       month: 2,
@@ -36,7 +35,6 @@ lab.beforeEach(() => {
         lastname: 'Herzog',
         telephone1: '055 8767 0835',
         emailaddress1: 'Amparo.Abbott49@example.com',
-        birthdate: '1999-12-22',
         defra_dateofbirthdaycompanieshouse: 1,
         defra_dobmonthcompanieshouse: 2,
         defra_dobyearcompanieshouse: 1970
@@ -48,7 +46,6 @@ lab.beforeEach(() => {
         lastname: 'Rice',
         telephone1: '055 8301 2280',
         emailaddress1: 'Mike9@example.com',
-        birthdate: '1999-12-22',
         defra_dateofbirthdaycompanieshouse: 3,
         defra_dobmonthcompanieshouse: 4,
         defra_dobyearcompanieshouse: 1970
@@ -60,7 +57,6 @@ lab.beforeEach(() => {
         lastname: 'Wisoky',
         telephone1: '01424 733336',
         emailaddress1: 'Danielle.Howell@example.com',
-        birthdate: '1999-12-22',
         defra_dateofbirthdaycompanieshouse: 5,
         defra_dobmonthcompanieshouse: 6,
         defra_dobyearcompanieshouse: 1970
@@ -91,7 +87,6 @@ lab.experiment('Contact Model tests:', () => {
       lastname: 'Herzog',
       telephone1: '055 8767 0835',
       emailaddress1: 'Amparo.Abbott49@example.com',
-      birthdate: '1999-12-22',
       defra_dateofbirthdaycompanieshouse: 1,
       defra_dobmonthcompanieshouse: 2,
       defra_dobyearcompanieshouse: 1970
@@ -108,7 +103,6 @@ lab.experiment('Contact Model tests:', () => {
       firstName: dynamicsData.firstname,
       lastName: dynamicsData.lastname,
       email: dynamicsData.emailaddress1,
-      dateOfBirth: dynamicsData.birthdate,
       dob: {
         month: dynamicsData.defra_dobmonthcompanieshouse,
         year: dynamicsData.defra_dobyearcompanieshouse

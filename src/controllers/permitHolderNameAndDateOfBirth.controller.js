@@ -7,11 +7,12 @@ const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 
 const Contact = require('../models/contact.model')
+const AddressDetail = require('../models/addressDetail.model')
 
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const { individualPermitHolder = new Contact() } = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
+    const { authToken, application, individualPermitHolder = new Contact() } = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -22,8 +23,10 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
           'last-name': individualPermitHolder.lastName
         }
 
-        if (individualPermitHolder.dateOfBirth) {
-          const [year, month, day] = individualPermitHolder.dateOfBirth.split('-')
+        const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, application.id)
+
+        if (individualPermitHolderDetails.dateOfBirth) {
+          const [year, month, day] = individualPermitHolderDetails.dateOfBirth.split('-')
           pageContext.formValues['dob-day'] = day
           pageContext.formValues['dob-month'] = month
           pageContext.formValues['dob-year'] = year
@@ -69,13 +72,15 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
         contact = new Contact({ firstName, lastName })
       }
 
-      contact.dateOfBirth = `${dobYear}-${dobMonth}-${dobDay}`
-
       await contact.save(authToken)
 
       application.permitHolderIndividualId = contact.id
 
       await application.save(authToken)
+
+      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, application.id)
+      individualPermitHolderDetails.dateOfBirth = `${dobYear}-${dobMonth}-${dobDay}`
+      await individualPermitHolderDetails.save(authToken)
 
       return this.redirect({ request, h, redirectPath: Constants.Routes.PERMIT_HOLDER_CONTACT_DETAILS.path })
     }
