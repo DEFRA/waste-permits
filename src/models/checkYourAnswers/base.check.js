@@ -108,10 +108,10 @@ module.exports = class BaseCheck {
 
   async getBillingInvoicingDetails () {
     const {authToken, applicationId} = this.data
-    if (!this._billingInvoicingDetails) {
-      this._billingInvoicingDetails = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
+    if (!this.data.billingInvoicingDetails) {
+      this.data.billingInvoicingDetails = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
     }
-    return this._billingInvoicingDetails || {}
+    return this.data.billingInvoicingDetails || {}
   }
 
   async getStandardRule () {
