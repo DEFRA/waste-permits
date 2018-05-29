@@ -11,20 +11,19 @@ const Contact = require('../models/contact.model')
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const { authToken, application } = await RecoveryService.createApplicationContext(h, { application: true })
+    const { individualPermitHolder = new Contact() } = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
 
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const contact = application.individualPermitHolderId() ? await Contact.getIndividualPermitHolderByApplicationId(authToken, application.id) : new Contact()
-      if (contact) {
+      if (individualPermitHolder) {
         pageContext.formValues = {
-          'first-name': contact.firstName,
-          'last-name': contact.lastName
+          'first-name': individualPermitHolder.firstName,
+          'last-name': individualPermitHolder.lastName
         }
 
-        if (contact.dateOfBirth) {
-          const [year, month, day] = contact.dateOfBirth.split('-')
+        if (individualPermitHolder.dateOfBirth) {
+          const [year, month, day] = individualPermitHolder.dateOfBirth.split('-')
           pageContext.formValues['dob-day'] = day
           pageContext.formValues['dob-month'] = month
           pageContext.formValues['dob-year'] = year

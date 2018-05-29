@@ -13,20 +13,16 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const {individualPermitHolder} = await RecoveryService.createApplicationContext(h, {individualPermitHolder: true})
 
       // If we don't have a permit holder at this point something has gone wrong
-      if (!application.individualPermitHolderId()) {
+      if (!individualPermitHolder) {
         throw Error('Application does not have a permit holder')
       }
 
-      let contact = await Contact.getIndividualPermitHolderByApplicationId(authToken, application.id)
-
-      if (contact) {
-        pageContext.formValues = {
-          'email': contact.email
-          // TODO: Add telephone
-        }
+      pageContext.formValues = {
+        'email': individualPermitHolder.email
+        // TODO: Add telephone
       }
     }
 
@@ -37,7 +33,7 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const { authToken, application } = await RecoveryService.createApplicationContext(h, { application: true })
+      const { authToken, application, individualPermitHolder } = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
       const {
         email
         // TODO: Add telephone
@@ -45,31 +41,22 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
       let contact
 
       // If we don't have a permit holder at this point something has gone wrong
-      if (!application.individualPermitHolderId()) {
+      if (!individualPermitHolder) {
         throw Error('Application does not have a permit holder')
       }
 
-      // Get an existing contact if we have it, but use a new contact if the email address has changed
-      contact = await Contact.getIndividualPermitHolderByApplicationId(authToken, application.id)
-      const { firstName, lastName } = contact
-      if (contact.email !== email) {
-        contact = undefined
+      const { id: individualPermitHolderId, firstName, lastName } = individualPermitHolder
+
+      contact = await Contact.getByFirstnameLastnameEmail(authToken, firstName, lastName, email)
+
+      if (contact && contact.id !== individualPermitHolderId) {
+        application.permitHolderIndividualId = contact.id
+        await application.save(authToken)
+        await individualPermitHolder.delete(authToken, individualPermitHolderId)
+      } else {
+        individualPermitHolder.email = email
+        await individualPermitHolder.save(authToken)
       }
-
-      // If the previous contact did not have a matching email address try to find one that does
-      if (contact === undefined) {
-        contact = await Contact.getByFirstnameLastnameEmail(authToken, firstName, lastName, email)
-      }
-
-      if (!contact) {
-        contact = new Contact({ firstName, lastName, email })
-      }
-
-      await contact.save(authToken)
-
-      application.permitHolderIndividualId = contact.id
-
-      await application.save(authToken)
 
       return this.redirect({ request, h, redirectPath: Constants.Routes.ADDRESS.POSTCODE_PERMIT_HOLDER.path })
     }
