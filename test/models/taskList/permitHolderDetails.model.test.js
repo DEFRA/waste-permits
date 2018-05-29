@@ -10,6 +10,10 @@ const Application = require('../../../src/models/application.model')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const Account = require('../../../src/models/account.model')
 const Contact = require('../../../src/models/contact.model')
+<<<<<<< 0476a392941a86235979d3d2e6fd84cb2643adeb
+=======
+const Address = require('../../../src/models/address.model')
+>>>>>>> Address changes for individual permit holders
 const AddressDetail = require('../../../src/models/addressDetail.model')
 const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.model')
 
@@ -18,9 +22,18 @@ let fakeApplication
 let fakeApplicationLine
 let fakeAccount
 let fakeContact
+<<<<<<< 0476a392941a86235979d3d2e6fd84cb2643adeb
 let fakeAddressDetails
+=======
+let fakeAddress1
+let fakeAddress2
+let fakeAddress3
+>>>>>>> Address changes for individual permit holders
 
+const request = undefined
 const authToken = 'THE_AUTH_TOKEN'
+const applicationId = 'APPLICATION_ID'
+const applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {
   fakeAccount = {
@@ -51,17 +64,62 @@ lab.beforeEach(() => {
     applicationId: fakeApplication.id
   }
 
+  fakeAddress1 = {
+    id: 'ADDRESS_ID_1',
+    buildingNameOrNumber: '101',
+    addressLine1: 'FIRST_ADDRESS_LINE_1',
+    addressLine2: undefined,
+    townOrCity: 'CITY1',
+    postcode: 'AB12 1AA',
+    uprn: 'UPRN1',
+    fromAddressLookup: true
+  }
+  
+  fakeAddress2 = {
+    id: 'ADDRESS_ID_2',
+    buildingNameOrNumber: '102',
+    addressLine1: 'SECOND_ADDRESS_LINE_1',
+    addressLine2: undefined,
+    townOrCity: 'CITY2',
+    postcode: 'AB12 2AA',
+    uprn: 'UPRN2',
+    fromAddressLookup: true
+  }
+  
+  fakeAddress3 = {
+    id: 'ADDRESS_ID_3',
+    buildingNameOrNumber: '103',
+    addressLine1: 'THIRD_ADDRESS_LINE_1',
+    addressLine2: undefined,
+    townOrCity: 'CITY3',
+    postcode: 'AB12 3AA',
+    uprn: 'UPRN3',
+    fromAddressLookup: true
+  }
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => fakeAddress1.id)
   sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
   sandbox.stub(Application, 'getById').value(() => fakeApplication)
   sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
   sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
   sandbox.stub(Account.prototype, 'save').value(() => {})
   sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
+<<<<<<< 0476a392941a86235979d3d2e6fd84cb2643adeb
   sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeAddressDetails))
+=======
+  sandbox.stub(AddressDetail, 'getByApplicationIdAndType').value(() => new AddressDetail({ addressId: 'ADDRESS_ID' }))
+  sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress1))
+  sandbox.stub(Address, 'getByUprn').value(() => new Address(fakeAddress1))
+  sandbox.stub(Address, 'listByPostcode').value(() => [
+    new Address(fakeAddress1),
+    new Address(fakeAddress2),
+    new Address(fakeAddress3)
+  ])
+>>>>>>> Address changes for individual permit holders
 })
 
 lab.afterEach(() => {
@@ -73,6 +131,34 @@ const testCompleteness = async (expectedResult) => {
   const result = await PermitHolderDetails.isComplete(authToken, fakeApplication.id)
   Code.expect(result).to.equal(expectedResult)
 }
+
+lab.experiment('Model persistence methods:', () => {
+  lab.test('getAddress() method correctly retrieves an Address', async () => {
+    const address = await PermitHolderDetails.getAddress(request, authToken, applicationId)
+    Code.expect(address.uprn).to.be.equal(fakeAddress1.uprn)
+  })
+
+  lab.test('saveSelectedAddress() method correctly saves an invoice address that is already in Dynamics', async () => {
+    const addressDto = {
+      uprn: fakeAddress1.uprn,
+      postcode: fakeAddress1.postcode
+    }
+    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    await PermitHolderDetails.saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
+    Code.expect(spy.callCount).to.equal(1)
+  })
+
+  lab.test('saveSelectedAddress() method correctly saves an invoice address that is not already in Dynamics', async () => {
+    Address.getByUprn = () => undefined
+    const addressDto = {
+      uprn: fakeAddress1.uprn,
+      postcode: fakeAddress1.postcode
+    }
+    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    await PermitHolderDetails.saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
+    Code.expect(spy.callCount).to.equal(1)
+  })
+})
 
 lab.experiment('Task List: Permit Holder Details Model tests:', () => {
   lab.test('updateCompleteness() method updates the task list item completeness', async () => {

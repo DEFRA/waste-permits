@@ -11,7 +11,7 @@ const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
 const Application = require('../../../../src/models/application.model')
 const Payment = require('../../../../src/models/payment.model')
-const Contact = require('../../../../src/models/contact.model')
+const PermitHolderDetails = require('../../../../src/models/taskList/permitHolderDetails.model')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let sandbox
@@ -106,8 +106,8 @@ lab.beforeEach(() => {
     new Address(fakeAddress2),
     new Address(fakeAddress3)
   ])
-  sandbox.stub(Contact, 'getAddress').value(() => new Address(fakeAddress1))
-  sandbox.stub(Contact, 'saveManualAddress').value(() => undefined)
+  sandbox.stub(PermitHolderDetails, 'getAddress').value(() => new Address(fakeAddress1))
+  sandbox.stub(PermitHolderDetails, 'saveManualAddress').value(() => undefined)
   sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
@@ -181,7 +181,7 @@ lab.experiment('Permit holder address select page tests:', () => {
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the manual address entry page correctly on first visit to the page`, async () => {
-      Contact.getAddress = () => undefined
+      PermitHolderDetails.getAddress = () => undefined
       await checkPageElements(getRequest)
     })
 
@@ -191,7 +191,7 @@ lab.experiment('Permit holder address select page tests:', () => {
 
     lab.test(`GET ${routePath} returns the manual address entry page correctly with the postcode from the cookie`, async () => {
       CookieService.get = () => fakeAddress1.postcode
-      Contact.getAddress = () => undefined
+      PermitHolderDetails.getAddress = () => undefined
       const expectedValue = {
         buildingNameOrNumber: '',
         addressLine1: '',
@@ -212,7 +212,7 @@ lab.experiment('Permit holder address select page tests:', () => {
         postRequest.payload[FORM_FIELD_ID.townOrCity] = fakeAddress1.townOrCity
         postRequest.payload[FORM_FIELD_ID.postcode] = fakeAddress1.postcode
 
-        const spy = sinon.spy(Contact, 'saveManualAddress')
+        const spy = sinon.spy(PermitHolderDetails, 'saveManualAddress')
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
 

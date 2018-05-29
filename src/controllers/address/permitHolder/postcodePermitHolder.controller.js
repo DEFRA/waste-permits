@@ -2,7 +2,7 @@
 
 const Constants = require('../../../constants')
 const PostcodeController = require('../base/postcode.controller')
-const Contact = require('../../../models/contact.model')
+const PermitHolderDetails = require('../../../models/taskList/permitHolderDetails.model')
 
 module.exports = class PostcodePermitHolderController extends PostcodeController {
   getPostcodeCookieKey () {
@@ -18,7 +18,7 @@ module.exports = class PostcodePermitHolderController extends PostcodeController
   }
 
   getModel () {
-    return Contact
+    return PermitHolderDetails
   }
 
   customisePageContext (pageContext) {

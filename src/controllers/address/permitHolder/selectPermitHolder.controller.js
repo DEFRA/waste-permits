@@ -2,7 +2,7 @@
 
 const Constants = require('../../../constants')
 const AddressSelectController = require('../base/addressSelect.controller')
-const Contact = require('../../../models/contact.model')
+const PermitHolderDetails = require('../../../models/taskList/permitHolderDetails.model')
 
 module.exports = class AddressSelectPermitHolderController extends AddressSelectController {
   getPostcodeCookieKey () {
@@ -18,7 +18,7 @@ module.exports = class AddressSelectPermitHolderController extends AddressSelect
   }
 
   getModel () {
-    return Contact
+    return PermitHolderDetails
   }
 
   getNextRoute () {

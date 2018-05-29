@@ -8,12 +8,95 @@ const Account = require('../account.model')
 const Application = require('../application.model')
 const ApplicationLine = require('../applicationLine.model')
 const Contact = require('../contact.model')
+<<<<<<< 0476a392941a86235979d3d2e6fd84cb2643adeb
+=======
+const Address = require('../address.model')
+>>>>>>> Address changes for individual permit holders
 const AddressDetail = require('../addressDetail.model')
 
 module.exports = class PermitHolderDetails extends BaseModel {
   constructor (data) {
     super()
     this.applicationLineId = data.applicationLineId
+  }
+
+  static async getAddress (request, authToken, applicationId, applicationLineId) {
+    let address
+    try {
+      // Get the AddressDetail for this application
+      const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+
+      if (addressDetail && addressDetail.addressId !== undefined) {
+        // Get the Address for this AddressDetail
+        address = await Address.getById(authToken, addressDetail.addressId)
+      }
+    } catch (error) {
+      LoggingService.logError(error, request)
+      throw error
+    }
+    return address
+  }
+
+  static async saveSelectedAddress (request, authToken, applicationId, applicationLineId, addressDto) {
+    if (!addressDto.uprn) {
+      const errorMessage = `Unable to save individual permit holder address as it does not have a UPRN`
+      LoggingService.logError(errorMessage, request)
+      throw new Error(errorMessage)
+    }
+
+    if (addressDto.postcode) {
+      addressDto.postcode = addressDto.postcode.toUpperCase()
+    }
+
+    let addressDetail = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+    if (!addressDetail.addressId) {
+      await addressDetail.save(authToken)
+    }
+
+    let address = await Address.getByUprn(authToken, addressDto.uprn)
+    if (!address) {
+      // The address is not already in Dynamics so look it up in AddressBase and save it in Dynamics
+      let addresses = await Address.listByPostcode(authToken, addressDto.postcode)
+      addresses = addresses.filter((element) => element.uprn === addressDto.uprn)
+      address = addresses.pop()
+      if (address) {
+        await address.save(authToken)
+      }
+    }
+
+    // Save the AddressDetail to associate the Address with the Application
+    if (address && addressDetail) {
+      addressDetail.addressId = address.id
+      await addressDetail.save(authToken)
+    }
+  }
+
+  static async saveManualAddress (request, authToken, applicationId, applicationLineId, addressDto) {
+    if (addressDto.postcode) {
+      addressDto.postcode = addressDto.postcode.toUpperCase()
+    }
+
+    // Get the AddressDetail for this Application (if there is one)
+    let addressDetail = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+    if (!addressDetail.addressId) {
+      await addressDetail.save(authToken)
+    }
+
+    // Get the Address for this AddressDetail (if there is one)
+    let address = await Address.getById(authToken, addressDetail.addressId)
+    if (!address) {
+      address = new Address(addressDto)
+    } else {
+      Object.assign(address, addressDto)
+    }
+    address.fromAddressLookup = false
+    await address.save(authToken)
+
+    // Save the AddressDetail to associate the Address with the Application
+    if (address && addressDetail) {
+      addressDetail.addressId = address.id
+      await addressDetail.save(authToken)
+    }
   }
 
   static async updateCompleteness (authToken, applicationId, applicationLineId) {
