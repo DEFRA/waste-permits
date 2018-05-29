@@ -12,6 +12,7 @@ const Address = require('../../../../src/models/address.model')
 const Application = require('../../../../src/models/application.model')
 const Payment = require('../../../../src/models/payment.model')
 const Contact = require('../../../../src/models/contact.model')
+const PermitHolderDetails = require('../../../../src/models/taskList/permitHolderDetails.model')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let sandbox
@@ -80,13 +81,14 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Contact, 'getAddress').value(() => new Address(fakeAddress1))
   sandbox.stub(Address, 'listByPostcode').value(() => [
     new Address(fakeAddress1),
     new Address(fakeAddress2),
     new Address(fakeAddress3)
   ])
-  sandbox.stub(Contact, 'saveSelectedAddress').value(() => undefined)
+  sandbox.stub(PermitHolderDetails, 'saveSelectedAddress').value(() => undefined)
+  sandbox.stub(PermitHolderDetails, 'getAddress').value(() => new Address(fakeAddress1))
+
   sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
@@ -144,7 +146,7 @@ lab.experiment('Permit holder postcode page tests:', () => {
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the postcode page correctly when there is no saved postcode`, async () => {
-      Contact.getAddress = () => undefined
+      PermitHolderDetails.getAddress = () => undefined
       checkPageElements(getRequest, '')
     })
 
@@ -155,7 +157,7 @@ lab.experiment('Permit holder postcode page tests:', () => {
     lab.test(`GET ${routePath} redirects to the Manual Address Entry route when the fromAddressLookup is not set: ${nextRoutePath}`, async () => {
       const fakeAddressManual = Object.assign({}, fakeAddress1)
       fakeAddressManual.fromAddressLookup = false
-      Contact.getAddress = () => new Address(fakeAddressManual)
+      PermitHolderDetails.getAddress = () => new Address(fakeAddressManual)
       const res = await server.inject(getRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePathManual)

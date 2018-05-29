@@ -8,10 +8,7 @@ const Account = require('../account.model')
 const Application = require('../application.model')
 const ApplicationLine = require('../applicationLine.model')
 const Contact = require('../contact.model')
-<<<<<<< 0476a392941a86235979d3d2e6fd84cb2643adeb
-=======
 const Address = require('../address.model')
->>>>>>> Address changes for individual permit holders
 const AddressDetail = require('../addressDetail.model')
 
 module.exports = class PermitHolderDetails extends BaseModel {

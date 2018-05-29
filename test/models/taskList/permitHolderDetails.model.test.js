@@ -10,10 +10,7 @@ const Application = require('../../../src/models/application.model')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const Account = require('../../../src/models/account.model')
 const Contact = require('../../../src/models/contact.model')
-<<<<<<< 0476a392941a86235979d3d2e6fd84cb2643adeb
-=======
 const Address = require('../../../src/models/address.model')
->>>>>>> Address changes for individual permit holders
 const AddressDetail = require('../../../src/models/addressDetail.model')
 const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.model')
 
@@ -22,13 +19,10 @@ let fakeApplication
 let fakeApplicationLine
 let fakeAccount
 let fakeContact
-<<<<<<< 0476a392941a86235979d3d2e6fd84cb2643adeb
 let fakeAddressDetails
-=======
 let fakeAddress1
 let fakeAddress2
 let fakeAddress3
->>>>>>> Address changes for individual permit holders
 
 const request = undefined
 const authToken = 'THE_AUTH_TOKEN'
@@ -47,11 +41,14 @@ lab.beforeEach(() => {
   fakeContact = {
     id: 'CONTACT_ID',
     firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME'
+    lastName: 'LASTNAME',
+    email: 'EMAIL'
   }
 
   fakeAddressDetails = {
-    dateOfBirth: 'DATE-OF-BIRTH'
+    addressId: 'ADDRESS-ID',
+    dateOfBirth: 'DATE-OF-BIRTH',
+    telephone: '0123456789'
   }
 
   fakeApplication = {
@@ -108,9 +105,7 @@ lab.beforeEach(() => {
   sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
   sandbox.stub(Account.prototype, 'save').value(() => {})
   sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
-<<<<<<< 0476a392941a86235979d3d2e6fd84cb2643adeb
   sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeAddressDetails))
-=======
   sandbox.stub(AddressDetail, 'getByApplicationIdAndType').value(() => new AddressDetail({ addressId: 'ADDRESS_ID' }))
   sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress1))
   sandbox.stub(Address, 'getByUprn').value(() => new Address(fakeAddress1))
@@ -119,7 +114,6 @@ lab.beforeEach(() => {
     new Address(fakeAddress2),
     new Address(fakeAddress3)
   ])
->>>>>>> Address changes for individual permit holders
 })
 
 lab.afterEach(() => {

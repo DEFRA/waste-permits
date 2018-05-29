@@ -12,6 +12,7 @@ const Address = require('../../../../src/models/address.model')
 const Application = require('../../../../src/models/application.model')
 const Payment = require('../../../../src/models/payment.model')
 const Contact = require('../../../../src/models/contact.model')
+const PermitHolderDetails = require('../../../../src/models/taskList/permitHolderDetails.model')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let sandbox
@@ -93,10 +94,12 @@ lab.beforeEach(() => {
     new Address(fakeAddress2),
     new Address(fakeAddress3)
   ])
-  sandbox.stub(Contact, 'getAddress').value(() => new Address(fakeAddress1))
-  sandbox.stub(Contact, 'saveSelectedAddress').value(() => undefined)
+  sandbox.stub(PermitHolderDetails, 'getAddress').value(() => new Address(fakeAddress1))
+  sandbox.stub(PermitHolderDetails, 'saveSelectedAddress').value(() => undefined)
+  
   sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
+  
 })
 
 lab.afterEach(() => {
@@ -153,7 +156,7 @@ lab.experiment('Permit holder address select page tests:', () => {
       lab.test(`POST ${routePath} success redirects to the Task List route: ${nextRoutePath}`, async () => {
         postRequest.payload['select-address'] = fakeAddress1.uprn
 
-        const spy = sinon.spy(Contact, 'saveSelectedAddress')
+        const spy = sinon.spy(PermitHolderDetails, 'saveSelectedAddress')
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
 
