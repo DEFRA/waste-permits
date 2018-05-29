@@ -49,13 +49,14 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
 
       contact = await Contact.getByFirstnameLastnameEmail(authToken, firstName, lastName, email)
 
-      if (contact && contact.id !== individualPermitHolderId) {
+      if (!contact) {
+        contact = new Contact({firstName, lastName, email})
+        await contact.save(authToken)
+      }
+
+      if (contact.id !== individualPermitHolderId) {
         application.permitHolderIndividualId = contact.id
         await application.save(authToken)
-        await individualPermitHolder.delete(authToken, individualPermitHolderId)
-      } else {
-        individualPermitHolder.email = email
-        await individualPermitHolder.save(authToken)
       }
 
       return this.redirect({ request, h, redirectPath: Constants.Routes.ADDRESS.POSTCODE_PERMIT_HOLDER.path })

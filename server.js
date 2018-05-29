@@ -201,7 +201,9 @@ const start = async () => {
   })
 
   // Start polling the CRM to keep it awake
-  await PollingService.start(config.dynamicsPollingInterval)
+  if (!config.isTest) {
+    await PollingService.start(config.dynamicsPollingInterval)
+  }
 }
 
 registerPlugins().then(start)
