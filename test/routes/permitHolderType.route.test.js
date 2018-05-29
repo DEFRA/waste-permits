@@ -14,7 +14,7 @@ const LoggingService = require('../../src/services/logging.service')
 const PermitHolderTypeController = require('../../src/controllers/permitHolderType.controller')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-const routePath = '/permit-holder/type'
+const routePath = '/permit-holder'
 const nextRoutePath = '/permit/category'
 const offlineRoutePath = '/start/apply-offline'
 const errorPath = '/errors/technical-problem'

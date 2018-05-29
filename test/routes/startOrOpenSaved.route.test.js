@@ -14,7 +14,7 @@ const {COOKIE_RESULT} = require('../../src/constants')
 let sandbox
 
 const routePath = '/start/start-or-open-saved'
-const nextRoutePath = '/permit-holder/type'
+const nextRoutePath = '/permit-holder'
 const checkEmailRoutePath = '/save-return/search-your-email'
 
 const getRequest = {

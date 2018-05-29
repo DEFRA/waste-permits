@@ -408,7 +408,7 @@ Constants.Routes = {
     pageHeading: 'Who will be the permit holder?'
   },
   PERMIT_HOLDER_TYPE: {
-    path: '/permit-holder/type',
+    path: '/permit-holder',
     view: 'permitHolderType',
     pageHeading: 'Who will be the permit holder?'
   },
