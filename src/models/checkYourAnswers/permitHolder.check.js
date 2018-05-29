@@ -52,8 +52,8 @@ module.exports = class PermitHolderCheck extends BaseCheck {
 
   async getIndividualLine () {
     const {path} = PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH
-    const {firstName = '', lastName = '', email = '', telephone = 'unknown'} = await this.getIndividualPermitHolder()
-    const {dateOfBirth = 'unknown'} = await this.getIndividualPermitHolderDetails()
+    const {firstName = '', lastName = '', email = ''} = await this.getIndividualPermitHolder()
+    const {dateOfBirth = 'unknown', telephone = 'unknown'} = await this.getIndividualPermitHolderDetails()
     const [year, month, day] = dateOfBirth.split('-')
     const dob = {day, month, year}
     const answers = []

@@ -5,6 +5,7 @@ const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 
 const Contact = require('../models/contact.model')
+const AddressDetail = require('../models/addressDetail.model')
 
 module.exports = class PermitHolderContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
@@ -13,16 +14,18 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const {individualPermitHolder} = await RecoveryService.createApplicationContext(h, {individualPermitHolder: true})
+      const {authToken, individualPermitHolder, applicationId} = await RecoveryService.createApplicationContext(h, {individualPermitHolder: true})
 
       // If we don't have a permit holder at this point something has gone wrong
       if (!individualPermitHolder) {
         throw Error('Application does not have a permit holder')
       }
 
+      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+
       pageContext.formValues = {
-        'email': individualPermitHolder.email
-        // TODO: Add telephone
+        'email': individualPermitHolder.email,
+        'telephone': individualPermitHolderDetails.telephone
       }
     }
 
@@ -35,8 +38,8 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
     } else {
       const { authToken, application, individualPermitHolder } = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
       const {
-        email
-        // TODO: Add telephone
+        email,
+        telephone
       } = request.payload
       let contact
 
@@ -58,6 +61,10 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
         application.permitHolderIndividualId = contact.id
         await application.save(authToken)
       }
+
+      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, application.id)
+      individualPermitHolderDetails.telephone = telephone
+      await individualPermitHolderDetails.save(authToken)
 
       return this.redirect({ request, h, redirectPath: Constants.Routes.ADDRESS.POSTCODE_PERMIT_HOLDER.path })
     }

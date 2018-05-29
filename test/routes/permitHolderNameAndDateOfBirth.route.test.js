@@ -26,8 +26,8 @@ const getRequest = {
 }
 let postRequest
 let validPermitHolderDetails
-let fakePrimaryContactDetails
-let fakePrimaryContactDetailsId = 'COMPANY_SECRETARY_DETAILS_ID'
+let fakeIndividualPermitHolderDetails
+let fakeIndividualPermitHolderDetailsId = 'INDIVIDUAL_PERMIT_HOLDER_ID'
 
 const fakeApplication = {
   id: 'APPLICATION_ID',
@@ -43,8 +43,8 @@ lab.beforeEach(() => {
     'dob-year': '1995'
   }
 
-  fakePrimaryContactDetails = {
-    id: fakePrimaryContactDetailsId
+  fakeIndividualPermitHolderDetails = {
+    id: fakeIndividualPermitHolderDetailsId
   }
 
   postRequest = {
@@ -68,7 +68,7 @@ lab.beforeEach(() => {
   sandbox.stub(Contact.prototype, 'save').value(() => undefined)
   sandbox.stub(Contact, 'getIndividualPermitHolderByApplicationId').value(() => new Contact())
   sandbox.stub(AddressDetail.prototype, 'save').value(() => undefined)
-  sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakePrimaryContactDetails))
+  sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeIndividualPermitHolderDetails))
 })
 
 lab.afterEach(() => {

@@ -12,6 +12,7 @@ const LoggingService = require('../../src/services/logging.service')
 const Application = require('../../src/models/application.model')
 const Contact = require('../../src/models/contact.model')
 const Payment = require('../../src/models/payment.model')
+const AddressDetail = require('../../src/models/addressDetail.model')
 const {COOKIE_RESULT} = require('../../src/constants')
 
 let sandbox
@@ -30,6 +31,8 @@ let validContactDetails
 let fakeContact
 let fakePermitHolder
 let fakeApplication
+let fakeIndividualPermitHolderDetails
+let fakeIndividualPermitHolderDetailsId = 'INDIVIDUAL_PERMIT_HOLDER_ID'
 
 lab.beforeEach(() => {
   fakeContact = {
@@ -58,6 +61,10 @@ lab.beforeEach(() => {
     'telephone': '01234567890'
   }
 
+  fakeIndividualPermitHolderDetails = {
+    id: fakeIndividualPermitHolderDetailsId
+  }
+
   postRequest = {
     method: 'POST',
     url: routePath,
@@ -79,6 +86,8 @@ lab.beforeEach(() => {
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
+  sandbox.stub(AddressDetail.prototype, 'save').value(() => undefined)
+  sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeIndividualPermitHolderDetails))
 })
 
 lab.afterEach(() => {

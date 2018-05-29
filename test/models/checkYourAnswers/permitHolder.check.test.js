@@ -73,13 +73,12 @@ lab.beforeEach(() => {
   fakeIndividualPermitHolder = {
     firstName: 'FIRSTNAME',
     lastName: 'LASTNAME',
-    telephone: 'TELEPHONE',
-    dateOfBirth: '1999-11-23',
     email: 'EMAIL'
   }
 
   fakeIndividualPermitHolderDetails = {
-    dateOfBirth: '1999-11-23'
+    dateOfBirth: '1999-11-23',
+    telephone: 'TELEPHONE'
   }
 
   // Create a sinon sandbox
@@ -168,7 +167,8 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {firstName, lastName, email, telephone, dateOfBirth} = fakeIndividualPermitHolder
+      const {firstName, lastName, email} = fakeIndividualPermitHolder
+      const {telephone, dateOfBirth} = fakeIndividualPermitHolderDetails
       const [year, month, day] = dateOfBirth.split('-')
       answers.forEach(({answer, answerId}, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
