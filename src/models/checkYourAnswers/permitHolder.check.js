@@ -5,6 +5,8 @@ const {PERMIT_HOLDER_DETAILS: ruleSetId} = Constants.Dynamics.RulesetIds
 
 const {COMPANY_DECLARE_BANKRUPTCY, COMPANY_DECLARE_OFFENCES, COMPANY_NUMBER, DIRECTOR_DATE_OF_BIRTH, PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, PERMIT_HOLDER_TYPE} = Constants.Routes
 
+const blankLine = {blankLine: true}
+
 module.exports = class PermitHolderCheck extends BaseCheck {
   static get rulesetId () {
     return ruleSetId
@@ -22,7 +24,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
         this.getTypeLine(),
         this.getIndividualLine(),
         this.getConvictionsLine(isIndividual),
-        this.getBancruptcyLine(isIndividual)
+        this.getBankcruptcyLine(isIndividual)
       ])
     }
 
@@ -31,7 +33,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       this.getCompanyLine(),
       this.getDirectorsLine(),
       this.getConvictionsLine(),
-      this.getBancruptcyLine()
+      this.getBankcruptcyLine()
     ])
   }
 
@@ -56,17 +58,35 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const {dateOfBirth = 'unknown', telephone = 'unknown'} = await this.getIndividualPermitHolderDetails()
     const [year, month, day] = dateOfBirth.split('-')
     const dob = {day, month, year}
-    const answers = []
+    let answers = []
     answers.push(`${firstName} ${lastName}`)
     answers.push(email)
     answers.push(`Telephone: ${telephone}`)
     answers.push(`Date of birth: ${Utilities.formatFullDateForDisplay(dob)}`)
+    answers.push(blankLine)
+    answers = answers.concat(await this.getPermitHolderAddressLine())
     return this.buildLine({
       heading: 'Permit holder',
       prefix: 'individual',
       answers,
       links: [{path, type: 'individual details'}]
     })
+  }
+
+  async getPermitHolderAddressLine () {
+    const {
+      buildingNameOrNumber = '',
+      addressLine1 = '',
+      addressLine2 = '',
+      townOrCity = '',
+      postcode = ''
+    } = await this.getIndividualPermitHolderAddress()
+    let firstLine = buildingNameOrNumber
+    if (firstLine && addressLine1) {
+      firstLine += ', '
+    }
+    firstLine += addressLine1
+    return [firstLine, addressLine2, townOrCity, postcode]
   }
 
   async getCompanyLine () {
@@ -121,7 +141,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
-  async getBancruptcyLine (isIndividual) {
+  async getBankcruptcyLine (isIndividual) {
     const {path} = COMPANY_DECLARE_BANKRUPTCY
     const {bankruptcy = false, bankruptcyDetails = ''} = await this.getApplication()
     const answers = []

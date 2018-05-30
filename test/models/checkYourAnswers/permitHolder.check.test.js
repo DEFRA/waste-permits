@@ -38,6 +38,7 @@ let fakeCompanyAccount
 let fakeDirector
 let fakeIndividualPermitHolder
 let fakeIndividualPermitHolderDetails
+let fakeIndividualPermitHolderAddress
 
 let sandbox
 
@@ -81,6 +82,14 @@ lab.beforeEach(() => {
     telephone: 'TELEPHONE'
   }
 
+  fakeIndividualPermitHolderAddress = {
+    buildingNameOrNumber: '5',
+    addressLine1: 'A ROAD',
+    addressLine2: 'AN AREA',
+    townOrCity: 'A TOWN',
+    postcode: 'BS1 6AD'
+  }
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
@@ -91,6 +100,7 @@ lab.beforeEach(() => {
   sandbox.stub(BaseCheck.prototype, 'getDirectors').value(() => [Merge({}, fakeDirector)])
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolder').value(() => Merge({}, fakeIndividualPermitHolder))
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderDetails').value(() => Merge({}, fakeIndividualPermitHolderDetails))
+  sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderAddress').value(() => Merge({}, fakeIndividualPermitHolderAddress))
 })
 
 lab.afterEach(() => {
@@ -184,6 +194,21 @@ lab.experiment('PermitHolder Check tests:', () => {
             break
           case 3:
             Code.expect(answer).to.equal(`Date of birth: ${day} ${getMonth(month)} ${year}`)
+            break
+          case 4:
+            Code.expect(answer).to.equal({blankLine: true})
+            break
+          case 5:
+            Code.expect(answer).to.equal(`5, A ROAD`)
+            break
+          case 6:
+            Code.expect(answer).to.equal(`AN AREA`)
+            break
+          case 7:
+            Code.expect(answer).to.equal(`A TOWN`)
+            break
+          case 8:
+            Code.expect(answer).to.equal(`BS1 6AD`)
             break
         }
       })

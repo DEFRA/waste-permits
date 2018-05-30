@@ -21,7 +21,11 @@
             </dt>
             <dd class="cya-answer">
               {{#each answers}}
-                <div id="{{answerId}}">{{answer}}</div>
+                {{#if answer.blankLine}}
+                  <br>
+                {{else}}
+                  <div id="{{answerId}}">{{answer}}</div>
+                {{/if}}
               {{/each}}
             </dd>
             <dd class="cya-change">

@@ -182,6 +182,12 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(individualPermitHolderDetails).to.equal(fakeIndividualPermitHolderDetails)
   })
 
+  lab.test('getIndividualPermitHolderAddress works correctly', async () => {
+    const check = new BaseCheck(context)
+    const individualPermitHolderAddress = await check.getIndividualPermitHolderAddress()
+    Code.expect(individualPermitHolderAddress).to.equal(fakeAddress)
+  })
+
   lab.test('getBillingInvoicingDetails works correctly', async () => {
     const check = new BaseCheck(context)
     const billingInvoicing = await check.getBillingInvoicingDetails()

@@ -122,6 +122,15 @@ module.exports = class BaseCheck {
     return this.data.individualPermitHolderDetails || {}
   }
 
+  async getIndividualPermitHolderAddress () {
+    const {authToken, individualPermitHolderAddress} = this.data
+    if (!individualPermitHolderAddress) {
+      const permitHolderDetails = await this.getIndividualPermitHolderDetails()
+      this.data.individualPermitHolderAddress = await Address.getById(authToken, permitHolderDetails.addressId)
+    }
+    return this.data.individualPermitHolderAddress || {}
+  }
+
   async getBillingInvoicingDetails () {
     const {authToken, applicationId} = this.data
     if (!this.data.billingInvoicingDetails) {

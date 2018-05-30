@@ -123,7 +123,12 @@ module.exports = class PermitHolderDetails extends BaseModel {
         // Get the Contact for this application
         const contact = await Contact.getById(authToken, permitHolderIndividualId)
         const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
-        isComplete = Boolean(contact && contact.firstName && contact.lastName && addressDetail.dateOfBirth && addressDetail.telephone)
+        const address = await Address.getById(authToken, addressDetail.addressId)
+
+        let isContactComplete = contact && contact.firstName && contact.lastName
+        let isContactDetailComplete = addressDetail.dateOfBirth && addressDetail.telephone
+
+        isComplete = Boolean(isContactComplete && isContactDetailComplete && address)
       } else {
         // Get the Account for this application
         const account = await Account.getById(authToken, accountId)
