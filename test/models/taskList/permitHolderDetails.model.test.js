@@ -24,7 +24,8 @@ let fakeAddress1
 let fakeAddress2
 let fakeAddress3
 
-const request = undefined
+const request = {app: {data: {}}}
+
 const authToken = 'THE_AUTH_TOKEN'
 const applicationId = 'APPLICATION_ID'
 const applicationLineId = 'APPLICATION_LINE_ID'
@@ -71,7 +72,7 @@ lab.beforeEach(() => {
     uprn: 'UPRN1',
     fromAddressLookup: true
   }
-  
+
   fakeAddress2 = {
     id: 'ADDRESS_ID_2',
     buildingNameOrNumber: '102',
@@ -82,7 +83,7 @@ lab.beforeEach(() => {
     uprn: 'UPRN2',
     fromAddressLookup: true
   }
-  
+
   fakeAddress3 = {
     id: 'ADDRESS_ID_3',
     buildingNameOrNumber: '103',
@@ -138,7 +139,7 @@ lab.experiment('Model persistence methods:', () => {
       postcode: fakeAddress1.postcode
     }
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await PermitHolderDetails.saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
+    await PermitHolderDetails.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
     Code.expect(spy.callCount).to.equal(1)
   })
 
@@ -149,7 +150,7 @@ lab.experiment('Model persistence methods:', () => {
       postcode: fakeAddress1.postcode
     }
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await PermitHolderDetails.saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
+    await PermitHolderDetails.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
     Code.expect(spy.callCount).to.equal(1)
   })
 })

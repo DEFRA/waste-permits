@@ -9,6 +9,7 @@ const ApplicationLine = require('../../src/models/applicationLine.model')
 const ApplicationReturn = require('../../src/models/applicationReturn.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
+const request = {app: {}}
 let fakeApplicationLine
 let fakeApplicationReturn
 
@@ -53,7 +54,7 @@ lab.experiment('ApplicationReturn Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const applicationReturn = await ApplicationReturn.getBySlug()
+    const applicationReturn = await ApplicationReturn.getBySlug(request)
     Code.expect(applicationReturn).to.equal(fakeApplicationReturn)
     Code.expect(spy.callCount).to.equal(1)
   })
@@ -66,7 +67,7 @@ lab.experiment('ApplicationReturn Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const applicationReturn = await ApplicationReturn.getByApplicationId()
+    const applicationReturn = await ApplicationReturn.getByApplicationId(request)
     Code.expect(applicationReturn).to.equal(fakeApplicationReturn)
     Code.expect(spy.callCount).to.equal(1)
   })

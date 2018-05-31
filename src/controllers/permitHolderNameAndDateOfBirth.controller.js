@@ -12,7 +12,8 @@ const AddressDetail = require('../models/addressDetail.model')
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const { authToken, application, individualPermitHolder = new Contact() } = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
+    const context = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
+    const { application, individualPermitHolder = new Contact() } = context
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -23,7 +24,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
           'last-name': individualPermitHolder.lastName
         }
 
-        const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, application.id)
+        const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(context, application.id)
 
         if (individualPermitHolderDetails.dateOfBirth) {
           const [year, month, day] = individualPermitHolderDetails.dateOfBirth.split('-')
@@ -50,7 +51,8 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const { authToken, application } = await RecoveryService.createApplicationContext(h, { application: true })
+      const context = await RecoveryService.createApplicationContext(h, { application: true })
+      const { application } = context
       const {
         'first-name': firstName,
         'last-name': lastName,
@@ -62,7 +64,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
 
       // Get an existing contact if we have it, but use a new contact if any details have changed
       if (application.individualPermitHolderId()) {
-        contact = await Contact.getIndividualPermitHolderByApplicationId(authToken, application.id)
+        contact = await Contact.getIndividualPermitHolderByApplicationId(context, application.id)
         if (contact.firstName !== firstName || contact.lastName !== lastName) {
           contact = undefined
         }
@@ -72,15 +74,15 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
         contact = new Contact({ firstName, lastName })
       }
 
-      await contact.save(authToken)
+      await contact.save(context)
 
       application.permitHolderIndividualId = contact.id
 
-      await application.save(authToken)
+      await application.save(context)
 
-      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, application.id)
+      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(context, application.id)
       individualPermitHolderDetails.dateOfBirth = `${dobYear}-${dobMonth}-${dobDay}`
-      await individualPermitHolderDetails.save(authToken)
+      await individualPermitHolderDetails.save(context)
 
       return this.redirect({ request, h, redirectPath: Constants.Routes.PERMIT_HOLDER_CONTACT_DETAILS.path })
     }

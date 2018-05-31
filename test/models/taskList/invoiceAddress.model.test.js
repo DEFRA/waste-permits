@@ -13,7 +13,7 @@ const InvoiceAddress = require('../../../src/models/taskList/invoiceAddress.mode
 
 let sandbox
 
-const request = undefined
+const request = {app: {data: {}}}
 const authToken = 'THE_AUTH_TOKEN'
 const applicationId = 'APPLICATION_ID'
 const applicationLineId = 'APPLICATION_LINE_ID'
@@ -60,6 +60,7 @@ lab.beforeEach(() => {
   sandbox.stub(DynamicsDalService.prototype, 'update').value(() => fakeAddress1.id)
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine({ id: applicationLineId }))
   sandbox.stub(AddressDetail, 'getByApplicationIdAndType').value(() => new AddressDetail({ addressId: 'ADDRESS_ID' }))
+  sandbox.stub(Address.prototype, 'save').value(() => undefined)
   sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress1))
   sandbox.stub(Address, 'getByUprn').value(() => new Address(fakeAddress1))
   sandbox.stub(Address, 'listByPostcode').value(() => [
@@ -86,8 +87,8 @@ lab.experiment('Task List: Invoice Address Model tests:', () => {
         uprn: fakeAddress1.uprn,
         postcode: fakeAddress1.postcode
       }
-      const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-      await InvoiceAddress.saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
+      const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+      await InvoiceAddress.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
       Code.expect(spy.callCount).to.equal(1)
     })
 
@@ -98,7 +99,7 @@ lab.experiment('Task List: Invoice Address Model tests:', () => {
         postcode: fakeAddress1.postcode
       }
       const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-      await InvoiceAddress.saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
+      await InvoiceAddress.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
       Code.expect(spy.callCount).to.equal(1)
     })
   })

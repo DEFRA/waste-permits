@@ -39,9 +39,9 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     return this._checks
   }
 
-  async _buildSections (data) {
-    const {authToken, applicationLineId} = data
-    const applicableRuleSetIds = await ApplicationLine.getValidRulesetIds(authToken, applicationLineId)
+  async _buildSections (context) {
+    const {applicationLineId} = context
+    const applicableRuleSetIds = await ApplicationLine.getValidRulesetIds(context, applicationLineId)
     const sections = await Promise.all(
       this.Checks
         // Only include those checks that are valid for this application line
@@ -50,7 +50,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
           return Check.name === 'PermitCheck' || applicableRuleSetIds.includes(Check.rulesetId)
         })
         .map((Check) => {
-          const check = new Check(data)
+          const check = new Check(context)
           return check.buildLines()
         })
     )
@@ -60,15 +60,15 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
   async doGet (request, h) {
     const pageContext = this.createPageContext()
-    const data = request.app.data
-    await RecoveryService.createApplicationContext(h, {application: true, applicationLine: true, contact: true})
-    const {authToken, applicationId, applicationLineId} = data
+    const context = request.app.data
+    await RecoveryService.createApplicationContext(h, {application: true})
+    const {applicationId, applicationLineId} = context
 
-    pageContext.sections = await this._buildSections(data)
+    pageContext.sections = await this._buildSections(context)
 
     // If all the task list items are not complete
-    const taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
-    const isComplete = await taskList.isComplete(authToken, applicationId, applicationLineId)
+    const taskList = await TaskList.getByApplicationLineId(context, applicationLineId)
+    const isComplete = await taskList.isComplete(context, applicationId, applicationLineId)
 
     // If the task list is not complete then redirect back to it and show a validation error
     if (!isComplete) {
@@ -79,13 +79,13 @@ module.exports = class CheckBeforeSendingController extends BaseController {
   }
 
   async doPost (request, h) {
-    const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
+    const {application} = await RecoveryService.createApplicationContext(h, {application: true})
 
     application.declaration = true
     application.statusCode = Constants.Dynamics.StatusCode.APPLICATION_RECEIVED
     application.submittedOn = Date.now()
 
-    await application.save(authToken)
+    await application.save(request.app.data)
 
     return this.redirect({request, h, redirectPath: Constants.Routes.PAYMENT.PAYMENT_TYPE.path})
   }

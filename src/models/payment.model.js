@@ -31,18 +31,18 @@ class Payment extends BaseModel {
     return Boolean(this.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED)
   }
 
-  static async getBacsPayment (authToken, applicationLineId) {
-    return this.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.BACS_PAYMENT)
+  static async getBacsPayment (context, applicationLineId) {
+    return this.getByApplicationLineIdAndType(context, applicationLineId, Constants.Dynamics.PaymentTypes.BACS_PAYMENT)
   }
 
-  static async getCardPayment (authToken, applicationLineId) {
-    return this.getByApplicationLineIdAndType(authToken, applicationLineId, Constants.Dynamics.PaymentTypes.CARD_PAYMENT)
+  static async getCardPayment (context, applicationLineId) {
+    return this.getByApplicationLineIdAndType(context, applicationLineId, Constants.Dynamics.PaymentTypes.CARD_PAYMENT)
   }
 
-  static async getByApplicationLineIdAndType (authToken, applicationLineId, type) {
+  static async getByApplicationLineIdAndType (context, applicationLineId, type) {
     let payment
     if (applicationLineId) {
-      const dynamicsDal = new DynamicsDalService(authToken)
+      const dynamicsDal = new DynamicsDalService(context.authToken)
       const filter = `_defra_applicationlineid_value eq ${applicationLineId} and defra_type eq ${type}`
       const query = `defra_payments?$select=${Payment.selectedDynamicsFields()}&$filter=${filter}`
       try {
@@ -59,16 +59,16 @@ class Payment extends BaseModel {
     return payment
   }
 
-  static async getBacsPaymentDetails (authToken, applicationLineId) {
-    return (await Payment.getByApplicationLineIdAndType(authToken, applicationLineId, BACS_PAYMENT)) || new Payment({applicationLineId, type: BACS_PAYMENT})
+  static async getBacsPaymentDetails (context, applicationLineId) {
+    return (await Payment.getByApplicationLineIdAndType(context, applicationLineId, BACS_PAYMENT)) || new Payment({applicationLineId, type: BACS_PAYMENT})
   }
 
-  static async getCardPaymentDetails (authToken, applicationLineId) {
-    return (await Payment.getByApplicationLineIdAndType(authToken, applicationLineId, CARD_PAYMENT)) || new Payment({applicationLineId, type: CARD_PAYMENT})
+  static async getCardPaymentDetails (context, applicationLineId) {
+    return (await Payment.getByApplicationLineIdAndType(context, applicationLineId, CARD_PAYMENT)) || new Payment({applicationLineId, type: CARD_PAYMENT})
   }
 
-  async makeCardPayment (authToken, description, returnUrl) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  async makeCardPayment (context, description, returnUrl) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
       Amount: this.value,
       ReturnUrl: returnUrl,
@@ -89,8 +89,8 @@ class Payment extends BaseModel {
     }
   }
 
-  async getCardPaymentResult (authToken) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  async getCardPaymentResult (context) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
       LookupByPaymentReference: this.referenceNumber
     }

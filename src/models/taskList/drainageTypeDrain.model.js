@@ -6,11 +6,11 @@ const BaseModel = require('../base.model')
 const LoggingService = require('../../services/logging.service')
 const ApplicationLine = require('../applicationLine.model')
 
-const updateCompleteness = async (authToken, applicationId, applicationLineId, value) => {
-  const dynamicsDal = new DynamicsDalService(authToken)
+const updateCompleteness = async (context, applicationId, applicationLineId, value) => {
+  const dynamicsDal = new DynamicsDalService(context.authToken)
 
   try {
-    const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
+    const applicationLine = await ApplicationLine.getById(context, applicationLineId)
 
     const query = `defra_wasteparamses(${applicationLine.parametersId})`
     await dynamicsDal.update(query, {[SURFACE_DRAINAGE]: value})
@@ -34,11 +34,11 @@ module.exports = class DrainageTypeDrain extends BaseModel {
     await updateCompleteness(...args, false)
   }
 
-  static async isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (context, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the completed flag for surface drainage
-      const completed = await ApplicationLine.getCompleted(authToken, applicationLineId, SURFACE_DRAINAGE)
+      const completed = await ApplicationLine.getCompleted(context, applicationLineId, SURFACE_DRAINAGE)
 
       isComplete = Boolean(completed)
     } catch (error) {

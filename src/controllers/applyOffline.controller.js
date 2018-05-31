@@ -44,7 +44,8 @@ module.exports = class ApplyOfflineController extends BaseController {
   }
 
   async doGet (request, h, errors) {
-    const {authToken, standardRuleId, permitHolderType} = await RecoveryService.createApplicationContext(h)
+    const context = await RecoveryService.createApplicationContext(h)
+    const {standardRuleId, permitHolderType} = context
 
     let offlineCategory
     let standardRule
@@ -53,7 +54,7 @@ module.exports = class ApplyOfflineController extends BaseController {
       const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
       offlineCategory = ApplyOfflineController.getOfflineCategory(standardRuleTypeId)
       if (standardRuleId) {
-        standardRule = await StandardRule.getById(authToken, standardRuleId)
+        standardRule = await StandardRule.getById(context, standardRuleId)
       }
       if ((!standardRule && !offlineCategory) || (standardRule && standardRule.canApplyOnline)) {
         LoggingService.logError(`Unable to get offline category for : ${standardRuleTypeId}`)

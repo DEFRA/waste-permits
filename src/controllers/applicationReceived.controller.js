@@ -9,10 +9,11 @@ const LoggingService = require('../services/logging.service')
 module.exports = class ApplicationReceivedController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext()
-    const {authToken, applicationId, applicationLineId, application, contact} = await RecoveryService.createApplicationContext(h, {application: true, contact: true})
+    const context = await RecoveryService.createApplicationContext(h, {application: true, contact: true})
+    const {applicationId, applicationLineId, application, contact} = context
 
-    const bacsPayment = await Payment.getBacsPayment(authToken, applicationLineId)
-    const cardPayment = await Payment.getCardPayment(authToken, applicationLineId)
+    const bacsPayment = await Payment.getBacsPayment(context, applicationLineId)
+    const cardPayment = await Payment.getCardPayment(context, applicationLineId)
 
     pageContext.applicationName = application.applicationName
     if (contact && contact.email) {

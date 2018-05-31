@@ -246,11 +246,15 @@ module.exports = class BaseModel {
     return !this.id
   }
 
-  static async getById (authToken, id, customFilter = () => true) {
+  static async getById (context, id, customFilter = () => true) {
     // See the explanation of a custom filter in the method selectedDynamicsFields above
     let model
+    let cachedData = context[Utilities.toCamelCase(this.name)]
     if (id) {
-      const dynamicsDal = new DynamicsDalService(authToken)
+      if (cachedData && cachedData.id === id) {
+        return cachedData
+      }
+      const dynamicsDal = new DynamicsDalService(context.authToken)
       const query = `${this.entity}(${id})`
       try {
         const result = await dynamicsDal.search(query)
@@ -306,19 +310,19 @@ module.exports = class BaseModel {
     }
   }
 
-  async save (authToken = undefined, dataObject = this.modelToDynamics()) {
+  async save (context, dataObject = this.modelToDynamics()) {
     const {entity, readOnly} = this.constructor
     if (readOnly) {
       const errorMessage = `Unable to save ${entity}: Read only!`
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }
-    if (!authToken) {
-      const errorMessage = `Unable to save ${entity}: Auth Token not supplied`
+    if (!context) {
+      const errorMessage = `Unable to save ${entity}: Context not supplied`
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }
-    const dynamicsDal = new DynamicsDalService(authToken)
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     try {
       let query
       if (this.isNew()) {
@@ -337,19 +341,19 @@ module.exports = class BaseModel {
     }
   }
 
-  async delete (authToken = undefined, id) {
+  async delete (context = undefined, id) {
     const {entity, readOnly} = this.constructor
     if (readOnly) {
       const errorMessage = `Unable to delete ${entity}: Read only!`
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }
-    if (!authToken) {
-      const errorMessage = `Unable to delete ${entity}: Auth Token not supplied`
+    if (!context) {
+      const errorMessage = `Unable to delete ${entity}: Context not supplied`
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }
-    const dynamicsDal = new DynamicsDalService(authToken)
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     try {
       let query = `${entity}(${id})`
       await dynamicsDal.delete(query)

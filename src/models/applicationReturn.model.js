@@ -20,8 +20,8 @@ class ApplicationReturn extends BaseModel {
     ]
   }
 
-  static async getByApplicationId (authToken, applicationId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getByApplicationId (context, applicationId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const filter = `_defra_application_value eq ${applicationId}`
     const query = `defra_saveandreturns?$select=${ApplicationReturn.selectedDynamicsFields()}&$filter=${filter}`
     try {
@@ -36,8 +36,8 @@ class ApplicationReturn extends BaseModel {
     }
   }
 
-  static async getBySlug (authToken, slug) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getBySlug (context, slug) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const filter = `defra_suffix eq '${slug}'`
     const query = `defra_saveandreturns?$select=${ApplicationReturn.selectedDynamicsFields()}&$filter=${filter}`
     try {

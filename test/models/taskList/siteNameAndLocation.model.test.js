@@ -40,7 +40,7 @@ const fakeLocationDetail = {
   addressId: fakeAddress.id
 }
 
-const request = undefined
+const request = {app: {data: {}}}
 const authToken = 'THE_AUTH_TOKEN'
 const applicationId = fakeApplicationLine.applicationId
 const applicationLineId = fakeApplicationLine.id
@@ -98,7 +98,7 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
     Location.getByApplicationId = () => {
       return undefined
     }
-    LocationDetail.getByLocationId = (authToken, locationId) => {
+    LocationDetail.getByLocationId = () => {
       return undefined
     }
     const appContext = {}

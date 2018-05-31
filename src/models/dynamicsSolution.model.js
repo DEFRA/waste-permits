@@ -9,8 +9,8 @@ class DynamicsSolution extends BaseModel {
     return 'solutions'
   }
 
-  static async get (authToken) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async get (context) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     // The three solutions we are interested in are:
     // - Core

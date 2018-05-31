@@ -11,7 +11,6 @@ const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
 const Application = require('../../../../src/models/application.model')
 const Payment = require('../../../../src/models/payment.model')
-const Contact = require('../../../../src/models/contact.model')
 const PermitHolderDetails = require('../../../../src/models/taskList/permitHolderDetails.model')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 

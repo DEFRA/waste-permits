@@ -25,9 +25,9 @@ class Location extends BaseModel {
     }
   }
 
-  static async getByApplicationId (authToken, applicationId, applicationLineId) {
+  static async getByApplicationId (context, applicationId, applicationLineId) {
     if (applicationId) {
-      const dynamicsDal = new DynamicsDalService(authToken)
+      const dynamicsDal = new DynamicsDalService(context.authToken)
       const filter = `_defra_applicationid_value eq ${applicationId}`
       const query = encodeURI(`defra_locations?$select=${Location.selectedDynamicsFields()}&$filter=${filter}`)
       try {
@@ -45,9 +45,9 @@ class Location extends BaseModel {
     }
   }
 
-  async save (authToken) {
+  async save (context) {
     const dataObject = this.modelToDynamics(({field}) => field !== 'id')
-    await super.save(authToken, dataObject)
+    await super.save(context, dataObject)
   }
 }
 

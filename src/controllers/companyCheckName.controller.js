@@ -42,7 +42,8 @@ module.exports = class CompanyCheckNameController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, application, account} = await RecoveryService.createApplicationContext(h, {application: true, account: true})
+      const context = await RecoveryService.createApplicationContext(h, {application: true, account: true})
+      const {application, account} = context
 
       if (application && account) {
         const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -50,9 +51,9 @@ module.exports = class CompanyCheckNameController extends BaseController {
         account.accountName = company.name
         account.isValidatedWithCompaniesHouse = true
 
-        await account.save(authToken, false)
+        await account.save(context, false)
 
-        await account.confirm(authToken)
+        await account.confirm(context)
 
         // The company trading name is only set if the corresponding checkbox is ticked
         if (request.payload['use-business-trading-name'] === 'on') {
@@ -61,7 +62,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
           application.tradingName = undefined
         }
 
-        await application.save(authToken)
+        await application.save(context)
       }
       return this.redirect({request, h, redirectPath: Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path})
     }

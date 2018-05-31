@@ -19,10 +19,10 @@ module.exports = class CheckYourEmailController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken} = await RecoveryService.createApplicationContext(h)
+      const context = await RecoveryService.createApplicationContext(h)
       const saveAndReturnEmail = request.payload['save-and-return-email']
       try {
-        const totalSent = await Application.sendAllRecoveryEmails(authToken, request.headers.origin, saveAndReturnEmail)
+        const totalSent = await Application.sendAllRecoveryEmails(context, request.headers.origin, saveAndReturnEmail)
         if (totalSent === 0) {
           return this.doGet(request, h, this.setCustomError('custom.missing', 'save-and-return-email'))
         }

@@ -13,12 +13,12 @@ module.exports = class ContactDetails extends BaseModel {
     this.applicationLineId = data.applicationLineId
   }
 
-  static async updateCompleteness (authToken, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async updateCompleteness (context, applicationId, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     try {
-      const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await ContactDetails.isComplete(authToken, applicationId, applicationLineId)
+      const applicationLine = await ApplicationLine.getById(context, applicationLineId)
+      const isComplete = await ContactDetails.isComplete(context, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.CONTACT_DETAILS]: isComplete
@@ -31,11 +31,11 @@ module.exports = class ContactDetails extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (context, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the Contact for this application
-      const contact = await Contact.getByApplicationId(authToken, applicationId)
+      const contact = await Contact.getByApplicationId(context, applicationId)
 
       isComplete = Boolean(contact && contact.firstName)
     } catch (error) {

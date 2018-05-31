@@ -15,9 +15,9 @@ module.exports = class PermitCategoryController extends BaseController {
 
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken} = await RecoveryService.createApplicationContext(h)
+    const context = await RecoveryService.createApplicationContext(h)
 
-    const categories = await StandardRuleType.getCategories(authToken)
+    const categories = await StandardRuleType.getCategories(context)
     categories.forEach((category) => {
       category.categoryName = category.categoryName.toLowerCase()
     })

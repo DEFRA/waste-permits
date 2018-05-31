@@ -5,15 +5,6 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 
 const BaseController = require('../../src/controllers/base.controller')
-let controller
-
-lab.beforeEach(() => {
-
-})
-
-lab.afterEach(() => {
-
-})
 
 lab.experiment('Base Controller tests:', () => {
   lab.test('createPageContext() method builds page context object correctly', () => {
@@ -23,7 +14,7 @@ lab.experiment('Base Controller tests:', () => {
       path: 'THE_ROUTE_PATH'
     }
 
-    controller = new BaseController({route})
+    const controller = new BaseController({route})
 
     const pageContext = controller.createPageContext(route)
 

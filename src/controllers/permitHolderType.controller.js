@@ -23,7 +23,8 @@ module.exports = class PermitHolderTypeController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const context = await RecoveryService.createApplicationContext(h, {application: true})
+      const {application} = context
 
       const permitHolder = PermitHolderTypeController.getHolderTypes()
         .filter(({id}) => request.payload['chosen-holder-type'] === id)
@@ -39,7 +40,7 @@ module.exports = class PermitHolderTypeController extends BaseController {
         CookieService.set(request, PERMIT_HOLDER_TYPE, permitHolder)
         if (permitHolder.canApplyOnline) {
           application.applicantType = permitHolder.dynamicsApplicantTypeId
-          await application.save(authToken)
+          await application.save(context)
 
           return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_CATEGORY.path})
         }

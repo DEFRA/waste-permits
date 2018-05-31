@@ -8,7 +8,8 @@ const RecoveryService = require('../../services/recovery.service')
 module.exports = class EmailSentController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, applicationLineId, application} = await RecoveryService.createApplicationContext(h, {application: true})
+    const context = await RecoveryService.createApplicationContext(h, {application: true})
+    const {applicationId, applicationLineId, application} = context
 
     if (request.payload) {
       // If we have Save and Return email in the payload then display them in the form
@@ -18,7 +19,7 @@ module.exports = class EmailSentController extends BaseController {
         'save-and-return-email': application.saveAndReturnEmail
       }
     }
-    pageContext.isComplete = await SaveAndReturn.isComplete(authToken, applicationId, applicationLineId)
+    pageContext.isComplete = await SaveAndReturn.isComplete(context, applicationId, applicationLineId)
     if (pageContext.isComplete) {
       pageContext.gotEmail = true
     }
@@ -36,20 +37,21 @@ module.exports = class EmailSentController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const context = await RecoveryService.createApplicationContext(h, {application: true})
+      const {applicationId, applicationLineId, application} = context
 
       if (request.payload['got-email']) {
         if (request.payload['got-email'] !== 'true') {
           application.saveAndReturnEmail = request.payload['save-and-return-email']
-          await application.save(authToken)
+          await application.save(context)
           try {
-            await application.sendSaveAndReturnEmail(authToken, request.headers.origin)
+            await application.sendSaveAndReturnEmail(context, request.headers.origin)
           } catch (err) {
             return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
           }
           return this.redirect({request, h, redirectPath: Constants.Routes.SAVE_AND_RETURN_SENT_RESENT.path})
         } else {
-          await SaveAndReturn.updateCompleteness(authToken, applicationId, applicationLineId)
+          await SaveAndReturn.updateCompleteness(context, applicationId, applicationLineId)
         }
       }
 

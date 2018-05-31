@@ -8,7 +8,8 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class CostTimeController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext()
-    const {applicationLine = {}} = await RecoveryService.createApplicationContext(h, {applicationLine: true})
+    const context = await RecoveryService.createApplicationContext(h, {applicationLine: true})
+    const {applicationLine = {}} = context
 
     // Default to 0 when the balance hasn't been set
     const {value = 0} = applicationLine
@@ -19,9 +20,10 @@ module.exports = class CostTimeController extends BaseController {
   }
 
   async doPost (request, h) {
-    const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+    const context = await RecoveryService.createApplicationContext(h)
+    const {applicationId, applicationLineId} = context
 
-    await CostTime.updateCompleteness(authToken, applicationId, applicationLineId)
+    await CostTime.updateCompleteness(context, applicationId, applicationLineId)
 
     return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
   }

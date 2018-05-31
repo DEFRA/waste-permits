@@ -34,8 +34,8 @@ class StandardRule extends BaseModel {
     this.codeForId = StandardRule.transformPermitCode(standardRule.code)
   }
 
-  static async getByCode (authToken, code) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getByCode (context, code) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const filter = `defra_code eq '${code}'`
     const query = encodeURI(`defra_standardrules?$select=${StandardRule.selectedDynamicsFields()}&$filter=${filter}`)
     try {
@@ -48,11 +48,11 @@ class StandardRule extends BaseModel {
     }
   }
 
-  static async getByApplicationLineId (authToken, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getByApplicationLineId (context, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     try {
-      const {standardRuleId} = await ApplicationLine.getById(authToken, applicationLineId)
+      const {standardRuleId} = await ApplicationLine.getById(context, applicationLineId)
       const query = encodeURI(`defra_standardrules(${standardRuleId})?$select=${StandardRule.selectedDynamicsFields()}`)
       const result = await dynamicsDal.search(query)
       return StandardRule.dynamicsToModel(result)
@@ -62,8 +62,8 @@ class StandardRule extends BaseModel {
     }
   }
 
-  static async list (authToken, standardRuleTypeId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async list (context, standardRuleTypeId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     let filter =
       // Must be open for applications

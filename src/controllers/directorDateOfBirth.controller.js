@@ -12,7 +12,8 @@ const Contact = require('../models/contact.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
-    const {authToken, applicationId, account} = await RecoveryService.createApplicationContext(h, {account: true})
+    const context = await RecoveryService.createApplicationContext(h, {account: true})
+    const {applicationId, account} = context
 
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
@@ -21,11 +22,11 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     }
 
     // Get the directors that relate to this application
-    const directors = await this._getDirectors(authToken, applicationId, account.id)
+    const directors = await this._getDirectors(context, applicationId, account.id)
 
     // Add the day of birth to each Director's date of birth from the ApplicationContact (if we have it)
     for (let director of directors) {
-      let applicationContact = await ApplicationContact.get(authToken, applicationId, director.id)
+      let applicationContact = await ApplicationContact.get(context, applicationId, director.id)
       if (applicationContact && applicationContact.directorDob) {
         director.dob.day = Utilities.extractDayFromDate(applicationContact.directorDob)
       }
@@ -58,15 +59,15 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   }
 
   async doPost (request, h, errors) {
-    const {authToken, applicationId, account} = await RecoveryService.createApplicationContext(h, {account: true})
-
+    const context = await RecoveryService.createApplicationContext(h, {account: true})
+    const {applicationId, account} = context
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
       LoggingService.logError(message, request)
       return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path, error: {message}})
     }
 
-    const directors = await this._getDirectors(authToken, applicationId, account.id)
+    const directors = await this._getDirectors(context, applicationId, account.id)
 
     // Perform manual (non-Joi) validation of dynamic form content
     errors = await this._validateDynamicFormContent(request, directors)
@@ -80,7 +81,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         director.dob.day = parseInt(request.payload[`director-dob-day-${i}`])
 
         // Get the ApplicationContact for this application
-        let applicationContact = await ApplicationContact.get(authToken, applicationId, director.id)
+        let applicationContact = await ApplicationContact.get(context, applicationId, director.id)
         if (!applicationContact) {
           // Create a ApplicationContact in Dynamics
           applicationContact = new ApplicationContact({
@@ -92,7 +93,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
           // Update existing ApplicationContact
           applicationContact.directorDob = Utilities.formatDateForPersistence(director.dob)
         }
-        await applicationContact.save(authToken)
+        await applicationContact.save(context)
       }
 
       return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path})
@@ -100,8 +101,8 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   }
 
   // Obtains the Directors that relate to an application
-  async _getDirectors (authToken, applicationId, accountId) {
-    const directors = await Contact.list(authToken, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
+  async _getDirectors (context, applicationId, accountId) {
+    const directors = await Contact.list(context, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
     for (let director of directors) {
       director.dateOfBirthFormatted = Utilities.formatDateForDisplay(director.dob)
     }

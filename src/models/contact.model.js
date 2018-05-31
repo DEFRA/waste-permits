@@ -23,12 +23,12 @@ class Contact extends BaseModel {
     ]
   }
 
-  static async getById (authToken, id) {
-    return super.getById(authToken, id, ({dynamics}) => dynamics !== 'defra_dateofbirthdaycompanieshouse')
+  static async getById (context, id) {
+    return super.getById(context, id, ({dynamics}) => dynamics !== 'defra_dateofbirthdaycompanieshouse')
   }
 
-  static async list (authToken, accountId = undefined, contactType = Constants.Dynamics.COMPANY_DIRECTOR) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async list (context, accountId = undefined, contactType = Constants.Dynamics.COMPANY_DIRECTOR) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     let filter = `accountrolecode eq ${contactType} and defra_resignedoncompanieshouse eq null`
     if (accountId) {
@@ -48,9 +48,9 @@ class Contact extends BaseModel {
     }
   }
 
-  static async getIndividualPermitHolderByApplicationId (authToken, applicationId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const application = await Application.getById(authToken, applicationId)
+  static async getIndividualPermitHolderByApplicationId (context, applicationId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+    const application = await Application.getById(context, applicationId)
     if (application.individualPermitHolderId()) {
       try {
         const query = encodeURI(`contacts(${application.individualPermitHolderId()})?$select=${Contact.selectedDynamicsFields()}`)
@@ -65,9 +65,9 @@ class Contact extends BaseModel {
     }
   }
 
-  static async getByApplicationId (authToken, applicationId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const application = await Application.getById(authToken, applicationId)
+  static async getByApplicationId (context, applicationId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+    const application = await Application.getById(context, applicationId)
     if (application.contactId) {
       try {
         const query = encodeURI(`contacts(${application.contactId})?$select=${Contact.selectedDynamicsFields()}`)
@@ -82,8 +82,8 @@ class Contact extends BaseModel {
     }
   }
 
-  static async getByFirstnameLastnameEmail (authToken, firstName, lastName, email) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getByFirstnameLastnameEmail (context, firstName, lastName, email) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const filter = `firstname eq '${firstName}' and lastname eq '${lastName}' and emailaddress1 eq '${encodeURIComponent(email)}'`
     const query = `contacts?$select=${this.selectedDynamicsFields()}&$filter=${filter}`
     try {
@@ -98,9 +98,9 @@ class Contact extends BaseModel {
     }
   }
 
-  async save (authToken) {
+  async save (context) {
     const dataObject = this.modelToDynamics()
-    await super.save(authToken, dataObject)
+    await super.save(context, dataObject)
   }
 }
 

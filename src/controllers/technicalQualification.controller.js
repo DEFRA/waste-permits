@@ -47,10 +47,11 @@ module.exports = class TechnicalQualificationController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const context = await RecoveryService.createApplicationContext(h, {application: true})
+      const {application} = context
 
       application.technicalQualification = request.payload['technical-qualification']
-      await application.save(authToken)
+      await application.save(context)
 
       return this.redirect({request, h, redirectPath: await TechnicalQualificationController._getPath(application.technicalQualification)})
     }
