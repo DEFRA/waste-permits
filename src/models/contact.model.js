@@ -98,18 +98,6 @@ class Contact extends BaseModel {
     }
   }
 
-  static async getAddress () {
-
-  }
-
-  static async saveManualAddress () {
-
-  }
-
-  static async saveSelectedAddress () {
-
-  }
-
   async save (authToken) {
     const dataObject = this.modelToDynamics()
     await super.save(authToken, dataObject)

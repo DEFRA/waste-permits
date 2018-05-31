@@ -396,7 +396,7 @@ Constants.Routes = {
   PERMIT_HOLDER_CONTACT_DETAILS: {
     path: '/permit-holder/contact-details',
     view: 'permitHolderContactDetails',
-    pageHeading: 'What are the permit holder\'s contact details?'
+    pageHeading: `What are the permit holder's contact details?`
   },
   PERMIT_HOLDER_DETAILS: {
     path: '/permit-holder/details',

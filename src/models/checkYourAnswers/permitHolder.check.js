@@ -23,8 +23,8 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       return Promise.all([
         this.getTypeLine(),
         this.getIndividualLine(),
-        this.getConvictionsLine(isIndividual),
-        this.getBankcruptcyLine(isIndividual)
+        this.getConvictionsLine(),
+        this.getBankruptcyLine()
       ])
     }
 
@@ -33,7 +33,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       this.getCompanyLine(),
       this.getDirectorsLine(),
       this.getConvictionsLine(),
-      this.getBankcruptcyLine()
+      this.getBankruptcyLine()
     ])
   }
 
@@ -123,7 +123,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
-  async getConvictionsLine (isIndividual) {
+  async getConvictionsLine () {
     const {path} = COMPANY_DECLARE_OFFENCES
     const {relevantOffences = false, relevantOffencesDetails = ''} = await this.getApplication()
     const answers = []
@@ -141,7 +141,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
-  async getBankcruptcyLine (isIndividual) {
+  async getBankruptcyLine () {
     const {path} = COMPANY_DECLARE_BANKRUPTCY
     const {bankruptcy = false, bankruptcyDetails = ''} = await this.getApplication()
     const answers = []
