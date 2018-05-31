@@ -3,6 +3,7 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
+const RecoveryService = require('../services/recovery.service')
 
 module.exports = class PermitHolderTypeController extends BaseController {
   static getHolderTypes () {
@@ -22,6 +23,8 @@ module.exports = class PermitHolderTypeController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
+      const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
+
       const permitHolder = PermitHolderTypeController.getHolderTypes()
         .filter(({id}) => request.payload['chosen-holder-type'] === id)
         .pop()
@@ -35,6 +38,9 @@ module.exports = class PermitHolderTypeController extends BaseController {
       if (permitHolder) {
         CookieService.set(request, PERMIT_HOLDER_TYPE, permitHolder)
         if (permitHolder.canApplyOnline) {
+          application.applicantType = permitHolder.dynamicsApplicantTypeId
+          await application.save(authToken)
+
           return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_CATEGORY.path})
         }
       }

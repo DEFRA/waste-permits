@@ -76,12 +76,19 @@ Constants.PERMIT_HOLDER_TYPES = {
   LIMITED_COMPANY: {
     id: 'limited-company',
     type: 'Limited company',
-    canApplyOnline: true
+    canApplyOnline: true,
+    dynamicsApplicantTypeId: 910400001
+  },
+  SOLE_TRADER: {
+    id: 'sole-trader',
+    type: 'Sole trader',
+    canApplyOnline: false
   },
   INDIVIDUAL: {
     id: 'individual',
-    type: 'Individual or sole trader',
-    canApplyOnline: false
+    type: 'Individual',
+    canApplyOnline: true,
+    dynamicsApplicantTypeId: 910400000
   },
   LOCAL_AUTHORITY: {
     id: 'local-authority',
@@ -152,6 +159,11 @@ Constants.Routes = {
       view: 'address/manualEntry',
       pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`
     },
+    MANUAL_PERMIT_HOLDER: {
+      path: '/permit-holder/address/address-manual',
+      view: 'address/manualEntry',
+      pageHeading: `What's their address?`
+    },
     MANUAL_SITE: {
       path: '/site/address/address-manual',
       view: 'address/manualEntry',
@@ -163,6 +175,11 @@ Constants.Routes = {
       pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`,
       taskListHeading: 'Give invoicing details'
     },
+    POSTCODE_PERMIT_HOLDER: {
+      path: '/permit-holder/address/postcode',
+      view: 'address/postcode',
+      pageHeading: `What's their address?`
+    },
     POSTCODE_SITE: {
       path: '/site/address/postcode',
       view: 'address/postcode',
@@ -172,6 +189,11 @@ Constants.Routes = {
       path: '/invoice/address/select-address',
       view: 'address/selectAddress',
       pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`
+    },
+    SELECT_PERMIT_HOLDER: {
+      path: '/permit-holder/address/select-address',
+      view: 'address/selectAddress',
+      pageHeading: `What's their address?`
     },
     SELECT_SITE: {
       path: '/site/address/select-address',
@@ -371,11 +393,24 @@ Constants.Routes = {
     view: 'permitCategory',
     pageHeading: 'What do you want the permit for?'
   },
+  PERMIT_HOLDER_CONTACT_DETAILS: {
+    path: '/permit-holder/contact-details',
+    view: 'permitHolderContactDetails',
+    pageHeading: `What are the permit holder's contact details?`
+  },
+  PERMIT_HOLDER_DETAILS: {
+    path: '/permit-holder/details',
+    taskListHeading: 'Give permit holder details'
+  },
+  PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH: {
+    path: '/permit-holder/name',
+    view: 'permitHolderNameAndDateOfBirth',
+    pageHeading: 'Who will be the permit holder?'
+  },
   PERMIT_HOLDER_TYPE: {
-    path: '/permit-holder/type',
+    path: '/permit-holder',
     view: 'permitHolderType',
-    pageHeading: 'Who will be the permit holder?',
-    taskListHeading: 'Give company details'
+    pageHeading: 'Who will be the permit holder?'
   },
   PERMIT_SELECT: {
     path: '/permit/select',
@@ -515,6 +550,10 @@ Constants.Dynamics = {
     AGENT: 910400000
   },
   AddressTypes: {
+    INDIVIDUAL_PERMIT_HOLDER: {
+      TYPE: 910400002,
+      NAME: 'Individual Permit Holder'
+    },
     BILLING_INVOICING: {
       TYPE: 910400004,
       NAME: 'Billing Invoicing Address'
@@ -688,6 +727,7 @@ Constants.UploadSubject = {
 
 Constants.CookieValue = {
   INVOICE_POSTCODE: 'INVOICE_POSTCODE',
+  PERMIT_HOLDER_POSTCODE: 'PERMIT_HOLDER_POSTCODE',
   SITE_POSTCODE: 'SITE_POSTCODE'
 }
 

@@ -3,7 +3,9 @@ const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
 const {PERMIT_HOLDER_DETAILS: ruleSetId} = Constants.Dynamics.RulesetIds
 
-const {COMPANY_NUMBER, DIRECTOR_DATE_OF_BIRTH, COMPANY_DECLARE_OFFENCES, COMPANY_DECLARE_BANKRUPTCY} = Constants.Routes
+const {COMPANY_DECLARE_BANKRUPTCY, COMPANY_DECLARE_OFFENCES, COMPANY_NUMBER, DIRECTOR_DATE_OF_BIRTH, PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, PERMIT_HOLDER_TYPE} = Constants.Routes
+
+const blankLine = {blankLine: true}
 
 module.exports = class PermitHolderCheck extends BaseCheck {
   static get rulesetId () {
@@ -15,19 +17,80 @@ module.exports = class PermitHolderCheck extends BaseCheck {
   }
 
   async buildLines () {
+    const {isIndividual} = await this.getApplication()
+
+    if (isIndividual) {
+      return Promise.all([
+        this.getTypeLine(),
+        this.getIndividualLine(),
+        this.getConvictionsLine(),
+        this.getBankruptcyLine()
+      ])
+    }
+
     return Promise.all([
+      this.getTypeLine(),
       this.getCompanyLine(),
       this.getDirectorsLine(),
       this.getConvictionsLine(),
-      this.getBancruptcyLine()
+      this.getBankruptcyLine()
     ])
   }
 
+  async getTypeLine () {
+    const {path} = PERMIT_HOLDER_TYPE
+    const {applicantType = ''} = await this.getApplication()
+    const type = Object.entries(Constants.PERMIT_HOLDER_TYPES)
+      .filter(([key, {dynamicsApplicantTypeId}]) => dynamicsApplicantTypeId === applicantType)
+      .map(([key, {type}]) => type)
+      .pop()
+    return this.buildLine({
+      heading: 'Permit holder type',
+      prefix: 'type',
+      answers: [type],
+      links: [{path, type: 'permit holder'}]
+    })
+  }
+
+  async getIndividualLine () {
+    const {path} = PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH
+    const {firstName = '', lastName = '', email = ''} = await this.getIndividualPermitHolder()
+    const {dateOfBirth = 'unknown', telephone = 'unknown'} = await this.getIndividualPermitHolderDetails()
+    const [year, month, day] = dateOfBirth.split('-')
+    const dob = {day, month, year}
+    let answers = []
+    answers.push(`${firstName} ${lastName}`)
+    answers.push(email)
+    answers.push(`Telephone: ${telephone}`)
+    answers.push(`Date of birth: ${Utilities.formatFullDateForDisplay(dob)}`)
+    answers.push(blankLine)
+    answers = answers.concat(await this.getPermitHolderAddressLine())
+    return this.buildLine({
+      heading: 'Permit holder',
+      prefix: 'individual',
+      answers,
+      links: [{path, type: 'individual details'}]
+    })
+  }
+
+  async getPermitHolderAddressLine () {
+    const {
+      buildingNameOrNumber = '',
+      addressLine1 = '',
+      addressLine2 = '',
+      townOrCity = '',
+      postcode = ''
+    } = await this.getIndividualPermitHolderAddress()
+    let firstLine = buildingNameOrNumber
+    if (firstLine && addressLine1) {
+      firstLine += ', '
+    }
+    firstLine += addressLine1
+    return [firstLine, addressLine2, townOrCity, postcode]
+  }
+
   async getCompanyLine () {
-    // For MVP the route for this task list item is different,
-    // we will go straight to the Company Details pathway instead.
     const {path} = COMPANY_NUMBER
-    // const {path} = PERMIT_HOLDER
     const {companyNumber = ''} = await this.getCompanyAccount()
     const {name = '', address = ''} = await this.getCompany()
     const {tradingName = ''} = await this.getApplication()
@@ -42,7 +105,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       heading: 'Permit holder',
       prefix: 'company',
       answers,
-      links: [{path, type: 'permit holder'}]
+      links: [{path, type: 'company details'}]
     })
   }
 
@@ -78,7 +141,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
-  async getBancruptcyLine () {
+  async getBankruptcyLine () {
     const {path} = COMPANY_DECLARE_BANKRUPTCY
     const {bankruptcy = false, bankruptcyDetails = ''} = await this.getApplication()
     const answers = []

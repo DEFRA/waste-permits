@@ -12,4 +12,8 @@ module.exports = class AddressManualInvoiceController extends AddressManualContr
   getModel () {
     return InvoiceAddress
   }
+
+  getNextRoute () {
+    return Constants.Routes.TASK_LIST.path
+  }
 }

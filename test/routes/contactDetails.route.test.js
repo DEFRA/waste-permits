@@ -40,7 +40,7 @@ lab.beforeEach(() => {
   fakeApplication = {
     id: fakeApplicationId,
     contactId: fakeContactId,
-    accountId: fakeAccountId
+    agentId: fakeAccountId
   }
   fakeAccount = {
     id: fakeAccountId,

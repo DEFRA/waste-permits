@@ -14,18 +14,19 @@ const {AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDA
 module.exports = class RecoveryService {
   static async recoverOptionalData (authToken, applicationId, applicationLineId, options) {
     // Query in parallel for optional entities
-    const [application, applicationLine, applicationReturn, account, contact, payment, cardPayment, standardRule] = await Promise.all([
+    const [application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule] = await Promise.all([
       options.application ? Application.getById(authToken, applicationId) : Promise.resolve(undefined),
       options.applicationLine ? ApplicationLine.getById(authToken, applicationLineId) : Promise.resolve(undefined),
       options.applicationReturn ? ApplicationReturn.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
       options.account ? Account.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
       options.contact ? Contact.getByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
+      options.individualPermitHolder ? Contact.getIndividualPermitHolderByApplicationId(authToken, applicationId) : Promise.resolve(undefined),
       options.payment ? Payment.getBacsPaymentDetails(authToken, applicationLineId) : Promise.resolve(undefined),
       options.cardPayment ? Payment.getCardPaymentDetails(authToken, applicationLineId) : Promise.resolve(undefined),
       options.standardRule ? StandardRule.getByApplicationLineId(authToken, applicationLineId) : Promise.resolve(undefined)
     ])
 
-    return {application, applicationLine, applicationReturn, account, contact, payment, cardPayment, standardRule}
+    return {application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule}
   }
 
   static async recoverFromCookies (slug, request, options) {
@@ -37,9 +38,9 @@ module.exports = class RecoveryService {
     const permitHolderType = CookieService.get(request, PERMIT_HOLDER_TYPE)
 
     // Query in parallel for optional entities
-    const {application, applicationLine, applicationReturn, account, contact, payment, cardPayment, standardRule} = await RecoveryService.recoverOptionalData(authToken, applicationId, applicationLineId, options)
+    const {application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule} = await RecoveryService.recoverOptionalData(authToken, applicationId, applicationLineId, options)
 
-    return {slug, authToken, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType}
+    return {slug, authToken, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType}
   }
 
   static async recoverFromSlug (slug, h, options) {
@@ -63,12 +64,12 @@ module.exports = class RecoveryService {
       // Always load the standard rule when restoring
       options.standardRule = true
 
-      const {account, contact, payment, cardPayment, standardRule} = await RecoveryService.recoverOptionalData(authToken, applicationId, applicationLineId, options)
+      const {account, contact, individualPermitHolder, payment, cardPayment, standardRule} = await RecoveryService.recoverOptionalData(authToken, applicationId, applicationLineId, options)
       const {id: standardRuleId, standardRuleTypeId} = standardRule || {}
 
       const permitHolderType = Constants.PERMIT_HOLDER_TYPES.LIMITED_COMPANY.id
 
-      recoveredApplication = {slug, cookie, authToken, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType}
+      recoveredApplication = {slug, cookie, authToken, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType}
 
       // Setup all the cookies as if the user hadn't left
       cookie[AUTH_TOKEN] = authToken

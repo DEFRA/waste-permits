@@ -106,6 +106,31 @@ module.exports = class BaseCheck {
     return this.data.primaryContactDetails || {}
   }
 
+  async getIndividualPermitHolder () {
+    const {authToken, applicationId, individualPermitHolder} = this.data
+    if (!individualPermitHolder) {
+      this.data.individualPermitHolder = await Contact.getIndividualPermitHolderByApplicationId(authToken, applicationId)
+    }
+    return this.data.individualPermitHolder || {}
+  }
+
+  async getIndividualPermitHolderDetails () {
+    const {authToken, applicationId, individualPermitHolderDetails} = this.data
+    if (!individualPermitHolderDetails) {
+      this.data.individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+    }
+    return this.data.individualPermitHolderDetails || {}
+  }
+
+  async getIndividualPermitHolderAddress () {
+    const {authToken, individualPermitHolderAddress} = this.data
+    if (!individualPermitHolderAddress) {
+      const permitHolderDetails = await this.getIndividualPermitHolderDetails()
+      this.data.individualPermitHolderAddress = await Address.getById(authToken, permitHolderDetails.addressId)
+    }
+    return this.data.individualPermitHolderAddress || {}
+  }
+
   async getBillingInvoicingDetails () {
     const {authToken, applicationId} = this.data
     if (!this.data.billingInvoicingDetails) {

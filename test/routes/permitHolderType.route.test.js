@@ -14,7 +14,7 @@ const LoggingService = require('../../src/services/logging.service')
 const PermitHolderTypeController = require('../../src/controllers/permitHolderType.controller')
 const {COOKIE_RESULT} = require('../../src/constants')
 
-const routePath = '/permit-holder/type'
+const routePath = '/permit-holder'
 const nextRoutePath = '/permit/category'
 const offlineRoutePath = '/start/apply-offline'
 const errorPath = '/errors/technical-problem'
@@ -41,6 +41,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
@@ -79,7 +80,8 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
     lab.experiment('success', () => {
       let holderTypes = [
         {id: 'limited-company', type: 'Limited company', canApplyOnline: true},
-        {id: 'individual', type: 'Individual or sole trader', canApplyOnline: false},
+        {id: 'individual', type: 'Individual', canApplyOnline: true},
+        {id: 'sole-trader', type: 'Sole trader', canApplyOnline: false},
         {id: 'local-authority', type: 'Local authority or public body', canApplyOnline: false},
         {id: 'partnership', type: 'Partnership', canApplyOnline: false},
         {id: 'registered-charity', type: 'Registered charity', canApplyOnline: false},

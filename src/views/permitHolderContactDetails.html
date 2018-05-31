@@ -1,0 +1,34 @@
+<main id="content" role="main">
+
+    {{> common/betaBanner }} {{> common/backLink }}
+  
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {{> common/errorSummary }} {{> common/pageHeading pageHeading }}
+        <form method="POST" action="{{formAction}}" novalidate="novalidate">
+          {{> common/csrfToken token=DefraCsrfToken}}
+  
+          <div class="form-group {{#getFormErrorGroupClass errors.email}}{{/getFormErrorGroupClass}}">
+            <label id="email-label" class="form-label" for="email">
+              Email address
+              <span id="email-hint" class="form-hint">Used to send a copy of the permit and any official notices</span>
+            </label>
+            {{> common/fieldError fieldId='email-error' message=errors.email }}
+            <input class="form-control form-control-char-35 {{#if errors.email}}form-control-error{{/if}}" id="email" name="email" type="email" value="{{formValues.email}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.telephone}}{{/getFormErrorGroupClass}}">
+            <label id="telephone-label" class="form-label" for="telephone">
+              Telephone number
+              <span id="telephone-hint" class="form-hint">This can be a landline or mobile</span>
+            </label>
+            {{> common/fieldError fieldId='telephone-error' message=errors.telephone }}
+            <input class="form-control form-control-char-15 {{#if errors.telephone}}form-control-error{{/if}}" id="telephone" name="telephone" type="tel" value="{{formValues.telephone}}">
+          </div>
+  
+          {{> common/submitButton }}
+        </form>
+      </div>
+    </div>
+  
+  </main>

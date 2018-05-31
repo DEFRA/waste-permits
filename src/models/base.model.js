@@ -294,13 +294,15 @@ module.exports = class BaseModel {
       const entityQuery = `${entity}(${this.id})?$select=${selectedFields}`
       const result = await dynamicsDal.search(entityQuery)
       // using the original value of each reference, build the query and delete the bound reference
-      boundMapping.forEach(async ({dynamics, bind: {relationship, entity}}) => {
+      let deleteCalls = boundMapping.map(async ({dynamics, bind: {relationship, entity}}) => {
         const ref = result[dynamics]
         if (ref) {
           const deleteQuery = `${entity}(${ref})/${relationship}(${this.id})/$ref`
           await dynamicsDal.delete(deleteQuery)
         }
+        return Promise.resolve()
       })
+      await Promise.all(deleteCalls)
     }
   }
 

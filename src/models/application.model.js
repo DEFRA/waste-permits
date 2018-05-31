@@ -16,6 +16,7 @@ class Application extends BaseModel {
       {field: 'id', dynamics: 'defra_applicationid', readOnly: true},
       {field: 'accountId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_account', relationship: 'defra_account_defra_application_customerid', entity: 'accounts'}},
       {field: 'agentId', dynamics: '_defra_agentid_value', bind: {id: 'defra_agentid_account', relationship: 'defra_account_defra_application_agentid', entity: 'accounts'}},
+      {field: 'applicantType', dynamics: 'defra_applicant_type'},
       {field: 'applicationName', dynamics: 'defra_name', readOnly: true},
       {field: 'applicationNumber', dynamics: 'defra_applicationnumber', readOnly: true},
       {field: 'bankruptcy', dynamics: 'defra_bankruptcydeclaration'},
@@ -26,6 +27,7 @@ class Application extends BaseModel {
       {field: 'declaration', dynamics: 'defra_applicationdeclaration'},
       {field: 'drainageType', dynamics: 'defra_drainagetype'},
       {field: 'paymentReceived', dynamics: 'defra_paymentreceived'},
+      {field: 'permitHolderIndividualId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_contact', relationship: 'defra_contact_defra_application_customerid', entity: 'contacts'}},
       {field: 'regime', dynamics: 'defra_regime', constant: Constants.Dynamics.WASTE_REGIME},
       {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},
       {field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails', length: {max: 2000}},
@@ -50,6 +52,34 @@ class Application extends BaseModel {
 
   isPaid () {
     return Boolean(this.paymentReceived)
+  }
+
+  get isIndividual () {
+    return this.applicantType === Constants.PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId
+  }
+
+  individualPermitHolderId () {
+    return this.isIndividual ? this.permitHolderIndividualId : undefined
+  }
+
+  modelToDynamics (...args) {
+    if (this.isIndividual && this.accountId) {
+      throw new Error('Application cannot have an accountId when the permit holder is an individual')
+    }
+    if (!this.isIndividual && this.permitHolderIndividualId) {
+      throw new Error('Application cannot have a permitHolderIndividualId when the permit holder is a company')
+    }
+    return super.modelToDynamics(...args)
+  }
+
+  static dynamicsToModel (...args) {
+    const model = super.dynamicsToModel(...args)
+    if (model.isIndividual) {
+      model.accountId = undefined
+    } else {
+      model.permitHolderIndividualId = undefined
+    }
+    return model
   }
 
   static async listBySaveAndReturnEmail (authToken, saveAndReturnEmail) {

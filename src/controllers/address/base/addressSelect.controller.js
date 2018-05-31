@@ -1,6 +1,5 @@
 'use strict'
 
-const Constants = require('../../../constants')
 const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
 const RecoveryService = require('../../../services/recovery.service')
@@ -60,7 +59,7 @@ module.exports = class AddressSelectController extends BaseController {
       }
       await this.getModel().saveSelectedAddress(request, authToken, applicationId, applicationLineId, addressDto)
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
+      return this.redirect({request, h, redirectPath: this.getNextRoute()})
     }
   }
 }

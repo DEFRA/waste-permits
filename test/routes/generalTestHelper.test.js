@@ -144,29 +144,31 @@ module.exports = class GeneralTestHelper {
         })
       }
 
-      lab.test(`GET ${routePath} page should have the beta banner`, async () => {
-        const res = await server.inject(getRequest)
+      if (!options.excludeHtmlTests) {
+        lab.test(`GET ${routePath} page should have the beta banner`, async () => {
+          const res = await server.inject(getRequest)
 
-        const parser = new DOMParser()
-        const doc = parser.parseFromString(res.payload, 'text/html')
+          const parser = new DOMParser()
+          const doc = parser.parseFromString(res.payload, 'text/html')
 
-        let element = doc.getElementById('beta-banner')
-        Code.expect(element).to.exist()
+          let element = doc.getElementById('beta-banner')
+          Code.expect(element).to.exist()
 
-        element = doc.getElementById('beta-banner-give-feedback-link')
-        Code.expect(element).to.exist()
-      })
+          element = doc.getElementById('beta-banner-give-feedback-link')
+          Code.expect(element).to.exist()
+        })
 
-      lab.test(`GET ${routePath} page should have the privacy footer link`, async () => {
-        const res = await server.inject(getRequest)
+        lab.test(`GET ${routePath} page should have the privacy footer link`, async () => {
+          const res = await server.inject(getRequest)
 
-        const parser = new DOMParser()
-        const doc = parser.parseFromString(res.payload, 'text/html')
+          const parser = new DOMParser()
+          const doc = parser.parseFromString(res.payload, 'text/html')
 
-        const element = doc.getElementById('footer-privacy-link')
-        Code.expect(element).to.exist()
-        Code.expect(element.getAttribute('href')).to.equal('/information/privacy')
-      })
+          const element = doc.getElementById('footer-privacy-link')
+          Code.expect(element).to.exist()
+          Code.expect(element.getAttribute('href')).to.equal('/information/privacy')
+        })
+      }
     })
   }
 }

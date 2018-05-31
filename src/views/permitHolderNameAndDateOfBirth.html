@@ -1,0 +1,70 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }} {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      {{> common/errorSummary }} {{> common/pageHeading pageHeading }}
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.first-name}}{{/getFormErrorGroupClass}}">
+          <label id="first-name-label" class="form-label" for="first-name">
+            First name
+          </label>
+          {{> common/fieldError fieldId='first-name-error' message=errors.first-name }}
+          <input class="form-control form-control-char-15 {{#if errors.first-name}}form-control-error{{/if}}" id="first-name" name="first-name"
+            type="text" value="{{formValues.first-name}}">
+        </div>
+
+        <div class="form-group {{#getFormErrorGroupClass errors.last-name}}{{/getFormErrorGroupClass}}">
+          <label id="last-name-label" class="form-label" for="last-name">
+            Last name
+          </label>
+          {{> common/fieldError fieldId='last-name-error' message=errors.last-name }}
+          <input class="form-control form-control-char-15 {{#if errors.last-name}}form-control-error{{/if}}" id="last-name" name="last-name"
+            type="text" value="{{formValues.last-name}}">
+        </div>
+
+        <div class="panel panel-border-wide">
+          <p>
+            We need their date of birth to identify them when we do security checks. We won't include it in the public permit register.
+          </p>
+        </div>
+
+        <div class="form-group {{#getFormErrorGroupClass errors.dob-day}}{{/getFormErrorGroupClass}}">
+          <label class="form-label" for="dob-day">Date of birth</label>
+
+          <span class="form-hint" id="dob-hint">
+            For example, 26 5 1971
+          </span>
+
+          {{> common/fieldError fieldId='dob-day-error' message=errors.dob-day }}
+
+          <fieldset>
+            <div class="form-date">
+              <div class="form-group form-group-day">
+                <label class="form-label" for="dob-day">Day</label>
+                <input class="form-control {{#if errors.dob-day}}form-control-error{{/if}}" id="dob-day" name="dob-day" type="number" min="0" max="31" 
+                  aria-describedby="dob-hint" value="{{formValues.dob-day}}">
+              </div>
+              <div class="form-group form-group-month">
+                <label class="form-label" for="dob-month">Month</label>
+                <input class="form-control {{#if errors.dob-day}}form-control-error{{/if}}" id="dob-month" name="dob-month" type="number" min="0" max="12" 
+                  value="{{formValues.dob-month}}">
+              </div>
+              <div class="form-group form-group-year">
+                <label class="form-label" for="dob-year">Year</label>
+                <input class="form-control {{#if errors.dob-day}}form-control-error{{/if}}" id="dob-year" name="dob-year" type="number" 
+                  value="{{formValues.dob-year}}">
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+    </div>
+  </div>
+
+</main>

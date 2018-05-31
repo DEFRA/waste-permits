@@ -17,7 +17,7 @@ const {COOKIE_RESULT} = require('../../src/constants')
 
 const permitSelectRoute = '/permit/select'
 const permitCategoryRoute = '/permit/category'
-const permitHolderRoute = '/permit-holder/type'
+const permitHolderRoute = '/permit-holder'
 
 const defaultLink = 'https://www.gov.uk/government/collections/environmental-permit-application-forms-for-a-standard-permit-installations-mining-waste-or-waste-operation'
 

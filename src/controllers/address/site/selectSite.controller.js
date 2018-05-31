@@ -20,4 +20,8 @@ module.exports = class AddressSelectSiteController extends AddressSelectControll
   getModel () {
     return SiteNameAndLocation
   }
+
+  getNextRoute () {
+    return Constants.Routes.TASK_LIST.path
+  }
 }
