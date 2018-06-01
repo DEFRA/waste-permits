@@ -35,7 +35,7 @@ const defaultContext = {
   footerSupportLinks: '',
   licenceMessage: loadCommonPartial('licenceMessage'),
   crownCopyrightMessage: '© Crown copyright',
-  bodyEnd: loadCommonPartial('bodyEnd')
+  bodyEnd: ''
 }
 
 module.exports = {

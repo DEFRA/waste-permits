@@ -58,3 +58,5 @@ $(document).ready(function () {
   // don't allow user interaction while an upload or remove is in progress
   uploadFilePanel()
 })
+
+GOVUK.detail.init()
