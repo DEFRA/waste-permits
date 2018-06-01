@@ -84,7 +84,7 @@ gulp.task('install-govuk-files', [], (done) => {
 // Copy and unglify the javascript
 gulp.task('copy-scripts', () => {
   return gulp
-    .src([paths.govukModules + 'govuk_frontend_toolkit/javascripts/govuk/show-hide-content.js'])
+    .src([paths.govukModules + 'govuk_frontend_toolkit/javascripts/govuk/show-hide-content.js', paths.govukModules + 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill.js'])
     .pipe(gulp.dest(paths.assets + 'javascripts'))
 })
 
