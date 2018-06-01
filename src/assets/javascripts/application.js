@@ -59,4 +59,4 @@ $(document).ready(function () {
   uploadFilePanel()
 })
 
-GOVUK.detail.init()
+GOVUK.details.init()
