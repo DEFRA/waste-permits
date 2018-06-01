@@ -5,6 +5,7 @@
 /govuk_modules/
 /log/
 /public/
+/src/assets/javascripts/govuk/
 temp
 govuk_template_mustache
 
