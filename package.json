@@ -58,7 +58,7 @@
     "deepmerge": "^2.1.0",
     "del": "^3.0.0",
     "disinfect": "^1.0.0",
-    "dotenv": "^5.0.1",
+    "dotenv": "^6.0.0",
     "es6-promisify": "^6.0.0",
     "govuk-elements-sass": "^3.1.2",
     "govuk_frontend_toolkit": "^7.5.0",
