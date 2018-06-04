@@ -96,7 +96,7 @@ lab.experiment('Get company number page tests:', () => {
     lab.test('success', async () => {
       doc = await GeneralTestHelper.getDoc(getRequest)
 
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`What's the UK company registration number?`)
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`What is the UK company registration number?`)
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
       Code.expect(doc.getElementById('company-number').getAttribute('value')).to.equal(fakeAccount.companyNumber)
       Code.expect(doc.getElementById('overseas-help')).to.exist()

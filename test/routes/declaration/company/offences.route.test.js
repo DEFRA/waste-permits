@@ -135,7 +135,7 @@ lab.experiment('Company Declare Offences tests:', () => {
 
       lab.test('when offences not checked', async () => {
         postRequest.payload = {}
-        await checkValidationMessage('declared', `Select yes if you have convictions to declare or no if you don't`)
+        await checkValidationMessage('declared', `Select yes if you have convictions to declare or no if you do not`)
       })
 
       lab.test('when offences set to yes and no details entered', async () => {
@@ -145,7 +145,7 @@ lab.experiment('Company Declare Offences tests:', () => {
 
       lab.test('when offences set to yes and details entered with 2001 characters', async () => {
         postRequest.payload = {'declared': 'yes', 'declaration-details': 'a'.repeat(2001)}
-        await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you’ve written', true)
+        await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you have written', true)
       })
     })
 

@@ -107,7 +107,7 @@ lab.experiment('Check company type page tests:', () => {
           lab.test(`${type}`, async () => {
             fakeCompany.type = type
             const doc = await GeneralTestHelper.getDoc(getRequest)
-            Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`That company can’t apply because it’s ${COMPANY_TYPES[type]}`)
+            Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`That company can not apply because it is ${COMPANY_TYPES[type]}`)
             Code.expect(doc.getElementById('company-type-message')).to.exist()
             Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)
             Code.expect(doc.getElementById('company-type').firstChild.nodeValue).to.equal(COMPANY_TYPES[type])

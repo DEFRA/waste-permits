@@ -64,7 +64,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment(`You’ve chosen to pay by bank transfer using Bacs:`, () => {
+lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeAlreadySubmittedTest: true})
 
@@ -76,7 +76,7 @@ lab.experiment(`You’ve chosen to pay by bank transfer using Bacs:`, () => {
     lab.test('success', async () => {
       doc = await GeneralTestHelper.getDoc(getRequest)
 
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('You’ve chosen to pay by bank transfer using Bacs')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('You have chosen to pay by bank transfer using Bacs')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Send application')
 
       // Test for the existence of expected static content

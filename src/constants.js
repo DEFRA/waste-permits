@@ -162,7 +162,7 @@ Constants.Routes = {
     MANUAL_PERMIT_HOLDER: {
       path: '/permit-holder/address/address-manual',
       view: 'address/manualEntry',
-      pageHeading: `What's their address?`
+      pageHeading: `What is their address?`
     },
     MANUAL_SITE: {
       path: '/site/address/address-manual',
@@ -178,12 +178,12 @@ Constants.Routes = {
     POSTCODE_PERMIT_HOLDER: {
       path: '/permit-holder/address/postcode',
       view: 'address/postcode',
-      pageHeading: `What's their address?`
+      pageHeading: `What is their address?`
     },
     POSTCODE_SITE: {
       path: '/site/address/postcode',
       view: 'address/postcode',
-      pageHeading: `What's the postcode for the site?`
+      pageHeading: `What is the postcode for the site?`
     },
     SELECT_INVOICE: {
       path: '/invoice/address/select-address',
@@ -193,12 +193,12 @@ Constants.Routes = {
     SELECT_PERMIT_HOLDER: {
       path: '/permit-holder/address/select-address',
       view: 'address/selectAddress',
-      pageHeading: `What's their address?`
+      pageHeading: `What is their address?`
     },
     SELECT_SITE: {
       path: '/site/address/select-address',
       view: 'address/selectAddress',
-      pageHeading: `What's the site address?`
+      pageHeading: `What is the site address?`
     }
   },
   APPLICATION_RECEIVED: {
@@ -232,12 +232,12 @@ Constants.Routes = {
   COMPANY_CHECK_STATUS: {
     path: '/permit-holder/company/status-not-active',
     view: 'companyCheckStatus',
-    pageHeading: `We can't issue a permit to that company because it {{{companyStatus}}}`
+    pageHeading: `We can not issue a permit to that company because it {{{companyStatus}}}`
   },
   COMPANY_CHECK_TYPE: {
     path: '/permit-holder/company/wrong-type',
     view: 'companyCheckType',
-    pageHeading: `That company can’t apply because it’s {{{companyType}}}`
+    pageHeading: `That company can not apply because it is {{{companyType}}}`
   },
   COMPANY_DECLARE_OFFENCES: {
     path: '/permit-holder/company/declare-offences',
@@ -252,8 +252,8 @@ Constants.Routes = {
   COMPANY_NUMBER: {
     path: '/permit-holder/company/number',
     view: 'companyNumber',
-    pageHeading: `What's the UK company registration number?`,
-    taskListHeading: `What's the company name or registration number?`
+    pageHeading: `What is the UK company registration number?`,
+    taskListHeading: `What is the company name or registration number?`
   },
   CONFIDENTIALITY: {
     path: '/confidentiality',
@@ -287,7 +287,7 @@ Constants.Routes = {
   DIRECTOR_DATE_OF_BIRTH: {
     path: '/permit-holder/company/director-date-of-birth',
     view: 'directorDateOfBirth',
-    pageHeading: `What's the director's date of birth?`,
+    pageHeading: `What is the director's date of birth?`,
     pageHeadingAlternate: `What are the directors' dates of birth?`
   },
   DRAINAGE_TYPE_FAIL: {
@@ -305,7 +305,7 @@ Constants.Routes = {
     ALREADY_SUBMITTED: {
       path: `${Constants.ALREADY_SUBMITTED_URL}/{slug?}`,
       view: 'error/alreadySubmitted',
-      pageHeading: `You’ve sent your application so you can't go back and change it`
+      pageHeading: `You have sent your application so you can not go back and change it`
     },
     COOKIES_DISABLED: {
       path: '/errors/cookies-off',
@@ -325,12 +325,12 @@ Constants.Routes = {
     PAGE_NOT_FOUND: {
       path: '/errors/page-not-found',
       view: 'error/pageNotFound',
-      pageHeading: `We can't find that page`
+      pageHeading: `We can not find that page`
     },
     RECOVERY_FAILED: {
       path: '/errors/recovery-failed',
       view: 'error/recoveryFailed',
-      pageHeading: 'Sorry, we can’t find that application'
+      pageHeading: 'Sorry, we can not find that application'
     },
     START_AT_BEGINNING: {
       path: '/errors/order/start-at-beginning',
@@ -368,7 +368,7 @@ Constants.Routes = {
     BACS_PAYMENT: {
       path: '/pay/bacs',
       view: 'payment/paymentBacs',
-      pageHeading: 'You’ve chosen to pay by bank transfer using Bacs'
+      pageHeading: 'You have chosen to pay by bank transfer using Bacs'
     },
     CARD_PAYMENT: {
       path: '/pay/card'
@@ -421,7 +421,7 @@ Constants.Routes = {
     path: '/pre-application',
     view: 'preApplication',
     pageHeading: 'Have you discussed this application with us?',
-    taskListHeading: `Tell us if you've discussed this application with us`
+    taskListHeading: `Tell us if you have discussed this application with us`
   },
   PRIVACY: {
     path: '/information/privacy',
@@ -446,12 +446,12 @@ Constants.Routes = {
   SAVE_AND_RETURN_SENT_RESENT: {
     path: '/save-return/email-sent-resent',
     view: 'saveAndReturn/emailSent',
-    pageHeading: 'We’ve resent the email - check again'
+    pageHeading: 'We have resent the email - check again'
   },
   SAVE_AND_RETURN_COMPLETE: {
     path: '/save-return/email-sent-task-check',
     view: 'saveAndReturn/emailSent',
-    pageHeading: 'You’ve saved your application'
+    pageHeading: 'You have saved your application'
   },
   SAVE_AND_RETURN_EMAIL: {
     path: '/save-return/email',
@@ -468,7 +468,7 @@ Constants.Routes = {
   SITE_GRID_REFERENCE: {
     path: '/site/grid-reference',
     view: 'siteGridReference',
-    pageHeading: `What's the grid reference for the centre of the site?`
+    pageHeading: `What is the grid reference for the centre of the site?`
   },
   SITE_PLAN: {
     path: '/site-plan',
@@ -479,7 +479,7 @@ Constants.Routes = {
   SITE_NAME: {
     path: '/site/site-name',
     view: 'siteName',
-    pageHeading: `What's the site name?`,
+    pageHeading: `What is the site name?`,
     taskListHeading: 'Give site name and location'
   },
   START_OR_OPEN_SAVED: {
@@ -624,7 +624,7 @@ Constants.Dynamics = {
     },
     REGISTERED_ON_A_COURSE: {
       TYPE: 910400001,
-      NAME: `We're getting WAMITAB or EPOC qualifications`
+      NAME: `We are getting WAMITAB or EPOC qualifications`
     },
     DEEMED_COMPETENCE: {
       TYPE: 910400002,
@@ -709,7 +709,7 @@ Constants.Company = {
     VOLUNTARY_ARRANGEMENT: 'is insolvent and has a Company Voluntary Arrangement',
     CONVERTED_CLOSED: 'has been closed or converted',
     INSOLVENCY_PROCEEDINGS: 'is insolvent',
-    NOT_ACTIVE: `isn't active`,
+    NOT_ACTIVE: `is not active`,
     NO_DIRECTORS: `has no directors`,
     NOT_APPLICABLE_COMPANY_TYPE: `is not applicable for this company type`
   },

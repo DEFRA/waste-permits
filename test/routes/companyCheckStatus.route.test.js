@@ -23,7 +23,7 @@ const COMPANY_STATUSES = {
   VOLUNTARY_ARRANGEMENT: 'is insolvent and has a Company Voluntary Arrangement',
   CONVERTED_CLOSED: 'has been closed or converted',
   INSOLVENCY_PROCEEDINGS: 'is insolvent',
-  NOT_ACTIVE: `isn't active`
+  NOT_ACTIVE: `is not active`
 }
 
 let sandbox
@@ -104,7 +104,7 @@ lab.experiment('Check company status page tests:', () => {
             fakeCompany.status = status
             fakeCompany.isActive = (status === 'ACTIVE')
             const doc = await GeneralTestHelper.getDoc(getRequest)
-            Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We can't issue a permit to that company because it ${COMPANY_STATUSES[status]}`)
+            Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We can not issue a permit to that company because it ${COMPANY_STATUSES[status]}`)
             Code.expect(doc.getElementById('company-status-message')).to.exist()
             Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)
             Code.expect(doc.getElementById('company-number').firstChild.nodeValue).to.equal(fakeAccount.companyNumber)
@@ -117,7 +117,7 @@ lab.experiment('Check company status page tests:', () => {
           CompanyLookupService.getActiveDirectors = () => []
           fakeCompany.isActive = true
           const doc = await GeneralTestHelper.getDoc(getRequest)
-          Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We can't issue a permit to that company because it has no directors`)
+          Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We can not issue a permit to that company because it has no directors`)
           Code.expect(doc.getElementById('company-status-message')).to.exist()
           Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)
           Code.expect(doc.getElementById('company-number').firstChild.nodeValue).to.equal(fakeAccount.companyNumber)

@@ -80,7 +80,7 @@ const fakeTaskList = {
         },
         {
           id: 'tell-us-if-youve-discussed-this-application-with-us',
-          label: `Tell us if you've discussed this application with us`,
+          label: `Tell us if you have discussed this application with us`,
           href: '/pre-application',
           completedLabelId: 'preapp-completed',
           rulesetId: 'defra_preapprequired',

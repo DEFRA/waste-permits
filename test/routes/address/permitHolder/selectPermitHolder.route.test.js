@@ -16,7 +16,7 @@ const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let sandbox
 
-const pageHeading = `What's their address?`
+const pageHeading = `What is their address?`
 const routePath = '/permit-holder/address/select-address'
 const nextRoutePath = '/permit-holder/company/declare-offences'
 

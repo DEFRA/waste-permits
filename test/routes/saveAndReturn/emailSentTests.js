@@ -112,7 +112,7 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
         lab.test('when either got email or email is missing are not selected', async () => {
           postRequest.payload = {}
           const doc = await GeneralTestHelper.getDoc(postRequest)
-          await GeneralTestHelper.checkValidationMessage(doc, 'got-email', 'Select you got the email or can’t find it')
+          await GeneralTestHelper.checkValidationMessage(doc, 'got-email', 'Select you got the email or can not find it')
         })
 
         lab.test('when email is not entered', async () => {
@@ -142,7 +142,7 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
           }
 
           const doc = await GeneralTestHelper.getDoc(postRequest)
-          await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Sorry, we can’t send emails just now. This is a technical fault and we have been notified. Please try the service again later.')
+          await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Sorry, we can not send emails just now. This is a technical fault and we have been notified. Please try the service again later.')
         })
       })
 

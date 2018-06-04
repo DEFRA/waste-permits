@@ -10,13 +10,13 @@ module.exports = class BankruptcyValidator extends BaseValidator {
 
     this.errorMessages = {
       'declared': {
-        'any.empty': `Select yes if you have bankruptcy or insolvency to declare or no if you don't`,
-        'any.required': `Select yes if you have bankruptcy or insolvency to declare or no if you don't`
+        'any.empty': `Select yes if you have bankruptcy or insolvency to declare or no if you do not`,
+        'any.required': `Select yes if you have bankruptcy or insolvency to declare or no if you do not`
       },
       'declaration-details': {
         'any.empty': `Enter details of the bankruptcy or insolvency`,
         'any.required': `Enter details of the bankruptcy or insolvency`,
-        'string.max': `You can only enter ${Application.bankruptcyDetails.length.max.toLocaleString()} characters - please shorten what you’ve written`
+        'string.max': `You can only enter ${Application.bankruptcyDetails.length.max.toLocaleString()} characters - please shorten what you have written`
       }
     }
   }
