@@ -16,7 +16,7 @@ const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let sandbox
 
-const pageHeading = `What's the site address?`
+const pageHeading = `What is the site address?`
 const routePath = '/site/address/select-address'
 const nextRoutePath = '/task-list'
 

@@ -16,7 +16,7 @@ const {COOKIE_RESULT} = require('../../../src/constants')
 let sandbox
 
 const routePath = '/errors/page-not-found'
-const pageHeading = `We can't find that page`
+const pageHeading = `We cannot find that page`
 
 let getRequest
 

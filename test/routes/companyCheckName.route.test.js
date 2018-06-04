@@ -117,7 +117,7 @@ const checkPageElements = async (request, companyFound, expectedValue) => {
   } else {
     // Company not found page elements
     element = doc.getElementById('page-heading-company-not-found').firstChild
-    Code.expect(element.nodeValue).to.equal(`We can't find that company`)
+    Code.expect(element.nodeValue).to.equal(`We cannot find that company`)
 
     // Test for the existence of expected static content
     GeneralTestHelper.checkElementsExist(doc, [

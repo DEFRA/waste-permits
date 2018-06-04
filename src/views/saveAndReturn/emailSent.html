@@ -12,7 +12,7 @@
       {{> common/pageHeading pageHeading }}
       <div class="form-group">
         <p id="email-sent-paragraph-1">We sent a secure link to <span id="email-sent" class="bold">{{ formValues.save-and-return-email }}</span> that allows you to return to your application at any time.</p>
-        <p id="email-sent-paragraph-2">Every time you complete a screen we’ll save your data automatically.</p>
+        <p id="email-sent-paragraph-2">Every time you complete a screen we will save your data automatically.</p>
       </div>
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
@@ -35,7 +35,7 @@
 
               <div class="multiple-choice" data-target="gotEmailD">
                 <input id="not-got-email" type="radio" name="got-email" value="false" {{#if notGotEmail}}checked{{/if}}>
-                <label id="not-got-email-label" for="not-got-email">I can't find the email - resend it</label>
+                <label id="not-got-email-label" for="not-got-email">I cannot find the email - resend it</label>
               </div>
 
               <div class="panel panel-border-narrow js-hidden" id="gotEmailD">

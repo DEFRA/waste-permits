@@ -137,7 +137,7 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
 
       lab.test('when bankruptcy not checked', async () => {
         postRequest.payload = {}
-        await checkValidationMessage('declared', `Select yes if you have bankruptcy or insolvency to declare or no if you don't`)
+        await checkValidationMessage('declared', `Select yes if you have bankruptcy or insolvency to declare or no if you do not`)
       })
 
       lab.test('when bankruptcy set to yes and no details entered', async () => {
@@ -147,7 +147,7 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
 
       lab.test('when bankruptcy set to yes and details entered with 2001 characters', async () => {
         postRequest.payload = {'declared': 'yes', 'declaration-details': 'a'.repeat(2001)}
-        await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you’ve written', true)
+        await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you have written', true)
       })
     })
 

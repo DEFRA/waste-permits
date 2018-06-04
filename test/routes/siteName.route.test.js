@@ -63,7 +63,7 @@ const checkPageElements = async (request, expectedValue) => {
   const doc = await GeneralTestHelper.getDoc(request)
 
   let element = doc.getElementById('page-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`What's the site name?`)
+  Code.expect(element.nodeValue).to.equal(`What is the site name?`)
 
   // Test for the existence of expected static content
   GeneralTestHelper.checkElementsExist(doc, [

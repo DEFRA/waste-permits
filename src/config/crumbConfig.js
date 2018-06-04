@@ -17,7 +17,7 @@ const crumbOptions = {
   // context to specify its custom name.
   // So for example we could in the baseController say
   // `pageContext.crumbKey = Constants.CRSF_COOKIE_KEY` but if we then do this
-  // <input type="hidden" name="crumb" value="{{pageContext.crumbKey}}">  we'll
+  // <input type="hidden" name="crumb" value="{{pageContext.crumbKey}}">  we will
   // just get the string value 'DefraCsrfToken`.
   key: 'DefraCsrfToken',
   cookieOptions: cookieConfig.options,

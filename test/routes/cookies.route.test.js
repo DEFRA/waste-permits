@@ -91,7 +91,7 @@ lab.experiment('Cookies page tests:', () => {
     ])
   })
 
-  lab.test(`GET ${routePath} success check number of tabular elements don't exceed expected`, async () => {
+  lab.test(`GET ${routePath} success check number of tabular elements do not exceed expected`, async () => {
     const request = {
       method: 'GET',
       url: routePath,

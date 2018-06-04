@@ -144,7 +144,7 @@ module.exports = (lab, {routePath, nextPath, errorPath, pageHeading}) => {
           }
 
           const doc = await GeneralTestHelper.getDoc(postRequest)
-          await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Sorry, we can’t send emails just now. This is a technical fault and we have been notified. Please try the service again later.')
+          await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Sorry, we cannot send emails just now. This is a technical fault and we have been notified. Please try the service again later.')
         })
 
         lab.test('when no matching applications are found for the entered email', async () => {
@@ -156,7 +156,7 @@ module.exports = (lab, {routePath, nextPath, errorPath, pageHeading}) => {
           numberOfMatchingEmails = 0
 
           const doc = await GeneralTestHelper.getDoc(postRequest)
-          await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'We can’t find any current applications for that email. Please check the email address.')
+          await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'We cannot find any current applications for that email. Please check the email address.')
         })
       })
     })

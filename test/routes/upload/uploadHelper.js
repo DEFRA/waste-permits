@@ -240,7 +240,7 @@ module.exports = class UploadTestHelper {
         Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const req = this._uploadRequest({filename: fakeAnnotation.filename, contentType})
         const doc = await GeneralTestHelper.getDoc(req)
-        checkExpectedErrors(doc, 'That file has the same name as one you’ve already uploaded. Choose another file or rename the file before uploading it again.')
+        checkExpectedErrors(doc, 'That file has the same name as one you have already uploaded. Choose another file or rename the file before uploading it again.')
       })
 
       lab.test('when the filename is too long', async () => {

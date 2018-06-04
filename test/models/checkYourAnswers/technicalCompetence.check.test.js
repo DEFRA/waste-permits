@@ -15,7 +15,7 @@ const Qualifications = {
   },
   REGISTERED_ON_A_COURSE: {
     technicalQualification: 910400001,
-    description: `We're getting WAMITAB or EPOC qualifications`
+    description: `We are getting WAMITAB or EPOC qualifications`
   },
   DEEMED_COMPETENCE: {
     technicalQualification: 910400002,

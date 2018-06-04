@@ -134,7 +134,7 @@ lab.experiment('Is part of your application commercially confidential? page test
 
       lab.test('when confidentiality not checked', async () => {
         postRequest.payload = {}
-        await checkValidationMessage('declared', `Select yes if you want to claim confidentiality or no if you don't`)
+        await checkValidationMessage('declared', `Select yes if you want to claim confidentiality or no if you do not`)
       })
 
       lab.test('when confidentiality set to yes and no details entered', async () => {
@@ -144,7 +144,7 @@ lab.experiment('Is part of your application commercially confidential? page test
 
       lab.test('when confidentiality set to yes and details entered with 2001 characters', async () => {
         postRequest.payload = {'declared': 'yes', 'declaration-details': 'a'.repeat(2001)}
-        await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you’ve written', true)
+        await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you have written', true)
       })
     })
 

@@ -198,7 +198,7 @@ lab.experiment('Contact details page tests:', () => {
           value: 'fred@james-',
           messages: [
             'First name can only include letters, hyphens and apostrophes - delete any other characters',
-            'First name can’t start or end with a dash - delete the dash']
+            'First name cannot start or end with a dash - delete the dash']
         },
         {
           field: 'first-name',
@@ -224,7 +224,7 @@ lab.experiment('Contact details page tests:', () => {
           value: 'fred!james-',
           messages: [
             'Last name can only include letters, hyphens and apostrophes - delete any other characters',
-            'Last name can’t start or end with a dash - delete the dash']
+            'Last name cannot start or end with a dash - delete the dash']
         },
         {
           field: 'last-name',
