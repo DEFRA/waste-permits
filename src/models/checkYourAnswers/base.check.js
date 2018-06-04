@@ -106,6 +106,11 @@ module.exports = class BaseCheck {
     return this.data.primaryContactDetails || {}
   }
 
+  async getPermitHolderType () {
+    const {permitHolderType} = this.data
+    return permitHolderType || {}
+  }
+
   async getIndividualPermitHolder () {
     const {applicationId, individualPermitHolder} = this.data
     if (!individualPermitHolder) {

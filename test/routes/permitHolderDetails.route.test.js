@@ -17,7 +17,6 @@ const companyNumberPath = '/permit-holder/company/number'
 const permitHolderName = '/permit-holder/name'
 
 let fakeApplication
-let fakePermitHolder
 let sandbox
 
 lab.beforeEach(() => {
@@ -26,17 +25,8 @@ lab.beforeEach(() => {
     applicationName: 'APPLICATION_NAME'
   }
 
-  fakePermitHolder = {
-    id: 'individual'
-  }
-
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
-
-  // Stub cookies
-  GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
-    'permitHolderType': () => fakePermitHolder
-  })
 
   // Stub methods
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
@@ -67,7 +57,8 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
 
     lab.experiment('success', () => {
       lab.test('redirects to company number screen if permit holder type is company', async () => {
-        fakePermitHolder.id = 'limited-company'
+        fakeApplication.applicantType = 910400001
+        fakeApplication.organisationType = 910400000
 
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
@@ -75,7 +66,7 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
       })
 
       lab.test('redirects to permit holder name screen if permit holder type is individual', async () => {
-        fakePermitHolder.id = 'individual'
+        fakeApplication.applicantType = 910400000
 
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)

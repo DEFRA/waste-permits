@@ -34,7 +34,7 @@
 
             {{#each holderTypes}}
             <div class="multiple-choice">
-              <input id="chosen-holder-{{this.id}}-input" type="radio" name="chosen-holder-type" value="{{this.id}}">
+              <input id="chosen-holder-{{this.id}}-input" type="radio" name="chosen-holder-type" value="{{this.id}}" {{#if this.selected}}checked="checked"{{/if}}>
               <label id="chosen-holder-{{this.id}}-label" class="selection-button-radio" for="chosen-holder-{{this.id}}-input">
                 <span id="chosen-holder-{{this.id}}-type">{{this.type}}</span>
               </label>

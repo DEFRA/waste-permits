@@ -74,7 +74,6 @@ const errorPath = '/errors/technical-problem'
 const startPath = '/errors/order/start-at-beginning'
 
 let fakeApplication
-let fakePermitHolderType
 let fakeStandardRule
 let fakeStandardRuleId
 let fakeStandardRuleType
@@ -82,12 +81,9 @@ let sandbox
 
 lab.beforeEach(() => {
   fakeApplication = {
-    id: 'APPLICATION_ID'
-  }
-
-  fakePermitHolderType = {
-    type: 'PERMIT_HOLDER_TYPE',
-    canApplyOnline: false
+    id: 'APPLICATION_ID',
+    applicantType: 910400001,
+    organisationType: 910400000
   }
 
   fakeStandardRule = {
@@ -105,7 +101,6 @@ lab.beforeEach(() => {
 
   // Stub cookies
   GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
-    permitHolderType: () => fakePermitHolderType,
     standardRuleTypeId: () => fakeStandardRuleType.id,
     standardRuleId: () => fakeStandardRuleId
   })
@@ -146,10 +141,6 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
 
     lab.experiment('success', () => {
       lab.experiment(`when the permit holder is "${permitHolderTypes.limitedCompany.type}" and the category is`, () => {
-        lab.beforeEach(() => {
-          fakePermitHolderType = permitHolderTypes.limitedCompany
-        })
-
         Object.keys(offlineCategories)
           .forEach((type) => {
             const standardRuleType = offlineCategories[type]
@@ -189,7 +180,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
       })
 
       lab.test('when the category other is selected', async () => {
-        fakePermitHolderType = permitHolderTypes.other
+        fakeApplication.organisationType = 910400006
 
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
@@ -221,7 +212,6 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
       lab.test('redirects to start screen when cookie does not contain an offline category id and the permit holder can apply online', async () => {
         fakeStandardRuleType = offlineStandardRule
         fakeStandardRule.canApplyOnline = true
-        fakePermitHolderType.canApplyOnline = true
         const spy = sandbox.spy(LoggingService, 'logError')
 
         const res = await server.inject(getRequest)
