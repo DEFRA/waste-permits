@@ -121,7 +121,7 @@ lab.experiment('Save and return confirm page tests:', () => {
         }
 
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Sorry, we can not send emails just now. This is a technical fault and we have been notified. Please try the service again later.')
+        await GeneralTestHelper.checkValidationMessage(doc, 'save-and-return-email', 'Sorry, we cannot send emails just now. This is a technical fault and we have been notified. Please try the service again later.')
       })
     })
 

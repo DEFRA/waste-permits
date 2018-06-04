@@ -232,12 +232,12 @@ Constants.Routes = {
   COMPANY_CHECK_STATUS: {
     path: '/permit-holder/company/status-not-active',
     view: 'companyCheckStatus',
-    pageHeading: `We can not issue a permit to that company because it {{{companyStatus}}}`
+    pageHeading: `We cannot issue a permit to that company because it {{{companyStatus}}}`
   },
   COMPANY_CHECK_TYPE: {
     path: '/permit-holder/company/wrong-type',
     view: 'companyCheckType',
-    pageHeading: `That company can not apply because it is {{{companyType}}}`
+    pageHeading: `That company cannot apply because it is {{{companyType}}}`
   },
   COMPANY_DECLARE_OFFENCES: {
     path: '/permit-holder/company/declare-offences',
@@ -305,7 +305,7 @@ Constants.Routes = {
     ALREADY_SUBMITTED: {
       path: `${Constants.ALREADY_SUBMITTED_URL}/{slug?}`,
       view: 'error/alreadySubmitted',
-      pageHeading: `You have sent your application so you can not go back and change it`
+      pageHeading: `You have sent your application so you cannot go back and change it`
     },
     COOKIES_DISABLED: {
       path: '/errors/cookies-off',
@@ -325,12 +325,12 @@ Constants.Routes = {
     PAGE_NOT_FOUND: {
       path: '/errors/page-not-found',
       view: 'error/pageNotFound',
-      pageHeading: `We can not find that page`
+      pageHeading: `We cannot find that page`
     },
     RECOVERY_FAILED: {
       path: '/errors/recovery-failed',
       view: 'error/recoveryFailed',
-      pageHeading: 'Sorry, we can not find that application'
+      pageHeading: 'Sorry, we cannot find that application'
     },
     START_AT_BEGINNING: {
       path: '/errors/order/start-at-beginning',

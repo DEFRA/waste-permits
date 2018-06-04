@@ -25,7 +25,7 @@ const sections = [
     heading: 'Cookies for measuring usage (Google Analytics)',
     intro: [
       `We use Google Analytics software to collect information about how you use this service. We do this to help make sure the service is meeting the needs of its users and to help us make improvements.`,
-      `Google Analytics stores information about the pages you visit in this service. We do not collect or store your personal information (for example your name or address) so this information can not be used to identify who you are.`,
+      `Google Analytics stores information about the pages you visit in this service. We do not collect or store your personal information (for example your name or address) so this information cannot be used to identify who you are.`,
       `We do not allow Google to use or share our analytics data.`
     ],
     id: 'analytics-cookie',

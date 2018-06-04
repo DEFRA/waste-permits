@@ -104,7 +104,7 @@ lab.experiment('Check company status page tests:', () => {
             fakeCompany.status = status
             fakeCompany.isActive = (status === 'ACTIVE')
             const doc = await GeneralTestHelper.getDoc(getRequest)
-            Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We can not issue a permit to that company because it ${COMPANY_STATUSES[status]}`)
+            Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We cannot issue a permit to that company because it ${COMPANY_STATUSES[status]}`)
             Code.expect(doc.getElementById('company-status-message')).to.exist()
             Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)
             Code.expect(doc.getElementById('company-number').firstChild.nodeValue).to.equal(fakeAccount.companyNumber)
@@ -117,7 +117,7 @@ lab.experiment('Check company status page tests:', () => {
           CompanyLookupService.getActiveDirectors = () => []
           fakeCompany.isActive = true
           const doc = await GeneralTestHelper.getDoc(getRequest)
-          Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We can not issue a permit to that company because it has no directors`)
+          Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`We cannot issue a permit to that company because it has no directors`)
           Code.expect(doc.getElementById('company-status-message')).to.exist()
           Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)
           Code.expect(doc.getElementById('company-number').firstChild.nodeValue).to.equal(fakeAccount.companyNumber)

@@ -12,7 +12,7 @@ module.exports = class PostcodeValidator extends BaseValidator {
         'any.empty': `Enter a postcode`,
         'any.required': `Enter a postcode`,
         'invalid': `Enter a valid postcode`,
-        'none.found': `We can not find any addresses for that postcode - check it is correct or enter address manually`
+        'none.found': `We cannot find any addresses for that postcode - check it is correct or enter address manually`
       }
     }
   }

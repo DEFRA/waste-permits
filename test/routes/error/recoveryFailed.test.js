@@ -14,7 +14,7 @@ const {COOKIE_RESULT} = require('../../../src/constants')
 let sandbox
 
 const routePath = '/errors/recovery-failed'
-const pageHeading = `Sorry, we can not find that application`
+const pageHeading = `Sorry, we cannot find that application`
 
 const fakeApplication = {
   id: 'APPLICATION_ID',

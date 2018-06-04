@@ -190,7 +190,7 @@ lab.experiment('Permit holder postcode page tests:', () => {
       lab.test(`POST ${routePath} shows an error message when no addresses are found`, async () => {
         postRequest.payload.postcode = fakeAddress1.postcode
         Address.listByPostcode = () => []
-        await checkValidationError(`We can not find any addresses for that postcode - check it is correct or enter address manually`)
+        await checkValidationError(`We cannot find any addresses for that postcode - check it is correct or enter address manually`)
       })
 
       lab.test(`POST ${routePath} shows an error message when the postcode is invalid`, async () => {

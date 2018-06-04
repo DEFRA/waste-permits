@@ -319,11 +319,11 @@ lab.experiment('Permit holder address select page tests:', () => {
           [FORM_FIELD_ID.townOrCity]: valueWithHyphen,
           [FORM_FIELD_ID.postcode]: valueWithHyphen
         }
-        await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Building name or number can not start or end with a dash - please delete it`, 0)
-        await checkValidationError(FORM_FIELD_ID.addressLine1, `Address line 1 can not start or end with a dash - please delete it`, 1)
-        await checkValidationError(FORM_FIELD_ID.addressLine2, `Address line 2 can not start or end with a dash - please delete it`, 2)
-        await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city can not start or end with a dash - please delete it`, 3)
-        await checkValidationError(FORM_FIELD_ID.postcode, `Postcode can not start or end with a dash - please delete it`, 4)
+        await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Building name or number cannot start or end with a dash - please delete it`, 0)
+        await checkValidationError(FORM_FIELD_ID.addressLine1, `Address line 1 cannot start or end with a dash - please delete it`, 1)
+        await checkValidationError(FORM_FIELD_ID.addressLine2, `Address line 2 cannot start or end with a dash - please delete it`, 2)
+        await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city cannot start or end with a dash - please delete it`, 3)
+        await checkValidationError(FORM_FIELD_ID.postcode, `Postcode cannot start or end with a dash - please delete it`, 4)
       })
 
       lab.test(`POST ${routePath} shows an error message when a field ends with a hyphen`, async () => {
@@ -335,11 +335,11 @@ lab.experiment('Permit holder address select page tests:', () => {
           [FORM_FIELD_ID.townOrCity]: valueWithHyphen,
           [FORM_FIELD_ID.postcode]: valueWithHyphen
         }
-        await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Building name or number can not start or end with a dash - please delete it`, 0)
-        await checkValidationError(FORM_FIELD_ID.addressLine1, `Address line 1 can not start or end with a dash - please delete it`, 1)
-        await checkValidationError(FORM_FIELD_ID.addressLine2, `Address line 2 can not start or end with a dash - please delete it`, 2)
-        await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city can not start or end with a dash - please delete it`, 3)
-        await checkValidationError(FORM_FIELD_ID.postcode, `Postcode can not start or end with a dash - please delete it`, 4)
+        await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Building name or number cannot start or end with a dash - please delete it`, 0)
+        await checkValidationError(FORM_FIELD_ID.addressLine1, `Address line 1 cannot start or end with a dash - please delete it`, 1)
+        await checkValidationError(FORM_FIELD_ID.addressLine2, `Address line 2 cannot start or end with a dash - please delete it`, 2)
+        await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city cannot start or end with a dash - please delete it`, 3)
+        await checkValidationError(FORM_FIELD_ID.postcode, `Postcode cannot start or end with a dash - please delete it`, 4)
       })
 
       lab.test(`POST ${routePath} shows an error message when the entered text contains invalid characters`, async () => {
@@ -351,7 +351,7 @@ lab.experiment('Permit holder address select page tests:', () => {
           [FORM_FIELD_ID.townOrCity]: valueWithNumbers,
           [FORM_FIELD_ID.postcode]: fakeAddress1.postcode
         }
-        await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city contains text we can not accept - enter only letters, apostrophes, dashes and spaces`, 0)
+        await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city contains text we cannot accept - enter only letters, apostrophes, dashes and spaces`, 0)
 
         let valueWithPunctuation = 'VALUE...'
         postRequest.payload = {
@@ -361,8 +361,8 @@ lab.experiment('Permit holder address select page tests:', () => {
           [FORM_FIELD_ID.townOrCity]: valueWithPunctuation,
           [FORM_FIELD_ID.postcode]: fakeAddress1.postcode
         }
-        await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Building name or number contains text we can not accept - enter only numbers, letters, apostrophes, dashes and spaces`, 0)
-        await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city contains text we can not accept - enter only letters, apostrophes, dashes and spaces`, 1)
+        await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Building name or number contains text we cannot accept - enter only numbers, letters, apostrophes, dashes and spaces`, 0)
+        await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city contains text we cannot accept - enter only letters, apostrophes, dashes and spaces`, 1)
       })
     })
   })

@@ -18,7 +18,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         'any.required': `Enter a first name`,
         'string.min': `First name must have at least two letters - if you entered an initial please enter a name`,
         'custom.invalid': `First name can only include letters, hyphens and apostrophes - delete any other characters`,
-        'custom.no-leading-and-trailing-dashes': `First name can not start or end with a dash - delete the dash`,
+        'custom.no-leading-and-trailing-dashes': `First name cannot start or end with a dash - delete the dash`,
         'string.max': `Enter a shorter first name with no more than ${Contact.firstName.length.max} characters`
       },
       'last-name': {
@@ -26,7 +26,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         'any.required': `Enter a last name`,
         'string.min': `Last name must have at least two letters - if you entered an initial please enter a name`,
         'custom.invalid': `Last name can only include letters, hyphens and apostrophes - delete any other characters`,
-        'custom.no-leading-and-trailing-dashes': `Last name can not start or end with a dash - delete the dash`,
+        'custom.no-leading-and-trailing-dashes': `Last name cannot start or end with a dash - delete the dash`,
         'string.max': `Enter a shorter last name with no more than ${Contact.lastName.length.max} characters`
       },
       'dob-day': {
