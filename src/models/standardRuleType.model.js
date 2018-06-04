@@ -23,8 +23,8 @@ class StandardRuleType extends BaseModel {
     ]
   }
 
-  static async list (authToken) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async list (context) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const orderBy = 'defra_category asc'
 
     const query = encodeURI(`defra_standardruletypes?$select=${StandardRuleType.selectedDynamicsFields()}&$orderby=${orderBy}`)
@@ -39,14 +39,14 @@ class StandardRuleType extends BaseModel {
     }
   }
 
-  static async getCategories (authToken) {
+  static async getCategories (context) {
     const categories = Object.keys(OFFLINE_CATEGORIES)
       .map((key) => {
         const {id, category, name: categoryName, hint = ''} = OFFLINE_CATEGORIES[key]
         return {id, categoryName, category, hint}
       })
 
-    const standardRuleTypes = await StandardRuleType.list(authToken)
+    const standardRuleTypes = await StandardRuleType.list(context)
     standardRuleTypes.forEach(({id = '', categoryName = '', category = '', hint = ''}) => {
       categories.push({id, categoryName: categoryName.toLowerCase(), category, hint})
     })

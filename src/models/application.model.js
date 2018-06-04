@@ -82,9 +82,9 @@ class Application extends BaseModel {
     return model
   }
 
-  static async listBySaveAndReturnEmail (authToken, saveAndReturnEmail) {
+  static async listBySaveAndReturnEmail (context, saveAndReturnEmail) {
     if (saveAndReturnEmail) {
-      const dynamicsDal = new DynamicsDalService(authToken)
+      const dynamicsDal = new DynamicsDalService(context.authToken)
       const filter = `defra_saveandreturnemail eq '${saveAndReturnEmail}' and  defra_submittedon eq null`
       const query = encodeURI(`${this.entity}?$select=${Application.selectedDynamicsFields()}&$filter=${filter}`)
       try {
@@ -97,8 +97,8 @@ class Application extends BaseModel {
     }
   }
 
-  async sendSaveAndReturnEmail (authToken, origin) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  async sendSaveAndReturnEmail (context, origin) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
       saveAndReturnUrl: `${origin}${Constants.SAVE_AND_RETURN_URL}`
     }
@@ -106,7 +106,7 @@ class Application extends BaseModel {
       // Call Dynamics save and return email action
       let action = `${this.constructor.entity}(${this.id})/Microsoft.Dynamics.CRM.defra_saveandreturnemail`
       await dynamicsDal.callAction(action, actionDataObject)
-      const applicationReturn = await ApplicationReturn.getByApplicationId(authToken, this.id)
+      const applicationReturn = await ApplicationReturn.getByApplicationId(context, this.id)
       LoggingService.logDebug(`Save and Return Url for Application "${this.applicationNumber}": ${origin}${Constants.SAVE_AND_RETURN_URL}/${applicationReturn.slug}`)
     } catch (error) {
       LoggingService.logError(`Unable to call Dynamics Save and Return Email action: ${error}`)
@@ -114,19 +114,19 @@ class Application extends BaseModel {
     }
   }
 
-  async save (authToken) {
+  async save (context) {
     const dataObject = this.modelToDynamics()
     const isNew = this.isNew()
-    await super.save(authToken, dataObject)
+    await super.save(context, dataObject)
     if (isNew) {
       LoggingService.logInfo(`Created application with ID: ${this.id}`)
     }
   }
 
-  static async sendAllRecoveryEmails (authToken, origin, saveAndReturnEmail) {
-    const applicationList = await this.listBySaveAndReturnEmail(authToken, saveAndReturnEmail)
+  static async sendAllRecoveryEmails (context, origin, saveAndReturnEmail) {
+    const applicationList = await this.listBySaveAndReturnEmail(context, saveAndReturnEmail)
     if (Array.isArray(applicationList)) {
-      await Promise.all(applicationList.map((application) => application.sendSaveAndReturnEmail(authToken, origin)))
+      await Promise.all(applicationList.map((application) => application.sendSaveAndReturnEmail(context, origin)))
       return applicationList.length
     }
     return 0

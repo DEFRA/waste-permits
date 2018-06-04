@@ -14,14 +14,15 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const {authToken, individualPermitHolder, applicationId} = await RecoveryService.createApplicationContext(h, {individualPermitHolder: true})
+      const context = await RecoveryService.createApplicationContext(h, {individualPermitHolder: true})
+      const {individualPermitHolder, applicationId} = context
 
       // If we don't have a permit holder at this point something has gone wrong
       if (!individualPermitHolder) {
         throw Error('Application does not have a permit holder')
       }
 
-      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
 
       pageContext.formValues = {
         'email': individualPermitHolder.email,
@@ -36,7 +37,8 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const { authToken, application, individualPermitHolder } = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
+      const context = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
+      const { application, individualPermitHolder } = context
       const {
         email,
         telephone
@@ -50,21 +52,21 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
 
       const { id: individualPermitHolderId, firstName, lastName } = individualPermitHolder
 
-      contact = await Contact.getByFirstnameLastnameEmail(authToken, firstName, lastName, email)
+      contact = await Contact.getByFirstnameLastnameEmail(context, firstName, lastName, email)
 
       if (!contact) {
         contact = new Contact({firstName, lastName, email})
-        await contact.save(authToken)
+        await contact.save(context)
       }
 
       if (contact.id !== individualPermitHolderId) {
         application.permitHolderIndividualId = contact.id
-        await application.save(authToken)
+        await application.save(context)
       }
 
-      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, application.id)
+      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(context, application.id)
       individualPermitHolderDetails.telephone = telephone
-      await individualPermitHolderDetails.save(authToken)
+      await individualPermitHolderDetails.save(context)
 
       return this.redirect({ request, h, redirectPath: Constants.Routes.ADDRESS.POSTCODE_PERMIT_HOLDER.path })
     }

@@ -12,11 +12,11 @@ module.exports = class ConfirmRules extends BaseModel {
     this.applicationLineId = data.applicationLineId
   }
 
-  static async updateCompleteness (authToken, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async updateCompleteness (context, applicationId, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     try {
-      const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
+      const applicationLine = await ApplicationLine.getById(context, applicationLineId)
 
       const query = `defra_wasteparamses(${applicationLine.parametersId})`
       await dynamicsDal.update(query, {[CONFIRM_RULES]: true})
@@ -26,11 +26,11 @@ module.exports = class ConfirmRules extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (context, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the completed flag for confirm rules
-      const completed = await ApplicationLine.getCompleted(authToken, applicationLineId, CONFIRM_RULES)
+      const completed = await ApplicationLine.getCompleted(context, applicationLineId, CONFIRM_RULES)
 
       isComplete = Boolean(completed)
     } catch (error) {

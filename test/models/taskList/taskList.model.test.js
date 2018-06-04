@@ -9,6 +9,7 @@ const TaskList = require('../../../src/models/taskList/taskList.model')
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
+const request = {app: {data: {}}}
 
 lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
@@ -60,14 +61,14 @@ lab.experiment('Task List Model tests:', () => {
 
   lab.test('getByApplicationLineId() method returns a TaskList object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const taskList = await TaskList.getByApplicationLineId()
+    const taskList = await TaskList.getByApplicationLineId(request)
     Code.expect(taskList).to.not.be.null()
     Code.expect(spy.callCount).to.equal(1)
   })
 
   lab.test('Task List returned by getByApplicationLineId() method has the correct number of sections', async () => {
     // Get the Task List
-    const taskList = await TaskList.getByApplicationLineId()
+    const taskList = await TaskList.getByApplicationLineId(request)
 
     // Check we have the correct sections
     Code.expect(Array.isArray(taskList.sections)).to.be.true()
@@ -78,7 +79,7 @@ lab.experiment('Task List Model tests:', () => {
     lab.test(`Task List returned by getByApplicationLineId() contains the ${sectionId} section`, async () => {
       const expectedSectionItemIds = expectedSections[sectionId]
       // Get the Task List
-      const taskList = await TaskList.getByApplicationLineId()
+      const taskList = await TaskList.getByApplicationLineId(request)
       const section = taskList.sections[index]
 
       // Check we have the correct section IDs in the section

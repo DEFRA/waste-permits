@@ -7,7 +7,8 @@ const RecoveryService = require('../../../services/recovery.service')
 module.exports = class DeclarationsController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {application} = await RecoveryService.createApplicationContext(h, {application: true})
+    const context = await RecoveryService.createApplicationContext(h, {application: true})
+    const {application} = context
 
     switch (this.route) {
       case Constants.Routes.COMPANY_DECLARE_OFFENCES:
@@ -39,12 +40,13 @@ module.exports = class DeclarationsController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const context = await RecoveryService.createApplicationContext(h, {application: true})
+      const {applicationId, applicationLineId, application} = context
 
       Object.assign(application, this.getRequestData(request))
-      await application.save(authToken)
+      await application.save(context)
       if (this.updateCompleteness) {
-        await this.updateCompleteness(authToken, applicationId, applicationLineId)
+        await this.updateCompleteness(context, applicationId, applicationLineId)
       }
 
       return this.redirect({request, h, redirectPath: this.nextPath})

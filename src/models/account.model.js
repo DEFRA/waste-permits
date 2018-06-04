@@ -21,9 +21,9 @@ class Account extends BaseModel {
     ]
   }
 
-  static async getByApplicationId (authToken, applicationId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
-    const application = await Application.getById(authToken, applicationId)
+  static async getByApplicationId (context, applicationId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+    const application = await Application.getById(context, applicationId)
     if (application && application.accountId) {
       try {
         const query = encodeURI(`accounts(${application.accountId})?$select=${Account.selectedDynamicsFields()}`)
@@ -36,8 +36,8 @@ class Account extends BaseModel {
     }
   }
 
-  static async getByCompanyNumber (authToken, companyNumber) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getByCompanyNumber (context, companyNumber) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     try {
       const filter = `defra_companyhouseid eq '${companyNumber}'`
       const query = encodeURI(`accounts?$select=${Account.selectedDynamicsFields()}&$filter=${filter}`)
@@ -52,15 +52,15 @@ class Account extends BaseModel {
     }
   }
 
-  async save (authToken, isDraft) {
+  async save (context, isDraft) {
     const dataObject = this.modelToDynamics()
     dataObject.defra_companyhouseid = dataObject.defra_companyhouseid ? Utilities.stripWhitespace(dataObject.defra_companyhouseid).toUpperCase() : undefined
     dataObject.defra_draft = isDraft
-    await super.save(authToken, dataObject)
+    await super.save(context, dataObject)
   }
 
-  async confirm (authToken) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  async confirm (context) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
       CompanyRegistrationNumber: this.companyNumber
     }

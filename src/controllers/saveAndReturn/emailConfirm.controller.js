@@ -8,9 +8,10 @@ const RecoveryService = require('../../services/recovery.service')
 module.exports = class EmailConfirmController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, applicationLineId, application} = await RecoveryService.createApplicationContext(h, {application: true})
+    const context = await RecoveryService.createApplicationContext(h, {application: true})
+    const {applicationId, applicationLineId, application} = context
 
-    const isComplete = await SaveAndReturn.isComplete(authToken, applicationId, applicationLineId)
+    const isComplete = await SaveAndReturn.isComplete(context, applicationId, applicationLineId)
     if (isComplete) {
       return this.redirect({request, h, redirectPath: Constants.Routes.SAVE_AND_RETURN_SENT_CHECK.path})
     }
@@ -30,13 +31,14 @@ module.exports = class EmailConfirmController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const context = await RecoveryService.createApplicationContext(h, {application: true})
+      const {application} = context
       application.saveAndReturnEmail = request.payload['save-and-return-email']
 
-      await application.save(authToken)
+      await application.save(context)
 
       try {
-        await application.sendSaveAndReturnEmail(authToken, request.headers.origin)
+        await application.sendSaveAndReturnEmail(context, request.headers.origin)
       } catch (err) {
         return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
       }

@@ -12,11 +12,11 @@ module.exports = class CostTime extends BaseModel {
     this.applicationLineId = data.applicationLineId
   }
 
-  static async updateCompleteness (authToken, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async updateCompleteness (context, applicationId, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     try {
-      const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
+      const applicationLine = await ApplicationLine.getById(context, applicationLineId)
 
       const query = `defra_wasteparamses(${applicationLine.parametersId})`
       await dynamicsDal.update(query, {[SHOW_COST_AND_TIME]: true})
@@ -26,11 +26,11 @@ module.exports = class CostTime extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (context, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the completed flag for cost time
-      const completed = await ApplicationLine.getCompleted(authToken, applicationLineId, SHOW_COST_AND_TIME)
+      const completed = await ApplicationLine.getCompleted(context, applicationLineId, SHOW_COST_AND_TIME)
 
       isComplete = Boolean(completed)
     } catch (error) {

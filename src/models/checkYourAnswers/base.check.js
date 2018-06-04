@@ -34,27 +34,27 @@ module.exports = class BaseCheck {
   }
 
   async getApplication () {
-    const {authToken, applicationId, application} = this.data
+    const {applicationId, application} = this.data
     if (!application) {
-      this.data.application = await Application.getById(authToken, applicationId)
+      this.data.application = await Application.getById(this.data, applicationId)
     }
     return this.data.application || {}
   }
 
   async getContact () {
-    const {authToken, contact} = this.data
+    const {contact} = this.data
     const {contactId} = await this.getApplication()
     if (!contact) {
-      this.data.contact = contactId ? await Contact.getById(authToken, contactId) : new Contact()
+      this.data.contact = contactId ? await Contact.getById(this.data, contactId) : new Contact()
     }
     return this.data.contact || {}
   }
 
   async getAgentAccount () {
-    const {authToken, agentAccount} = this.data
+    const {agentAccount} = this.data
     const {agentId} = await this.getApplication()
     if (!agentAccount) {
-      this.data.agentAccount = agentId ? await Account.getById(authToken, agentId) : new Account()
+      this.data.agentAccount = agentId ? await Account.getById(this.data, agentId) : new Account()
     }
     return this.data.agentAccount || {}
   }
@@ -68,28 +68,28 @@ module.exports = class BaseCheck {
   }
 
   async getCompanyAccount () {
-    const {authToken, applicationId, companyAccount} = this.data
+    const {applicationId, companyAccount} = this.data
     if (!companyAccount) {
-      this.data.companyAccount = await Account.getByApplicationId(authToken, applicationId)
+      this.data.companyAccount = await Account.getByApplicationId(this.data, applicationId)
     }
     return this.data.companyAccount || {}
   }
 
   async getCompanySecretaryDetails () {
-    const {authToken, applicationId, companySecretaryDetails} = this.data
+    const {applicationId, companySecretaryDetails} = this.data
     if (!companySecretaryDetails) {
-      this.data.companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
+      this.data.companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(this.data, applicationId)
     }
     return this.data.companySecretaryDetails || {}
   }
 
   async getDirectors () {
-    const {authToken, applicationId, directors} = this.data
+    const {applicationId, directors} = this.data
     const {id} = await this.getCompanyAccount()
     if (!directors) {
-      this.data.directors = await Contact.list(authToken, id, COMPANY_DIRECTOR)
+      this.data.directors = await Contact.list(this.data, id, COMPANY_DIRECTOR)
       await Promise.all(this.data.directors.map(async (director) => {
-        let applicationContact = await ApplicationContact.get(authToken, applicationId, director.id)
+        let applicationContact = await ApplicationContact.get(this.data, applicationId, director.id)
         if (applicationContact && applicationContact.directorDob) {
           director.dob.day = Utilities.extractDayFromDate(applicationContact.directorDob)
         }
@@ -99,109 +99,109 @@ module.exports = class BaseCheck {
   }
 
   async getPrimaryContactDetails () {
-    const {authToken, applicationId, primaryContactDetails} = this.data
+    const {applicationId, primaryContactDetails} = this.data
     if (!primaryContactDetails) {
-      this.data.primaryContactDetails = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
+      this.data.primaryContactDetails = await AddressDetail.getPrimaryContactDetails(this.data, applicationId)
     }
     return this.data.primaryContactDetails || {}
   }
 
   async getIndividualPermitHolder () {
-    const {authToken, applicationId, individualPermitHolder} = this.data
+    const {applicationId, individualPermitHolder} = this.data
     if (!individualPermitHolder) {
-      this.data.individualPermitHolder = await Contact.getIndividualPermitHolderByApplicationId(authToken, applicationId)
+      this.data.individualPermitHolder = await Contact.getIndividualPermitHolderByApplicationId(this.data, applicationId)
     }
     return this.data.individualPermitHolder || {}
   }
 
   async getIndividualPermitHolderDetails () {
-    const {authToken, applicationId, individualPermitHolderDetails} = this.data
+    const {applicationId, individualPermitHolderDetails} = this.data
     if (!individualPermitHolderDetails) {
-      this.data.individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+      this.data.individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(this.data, applicationId)
     }
     return this.data.individualPermitHolderDetails || {}
   }
 
   async getIndividualPermitHolderAddress () {
-    const {authToken, individualPermitHolderAddress} = this.data
+    const {individualPermitHolderAddress} = this.data
     if (!individualPermitHolderAddress) {
       const permitHolderDetails = await this.getIndividualPermitHolderDetails()
-      this.data.individualPermitHolderAddress = await Address.getById(authToken, permitHolderDetails.addressId)
+      this.data.individualPermitHolderAddress = await Address.getById(this.data, permitHolderDetails.addressId)
     }
     return this.data.individualPermitHolderAddress || {}
   }
 
   async getBillingInvoicingDetails () {
-    const {authToken, applicationId} = this.data
+    const {applicationId} = this.data
     if (!this.data.billingInvoicingDetails) {
-      this.data.billingInvoicingDetails = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
+      this.data.billingInvoicingDetails = await AddressDetail.getBillingInvoicingDetails(this.data, applicationId)
     }
     return this.data.billingInvoicingDetails || {}
   }
 
   async getStandardRule () {
-    const {authToken, applicationLineId, standardRule} = this.data
+    const {applicationLineId, standardRule} = this.data
     if (!standardRule) {
-      this.data.standardRule = await StandardRule.getByApplicationLineId(authToken, applicationLineId)
+      this.data.standardRule = await StandardRule.getByApplicationLineId(this.data, applicationLineId)
     }
     return this.data.standardRule || {}
   }
 
   async getLocation () {
-    const {authToken, applicationId, applicationLineId, location} = this.data
+    const {applicationId, applicationLineId, location} = this.data
     if (!location) {
-      this.data.location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+      this.data.location = await Location.getByApplicationId(this.data, applicationId, applicationLineId)
     }
     return this.data.location || {}
   }
 
   async getLocationDetail () {
-    const {authToken, locationDetail} = this.data
+    const {locationDetail} = this.data
     const {id} = await this.getLocation()
     if (!locationDetail) {
-      this.data.locationDetail = await LocationDetail.getByLocationId(authToken, id)
+      this.data.locationDetail = await LocationDetail.getByLocationId(this.data, id)
     }
     return this.data.locationDetail || {}
   }
 
   async getLocationAddress () {
-    const {authToken, locationAddress} = this.data
+    const {locationAddress} = this.data
     const {addressId} = await this.getLocationDetail()
     if (!locationAddress) {
-      this.data.locationAddress = await Address.getById(authToken, addressId)
+      this.data.locationAddress = await Address.getById(this.data, addressId)
     }
     return this.data.locationAddress || {}
   }
 
   async getInvoiceAddress () {
-    const {authToken, invoiceAddress} = this.data
+    const {invoiceAddress} = this.data
     const {addressId} = await this.getBillingInvoicingDetails()
     if (!invoiceAddress) {
-      this.data.invoiceAddress = await Address.getById(authToken, addressId)
+      this.data.invoiceAddress = await Address.getById(this.data, addressId)
     }
     return this.data.invoiceAddress || {}
   }
 
   async getTechnicalCompetenceEvidence () {
-    const {authToken, applicationId, technicalCompetenceEvidence} = this.data
+    const {applicationId, technicalCompetenceEvidence} = this.data
     if (!technicalCompetenceEvidence) {
-      this.data.technicalCompetenceEvidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, TECHNICAL_QUALIFICATION)
+      this.data.technicalCompetenceEvidence = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, TECHNICAL_QUALIFICATION)
     }
     return this.data.technicalCompetenceEvidence || {}
   }
 
   async getSitePlan () {
-    const {authToken, applicationId, sitePlan} = this.data
+    const {applicationId, sitePlan} = this.data
     if (!sitePlan) {
-      this.data.sitePlan = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, SITE_PLAN)
+      this.data.sitePlan = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, SITE_PLAN)
     }
     return this.data.sitePlan || {}
   }
 
   async getFirePreventionPlan () {
-    const {authToken, applicationId, firePreventionPlan} = this.data
+    const {applicationId, firePreventionPlan} = this.data
     if (!firePreventionPlan) {
-      this.data.firePreventionPlan = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, FIRE_PREVENTION_PLAN)
+      this.data.firePreventionPlan = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, FIRE_PREVENTION_PLAN)
     }
     return this.data.firePreventionPlan || {}
   }

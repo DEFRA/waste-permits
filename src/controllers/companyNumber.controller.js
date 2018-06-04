@@ -27,22 +27,23 @@ module.exports = class CompanyNumberController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const context = await RecoveryService.createApplicationContext(h, {application: true})
+      const {application} = context
 
       const companyNumber = Utilities.stripWhitespace(request.payload['company-number'])
 
       // See if there is an existing account with this company number. If not, create one.
-      const account = (await Account.getByCompanyNumber(authToken, companyNumber)) || new Account()
+      const account = (await Account.getByCompanyNumber(context, companyNumber)) || new Account()
 
       if (account.isNew()) {
         account.companyNumber = companyNumber
-        await account.save(authToken, true)
+        await account.save(context, true)
       }
 
       // Update the Application with the Account (if it has changed)
       if (application && application.accountId !== account.id) {
         application.accountId = account.id
-        await application.save(authToken)
+        await application.save(context)
       }
 
       return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_CHECK_TYPE.path})

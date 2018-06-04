@@ -8,14 +8,14 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class SiteNameController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+    const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       // If we have Location name in the payload then display them in the form
       pageContext.formValues = request.payload
     } else {
       pageContext.formValues = {
-        'site-name': await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
+        'site-name': await SiteNameAndLocation.getSiteName(request, applicationId, applicationLineId)
       }
     }
 
@@ -26,9 +26,9 @@ module.exports = class SiteNameController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+      const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
-      await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'], authToken, applicationId, applicationLineId)
+      await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'], applicationId, applicationLineId)
 
       return this.redirect({request, h, redirectPath: Constants.Routes.SITE_GRID_REFERENCE.path})
     }

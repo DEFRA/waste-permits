@@ -8,13 +8,13 @@ const Address = require('../../../models/address.model')
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+    const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
       pageContext.formValues = request.payload
     } else {
-      const address = await this.getModel().getAddress(request, authToken, applicationId, applicationLineId)
+      const address = await this.getModel().getAddress(request, applicationId, applicationLineId)
       if (address) {
         // If the manual entry flag is set then redirect off to the mamual address entry page instead
         if (!address.fromAddressLookup) {
@@ -42,7 +42,7 @@ module.exports = class PostcodeController extends BaseController {
   }
 
   async doPost (request, h, errors) {
-    const {authToken} = await RecoveryService.createApplicationContext(h)
+    const context = await RecoveryService.createApplicationContext(h)
     const postcode = request.payload['postcode']
     const errorPath = 'postcode'
 
@@ -51,7 +51,7 @@ module.exports = class PostcodeController extends BaseController {
 
     let addresses
     try {
-      addresses = await Address.listByPostcode(authToken, postcode)
+      addresses = await Address.listByPostcode(context, postcode)
     } catch (error) {
       if (!errors) {
         // Add error if the entered postcode led to an error being returned from AddressBase

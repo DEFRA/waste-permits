@@ -7,13 +7,13 @@ const RecoveryService = require('../../../services/recovery.service')
 module.exports = class AddressManualController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+    const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
       pageContext.formValues = request.payload
     } else {
-      const address = await this.getModel().getAddress(request, authToken, applicationId, applicationLineId)
+      const address = await this.getModel().getAddress(request, applicationId, applicationLineId)
       if (address) {
         pageContext.formValues = {
           'building-name-or-number': address.buildingNameOrNumber,
@@ -41,7 +41,7 @@ module.exports = class AddressManualController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+      const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
       const addressDto = {
         buildingNameOrNumber: request.payload['building-name-or-number'],
@@ -51,7 +51,7 @@ module.exports = class AddressManualController extends BaseController {
         postcode: request.payload['postcode']
       }
 
-      await this.getModel().saveManualAddress(request, authToken, applicationId, applicationLineId, addressDto)
+      await this.getModel().saveManualAddress(request, applicationId, applicationLineId, addressDto)
 
       return this.redirect({request, h, redirectPath: this.getNextRoute()})
     }

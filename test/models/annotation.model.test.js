@@ -9,6 +9,7 @@ const Annotation = require('../../src/models/annotation.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let sandbox
+const request = {app: {}}
 
 let testAnnotation
 const testAnnotationId = 'ANNOTATION_ID'
@@ -77,7 +78,7 @@ lab.experiment('Annotation Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const annotationList = await Annotation.listByApplicationIdAndSubject(undefined, fakeApplication.id)
+    const annotationList = await Annotation.listByApplicationIdAndSubject(request, fakeApplication.id)
     Code.expect(Array.isArray(annotationList)).to.be.true()
     Code.expect(annotationList.length).to.equal(3)
     annotationList.forEach((annotation, index) => {

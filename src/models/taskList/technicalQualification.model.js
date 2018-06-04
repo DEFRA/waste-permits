@@ -13,12 +13,12 @@ module.exports = class TechnicalQualification extends BaseModel {
     this.applicationLineId = data.applicationLineId
   }
 
-  static async updateCompleteness (authToken, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async updateCompleteness (context, applicationId, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     try {
-      const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await TechnicalQualification.isComplete(authToken, applicationId, applicationLineId)
+      const applicationLine = await ApplicationLine.getById(context, applicationLineId)
+      const isComplete = await TechnicalQualification.isComplete(context, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.TECHNICAL_QUALIFICATION]: isComplete
@@ -31,11 +31,11 @@ module.exports = class TechnicalQualification extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (context, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the Evidence for a technical qualification
-      const evidence = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, Constants.UploadSubject.TECHNICAL_QUALIFICATION)
+      const evidence = await Annotation.listByApplicationIdAndSubject(context, applicationId, Constants.UploadSubject.TECHNICAL_QUALIFICATION)
       isComplete = Boolean(evidence && evidence.length)
     } catch (error) {
       LoggingService.logError(`Unable to calculate TechnicalQualification completeness: ${error}`)

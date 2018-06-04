@@ -23,15 +23,15 @@ class Address extends BaseModel {
     ]
   }
 
-  static async getByUprn (authToken, uprn) {
-    if (!authToken) {
-      const errorMessage = `Unable to get ${this._entity} by UPRN: Auth Token not supplied`
+  static async getByUprn (context, uprn) {
+    if (!context) {
+      const errorMessage = `Unable to get ${this._entity} by UPRN: Context not supplied`
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }
 
     let address
-    const dynamicsDal = new DynamicsDalService(authToken)
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const filter = `defra_uprn eq '${uprn}'`
     const query = `defra_addresses?$select=${this.selectedDynamicsFields()}&$filter=${filter}`
     try {
@@ -47,9 +47,9 @@ class Address extends BaseModel {
     return address
   }
 
-  static async listByPostcode (authToken, postcode) {
+  static async listByPostcode (context, postcode) {
     let addresses
-    const dynamicsDal = new DynamicsDalService(authToken)
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
       postcode: postcode
     }
@@ -81,14 +81,14 @@ class Address extends BaseModel {
     return addresses
   }
 
-  async save (authToken) {
+  async save (context) {
     // Build the address name (i.e. the full address) if it is a manual address entry
     if (!this.fromAddressLookup) {
       this.fullAddress = `${this.buildingNameOrNumber}, ${this.addressLine1}, ${this.addressLine2}, ${this.townOrCity}, ${this.postcode}`
     }
     const dataObject = this.modelToDynamics()
 
-    await super.save(authToken, dataObject)
+    await super.save(context, dataObject)
   }
 }
 

@@ -11,9 +11,10 @@ const Annotation = require('../../../models/annotation.model')
 module.exports = class UploadController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId} = await RecoveryService.createApplicationContext(h)
+    const context = await RecoveryService.createApplicationContext(h)
+    const {applicationId} = context
 
-    const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
+    const list = await Annotation.listByApplicationIdAndSubject(context, applicationId, this.subject)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -36,14 +37,15 @@ module.exports = class UploadController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+      const context = await RecoveryService.createApplicationContext(h)
+      const {applicationId, applicationLineId} = context
 
-      const list = await Annotation.listByApplicationIdAndSubject(authToken, applicationId, this.subject)
+      const list = await Annotation.listByApplicationIdAndSubject(context, applicationId, this.subject)
       if (!list.length) {
         return this.handler(request, h, undefined, this.setCustomError('noFilesUploaded', 'file'))
       }
       if (this.updateCompleteness) {
-        await this.updateCompleteness(authToken, applicationId, applicationLineId)
+        await this.updateCompleteness(context, applicationId, applicationLineId)
       }
       return this.redirect({request, h, redirectPath: this.nextPath})
     }
@@ -72,10 +74,11 @@ module.exports = class UploadController extends BaseController {
         return this.doGet(request, h, errors)
       }
 
-      const {authToken, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const context = await RecoveryService.createApplicationContext(h, {application: true})
+      const {application} = context
 
       try {
-        await UploadService.upload(authToken, application, request.payload.file, this.subject)
+        await UploadService.upload(context, application, request.payload.file, this.subject)
       } catch (err) {
         if (err.message === UploadService.DUPLICATE) {
           return this.handler(request, h, this.setCustomError(err.message, 'file'))
@@ -101,9 +104,10 @@ module.exports = class UploadController extends BaseController {
       return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path, error: {message}})
     }
 
-    const {authToken, applicationId} = await RecoveryService.createApplicationContext(h)
+    const context = await RecoveryService.createApplicationContext(h)
+    const {applicationId} = context
     const annotationId = request.params.id
-    const annotation = await Annotation.getById(authToken, annotationId)
+    const annotation = await Annotation.getById(context, annotationId)
 
     // make sure this annotation belongs to this application
     if (annotation.applicationId !== applicationId) {
@@ -111,7 +115,7 @@ module.exports = class UploadController extends BaseController {
       LoggingService.logError(message, request)
       return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.TECHNICAL_PROBLEM.path, error: {message}})
     }
-    await annotation.delete(authToken, annotationId)
+    await annotation.delete(context, annotationId)
     return this.redirect({request, h, redirectPath: this.path})
   }
 

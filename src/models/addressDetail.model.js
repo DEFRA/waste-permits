@@ -24,8 +24,8 @@ class AddressDetail extends BaseModel {
     ]
   }
 
-  static async getByApplicationIdAndType (authToken, applicationId, type) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getByApplicationIdAndType (context, applicationId, type) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const filter = `_defra_applicationid_value eq ${applicationId} and defra_addresstype eq ${type}`
     const query = `defra_addressdetailses?$select=${AddressDetail.selectedDynamicsFields()}&$filter=${filter}`
 
@@ -41,29 +41,29 @@ class AddressDetail extends BaseModel {
     }
   }
 
-  async save (authToken) {
+  async save (context) {
     const dataObject = this.modelToDynamics()
-    await super.save(authToken, dataObject)
+    await super.save(context, dataObject)
   }
 
-  static async getDetails (authToken, applicationId, type) {
-    return (await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type.TYPE)) || new AddressDetail({applicationId, addressDetail: type.NAME, type: type.TYPE})
+  static async getDetails (context, applicationId, type) {
+    return (await AddressDetail.getByApplicationIdAndType(context, applicationId, type.TYPE)) || new AddressDetail({applicationId, addressDetail: type.NAME, type: type.TYPE})
   }
 
-  static async getCompanySecretaryDetails (authToken, applicationId) {
-    return this.getDetails(authToken, applicationId, COMPANY_SECRETARY_EMAIL)
+  static async getCompanySecretaryDetails (context, applicationId) {
+    return this.getDetails(context, applicationId, COMPANY_SECRETARY_EMAIL)
   }
 
-  static async getPrimaryContactDetails (authToken, applicationId) {
-    return this.getDetails(authToken, applicationId, PRIMARY_CONTACT_TELEPHONE_NUMBER)
+  static async getPrimaryContactDetails (context, applicationId) {
+    return this.getDetails(context, applicationId, PRIMARY_CONTACT_TELEPHONE_NUMBER)
   }
 
-  static async getBillingInvoicingDetails (authToken, applicationId) {
-    return this.getDetails(authToken, applicationId, BILLING_INVOICING)
+  static async getBillingInvoicingDetails (context, applicationId) {
+    return this.getDetails(context, applicationId, BILLING_INVOICING)
   }
 
-  static async getIndividualPermitHolderDetails (authToken, applicationId) {
-    return this.getDetails(authToken, applicationId, INDIVIDUAL_PERMIT_HOLDER)
+  static async getIndividualPermitHolderDetails (context, applicationId) {
+    return this.getDetails(context, applicationId, INDIVIDUAL_PERMIT_HOLDER)
   }
 }
 

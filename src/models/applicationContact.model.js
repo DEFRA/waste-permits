@@ -18,8 +18,8 @@ class ApplicationContact extends BaseModel {
     ]
   }
 
-  static async get (authToken, applicationId, contactId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async get (context, applicationId, contactId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const filter = `_defra_applicationid_value eq ${applicationId} and _defra_contactid_value eq ${contactId}`
     const query = `defra_applicationcontacts?$select=${ApplicationContact.selectedDynamicsFields()}&$filter=${filter}`
     try {
@@ -34,9 +34,9 @@ class ApplicationContact extends BaseModel {
     }
   }
 
-  async save (authToken) {
+  async save (context) {
     const dataObject = this.modelToDynamics()
-    await super.save(authToken, dataObject)
+    await super.save(context, dataObject)
   }
 }
 

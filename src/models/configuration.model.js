@@ -20,8 +20,8 @@ class Configuration extends BaseModel {
     ]
   }
 
-  static async list (authToken) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async list (context) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const query = encodeURI(`defra_configurations?$select=${Configuration.selectedDynamicsFields()}`)
     try {
       const response = await dynamicsDal.search(query)

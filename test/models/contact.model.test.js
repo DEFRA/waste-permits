@@ -10,6 +10,7 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let testContact
 let sandbox
+const request = {app: {}}
 const authToken = 'THE_AUTH_TOKEN'
 
 lab.beforeEach(() => {
@@ -113,7 +114,7 @@ lab.experiment('Contact Model tests:', () => {
 
   lab.test('list() method returns a list of Contact objects', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const contactList = await Contact.list()
+    const contactList = await Contact.list(request)
     Code.expect(Array.isArray(contactList)).to.be.true()
     Code.expect(contactList.length).to.equal(3)
     Code.expect(spy.callCount).to.equal(1)

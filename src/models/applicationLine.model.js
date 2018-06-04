@@ -22,8 +22,8 @@ class ApplicationLine extends BaseModel {
     ]
   }
 
-  static async getByApplicationId (authToken, applicationId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getByApplicationId (context, applicationId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const filter = `_defra_applicationid_value eq ${applicationId}`
     const query = `defra_applicationlines?$select=${ApplicationLine.selectedDynamicsFields()}&$filter=${filter}`
     try {
@@ -38,8 +38,8 @@ class ApplicationLine extends BaseModel {
     }
   }
 
-  static async getValidRulesetIds (authToken, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getValidRulesetIds (context, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const rulesetIds = Object.keys(RulesetIds).map((prop) => RulesetIds[prop])
     const query = encodeURI(`defra_applicationlines(${applicationLineId})?$expand=defra_parametersId($select=${rulesetIds.join()})`)
     let validRuleIds = []
@@ -56,8 +56,8 @@ class ApplicationLine extends BaseModel {
     return validRuleIds
   }
 
-  static async getCompleted (authToken, applicationLineId, completedId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getCompleted (context, applicationLineId, completedId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
     const query = encodeURI(`defra_applicationlines(${applicationLineId})?$expand=defra_parametersId($select=${completedId})`)
     let completed
     try {
@@ -73,9 +73,9 @@ class ApplicationLine extends BaseModel {
     return completed
   }
 
-  async save (authToken) {
+  async save (context) {
     const dataObject = this.modelToDynamics()
-    await super.save(authToken, dataObject)
+    await super.save(context, dataObject)
   }
 }
 

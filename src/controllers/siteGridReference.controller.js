@@ -8,14 +8,14 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class SiteGridReferenceController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+    const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       // If we have Site details in the payload then display them in the form
       pageContext.formValues = request.payload
     } else {
       pageContext.formValues = {
-        'site-grid-reference': await SiteNameAndLocation.getGridReference(request, authToken, applicationId, applicationLineId)
+        'site-grid-reference': await SiteNameAndLocation.getGridReference(request, applicationId, applicationLineId)
       }
     }
     return this.showView({request, h, pageContext})
@@ -25,10 +25,10 @@ module.exports = class SiteGridReferenceController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+      const context = await RecoveryService.createApplicationContext(h)
+      const {applicationId, applicationLineId} = context
 
-      await SiteNameAndLocation.saveGridReference(request, request.payload['site-grid-reference'],
-        authToken, applicationId, applicationLineId)
+      await SiteNameAndLocation.saveGridReference(request, request.payload['site-grid-reference'], applicationId, applicationLineId)
 
       return this.redirect({request, h, redirectPath: Constants.Routes.ADDRESS.POSTCODE_SITE.path})
     }

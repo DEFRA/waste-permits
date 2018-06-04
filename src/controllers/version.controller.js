@@ -12,15 +12,15 @@ module.exports = class VersionController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext()
 
-    let authToken = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
+    let context = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
 
     // If we didn't get an Auth token from the cookie then create a new one
-    if (!authToken) {
+    if (!context) {
       const cookie = await CookieService.generateCookie(h)
-      authToken = cookie.authToken
+      context = cookie.context
     }
 
-    pageContext.dynamicsSolution = await DynamicsSolution.get(authToken)
+    pageContext.dynamicsSolution = await DynamicsSolution.get(context)
 
     pageContext.applicationVersion = Constants.getVersion()
     pageContext.githubRef = config.gitSha

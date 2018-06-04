@@ -11,14 +11,15 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationId, application} = await RecoveryService.createApplicationContext(h, {application: true})
+    const context = await RecoveryService.createApplicationContext(h, {application: true})
+    const {applicationId, application} = context
 
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const contact = application.contactId ? await Contact.getById(authToken, application.contactId) : new Contact()
-      const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
-      const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
+      const contact = application.contactId ? await Contact.getById(context, application.contactId) : new Contact()
+      const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(context, applicationId)
+      const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(context, applicationId)
       if (contact) {
         pageContext.formValues = {
           'first-name': contact.firstName,
@@ -28,7 +29,7 @@ module.exports = class ContactDetailsController extends BaseController {
           'company-secretary-email': companySecretaryDetails.email
         }
         if (application.agentId) {
-          const account = await Account.getById(authToken, application.agentId)
+          const account = await Account.getById(context, application.agentId)
           pageContext.formValues['is-contact-an-agent'] = true
           pageContext.formValues['agent-company'] = account.accountName
         }
@@ -42,7 +43,8 @@ module.exports = class ContactDetailsController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId, application} = await RecoveryService.createApplicationContext(h, {application: true})
+      const context = await RecoveryService.createApplicationContext(h, {application: true})
+      const {applicationId, applicationLineId, application} = context
       const {
         'first-name': firstName,
         'last-name': lastName,
@@ -55,44 +57,44 @@ module.exports = class ContactDetailsController extends BaseController {
       let contact
 
       if (application.contactId) {
-        contact = await Contact.getById(authToken, application.contactId)
+        contact = await Contact.getById(context, application.contactId)
         if (contact.firstName !== firstName || contact.lastName !== lastName || contact.email !== email) {
           application.contactId = undefined
         }
       }
 
       if (!application.contactId) {
-        contact = await Contact.getByFirstnameLastnameEmail(authToken, firstName, lastName, email)
+        contact = await Contact.getByFirstnameLastnameEmail(context, firstName, lastName, email)
       }
 
       if (!contact) {
         contact = new Contact({firstName, lastName, email})
       }
 
-      await contact.save(authToken)
+      await contact.save(context)
 
       // The agent company or trading name is only set if the corresponding checkbox is ticked
       if (isAgent) {
-        const account = application.agentId ? await Account.getById(authToken, application.agentId) : new Account()
+        const account = application.agentId ? await Account.getById(context, application.agentId) : new Account()
         account.accountName = agentCompany
-        await account.save(authToken)
+        await account.save(context)
         application.agentId = account.id
       } else {
         application.agentId = undefined
       }
 
       application.contactId = contact.id
-      await application.save(authToken)
+      await application.save(context)
 
-      const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
+      const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(context, applicationId)
       companySecretaryDetails.email = companySecretaryEmail
-      await companySecretaryDetails.save(authToken)
+      await companySecretaryDetails.save(context)
 
-      const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
+      const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(context, applicationId)
       primaryContactDetails.telephone = telephone
-      await primaryContactDetails.save(authToken)
+      await primaryContactDetails.save(context)
 
-      await ContactDetails.updateCompleteness(authToken, applicationId, applicationLineId)
+      await ContactDetails.updateCompleteness(context, applicationId, applicationLineId)
 
       return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
     }

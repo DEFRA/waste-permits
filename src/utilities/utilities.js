@@ -98,4 +98,8 @@ module.exports = class Utilities {
     }
     return returnValue
   }
+
+  static toCamelCase (str) {
+    return str[0].toLowerCase() + str.substr(1)
+  }
 }

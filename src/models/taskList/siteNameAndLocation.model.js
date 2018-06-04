@@ -12,11 +12,12 @@ const LoggingService = require('../../services/logging.service')
 const Utilities = require('../../utilities/utilities')
 
 module.exports = class SiteNameAndLocation extends BaseModel {
-  static async getSiteName (request, authToken, applicationId, applicationLineId) {
+  static async getSiteName (request, applicationId, applicationLineId) {
     let siteName
     try {
+      const context = request.app.data
       // Get the Location for this application (if we have one)
-      const location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+      const location = await Location.getByApplicationId(context, applicationId, applicationLineId)
       if (location) {
         siteName = location.siteName
       }
@@ -27,10 +28,11 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     return siteName
   }
 
-  static async saveSiteName (request, siteName, authToken, applicationId, applicationLineId) {
+  static async saveSiteName (request, siteName, applicationId, applicationLineId) {
     try {
+      const context = request.app.data
       // Get the Location for this application
-      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+      let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
       if (!location) {
         // Create a Location in Dynamics
         location = new Location({
@@ -42,23 +44,24 @@ module.exports = class SiteNameAndLocation extends BaseModel {
         // Update existing Site
         location.siteName = siteName
       }
-      await location.save(authToken)
-      await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
+      await location.save(context)
+      await SiteNameAndLocation.updateCompleteness(context, applicationId, applicationLineId)
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
     }
   }
 
-  static async getGridReference (request, authToken, applicationId, applicationLineId) {
+  static async getGridReference (request, applicationId, applicationLineId) {
     let gridReference
     try {
+      const context = request.app.data
       // Get the Location for this application
-      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+      let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
 
       if (location) {
         // Get the LocationDetail for this application (if there is one)
-        let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+        let locationDetail = await LocationDetail.getByLocationId(context, location.id)
         if (locationDetail) {
           gridReference = locationDetail.gridReference
         }
@@ -70,12 +73,13 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     return gridReference
   }
 
-  static async saveGridReference (request, gridReference, authToken, applicationId, applicationLineId) {
+  static async saveGridReference (request, gridReference, applicationId, applicationLineId) {
     // Strip out whitespace from the grid reference, convert to upper case and save it
     gridReference = Utilities.stripWhitespace(gridReference).toUpperCase()
     try {
+      const context = request.app.data
       // Get the Location for this application
-      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+      let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
       if (!location) {
         // Create a Location in Dynamics
         location = new Location({
@@ -83,11 +87,11 @@ module.exports = class SiteNameAndLocation extends BaseModel {
           applicationId: applicationId,
           applicationLineId: applicationLineId
         })
-        await location.save(authToken)
+        await location.save(context)
       }
 
       // Get the LocationDetail for this application (if there is one)
-      let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+      let locationDetail = await LocationDetail.getByLocationId(context, location.id)
       if (!locationDetail) {
         // Create new LocationDetail
         locationDetail = new LocationDetail({
@@ -100,27 +104,28 @@ module.exports = class SiteNameAndLocation extends BaseModel {
         locationDetail.gridReference = gridReference
       }
 
-      await locationDetail.save(authToken)
-      await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
+      await locationDetail.save(context)
+      await SiteNameAndLocation.updateCompleteness(context, applicationId, applicationLineId)
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
     }
   }
 
-  static async getAddress (request, authToken, applicationId, applicationLineId) {
+  static async getAddress (request, applicationId, applicationLineId) {
     let address
     try {
+      const context = request.app.data
       // Get the Location for this application
-      let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+      let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
 
       if (location) {
         // Get the LocationDetail for this application
-        let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+        let locationDetail = await LocationDetail.getByLocationId(context, location.id)
 
         if (locationDetail && locationDetail.addressId !== undefined) {
           // Get the Address for this Location Detail
-          address = await Address.getById(authToken, locationDetail.addressId)
+          address = await Address.getById(context, locationDetail.addressId)
         }
       }
     } catch (error) {
@@ -130,7 +135,8 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     return address
   }
 
-  static async saveSelectedAddress (request, authToken, applicationId, applicationLineId, addressDto) {
+  static async saveSelectedAddress (request, applicationId, applicationLineId, addressDto) {
+    const context = request.app.data
     if (!addressDto.uprn) {
       const errorMessage = `Unable to save site address as it does not have a UPRN`
       LoggingService.logError(errorMessage, request)
@@ -142,7 +148,7 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     }
 
     // Get the Location for this application
-    let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+    let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
     if (!location) {
       // Create a Location in Dynamics
       location = new Location({
@@ -150,11 +156,11 @@ module.exports = class SiteNameAndLocation extends BaseModel {
         applicationId: applicationId,
         applicationLineId: applicationLineId
       })
-      await location.save(authToken)
+      await location.save(context)
     }
 
     // Get the LocationDetail for this application (if there is one)
-    let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+    let locationDetail = await LocationDetail.getByLocationId(context, location.id)
     if (!locationDetail) {
       // Create new LocationDetail
       locationDetail = new LocationDetail({
@@ -162,36 +168,37 @@ module.exports = class SiteNameAndLocation extends BaseModel {
         gridReference: undefined,
         locationId: location.id
       })
-      await locationDetail.save(authToken)
+      await locationDetail.save(context)
     }
 
-    let address = await Address.getByUprn(authToken, addressDto.uprn)
+    let address = await Address.getByUprn(context, addressDto.uprn)
     if (!address) {
       // The address is not already in Dynamics so look it up in AddressBase and save it in Dynamics
-      let addresses = await Address.listByPostcode(authToken, addressDto.postcode)
+      let addresses = await Address.listByPostcode(context, addressDto.postcode)
       addresses = addresses.filter((element) => element.uprn === addressDto.uprn)
       address = addresses.pop()
       if (address) {
-        await address.save(authToken)
+        await address.save(context)
       }
     }
 
     // Save the LocationDetail to associate the Address with the Application
     if (address && locationDetail) {
       locationDetail.addressId = address.id
-      await locationDetail.save(authToken)
+      await locationDetail.save(context)
     }
 
-    await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
+    await SiteNameAndLocation.updateCompleteness(context, applicationId, applicationLineId)
   }
 
-  static async saveManualAddress (request, authToken, applicationId, applicationLineId, addressDto) {
+  static async saveManualAddress (request, applicationId, applicationLineId, addressDto) {
+    const context = request.app.data
     if (addressDto.postcode) {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
     // Get the Location for this application
-    let location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+    let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
     if (!location) {
       // Create a Location in Dynamics
       location = new Location({
@@ -199,11 +206,11 @@ module.exports = class SiteNameAndLocation extends BaseModel {
         applicationId: applicationId,
         applicationLineId: applicationLineId
       })
-      await location.save(authToken)
+      await location.save(context)
     }
 
     // Get the LocationDetail for this application (if there is one)
-    let locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+    let locationDetail = await LocationDetail.getByLocationId(context, location.id)
     if (!locationDetail) {
       // Create new LocationDetail
       locationDetail = new LocationDetail({
@@ -211,34 +218,34 @@ module.exports = class SiteNameAndLocation extends BaseModel {
         gridReference: undefined,
         locationId: location.id
       })
-      await locationDetail.save(authToken)
+      await locationDetail.save(context)
     }
 
     // Get the Address for this AddressDetail (if there is one)
-    let address = await Address.getById(authToken, locationDetail.addressId)
+    let address = await Address.getById(context, locationDetail.addressId)
     if (!address) {
       address = new Address(addressDto)
     } else {
       Object.assign(address, addressDto)
     }
     address.fromAddressLookup = false
-    await address.save(authToken)
+    await address.save(context)
 
     // Save the LocationDetail to associate the Address with the Application
     if (address && locationDetail) {
       locationDetail.addressId = address.id
-      await locationDetail.save(authToken)
+      await locationDetail.save(context)
     }
 
-    await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
+    await SiteNameAndLocation.updateCompleteness(context, applicationId, applicationLineId)
   }
 
-  static async updateCompleteness (authToken, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async updateCompleteness (context, applicationId, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     try {
-      const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId)
+      const applicationLine = await ApplicationLine.getById(context, applicationLineId)
+      const isComplete = await SiteNameAndLocation.isComplete(context, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION]: isComplete
@@ -251,21 +258,21 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (context, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the Location for this application
-      const location = await Location.getByApplicationId(authToken, applicationId, applicationLineId)
+      const location = await Location.getByApplicationId(context, applicationId, applicationLineId)
 
       // Get the LocationDetail
       let locationDetail
       if (location) {
-        locationDetail = await LocationDetail.getByLocationId(authToken, location.id)
+        locationDetail = await LocationDetail.getByLocationId(context, location.id)
       }
 
       let address
       if (locationDetail) {
-        address = await Address.getById(authToken, locationDetail.addressId)
+        address = await Address.getById(context, locationDetail.addressId)
       }
 
       if (location && locationDetail && address) {

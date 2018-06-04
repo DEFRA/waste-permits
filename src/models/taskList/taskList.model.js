@@ -26,8 +26,8 @@ class TaskList extends BaseModel {
     })
   }
 
-  static async getByApplicationLineId (authToken, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async getByApplicationLineId (context, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     const taskList = new TaskList()
     taskList._defineTaskListSections()
@@ -265,7 +265,7 @@ class TaskList extends BaseModel {
 
   // Iterates through all of the task list items and calls the isComplete() function of each one,
   // combining the results into a single boolean value if all task list items are complete
-  isComplete (authToken, applicationId, applicationLineId) {
+  isComplete (context, applicationId, applicationLineId) {
     return Promise.all(
       // Exclude models that are not applicable to the current task list
       this.taskListModels
@@ -273,7 +273,7 @@ class TaskList extends BaseModel {
           return (this.taskListModelNames.includes(item.name))
         })
         .map((item) => {
-          return item.isComplete(authToken, applicationId, applicationLineId)
+          return item.isComplete(context, applicationId, applicationLineId)
         })
     ).then((values) => {
       // Reduce all of the individual flags into a single flag (which can be overridden by the bypassCompletenessCheck flag, e.g. during development)

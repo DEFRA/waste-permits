@@ -8,8 +8,9 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class TaskListController extends BaseController {
   async doGet (request, h, errors, firstTimeIn = true) {
     const pageContext = this.createPageContext(errors)
-    const {authToken, applicationLineId, standardRule} = await RecoveryService.createApplicationContext(h, {standardRule: true})
-    const taskList = await TaskList.getByApplicationLineId(authToken, applicationLineId)
+    const context = await RecoveryService.createApplicationContext(h, {standardRule: true})
+    const {applicationLineId, standardRule} = context
+    const taskList = await TaskList.getByApplicationLineId(context, applicationLineId)
 
     const showError = Boolean(request.query.showError)
     if (showError && firstTimeIn) {

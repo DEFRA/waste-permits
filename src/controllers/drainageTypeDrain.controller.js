@@ -42,7 +42,8 @@ module.exports = class drainageTypeController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {authToken, applicationId, applicationLineId, application, standardRule} = await RecoveryService.createApplicationContext(h, {application: true, standardRule: true})
+      const context = await RecoveryService.createApplicationContext(h, {application: true, standardRule: true})
+      const {applicationId, applicationLineId, application, standardRule} = context
 
       const type = parseInt(request.payload['drainage-type'])
 
@@ -62,13 +63,13 @@ module.exports = class drainageTypeController extends BaseController {
       }
 
       application.drainageType = drainageType.type
-      await application.save(authToken)
+      await application.save(context)
 
       if (drainageType.allowed) {
-        await DrainageTypeDrain.updateCompleteness(authToken, applicationId, applicationLineId)
+        await DrainageTypeDrain.updateCompleteness(context, applicationId, applicationLineId)
         redirectPath = TASK_LIST.path
       } else {
-        await DrainageTypeDrain.clearCompleteness(authToken, applicationId, applicationLineId)
+        await DrainageTypeDrain.clearCompleteness(context, applicationId, applicationLineId)
         redirectPath = DRAINAGE_TYPE_FAIL.path
       }
 

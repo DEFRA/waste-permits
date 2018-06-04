@@ -19,14 +19,14 @@ class Annotation extends BaseModel {
     ]
   }
 
-  static async getById (authToken, id) {
-    return super.getById(authToken, id, ({dynamics}) => dynamics !== 'documentbody')
+  static async getById (context, id) {
+    return super.getById(context, id, ({dynamics}) => dynamics !== 'documentbody')
   }
 
-  static async getByApplicationIdSubjectAndFilename (authToken, applicationId, subject, filename) {
+  static async getByApplicationIdSubjectAndFilename (context, applicationId, subject, filename) {
     let payment
     if (applicationId) {
-      const dynamicsDal = new DynamicsDalService(authToken)
+      const dynamicsDal = new DynamicsDalService(context.authToken)
       const filter = `_objectid_value eq ${applicationId} and filename eq '${filename}' and subject eq '${subject}'`
       const query = `annotations?$select=${Annotation.selectedDynamicsFields()}&$filter=${filter}`
       try {
@@ -43,9 +43,9 @@ class Annotation extends BaseModel {
     return payment
   }
 
-  static async listByApplicationIdAndSubject (authToken, applicationId, subject) {
+  static async listByApplicationIdAndSubject (context, applicationId, subject) {
     if (applicationId) {
-      const dynamicsDal = new DynamicsDalService(authToken)
+      const dynamicsDal = new DynamicsDalService(context.authToken)
       const filter = `_objectid_value eq ${applicationId} and objecttypecode eq 'defra_application' and subject eq '${subject}'`
       const query = encodeURI(`annotations?$select=${Annotation.selectedDynamicsFields(({dynamics}) => dynamics !== 'documentbody')}&$filter=${filter}`)
       try {
@@ -58,9 +58,9 @@ class Annotation extends BaseModel {
     }
   }
 
-  async save (authToken) {
+  async save (context) {
     const dataObject = this.modelToDynamics()
-    await super.save(authToken, dataObject)
+    await super.save(context, dataObject)
   }
 }
 

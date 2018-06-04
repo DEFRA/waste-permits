@@ -11,15 +11,15 @@ const ApplicationLine = require('../models/applicationLine.model')
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const {authToken} = await RecoveryService.createApplicationContext(h)
+    const context = await RecoveryService.createApplicationContext(h)
 
     pageContext.formValues = request.payload
 
     const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
-    const {category = 'all categories'} = await StandardRuleType.getById(authToken, standardRuleTypeId)
+    const {category = 'all categories'} = await StandardRuleType.getById(context, standardRuleTypeId)
     pageContext.category = category.toLowerCase()
 
-    pageContext.standardRules = await StandardRule.list(authToken, standardRuleTypeId)
+    pageContext.standardRules = await StandardRule.list(context, standardRuleTypeId)
     pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
 
     return this.showView({request, h, pageContext})
@@ -29,10 +29,11 @@ module.exports = class PermitSelectController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      let {authToken, applicationId, applicationLine} = await RecoveryService.createApplicationContext(h, {applicationLine: true})
+      const context = await RecoveryService.createApplicationContext(h, {applicationLine: true})
+      let {applicationId, applicationLine} = context
 
       // Look up the Standard Rule based on the chosen permit type
-      const standardRule = await StandardRule.getByCode(authToken, request.payload['chosen-permit'])
+      const standardRule = await StandardRule.getByCode(context, request.payload['chosen-permit'])
 
       CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_ID, standardRule.id)
 
@@ -42,7 +43,7 @@ module.exports = class PermitSelectController extends BaseController {
 
       // Delete if it already exists
       if (applicationLine) {
-        await applicationLine.delete(authToken, applicationLine.id)
+        await applicationLine.delete(context, applicationLine.id)
       }
 
       // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
@@ -52,7 +53,7 @@ module.exports = class PermitSelectController extends BaseController {
         parametersId: undefined
       })
 
-      await applicationLine.save(authToken)
+      await applicationLine.save(context)
 
       // Set the application ID in the cookie
       CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)

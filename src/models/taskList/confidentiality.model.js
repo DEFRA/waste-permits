@@ -13,12 +13,12 @@ module.exports = class Confidentiality extends BaseModel {
     this.applicationLineId = data.applicationLineId
   }
 
-  static async updateCompleteness (authToken, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(authToken)
+  static async updateCompleteness (context, applicationId, applicationLineId) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
 
     try {
-      const applicationLine = await ApplicationLine.getById(authToken, applicationLineId)
-      const isComplete = await Confidentiality.isComplete(authToken, applicationId, applicationLineId)
+      const applicationLine = await ApplicationLine.getById(context, applicationLineId)
+      const isComplete = await Confidentiality.isComplete(context, applicationId, applicationLineId)
 
       const entity = {
         [Constants.Dynamics.CompletedParamters.CONFIRM_CONFIDENTIALLY]: isComplete
@@ -31,11 +31,11 @@ module.exports = class Confidentiality extends BaseModel {
     }
   }
 
-  static async isComplete (authToken, applicationId, applicationLineId) {
+  static async isComplete (context, applicationId, applicationLineId) {
     let isComplete = false
     try {
       // Get the Application for this application
-      const application = await Application.getById(authToken, applicationId)
+      const application = await Application.getById(context, applicationId)
 
       isComplete = application.confidentiality !== undefined
     } catch (error) {
