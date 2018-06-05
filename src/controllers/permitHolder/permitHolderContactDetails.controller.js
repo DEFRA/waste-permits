@@ -1,11 +1,11 @@
 'use strict'
 
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
-const RecoveryService = require('../services/recovery.service')
+const Constants = require('../../constants')
+const BaseController = require('../base.controller')
+const RecoveryService = require('../../services/recovery.service')
 
-const Contact = require('../models/contact.model')
-const AddressDetail = require('../models/addressDetail.model')
+const Contact = require('../../models/contact.model')
+const AddressDetail = require('../../models/addressDetail.model')
 
 module.exports = class PermitHolderContactDetailsController extends BaseController {
   async doGet (request, h, errors) {

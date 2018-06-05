@@ -4,15 +4,15 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const GeneralTestHelper = require('./generalTestHelper.test')
+const GeneralTestHelper = require('../generalTestHelper.test')
 
-const server = require('../../server')
-const CookieService = require('../../src/services/cookie.service')
-const Application = require('../../src/models/application.model')
-const Payment = require('../../src/models/payment.model')
-const Contact = require('../../src/models/contact.model')
-const AddressDetail = require('../../src/models/addressDetail.model')
-const {COOKIE_RESULT} = require('../../src/constants')
+const server = require('../../../server')
+const CookieService = require('../../../src/services/cookie.service')
+const Application = require('../../../src/models/application.model')
+const Payment = require('../../../src/models/payment.model')
+const Contact = require('../../../src/models/contact.model')
+const AddressDetail = require('../../../src/models/addressDetail.model')
+const {COOKIE_RESULT} = require('../../../src/constants')
 
 let sandbox
 

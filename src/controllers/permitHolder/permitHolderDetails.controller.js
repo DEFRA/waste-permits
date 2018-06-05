@@ -1,8 +1,8 @@
 'use strict'
 
-const Constants = require('../constants')
-const BaseController = require('./base.controller')
-const RecoveryService = require('../services/recovery.service')
+const Constants = require('../../constants')
+const BaseController = require('../base.controller')
+const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class PermitHolderDetailsController extends BaseController {
   async doGet (request, h) {
