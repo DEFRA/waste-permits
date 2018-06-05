@@ -24,9 +24,9 @@ class Account extends BaseModel {
   static async getByApplicationId (context, applicationId) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const application = await Application.getById(context, applicationId)
-    if (application && application.accountId) {
+    if (application && application.permitHolderOrganisationId) {
       try {
-        const query = encodeURI(`accounts(${application.accountId})?$select=${Account.selectedDynamicsFields()}`)
+        const query = encodeURI(`accounts(${application.permitHolderOrganisationId})?$select=${Account.selectedDynamicsFields()}`)
         const result = await dynamicsDal.search(query)
         return Account.dynamicsToModel(result)
       } catch (error) {

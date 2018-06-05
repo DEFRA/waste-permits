@@ -20,7 +20,7 @@ const fakeAccountData = {
 
 const fakeApplicationData = {
   id: 'APPLICATION_ID',
-  accountId: 'ACCOUNT_ID',
+  permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
   tradingName: null
 }
 
@@ -36,8 +36,8 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(DynamicsDalService.prototype, 'callAction').value(() => {})
   sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => fakeApplicationData.accountId)
-  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => fakeApplicationData.accountId)
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => fakeApplicationData.permitHolderOrganisationId)
+  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => fakeApplicationData.permitHolderOrganisationId)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplicationData))
 })
 
@@ -111,15 +111,15 @@ lab.experiment('Account Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     await testAccount.save(authToken, false)
     Code.expect(spy.callCount).to.equal(1)
-    Code.expect(testAccount.id).to.equal(fakeApplicationData.accountId)
+    Code.expect(testAccount.id).to.equal(fakeApplicationData.permitHolderOrganisationId)
   })
 
   lab.test('save() method updates an existing Account object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-    testAccount.id = fakeApplicationData.accountId
+    testAccount.id = fakeApplicationData.permitHolderOrganisationId
     await testAccount.save(authToken, false)
     Code.expect(spy.callCount).to.equal(1)
-    Code.expect(testAccount.id).to.equal(fakeApplicationData.accountId)
+    Code.expect(testAccount.id).to.equal(fakeApplicationData.permitHolderOrganisationId)
   })
 
   lab.test('confirm() method confirms an Account object', async () => {

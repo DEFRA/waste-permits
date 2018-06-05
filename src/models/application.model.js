@@ -14,7 +14,6 @@ class Application extends BaseModel {
   static get mapping () {
     return [
       {field: 'id', dynamics: 'defra_applicationid', readOnly: true},
-      {field: 'accountId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_account', relationship: 'defra_account_defra_application_customerid', entity: 'accounts'}},
       {field: 'agentId', dynamics: '_defra_agentid_value', bind: {id: 'defra_agentid_account', relationship: 'defra_account_defra_application_agentid', entity: 'accounts'}},
       {field: 'applicantType', dynamics: 'defra_applicant_type'},
       {field: 'organisationType', dynamics: 'defra_applicant_organisation_type'},
@@ -28,6 +27,7 @@ class Application extends BaseModel {
       {field: 'declaration', dynamics: 'defra_applicationdeclaration'},
       {field: 'drainageType', dynamics: 'defra_drainagetype'},
       {field: 'paymentReceived', dynamics: 'defra_paymentreceived'},
+      {field: 'permitHolderOrganisationId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_account', relationship: 'defra_account_defra_application_customerid', entity: 'accounts'}},
       {field: 'permitHolderIndividualId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_contact', relationship: 'defra_contact_defra_application_customerid', entity: 'contacts'}},
       {field: 'regime', dynamics: 'defra_regime', constant: Constants.Dynamics.WASTE_REGIME},
       {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},
@@ -64,8 +64,8 @@ class Application extends BaseModel {
   }
 
   modelToDynamics (...args) {
-    if (this.isIndividual && this.accountId) {
-      throw new Error('Application cannot have an accountId when the permit holder is an individual')
+    if (this.isIndividual && this.permitHolderOrganisationId) {
+      throw new Error('Application cannot have a permitHolderOrganisationId when the permit holder is an individual')
     }
     if (!this.isIndividual && this.permitHolderIndividualId) {
       throw new Error('Application cannot have a permitHolderIndividualId when the permit holder is a company')
@@ -76,7 +76,7 @@ class Application extends BaseModel {
   static dynamicsToModel (...args) {
     const model = super.dynamicsToModel(...args)
     if (model.isIndividual) {
-      model.accountId = undefined
+      model.permitHolderOrganisationId = undefined
     } else {
       model.permitHolderIndividualId = undefined
     }

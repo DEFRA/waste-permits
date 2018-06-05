@@ -42,7 +42,7 @@ module.exports = class PermitHolderTypeController extends BaseController {
       if (application.organisationType) {
         application.permitHolderIndividualId = undefined
       } else {
-        application.accountId = undefined
+        application.permitHolderOrganisationId = undefined
       }
       await application.save(context)
 

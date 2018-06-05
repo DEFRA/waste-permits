@@ -101,8 +101,8 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   }
 
   // Obtains the Directors that relate to an application
-  async _getDirectors (context, applicationId, accountId) {
-    const directors = await Contact.list(context, accountId, Constants.Dynamics.COMPANY_DIRECTOR)
+  async _getDirectors (context, applicationId, permitHolderOrganisationId) {
+    const directors = await Contact.list(context, permitHolderOrganisationId, Constants.Dynamics.COMPANY_DIRECTOR)
     for (let director of directors) {
       director.dateOfBirthFormatted = Utilities.formatDateForDisplay(director.dob)
     }

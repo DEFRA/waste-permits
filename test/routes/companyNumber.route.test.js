@@ -29,7 +29,7 @@ lab.beforeEach(() => {
     companyNumber: '01234567'
   }
   fakeApplication = {
-    accountId: fakeAccount.id
+    permitHolderOrganisationId: fakeAccount.id
   }
 
   // Stub methods

@@ -25,7 +25,7 @@ const PERMIT_HOLDER_TYPES = {
 }
 
 const fakeApplicationData = {
-  accountId: 'ACCOUNT_ID',
+  permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
   agentId: 'AGENT_ID',
   applicantType: 'APPLICANT_TYPE',
   applicationName: 'APPLICATION_NAME',
@@ -59,7 +59,7 @@ const fakeApplicationReturnData = {
 const fakeApplicationDynamicsRecord = (options = {}) => {
   const application = new Application(Object.assign({}, fakeApplicationData, options))
   return {
-    _defra_customerid_value: application.applicantType === PERMIT_HOLDER_TYPES.LIMITED_COMPANY ? application.accountId : application.permitHolderIndividualId,
+    _defra_customerid_value: application.applicantType === PERMIT_HOLDER_TYPES.LIMITED_COMPANY ? application.permitHolderOrganisationId : application.permitHolderIndividualId,
     _defra_agentid_value: application.agentId,
     defra_name: application.applicationName,
     defra_applicant_type: application.applicantType,
@@ -93,7 +93,7 @@ const listData = [
     applicantType: PERMIT_HOLDER_TYPES.LIMITED_COMPANY
   },
   {
-    accountId: undefined,
+    permitHolderOrganisationId: undefined,
     applicationNumber: 'APPLICATION_NUMBER_2',
     applicantType: PERMIT_HOLDER_TYPES.INDIVIDUAL
   },
@@ -123,7 +123,7 @@ lab.beforeEach(() => {
     // Dynamics Application object
     return {
       '@odata.etag': 'W/"1039198"',
-      _defra_customerid_value: fakeApplicationData.accountId
+      _defra_customerid_value: fakeApplicationData.permitHolderOrganisationId
     }
   })
   sandbox.stub(DynamicsDalService.prototype, 'callAction').value(() => {})
@@ -140,7 +140,7 @@ lab.experiment('Application Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const application = await Application.getById('AUTH_TOKEN', testApplicationId)
     Code.expect(spy.callCount).to.equal(1)
-    Code.expect(application.accountId).to.equal(fakeApplicationData.accountId)
+    Code.expect(application.permitHolderOrganisationId).to.equal(fakeApplicationData.permitHolderOrganisationId)
     Code.expect(application.id).to.equal(testApplicationId)
   })
 
@@ -192,7 +192,7 @@ lab.experiment('Application Model tests:', () => {
   lab.test('save() method saves a new Application object for an individual', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     testApplication.id = undefined
-    testApplication.accountId = undefined
+    testApplication.permitHolderOrganisationId = undefined
     testApplication.applicantType = PERMIT_HOLDER_TYPES.INDIVIDUAL
     await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
@@ -210,7 +210,7 @@ lab.experiment('Application Model tests:', () => {
 
   lab.test('save() method updates an existing Application object for an individual', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-    testApplication.accountId = undefined
+    testApplication.permitHolderOrganisationId = undefined
     testApplication.applicantType = PERMIT_HOLDER_TYPES.INDIVIDUAL
     await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
@@ -236,6 +236,6 @@ lab.experiment('Application Model tests:', () => {
     } catch (err) {
       error = err
     }
-    Code.expect(error.message).to.equal('Application cannot have an accountId when the permit holder is an individual')
+    Code.expect(error.message).to.equal('Application cannot have a permitHolderOrganisationId when the permit holder is an individual')
   })
 })
