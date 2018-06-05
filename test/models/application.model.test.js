@@ -19,10 +19,8 @@ const testApplicationId = 'APPLICATION_ID'
 const authToken = 'THE_AUTH_TOKEN'
 const submittedOn = '05/01/2018 04:00:00'
 
-const PERMIT_HOLDER_TYPES = {
-  LIMITED_COMPANY: 910400001,
-  INDIVIDUAL: 910400000
-}
+const ORGANISATION = 910400001
+const INDIVIDUAL = 910400000
 
 const fakeApplicationData = {
   permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
@@ -49,7 +47,8 @@ const fakeApplicationData = {
   submittedOn: new Date(submittedOn),
   technicalQualification: 'TECHNICAL_QUALIFICATIONS',
   tradingName: 'TRADING_NAME',
-  saveAndReturnEmail: 'fake@email.com'
+  saveAndReturnEmail: 'fake@email.com',
+  useTradingName: 'USE_TRADING_NAME'
 }
 const fakeApplicationReturnData = {
   applicationId: testApplicationId,
@@ -59,7 +58,7 @@ const fakeApplicationReturnData = {
 const fakeApplicationDynamicsRecord = (options = {}) => {
   const application = new Application(Object.assign({}, fakeApplicationData, options))
   return {
-    _defra_customerid_value: application.applicantType === PERMIT_HOLDER_TYPES.LIMITED_COMPANY ? application.permitHolderOrganisationId : application.permitHolderIndividualId,
+    _defra_customerid_value: application.applicantType === ORGANISATION ? application.permitHolderOrganisationId : application.permitHolderIndividualId,
     _defra_agentid_value: application.agentId,
     defra_name: application.applicationName,
     defra_applicant_type: application.applicantType,
@@ -82,7 +81,8 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
     defra_submittedon: application.submittedOn.toISOString(),
     defra_technicalability: application.technicalQualification,
     defra_tradingname: application.tradingName,
-    defra_saveandreturnemail: application.saveAndReturnEmail
+    defra_saveandreturnemail: application.saveAndReturnEmail,
+    defra_tradingnameused: application.useTradingName
   }
 }
 
@@ -90,17 +90,17 @@ const listData = [
   {
     permitHolderIndividualId: undefined,
     applicationNumber: 'APPLICATION_NUMBER_1',
-    applicantType: PERMIT_HOLDER_TYPES.LIMITED_COMPANY
+    applicantType: ORGANISATION
   },
   {
     permitHolderOrganisationId: undefined,
     applicationNumber: 'APPLICATION_NUMBER_2',
-    applicantType: PERMIT_HOLDER_TYPES.INDIVIDUAL
+    applicantType: INDIVIDUAL
   },
   {
     permitHolderIndividualId: undefined,
     applicationNumber: 'APPLICATION_NUMBER_3',
-    applicantType: PERMIT_HOLDER_TYPES.LIMITED_COMPANY
+    applicantType: ORGANISATION
   }
 ]
 const dynamicsApplicationList = [
@@ -183,7 +183,7 @@ lab.experiment('Application Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     testApplication.id = undefined
     testApplication.permitHolderIndividualId = undefined
-    testApplication.applicantType = PERMIT_HOLDER_TYPES.LIMITED_COMPANY
+    testApplication.applicantType = ORGANISATION
     await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
@@ -193,7 +193,7 @@ lab.experiment('Application Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     testApplication.id = undefined
     testApplication.permitHolderOrganisationId = undefined
-    testApplication.applicantType = PERMIT_HOLDER_TYPES.INDIVIDUAL
+    testApplication.applicantType = INDIVIDUAL
     await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
@@ -202,7 +202,7 @@ lab.experiment('Application Model tests:', () => {
   lab.test('save() method updates an existing Application object for a company', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testApplication.permitHolderIndividualId = undefined
-    testApplication.applicantType = PERMIT_HOLDER_TYPES.LIMITED_COMPANY
+    testApplication.applicantType = ORGANISATION
     await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
@@ -211,7 +211,7 @@ lab.experiment('Application Model tests:', () => {
   lab.test('save() method updates an existing Application object for an individual', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testApplication.permitHolderOrganisationId = undefined
-    testApplication.applicantType = PERMIT_HOLDER_TYPES.INDIVIDUAL
+    testApplication.applicantType = INDIVIDUAL
     await testApplication.save(authToken)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
@@ -220,7 +220,7 @@ lab.experiment('Application Model tests:', () => {
   lab.test('save() method fails for a company', async () => {
     let error
     try {
-      testApplication.applicantType = PERMIT_HOLDER_TYPES.LIMITED_COMPANY
+      testApplication.applicantType = ORGANISATION
       await testApplication.save(authToken)
     } catch (err) {
       error = err
@@ -231,7 +231,7 @@ lab.experiment('Application Model tests:', () => {
   lab.test('save() method fails for an individual', async () => {
     let error
     try {
-      testApplication.applicantType = PERMIT_HOLDER_TYPES.INDIVIDUAL
+      testApplication.applicantType = INDIVIDUAL
       await testApplication.save(authToken)
     } catch (err) {
       error = err

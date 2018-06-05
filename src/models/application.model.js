@@ -37,6 +37,7 @@ class Application extends BaseModel {
       {field: 'submittedOn', dynamics: 'defra_submittedon', isDate: true},
       {field: 'technicalQualification', dynamics: 'defra_technicalability'},
       {field: 'tradingName', dynamics: 'defra_tradingname', length: {max: 170}},
+      {field: 'useTradingName', dynamics: 'defra_tradingnameused'},
       {field: 'saveAndReturnEmail', dynamics: 'defra_saveandreturnemail', length: {max: 100}}
     ]
   }
@@ -56,7 +57,7 @@ class Application extends BaseModel {
   }
 
   get isIndividual () {
-    return this.applicantType === Constants.PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId
+    return this.applicantType === Constants.PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId || this.organisationType === Constants.PERMIT_HOLDER_TYPES.SOLE_TRADER.dynamicsOrganisationTypeId
   }
 
   individualPermitHolderId () {

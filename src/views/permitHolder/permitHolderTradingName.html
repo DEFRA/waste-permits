@@ -1,0 +1,49 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }} {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      {{> common/errorSummary }} {{> common/pageHeading pageHeading }}
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.use-trading-name}}{{/getFormErrorGroupClass}}{{#getFormErrorGroupClass errors.trading-name}}{{/getFormErrorGroupClass}}">
+
+          <fieldset>
+
+            <legend id="trading-name-visually-hidden" class="visually-hidden">{{pageHeading}}</legend>
+
+              {{> common/fieldError fieldId='use-trading-name-error' message=errors.use-trading-name }}
+              <div class="multiple-choice">
+                <input id="use-trading-name-off" name="use-trading-name" type="radio" value="{{useTradingNameOffValue}}" {{#if useTradingNameOff}}checked="checked" {{/if}}>
+                <label id="use-trading-name-off-label" for="use-trading-name-off">They use their own name</label>
+              </div>
+
+              <div class="multiple-choice" data-target="give-trading-name">
+                <input id="use-trading-name-on" name="use-trading-name" type="radio" value="{{useTradingNameOnValue}}" {{#if useTradingNameOn}}checked="checked" {{/if}}>
+                <label id="use-trading-name-on-label" for="use-trading-name-on">
+                  They use a trading name
+                  <span id="use-trading-name-hint" class="form-hint">For example ‘ABC Waste Services’</span>
+                </label>
+              </div>
+
+              <div class="panel panel-border-narrow js-hidden" id="give-trading-name">
+                <label id="trading-name-label" class="form-label" for="trading-name">
+                  Trading name for the sole trader
+                  <span id="trading-name-hint" class="form-hint">If this is a registered company, go back and apply as a registered company</span>
+                </label>
+                {{> common/fieldError fieldId='trading-name-error' message=errors.trading-name }}
+                <input id="trading-name" class="form-control form-control-char-50 {{#if errors.trading-name}}form-control-error{{/if}}" type="text" name="trading-name" value="{{ formValues.trading-name }}">
+              </div>
+
+          </fieldset>
+
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+    </div>
+  </div>
+
+</main>

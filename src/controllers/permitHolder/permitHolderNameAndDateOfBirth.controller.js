@@ -2,12 +2,16 @@
 
 const moment = require('moment')
 
-const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
 const Contact = require('../../models/contact.model')
 const AddressDetail = require('../../models/addressDetail.model')
+
+const {
+  PERMIT_HOLDER_TYPES: {SOLE_TRADER},
+  Routes: {PERMIT_HOLDER_CONTACT_DETAILS, PERMIT_HOLDER_TRADING_NAME}
+} = require('../../constants')
 
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
@@ -52,7 +56,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { application } = context
+      const { application, permitHolderType } = context
       const {
         'first-name': firstName,
         'last-name': lastName,
@@ -84,7 +88,9 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       individualPermitHolderDetails.dateOfBirth = `${dobYear}-${dobMonth}-${dobDay}`
       await individualPermitHolderDetails.save(context)
 
-      return this.redirect({ request, h, redirectPath: Constants.Routes.PERMIT_HOLDER_CONTACT_DETAILS.path })
+      const redirectPath = permitHolderType === SOLE_TRADER ? PERMIT_HOLDER_TRADING_NAME.path : PERMIT_HOLDER_CONTACT_DETAILS.path
+
+      return this.redirect({ request, h, redirectPath })
     }
   }
 

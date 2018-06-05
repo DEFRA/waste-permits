@@ -83,7 +83,7 @@ Constants.PERMIT_HOLDER_TYPES = {
   SOLE_TRADER: {
     id: 'sole-trader',
     type: 'Sole trader',
-    canApplyOnline: false,
+    canApplyOnline: true,
     dynamicsApplicantTypeId: 910400001,
     dynamicsOrganisationTypeId: 910400001
   },
@@ -420,6 +420,11 @@ Constants.Routes = {
     view: 'permitHolder/permitHolderNameAndDateOfBirth',
     pageHeading: 'Who will be the permit holder?'
   },
+  PERMIT_HOLDER_TRADING_NAME: {
+    path: '/permit-holder/trading-name',
+    view: 'permitHolder/permitHolderTradingName',
+    pageHeading: 'Do they do business using their own name or a trading name?'
+  },
   PERMIT_HOLDER_TYPE: {
     path: '/permit-holder',
     view: 'permitHolder/permitHolderType',
@@ -647,6 +652,10 @@ Constants.Dynamics = {
       TYPE: 910400003,
       NAME: 'Energy & Utility Skills / ESA system'
     }
+  },
+  TRADING_NAME_USAGE: {
+    YES: 910400000,
+    NO: 910400001
   },
   WamitabRiskLevel: {
     NA: 910400000,

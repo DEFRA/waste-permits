@@ -1,7 +1,7 @@
 'use strict'
 
 const Joi = require('joi')
-const BaseValidator = require('./base.validator')
+const BaseValidator = require('../base.validator')
 
 module.exports = class PermitHolderTypeValidator extends BaseValidator {
   constructor () {

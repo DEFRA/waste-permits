@@ -52,10 +52,14 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const {path} = PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH
     const {firstName = '', lastName = '', email = ''} = await this.getIndividualPermitHolder()
     const {dateOfBirth = 'unknown', telephone = 'unknown'} = await this.getIndividualPermitHolderDetails()
+    const {tradingName = ''} = await this.getApplication()
     const [year, month, day] = dateOfBirth.split('-')
     const dob = {day, month, year}
     let answers = []
     answers.push(`${firstName} ${lastName}`)
+    if (tradingName) {
+      answers.push(`Trading as: ${tradingName}`)
+    }
     answers.push(email)
     answers.push(`Telephone: ${telephone}`)
     answers.push(`Date of birth: ${Utilities.formatFullDateForDisplay(dob)}`)
