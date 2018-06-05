@@ -10,7 +10,8 @@ module.exports = class PermitHolderTypeController extends BaseController {
   static getHolderTypes (application) {
     return Object.entries(PERMIT_HOLDER_TYPES)
       .map(([key, permitHolderType]) => {
-        return Object.assign({}, permitHolderType, {selected: application && application.applicantType === permitHolderType.dynamicsApplicantTypeId && application.organisationType === permitHolderType.dynamicsOrganisationTypeId})
+        const isSelected = application && application.applicantType === permitHolderType.dynamicsApplicantTypeId && application.organisationType === permitHolderType.dynamicsOrganisationTypeId
+        return Object.assign({isSelected}, permitHolderType)
       })
   }
 
