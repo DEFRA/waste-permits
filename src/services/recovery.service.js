@@ -30,9 +30,8 @@ module.exports = class RecoveryService {
   }
 
   static getPermitHolderType (application) {
-    const {applicantType, organisationType} = application
     return Object.entries(Constants.PERMIT_HOLDER_TYPES)
-      .filter(([key, {dynamicsApplicantTypeId, dynamicsOrganisationTypeId}]) => application && dynamicsApplicantTypeId === applicantType && dynamicsOrganisationTypeId === organisationType)
+      .filter(([key, {dynamicsApplicantTypeId, dynamicsOrganisationTypeId}]) => application && dynamicsApplicantTypeId === application.applicantType && dynamicsOrganisationTypeId === application.organisationType)
       .map(([key, permitHolderType]) => permitHolderType)
       .pop()
   }
