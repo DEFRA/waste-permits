@@ -9,7 +9,7 @@ const ApplicationReturn = require('../models/applicationReturn.model')
 const Contact = require('../models/contact.model')
 const Payment = require('../models/payment.model')
 const StandardRule = require('../models/standardRule.model')
-const {AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID, PERMIT_HOLDER_TYPE} = Constants.COOKIE_KEY
+const {AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID} = Constants.COOKIE_KEY
 
 module.exports = class RecoveryService {
   static async recoverOptionalData (context, applicationId, applicationLineId, options) {
@@ -29,6 +29,14 @@ module.exports = class RecoveryService {
     return {application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule}
   }
 
+  static getPermitHolderType (application) {
+    const {applicantType, organisationType} = application
+    return Object.entries(Constants.PERMIT_HOLDER_TYPES)
+      .filter(([key, {dynamicsApplicantTypeId, dynamicsOrganisationTypeId}]) => application && dynamicsApplicantTypeId === applicantType && dynamicsOrganisationTypeId === organisationType)
+      .map(([key, permitHolderType]) => permitHolderType)
+      .pop()
+  }
+
   static async recoverFromCookies (slug, request, options) {
     const context = request.app.data
 
@@ -38,7 +46,7 @@ module.exports = class RecoveryService {
     const applicationLineId = CookieService.get(request, APPLICATION_LINE_ID)
     const standardRuleId = CookieService.get(request, STANDARD_RULE_ID)
     const standardRuleTypeId = CookieService.get(request, STANDARD_RULE_TYPE_ID)
-    const permitHolderType = CookieService.get(request, PERMIT_HOLDER_TYPE)
+    const permitHolderType = RecoveryService.getPermitHolderType(application)
 
     // Query in parallel for optional entities
     const {applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule} = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
@@ -73,7 +81,7 @@ module.exports = class RecoveryService {
       const {account, contact, individualPermitHolder, payment, cardPayment, standardRule} = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
       const {id: standardRuleId, standardRuleTypeId} = standardRule || {}
 
-      const permitHolderType = Constants.PERMIT_HOLDER_TYPES.LIMITED_COMPANY.id
+      const permitHolderType = RecoveryService.getPermitHolderType(application)
 
       Object.assign(context, {slug, cookie, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType})
 
@@ -87,7 +95,6 @@ module.exports = class RecoveryService {
       if (standardRuleTypeId) {
         cookie[STANDARD_RULE_TYPE_ID] = standardRuleTypeId
       }
-      cookie[PERMIT_HOLDER_TYPE] = permitHolderType
     }
 
     return context

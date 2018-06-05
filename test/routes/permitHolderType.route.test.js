@@ -32,7 +32,8 @@ lab.beforeEach(() => {
   fakePermitHolderType = {
     id: 'PERMIT_HOLDER_TYPE_ID',
     type: 'PERMIT_HOLDER_TYPE',
-    canApplyOnline: true
+    canApplyOnline: true,
+    dynamicsApplicantTypeId: 'APPLICANT_TYPE'
   }
 
   // Create a sinon sandbox to stub methods
@@ -130,13 +131,8 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
     lab.experiment('success', () => {
       const checkRoute = async (route) => {
-        const setCookieSpy = sandbox.spy(CookieService, 'set')
         postRequest.payload['chosen-holder-type'] = fakePermitHolderType.id
         const res = await server.inject(postRequest)
-
-        // Make sure standard rule type is saved in a cookie
-        Code.expect(setCookieSpy.calledOnce).to.equal(true)
-        Code.expect(setCookieSpy.calledWith(res.request, 'permitHolderType', fakePermitHolderType)).to.equal(true)
 
         // Make sure a redirection has taken place correctly
         Code.expect(res.statusCode).to.equal(302)
@@ -147,7 +143,12 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
         sandbox.stub(PermitHolderTypeController, 'getHolderTypes').value(() => [fakePermitHolderType])
       })
 
-      lab.test('when holder type can apply online', async () => {
+      lab.test('when holder type can apply online and is an individual', async () => {
+        await checkRoute(nextRoutePath)
+      })
+
+      lab.test('when holder type can apply online and is an organisation', async () => {
+        fakePermitHolderType.dynamicsOrganisationTypeId = 'ORGANISATION_TYPE'
         await checkRoute(nextRoutePath)
       })
 

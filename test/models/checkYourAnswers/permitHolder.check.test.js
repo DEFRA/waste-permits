@@ -39,13 +39,13 @@ let fakeDirector
 let fakeIndividualPermitHolder
 let fakeIndividualPermitHolderDetails
 let fakeIndividualPermitHolderAddress
+let fakePermitHolderType
 
 let sandbox
 
 lab.beforeEach(() => {
   fakeApplication = {
     tradingName: 'TRADING_NAME',
-    applicantType: 910400001,
     relevantOffences: true,
     relevantOffencesDetails: 'CONVICTION DETAILS 1\nCONVICTION DETAILS 2',
     bankruptcy: true,
@@ -90,11 +90,16 @@ lab.beforeEach(() => {
     postcode: 'BS1 6AD'
   }
 
+  fakePermitHolderType = {
+    type: 'Limited company'
+  }
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
   sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => Merge({}, fakeApplication))
+  sandbox.stub(BaseCheck.prototype, 'getPermitHolderType').value(() => Merge({}, fakePermitHolderType))
   sandbox.stub(BaseCheck.prototype, 'getCompany').value(() => Merge({}, fakeCompany))
   sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(() => Merge({}, fakeCompanyAccount))
   sandbox.stub(BaseCheck.prototype, 'getDirectors').value(() => [Merge({}, fakeDirector)])

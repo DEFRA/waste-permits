@@ -174,13 +174,8 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
     lab.experiment('success', async () => {
       const checkSuccessRoute = async (route) => {
-        const setCookieSpy = sandbox.spy(CookieService, 'set')
         postRequest.payload['chosen-category'] = fakeStandardRuleType.id
         const res = await server.inject(postRequest)
-
-        // Make sure standard rule type is saved in a cookie
-        Code.expect(setCookieSpy.calledOnce).to.equal(true)
-        Code.expect(setCookieSpy.calledWith(res.request, 'standardRuleTypeId', fakeStandardRuleType.id)).to.equal(true)
 
         // Make sure a redirection has taken place correctly
         Code.expect(res.statusCode).to.equal(302)

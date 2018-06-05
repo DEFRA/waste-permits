@@ -39,11 +39,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
 
   async getTypeLine () {
     const {path} = PERMIT_HOLDER_TYPE
-    const {applicantType = ''} = await this.getApplication()
-    const type = Object.entries(Constants.PERMIT_HOLDER_TYPES)
-      .filter(([key, {dynamicsApplicantTypeId}]) => dynamicsApplicantTypeId === applicantType)
-      .map(([key, {type}]) => type)
-      .pop()
+    const {type} = await this.getPermitHolderType()
     return this.buildLine({
       heading: 'Permit holder type',
       prefix: 'type',

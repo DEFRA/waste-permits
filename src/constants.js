@@ -77,12 +77,15 @@ Constants.PERMIT_HOLDER_TYPES = {
     id: 'limited-company',
     type: 'Limited company',
     canApplyOnline: true,
-    dynamicsApplicantTypeId: 910400001
+    dynamicsApplicantTypeId: 910400001,
+    dynamicsOrganisationTypeId: 910400000
   },
   SOLE_TRADER: {
     id: 'sole-trader',
     type: 'Sole trader',
-    canApplyOnline: false
+    canApplyOnline: false,
+    dynamicsApplicantTypeId: 910400001,
+    dynamicsOrganisationTypeId: 910400001
   },
   INDIVIDUAL: {
     id: 'individual',
@@ -93,27 +96,37 @@ Constants.PERMIT_HOLDER_TYPES = {
   LOCAL_AUTHORITY: {
     id: 'local-authority',
     type: 'Local authority or public body',
-    canApplyOnline: false
+    canApplyOnline: false,
+    dynamicsApplicantTypeId: 910400001,
+    dynamicsOrganisationTypeId: 910400002
   },
   PARTNERSHIP: {
     id: 'partnership',
     type: 'Partnership',
-    canApplyOnline: false
+    canApplyOnline: false,
+    dynamicsApplicantTypeId: 910400001,
+    dynamicsOrganisationTypeId: 910400003
   },
   REGISTERED_CHARITY: {
     id: 'registered-charity',
     type: 'Registered charity',
-    canApplyOnline: false
+    canApplyOnline: false,
+    dynamicsApplicantTypeId: 910400001,
+    dynamicsOrganisationTypeId: 910400004
   },
   LIMITED_LIABILITY_PARTNERSHIP: {
     id: 'limited-liability-partnership',
     type: 'Limited liability partnership',
-    canApplyOnline: false
+    canApplyOnline: false,
+    dynamicsApplicantTypeId: 910400001,
+    dynamicsOrganisationTypeId: 910400005
   },
   OTHER_ORGANISATION: {
     id: 'other-organisation',
     type: 'Other organisation, for example a club or association',
-    canApplyOnline: false
+    canApplyOnline: false,
+    dynamicsApplicantTypeId: 910400001,
+    dynamicsOrganisationTypeId: 910400006
   }
 }
 
