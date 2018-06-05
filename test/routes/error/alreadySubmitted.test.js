@@ -18,7 +18,7 @@ const pageHeading = `You have sent your application so you cannot go back and ch
 
 const fakeApplication = {
   id: 'APPLICATION_ID',
-  accountId: 'ACCOUNT_ID',
+  permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
   tradingName: 'THE TRADING NAME',
   applicationNumber: 'APPLICATION_REFERENCE'
 }

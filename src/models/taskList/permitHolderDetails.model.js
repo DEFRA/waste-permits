@@ -120,7 +120,7 @@ module.exports = class PermitHolderDetails extends BaseModel {
   static async isComplete (context, applicationId) {
     let isComplete = false
     try {
-      const {isIndividual, accountId, permitHolderIndividualId} = await Application.getById(context, applicationId)
+      const {isIndividual, permitHolderOrganisationId, permitHolderIndividualId} = await Application.getById(context, applicationId)
 
       if (isIndividual) {
         // Get the Contact for this application
@@ -134,7 +134,7 @@ module.exports = class PermitHolderDetails extends BaseModel {
         isComplete = Boolean(isContactComplete && isContactDetailComplete && address)
       } else {
         // Get the Account for this application
-        const account = await Account.getById(context, accountId)
+        const account = await Account.getById(context, permitHolderOrganisationId)
         isComplete = Boolean(account && account.accountName)
       }
     } catch (error) {

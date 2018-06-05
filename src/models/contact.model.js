@@ -27,12 +27,12 @@ class Contact extends BaseModel {
     return super.getById(context, id, ({dynamics}) => dynamics !== 'defra_dateofbirthdaycompanieshouse')
   }
 
-  static async list (context, accountId = undefined, contactType = Constants.Dynamics.COMPANY_DIRECTOR) {
+  static async list (context, permitHolderOrganisationId = undefined, contactType = Constants.Dynamics.COMPANY_DIRECTOR) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
 
     let filter = `accountrolecode eq ${contactType} and defra_resignedoncompanieshouse eq null`
-    if (accountId) {
-      filter += ` and parentcustomerid_account/accountid eq ${accountId}`
+    if (permitHolderOrganisationId) {
+      filter += ` and parentcustomerid_account/accountid eq ${permitHolderOrganisationId}`
     }
     let orderBy = 'lastname asc,firstname asc'
     const query = `contacts?$select=${Contact.selectedDynamicsFields(({dynamics}) => dynamics !== 'defra_dateofbirthdaycompanieshouse')}&$filter=${filter}&$orderby=${orderBy}`

@@ -41,8 +41,8 @@ module.exports = class CompanyNumberController extends BaseController {
       }
 
       // Update the Application with the Account (if it has changed)
-      if (application && application.accountId !== account.id) {
-        application.accountId = account.id
+      if (application && application.permitHolderOrganisationId !== account.id) {
+        application.permitHolderOrganisationId = account.id
         await application.save(context)
       }
 

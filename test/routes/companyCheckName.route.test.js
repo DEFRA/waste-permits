@@ -28,7 +28,7 @@ const getRequest = {
 let postRequest
 
 const fakeApplication = {
-  accountId: 'ACCOUNT_ID',
+  permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
   tradingName: 'THE TRADING NAME'
 }
 
@@ -40,6 +40,7 @@ const fakeCompanyData = {
 }
 
 const fakeAccountData = {
+  id: 'ACCOUNT_ID',
   companyNumber: fakeCompanyData.companyNumber,
   accountName: fakeCompanyData.name
 }
@@ -147,7 +148,7 @@ lab.experiment('Check Company Details page tests:', () => {
   lab.experiment(`GET ${routePath} page tests`, () => {
     lab.test('Check page elements - no existing trading name saved', async () => {
       Application.getById = () => new Application({
-        accountId: fakeAccountData.address,
+        permitHolderOrganisationId: fakeAccountData.id,
         tradingName: undefined
       })
       checkPageElements(getRequest, true, '')

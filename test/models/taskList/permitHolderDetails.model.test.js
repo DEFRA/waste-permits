@@ -164,7 +164,7 @@ lab.experiment('Task List: Permit Holder Details Model tests:', () => {
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete for a company', async () => {
     fakeApplication.isIndividual = false
-    fakeApplication.accountId = fakeAccount.id
+    fakeApplication.permitHolderOrganisationId = fakeAccount.id
     testCompleteness(true)
   })
 
@@ -176,7 +176,7 @@ lab.experiment('Task List: Permit Holder Details Model tests:', () => {
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete for a company', async () => {
     fakeApplication.isIndividual = false
-    fakeApplication.accountId = fakeAccount.id
+    fakeApplication.permitHolderOrganisationId = fakeAccount.id
     fakeAccount.accountName = undefined
     testCompleteness(false)
   })

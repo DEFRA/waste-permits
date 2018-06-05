@@ -18,7 +18,7 @@ const pageHeading = `Sorry, we cannot find that application`
 
 const fakeApplication = {
   id: 'APPLICATION_ID',
-  accountId: 'ACCOUNT_ID',
+  permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
   tradingName: 'THE TRADING NAME',
   applicationNumber: 'APPLICATION_REFERENCE'
 }
