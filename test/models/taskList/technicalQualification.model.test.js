@@ -27,6 +27,7 @@ lab.beforeEach(() => {
   // Stub the asynchronous model methods
   sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
   sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
+  sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [])
 })
 
 lab.afterEach(() => {
