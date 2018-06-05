@@ -4,13 +4,13 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const GeneralTestHelper = require('./generalTestHelper.test')
+const GeneralTestHelper = require('../generalTestHelper.test')
 
-const server = require('../../server')
-const Application = require('../../src/models/application.model')
-const Payment = require('../../src/models/payment.model')
-const CookieService = require('../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const server = require('../../../server')
+const Application = require('../../../src/models/application.model')
+const Payment = require('../../../src/models/payment.model')
+const CookieService = require('../../../src/services/cookie.service')
+const {COOKIE_RESULT} = require('../../../src/constants')
 
 const routePath = '/permit-holder/details'
 const companyNumberPath = '/permit-holder/company/number'

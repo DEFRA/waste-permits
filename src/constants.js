@@ -408,7 +408,7 @@ Constants.Routes = {
   },
   PERMIT_HOLDER_CONTACT_DETAILS: {
     path: '/permit-holder/contact-details',
-    view: 'permitHolderContactDetails',
+    view: 'permitHolder/permitHolderContactDetails',
     pageHeading: `What are the permit holder's contact details?`
   },
   PERMIT_HOLDER_DETAILS: {
@@ -417,12 +417,12 @@ Constants.Routes = {
   },
   PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH: {
     path: '/permit-holder/name',
-    view: 'permitHolderNameAndDateOfBirth',
+    view: 'permitHolder/permitHolderNameAndDateOfBirth',
     pageHeading: 'Who will be the permit holder?'
   },
   PERMIT_HOLDER_TYPE: {
     path: '/permit-holder',
-    view: 'permitHolderType',
+    view: 'permitHolder/permitHolderType',
     pageHeading: 'Who will be the permit holder?'
   },
   PERMIT_SELECT: {
