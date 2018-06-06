@@ -30,7 +30,8 @@ module.exports = class AddressManualValidator extends BaseValidator {
         'any.required': `Enter the building name or number`,
         'string.max': `Enter a shorter building name or number with no more than ${Address.buildingNameOrNumber.length.max} characters`,
         'custom.starts.or.ends.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', `Building name or number`),
-        'custom.invalid.characters': INVALID_CHARS_ERROR_MESSAGE.replace('<FIELD>', `Building name or number`)
+        'custom.invalid.characters': INVALID_CHARS_ERROR_MESSAGE.replace('<FIELD>', `Building name or number`),
+        'custom.address.lookup.failed': 'Please enter the address below'
       },
       'address-line-1': {
         'any.empty': `Enter an address line 1`,

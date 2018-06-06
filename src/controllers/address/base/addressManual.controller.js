@@ -6,7 +6,12 @@ const RecoveryService = require('../../../services/recovery.service')
 
 module.exports = class AddressManualController extends BaseController {
   async doGet (request, h, errors) {
+    const {addressLookupFailed} = request.query || {}
+    if (addressLookupFailed) {
+      errors = this.setCustomError('custom.address.lookup.failed', 'building-name-or-number', {supressField: true})
+    }
     const pageContext = this.createPageContext(errors)
+    pageContext.errorSummaryTitle = addressLookupFailed ? 'Our address finder is not working' : ''
     const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {

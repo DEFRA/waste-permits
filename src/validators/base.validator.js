@@ -74,7 +74,8 @@ module.exports = class BaseValidator {
       if (error.path.length) {
         const fieldName = error.path[0] // field that the error is to be associated with.
         const propertyWithError = error.path.pop() // the descendant in the path where the error can be found.
-        if (!pageContext.errors[fieldName]) {
+        const {supressField = false} = error.options || {}
+        if (!supressField && !pageContext.errors[fieldName]) {
           // Create an array to hold all the errors that will refer to this fieldName
           pageContext.errors[fieldName] = []
         }
@@ -91,7 +92,9 @@ module.exports = class BaseValidator {
             fieldName: fieldName,
             message: message
           })
-          pageContext.errors[fieldName].push(message)
+          if (!supressField) {
+            pageContext.errors[fieldName].push(message)
+          }
         }
       }
     })

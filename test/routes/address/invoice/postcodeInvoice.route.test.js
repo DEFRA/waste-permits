@@ -175,7 +175,7 @@ lab.experiment('Invoice postcode page tests:', () => {
       })
     })
 
-    lab.experiment('Failure:', () => {
+    lab.experiment('Invalid:', () => {
       lab.test(`POST ${routePath} shows an error message when the postcode is blank`, async () => {
         postRequest.payload.postcode = ''
         await checkValidationError('Enter a postcode')
@@ -191,13 +191,18 @@ lab.experiment('Invoice postcode page tests:', () => {
         Address.listByPostcode = () => []
         await checkValidationError(`We cannot find any addresses for that postcode - check it is correct or enter address manually`)
       })
+    })
 
-      lab.test(`POST ${routePath} shows an error message when the postcode is invalid`, async () => {
+    lab.experiment('Failure:', () => {
+      lab.test(`POST ${routePath} redirects to manual address input with an error`, async () => {
         postRequest.payload.postcode = 'INVALID_POSTCODE'
         Address.listByPostcode = () => {
           throw new Error('AddressBase error')
         }
-        await checkValidationError('Enter a valid postcode')
+
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(`${nextRoutePathManual}?addressLookupFailed=true`)
       })
     })
   })
