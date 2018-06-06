@@ -33,8 +33,16 @@
           <li>business partners, where the offence was committed in the course of their business</li>
         </ul>
         {{/if}}
-      </div>
 
+        {{#if operatorTypeIsLimitedLiabilityPartnership}}
+        <ul id="operator-type-is-limited-liability-partnership" class="list list-bullet">
+          <li>the limited liability partnership itself</li>
+          <li>the members of the partnership</li>
+          <li>other companies, if the members of the partnership were officers of that other company when it became insolvent</li>
+        </ul>
+        {{/if}}
+      </div>
+      
       {{> declaration/declarationForm }}
 
     </div>
