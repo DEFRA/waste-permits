@@ -112,11 +112,12 @@ module.exports = class BaseController {
       .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
-  setCustomError (type, field) {
+  setCustomError (type, field, options = {}) {
     return {
       details: [{
         type,
-        path: field.split('.')
+        path: field.split('.'),
+        options
       }]
     }
   }

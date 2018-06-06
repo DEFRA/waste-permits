@@ -42,6 +42,10 @@ module.exports = class PostcodeController extends BaseController {
   }
 
   async doPost (request, h, errors) {
+    if (errors && errors.details) {
+      return this.doGet(request, h, errors)
+    }
+
     const context = await RecoveryService.createApplicationContext(h)
     const postcode = request.payload['postcode']
     const errorPath = 'postcode'
@@ -53,10 +57,7 @@ module.exports = class PostcodeController extends BaseController {
     try {
       addresses = await Address.listByPostcode(context, postcode)
     } catch (error) {
-      if (!errors) {
-        // Add error if the entered postcode led to an error being returned from AddressBase
-        errors = this._addCustomError(errorPath, `"${errorPath}" is invalid`, 'invalid')
-      }
+      return this.redirect({request, h, redirectPath: `${this.getManualEntryRoute()}?addressLookupFailed=true`})
     }
 
     if (!errors && addresses && addresses.length === 0) {
