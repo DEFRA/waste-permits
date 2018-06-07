@@ -1,24 +1,27 @@
 'use strict'
 
-const Constants = require('../../../constants')
+const {PERMIT_HOLDER_TYPES} = require('../../../constants')
 const BaseController = require('../../base.controller')
 const RecoveryService = require('../../../services/recovery.service')
 
 module.exports = class DeclarationsController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
-    const context = await RecoveryService.createApplicationContext(h, {application: true})
-    const {application} = context
+    const {application, permitHolderType} = await RecoveryService.createApplicationContext(h, {application: true})
 
-    switch (this.route) {
-      case Constants.Routes.COMPANY_DECLARE_OFFENCES:
-      case Constants.Routes.COMPANY_DECLARE_BANKRUPTCY:
-        pageContext.operatorTypeIsLimitedCompany = true
+    switch (permitHolderType) {
+      case PERMIT_HOLDER_TYPES.INDIVIDUAL:
+      case PERMIT_HOLDER_TYPES.SOLE_TRADER:
+        pageContext.operatorTypeIsIndividual = true
         break
-      case Constants.Routes.CONFIDENTIALITY:
+      case PERMIT_HOLDER_TYPES.PARTNERSHIP:
+        pageContext.operatorTypeIsPartnership = true
+        break
+      case PERMIT_HOLDER_TYPES.LIMITED_LIABILITY_PARTNERSHIP:
+        pageContext.operatorTypeIsLimitedLiabilityPartnership = true
         break
       default:
-        throw new Error(`Unexpected route (${this.route.path})`)
+        pageContext.operatorTypeIsLimitedCompany = true
     }
 
     if (request.payload) {

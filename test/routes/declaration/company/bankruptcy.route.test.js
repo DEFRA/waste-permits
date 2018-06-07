@@ -12,7 +12,8 @@ const Application = require('../../../../src/models/application.model')
 const Payment = require('../../../../src/models/payment.model')
 const PermitHolderDetails = require('../../../../src/models/taskList/permitHolderDetails.model')
 const LoggingService = require('../../../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../../../src/constants')
+const RecoveryService = require('../../../../src/services/recovery.service')
+const {COOKIE_RESULT, PERMIT_HOLDER_TYPES} = require('../../../../src/constants')
 
 let sandbox
 
@@ -69,18 +70,56 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
       Code.expect(element).to.exist()
     })
 
-    lab.test('success', async () => {
-      doc = await GeneralTestHelper.getDoc(getRequest)
+    lab.experiment('success', () => {
+      lab.test('shows all static element', async () => {
+        doc = await GeneralTestHelper.getDoc(getRequest)
+  
+        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Do you have current or past bankruptcy or insolvency proceedings to declare?')
+        Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+        Code.expect(doc.getElementById('declaration-details').firstChild.nodeValue).to.equal(fakeApplication.bankruptcyDetails)
+        Code.expect(doc.getElementById('declaration-hint')).to.not.exist()
+        Code.expect(doc.getElementById('declaration-notice')).to.exist()
+      })
 
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Do you have current or past bankruptcy or insolvency proceedings to declare?')
-      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
-      Code.expect(doc.getElementById('declaration-details').firstChild.nodeValue).to.equal(fakeApplication.bankruptcyDetails)
-      Code.expect(doc.getElementById('declaration-hint')).to.not.exist()
-      Code.expect(doc.getElementById('declaration-notice')).to.exist()
-      Code.expect(doc.getElementById('operator-type-is-limited-company')).to.exist()
-      Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()
-      Code.expect(doc.getElementById('operator-type-is-partnership')).to.not.exist()
+      lab.test('with operator type of limited company shows correct conditional content', async () => {
+        sandbox.stub(RecoveryService, 'getPermitHolderType').value(() => PERMIT_HOLDER_TYPES.LIMITED_COMPANY)
+        doc = await GeneralTestHelper.getDoc(getRequest)        
+
+        Code.expect(doc.getElementById('operator-type-is-limited-company')).to.exist()
+        Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-partnership')).to.not.exist()
+      })
+
+      lab.test('with operator type of individual shows correct conditional content', async () => {
+        sandbox.stub(RecoveryService, 'getPermitHolderType').value(() => PERMIT_HOLDER_TYPES.INDIVIDUAL)
+        doc = await GeneralTestHelper.getDoc(getRequest)        
+
+        Code.expect(doc.getElementById('operator-type-is-individual')).to.exist()
+        Code.expect(doc.getElementById('operator-type-is-limited-company')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-partnership')).to.not.exist()
+      })
+
+      lab.test('with operator type of partnership shows correct conditional content', async () => {
+        sandbox.stub(RecoveryService, 'getPermitHolderType').value(() => PERMIT_HOLDER_TYPES.PARTNERSHIP)
+        doc = await GeneralTestHelper.getDoc(getRequest)        
+
+        Code.expect(doc.getElementById('operator-type-is-partnership')).to.exist()
+        Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-limited-company')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-limited-liability-partnership')).to.not.exist()
+      })
+
+      lab.test('with operator type of limited liability partnership shows correct conditional content', async () => {
+        sandbox.stub(RecoveryService, 'getPermitHolderType').value(() => PERMIT_HOLDER_TYPES.LIMITED_LIABILITY_PARTNERSHIP)
+        doc = await GeneralTestHelper.getDoc(getRequest)        
+
+        Code.expect(doc.getElementById('operator-type-is-limited-liability-partnership')).to.exist()
+        Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-limited-company')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-partnership')).to.not.exist()
+      })
     })
+
 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
