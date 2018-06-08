@@ -127,6 +127,7 @@ module.exports = class GeneralTestHelper {
       if (!options.excludeAlreadySubmittedTest) {
         lab.test('Redirects to the Already Submitted screen if the application has already been submitted and paid for', async () => {
           Application.prototype.isSubmitted = () => true
+          Application.prototype.isPaid = () => true
           Payment.prototype.isPaid = () => true
 
           const res = await server.inject(getRequest)
@@ -136,6 +137,7 @@ module.exports = class GeneralTestHelper {
 
         lab.test('Redirects to the Not Paid screen if the application has been submitted but not paid for', async () => {
           Application.prototype.isSubmitted = () => true
+          Application.prototype.isPaid = () => false
           Payment.prototype.isPaid = () => false
 
           const res = await server.inject(getRequest)
