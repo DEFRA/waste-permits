@@ -80,9 +80,11 @@ lab.beforeEach(() => {
   })
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
+  sandbox.stub(Application.prototype, 'isPaid').value(() => true)
   sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
   sandbox.stub(Payment, 'getBacsPayment').value(() => new Payment(fakePayment))
   sandbox.stub(Payment, 'getCardPayment').value(() => undefined)
+  sandbox.stub(Payment.prototype, 'isPaid').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -191,7 +193,9 @@ lab.experiment('ApplicationReceived page tests:', () => {
     })
 
     lab.test('Redirects to the Not Paid screen if bacs has not been selected for payment and the application has not been paid for yet', async () => {
-      Payment.getBacsPayment = () => undefined
+      Application.prototype.isPaid = () => false
+      Payment.prototype.isPaid = () => false
+      Payment.getCardPayment = () => undefined
       Payment.getCardPayment = () => undefined
       fakeApplication.paymentReceived = 0
       request.url = '/done'
