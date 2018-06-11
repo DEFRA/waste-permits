@@ -96,7 +96,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         await applicationContact.save(context)
       }
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DIRECTOR_EMAIL.path})
     }
   }
 

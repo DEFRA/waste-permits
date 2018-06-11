@@ -204,6 +204,11 @@ Constants.Routes = {
     view: 'declaration/company/bankruptcy',
     pageHeading: 'Do you have current or past bankruptcy or insolvency proceedings to declare?'
   },
+  COMPANY_DIRECTOR_EMAIL: {
+    path: '/permit-holder/company/director-email',
+    view: 'companyDirectorEmail',
+    pageHeading: `What is the email address for the Company Secretary or a director?`
+  },
   COMPANY_NUMBER: {
     path: '/permit-holder/company/number',
     view: 'companyNumber',

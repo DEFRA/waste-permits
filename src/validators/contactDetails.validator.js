@@ -55,12 +55,6 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
         'any.required': `Enter an email address for the main contact`,
         'string.regex.base': `Enter a valid email address for the main contact`,
         'string.max': `Enter a shorter email address for the main contact with no more than ${Contact.email.length.max} characters`
-      },
-      'company-secretary-email': {
-        'any.empty': `Enter an email address for the Company Secretary or a director`,
-        'any.required': `Enter an email address for the Company Secretary or a director`,
-        'string.regex.base': `Enter a valid email address for the Company Secretary or director`,
-        'string.max': `Enter a shorter email address for the Company Secretary or director with no more than ${AddressDetail.email.length.max} characters`
       }
     }
   }
@@ -91,11 +85,6 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
       'email': Joi
         .string()
         .max(Contact.email.length.max)
-        .regex(EMAIL_VALID_REGEX)
-        .required(),
-      'company-secretary-email': Joi
-        .string()
-        .max(AddressDetail.email.length.max)
         .regex(EMAIL_VALID_REGEX)
         .required()
     }

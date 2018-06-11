@@ -13,7 +13,6 @@ const CONTACT_LINE = 0
 const AGENT_LINE = 1
 const TELEPHONE_LINE = 2
 const EMAIL_LINE = 3
-const COMPANY_SECRETARY_EMAIL_LINE = 4
 
 const fakeContact = {
   firstName: 'CONTACT_FIRSTNAME',
@@ -22,9 +21,6 @@ const fakeContact = {
 }
 const fakePrimaryContact = {
   telephone: 'PRIMARY_CONTACT_TELEPHONE'
-}
-const fakeCompanySecretary = {
-  email: 'COMPANY_SECRETARY_EMAIL'
 }
 const fakeAgentAccount = {
   description: 'This person is an agent or consultant',
@@ -41,7 +37,6 @@ lab.beforeEach(() => {
   // Stub the asynchronous base methods
   sandbox.stub(BaseCheck.prototype, 'getContact').value(() => Merge({}, fakeContact))
   sandbox.stub(BaseCheck.prototype, 'getPrimaryContactDetails').value(() => Merge({}, fakePrimaryContact))
-  sandbox.stub(BaseCheck.prototype, 'getCompanySecretaryDetails').value(() => Merge({}, fakeCompanySecretary))
   sandbox.stub(BaseCheck.prototype, 'getAgentAccount').value(() => Merge({}, fakeAgentAccount))
 })
 
@@ -139,23 +134,6 @@ lab.experiment('Contact Check tests:', () => {
       const {link, linkId, linkType} = links.pop()
       Code.expect(link).to.equal('/contact-details')
       Code.expect(linkType).to.equal('main contact email')
-      Code.expect(linkId).to.equal(`${linePrefix}-link`)
-    })
-
-    lab.test('(company secretary email line) works correctly', async () => {
-      const {heading, headingId, answers, links} = lines[COMPANY_SECRETARY_EMAIL_LINE]
-      const linePrefix = `${prefix}-company-secretary-email`
-      Code.expect(heading).to.equal(heading)
-      Code.expect(headingId).to.equal(`${linePrefix}-heading`)
-
-      const {answer, answerId} = answers.pop()
-      const {email} = fakeCompanySecretary
-      Code.expect(answer).to.equal(email)
-      Code.expect(answerId).to.equal(`${linePrefix}-answer`)
-
-      const {link, linkId, linkType} = links.pop()
-      Code.expect(link).to.equal('/contact-details')
-      Code.expect(linkType).to.equal('company secretary or director email')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
   })
