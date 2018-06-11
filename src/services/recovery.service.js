@@ -1,6 +1,5 @@
 'use strict'
 
-const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 const Account = require('../models/account.model')
 const Application = require('../models/application.model')
@@ -9,7 +8,11 @@ const ApplicationReturn = require('../models/applicationReturn.model')
 const Contact = require('../models/contact.model')
 const Payment = require('../models/payment.model')
 const StandardRule = require('../models/standardRule.model')
-const {AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID} = Constants.COOKIE_KEY
+
+const {
+  COOKIE_KEY: {AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID},
+  Dynamics: {PERMIT_HOLDER_TYPES}
+} = require('../constants')
 
 module.exports = class RecoveryService {
   static async recoverOptionalData (context, applicationId, applicationLineId, options) {
@@ -30,7 +33,7 @@ module.exports = class RecoveryService {
   }
 
   static getPermitHolderType (application) {
-    return Object.entries(Constants.PERMIT_HOLDER_TYPES)
+    return Object.entries(PERMIT_HOLDER_TYPES)
       .filter(([key, {dynamicsApplicantTypeId, dynamicsOrganisationTypeId}]) => application && dynamicsApplicantTypeId === application.applicantType && dynamicsOrganisationTypeId === application.organisationType)
       .map(([key, permitHolderType]) => permitHolderType)
       .pop()

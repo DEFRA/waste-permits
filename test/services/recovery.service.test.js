@@ -4,19 +4,17 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const config = require('../../src/config/config')
 
 const RecoveryService = require('../../src/services/recovery.service')
 const CookieService = require('../../src/services/cookie.service')
 
 const Application = require('../../src/models/application.model')
 
-const {PERMIT_HOLDER_TYPES} = require('../../src/constants')
+const {Dynamics: {PERMIT_HOLDER_TYPES}} = require('../../src/constants')
 
 const GeneralTestHelper = require('../routes/generalTestHelper.test')
 
 let sandbox
-let spy
 
 const fakeAccount = {}
 const fakeAuthToken = 'FAKE_AUTH_TOKEN'
@@ -55,7 +53,7 @@ lab.afterEach(() => {
 
 lab.experiment('RecoveryService tests:', () => {
   lab.test('recoverFromCookies() should return all application data', async () => {
-    sandbox.stub(RecoveryService, 'getPermitHolderType').value((application) => application.type )
+    sandbox.stub(RecoveryService, 'getPermitHolderType').value((application) => application.type)
     sandbox.stub(RecoveryService, 'recoverOptionalData').value(() => { return { applicationLine: fakeApplicationLine, applicationReturn: fakeApplicationReturn, account: fakeAccount, contact: fakeContact, individualPermitHolder: fakeIndividualPermitHolder, payment: fakePayment, cardPayment: fakeCardPayment, standardRule: fakeStandardRule } })
 
     const recovery = await RecoveryService.recoverFromCookies(fakeSlug, fakeRequest)
@@ -76,7 +74,7 @@ lab.experiment('RecoveryService tests:', () => {
     Code.expect(recovery.permitHolderType).to.equal(fakeStandardRule.permitHolderType)
     Code.expect(recovery.slug).to.equal(fakeSlug)
   })
-  
+
   lab.experiment('getPermitHolderType() should return', () => {
     lab.test('undefined if there is no application', () => {
       Code.expect(RecoveryService.getPermitHolderType(undefined)).to.equal(undefined)

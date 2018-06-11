@@ -1,7 +1,6 @@
 'use strict'
 
 const moment = require('moment')
-
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
@@ -9,7 +8,7 @@ const Contact = require('../../models/contact.model')
 const AddressDetail = require('../../models/addressDetail.model')
 
 const {
-  PERMIT_HOLDER_TYPES: {SOLE_TRADER},
+  Dynamics: {PERMIT_HOLDER_TYPES: {SOLE_TRADER}},
   Routes: {PERMIT_HOLDER_CONTACT_DETAILS, PERMIT_HOLDER_TRADING_NAME}
 } = require('../../constants')
 
