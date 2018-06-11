@@ -2,10 +2,10 @@
 
 const Joi = require('joi')
 
-const Constants = require('../constants')
-const BaseValidator = require('./base.validator')
-const AddressDetail = require('../models/addressDetail.model')
-const Contact = require('../models/contact.model')
+const Constants = require('../../constants')
+const BaseValidator = require('../base.validator')
+const AddressDetail = require('../../models/addressDetail.model')
+const Contact = require('../../models/contact.model')
 
 const PLUSES_AND_SPACES_REGEX = /(\+|\s)/g
 const PLUSES_SPACES_AND_NUMBERS_REGEX = /^[0-9 +]*$/

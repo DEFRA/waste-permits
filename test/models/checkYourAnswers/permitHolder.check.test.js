@@ -182,6 +182,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
+      const {tradingName} = fakeApplication
       const {firstName, lastName, email} = fakeIndividualPermitHolder
       const {telephone, dateOfBirth} = fakeIndividualPermitHolderDetails
       const [year, month, day] = dateOfBirth.split('-')
@@ -192,27 +193,30 @@ lab.experiment('PermitHolder Check tests:', () => {
             Code.expect(answer).to.equal(`${firstName} ${lastName}`)
             break
           case 1:
-            Code.expect(answer).to.equal(email)
+            Code.expect(answer).to.equal(`Trading as: ${tradingName}`)
             break
           case 2:
-            Code.expect(answer).to.equal(`Telephone: ${telephone}`)
+            Code.expect(answer).to.equal(email)
             break
           case 3:
-            Code.expect(answer).to.equal(`Date of birth: ${day} ${getMonth(month)} ${year}`)
+            Code.expect(answer).to.equal(`Telephone: ${telephone}`)
             break
           case 4:
-            Code.expect(answer).to.equal({blankLine: true})
+            Code.expect(answer).to.equal(`Date of birth: ${day} ${getMonth(month)} ${year}`)
             break
           case 5:
-            Code.expect(answer).to.equal(`5, A ROAD`)
+            Code.expect(answer).to.equal({blankLine: true})
             break
           case 6:
-            Code.expect(answer).to.equal(`AN AREA`)
+            Code.expect(answer).to.equal(`5, A ROAD`)
             break
           case 7:
-            Code.expect(answer).to.equal(`A TOWN`)
+            Code.expect(answer).to.equal(`AN AREA`)
             break
           case 8:
+            Code.expect(answer).to.equal(`A TOWN`)
+            break
+          case 9:
             Code.expect(answer).to.equal(`BS1 6AD`)
             break
         }

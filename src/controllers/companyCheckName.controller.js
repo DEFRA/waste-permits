@@ -1,9 +1,13 @@
 'use strict'
 
-const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
 const RecoveryService = require('../services/recovery.service')
+
+const {
+  Dynamics: {TRADING_NAME_USAGE},
+  Routes: {DIRECTOR_DATE_OF_BIRTH, COMPANY_NUMBER, TASK_LIST}
+} = require('../constants')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, h, errors) {
@@ -11,7 +15,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
     const {application, account} = await RecoveryService.createApplicationContext(h, {application: true, account: true})
 
     if (!application || !account) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
+      return this.redirect({request, h, redirectPath: TASK_LIST.path})
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -33,7 +37,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
     }
     pageContext.companyFound = company !== undefined
 
-    pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
+    pageContext.enterCompanyNumberRoute = COMPANY_NUMBER.path
 
     return this.showView({request, h, pageContext})
   }
@@ -58,13 +62,15 @@ module.exports = class CompanyCheckNameController extends BaseController {
         // The company trading name is only set if the corresponding checkbox is ticked
         if (request.payload['use-business-trading-name'] === 'on') {
           application.tradingName = request.payload['business-trading-name']
+          application.useTradingName = TRADING_NAME_USAGE.YES
         } else {
           application.tradingName = undefined
+          application.useTradingName = TRADING_NAME_USAGE.NO
         }
 
         await application.save(context)
       }
-      return this.redirect({request, h, redirectPath: Constants.Routes.DIRECTOR_DATE_OF_BIRTH.path})
+      return this.redirect({request, h, redirectPath: DIRECTOR_DATE_OF_BIRTH.path})
     }
   }
 }

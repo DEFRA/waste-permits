@@ -1,8 +1,8 @@
 'use strict'
 
 const Joi = require('joi')
-const BaseValidator = require('./base.validator')
-const Contact = require('../models/contact.model')
+const BaseValidator = require('../base.validator')
+const Contact = require('../../models/contact.model')
 
 const LEADING_AND_TRAILING_DASHES_REGEX = /(^-.*$|^.*-$)/
 const LETTERS_HYPHENS_AND_APOSTROPHES_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+$/
