@@ -1,10 +1,14 @@
 'use strict'
 
-const Constants = require('../constants')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const ApplicationReturn = require('./applicationReturn.model')
 const LoggingService = require('../services/logging.service')
+
+const {
+  Dynamics: {DIGITAL_SOURCE, PERMIT_HOLDER_TYPES, StatusCode, WASTE_REGIME},
+  SAVE_AND_RETURN_URL
+} = require('../constants')
 
 class Application extends BaseModel {
   static get entity () {
@@ -29,10 +33,10 @@ class Application extends BaseModel {
       {field: 'paymentReceived', dynamics: 'defra_paymentreceived'},
       {field: 'permitHolderOrganisationId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_account', relationship: 'defra_account_defra_application_customerid', entity: 'accounts'}},
       {field: 'permitHolderIndividualId', dynamics: '_defra_customerid_value', bind: {id: 'defra_customerid_contact', relationship: 'defra_contact_defra_application_customerid', entity: 'contacts'}},
-      {field: 'regime', dynamics: 'defra_regime', constant: Constants.Dynamics.WASTE_REGIME},
+      {field: 'regime', dynamics: 'defra_regime', constant: WASTE_REGIME},
       {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},
       {field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails', length: {max: 2000}},
-      {field: 'source', dynamics: 'defra_source', constant: Constants.Dynamics.DIGITAL_SOURCE},
+      {field: 'source', dynamics: 'defra_source', constant: DIGITAL_SOURCE},
       {field: 'statusCode', dynamics: 'statuscode'},
       {field: 'submittedOn', dynamics: 'defra_submittedon', isDate: true},
       {field: 'technicalQualification', dynamics: 'defra_technicalability'},
@@ -49,7 +53,7 @@ class Application extends BaseModel {
   }
 
   isSubmitted () {
-    return this.statusCode && (this.statusCode === Constants.Dynamics.StatusCode.APPLICATION_RECEIVED)
+    return this.statusCode && (this.statusCode === StatusCode.APPLICATION_RECEIVED)
   }
 
   isPaid () {
@@ -57,7 +61,7 @@ class Application extends BaseModel {
   }
 
   get isIndividual () {
-    return this.applicantType === Constants.PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId || this.organisationType === Constants.PERMIT_HOLDER_TYPES.SOLE_TRADER.dynamicsOrganisationTypeId
+    return this.applicantType === PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId || this.organisationType === PERMIT_HOLDER_TYPES.SOLE_TRADER.dynamicsOrganisationTypeId
   }
 
   individualPermitHolderId () {
@@ -102,14 +106,14 @@ class Application extends BaseModel {
   async sendSaveAndReturnEmail (context, origin) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
-      saveAndReturnUrl: `${origin}${Constants.SAVE_AND_RETURN_URL}`
+      saveAndReturnUrl: `${origin}${SAVE_AND_RETURN_URL}`
     }
     try {
       // Call Dynamics save and return email action
       let action = `${this.constructor.entity}(${this.id})/Microsoft.Dynamics.CRM.defra_saveandreturnemail`
       await dynamicsDal.callAction(action, actionDataObject)
       const applicationReturn = await ApplicationReturn.getByApplicationId(context, this.id)
-      LoggingService.logDebug(`Save and Return Url for Application "${this.applicationNumber}": ${origin}${Constants.SAVE_AND_RETURN_URL}/${applicationReturn.slug}`)
+      LoggingService.logDebug(`Save and Return Url for Application "${this.applicationNumber}": ${origin}${SAVE_AND_RETURN_URL}/${applicationReturn.slug}`)
     } catch (error) {
       LoggingService.logError(`Unable to call Dynamics Save and Return Email action: ${error}`)
       throw error

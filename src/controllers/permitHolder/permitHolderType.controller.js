@@ -1,10 +1,14 @@
 'use strict'
 
-const Constants = require('../../constants')
 const BaseController = require('../base.controller')
 const CookieService = require('../../services/cookie.service')
 const RecoveryService = require('../../services/recovery.service')
-const {PERMIT_HOLDER_TYPES} = Constants
+
+const {
+  COOKIE_KEY: {STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID},
+  Dynamics: {PERMIT_HOLDER_TYPES},
+  Routes: {APPLY_OFFLINE, PERMIT_CATEGORY}
+} = require('../../constants')
 
 module.exports = class PermitHolderTypeController extends BaseController {
   static getHolderTypes (application) {
@@ -32,7 +36,6 @@ module.exports = class PermitHolderTypeController extends BaseController {
       const permitHolder = PermitHolderTypeController.getHolderTypes()
         .filter(({id}) => request.payload['chosen-holder-type'] === id)
         .pop()
-      const {STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID} = Constants.COOKIE_KEY
 
       CookieService.remove(request, STANDARD_RULE_ID)
       CookieService.remove(request, STANDARD_RULE_TYPE_ID)
@@ -47,10 +50,10 @@ module.exports = class PermitHolderTypeController extends BaseController {
       await application.save(context)
 
       if (permitHolder.canApplyOnline) {
-        return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_CATEGORY.path})
+        return this.redirect({request, h, redirectPath: PERMIT_CATEGORY.path})
       }
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.APPLY_OFFLINE.path})
+      return this.redirect({request, h, redirectPath: APPLY_OFFLINE.path})
     }
   }
 }
