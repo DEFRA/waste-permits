@@ -93,10 +93,10 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const {path} = COMPANY_NUMBER
     const {companyNumber = ''} = await this.getCompanyAccount()
     const {name = '', address = ''} = await this.getCompany()
-    const {tradingName = ''} = await this.getApplication()
+    const {useTradingName, tradingName = ''} = await this.getApplication()
     const answers = []
     answers.push(name)
-    if (tradingName) {
+    if (useTradingName) {
       answers.push(`Trading as: ${tradingName}`)
     }
     answers.push(address)

@@ -46,6 +46,7 @@ let sandbox
 lab.beforeEach(() => {
   fakeApplication = {
     tradingName: 'TRADING_NAME',
+    useTradingName: true,
     relevantOffences: true,
     relevantOffencesDetails: 'CONVICTION DETAILS 1\nCONVICTION DETAILS 2',
     bankruptcy: true,
