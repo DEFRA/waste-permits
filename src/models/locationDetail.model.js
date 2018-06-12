@@ -1,8 +1,6 @@
 'use strict'
 
-const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
-const LoggingService = require('../services/logging.service')
 
 class LocationDetail extends BaseModel {
   static get entity () {
@@ -20,22 +18,7 @@ class LocationDetail extends BaseModel {
   }
 
   static async getByLocationId (context, locationId) {
-    if (locationId) {
-      const dynamicsDal = new DynamicsDalService(context.authToken)
-      const filter = `_defra_locationid_value eq ${locationId}`
-      const query = encodeURI(`defra_locationdetailses?$select=${LocationDetail.selectedDynamicsFields()}&$filter=${filter}`)
-      try {
-        const response = await dynamicsDal.search(query)
-        const result = response.value.pop()
-
-        if (result) {
-          return LocationDetail.dynamicsToModel(result)
-        }
-      } catch (error) {
-        LoggingService.logError(`Unable to get LocationDetail by Location ID: ${error}`)
-        throw error
-      }
-    }
+    return super.getBy(context, {locationId})
   }
 
   setAddress (addressId) {

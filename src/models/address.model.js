@@ -17,34 +17,14 @@ class Address extends BaseModel {
       {field: 'addressLine2', dynamics: 'defra_locality', length: {max: 100}},
       {field: 'townOrCity', dynamics: 'defra_towntext', length: {max: 70}},
       {field: 'postcode', dynamics: 'defra_postcode', length: {max: 8}},
-      {field: 'uprn', dynamics: 'defra_uprn', length: {max: 20}},
+      {field: 'uprn', dynamics: 'defra_uprn', encode: true, length: {max: 20}},
       {field: 'fromAddressLookup', dynamics: 'defra_fromaddresslookup'},
       {field: 'fullAddress', dynamics: 'defra_name', length: {max: 450}}
     ]
   }
 
   static async getByUprn (context, uprn) {
-    if (!context) {
-      const errorMessage = `Unable to get ${this._entity} by UPRN: Context not supplied`
-      LoggingService.logError(errorMessage)
-      throw new Error(errorMessage)
-    }
-
-    let address
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    const filter = `defra_uprn eq '${uprn}'`
-    const query = `defra_addresses?$select=${this.selectedDynamicsFields()}&$filter=${filter}`
-    try {
-      const response = await dynamicsDal.search(query)
-      const result = response && response.value ? response.value.pop() : undefined
-      if (result) {
-        address = this.dynamicsToModel(result)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to get ${this.name} by UPRN(${uprn}): ${error}`)
-      throw error
-    }
-    return address
+    return super.getBy(context, {uprn})
   }
 
   static async listByPostcode (context, postcode) {

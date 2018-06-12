@@ -1,9 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
-const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
-const LoggingService = require('../services/logging.service')
 const {COMPANY_SECRETARY_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER} = Constants.Dynamics.AddressTypes
 
 class AddressDetail extends BaseModel {
@@ -25,20 +23,7 @@ class AddressDetail extends BaseModel {
   }
 
   static async getByApplicationIdAndType (context, applicationId, type) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    const filter = `_defra_applicationid_value eq ${applicationId} and defra_addresstype eq ${type}`
-    const query = `defra_addressdetailses?$select=${AddressDetail.selectedDynamicsFields()}&$filter=${filter}`
-
-    try {
-      const response = await dynamicsDal.search(query)
-      const result = response && response.value ? response.value.pop() : undefined
-      if (result) {
-        return AddressDetail.dynamicsToModel(result)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to get AddressDetail by Type(${type}): ${error}`)
-      throw error
-    }
+    return super.getBy(context, {applicationId, type})
   }
 
   async save (context) {
