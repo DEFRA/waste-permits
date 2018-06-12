@@ -12,8 +12,9 @@ const PermitHolderCheck = require('../../../src/models/checkYourAnswers/permitHo
 const PERMIT_HOLDER_TYPE_LINE = 0
 const PERMIT_HOLDER_LINE = 1
 const DIRECTORS_LINE = 2
-const CONVICTIONS_LINE = 3
-const BANKRUPTCY_LINE = 4
+const COMPANY_SECRETARY_EMAIL_LINE = 3
+const CONVICTIONS_LINE = 4
+const BANKRUPTCY_LINE = 5
 
 const prefix = 'section-permit-holder'
 
@@ -40,6 +41,7 @@ let fakeIndividualPermitHolder
 let fakeIndividualPermitHolderDetails
 let fakeIndividualPermitHolderAddress
 let fakePermitHolderType
+let fakeCompanySecretary
 
 let sandbox
 
@@ -60,6 +62,10 @@ lab.beforeEach(() => {
 
   fakeCompanyAccount = {
     companyNumber: 'COMPANY_NUMBER'
+  }
+
+  fakeCompanySecretary = {
+    email: 'COMPANY_SECRETARY_EMAIL'
   }
 
   fakeDirector = {
@@ -103,6 +109,7 @@ lab.beforeEach(() => {
   sandbox.stub(BaseCheck.prototype, 'getPermitHolderType').value(() => Merge({}, fakePermitHolderType))
   sandbox.stub(BaseCheck.prototype, 'getCompany').value(() => Merge({}, fakeCompany))
   sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(() => Merge({}, fakeCompanyAccount))
+  sandbox.stub(BaseCheck.prototype, 'getCompanySecretaryDetails').value(() => Merge({}, fakeCompanySecretary))
   sandbox.stub(BaseCheck.prototype, 'getDirectors').value(() => [Merge({}, fakeDirector)])
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolder').value(() => Merge({}, fakeIndividualPermitHolder))
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderDetails').value(() => Merge({}, fakeIndividualPermitHolderDetails))
@@ -243,6 +250,24 @@ lab.experiment('PermitHolder Check tests:', () => {
       const {link, linkId, linkType} = links.pop()
       Code.expect(link).to.equal('/permit-holder/company/director-date-of-birth')
       Code.expect(linkType).to.equal(`director's date of birth`)
+      Code.expect(linkId).to.equal(`${linePrefix}-link`)
+    })
+
+    lab.test('(company secretary email line) works correctly', async () => {
+      const lines = await buildLines()
+      const {heading, headingId, answers, links} = lines[COMPANY_SECRETARY_EMAIL_LINE]
+      const linePrefix = `${prefix}-company-secretary-email`
+      Code.expect(heading).to.equal(heading)
+      Code.expect(headingId).to.equal(`${linePrefix}-heading`)
+
+      const {answer, answerId} = answers.pop()
+      const {email} = fakeCompanySecretary
+      Code.expect(answer).to.equal(email)
+      Code.expect(answerId).to.equal(`${linePrefix}-answer`)
+
+      const {link, linkId, linkType} = links.pop()
+      Code.expect(link).to.equal('/permit-holder/company/director-email')
+      Code.expect(linkType).to.equal('company secretary or director email')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 

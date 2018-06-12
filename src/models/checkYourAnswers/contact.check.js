@@ -18,8 +18,7 @@ module.exports = class ContactCheck extends BaseCheck {
       this.getContactLine(),
       this.getAgentLine(),
       this.getTelephoneLine(),
-      this.getEmailLine(),
-      this.getCompanySecretaryEmailLine()
+      this.getEmailLine()
     ])
   }
 
@@ -61,16 +60,6 @@ module.exports = class ContactCheck extends BaseCheck {
       prefix: 'email',
       answers: [email],
       links: [{path, type: 'main contact email'}]
-    })
-  }
-
-  async getCompanySecretaryEmailLine () {
-    const {email = ''} = await this.getCompanySecretaryDetails()
-    return this.buildLine({
-      heading: 'Company Secretary or director email',
-      prefix: 'company-secretary-email',
-      answers: [email],
-      links: [{path, type: 'company secretary or director email'}]
     })
   }
 }

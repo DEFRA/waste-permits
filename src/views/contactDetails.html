@@ -52,35 +52,14 @@
           <input class="form-control form-control-char-15 {{#if errors.telephone}}form-control-error{{/if}}" id="telephone" name="telephone" type="tel" value="{{formValues.telephone}}">
         </div>
 
-        <fieldset>
-          <legend><h2 id="email-heading" class="heading-small">Email addresses for communications about this application</h2></legend>
-
-          <div class="form-group {{#getFormErrorGroupClass errors.email}}{{/getFormErrorGroupClass}}">
-            <label id="email-label" class="form-label" for="email">
-              Email address for main contact
-              <span id="email-hint" class="form-hint">They get every communication and also the permit and any notices</span>
-            </label>
-            {{> common/fieldError fieldId='email-error' message=errors.email }}
-            <input class="form-control form-control-char-35 {{#if errors.email}}form-control-error{{/if}}" id="email" name="email" type="email" value="{{formValues.email}}">
-          </div>
-
-          <div class="form-group {{#getFormErrorGroupClass errors.company-secretary-email}}{{/getFormErrorGroupClass}}">
-            <label id="company-secretary-email-label" class="form-label" for="company-secretary-email">
-              Email address for Company Secretary or a director
-            </label>
-            <span id="company-secretary-email-hint" class="form-hint">They just get a copy of the permit and any notices</span>
-            <details role="group" class="form-hint-details">
-              <summary role="button" aria-controls="details-content-0" aria-expanded="false"><span id="company-secretary-email-summary" class="summary">What is this for and whose email can I give?</span></summary>
-              <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true">
-                <p id="company-secretary-email-description">
-                  Legally, we have to send a copy of the permit to the registered office or to an official company email address. Company Secretary is an official legal position, not a secretary or personal assistant. If you do not have a Company Secretary you can give a director’s email address.
-                </p>
-              </div>
-            </details>
-            {{> common/fieldError fieldId='company-secretary-email-error' message=errors.company-secretary-email }}
-            <input class="form-control form-control-char-35 {{#if errors.company-secretary-email}}form-control-error{{/if}}" id="company-secretary-email" name="company-secretary-email" type="email" value="{{formValues.company-secretary-email}}">
-          </div>
-        </fieldset>
+        <div class="form-group {{#getFormErrorGroupClass errors.email}}{{/getFormErrorGroupClass}}">
+          <label id="email-label" class="form-label" for="email">
+            Email address for main contact
+            <span id="email-hint" class="form-hint">They get every communication and also the permit and any notices</span>
+          </label>
+          {{> common/fieldError fieldId='email-error' message=errors.email }}
+          <input class="form-control form-control-char-35 {{#if errors.email}}form-control-error{{/if}}" id="email" name="email" type="email" value="{{formValues.email}}">
+        </div>
 
         <div class="form-group">
           <a id="privacy-link" target="_blank" rel="noopener noreferrer" href="/information/privacy">Privacy: how we use your personal information (opens new tab)</a>

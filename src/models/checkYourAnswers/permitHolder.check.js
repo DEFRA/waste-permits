@@ -3,7 +3,7 @@ const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
 const {PERMIT_HOLDER_DETAILS: ruleSetId} = Constants.Dynamics.RulesetIds
 
-const {COMPANY_DECLARE_BANKRUPTCY, COMPANY_DECLARE_OFFENCES, COMPANY_NUMBER, DIRECTOR_DATE_OF_BIRTH, PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, PERMIT_HOLDER_TYPE} = Constants.Routes
+const {COMPANY_DECLARE_BANKRUPTCY, COMPANY_DECLARE_OFFENCES, COMPANY_DIRECTOR_EMAIL, COMPANY_NUMBER, DIRECTOR_DATE_OF_BIRTH, PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, PERMIT_HOLDER_TYPE} = Constants.Routes
 
 const blankLine = {blankLine: true}
 
@@ -32,6 +32,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       this.getTypeLine(),
       this.getCompanyLine(),
       this.getDirectorsLine(),
+      this.getCompanySecretaryEmailLine(),
       this.getConvictionsLine(),
       this.getBankruptcyLine()
     ])
@@ -120,6 +121,17 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       prefix: 'director',
       answers: answers,
       links: [{path, type: `director's date of birth`}]
+    })
+  }
+
+  async getCompanySecretaryEmailLine () {
+    const {path} = COMPANY_DIRECTOR_EMAIL
+    const {email = ''} = await this.getCompanySecretaryDetails()
+    return this.buildLine({
+      heading: 'Company Secretary or director email',
+      prefix: 'company-secretary-email',
+      answers: [email],
+      links: [{path, type: 'company secretary or director email'}]
     })
   }
 

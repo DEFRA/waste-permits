@@ -28,7 +28,6 @@ let fakePrimaryContactDetails
 let fakeApplicationId = 'APPLICATION_ID'
 let fakeContactId = 'CONTACT_ID'
 let fakeAccountId = 'ACCOUNT_ID'
-let fakeCompanySecretaryDetailsId = 'COMPANY_SECRETARY_DETAILS_ID'
 let fakePrimaryContactDetailsId = 'PRIMARY_CONTACT_DETAILS_ID'
 
 let validPayload
@@ -46,10 +45,6 @@ lab.beforeEach(() => {
     id: fakeAccountId,
     name: 'Agent'
   }
-  fakeCompanySecretaryDetails = {
-    id: fakeCompanySecretaryDetailsId,
-    email: 'fred.james@email.com'
-  }
   fakePrimaryContactDetails = {
     id: fakePrimaryContactDetailsId,
     telephone: '+ 12  012 3456 7890'
@@ -65,8 +60,7 @@ lab.beforeEach(() => {
     'first-name': fakeContact.firstName,
     'last-name': fakeContact.lastName,
     'telephone': fakePrimaryContactDetails.telephone,
-    'email': fakeContact.email,
-    'company-secretary-email': fakeCompanySecretaryDetails.email
+    'email': fakeContact.email
   }
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -128,13 +122,8 @@ lab.experiment('Contact details page tests:', () => {
         'agent-company-label',
         'telephone-label',
         'telephone-hint',
-        'email-heading',
         'email-label',
-        'email-hint',
-        'company-secretary-email-label',
-        'company-secretary-email-hint',
-        'company-secretary-email-summary',
-        'company-secretary-email-description'
+        'email-hint'
       ])
     })
   })
@@ -291,16 +280,6 @@ lab.experiment('Contact details page tests:', () => {
           field: 'email',
           value: 'farm manager@hilltopfarming.co.uk',
           messages: ['Enter a valid email address for the main contact']
-        },
-        {
-          field: 'company-secretary-email',
-          value: '',
-          messages: ['Enter an email address for the Company Secretary or a director']
-        },
-        {
-          field: 'company-secretary-email',
-          value: 'john"hardman"harding@securityguards.com',
-          messages: ['Enter a valid email address for the Company Secretary or director']
         },
         {
           field: 'agent-company',
