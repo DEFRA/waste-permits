@@ -65,7 +65,7 @@ module.exports = class BaseController {
   }
 
   async checkRouteAccess (slug, application, payment) {
-    const {ALREADY_SUBMITTED, NOT_SUBMITTED, NOT_PAID, RECOVERY_FAILED} = Constants.Routes.ERROR
+    const {ALREADY_SUBMITTED, NOT_SUBMITTED, NOT_PAID, RECOVERY_FAILED} = Constants.Routes
     if (!application) {
       return RECOVERY_FAILED.path
     }
@@ -136,7 +136,7 @@ module.exports = class BaseController {
   }
 
   async handler (request, h, errors) {
-    const {START_AT_BEGINNING, TECHNICAL_PROBLEM, TIMEOUT} = Constants.Routes.ERROR
+    const {START_AT_BEGINNING, TECHNICAL_PROBLEM, TIMEOUT} = Constants.Routes
     if (this.cookieValidationRequired) {
       // Validate the cookie
       const cookieValidationResult = await CookieService.validateCookie(request)
@@ -173,7 +173,7 @@ module.exports = class BaseController {
     }
 
     switch (this.route) {
-      case Constants.Routes.ERROR:
+      case Constants.Routes:
       case Constants.Routes.PAGE_NOT_FOUND:
         return this._handler(request, h, errors)
       default:

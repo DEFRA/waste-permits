@@ -46,7 +46,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
       return this.showView({request, h, pageContext})
     } else {
       // If the application has not been paid for
-      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_PAID.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.NOT_PAID.path})
     }
   }
 }

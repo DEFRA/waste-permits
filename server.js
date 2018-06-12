@@ -169,9 +169,9 @@ const start = async () => {
 
     // if the response is a Boom error object and the status code is 404
     if (response.isBoom && response.output.statusCode === 404) {
-      return h.redirect(Constants.Routes.ERROR.PAGE_NOT_FOUND.path)
+      return h.redirect(Constants.Routes.PAGE_NOT_FOUND.path)
     } else if (response.isBoom && response.output.statusCode === 403) {
-      return h.redirect(Constants.Routes.ERROR.COOKIES_DISABLED.path)
+      return h.redirect(Constants.Routes.COOKIES_DISABLED.path)
     } else {
       return h.continue
     }

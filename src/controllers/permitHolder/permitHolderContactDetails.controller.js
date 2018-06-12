@@ -68,7 +68,7 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
       individualPermitHolderDetails.telephone = telephone
       await individualPermitHolderDetails.save(context)
 
-      return this.redirect({ request, h, redirectPath: Constants.Routes.ADDRESS.POSTCODE_PERMIT_HOLDER.path })
+      return this.redirect({ request, h, redirectPath: Constants.Routes.POSTCODE_PERMIT_HOLDER.path })
     }
   }
 }

@@ -10,11 +10,11 @@ module.exports = class PostcodeInvoiceController extends PostcodeController {
   }
 
   getManualEntryRoute () {
-    return Constants.Routes.ADDRESS.MANUAL_SITE.path
+    return Constants.Routes.MANUAL_SITE.path
   }
 
   getAddressSelectionPath () {
-    return Constants.Routes.ADDRESS.SELECT_SITE.path
+    return Constants.Routes.SELECT_SITE.path
   }
 
   getModel () {

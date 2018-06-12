@@ -14,9 +14,9 @@ module.exports = class PaymentBacsController extends BaseController {
     const payment = await Payment.getBacsPaymentDetails(context, applicationLineId)
 
     if (!application.isSubmitted()) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.NOT_SUBMITTED.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.NOT_SUBMITTED.path})
     } else if ((payment && payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED) || (application && application.paymentReceived)) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.ALREADY_SUBMITTED.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.ALREADY_SUBMITTED.path})
     }
 
     return this.showView({request, h, pageContext})

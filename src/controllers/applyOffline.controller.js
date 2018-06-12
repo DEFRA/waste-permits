@@ -58,7 +58,7 @@ module.exports = class ApplyOfflineController extends BaseController {
       }
       if ((!standardRule && !offlineCategory) || (standardRule && standardRule.canApplyOnline)) {
         LoggingService.logError(`Unable to get offline category for : ${standardRuleTypeId}`)
-        return this.redirect({request, h, redirectPath: Constants.Routes.ERROR.START_AT_BEGINNING.path})
+        return this.redirect({request, h, redirectPath: Constants.Routes.START_AT_BEGINNING.path})
       }
     }
 
