@@ -20,8 +20,4 @@ module.exports = class AddressSelectPermitHolderController extends AddressSelect
   getModel () {
     return PermitHolderDetails
   }
-
-  getNextRoute () {
-    return Constants.Routes.COMPANY_DECLARE_OFFENCES.path
-  }
 }

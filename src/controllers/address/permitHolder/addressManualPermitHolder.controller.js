@@ -12,8 +12,4 @@ module.exports = class AddressManualPermitHolderController extends AddressManual
   getModel () {
     return PermitHolderDetails
   }
-
-  getNextRoute () {
-    return Constants.Routes.COMPANY_DECLARE_OFFENCES.path
-  }
 }

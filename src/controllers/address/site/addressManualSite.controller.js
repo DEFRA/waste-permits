@@ -12,8 +12,4 @@ module.exports = class AddressManualSiteController extends AddressManualControll
   getModel () {
     return SiteNameAndLocation
   }
-
-  getNextRoute () {
-    return Constants.Routes.TASK_LIST.path
-  }
 }

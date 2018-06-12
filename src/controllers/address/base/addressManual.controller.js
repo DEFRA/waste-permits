@@ -58,7 +58,7 @@ module.exports = class AddressManualController extends BaseController {
 
       await this.getModel().saveManualAddress(request, applicationId, applicationLineId, addressDto)
 
-      return this.redirect({request, h, redirectPath: this.getNextRoute()})
+      return this.redirect({request, h, redirectPath: this.nextPath})
     }
   }
 }
