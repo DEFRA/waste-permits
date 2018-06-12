@@ -60,7 +60,7 @@ module.exports = class AddressSelectController extends BaseController {
       }
       await this.getModel().saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
 
-      return this.redirect({request, h, redirectPath: this.getNextRoute()})
+      return this.redirect({request, h, redirectPath: this.nextPath})
     }
   }
 }

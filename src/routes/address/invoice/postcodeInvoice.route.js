@@ -5,6 +5,6 @@ const Route = require('../../baseRoute')
 const PostcodeController = require('../../../controllers/address/invoice/postcodeInvoice.controller')
 const PostcodeValidator = require('../../../validators/address/postcode.validator')
 const validator = new PostcodeValidator()
-const controller = new PostcodeController({route: Constants.Routes.POSTCODE_INVOICE, validator})
+const controller = new PostcodeController({route: Constants.Routes.POSTCODE_INVOICE, nextRoute: Constants.Routes.TASK_LIST, validator})
 
 module.exports = Route.register('GET, POST', controller, validator)
