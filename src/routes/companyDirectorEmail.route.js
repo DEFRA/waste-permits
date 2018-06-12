@@ -7,6 +7,6 @@ const CompanyDirectorEmailValidator = require('../validators/companyDirectorEmai
 
 const validator = new CompanyDirectorEmailValidator()
 
-const controller = new CompanyDirectorEmailController({route: Constants.Routes.COMPANY_DIRECTOR_EMAIL, validator})
+const controller = new CompanyDirectorEmailController({route: Constants.Routes.PERMIT_HOLDER.COMPANY_DIRECTOR_EMAIL, validator})
 
 module.exports = Route.register('GET, POST', controller, validator)

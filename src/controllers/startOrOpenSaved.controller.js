@@ -37,7 +37,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       // Set the application ID in the cookie
       cookie.applicationId = application.id
 
-      nextPage = Constants.Routes.PERMIT_HOLDER_TYPE
+      nextPage = Constants.Routes.PERMIT_HOLDER.PERMIT_HOLDER_TYPE
     } else {
       nextPage = Constants.Routes.SEARCH_YOUR_EMAIL
     }

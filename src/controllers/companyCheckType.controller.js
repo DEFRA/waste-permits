@@ -16,7 +16,7 @@ module.exports = class CompanyTypeController extends BaseController {
     const companyType = company ? Constants.Company.Type[company.type] : undefined
 
     if (!companyType) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_CHECK_STATUS.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_HOLDER.COMPANY_CHECK_STATUS.path})
     }
 
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({
@@ -26,7 +26,7 @@ module.exports = class CompanyTypeController extends BaseController {
     pageContext.companyNumber = account.companyNumber
     pageContext.companyName = company.name
     pageContext.companyType = companyType
-    pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
+    pageContext.enterCompanyNumberRoute = Constants.Routes.PERMIT_HOLDER.COMPANY_NUMBER.path
 
     return this.showView({request, h, pageContext})
   }

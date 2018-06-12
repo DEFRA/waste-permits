@@ -3,7 +3,7 @@ const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
 const {PERMIT_HOLDER_DETAILS: ruleSetId} = Constants.Dynamics.RulesetIds
 
-const {COMPANY_DECLARE_BANKRUPTCY, COMPANY_DECLARE_OFFENCES, COMPANY_DIRECTOR_EMAIL, COMPANY_NUMBER, DIRECTOR_DATE_OF_BIRTH, PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, PERMIT_HOLDER_TYPE} = Constants.Routes
+const {COMPANY_DECLARE_BANKRUPTCY, COMPANY_DECLARE_OFFENCES, COMPANY_DIRECTOR_EMAIL, COMPANY_NUMBER, DIRECTOR_DATE_OF_BIRTH, INDIVIDUAL_NAME_AND_DATE_OF_BIRTH, PERMIT_HOLDER_TYPE} = Constants.Routes.PERMIT_HOLDER
 
 const blankLine = {blankLine: true}
 
@@ -50,7 +50,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
   }
 
   async getIndividualLine () {
-    const {path} = PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH
+    const {path} = INDIVIDUAL_NAME_AND_DATE_OF_BIRTH
     const {firstName = '', lastName = '', email = ''} = await this.getIndividualPermitHolder()
     const {dateOfBirth = 'unknown', telephone = 'unknown'} = await this.getIndividualPermitHolderDetails()
     const {tradingName = ''} = await this.getApplication()

@@ -5,7 +5,7 @@ const RecoveryService = require('../../services/recovery.service')
 
 const {
   Dynamics: {PERMIT_HOLDER_TYPES},
-  Routes: {PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, COMPANY_NUMBER}
+  Routes: {PERMIT_HOLDER}
 } = require('../../constants')
 
 const {INDIVIDUAL, SOLE_TRADER} = PERMIT_HOLDER_TYPES
@@ -18,10 +18,10 @@ module.exports = class PermitHolderDetailsController extends BaseController {
       case INDIVIDUAL:
       case SOLE_TRADER:
         // Re-direct to individual details flow
-        return this.redirect({request, h, redirectPath: PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH.path})
+        return this.redirect({request, h, redirectPath: PERMIT_HOLDER.INDIVIDUAL_NAME_AND_DATE_OF_BIRTH.path})
       default:
         // Re-direct to company details flow
-        return this.redirect({request, h, redirectPath: COMPANY_NUMBER.path})
+        return this.redirect({request, h, redirectPath: PERMIT_HOLDER.COMPANY_NUMBER.path})
     }
   }
 }

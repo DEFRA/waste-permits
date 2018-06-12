@@ -9,7 +9,7 @@ const AddressDetail = require('../../models/addressDetail.model')
 
 const {
   Dynamics: {PERMIT_HOLDER_TYPES: {SOLE_TRADER}},
-  Routes: {PERMIT_HOLDER_CONTACT_DETAILS, PERMIT_HOLDER_TRADING_NAME}
+  Routes: {PERMIT_HOLDER}
 } = require('../../constants')
 
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
@@ -87,7 +87,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       individualPermitHolderDetails.dateOfBirth = `${dobYear}-${dobMonth}-${dobDay}`
       await individualPermitHolderDetails.save(context)
 
-      const redirectPath = permitHolderType === SOLE_TRADER ? PERMIT_HOLDER_TRADING_NAME.path : PERMIT_HOLDER_CONTACT_DETAILS.path
+      const redirectPath = permitHolderType === SOLE_TRADER ? PERMIT_HOLDER.INDIVIDUAL_TRADING_NAME.path : PERMIT_HOLDER.CONTACT_DETAILS.path
 
       return this.redirect({ request, h, redirectPath })
     }

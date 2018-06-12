@@ -19,13 +19,13 @@ module.exports = class ApplyOfflineController extends BaseController {
   }
 
   static getChangeSelectionRoute (offlineCategory = {}, standardRule = {}) {
-    const {PERMIT_CATEGORY, PERMIT_SELECT, PERMIT_HOLDER_TYPE} = Constants.Routes
+    const {PERMIT_CATEGORY, PERMIT_SELECT, PERMIT_HOLDER} = Constants.Routes
     if (standardRule.permitName) {
       return PERMIT_SELECT
     } else if (offlineCategory.category) {
       return PERMIT_CATEGORY
     } else {
-      return PERMIT_HOLDER_TYPE
+      return PERMIT_HOLDER.PERMIT_HOLDER_TYPE
     }
   }
 

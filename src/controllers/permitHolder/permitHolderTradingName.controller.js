@@ -5,7 +5,7 @@ const RecoveryService = require('../../services/recovery.service')
 
 const {
   Dynamics: {TRADING_NAME_USAGE},
-  Routes: {PERMIT_HOLDER_CONTACT_DETAILS}
+  Routes: {PERMIT_HOLDER}
 } = require('../../constants')
 
 module.exports = class PermitHolderContactTradingNameController extends BaseController {
@@ -48,7 +48,7 @@ module.exports = class PermitHolderContactTradingNameController extends BaseCont
       }
 
       await application.save(context)
-      return this.redirect({ request, h, redirectPath: PERMIT_HOLDER_CONTACT_DETAILS.path })
+      return this.redirect({ request, h, redirectPath: PERMIT_HOLDER.CONTACT_DETAILS.path })
     }
   }
 }

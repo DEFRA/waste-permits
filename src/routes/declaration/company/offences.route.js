@@ -2,7 +2,7 @@
 
 const Constants = require('../../../constants')
 const Route = require('../../baseRoute')
-const {COMPANY_DECLARE_OFFENCES, COMPANY_DECLARE_BANKRUPTCY} = Constants.Routes
+const {COMPANY_DECLARE_OFFENCES, COMPANY_DECLARE_BANKRUPTCY} = Constants.Routes.PERMIT_HOLDER
 const CompanyOffencesController = require('../../../controllers/declaration/company/offences.controller')
 const CompanyOffencesValidator = require('../../../validators/declaration/company/offences.validator')
 const validator = new CompanyOffencesValidator()
