@@ -39,8 +39,8 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     pageContext.directors = directors
 
     if (directors.length > 1) {
-      pageContext.pageHeading = Constants.Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate
-      pageContext.pageTitle = Constants.buildPageTitle(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate)
+      pageContext.pageHeading = Constants.Routes.PERMIT_HOLDER.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate
+      pageContext.pageTitle = Constants.buildPageTitle(Constants.Routes.PERMIT_HOLDER.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate)
 
       // Change page title if there is an error using the following
       if (errors && errors.details) {
@@ -96,7 +96,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         await applicationContact.save(context)
       }
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DIRECTOR_EMAIL.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_HOLDER.COMPANY_DIRECTOR_EMAIL.path})
     }
   }
 

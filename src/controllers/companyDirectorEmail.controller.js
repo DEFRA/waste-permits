@@ -5,7 +5,7 @@ const BaseController = require('./base.controller')
 const AddressDetail = require('../models/addressDetail.model')
 const RecoveryService = require('../services/recovery.service')
 
-module.exports = class ContactDetailsController extends BaseController {
+module.exports = class CompanyDirectorEmailController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(errors)
     const context = await RecoveryService.createApplicationContext(h, {application: true})
@@ -31,7 +31,7 @@ module.exports = class ContactDetailsController extends BaseController {
       companySecretaryDetails.email = request.payload.email
       await companySecretaryDetails.save(context)
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_HOLDER.COMPANY_DECLARE_OFFENCES.path})
     }
   }
 }

@@ -46,7 +46,7 @@ module.exports = class CompanyNumberController extends BaseController {
         await application.save(context)
       }
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_CHECK_TYPE.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_HOLDER.COMPANY_CHECK_TYPE.path})
     }
   }
 }

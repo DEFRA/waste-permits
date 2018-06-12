@@ -6,7 +6,7 @@ const RecoveryService = require('../services/recovery.service')
 
 const {
   Dynamics: {TRADING_NAME_USAGE},
-  Routes: {DIRECTOR_DATE_OF_BIRTH, COMPANY_NUMBER, TASK_LIST}
+  Routes: {PERMIT_HOLDER, TASK_LIST}
 } = require('../constants')
 
 module.exports = class CompanyCheckNameController extends BaseController {
@@ -37,7 +37,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
     }
     pageContext.companyFound = company !== undefined
 
-    pageContext.enterCompanyNumberRoute = COMPANY_NUMBER.path
+    pageContext.enterCompanyNumberRoute = PERMIT_HOLDER.COMPANY_NUMBER.path
 
     return this.showView({request, h, pageContext})
   }
@@ -70,7 +70,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         await application.save(context)
       }
-      return this.redirect({request, h, redirectPath: DIRECTOR_DATE_OF_BIRTH.path})
+      return this.redirect({request, h, redirectPath: PERMIT_HOLDER.DIRECTOR_DATE_OF_BIRTH.path})
     }
   }
 }

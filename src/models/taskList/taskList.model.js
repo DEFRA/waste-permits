@@ -129,8 +129,8 @@ class TaskList extends BaseModel {
         available: false
       }, {
         id: 'give-permit-holder-details',
-        label: Constants.Routes.PERMIT_HOLDER_DETAILS.taskListHeading,
-        href: Constants.Routes.PERMIT_HOLDER_DETAILS.path,
+        label: Constants.Routes.PERMIT_HOLDER.PERMIT_HOLDER_DETAILS.taskListHeading,
+        href: Constants.Routes.PERMIT_HOLDER.PERMIT_HOLDER_DETAILS.path,
         completedLabelId: 'site-operator-completed',
         rulesetId: Constants.Dynamics.RulesetIds.PERMIT_HOLDER_DETAILS,
         taskListModelName: 'CompanyDetails',

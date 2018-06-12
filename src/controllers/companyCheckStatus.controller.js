@@ -13,7 +13,7 @@ module.exports = class CompanyStatusController extends BaseController {
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
     if (!company) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_CHECK_NAME.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_HOLDER.COMPANY_CHECK_NAME.path})
     }
 
     let companyStatus
@@ -23,7 +23,7 @@ module.exports = class CompanyStatusController extends BaseController {
     } else {
       const activeDirectors = await CompanyLookupService.getActiveDirectors(account.companyNumber)
       if (activeDirectors.length) {
-        return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_CHECK_NAME.path})
+        return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_HOLDER.COMPANY_CHECK_NAME.path})
       } else {
         companyStatus = Constants.Company.Status.NO_DIRECTORS
       }
@@ -37,7 +37,7 @@ module.exports = class CompanyStatusController extends BaseController {
     pageContext.companyNumber = account.companyNumber
     pageContext.companyName = company.name
     pageContext.companyStatus = companyStatus
-    pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
+    pageContext.enterCompanyNumberRoute = Constants.Routes.PERMIT_HOLDER.COMPANY_NUMBER.path
 
     return this.showView({request, h, pageContext})
   }

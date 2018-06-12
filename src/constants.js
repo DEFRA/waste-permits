@@ -156,6 +156,74 @@ Constants.Routes = {
       pageHeading: `What is the site address?`
     }
   },
+  PERMIT_HOLDER: {
+    COMPANY_CHECK_NAME: {
+      path: '/permit-holder/company/check-name',
+      view: 'companyCheckName',
+      pageHeading: `Is this the right company?`
+    },
+    COMPANY_CHECK_STATUS: {
+      path: '/permit-holder/company/status-not-active',
+      view: 'companyCheckStatus',
+      pageHeading: `We cannot issue a permit to that company because it {{{companyStatus}}}`
+    },
+    COMPANY_CHECK_TYPE: {
+      path: '/permit-holder/company/wrong-type',
+      view: 'companyCheckType',
+      pageHeading: `That company cannot apply because it is {{{companyType}}}`
+    },
+    COMPANY_DECLARE_OFFENCES: {
+      path: '/permit-holder/company/declare-offences',
+      view: 'declaration/company/offences',
+      pageHeading: 'Does anyone connected with your business have a conviction for a relevant offence?'
+    },
+    COMPANY_DECLARE_BANKRUPTCY: {
+      path: '/permit-holder/company/bankruptcy-insolvency',
+      view: 'declaration/company/bankruptcy',
+      pageHeading: 'Do you have current or past bankruptcy or insolvency proceedings to declare?'
+    },
+    COMPANY_DIRECTOR_EMAIL: {
+      path: '/permit-holder/company/director-email',
+      view: 'companyDirectorEmail',
+      pageHeading: `What is the email address for the Company Secretary or a director?`
+    },
+    COMPANY_NUMBER: {
+      path: '/permit-holder/company/number',
+      view: 'companyNumber',
+      pageHeading: `What is the UK company registration number?`,
+      taskListHeading: `What is the company name or registration number?`
+    },
+    DIRECTOR_DATE_OF_BIRTH: {
+      path: '/permit-holder/company/director-date-of-birth',
+      view: 'directorDateOfBirth',
+      pageHeading: `What is the director's date of birth?`,
+      pageHeadingAlternate: `What are the directors' dates of birth?`
+    },
+    CONTACT_DETAILS: {
+      path: '/permit-holder/contact-details',
+      view: 'permitHolder/permitHolderContactDetails',
+      pageHeading: `What are the permit holder's contact details?`
+    },
+    PERMIT_HOLDER_DETAILS: {
+      path: '/permit-holder/details',
+      taskListHeading: 'Give permit holder details'
+    },
+    INDIVIDUAL_NAME_AND_DATE_OF_BIRTH: {
+      path: '/permit-holder/name',
+      view: 'permitHolder/permitHolderNameAndDateOfBirth',
+      pageHeading: 'Who will be the permit holder?'
+    },
+    INDIVIDUAL_TRADING_NAME: {
+      path: '/permit-holder/trading-name',
+      view: 'permitHolder/permitHolderTradingName',
+      pageHeading: 'Do they do business using their own name or a trading name?'
+    },
+    PERMIT_HOLDER_TYPE: {
+      path: '/permit-holder',
+      view: 'permitHolder/permitHolderType',
+      pageHeading: 'Who will be the permit holder?'
+    }
+  },
   APPLICATION_RECEIVED: {
     path: `${Constants.APPLICATION_RECEIVED_URL}/{slug?}`,
     view: 'applicationReceived',
@@ -178,42 +246,6 @@ Constants.Routes = {
     view: 'saveAndReturn/checkYourEmail',
     pageHeading: 'Check your email',
     taskListHeading: 'Check your email'
-  },
-  COMPANY_CHECK_NAME: {
-    path: '/permit-holder/company/check-name',
-    view: 'companyCheckName',
-    pageHeading: `Is this the right company?`
-  },
-  COMPANY_CHECK_STATUS: {
-    path: '/permit-holder/company/status-not-active',
-    view: 'companyCheckStatus',
-    pageHeading: `We cannot issue a permit to that company because it {{{companyStatus}}}`
-  },
-  COMPANY_CHECK_TYPE: {
-    path: '/permit-holder/company/wrong-type',
-    view: 'companyCheckType',
-    pageHeading: `That company cannot apply because it is {{{companyType}}}`
-  },
-  COMPANY_DECLARE_OFFENCES: {
-    path: '/permit-holder/company/declare-offences',
-    view: 'declaration/company/offences',
-    pageHeading: 'Does anyone connected with your business have a conviction for a relevant offence?'
-  },
-  COMPANY_DECLARE_BANKRUPTCY: {
-    path: '/permit-holder/company/bankruptcy-insolvency',
-    view: 'declaration/company/bankruptcy',
-    pageHeading: 'Do you have current or past bankruptcy or insolvency proceedings to declare?'
-  },
-  COMPANY_DIRECTOR_EMAIL: {
-    path: '/permit-holder/company/director-email',
-    view: 'companyDirectorEmail',
-    pageHeading: `What is the email address for the Company Secretary or a director?`
-  },
-  COMPANY_NUMBER: {
-    path: '/permit-holder/company/number',
-    view: 'companyNumber',
-    pageHeading: `What is the UK company registration number?`,
-    taskListHeading: `What is the company name or registration number?`
   },
   CONFIDENTIALITY: {
     path: '/confidentiality',
@@ -243,12 +275,6 @@ Constants.Routes = {
     view: 'costTime',
     pageHeading: 'Costs and processing time',
     taskListHeading: 'Check costs and processing time'
-  },
-  DIRECTOR_DATE_OF_BIRTH: {
-    path: '/permit-holder/company/director-date-of-birth',
-    view: 'directorDateOfBirth',
-    pageHeading: `What is the director's date of birth?`,
-    pageHeadingAlternate: `What are the directors' dates of birth?`
   },
   DRAINAGE_TYPE_FAIL: {
     path: '/drainage-type/contact-us',
@@ -352,30 +378,6 @@ Constants.Routes = {
     path: '/permit/category',
     view: 'permitCategory',
     pageHeading: 'What do you want the permit for?'
-  },
-  PERMIT_HOLDER_CONTACT_DETAILS: {
-    path: '/permit-holder/contact-details',
-    view: 'permitHolder/permitHolderContactDetails',
-    pageHeading: `What are the permit holder's contact details?`
-  },
-  PERMIT_HOLDER_DETAILS: {
-    path: '/permit-holder/details',
-    taskListHeading: 'Give permit holder details'
-  },
-  PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH: {
-    path: '/permit-holder/name',
-    view: 'permitHolder/permitHolderNameAndDateOfBirth',
-    pageHeading: 'Who will be the permit holder?'
-  },
-  PERMIT_HOLDER_TRADING_NAME: {
-    path: '/permit-holder/trading-name',
-    view: 'permitHolder/permitHolderTradingName',
-    pageHeading: 'Do they do business using their own name or a trading name?'
-  },
-  PERMIT_HOLDER_TYPE: {
-    path: '/permit-holder',
-    view: 'permitHolder/permitHolderType',
-    pageHeading: 'Who will be the permit holder?'
   },
   PERMIT_SELECT: {
     path: '/permit/select',
