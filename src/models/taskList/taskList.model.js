@@ -193,8 +193,8 @@ class TaskList extends BaseModel {
         available: false
       }, {
         id: 'invoicing-details',
-        label: Constants.Routes.ADDRESS.POSTCODE_INVOICE.taskListHeading,
-        href: Constants.Routes.ADDRESS.POSTCODE_INVOICE.path,
+        label: Constants.Routes.POSTCODE_INVOICE.taskListHeading,
+        href: Constants.Routes.POSTCODE_INVOICE.path,
         completedLabelId: 'invoicing-details-completed',
         rulesetId: Constants.Dynamics.RulesetIds.INVOICING_DETAILS,
         taskListModelName: 'InvoiceAddress',

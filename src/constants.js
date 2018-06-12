@@ -6,7 +6,7 @@ const Constants = module.exports = {}
 
 Constants.SERVICE_NAME = 'Apply for a standard rules environmental permit'
 Constants.GDS_NAME = 'GOV.UK'
-Constants.COOKIE_PATH = { path: '/' }
+Constants.COOKIE_PATH = {path: '/'}
 Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
 Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
@@ -108,77 +108,58 @@ Constants.Routes = {
     path: '/',
     pageHeading: 'Waste Permits Home Page'
   },
-  ADDRESS: {
-    MANUAL_INVOICE: {
-      path: '/invoice/address/address-manual',
-      view: 'address/manualEntry',
-      pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`
-    },
-    MANUAL_PERMIT_HOLDER: {
-      path: '/permit-holder/address/address-manual',
-      view: 'address/manualEntry',
-      pageHeading: `What is their address?`
-    },
-    MANUAL_SITE: {
-      path: '/site/address/address-manual',
-      view: 'address/manualEntry',
-      pageHeading: `Enter the site address`
-    },
-    POSTCODE_INVOICE: {
-      path: '/invoice/address/postcode',
-      view: 'address/postcode',
-      pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`,
-      taskListHeading: 'Give invoicing details'
-    },
-    POSTCODE_PERMIT_HOLDER: {
-      path: '/permit-holder/address/postcode',
-      view: 'address/postcode',
-      pageHeading: `What is their address?`
-    },
-    POSTCODE_SITE: {
-      path: '/site/address/postcode',
-      view: 'address/postcode',
-      pageHeading: `What is the postcode for the site?`
-    },
-    SELECT_INVOICE: {
-      path: '/invoice/address/select-address',
-      view: 'address/selectAddress',
-      pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`
-    },
-    SELECT_PERMIT_HOLDER: {
-      path: '/permit-holder/address/select-address',
-      view: 'address/selectAddress',
-      pageHeading: `What is their address?`
-    },
-    SELECT_SITE: {
-      path: '/site/address/select-address',
-      view: 'address/selectAddress',
-      pageHeading: `What is the site address?`
-    }
+
+  // ADDRESS
+  // *******
+  MANUAL_INVOICE: {
+    path: '/invoice/address/address-manual',
+    view: 'address/manualEntry',
+    pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`
   },
-  APPLICATION_RECEIVED: {
-    path: `${Constants.APPLICATION_RECEIVED_URL}/{slug?}`,
-    view: 'applicationReceived',
-    pageHeading: `Application received`,
-    pageHeadingAlternate: `Application and card payment received`
+  MANUAL_PERMIT_HOLDER: {
+    path: '/permit-holder/address/address-manual',
+    view: 'address/manualEntry',
+    pageHeading: `What is their address?`
   },
-  APPLY_OFFLINE: {
-    path: '/start/apply-offline',
-    view: 'applyOffline',
-    pageHeading: `Apply for {{{chosenOption}}}`
+  MANUAL_SITE: {
+    path: '/site/address/address-manual',
+    view: 'address/manualEntry',
+    pageHeading: `Enter the site address`
   },
-  CHECK_BEFORE_SENDING: {
-    path: '/check-before-sending',
-    view: 'checkBeforeSending',
-    pageHeading: 'Check your answers',
-    taskListHeading: 'Send application and pay'
+  POSTCODE_INVOICE: {
+    path: '/invoice/address/postcode',
+    view: 'address/postcode',
+    pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`,
+    taskListHeading: 'Give invoicing details'
   },
-  CHECK_YOUR_EMAIL: {
-    path: '/save-return/check-your-email',
-    view: 'saveAndReturn/checkYourEmail',
-    pageHeading: 'Check your email',
-    taskListHeading: 'Check your email'
+  POSTCODE_PERMIT_HOLDER: {
+    path: '/permit-holder/address/postcode',
+    view: 'address/postcode',
+    pageHeading: `What is their address?`
   },
+  POSTCODE_SITE: {
+    path: '/site/address/postcode',
+    view: 'address/postcode',
+    pageHeading: `What is the postcode for the site?`
+  },
+  SELECT_INVOICE: {
+    path: '/invoice/address/select-address',
+    view: 'address/selectAddress',
+    pageHeading: `Where should we send invoices for the annual costs after the permit has been issued?`
+  },
+  SELECT_PERMIT_HOLDER: {
+    path: '/permit-holder/address/select-address',
+    view: 'address/selectAddress',
+    pageHeading: `What is their address?`
+  },
+  SELECT_SITE: {
+    path: '/site/address/select-address',
+    view: 'address/selectAddress',
+    pageHeading: `What is the site address?`
+  },
+
+  // PERMIT HOLDER
+  // *************
   COMPANY_CHECK_NAME: {
     path: '/permit-holder/company/check-name',
     view: 'companyCheckName',
@@ -215,6 +196,135 @@ Constants.Routes = {
     pageHeading: `What is the UK company registration number?`,
     taskListHeading: `What is the company name or registration number?`
   },
+  DIRECTOR_DATE_OF_BIRTH: {
+    path: '/permit-holder/company/director-date-of-birth',
+    view: 'directorDateOfBirth',
+    pageHeading: `What is the director's date of birth?`,
+    pageHeadingAlternate: `What are the directors' dates of birth?`
+  },
+  PERMIT_HOLDER_DETAILS: {
+    path: '/permit-holder/details',
+    taskListHeading: 'Give permit holder details'
+  },
+  PERMIT_HOLDER_CONTACT_DETAILS: {
+    path: '/permit-holder/contact-details',
+    view: 'permitHolder/permitHolderContactDetails',
+    pageHeading: `What are the permit holder's contact details?`
+  },
+  PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH: {
+    path: '/permit-holder/name',
+    view: 'permitHolder/permitHolderNameAndDateOfBirth',
+    pageHeading: 'Who will be the permit holder?'
+  },
+  PERMIT_HOLDER_TRADING_NAME: {
+    path: '/permit-holder/trading-name',
+    view: 'permitHolder/permitHolderTradingName',
+    pageHeading: 'Do they do business using their own name or a trading name?'
+  },
+  PERMIT_HOLDER_TYPE: {
+    path: '/permit-holder',
+    view: 'permitHolder/permitHolderType',
+    pageHeading: 'Who will be the permit holder?'
+  },
+
+  // PAYMENT
+  // *******
+  BACS_PAYMENT: {
+    path: '/pay/bacs',
+    view: 'payment/paymentBacs',
+    pageHeading: 'You have chosen to pay by bank transfer using Bacs'
+  },
+  CARD_PAYMENT: {
+    path: '/pay/card'
+  },
+  CARD_PROBLEM: {
+    path: `${Constants.PAYMENT_CARD_PROBLEM_URL}/{slug?}`,
+    view: 'payment/cardProblem',
+    pageHeading: 'Your card payment failed'
+  },
+  PAYMENT_RESULT: {
+    path: `${Constants.PAYMENT_RESULT_URL}/{slug?}`,
+    pageHeading: 'Your card payment failed'
+  },
+  PAYMENT_TYPE: {
+    path: '/pay/type',
+    view: 'payment/paymentType',
+    pageHeading: 'How do you want to pay?'
+  },
+
+  // ERRORS
+  // ******
+  ALREADY_SUBMITTED: {
+    path: `${Constants.ALREADY_SUBMITTED_URL}/{slug?}`,
+    view: 'error/alreadySubmitted',
+    pageHeading: `You have sent your application so you cannot go back and change it`
+  },
+  COOKIES_DISABLED: {
+    path: '/errors/cookies-off',
+    view: 'error/cookiesDisabled',
+    pageHeading: 'You must switch on cookies to use this service'
+  },
+  NOT_PAID: {
+    path: '/errors/order/card-payment-not-complete',
+    view: 'error/notPaid',
+    pageHeading: 'You need to pay for your application'
+  },
+  NOT_SUBMITTED: {
+    path: '/errors/order/check-answers-not-complete',
+    view: 'error/notSubmitted',
+    pageHeading: 'You need to check your answers and submit your application'
+  },
+  PAGE_NOT_FOUND: {
+    path: '/errors/page-not-found',
+    view: 'error/pageNotFound',
+    pageHeading: `We cannot find that page`
+  },
+  RECOVERY_FAILED: {
+    path: '/errors/recovery-failed',
+    view: 'error/recoveryFailed',
+    pageHeading: 'Sorry, we cannot find that application'
+  },
+  START_AT_BEGINNING: {
+    path: '/errors/order/start-at-beginning',
+    view: 'error/startAtBeginning',
+    pageHeading: 'Please start at the beginning of the application'
+  },
+  TECHNICAL_PROBLEM: {
+    path: '/errors/technical-problem',
+    view: 'error/technicalProblem',
+    pageHeading: 'Something went wrong'
+  },
+  TIMEOUT: {
+    path: '/errors/timeout',
+    view: 'error/timeout',
+    pageHeading: 'Your application has timed out'
+  },
+
+  // OTHER
+  // *****
+  APPLICATION_RECEIVED: {
+    path: `${Constants.APPLICATION_RECEIVED_URL}/{slug?}`,
+    view: 'applicationReceived',
+    pageHeading: `Application received`,
+    pageHeadingAlternate: `Application and card payment received`
+  },
+  APPLY_OFFLINE: {
+    path: '/start/apply-offline',
+    view: 'applyOffline',
+    pageHeading: `Apply for {{{chosenOption}}}`
+  },
+  CHECK_BEFORE_SENDING: {
+    path: '/check-before-sending',
+    view: 'checkBeforeSending',
+    pageHeading: 'Check your answers',
+    taskListHeading: 'Send application and pay'
+  },
+  CHECK_YOUR_EMAIL: {
+    path: '/save-return/check-your-email',
+    view: 'saveAndReturn/checkYourEmail',
+    pageHeading: 'Check your email',
+    taskListHeading: 'Check your email'
+  },
   CONFIDENTIALITY: {
     path: '/confidentiality',
     view: 'declaration/confidentiality/confidentiality',
@@ -244,12 +354,6 @@ Constants.Routes = {
     pageHeading: 'Costs and processing time',
     taskListHeading: 'Check costs and processing time'
   },
-  DIRECTOR_DATE_OF_BIRTH: {
-    path: '/permit-holder/company/director-date-of-birth',
-    view: 'directorDateOfBirth',
-    pageHeading: `What is the director's date of birth?`,
-    pageHeadingAlternate: `What are the directors' dates of birth?`
-  },
   DRAINAGE_TYPE_FAIL: {
     path: '/drainage-type/contact-us',
     view: 'drainageTypeFail',
@@ -260,53 +364,6 @@ Constants.Routes = {
     view: 'drainageTypeDrain',
     pageHeading: 'Where does the vehicle storage area drain to?',
     taskListHeading: 'Confirm you have a suitable vehicle storage area'
-  },
-  ERROR: {
-    ALREADY_SUBMITTED: {
-      path: `${Constants.ALREADY_SUBMITTED_URL}/{slug?}`,
-      view: 'error/alreadySubmitted',
-      pageHeading: `You have sent your application so you cannot go back and change it`
-    },
-    COOKIES_DISABLED: {
-      path: '/errors/cookies-off',
-      view: 'error/cookiesDisabled',
-      pageHeading: 'You must switch on cookies to use this service'
-    },
-    NOT_PAID: {
-      path: '/errors/order/card-payment-not-complete',
-      view: 'error/notPaid',
-      pageHeading: 'You need to pay for your application'
-    },
-    NOT_SUBMITTED: {
-      path: '/errors/order/check-answers-not-complete',
-      view: 'error/notSubmitted',
-      pageHeading: 'You need to check your answers and submit your application'
-    },
-    PAGE_NOT_FOUND: {
-      path: '/errors/page-not-found',
-      view: 'error/pageNotFound',
-      pageHeading: `We cannot find that page`
-    },
-    RECOVERY_FAILED: {
-      path: '/errors/recovery-failed',
-      view: 'error/recoveryFailed',
-      pageHeading: 'Sorry, we cannot find that application'
-    },
-    START_AT_BEGINNING: {
-      path: '/errors/order/start-at-beginning',
-      view: 'error/startAtBeginning',
-      pageHeading: 'Please start at the beginning of the application'
-    },
-    TECHNICAL_PROBLEM: {
-      path: '/errors/technical-problem',
-      view: 'error/technicalProblem',
-      pageHeading: 'Something went wrong'
-    },
-    TIMEOUT: {
-      path: '/errors/timeout',
-      view: 'error/timeout',
-      pageHeading: 'Your application has timed out'
-    }
   },
   FIRE_PREVENTION_PLAN: {
     path: '/fire-prevention-plan',
@@ -324,58 +381,11 @@ Constants.Routes = {
     pageHeading: 'Which management system will you use?',
     taskListHeading: 'Tell us which management system you use'
   },
-  PAYMENT: {
-    BACS_PAYMENT: {
-      path: '/pay/bacs',
-      view: 'payment/paymentBacs',
-      pageHeading: 'You have chosen to pay by bank transfer using Bacs'
-    },
-    CARD_PAYMENT: {
-      path: '/pay/card'
-    },
-    CARD_PROBLEM: {
-      path: `${Constants.PAYMENT_CARD_PROBLEM_URL}/{slug?}`,
-      view: 'payment/cardProblem',
-      pageHeading: 'Your card payment failed'
-    },
-    PAYMENT_RESULT: {
-      path: `${Constants.PAYMENT_RESULT_URL}/{slug?}`,
-      pageHeading: 'Your card payment failed'
-    },
-    PAYMENT_TYPE: {
-      path: '/pay/type',
-      view: 'payment/paymentType',
-      pageHeading: 'How do you want to pay?'
-    }
-  },
+
   PERMIT_CATEGORY: {
     path: '/permit/category',
     view: 'permitCategory',
     pageHeading: 'What do you want the permit for?'
-  },
-  PERMIT_HOLDER_CONTACT_DETAILS: {
-    path: '/permit-holder/contact-details',
-    view: 'permitHolder/permitHolderContactDetails',
-    pageHeading: `What are the permit holder's contact details?`
-  },
-  PERMIT_HOLDER_DETAILS: {
-    path: '/permit-holder/details',
-    taskListHeading: 'Give permit holder details'
-  },
-  PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH: {
-    path: '/permit-holder/name',
-    view: 'permitHolder/permitHolderNameAndDateOfBirth',
-    pageHeading: 'Who will be the permit holder?'
-  },
-  PERMIT_HOLDER_TRADING_NAME: {
-    path: '/permit-holder/trading-name',
-    view: 'permitHolder/permitHolderTradingName',
-    pageHeading: 'Do they do business using their own name or a trading name?'
-  },
-  PERMIT_HOLDER_TYPE: {
-    path: '/permit-holder',
-    view: 'permitHolder/permitHolderType',
-    pageHeading: 'Who will be the permit holder?'
   },
   PERMIT_SELECT: {
     path: '/permit/select',

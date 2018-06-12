@@ -10,11 +10,11 @@ module.exports = class PostcodePermitHolderController extends PostcodeController
   }
 
   getManualEntryRoute () {
-    return Constants.Routes.ADDRESS.MANUAL_PERMIT_HOLDER.path
+    return Constants.Routes.MANUAL_PERMIT_HOLDER.path
   }
 
   getAddressSelectionPath () {
-    return Constants.Routes.ADDRESS.SELECT_PERMIT_HOLDER.path
+    return Constants.Routes.SELECT_PERMIT_HOLDER.path
   }
 
   getModel () {

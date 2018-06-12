@@ -30,7 +30,7 @@ module.exports = class SiteGridReferenceController extends BaseController {
 
       await SiteNameAndLocation.saveGridReference(request, request.payload['site-grid-reference'], applicationId, applicationLineId)
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.ADDRESS.POSTCODE_SITE.path})
+      return this.redirect({request, h, redirectPath: Constants.Routes.POSTCODE_SITE.path})
     }
   }
 }

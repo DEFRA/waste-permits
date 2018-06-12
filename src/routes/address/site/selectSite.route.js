@@ -5,6 +5,6 @@ const Route = require('../../baseRoute')
 const AddressSelectSiteController = require('../../../controllers/address/site/selectSite.controller')
 const AddressSelectValidator = require('../../../validators/address/addressSelect.validator')
 const validator = new AddressSelectValidator()
-const controller = new AddressSelectSiteController({route: Constants.Routes.ADDRESS.SELECT_SITE, validator})
+const controller = new AddressSelectSiteController({route: Constants.Routes.SELECT_SITE, validator})
 
 module.exports = Route.register('GET, POST', controller, validator)

@@ -87,6 +87,6 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
     await application.save(request.app.data)
 
-    return this.redirect({request, h, redirectPath: Constants.Routes.PAYMENT.PAYMENT_TYPE.path})
+    return this.redirect({request, h, redirectPath: Constants.Routes.PAYMENT_TYPE.path})
   }
 }

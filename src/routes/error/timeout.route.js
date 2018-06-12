@@ -3,6 +3,6 @@
 const Constants = require('../../constants')
 const Route = require('../baseRoute')
 const TimeoutController = require('../../controllers/error/timeout.controller')
-const controller = new TimeoutController({route: Constants.Routes.ERROR.TIMEOUT, cookieValidationRequired: false, applicationRequired: false})
+const controller = new TimeoutController({route: Constants.Routes.TIMEOUT, cookieValidationRequired: false, applicationRequired: false})
 
 module.exports = Route.register('GET', controller)

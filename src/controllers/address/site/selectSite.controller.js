@@ -10,11 +10,11 @@ module.exports = class AddressSelectSiteController extends AddressSelectControll
   }
 
   getManualEntryRoute () {
-    return Constants.Routes.ADDRESS.MANUAL_SITE.path
+    return Constants.Routes.MANUAL_SITE.path
   }
 
   getPostcodeRoute () {
-    return Constants.Routes.ADDRESS.POSTCODE_SITE.path
+    return Constants.Routes.POSTCODE_SITE.path
   }
 
   getModel () {
