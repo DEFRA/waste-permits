@@ -18,15 +18,13 @@ module.exports = class ContactDetailsController extends BaseController {
       pageContext.formValues = request.payload
     } else {
       const contact = application.contactId ? await Contact.getById(context, application.contactId) : new Contact()
-      const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(context, applicationId)
       const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(context, applicationId)
       if (contact) {
         pageContext.formValues = {
           'first-name': contact.firstName,
           'last-name': contact.lastName,
           'telephone': primaryContactDetails.telephone,
-          'email': contact.email,
-          'company-secretary-email': companySecretaryDetails.email
+          'email': contact.email
         }
         if (application.agentId) {
           const account = await Account.getById(context, application.agentId)
@@ -50,7 +48,6 @@ module.exports = class ContactDetailsController extends BaseController {
         'last-name': lastName,
         'is-contact-an-agent': isAgent,
         'agent-company': agentCompany,
-        'company-secretary-email': companySecretaryEmail,
         telephone,
         email
       } = request.payload
@@ -85,10 +82,6 @@ module.exports = class ContactDetailsController extends BaseController {
 
       application.contactId = contact.id
       await application.save(context)
-
-      const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(context, applicationId)
-      companySecretaryDetails.email = companySecretaryEmail
-      await companySecretaryDetails.save(context)
 
       const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(context, applicationId)
       primaryContactDetails.telephone = telephone
