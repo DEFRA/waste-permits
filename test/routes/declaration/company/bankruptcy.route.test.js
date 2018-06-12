@@ -9,7 +9,6 @@ const GeneralTestHelper = require('../../generalTestHelper.test')
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Application = require('../../../../src/models/application.model')
-const Payment = require('../../../../src/models/payment.model')
 const PermitHolderDetails = require('../../../../src/models/taskList/permitHolderDetails.model')
 const LoggingService = require('../../../../src/services/logging.service')
 const RecoveryService = require('../../../../src/services/recovery.service')
@@ -18,6 +17,8 @@ const {COOKIE_RESULT, Dynamics: {PERMIT_HOLDER_TYPES}} = require('../../../../sr
 let sandbox
 
 let fakeApplication
+let fakeRecovery
+let fakePermitHolderType
 
 const routePath = '/permit-holder/company/bankruptcy-insolvency'
 const nextRoutePath = '/task-list'
@@ -30,17 +31,24 @@ lab.beforeEach(() => {
     bankruptcy: 'yes'
   }
 
+  fakePermitHolderType = PERMIT_HOLDER_TYPES.LIMITED_COMPANY
+
+  fakeRecovery = () => ({
+    authToken: 'AUTH_TOKEN',
+    applicationId: fakeApplication.id,
+    application: new Application(fakeApplication),
+    permitHolderType: fakePermitHolderType
+  })
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => {})
   sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(PermitHolderDetails, 'updateCompleteness').value(() => {})
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
 })
 
 lab.afterEach(() => {
@@ -82,7 +90,7 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
       })
 
       lab.test('with operator type of limited company shows correct conditional content', async () => {
-        sandbox.stub(RecoveryService, 'getPermitHolderType').value(() => PERMIT_HOLDER_TYPES.LIMITED_COMPANY)
+        fakePermitHolderType = PERMIT_HOLDER_TYPES.LIMITED_COMPANY
         doc = await GeneralTestHelper.getDoc(getRequest)
 
         Code.expect(doc.getElementById('operator-type-is-limited-company')).to.exist()
@@ -91,7 +99,7 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
       })
 
       lab.test('with operator type of individual shows correct conditional content', async () => {
-        sandbox.stub(RecoveryService, 'getPermitHolderType').value(() => PERMIT_HOLDER_TYPES.INDIVIDUAL)
+        fakePermitHolderType = PERMIT_HOLDER_TYPES.INDIVIDUAL
         doc = await GeneralTestHelper.getDoc(getRequest)
 
         Code.expect(doc.getElementById('operator-type-is-individual')).to.exist()
@@ -100,7 +108,7 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
       })
 
       lab.test('with operator type of partnership shows correct conditional content', async () => {
-        sandbox.stub(RecoveryService, 'getPermitHolderType').value(() => PERMIT_HOLDER_TYPES.PARTNERSHIP)
+        fakePermitHolderType = PERMIT_HOLDER_TYPES.PARTNERSHIP
         doc = await GeneralTestHelper.getDoc(getRequest)
 
         Code.expect(doc.getElementById('operator-type-is-partnership')).to.exist()
@@ -110,7 +118,7 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
       })
 
       lab.test('with operator type of limited liability partnership shows correct conditional content', async () => {
-        sandbox.stub(RecoveryService, 'getPermitHolderType').value(() => PERMIT_HOLDER_TYPES.LIMITED_LIABILITY_PARTNERSHIP)
+        fakePermitHolderType = PERMIT_HOLDER_TYPES.LIMITED_LIABILITY_PARTNERSHIP
         doc = await GeneralTestHelper.getDoc(getRequest)
 
         Code.expect(doc.getElementById('operator-type-is-limited-liability-partnership')).to.exist()
@@ -121,10 +129,10 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('recovery failed')
         }
 
         const res = await server.inject(getRequest)
@@ -190,9 +198,11 @@ lab.experiment('Company Declare Bankruptcy tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => Promise.reject(new Error('read failed'))
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('recovery failed')
+        }
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)

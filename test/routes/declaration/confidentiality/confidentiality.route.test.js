@@ -12,11 +12,13 @@ const Application = require('../../../../src/models/application.model')
 const Confidentiality = require('../../../../src/models/taskList/confidentiality.model')
 const Payment = require('../../../../src/models/payment.model')
 const LoggingService = require('../../../../src/services/logging.service')
+const RecoveryService = require('../../../../src/services/recovery.service')
 const {COOKIE_RESULT} = require('../../../../src/constants')
 
 let sandbox
 
 let fakeApplication
+let fakeRecovery
 
 const routePath = '/confidentiality'
 const nextRoutePath = '/task-list'
@@ -29,17 +31,22 @@ lab.beforeEach(() => {
     confidentiality: true
   }
 
+  fakeRecovery = () => ({
+    authToken: 'AUTH_TOKEN',
+    applicationId: fakeApplication.id,
+    application: new Application(fakeApplication)
+  })
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => {})
   sandbox.stub(Application.prototype, 'save').value(() => false)
   sandbox.stub(Confidentiality, 'updateCompleteness').value(() => {})
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
 })
 
 lab.afterEach(() => {
@@ -80,10 +87,10 @@ lab.experiment('Is part of your application commercially confidential? page test
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = async () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('recovery failed')
         }
 
         const res = await server.inject(getRequest)
@@ -149,9 +156,11 @@ lab.experiment('Is part of your application commercially confidential? page test
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => Promise.reject(new Error('read failed'))
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('recovery failed')
+        }
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
