@@ -23,8 +23,14 @@ class Contact extends BaseModel {
     ]
   }
 
+  static selectedDynamicsFields (customFilter) {
+    return super.selectedDynamicsFields(customFilter)
+    // Do not retrieve the director date of birth
+      .filter((field) => field !== 'dob.day')
+  }
+
   static async getById (context, id) {
-    return super.getById(context, id, ({dynamics}) => dynamics !== 'defra_dateofbirthdaycompanieshouse')
+    return super.getById(context, id, ({field}) => field !== 'dob.day')
   }
 
   static async list (context, permitHolderOrganisationId = undefined, contactType = Constants.Dynamics.COMPANY_DIRECTOR) {
@@ -35,7 +41,7 @@ class Contact extends BaseModel {
       filter += ` and parentcustomerid_account/accountid eq ${permitHolderOrganisationId}`
     }
     let orderBy = 'lastname asc,firstname asc'
-    const query = `contacts?$select=${Contact.selectedDynamicsFields(({dynamics}) => dynamics !== 'defra_dateofbirthdaycompanieshouse')}&$filter=${filter}&$orderby=${orderBy}`
+    const query = `contacts?$select=${Contact.selectedDynamicsFields()}&$filter=${filter}&$orderby=${orderBy}`
 
     try {
       const response = await dynamicsDal.search(query)

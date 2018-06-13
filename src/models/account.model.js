@@ -14,7 +14,7 @@ class Account extends BaseModel {
   static get mapping () {
     return [
       {field: 'id', dynamics: 'accountid'},
-      {field: 'companyNumber', dynamics: 'defra_companyhouseid', length: {max: 8, min: 8}},
+      {field: 'companyNumber', dynamics: 'defra_companyhouseid', encode: true, length: {max: 8, min: 8}},
       {field: 'accountName', dynamics: 'name', length: {max: 160}},
       {field: 'isDraft', dynamics: 'defra_draft'},
       {field: 'isValidatedWithCompaniesHouse', dynamics: 'defra_validatedwithcompanyhouse'}
@@ -37,19 +37,7 @@ class Account extends BaseModel {
   }
 
   static async getByCompanyNumber (context, companyNumber) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    try {
-      const filter = `defra_companyhouseid eq '${companyNumber}'`
-      const query = encodeURI(`accounts?$select=${Account.selectedDynamicsFields()}&$filter=${filter}`)
-      let result = await dynamicsDal.search(query)
-
-      if (result && result.value) {
-        return Account.dynamicsToModel(result.value.pop() || [])
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to get Account by application ID: ${error}`)
-      throw error
-    }
+    return super.getBy(context, {companyNumber})
   }
 
   async save (context, isDraft) {

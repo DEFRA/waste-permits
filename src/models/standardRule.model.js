@@ -20,7 +20,7 @@ class StandardRule extends BaseModel {
       {field: 'standardRuleTypeId', dynamics: '_defra_standardruletypeid_value'},
       {field: 'permitName', dynamics: 'defra_rulesnamegovuk'},
       {field: 'limits', dynamics: 'defra_limits'},
-      {field: 'code', dynamics: 'defra_code'},
+      {field: 'code', dynamics: 'defra_code', encode: true},
       {field: 'wamitabRiskLevel', dynamics: 'defra_wamitabrisklevel'},
       {field: 'guidanceUrl', dynamics: 'defra_guidanceurl'},
       {field: 'canApplyFor', dynamics: 'defra_canapplyfor'},
@@ -35,17 +35,7 @@ class StandardRule extends BaseModel {
   }
 
   static async getByCode (context, code) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    const filter = `defra_code eq '${code}'`
-    const query = encodeURI(`defra_standardrules?$select=${StandardRule.selectedDynamicsFields()}&$filter=${filter}`)
-    try {
-      const response = await dynamicsDal.search(query)
-      const result = response.value.pop()
-      return StandardRule.dynamicsToModel(result)
-    } catch (error) {
-      LoggingService.logError(`Unable to get StandardRule by code: ${error}`)
-      throw error
-    }
+    return super.getBy(context, {code})
   }
 
   static async getByApplicationLineId (context, applicationLineId) {

@@ -89,18 +89,7 @@ class Application extends BaseModel {
   }
 
   static async listBySaveAndReturnEmail (context, saveAndReturnEmail) {
-    if (saveAndReturnEmail) {
-      const dynamicsDal = new DynamicsDalService(context.authToken)
-      const filter = `defra_saveandreturnemail eq '${saveAndReturnEmail}' and  defra_submittedon eq null`
-      const query = encodeURI(`${this.entity}?$select=${Application.selectedDynamicsFields()}&$filter=${filter}`)
-      try {
-        const response = await dynamicsDal.search(query)
-        return response.value.map((result) => Application.dynamicsToModel(result))
-      } catch (error) {
-        LoggingService.logError(`Unable to get Applications by saveAndReturnEmail: ${error}`)
-        throw error
-      }
-    }
+    return super.listBy(context, {saveAndReturnEmail})
   }
 
   async sendSaveAndReturnEmail (context, origin) {

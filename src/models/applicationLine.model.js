@@ -23,19 +23,7 @@ class ApplicationLine extends BaseModel {
   }
 
   static async getByApplicationId (context, applicationId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    const filter = `_defra_applicationid_value eq ${applicationId}`
-    const query = `defra_applicationlines?$select=${ApplicationLine.selectedDynamicsFields()}&$filter=${filter}`
-    try {
-      const response = await dynamicsDal.search(query)
-      const result = response && response.value ? response.value.pop() : undefined
-      if (result) {
-        return ApplicationLine.dynamicsToModel(result)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to get ApplicationLine by ApplicationId(${applicationId}): ${error}`)
-      throw error
-    }
+    return super.getBy(context, {applicationId})
   }
 
   static async getValidRulesetIds (context, applicationLineId) {

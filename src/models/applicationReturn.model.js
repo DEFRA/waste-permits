@@ -1,8 +1,6 @@
 'use strict'
 
-const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
-const LoggingService = require('../services/logging.service')
 
 class ApplicationReturn extends BaseModel {
   static get entity () {
@@ -16,40 +14,16 @@ class ApplicationReturn extends BaseModel {
   static get mapping () {
     return [
       {field: 'applicationId', dynamics: '_defra_application_value'},
-      {field: 'slug', dynamics: 'defra_suffix'}
+      {field: 'slug', dynamics: 'defra_suffix', encode: true}
     ]
   }
 
   static async getByApplicationId (context, applicationId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    const filter = `_defra_application_value eq ${applicationId}`
-    const query = `defra_saveandreturns?$select=${ApplicationReturn.selectedDynamicsFields()}&$filter=${filter}`
-    try {
-      const response = await dynamicsDal.search(query)
-      const result = response && response.value ? response.value.pop() : undefined
-      if (result) {
-        return ApplicationReturn.dynamicsToModel(result)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to get ApplicationReturn by Application ID(${applicationId}): ${error}`)
-      throw error
-    }
+    return super.getBy(context, {applicationId})
   }
 
   static async getBySlug (context, slug) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    const filter = `defra_suffix eq '${slug}'`
-    const query = `defra_saveandreturns?$select=${ApplicationReturn.selectedDynamicsFields()}&$filter=${filter}`
-    try {
-      const response = await dynamicsDal.search(query)
-      const result = response && response.value ? response.value.pop() : undefined
-      if (result) {
-        return ApplicationReturn.dynamicsToModel(result)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to get ApplicationReturn by Slug(${slug}): ${error}`)
-      throw error
-    }
+    return super.getBy(context, {slug})
   }
 }
 

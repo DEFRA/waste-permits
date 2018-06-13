@@ -268,6 +268,43 @@ module.exports = class BaseModel {
     return model
   }
 
+  static async getBy (context, filterData = {}) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+
+    const filter = Object.entries(filterData)
+      .map(([field, val]) => `${this[field].dynamics} eq ${this[field].encode ? `'${encodeURIComponent(val)}'` : val}`)
+      .join(' and ')
+    const query = `${this.entity}?$select=${this.selectedDynamicsFields()}&$filter=${filter}`
+
+    try {
+      const response = await dynamicsDal.search(query)
+      const result = response && response.value ? response.value.pop() : undefined
+      if (result) {
+        return this.dynamicsToModel(result)
+      }
+    } catch (error) {
+      LoggingService.logError(`Unable to get ${this.name} by ${JSON.stringify(filterData)}: ${error}`)
+      throw error
+    }
+  }
+
+  static async listBy (context, filterData = {}) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+
+    const filter = Object.entries(filterData)
+      .map(([field, val]) => `${this[field].dynamics} eq ${this[field].encode ? `'${encodeURIComponent(val)}'` : val}`)
+      .join(' and ')
+    const query = `${this.entity}?$select=${this.selectedDynamicsFields()}&$filter=${filter}`
+
+    try {
+      const response = await dynamicsDal.search(query)
+      return response.value.map((result) => this.dynamicsToModel(result))
+    } catch (error) {
+      LoggingService.logError(`Unable to list ${this.name} by ${JSON.stringify(filterData)}: ${error}`)
+      throw error
+    }
+  }
+
   async _deleteBoundReferences (dynamicsDal) {
     // This method deletes any bound references as specified in the mapping method if the new value of any key is undefined.
     //
