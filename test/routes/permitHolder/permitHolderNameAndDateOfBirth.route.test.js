@@ -149,7 +149,7 @@ lab.experiment('Permit Holder Name page tests:', () => {
 
   lab.experiment('POST:', () => {
     lab.experiment('Success:', () => {
-      lab.test(`POST ${routePath} (new Permit Holder) redirects to the next route ${nextRoutePath}`, async () => {
+      lab.test(`(new Permit Holder) redirects to the next route ${nextRoutePath}`, async () => {
         // No current permit holder
         fakeApplication.individualPermitHolderId = () => {
           return undefined
@@ -198,6 +198,16 @@ lab.experiment('Permit Holder Name page tests:', () => {
     })
 
     lab.experiment('Failure:', () => {
+      const day = 13
+      const month = 10
+      const year = 2016
+
+      lab.beforeEach(() => {
+        sandbox.stub(Date, 'now').value(() => new Date(year, month - 1, day))
+        postRequest.payload['dob-day'] = day
+        postRequest.payload['dob-month'] = month
+      })
+
       lab.test(`POST ${routePath} shows an error message when the first name is blank`, async () => {
         postRequest.payload['first-name'] = ''
         await checkValidationErrors('first-name', ['Enter a first name'])
@@ -254,6 +264,17 @@ lab.experiment('Permit Holder Name page tests:', () => {
       lab.test(`POST ${routePath} shows an error message when the date of birth is not a real date`, async () => {
         postRequest.payload['dob-month'] = '15'
         await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
+      })
+
+      lab.test(`POST ${routePath} shows an error message when the age is less than 16`, async () => {
+        postRequest.payload['dob-day'] = day + 1
+        postRequest.payload['dob-year'] = year - 16
+        await checkValidationErrors('dob-day', ['Enter a date of birth that is older than 16 and under 120 years of age'])
+      })
+
+      lab.test(`POST ${routePath} shows an error message when the age is greater than 120`, async () => {
+        postRequest.payload['dob-year'] = year - 120
+        await checkValidationErrors('dob-day', ['Enter a date of birth that is older than 16 and under 120 years of age'])
       })
     })
   })
