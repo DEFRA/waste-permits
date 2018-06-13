@@ -26,26 +26,9 @@ class Location extends BaseModel {
   }
 
   static async getByApplicationId (context, applicationId, applicationLineId) {
-    // const location = await super.getBy(context, {applicationId})
-    // location.applicationLineId = applicationLineId
-    // return location
-    if (applicationId) {
-      const dynamicsDal = new DynamicsDalService(context.authToken)
-      const filter = `_defra_applicationid_value eq ${applicationId}`
-      const query = encodeURI(`defra_locations?$select=${Location.selectedDynamicsFields()}&$filter=${filter}`)
-      try {
-        const response = await dynamicsDal.search(query)
-        const result = response.value[0]
-        if (result) {
-          const location = Location.dynamicsToModel(result)
-          location.applicationLineId = applicationLineId
-          return location
-        }
-      } catch (error) {
-        LoggingService.logError(`Unable to get Location by application ID: ${error}`)
-        throw error
-      }
-    }
+    const location = await super.getBy(context, {applicationId})
+    location.applicationLineId = applicationLineId
+    return location
   }
 
   async save (context) {
