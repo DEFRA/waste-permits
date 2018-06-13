@@ -1,6 +1,5 @@
 'use strict'
 
-const moment = require('moment')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
@@ -42,15 +41,6 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
   }
 
   async doPost (request, h, errors) {
-    // Perform manual (non-Joi) validation of date of birth
-    const dobError = await this._validateDateOfBirth(request)
-    if (dobError) {
-      if (!errors) {
-        errors = { details: [] }
-      }
-      errors.details.push(dobError)
-    }
-
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
@@ -90,36 +80,6 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       const redirectPath = permitHolderType === SOLE_TRADER ? PERMIT_HOLDER_TRADING_NAME.path : PERMIT_HOLDER_CONTACT_DETAILS.path
 
       return this.redirect({ request, h, redirectPath })
-    }
-  }
-
-  // This is required because the date of birth is split across three fields
-  async _validateDateOfBirth (request) {
-    const dobDayFieldId = 'dob-day'
-    const dobMonthFieldId = 'dob-month'
-    const dobYearFieldId = 'dob-year'
-
-    const dobDay = request.payload[dobDayFieldId]
-    const dobMonth = request.payload[dobMonthFieldId]
-    const dobYear = request.payload[dobYearFieldId]
-
-    const date = moment({
-      day: dobDay,
-      month: parseInt(dobMonth) - 1, // Because moment 0 indexes months
-      year: dobYear
-    })
-
-    if (dobDay && dobMonth && dobYear && date.isValid()) {
-      return null
-    } else {
-      const errorPath = 'dob-day'
-
-      return {
-        message: 'Enter a valid date',
-        path: [errorPath],
-        type: 'invalid',
-        context: { key: errorPath, label: errorPath }
-      }
     }
   }
 }
