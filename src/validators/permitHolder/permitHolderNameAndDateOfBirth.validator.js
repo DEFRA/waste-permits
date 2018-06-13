@@ -1,11 +1,23 @@
 'use strict'
 
+const moment = require('moment')
 const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 const Contact = require('../../models/contact.model')
 
 const LEADING_AND_TRAILING_DASHES_REGEX = /(^-.*$|^.*-$)/
 const LETTERS_HYPHENS_AND_APOSTROPHES_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+$/
+const MAX_AGE = 120
+const MIN_AGE = 16
+
+function getAge (day, month, year) {
+  const date = moment({
+    day,
+    month: parseInt(month) - 1, // Because moment 0 indexes months
+    year
+  })
+  return day && month && year && date.isValid() ? -date.diff(Date.now(), 'years', true) : 0
+}
 
 module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValidator {
   constructor (options) {
@@ -30,7 +42,8 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         'string.max': `Enter a shorter last name with no more than ${Contact.lastName.length.max} characters`
       },
       'dob-day': {
-        'invalid': 'Enter a valid date of birth'
+        'custom.invalid': 'Enter a valid date of birth',
+        'custom.range': `Enter a date of birth that is older than ${MIN_AGE} and under ${MAX_AGE} years of age`
       }
     }
   }
@@ -59,6 +72,13 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
       'last-name': {
         'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value),
         'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value)
+      },
+      'dob-day': {
+        'custom.invalid': (dobDay, {'dob-month': dobMonth, 'dob-year': dobYear}) => !getAge(dobDay, dobMonth, dobYear),
+        'custom.range': (dobDay, {'dob-month': dobMonth, 'dob-year': dobYear}) => {
+          const age = getAge(dobDay, dobMonth, dobYear)
+          return !(age > MIN_AGE && age < MAX_AGE)
+        }
       }
     }
   }
