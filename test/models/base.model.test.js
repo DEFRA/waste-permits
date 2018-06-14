@@ -19,7 +19,8 @@ class Model extends BaseModel {
       {field: 'dob.month', dynamics: 'dynamicsDobMonth'},
       {field: 'dob.year', dynamics: 'dynamicsDobYear'},
       {field: 'ref', dynamics: 'dynamicsRef', readOnly: true},
-      {field: 'regime', dynamics: 'dynamicsRegime', constant: 'REGIME'}
+      {field: 'regime', dynamics: 'dynamicsRegime', constant: 'REGIME'},
+      {field: 'optionalData', dynamics: 'dynamicsOptionalData'}
     ]
   }
 }
@@ -35,7 +36,8 @@ const modelData = {
     year: 'YEAR'
   },
   ref: 'REF',
-  regime: 'REGIME'
+  regime: 'REGIME',
+  optionalData: undefined
 }
 
 const dynamicsRequestData = {
@@ -44,7 +46,8 @@ const dynamicsRequestData = {
   dynamicsName: 'MODEL_NAME',
   dynamicsDobMonth: 'MONTH',
   dynamicsDobYear: 'YEAR',
-  dynamicsRegime: 'REGIME'
+  dynamicsRegime: 'REGIME',
+  dynamicsOptionalData: undefined
 }
 
 const dynamicsReplyData = {

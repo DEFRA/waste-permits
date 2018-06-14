@@ -1,8 +1,6 @@
 'use strict'
 
-const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
-const LoggingService = require('../services/logging.service')
 
 class Location extends BaseModel {
   static get entity () {
@@ -27,7 +25,9 @@ class Location extends BaseModel {
 
   static async getByApplicationId (context, applicationId, applicationLineId) {
     const location = await super.getBy(context, {applicationId})
-    location.applicationLineId = applicationLineId
+    if (location) {
+      location.applicationLineId = applicationLineId
+    }
     return location
   }
 

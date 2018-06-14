@@ -163,7 +163,7 @@ module.exports = class BaseCheck {
   async getLocationDetail () {
     const {locationDetail} = this.data
     const {id} = await this.getLocation()
-    if (!locationDetail) {
+    if (id && !locationDetail) {
       this.data.locationDetail = await LocationDetail.getByLocationId(this.data, id)
     }
     return this.data.locationDetail || {}
