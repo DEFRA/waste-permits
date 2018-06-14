@@ -14,6 +14,8 @@ const Address = require('../../../src/models/address.model')
 const AddressDetail = require('../../../src/models/addressDetail.model')
 const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.model')
 
+const COMPLETENESS_PARAMETER = 'defra_pholderdetailsrequired_completed'
+
 let sandbox
 let fakeApplication
 let fakeApplicationLine
@@ -123,7 +125,7 @@ lab.afterEach(() => {
 })
 
 const testCompleteness = async (expectedResult) => {
-  const result = await PermitHolderDetails.isComplete(authToken, fakeApplication.id)
+  const result = await PermitHolderDetails.checkComplete()
   Code.expect(result).to.equal(expectedResult)
 }
 
@@ -176,10 +178,8 @@ lab.experiment('Model persistence methods:', () => {
 })
 
 lab.experiment('Task List: Permit Holder Details Model tests:', () => {
-  lab.test('updateCompleteness() method updates the task list item completeness', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-    await PermitHolderDetails.updateCompleteness(authToken, fakeApplication.id, fakeApplicationLine.id)
-    Code.expect(spy.callCount).to.equal(1)
+  lab.test(`completenessParameter is ${COMPLETENESS_PARAMETER}`, async () => {
+    Code.expect(PermitHolderDetails.completenessParameter).to.equal(COMPLETENESS_PARAMETER)
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete for a company', async () => {

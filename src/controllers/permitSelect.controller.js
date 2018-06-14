@@ -49,8 +49,7 @@ module.exports = class PermitSelectController extends BaseController {
       // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
       applicationLine = new ApplicationLine({
         applicationId: applicationId,
-        standardRuleId: standardRule.id,
-        parametersId: undefined
+        standardRuleId: standardRule.id
       })
 
       await applicationLine.save(context)

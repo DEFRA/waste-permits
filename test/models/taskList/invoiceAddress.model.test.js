@@ -11,6 +11,8 @@ const Address = require('../../../src/models/address.model')
 const AddressDetail = require('../../../src/models/addressDetail.model')
 const InvoiceAddress = require('../../../src/models/taskList/invoiceAddress.model')
 
+const COMPLETENESS_PARAMETER = 'defra_invoicingdetails_completed'
+
 let sandbox
 
 const request = {app: {data: {}}}
@@ -60,6 +62,7 @@ lab.beforeEach(() => {
   sandbox.stub(DynamicsDalService.prototype, 'update').value(() => fakeAddress1.id)
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine({ id: applicationLineId }))
   sandbox.stub(AddressDetail, 'getByApplicationIdAndType').value(() => new AddressDetail({ addressId: 'ADDRESS_ID' }))
+  sandbox.stub(AddressDetail, 'getBillingInvoicingDetails').value(() => new AddressDetail({ addressId: 'ADDRESS_ID' }))
   sandbox.stub(Address.prototype, 'save').value(() => undefined)
   sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress1))
   sandbox.stub(Address, 'getByUprn').value(() => new Address(fakeAddress1))
@@ -125,15 +128,19 @@ lab.experiment('Task List: Invoice Address Model tests:', () => {
   })
 
   lab.experiment('Completeness:', () => {
-    lab.test('updateCompleteness() method updates the task list item completeness', async () => {
-      const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-      await InvoiceAddress.updateCompleteness(authToken, applicationId, applicationLineId)
-      Code.expect(spy.callCount).to.equal(1)
+    lab.test(`completenessParameter is ${COMPLETENESS_PARAMETER}`, async () => {
+      Code.expect(InvoiceAddress.completenessParameter).to.equal(COMPLETENESS_PARAMETER)
     })
 
-    lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
-      const result = await InvoiceAddress.isComplete(authToken, applicationId, applicationLineId)
-      Code.expect(result).to.be.true()
+    lab.test('checkComplete() method correctly returns FALSE when the address details are not set', async () => {
+      AddressDetail.getBillingInvoicingDetails = () => {}
+      const result = await InvoiceAddress.checkComplete()
+      Code.expect(result).to.equal(false)
+    })
+
+    lab.test('checkComplete() method correctly returns TRUE when address details are set', async () => {
+      const result = await InvoiceAddress.checkComplete()
+      Code.expect(result).to.equal(true)
     })
   })
 })
