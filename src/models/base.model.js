@@ -217,9 +217,7 @@ module.exports = class BaseModel {
           } else {
             if (value !== undefined || field !== 'id') {
               const val = ObjectPath.get(this, field)
-              if (val !== undefined) {
-                dynamicsData[dynamics] = isDate ? new Date(val).toISOString() : val
-              }
+              dynamicsData[dynamics] = isDate && val !== undefined ? new Date(val).toISOString() : val
             }
           }
         }

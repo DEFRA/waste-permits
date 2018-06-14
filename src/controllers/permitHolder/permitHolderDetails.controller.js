@@ -15,6 +15,8 @@ module.exports = class PermitHolderDetailsController extends BaseController {
     const {permitHolderType} = await RecoveryService.createApplicationContext(h)
 
     switch (permitHolderType) {
+      case undefined:
+        throw new Error('Permit Holder Type is undefined')
       case INDIVIDUAL:
       case SOLE_TRADER:
         // Re-direct to individual details flow
