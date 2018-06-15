@@ -153,6 +153,26 @@ lab.experiment('Model persistence methods:', () => {
     await PermitHolderDetails.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
     Code.expect(spy.callCount).to.equal(1)
   })
+
+  lab.test('saveManualAddress() method correctly creates an invoice address from a selected address that is already in Dynamics', async () => {
+    const addressDto = {
+      uprn: fakeAddress1.uprn,
+      postcode: fakeAddress1.postcode
+    }
+    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    await PermitHolderDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
+    Code.expect(spy.callCount).to.equal(2)
+  })
+
+  lab.test('saveManualAddress() method correctly saves an invoice address that is not already in Dynamics', async () => {
+    Address.getByUprn = () => undefined
+    const addressDto = {
+      postcode: fakeAddress1.postcode
+    }
+    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    await PermitHolderDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
+    Code.expect(spy.callCount).to.equal(2)
+  })
 })
 
 lab.experiment('Task List: Permit Holder Details Model tests:', () => {

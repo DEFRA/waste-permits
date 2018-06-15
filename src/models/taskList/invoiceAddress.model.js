@@ -79,7 +79,8 @@ module.exports = class InvoiceAddress extends BaseModel {
 
     // Get the Address for this AddressDetail (if there is one)
     let address = await Address.getById(context, addressDetail.addressId)
-    if (!address) {
+    if (!address || address.fromAddressLookup) {
+      // Create a new address if changing from a selected address
       address = new Address(addressDto)
     } else {
       Object.assign(address, addressDto)

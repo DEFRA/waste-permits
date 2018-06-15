@@ -23,6 +23,7 @@ const fakeApplicationLine = {
 
 const fakeAddress = {
   id: 'ADDRESS_DETAIL_ID',
+  uprn: 'UPRN',
   postcode: 'BS1 5AH'
 }
 
@@ -50,6 +51,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => fakeAddress.id)
   sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
   sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
   sandbox.stub(Location, 'getByApplicationId').value(() => new Location(fakeLocation))
@@ -57,6 +59,7 @@ lab.beforeEach(() => {
   sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(fakeLocationDetail))
   sandbox.stub(LocationDetail.prototype, 'save').value(() => {})
   sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
+  sandbox.stub(Address, 'getByUprn').value(() => new Address(fakeAddress))
 })
 
 lab.afterEach(() => {
@@ -116,6 +119,32 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
     const spy = sinon.spy(LocationDetail.prototype, 'save')
     await SiteNameAndLocation.saveGridReference(request, fakeLocationDetail.gridReference, authToken, applicationId, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
+  })
+  lab.experiment('Model persistence methods:', () => {
+    lab.test('getAddress() method correctly retrieves an Address', async () => {
+      const address = await SiteNameAndLocation.getAddress(request, authToken, applicationId)
+      Code.expect(address.uprn).to.be.equal(fakeAddress.uprn)
+    })
+
+    lab.test('saveManualAddress() method correctly creates an site address from a selected address that is already in Dynamics', async () => {
+      const addressDto = {
+        uprn: fakeAddress.uprn,
+        postcode: fakeAddress.postcode
+      }
+      const spy = sinon.spy(LocationDetail.prototype, 'save')
+      await SiteNameAndLocation.saveManualAddress(request, applicationId, applicationLineId, addressDto)
+      Code.expect(spy.callCount).to.equal(1)
+    })
+
+    lab.test('saveManualAddress() method correctly saves an site address that is not already in Dynamics', async () => {
+      Address.getByUprn = () => undefined
+      const addressDto = {
+        postcode: fakeAddress.postcode
+      }
+      const spy = sinon.spy(LocationDetail.prototype, 'save')
+      await SiteNameAndLocation.saveManualAddress(request, applicationId, applicationLineId, addressDto)
+      Code.expect(spy.callCount).to.equal(1)
+    })
   })
 
   lab.test('updateCompleteness() method updates the task list item completeness', async () => {
