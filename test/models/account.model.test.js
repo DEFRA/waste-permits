@@ -14,12 +14,14 @@ let sandbox
 let testAccount
 const fakeAccountData = {
   companyNumber: '01234567',
+  organisationType: 'ORGANISATION_TYPE',
   accountName: 'COMPANY_NAME',
   isDraft: true
 }
 
 const fakeApplicationData = {
   id: 'APPLICATION_ID',
+  organisationType: 'ORGANISATION_TYPE',
   permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
   tradingName: null
 }
@@ -55,6 +57,7 @@ lab.experiment('Account Model tests:', () => {
         accountid: fakeAccountData.id,
         name: fakeAccountData.accountName,
         defra_companyhouseid: fakeAccountData.companyNumber,
+        defra_organisation_type: fakeAccountData.organisationType,
         defra_draft: true
       }
     }
@@ -64,6 +67,7 @@ lab.experiment('Account Model tests:', () => {
 
     Code.expect(testAccount.companyNumber).to.equal(fakeAccountData.companyNumber)
     Code.expect(testAccount.accountName).to.equal(fakeAccountData.accountName)
+    Code.expect(testAccount.organisationType).to.equal(fakeAccountData.organisationType)
 
     // Should have been converted from null to undefined
     Code.expect(testAccount.tradingName).to.equal(undefined)
@@ -77,6 +81,7 @@ lab.experiment('Account Model tests:', () => {
         accountid: fakeAccountData.id,
         name: fakeAccountData.accountName,
         defra_companyhouseid: fakeAccountData.companyNumber,
+        defra_organisation_type: fakeAccountData.organisationType,
         defra_draft: true
       }
     }
@@ -85,6 +90,7 @@ lab.experiment('Account Model tests:', () => {
     const account = await Account.getByApplicationId(authToken, applicationId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
+    Code.expect(account.organisationType).to.equal(fakeAccountData.organisationType)
   })
 
   lab.test('getByCompanyNumber() method returns a single Account object', async () => {
@@ -96,6 +102,7 @@ lab.experiment('Account Model tests:', () => {
           accountid: fakeAccountData.id,
           name: fakeAccountData.accountName,
           defra_companyhouseid: fakeAccountData.companyNumber,
+          defra_organisation_type: fakeAccountData.organisationType,
           defra_draft: true
         }]
       }
@@ -105,6 +112,7 @@ lab.experiment('Account Model tests:', () => {
     const account = await Account.getByCompanyNumber(authToken, fakeAccountData.companyNumber)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
+    Code.expect(account.organisationType).to.equal(fakeAccountData.organisationType)
   })
 
   lab.test('save() method saves a new Account object', async () => {
