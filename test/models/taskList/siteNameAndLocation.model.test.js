@@ -12,6 +12,8 @@ const LocationDetail = require('../../../src/models/locationDetail.model')
 const Address = require('../../../src/models/address.model')
 const SiteNameAndLocation = require('../../../src/models/taskList/siteNameAndLocation.model')
 
+const COMPLETENESS_PARAMETER = 'defra_locationrequired_completed'
+
 let sandbox
 
 const fakeApplicationLine = {
@@ -71,7 +73,7 @@ const testCompleteness = async (obj, expectedResult) => {
   fakeLocation.siteName = obj.siteName
   fakeLocationDetail.gridReference = obj.gridReference
   fakeAddress.postcode = obj.postcode
-  const result = await SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId)
+  const result = await SiteNameAndLocation.checkComplete()
   Code.expect(result).to.equal(expectedResult)
 }
 
@@ -147,14 +149,12 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
     })
   })
 
-  lab.test('updateCompleteness() method updates the task list item completeness', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-    await SiteNameAndLocation.updateCompleteness(authToken, applicationId, applicationLineId)
-    Code.expect(spy.callCount).to.equal(1)
+  lab.test(`completenessParameter is ${COMPLETENESS_PARAMETER}`, async () => {
+    Code.expect(SiteNameAndLocation.completenessParameter).to.equal(COMPLETENESS_PARAMETER)
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
-    const result = await SiteNameAndLocation.isComplete(authToken, applicationId, applicationLineId)
+    const result = await SiteNameAndLocation.checkComplete(authToken, applicationId, applicationLineId)
     Code.expect(result).to.be.true()
   })
 

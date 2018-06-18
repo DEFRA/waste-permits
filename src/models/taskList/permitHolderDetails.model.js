@@ -1,22 +1,17 @@
 'use strict'
 
 const Constants = require('../../constants')
-const DynamicsDalService = require('../../services/dynamicsDal.service')
-const BaseModel = require('../base.model')
+const {PERMIT_HOLDER_DETAILS} = Constants.Dynamics.CompletedParamters
+
+const Completeness = require('./completeness.model')
 const LoggingService = require('../../services/logging.service')
 const Account = require('../account.model')
 const Application = require('../application.model')
-const ApplicationLine = require('../applicationLine.model')
 const Contact = require('../contact.model')
 const Address = require('../address.model')
 const AddressDetail = require('../addressDetail.model')
 
-module.exports = class PermitHolderDetails extends BaseModel {
-  constructor (data) {
-    super()
-    this.applicationLineId = data.applicationLineId
-  }
-
+module.exports = class PermitHolderDetails extends Completeness {
   static async getAddress (request, applicationId) {
     let address
     try {
@@ -100,48 +95,27 @@ module.exports = class PermitHolderDetails extends BaseModel {
     }
   }
 
-  static async updateCompleteness (context, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-
-    try {
-      const applicationLine = await ApplicationLine.getById(context, applicationLineId)
-      const isComplete = await PermitHolderDetails.isComplete(context, applicationId, applicationLineId)
-
-      const entity = {
-        [Constants.Dynamics.CompletedParamters.PERMIT_HOLDER_DETAILS]: isComplete
-      }
-      const query = `defra_wasteparamses(${applicationLine.parametersId})`
-      await dynamicsDal.update(query, entity)
-    } catch (error) {
-      LoggingService.logError(`Unable to update CompanyDetails completeness: ${error}`)
-      throw error
-    }
+  static get completenessParameter () {
+    return PERMIT_HOLDER_DETAILS
   }
 
-  static async isComplete (context, applicationId) {
-    let isComplete = false
-    try {
-      const {isIndividual, permitHolderOrganisationId, permitHolderIndividualId} = await Application.getById(context, applicationId)
+  static async checkComplete (context, applicationId) {
+    const {isIndividual, permitHolderOrganisationId, permitHolderIndividualId} = await Application.getById(context, applicationId)
 
-      if (isIndividual) {
-        // Get the Contact for this application
-        const contact = await Contact.getById(context, permitHolderIndividualId)
-        const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
-        const address = await Address.getById(context, addressDetail.addressId)
+    if (isIndividual) {
+      // Get the Contact for this application
+      const contact = await Contact.getById(context, permitHolderIndividualId)
+      const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
+      const address = await Address.getById(context, addressDetail.addressId)
 
-        let isContactComplete = contact && contact.firstName && contact.lastName
-        let isContactDetailComplete = addressDetail.dateOfBirth && addressDetail.telephone
+      let isContactComplete = contact && contact.firstName && contact.lastName
+      let isContactDetailComplete = addressDetail.dateOfBirth && addressDetail.telephone
 
-        isComplete = Boolean(isContactComplete && isContactDetailComplete && address)
-      } else {
-        // Get the Account for this application
-        const account = await Account.getById(context, permitHolderOrganisationId)
-        isComplete = Boolean(account && account.accountName)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to calculate PermitHolderDetails completeness: ${error}`)
-      throw error
+      return Boolean(isContactComplete && isContactDetailComplete && address)
+    } else {
+      // Get the Account for this application
+      const account = await Account.getById(context, permitHolderOrganisationId)
+      return Boolean(account && account.accountName)
     }
-    return isComplete
   }
 }

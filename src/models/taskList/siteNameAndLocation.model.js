@@ -1,17 +1,16 @@
 'use strict'
 
 const Constants = require('../../constants')
+const {SITE_NAME_LOCATION} = Constants.Dynamics.CompletedParamters
 
-const DynamicsDalService = require('../../services/dynamicsDal.service')
-const BaseModel = require('../base.model')
-const ApplicationLine = require('../applicationLine.model')
+const Completeness = require('./completeness.model')
 const Location = require('../location.model')
 const LocationDetail = require('../locationDetail.model')
 const Address = require('../address.model')
 const LoggingService = require('../../services/logging.service')
 const Utilities = require('../../utilities/utilities')
 
-module.exports = class SiteNameAndLocation extends BaseModel {
+module.exports = class SiteNameAndLocation extends Completeness {
   static async getSiteName (request, applicationId, applicationLineId) {
     let siteName
     try {
@@ -241,50 +240,27 @@ module.exports = class SiteNameAndLocation extends BaseModel {
     await SiteNameAndLocation.updateCompleteness(context, applicationId, applicationLineId)
   }
 
-  static async updateCompleteness (context, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-
-    try {
-      const applicationLine = await ApplicationLine.getById(context, applicationLineId)
-      const isComplete = await SiteNameAndLocation.isComplete(context, applicationId, applicationLineId)
-
-      const entity = {
-        [Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION]: isComplete
-      }
-      const query = `defra_wasteparamses(${applicationLine.parametersId})`
-      await dynamicsDal.update(query, entity)
-    } catch (error) {
-      LoggingService.logError(`Unable to update SiteNameAndLocation completeness: ${error}`)
-      throw error
-    }
+  static get completenessParameter () {
+    return SITE_NAME_LOCATION
   }
 
-  static async isComplete (context, applicationId, applicationLineId) {
-    let isComplete = false
-    try {
-      // Get the Location for this application
-      const location = await Location.getByApplicationId(context, applicationId, applicationLineId)
+  static async checkComplete (context, applicationId, applicationLineId) {
+    // Get the Location for this application
+    const location = await Location.getByApplicationId(context, applicationId, applicationLineId)
 
-      // Get the LocationDetail
-      let locationDetail
-      if (location) {
-        locationDetail = await LocationDetail.getByLocationId(context, location.id)
-      }
-
-      let address
-      if (locationDetail) {
-        address = await Address.getById(context, locationDetail.addressId)
-      }
-
-      if (location && locationDetail && address) {
-        isComplete =
-          location.siteName !== undefined && location.siteName.length > 0 &&
-          locationDetail.gridReference !== undefined && locationDetail.gridReference.length > 0
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to calculate SiteNameAndLocation completeness: ${error}`)
-      throw error
+    // Get the LocationDetail
+    let locationDetail
+    if (location) {
+      locationDetail = await LocationDetail.getByLocationId(context, location.id)
     }
-    return isComplete
+
+    let address
+    if (locationDetail) {
+      address = await Address.getById(context, locationDetail.addressId)
+    }
+
+    return Boolean(location && locationDetail && address &&
+        location.siteName !== undefined && location.siteName.length > 0 &&
+        locationDetail.gridReference !== undefined && locationDetail.gridReference.length > 0)
   }
 }

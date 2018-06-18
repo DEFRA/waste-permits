@@ -1,15 +1,14 @@
 'use strict'
 
 const Constants = require('../../constants')
+const {INVOICING_DETAILS} = Constants.Dynamics.CompletedParamters
 
-const DynamicsDalService = require('../../services/dynamicsDal.service')
-const BaseModel = require('../base.model')
-const ApplicationLine = require('../applicationLine.model')
+const Completeness = require('./completeness.model')
 const Address = require('../address.model')
 const AddressDetail = require('../addressDetail.model')
 const LoggingService = require('../../services/logging.service')
 
-module.exports = class InvoiceAddress extends BaseModel {
+module.exports = class InvoiceAddress extends Completeness {
   static async getAddress (request, applicationId) {
     let address
     try {
@@ -97,34 +96,12 @@ module.exports = class InvoiceAddress extends BaseModel {
     await InvoiceAddress.updateCompleteness(context, applicationId, applicationLineId)
   }
 
-  static async updateCompleteness (context, applicationId, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    try {
-      const applicationLine = await ApplicationLine.getById(context, applicationLineId)
-      const isComplete = await InvoiceAddress.isComplete(context, applicationId, applicationLineId)
-
-      const entity = {
-        [Constants.Dynamics.CompletedParamters.INVOICING_DETAILS]: isComplete
-      }
-      const query = `defra_wasteparamses(${applicationLine.parametersId})`
-      await dynamicsDal.update(query, entity)
-    } catch (error) {
-      LoggingService.logError(`Unable to update InvoiceAddress completeness: ${error}`)
-      throw error
-    }
+  static get completenessParameter () {
+    return INVOICING_DETAILS
   }
 
-  static async isComplete (context, applicationId) {
-    let isComplete = false
-    try {
-      const addressDetail = await AddressDetail.getBillingInvoicingDetails(context, applicationId)
-      if (addressDetail && addressDetail.addressId) {
-        isComplete = Address.getById(addressDetail.addressId) !== undefined
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to calculate InvoiceAddress completeness: ${error}`)
-      throw error
-    }
-    return isComplete
+  static async checkComplete (context, applicationId) {
+    const addressDetail = await AddressDetail.getBillingInvoicingDetails(context, applicationId)
+    return Boolean(addressDetail && addressDetail.addressId && await Address.getById(context, addressDetail.addressId))
   }
 }
