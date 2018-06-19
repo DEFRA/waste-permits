@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CostTime = require('../models/taskList/costTime.model')
 const RecoveryService = require('../services/recovery.service')
@@ -25,6 +25,6 @@ module.exports = class CostTimeController extends BaseController {
 
     await CostTime.updateCompleteness(context, applicationId, applicationLineId)
 
-    return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
+    return this.redirect({request, h, redirectPath: Routes.TASK_LIST.path})
   }
 }

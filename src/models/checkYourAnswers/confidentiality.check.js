@@ -1,7 +1,7 @@
 const Constants = require('../../constants')
 const BaseCheck = require('./base.check')
 
-const {path} = Constants.Routes.CONFIDENTIALITY
+const {path} = require('../../routes').CONFIDENTIALITY
 const {CONFIRM_CONFIDENTIALLY: ruleSetId} = Constants.Dynamics.RulesetIds
 
 module.exports = class ConfidentialityCheck extends BaseCheck {

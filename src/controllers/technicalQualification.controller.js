@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.Dynamics.TechnicalQualification
@@ -60,13 +61,13 @@ module.exports = class TechnicalQualificationController extends BaseController {
   static async _getPath (technicalQualification) {
     switch (parseInt(technicalQualification)) {
       case WAMITAB_QUALIFICATION.TYPE:
-        return Constants.Routes.UPLOAD_WAMITAB_QUALIFICATION.path
+        return Routes.UPLOAD_WAMITAB_QUALIFICATION.path
       case REGISTERED_ON_A_COURSE.TYPE:
-        return Constants.Routes.UPLOAD_COURSE_REGISTRATION.path
+        return Routes.UPLOAD_COURSE_REGISTRATION.path
       case DEEMED_COMPETENCE.TYPE:
-        return Constants.Routes.UPLOAD_DEEMED_EVIDENCE.path
+        return Routes.UPLOAD_DEEMED_EVIDENCE.path
       case ESA_EU_SKILLS.TYPE:
-        return Constants.Routes.UPLOAD_ESA_EU_SKILLS.path
+        return Routes.UPLOAD_ESA_EU_SKILLS.path
       default:
         throw new Error(`Unexpected technical qualification (${technicalQualification})`)
     }

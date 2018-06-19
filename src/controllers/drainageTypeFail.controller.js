@@ -2,6 +2,7 @@
 
 const Merge = require('deepmerge')
 const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const DrainageTypes = Merge({}, Constants.Dynamics.DrainageTypes)
@@ -25,7 +26,7 @@ module.exports = class DrainageTypeFailController extends BaseController {
     }
 
     if (drainageType.allowed) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
+      return this.redirect({request, h, redirectPath: Routes.TASK_LIST.path})
     }
 
     drainageType.description = drainageType.description.toLowerCase()

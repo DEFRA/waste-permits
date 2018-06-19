@@ -6,9 +6,10 @@ const RecoveryService = require('../../services/recovery.service')
 
 const {
   COOKIE_KEY: {STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID},
-  Dynamics: {PERMIT_HOLDER_TYPES},
-  Routes: {APPLY_OFFLINE, PERMIT_CATEGORY}
+  Dynamics: {PERMIT_HOLDER_TYPES}
 } = require('../../constants')
+
+const {APPLY_OFFLINE, PERMIT_CATEGORY} = require('../../routes')
 
 module.exports = class PermitHolderTypeController extends BaseController {
   static getHolderTypes (application) {

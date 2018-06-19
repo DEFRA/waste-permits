@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const TaskList = require('../models/taskList/taskList.model')
 const RecoveryService = require('../services/recovery.service')
@@ -24,7 +24,7 @@ module.exports = class TaskListController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
+    pageContext.permitCategoryRoute = Routes.PERMIT_CATEGORY.path
 
     return this.showView({request, h, pageContext})
   }

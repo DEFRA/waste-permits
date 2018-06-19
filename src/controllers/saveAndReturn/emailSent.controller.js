@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../../constants')
+const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const SaveAndReturn = require('../../models/taskList/saveAndReturn.model')
 const RecoveryService = require('../../services/recovery.service')
@@ -49,13 +49,13 @@ module.exports = class EmailSentController extends BaseController {
           } catch (err) {
             return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
           }
-          return this.redirect({request, h, redirectPath: Constants.Routes.SAVE_AND_RETURN_SENT_RESENT.path})
+          return this.redirect({request, h, redirectPath: Routes.SAVE_AND_RETURN_SENT_RESENT.path})
         } else {
           await SaveAndReturn.updateCompleteness(context, applicationId, applicationLineId)
         }
       }
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
+      return this.redirect({request, h, redirectPath: Routes.TASK_LIST.path})
     }
   }
 }

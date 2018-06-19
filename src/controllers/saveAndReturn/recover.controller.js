@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../../constants')
+const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
@@ -8,7 +9,7 @@ module.exports = class RecoverController extends BaseController {
   async doGet (request, h) {
     const recoveredApplication = await RecoveryService.createApplicationContext(h, {application: true, applicationReturn: true})
     if (!recoveredApplication) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.RECOVERY_FAILED.path})
+      return this.redirect({request, h, redirectPath: Routes.RECOVERY_FAILED.path})
     }
     const {application, applicationReturn, standardRule} = recoveredApplication
     const applicationNumber = application.applicationNumber
@@ -24,6 +25,6 @@ module.exports = class RecoverController extends BaseController {
     const {cookie} = await RecoveryService.createApplicationContext(h)
 
     // Now redirect to the tasklist
-    return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path, cookie})
+    return this.redirect({request, h, redirectPath: Routes.TASK_LIST.path, cookie})
   }
 }

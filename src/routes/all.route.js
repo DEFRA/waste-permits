@@ -1,4 +1,4 @@
-const {Routes} = require('../constants')
+const Routes = require('../routes')
 
 const routes = []
 

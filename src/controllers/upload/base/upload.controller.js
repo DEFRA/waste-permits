@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../../../constants')
+const Routes = require('../../../routes')
 const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
 const LoggingService = require('../../../services/logging.service')
@@ -57,7 +58,7 @@ module.exports = class UploadController extends BaseController {
       if (!CookieService.validateCookie(request)) {
         const message = 'Upload failed validating cookie'
         LoggingService.logError(message, request)
-        return this.redirect({request, h, redirectPath: Constants.Routes.TECHNICAL_PROBLEM.path, error: {message}})
+        return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: {message}})
       }
 
       // Post if it's not an attempt to upload a file
@@ -92,7 +93,7 @@ module.exports = class UploadController extends BaseController {
       return this.redirect({request, h, redirectPath: this.path})
     } catch (error) {
       LoggingService.logError(error, request)
-      return this.redirect({request, h, redirectPath: Constants.Routes.TECHNICAL_PROBLEM.path, error})
+      return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error})
     }
   }
 
@@ -101,7 +102,7 @@ module.exports = class UploadController extends BaseController {
     if (!CookieService.validateCookie(request)) {
       const message = 'Remove failed validating cookie'
       LoggingService.logError(message, request)
-      return this.redirect({request, h, redirectPath: Constants.Routes.TECHNICAL_PROBLEM.path, error: {message}})
+      return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: {message}})
     }
 
     const context = await RecoveryService.createApplicationContext(h)
@@ -113,7 +114,7 @@ module.exports = class UploadController extends BaseController {
     if (annotation.applicationId !== applicationId) {
       const message = 'Annotation and application mismatch'
       LoggingService.logError(message, request)
-      return this.redirect({request, h, redirectPath: Constants.Routes.TECHNICAL_PROBLEM.path, error: {message}})
+      return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: {message}})
     }
     await annotation.delete(context, annotationId)
     return this.redirect({request, h, redirectPath: this.path})

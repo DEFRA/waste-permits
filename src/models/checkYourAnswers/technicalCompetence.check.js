@@ -2,7 +2,7 @@ const Constants = require('../../constants')
 const BaseCheck = require('./base.check')
 
 const {TECHNICAL_QUALIFICATION: ruleSetId} = Constants.Dynamics.RulesetIds
-const {TECHNICAL_QUALIFICATION} = Constants.Routes
+const {TECHNICAL_QUALIFICATION} = require('../../routes')
 const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.Dynamics.TechnicalQualification
 
 module.exports = class TechnicalCheck extends BaseCheck {

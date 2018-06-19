@@ -2,6 +2,7 @@
 
 const config = require('../config/config')
 const Constants = require('../constants')
+const Routes = require('../routes')
 const LoggingService = require('../services/logging.service')
 const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
 const authService = new ActiveDirectoryAuthService()
@@ -25,7 +26,7 @@ module.exports = class CookieService {
       }
     } catch (error) {
       LoggingService.logError(error)
-      return this.redirect({h, redirectPath: Constants.Routes.SAVE_AND_RETURN_COMPLETE.path, error})
+      return this.redirect({h, redirectPath: Routes.SAVE_AND_RETURN_COMPLETE.path, error})
     }
   }
 

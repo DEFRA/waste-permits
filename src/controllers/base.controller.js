@@ -1,10 +1,11 @@
 'use strict'
 const Config = require('../config/config')
 const Constants = require('../constants')
+const Routes = require('../routes')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
-const {COOKIE_RESULT, Routes} = Constants
+const {COOKIE_RESULT} = Constants
 
 module.exports = class BaseController {
   constructor ({
@@ -16,7 +17,7 @@ module.exports = class BaseController {
     paymentRequired = false
   }) {
     if (!route) {
-      console.error(`Error - Unable to find Constants.Routes for: ${Object.getPrototypeOf(this).constructor.name}`)
+      console.error(`Error - Unable to find Routes for: ${Object.getPrototypeOf(this).constructor.name}`)
     }
 
     this.route = route
@@ -64,7 +65,7 @@ module.exports = class BaseController {
   }
 
   async checkRouteAccess (slug, application, payment) {
-    const {ALREADY_SUBMITTED, NOT_SUBMITTED, NOT_PAID, RECOVERY_FAILED} = Constants.Routes
+    const {ALREADY_SUBMITTED, NOT_SUBMITTED, NOT_PAID, RECOVERY_FAILED} = Routes
     if (!application) {
       return RECOVERY_FAILED.path
     }
@@ -135,7 +136,7 @@ module.exports = class BaseController {
   }
 
   async handler (request, h, errors) {
-    const {START_AT_BEGINNING, TECHNICAL_PROBLEM, TIMEOUT} = Constants.Routes
+    const {START_AT_BEGINNING, TECHNICAL_PROBLEM, TIMEOUT} = Routes
     if (this.cookieValidationRequired) {
       // Validate the cookie
       const cookieValidationResult = await CookieService.validateCookie(request)
@@ -172,8 +173,8 @@ module.exports = class BaseController {
     }
 
     switch (this.route) {
-      case Constants.Routes:
-      case Constants.Routes.PAGE_NOT_FOUND:
+      case Routes:
+      case Routes.PAGE_NOT_FOUND:
         return this._handler(request, h, errors)
       default:
         try {

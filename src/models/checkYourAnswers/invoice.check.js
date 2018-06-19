@@ -2,7 +2,7 @@ const Constants = require('../../constants')
 const BaseCheck = require('./base.check')
 
 const {INVOICING_DETAILS: ruleSetId} = Constants.Dynamics.RulesetIds
-const {POSTCODE_INVOICE, MANUAL_INVOICE} = Constants.Routes
+const {POSTCODE_INVOICE, MANUAL_INVOICE} = require('../../routes')
 
 module.exports = class InvoiceCheck extends BaseCheck {
   static get rulesetId () {

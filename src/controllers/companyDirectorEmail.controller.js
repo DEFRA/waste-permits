@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const AddressDetail = require('../models/addressDetail.model')
 const RecoveryService = require('../services/recovery.service')
@@ -31,7 +31,7 @@ module.exports = class ContactDetailsController extends BaseController {
       companySecretaryDetails.email = request.payload.email
       await companySecretaryDetails.save(context)
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DECLARE_OFFENCES.path})
+      return this.redirect({request, h, redirectPath: Routes.COMPANY_DECLARE_OFFENCES.path})
     }
   }
 }

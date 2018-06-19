@@ -2,6 +2,7 @@
 
 const Handlebars = require('handlebars')
 const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const StandardRule = require('../models/standardRule.model')
 const CookieService = require('../services/cookie.service')
@@ -19,7 +20,7 @@ module.exports = class ApplyOfflineController extends BaseController {
   }
 
   static getChangeSelectionRoute (offlineCategory = {}, standardRule = {}) {
-    const {PERMIT_CATEGORY, PERMIT_SELECT, PERMIT_HOLDER_TYPE} = Constants.Routes
+    const {PERMIT_CATEGORY, PERMIT_SELECT, PERMIT_HOLDER_TYPE} = Routes
     if (standardRule.permitName) {
       return PERMIT_SELECT
     } else if (offlineCategory.category) {
@@ -58,7 +59,7 @@ module.exports = class ApplyOfflineController extends BaseController {
       }
       if ((!standardRule && !offlineCategory) || (standardRule && standardRule.canApplyOnline)) {
         LoggingService.logError(`Unable to get offline category for : ${standardRuleTypeId}`)
-        return this.redirect({request, h, redirectPath: Constants.Routes.START_AT_BEGINNING.path})
+        return this.redirect({request, h, redirectPath: Routes.START_AT_BEGINNING.path})
       }
     }
 

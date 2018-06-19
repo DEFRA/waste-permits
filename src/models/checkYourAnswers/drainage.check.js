@@ -2,7 +2,7 @@ const Constants = require('../../constants')
 const BaseCheck = require('./base.check')
 
 const {SURFACE_DRAINAGE: ruleSetId} = Constants.Dynamics.RulesetIds
-const path = Constants.Routes.DRAINAGE_TYPE_DRAIN.path
+const path = require('../../routes').DRAINAGE_TYPE_DRAIN.path
 const DrainageTypes = Constants.Dynamics.DrainageTypes
 
 module.exports = class DrainageCheck extends BaseCheck {
