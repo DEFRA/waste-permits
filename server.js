@@ -76,7 +76,7 @@ const registerPlugins = async () => server.register([
   {
     plugin: HapiRouter,
     options: {
-      routes: './src/routes/**/*.route.js'
+      routes: './src/routes/*.route.js'
     }
   },
 
