@@ -2,8 +2,18 @@ const Constants = require('../../constants')
 const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
 const {PERMIT_HOLDER_DETAILS: ruleSetId} = Constants.Dynamics.RulesetIds
+const {LIMITED_LIABILITY_PARTNERSHIP} = Constants.Dynamics.PERMIT_HOLDER_TYPES
 
-const {COMPANY_DECLARE_BANKRUPTCY, COMPANY_DECLARE_OFFENCES, COMPANY_DIRECTOR_EMAIL, COMPANY_NUMBER, DIRECTOR_DATE_OF_BIRTH, PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, PERMIT_HOLDER_TYPE} = require('../../routes')
+const {
+  COMPANY_DECLARE_BANKRUPTCY,
+  COMPANY_DECLARE_OFFENCES,
+  COMPANY_DIRECTOR_EMAIL,
+  COMPANY_NUMBER,
+  DIRECTOR_DATE_OF_BIRTH,
+  LLP_COMPANY_DESIGNATED_MEMBER_EMAIL,
+  PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH,
+  PERMIT_HOLDER_TYPE
+} = require('../../routes')
 
 const blankLine = {blankLine: true}
 
@@ -28,14 +38,31 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       ])
     }
 
-    return Promise.all([
-      this.getTypeLine(),
-      this.getCompanyLine(),
-      this.getDirectorsLine(),
-      this.getCompanySecretaryEmailLine(),
-      this.getConvictionsLine(),
-      this.getBankruptcyLine()
-    ])
+    switch (await this.getPermitHolderType()) {
+      case LIMITED_LIABILITY_PARTNERSHIP:
+        // path = LLP_COMPANY_DESIGNATED_MEMBER_EMAIL.path
+        // heading = 'Designated member email'
+        // prefix = 'company-secretary-email'
+        return Promise.all([
+          this.getTypeLine(),
+          this.getCompanyLine(),
+          this.getDesignatedMemberEmailLine(),
+          this.getConvictionsLine(),
+          this.getBankruptcyLine()
+        ])
+      default:
+      //   path = COMPANY_DIRECTOR_EMAIL.path
+      //   heading = 'Company secretary or director email'
+      //   prefix = 'designated-member-email'
+        return Promise.all([
+          this.getTypeLine(),
+          this.getCompanyLine(),
+          this.getDirectorsLine(),
+          this.getCompanySecretaryEmailLine(),
+          this.getConvictionsLine(),
+          this.getBankruptcyLine()
+        ])
+    }
   }
 
   async getTypeLine () {
@@ -121,6 +148,17 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       prefix: 'director',
       answers: answers,
       links: [{path, type: `director's date of birth`}]
+    })
+  }
+
+  async getDesignatedMemberEmailLine () {
+    const {path} = LLP_COMPANY_DESIGNATED_MEMBER_EMAIL
+    const {email = ''} = await this.getCompanySecretaryDetails()
+    return this.buildLine({
+      heading: 'Designated Member email',
+      prefix: 'designated-member-email',
+      answers: [email],
+      links: [{path, type: 'designated member email'}]
     })
   }
 

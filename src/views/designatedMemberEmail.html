@@ -1,0 +1,31 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      {{> common/errorSummary }}
+      {{> common/pageHeading pageHeading }}
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <p id="designated-member-email-paragraph-1">A limited liability partnership must have at least 2 designated members. We will send a copy of any official notices to one of these designated members.</p>
+        <p id="designated-member-email-paragraph-2">The main contact for the application will get a copy of all communications.</p>
+
+        <div class="form-group {{#getFormErrorGroupClass errors.email}}{{/getFormErrorGroupClass}}">
+          <label id="email-label" class="form-label" for="email">
+            Email address for a designated member
+          </label>
+
+          {{> common/fieldError fieldId='email-error' message=errors.email }}
+          <input class="form-control form-control-char-35 {{#if errors.email}}form-control-error{{/if}}" id="email" name="email" type="email" value="{{formValues.email}}">
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+    </div>
+  </div>
+
+</main>

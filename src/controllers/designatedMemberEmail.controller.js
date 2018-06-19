@@ -13,7 +13,7 @@ module.exports = class ContactDetailsController extends BaseController {
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const {email} = await AddressDetail.getCompanySecretaryDetails(context, applicationId)
+      const {email} = await AddressDetail.getDesignatedMemberDetails(context, applicationId)
       pageContext.formValues = {email}
     }
 
@@ -26,9 +26,9 @@ module.exports = class ContactDetailsController extends BaseController {
     } else {
       const context = await RecoveryService.createApplicationContext(h, {application: true})
       const {applicationId} = context
-      const companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(context, applicationId)
-      companySecretaryDetails.email = request.payload.email
-      await companySecretaryDetails.save(context)
+      const designatedMemberDetails = await AddressDetail.getDesignatedMemberDetails(context, applicationId)
+      designatedMemberDetails.email = request.payload.email
+      await designatedMemberDetails.save(context)
 
       return this.redirect({request, h, redirectPath: this.nextPath})
     }

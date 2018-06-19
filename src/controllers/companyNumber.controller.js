@@ -1,6 +1,5 @@
 'use strict'
 
-const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const Account = require('../models/account.model')
 const Utilities = require('../utilities/utilities')
@@ -47,7 +46,7 @@ module.exports = class CompanyNumberController extends BaseController {
         await application.save(context)
       }
 
-      return this.redirect({request, h, redirectPath: Routes.COMPANY_CHECK_TYPE.path})
+      return this.redirect({request, h, redirectPath: this.nextPath})
     }
   }
 }

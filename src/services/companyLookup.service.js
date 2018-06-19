@@ -47,7 +47,7 @@ module.exports = class CompanyLookupService {
     return company
   }
 
-  static async getActiveDirectors (companyNumber) {
+  static async getActiveOfficers (companyNumber, type) {
     const options = {
       uri: `${config.COMPANIES_HOUSE_SERVICE}/company/${companyNumber}/officers`,
       json: true,
@@ -57,12 +57,16 @@ module.exports = class CompanyLookupService {
     LoggingService.logDebug(`CompanyLookupService - looking up officers for Company Number: ${companyNumber}`)
     LoggingService.logDebug(`CompanyLookupService request options:`, options)
 
-    let activeDirectors = []
+    let active = []
     await rp(options)
       .then((data) => {
         if (data && data.items) {
           LoggingService.logDebug(`CompanyLookupService - retrieved data:`, data)
-          activeDirectors = data.items.filter((officer) => officer.officer_role === 'director' && !officer.resigned_on)
+          if (type) {
+            active = data.items.filter((officer) => officer.officer_role === type && !officer.resigned_on)
+          } else {
+            active = data.items.filter((officer) => !officer.resigned_on)
+          }
         }
       })
       .catch((error) => {
@@ -71,7 +75,15 @@ module.exports = class CompanyLookupService {
         }
       })
 
-    return activeDirectors
+    return active
+  }
+
+  static async getActiveDirectors (companyNumber) {
+    return this.getActiveOfficers(companyNumber, 'director')
+  }
+
+  static async getActiveDesignatedMembers (companyNumber) {
+    return this.getActiveOfficers(companyNumber, 'llp-designated-member')
   }
 
   // Convert to upper case and replaces the hyphens with underscores
