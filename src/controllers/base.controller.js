@@ -4,12 +4,11 @@ const Constants = require('../constants')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
-const {COOKIE_RESULT} = Constants
+const {COOKIE_RESULT, Routes} = Constants
 
 module.exports = class BaseController {
   constructor ({
     route,
-    nextRoute,
     validator,
     cookieValidationRequired = true,
     applicationRequired = true,
@@ -23,8 +22,8 @@ module.exports = class BaseController {
     this.route = route
     this.path = route.path
 
-    if (nextRoute) {
-      this.nextPath = nextRoute.path
+    if (route.nextRoute) {
+      this.nextPath = Routes[route.nextRoute].path
     }
 
     if (validator) {

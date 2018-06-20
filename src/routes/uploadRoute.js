@@ -1,5 +1,5 @@
-const BaseRoute = require('../../baseRoute')
-const Constants = require('../../../constants')
+const BaseRoute = require('./baseRoute')
+const Constants = require('../constants')
 
 class UploadRoute extends BaseRoute {
   static POST (controller) {
