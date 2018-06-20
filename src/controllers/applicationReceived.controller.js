@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const Payment = require('../models/payment.model')
 const RecoveryService = require('../services/recovery.service')
@@ -35,7 +36,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
         paymentEmail: Constants.BankAccountDetails.PAYMENT_EMAIL
       }
     } else if (cardPayment) {
-      pageContext.pageHeading = Constants.Routes.APPLICATION_RECEIVED.pageHeadingAlternate
+      pageContext.pageHeading = Routes.APPLICATION_RECEIVED.pageHeadingAlternate
       pageContext.cardPayment = {
         description: cardPayment.description,
         amount: cardPayment.value.toLocaleString()
@@ -46,7 +47,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
       return this.showView({request, h, pageContext})
     } else {
       // If the application has not been paid for
-      return this.redirect({request, h, redirectPath: Constants.Routes.NOT_PAID.path})
+      return this.redirect({request, h, redirectPath: Routes.NOT_PAID.path})
     }
   }
 }

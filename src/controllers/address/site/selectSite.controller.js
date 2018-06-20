@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../../../constants')
+const Routes = require('../../../routes')
 const AddressSelectController = require('../base/addressSelect.controller')
 const SiteNameAndLocation = require('../../../models/taskList/siteNameAndLocation.model')
 
@@ -10,11 +11,11 @@ module.exports = class AddressSelectSiteController extends AddressSelectControll
   }
 
   getManualEntryRoute () {
-    return Constants.Routes.MANUAL_SITE.path
+    return Routes.MANUAL_SITE.path
   }
 
   getPostcodeRoute () {
-    return Constants.Routes.POSTCODE_SITE.path
+    return Routes.POSTCODE_SITE.path
   }
 
   getModel () {

@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const Application = require('../models/application.model')
@@ -37,9 +38,9 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       // Set the application ID in the cookie
       cookie.applicationId = application.id
 
-      nextPage = Constants.Routes.PERMIT_HOLDER_TYPE
+      nextPage = Routes.PERMIT_HOLDER_TYPE
     } else {
-      nextPage = Constants.Routes.SEARCH_YOUR_EMAIL
+      nextPage = Routes.SEARCH_YOUR_EMAIL
     }
 
     return this.redirect({request, h, redirectPath: nextPage.path, cookie})

@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../../constants')
+const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const SaveAndReturn = require('../../models/taskList/saveAndReturn.model')
 const RecoveryService = require('../../services/recovery.service')
@@ -13,7 +13,7 @@ module.exports = class EnterEmailController extends BaseController {
 
     const isComplete = await SaveAndReturn.isComplete(context, applicationId, applicationLineId)
     if (isComplete) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.SAVE_AND_RETURN_COMPLETE.path})
+      return this.redirect({request, h, redirectPath: Routes.SAVE_AND_RETURN_COMPLETE.path})
     }
 
     if (request.payload) {
@@ -37,7 +37,7 @@ module.exports = class EnterEmailController extends BaseController {
 
       await application.save(context)
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.SAVE_AND_RETURN_CONFIRM.path})
+      return this.redirect({request, h, redirectPath: Routes.SAVE_AND_RETURN_CONFIRM.path})
     }
   }
 }

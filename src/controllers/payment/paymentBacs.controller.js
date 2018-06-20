@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../../constants')
+const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const Payment = require('../../models/payment.model')
 const RecoveryService = require('../../services/recovery.service')
@@ -14,9 +15,9 @@ module.exports = class PaymentBacsController extends BaseController {
     const payment = await Payment.getBacsPaymentDetails(context, applicationLineId)
 
     if (!application.isSubmitted()) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.NOT_SUBMITTED.path})
+      return this.redirect({request, h, redirectPath: Routes.NOT_SUBMITTED.path})
     } else if ((payment && payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED) || (application && application.paymentReceived)) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.ALREADY_SUBMITTED.path})
+      return this.redirect({request, h, redirectPath: Routes.ALREADY_SUBMITTED.path})
     }
 
     return this.showView({request, h, pageContext})

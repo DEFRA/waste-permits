@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const Routes = require('../routes')
 const RecoveryService = require('../services/recovery.service')
 const ApplicationLine = require('../models/applicationLine.model')
 const BaseController = require('./base.controller')
@@ -72,7 +73,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
     // If the task list is not complete then redirect back to it and show a validation error
     if (!isComplete) {
-      return this.redirect({request, h, redirectPath: `${Constants.Routes.TASK_LIST.path}?showError=true`})
+      return this.redirect({request, h, redirectPath: `${Routes.TASK_LIST.path}?showError=true`})
     }
 
     return this.showView({request, h, pageContext})
@@ -87,6 +88,6 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
     await application.save(request.app.data)
 
-    return this.redirect({request, h, redirectPath: Constants.Routes.PAYMENT_TYPE.path})
+    return this.redirect({request, h, redirectPath: Routes.PAYMENT_TYPE.path})
   }
 }

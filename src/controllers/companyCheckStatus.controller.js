@@ -2,6 +2,7 @@
 
 const Handlebars = require('handlebars')
 const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
 const RecoveryService = require('../services/recovery.service')
@@ -13,7 +14,7 @@ module.exports = class CompanyStatusController extends BaseController {
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
     if (!company) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_CHECK_NAME.path})
+      return this.redirect({request, h, redirectPath: Routes.COMPANY_CHECK_NAME.path})
     }
 
     let companyStatus
@@ -23,7 +24,7 @@ module.exports = class CompanyStatusController extends BaseController {
     } else {
       const activeDirectors = await CompanyLookupService.getActiveDirectors(account.companyNumber)
       if (activeDirectors.length) {
-        return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_CHECK_NAME.path})
+        return this.redirect({request, h, redirectPath: Routes.COMPANY_CHECK_NAME.path})
       } else {
         companyStatus = Constants.Company.Status.NO_DIRECTORS
       }
@@ -37,7 +38,7 @@ module.exports = class CompanyStatusController extends BaseController {
     pageContext.companyNumber = account.companyNumber
     pageContext.companyName = company.name
     pageContext.companyStatus = companyStatus
-    pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
+    pageContext.enterCompanyNumberRoute = Routes.COMPANY_NUMBER.path
 
     return this.showView({request, h, pageContext})
   }

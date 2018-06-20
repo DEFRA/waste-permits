@@ -2,6 +2,7 @@
 
 const config = require('../../config/config')
 const Constants = require('../../constants')
+const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 const {CARD_PAYMENT, BACS_PAYMENT} = Constants.Dynamics.PaymentTypes
@@ -12,7 +13,7 @@ module.exports = class PaymentTypeController extends BaseController {
     const {application, applicationLine, applicationReturn} = context
 
     if (!application.isSubmitted()) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.NOT_SUBMITTED.path})
+      return this.redirect({request, h, redirectPath: Routes.NOT_SUBMITTED.path})
     }
 
     this.path = this.path.replace('{slug?}', applicationReturn ? applicationReturn.slug : '')
@@ -53,10 +54,10 @@ module.exports = class PaymentTypeController extends BaseController {
         case CARD_PAYMENT:
           let origin = config.wastePermitsAppUrl || request.headers.origin
           let returnUrl = `${origin}${Constants.PAYMENT_RESULT_URL}/${applicationReturn.slug}`
-          nextPath = `${Constants.Routes.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
+          nextPath = `${Routes.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
           break
         case BACS_PAYMENT:
-          nextPath = Constants.Routes.BACS_PAYMENT.path
+          nextPath = Routes.BACS_PAYMENT.path
           break
         default:
           throw new Error(`Unexpected payment type (${paymentType})`)

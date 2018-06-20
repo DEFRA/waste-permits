@@ -1,7 +1,6 @@
-const Constants = require('../../constants')
 const BaseCheck = require('./base.check')
 
-const {path} = Constants.Routes.PERMIT_CATEGORY
+const {path} = require('../../routes').PERMIT_CATEGORY
 
 module.exports = class PermitCheck extends BaseCheck {
   get prefix () {

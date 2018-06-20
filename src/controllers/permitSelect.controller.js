@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const RecoveryService = require('../services/recovery.service')
@@ -20,7 +21,7 @@ module.exports = class PermitSelectController extends BaseController {
     pageContext.category = category.toLowerCase()
 
     pageContext.standardRules = await StandardRule.list(context, standardRuleTypeId)
-    pageContext.permitCategoryRoute = Constants.Routes.PERMIT_CATEGORY.path
+    pageContext.permitCategoryRoute = Routes.PERMIT_CATEGORY.path
 
     return this.showView({request, h, pageContext})
   }
@@ -38,7 +39,7 @@ module.exports = class PermitSelectController extends BaseController {
       CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_ID, standardRule.id)
 
       if (!standardRule.canApplyOnline) {
-        return this.redirect({request, h, redirectPath: Constants.Routes.APPLY_OFFLINE.path})
+        return this.redirect({request, h, redirectPath: Routes.APPLY_OFFLINE.path})
       }
 
       // Delete if it already exists
@@ -57,7 +58,7 @@ module.exports = class PermitSelectController extends BaseController {
       // Set the application ID in the cookie
       CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
+      return this.redirect({request, h, redirectPath: Routes.TASK_LIST.path})
     }
   }
 }

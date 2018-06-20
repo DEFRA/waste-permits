@@ -4,10 +4,8 @@ const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
 const RecoveryService = require('../services/recovery.service')
 
-const {
-  Dynamics: {TRADING_NAME_USAGE},
-  Routes: {DIRECTOR_DATE_OF_BIRTH, COMPANY_NUMBER, TASK_LIST}
-} = require('../constants')
+const {TRADING_NAME_USAGE} = require('../constants').Dynamics
+const {DIRECTOR_DATE_OF_BIRTH, COMPANY_NUMBER, TASK_LIST} = require('../routes')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, h, errors) {

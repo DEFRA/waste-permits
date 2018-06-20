@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('./src/constants')
+const Routes = require('./src/routes')
 const config = require('./src/config/config')
 const logConfig = require('./src/config/logConfig')
 const cookieConfig = require('./src/config/cookieConfig')
@@ -44,7 +45,7 @@ if (config.LOG_LEVEL === Constants.LogLevels.DEBUG) {
 const loadHealthTemplate = () => {
   let template = String(fs.readFileSync((Path.join(__dirname, 'src', 'views', 'health.html'))))
   template = template
-    .replace('##PAGE_TITLE##', Constants.buildPageTitle(Constants.Routes.HEALTH.pageHeading))
+    .replace('##PAGE_TITLE##', Constants.buildPageTitle(Routes.HEALTH.pageHeading))
     .replace('##SERVICE_NAME##', Constants.SERVICE_NAME)
     .replace('##APP_VERSION##', Constants.getVersion())
     .replace('##GITHUB_HREF##', `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`)
@@ -124,7 +125,7 @@ const registerPlugins = async () => server.register([
   {
     plugin: HapiAlive,
     options: {
-      path: Constants.Routes.HEALTH.path,
+      path: Routes.HEALTH.path,
       responses: {
         healthy: {
           message: loadHealthTemplate()
@@ -169,9 +170,9 @@ const start = async () => {
 
     // if the response is a Boom error object and the status code is 404
     if (response.isBoom && response.output.statusCode === 404) {
-      return h.redirect(Constants.Routes.PAGE_NOT_FOUND.path)
+      return h.redirect(Routes.PAGE_NOT_FOUND.path)
     } else if (response.isBoom && response.output.statusCode === 403) {
-      return h.redirect(Constants.Routes.COOKIES_DISABLED.path)
+      return h.redirect(Routes.COOKIES_DISABLED.path)
     } else {
       return h.continue
     }

@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../../constants')
+const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
@@ -10,7 +11,7 @@ module.exports = class PaymentResultController extends BaseController {
     const {application, applicationReturn, cardPayment} = context
 
     if (!application.isSubmitted()) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.NOT_SUBMITTED.path})
+      return this.redirect({request, h, redirectPath: Routes.NOT_SUBMITTED.path})
     }
 
     const paymentStatus = await cardPayment.getCardPaymentResult(context)

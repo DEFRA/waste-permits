@@ -2,12 +2,13 @@
 
 const Merge = require('deepmerge')
 const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const DrainageTypeDrain = require('../models/taskList/drainageTypeDrain.model')
 const RecoveryService = require('../services/recovery.service')
 const DrainageTypes = Merge({}, Constants.Dynamics.DrainageTypes)
 
-const {DRAINAGE_TYPE_FAIL, TASK_LIST} = Constants.Routes
+const {DRAINAGE_TYPE_FAIL, TASK_LIST} = Routes
 
 module.exports = class drainageTypeController extends BaseController {
   async doGet (request, h, errors) {

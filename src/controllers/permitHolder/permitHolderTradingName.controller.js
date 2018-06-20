@@ -3,10 +3,8 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const {
-  Dynamics: {TRADING_NAME_USAGE},
-  Routes: {PERMIT_HOLDER_CONTACT_DETAILS}
-} = require('../../constants')
+const {TRADING_NAME_USAGE} = require('../../constants').Dynamics
+const {PERMIT_HOLDER_CONTACT_DETAILS} = require('../../routes')
 
 module.exports = class PermitHolderContactTradingNameController extends BaseController {
   async doGet (request, h, errors) {

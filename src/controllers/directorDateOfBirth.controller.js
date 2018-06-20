@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 const Constants = require('../constants')
+const Routes = require('../routes')
 const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
 const DirectorDateOfBirthValidator = require('../validators/directorDateOfBirth.validator')
@@ -18,7 +19,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
       LoggingService.logError(message, request)
-      return this.redirect({request, h, redirectPath: Constants.Routes.TECHNICAL_PROBLEM.path, error: {message}})
+      return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: {message}})
     }
 
     // Get the directors that relate to this application
@@ -39,8 +40,8 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     pageContext.directors = directors
 
     if (directors.length > 1) {
-      pageContext.pageHeading = Constants.Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate
-      pageContext.pageTitle = Constants.buildPageTitle(Constants.Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate)
+      pageContext.pageHeading = Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate
+      pageContext.pageTitle = Constants.buildPageTitle(Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate)
 
       // Change page title if there is an error using the following
       if (errors && errors.details) {
@@ -64,7 +65,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
       LoggingService.logError(message, request)
-      return this.redirect({request, h, redirectPath: Constants.Routes.TECHNICAL_PROBLEM.path, error: {message}})
+      return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: {message}})
     }
 
     const directors = await this._getDirectors(context, applicationId, account.id)
@@ -96,7 +97,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         await applicationContact.save(context)
       }
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_DIRECTOR_EMAIL.path})
+      return this.redirect({request, h, redirectPath: Routes.COMPANY_DIRECTOR_EMAIL.path})
     }
   }
 

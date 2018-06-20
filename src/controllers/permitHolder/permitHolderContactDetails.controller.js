@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../../constants')
+const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
@@ -68,7 +68,7 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
       individualPermitHolderDetails.telephone = telephone
       await individualPermitHolderDetails.save(context)
 
-      return this.redirect({ request, h, redirectPath: Constants.Routes.POSTCODE_PERMIT_HOLDER.path })
+      return this.redirect({ request, h, redirectPath: Routes.POSTCODE_PERMIT_HOLDER.path })
     }
   }
 }

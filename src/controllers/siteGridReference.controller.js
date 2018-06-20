@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
 const RecoveryService = require('../services/recovery.service')
@@ -30,7 +30,7 @@ module.exports = class SiteGridReferenceController extends BaseController {
 
       await SiteNameAndLocation.saveGridReference(request, request.payload['site-grid-reference'], applicationId, applicationLineId)
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.POSTCODE_SITE.path})
+      return this.redirect({request, h, redirectPath: Routes.POSTCODE_SITE.path})
     }
   }
 }

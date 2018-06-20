@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const Contact = require('../models/contact.model')
 const AddressDetail = require('../models/addressDetail.model')
@@ -89,7 +89,7 @@ module.exports = class ContactDetailsController extends BaseController {
 
       await ContactDetails.updateCompleteness(context, applicationId, applicationLineId)
 
-      return this.redirect({request, h, redirectPath: Constants.Routes.TASK_LIST.path})
+      return this.redirect({request, h, redirectPath: Routes.TASK_LIST.path})
     }
   }
 }

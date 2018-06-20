@@ -2,6 +2,7 @@
 
 const Handlebars = require('handlebars')
 const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
 const RecoveryService = require('../services/recovery.service')
@@ -16,7 +17,7 @@ module.exports = class CompanyTypeController extends BaseController {
     const companyType = company ? Constants.Company.Type[company.type] : undefined
 
     if (!companyType) {
-      return this.redirect({request, h, redirectPath: Constants.Routes.COMPANY_CHECK_STATUS.path})
+      return this.redirect({request, h, redirectPath: Routes.COMPANY_CHECK_STATUS.path})
     }
 
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({
@@ -26,7 +27,7 @@ module.exports = class CompanyTypeController extends BaseController {
     pageContext.companyNumber = account.companyNumber
     pageContext.companyName = company.name
     pageContext.companyType = companyType
-    pageContext.enterCompanyNumberRoute = Constants.Routes.COMPANY_NUMBER.path
+    pageContext.enterCompanyNumberRoute = Routes.COMPANY_NUMBER.path
 
     return this.showView({request, h, pageContext})
   }

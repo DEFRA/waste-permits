@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../../constants')
+const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const CookieService = require('../../services/cookie.service')
 const RecoveryService = require('../../services/recovery.service')
@@ -30,7 +31,7 @@ module.exports = class CheckYourEmailController extends BaseController {
         return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
       }
       CookieService.set(request, Constants.COOKIE_KEY.SAVE_AND_RETURN_EMAIL, saveAndReturnEmail)
-      return this.redirect({request, h, redirectPath: Constants.Routes.CHECK_YOUR_EMAIL.path})
+      return this.redirect({request, h, redirectPath: Routes.CHECK_YOUR_EMAIL.path})
     }
   }
 }

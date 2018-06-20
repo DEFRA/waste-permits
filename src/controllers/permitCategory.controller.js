@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const RecoveryService = require('../services/recovery.service')
@@ -39,9 +40,9 @@ module.exports = class PermitCategoryController extends BaseController {
       CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID, standardRuleTypeId)
 
       if (PermitCategoryController.isOfflineCategory(standardRuleTypeId)) {
-        return this.redirect({request, h, redirectPath: Constants.Routes.APPLY_OFFLINE.path})
+        return this.redirect({request, h, redirectPath: Routes.APPLY_OFFLINE.path})
       } else {
-        return this.redirect({request, h, redirectPath: Constants.Routes.PERMIT_SELECT.path})
+        return this.redirect({request, h, redirectPath: Routes.PERMIT_SELECT.path})
       }
     }
   }
