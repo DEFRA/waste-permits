@@ -113,6 +113,10 @@ Constants.PermitTypes = {
 }
 
 Constants.Dynamics = {
+  AccountRoleCodes: {
+    COMPANY_DIRECTOR: 910400000,
+    MEMBER: 910400001
+  },
   AccountTypes: {
     AGENT: 910400000
   },
@@ -132,9 +136,12 @@ Constants.Dynamics = {
     PRIMARY_CONTACT_TELEPHONE_NUMBER: {
       TYPE: 910400007,
       NAME: 'Primary Contact Telephone Number'
+    },
+    DESIGNATED_MEMBER_EMAIL: {
+      TYPE: 910400004,
+      NAME: 'Designated Member Email Address'
     }
   },
-  COMPANY_DIRECTOR: 910400000,
   DIGITAL_SOURCE: 910400000,
   DrainageTypes: {
     SEWER: {
@@ -225,7 +232,7 @@ Constants.Dynamics = {
     LIMITED_LIABILITY_PARTNERSHIP: {
       id: 'limited-liability-partnership',
       type: 'Limited liability partnership',
-      canApplyOnline: false,
+      canApplyOnline: false, // ToDo This has been implemented so will work when this is set to true
       dynamicsApplicantTypeId: 910400001,
       dynamicsOrganisationTypeId: 910400005
     },
@@ -338,6 +345,7 @@ Constants.Company = {
     CONVERTED_CLOSED: 'has been closed or converted',
     INSOLVENCY_PROCEEDINGS: 'is insolvent',
     NOT_ACTIVE: `is not active`,
+    NO_DESIGNATED_MEMBERS: `has no designated members`,
     NO_DIRECTORS: `has no directors`,
     NOT_APPLICABLE_COMPANY_TYPE: `is not applicable for this company type`
   },

@@ -1,8 +1,9 @@
 'use strict'
 
 const Handlebars = require('handlebars')
-const Constants = require('../constants')
+const {Status} = require('../constants').Company
 const Routes = require('../routes')
+const {COMPANY_CHECK_STATUS, LLP_COMPANY_CHECK_STATUS} = require('../routes')
 const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
 const RecoveryService = require('../services/recovery.service')
@@ -13,20 +14,38 @@ module.exports = class CompanyStatusController extends BaseController {
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
+    const companyPath = Routes[this.route.companyRoute].path
+
     if (!company) {
-      return this.redirect({request, h, redirectPath: Routes.COMPANY_CHECK_NAME.path})
+      return this.redirect({request, h, redirectPath: companyPath})
     }
 
     let companyStatus
 
     if (company.status && !company.isActive) {
-      companyStatus = Constants.Company.Status[company.status]
+      companyStatus = Status[company.status]
     } else {
-      const activeDirectors = await CompanyLookupService.getActiveDirectors(account.companyNumber)
-      if (activeDirectors.length) {
-        return this.redirect({request, h, redirectPath: Routes.COMPANY_CHECK_NAME.path})
+      let active
+      switch (this.route) {
+        case COMPANY_CHECK_STATUS:
+          active = await CompanyLookupService.getActiveDirectors(account.companyNumber)
+          break
+        case LLP_COMPANY_CHECK_STATUS:
+          active = await CompanyLookupService.getActiveDesignatedMembers(account.companyNumber)
+          break
+      }
+
+      if (active.length) {
+        return this.redirect({request, h, redirectPath: this.nextPath})
       } else {
-        companyStatus = Constants.Company.Status.NO_DIRECTORS
+        switch (this.route) {
+          case COMPANY_CHECK_STATUS:
+            companyStatus = Status.NO_DIRECTORS
+            break
+          case LLP_COMPANY_CHECK_STATUS:
+            companyStatus = Status.NO_DESIGNATED_MEMBERS
+            break
+        }
       }
     }
 
@@ -38,7 +57,7 @@ module.exports = class CompanyStatusController extends BaseController {
     pageContext.companyNumber = account.companyNumber
     pageContext.companyName = company.name
     pageContext.companyStatus = companyStatus
-    pageContext.enterCompanyNumberRoute = Routes.COMPANY_NUMBER.path
+    pageContext.enterCompanyNumberRoute = companyPath
 
     return this.showView({request, h, pageContext})
   }

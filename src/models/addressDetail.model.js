@@ -2,7 +2,7 @@
 
 const Constants = require('../constants')
 const BaseModel = require('./base.model')
-const {COMPANY_SECRETARY_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER} = Constants.Dynamics.AddressTypes
+const {COMPANY_SECRETARY_EMAIL, DESIGNATED_MEMBER_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER} = Constants.Dynamics.AddressTypes
 
 class AddressDetail extends BaseModel {
   static get entity () {
@@ -33,6 +33,10 @@ class AddressDetail extends BaseModel {
 
   static async getDetails (context, applicationId, type) {
     return (await AddressDetail.getByApplicationIdAndType(context, applicationId, type.TYPE)) || new AddressDetail({applicationId, addressDetail: type.NAME, type: type.TYPE})
+  }
+
+  static async getDesignatedMemberDetails (context, applicationId) {
+    return this.getDetails(context, applicationId, DESIGNATED_MEMBER_EMAIL)
   }
 
   static async getCompanySecretaryDetails (context, applicationId) {

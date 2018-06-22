@@ -97,13 +97,13 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         await applicationContact.save(context)
       }
 
-      return this.redirect({request, h, redirectPath: Routes.COMPANY_DIRECTOR_EMAIL.path})
+      return this.redirect({request, h, redirectPath: this.nextPath})
     }
   }
 
   // Obtains the Directors that relate to an application
   async _getDirectors (context, applicationId, permitHolderOrganisationId) {
-    const directors = await Contact.list(context, permitHolderOrganisationId, Constants.Dynamics.COMPANY_DIRECTOR)
+    const directors = await Contact.list(context, permitHolderOrganisationId, Constants.Dynamics.AccountRoleCodes.COMPANY_DIRECTOR)
     for (let director of directors) {
       director.dateOfBirthFormatted = Utilities.formatDateForDisplay(director.dob)
     }

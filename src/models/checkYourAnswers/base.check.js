@@ -11,7 +11,7 @@ const LocationDetail = require('../locationDetail.model')
 const StandardRule = require('../standardRule.model')
 const CompanyLookupService = require('../../services/companyLookup.service')
 const Utilities = require('../../utilities/utilities')
-const {COMPANY_DIRECTOR} = Constants.Dynamics
+const {COMPANY_DIRECTOR} = Constants.Dynamics.AccountRoleCodes
 const {TECHNICAL_QUALIFICATION, SITE_PLAN, FIRE_PREVENTION_PLAN} = Constants.UploadSubject
 
 module.exports = class BaseCheck {

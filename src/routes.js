@@ -103,6 +103,8 @@ const Routes = {
     pageHeading: 'Is this the right company?',
     controller: 'companyCheckName',
     validator: 'companyCheckName',
+    nextRoute: 'DIRECTOR_DATE_OF_BIRTH',
+    companyRoute: 'COMPANY_NUMBER',
     types: 'GET, POST'
   },
   COMPANY_CHECK_STATUS: {
@@ -111,6 +113,8 @@ const Routes = {
     pageHeading: 'We cannot issue a permit to that company because it {{{companyStatus}}}',
     controller: 'companyCheckStatus',
     validator: true,
+    nextRoute: 'COMPANY_CHECK_NAME',
+    companyRoute: 'COMPANY_NUMBER',
     types: 'GET'
   },
   COMPANY_CHECK_TYPE: {
@@ -119,6 +123,8 @@ const Routes = {
     pageHeading: 'That company cannot apply because it is {{{companyType}}}',
     controller: 'companyCheckType',
     validator: true,
+    nextRoute: 'COMPANY_CHECK_STATUS',
+    companyRoute: 'COMPANY_NUMBER',
     types: 'GET'
   },
   COMPANY_DECLARE_OFFENCES: {
@@ -145,15 +151,16 @@ const Routes = {
     pageHeading: 'What is the email address for the Company Secretary or a director?',
     controller: 'companyDirectorEmail',
     validator: 'companyDirectorEmail',
+    nextRoute: 'COMPANY_DECLARE_OFFENCES',
     types: 'GET, POST'
   },
   COMPANY_NUMBER: {
     path: '/permit-holder/company/number',
     view: 'companyNumber',
     pageHeading: 'What is the UK company registration number?',
-    taskListHeading: 'What is the company name or registration number?',
     controller: 'companyNumber',
     validator: 'companyNumber',
+    nextRoute: 'COMPANY_CHECK_TYPE',
     types: 'GET, POST'
   },
   DIRECTOR_DATE_OF_BIRTH: {
@@ -163,7 +170,46 @@ const Routes = {
     pageHeadingAlternate: 'What are the directors\' dates of birth?',
     controller: 'directorDateOfBirth',
     validator: 'directorDateOfBirth',
+    nextRoute: 'COMPANY_DIRECTOR_EMAIL',
     types: 'GET, POST'
+  },
+  LLP_COMPANY_CHECK_NAME: {
+    path: '/permit-holder/limited-liability-partnership/check-name',
+    view: 'companyCheckName',
+    pageHeading: 'Is this the right limited liability partnership?',
+    controller: 'companyCheckName',
+    validator: 'companyCheckName',
+    nextRoute: 'LLP_COMPANY_DESIGNATED_MEMBER_EMAIL',
+    companyRoute: 'LLP_COMPANY_NUMBER',
+    types: 'GET, POST'
+  },
+  LLP_COMPANY_DESIGNATED_MEMBER_EMAIL: {
+    path: '/permit-holder/limited-liability-partnership/designated-member-email',
+    view: 'designatedMemberEmail',
+    pageHeading: 'Email address for one of the designated members',
+    controller: 'designatedMemberEmail',
+    validator: 'companyDirectorEmail',
+    nextRoute: 'COMPANY_DECLARE_OFFENCES',
+    types: 'GET, POST'
+  },
+  LLP_COMPANY_NUMBER: {
+    path: '/permit-holder/limited-liability-partnership/number',
+    view: 'companyNumber',
+    pageHeading: `What is the company number for the  limited liability partnership?`,
+    controller: 'companyNumber',
+    validator: 'llpCompanyNumber',
+    nextRoute: 'LLP_COMPANY_CHECK_STATUS',
+    types: 'GET, POST'
+  },
+  LLP_COMPANY_CHECK_STATUS: {
+    path: '/permit-holder/limited-liability-partnership/status-not-active',
+    view: 'companyCheckStatus',
+    pageHeading: 'We cannot issue a permit to that limited liability partnership (LLP) because it {{{companyStatus}}}',
+    controller: 'companyCheckStatus',
+    nextRoute: 'LLP_COMPANY_CHECK_NAME',
+    companyRoute: 'LLP_COMPANY_NUMBER',
+    validator: true,
+    types: 'GET'
   },
   PERMIT_HOLDER_DETAILS: {
     path: '/permit-holder/details',

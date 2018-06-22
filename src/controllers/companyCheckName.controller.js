@@ -4,8 +4,8 @@ const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
 const RecoveryService = require('../services/recovery.service')
 
+const Routes = require('../routes')
 const {TRADING_NAME_USAGE} = require('../constants').Dynamics
-const {DIRECTOR_DATE_OF_BIRTH, COMPANY_NUMBER, TASK_LIST} = require('../routes')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, h, errors) {
@@ -13,7 +13,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
     const {application, account} = await RecoveryService.createApplicationContext(h, {application: true, account: true})
 
     if (!application || !account) {
-      return this.redirect({request, h, redirectPath: TASK_LIST.path})
+      return this.redirect({request, h, redirectPath: Routes.TASK_LIST.path})
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -35,7 +35,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
     }
     pageContext.companyFound = company !== undefined
 
-    pageContext.enterCompanyNumberRoute = COMPANY_NUMBER.path
+    pageContext.enterCompanyNumberRoute = Routes[this.route.companyRoute].path
 
     return this.showView({request, h, pageContext})
   }
@@ -68,7 +68,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         await application.save(context)
       }
-      return this.redirect({request, h, redirectPath: DIRECTOR_DATE_OF_BIRTH.path})
+      return this.redirect({request, h, redirectPath: this.nextPath})
     }
   }
 }
