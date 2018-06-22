@@ -29,16 +29,23 @@ module.exports = class CompanyStatusController extends BaseController {
       switch (this.route) {
         case COMPANY_CHECK_STATUS:
           active = await CompanyLookupService.getActiveDirectors(account.companyNumber)
-          companyStatus = Status.NO_DIRECTORS
           break
         case LLP_COMPANY_CHECK_STATUS:
           active = await CompanyLookupService.getActiveDesignatedMembers(account.companyNumber)
-          companyStatus = Status.NO_DESIGNATED_MEMBERS
           break
       }
 
       if (active.length) {
         return this.redirect({request, h, redirectPath: this.nextPath})
+      } else {
+        switch (this.route) {
+          case COMPANY_CHECK_STATUS:
+            companyStatus = Status.NO_DIRECTORS
+            break
+          case LLP_COMPANY_CHECK_STATUS:
+            companyStatus = Status.NO_DESIGNATED_MEMBERS
+            break
+        }
       }
     }
 
