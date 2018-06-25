@@ -1,11 +1,11 @@
 'use strict'
 
 const Merge = require('deepmerge')
-const Constants = require('../constants')
+const Dynamics = require('../dynamics')
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const DrainageTypes = Merge({}, Constants.Dynamics.DrainageTypes)
+const DrainageTypes = Merge({}, Dynamics.DrainageTypes)
 
 module.exports = class DrainageTypeFailController extends BaseController {
   async doGet (request, h) {

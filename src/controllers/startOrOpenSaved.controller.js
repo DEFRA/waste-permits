@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../constants')
+const Dynamics = require('../dynamics')
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
@@ -32,7 +33,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
     if (request.payload['started-application'] === 'new') {
       // Create new application in Dynamics and set the applicationId in the cookie
       const application = new Application()
-      application.statusCode = Constants.Dynamics.StatusCode.DRAFT
+      application.statusCode = Dynamics.StatusCode.DRAFT
       await application.save({authToken})
 
       // Set the application ID in the cookie

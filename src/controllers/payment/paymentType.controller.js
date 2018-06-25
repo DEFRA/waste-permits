@@ -2,10 +2,11 @@
 
 const config = require('../../config/config')
 const Constants = require('../../constants')
+const Dynamics = require('../../dynamics')
 const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
-const {CARD_PAYMENT, BACS_PAYMENT} = Constants.Dynamics.PaymentTypes
+const {CARD_PAYMENT, BACS_PAYMENT} = Dynamics.PaymentTypes
 
 module.exports = class PaymentTypeController extends BaseController {
   async doGet (request, h, errors) {

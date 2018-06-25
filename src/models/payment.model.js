@@ -1,11 +1,11 @@
 'use strict'
 
-const Constants = require('../constants')
+const {PaymentStatusCodes, PaymentTypes} = require('../dynamics')
 const Utilities = require('../utilities/utilities')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
-const {BACS_PAYMENT, CARD_PAYMENT} = Constants.Dynamics.PaymentTypes
+const {BACS_PAYMENT, CARD_PAYMENT} = PaymentTypes
 
 class Payment extends BaseModel {
   static get entity () {
@@ -28,15 +28,15 @@ class Payment extends BaseModel {
   }
 
   isPaid () {
-    return Boolean(this.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED)
+    return Boolean(this.statusCode === PaymentStatusCodes.ISSUED)
   }
 
   static async getBacsPayment (context, applicationLineId) {
-    return this.getByApplicationLineIdAndType(context, applicationLineId, Constants.Dynamics.PaymentTypes.BACS_PAYMENT)
+    return this.getByApplicationLineIdAndType(context, applicationLineId, BACS_PAYMENT)
   }
 
   static async getCardPayment (context, applicationLineId) {
-    return this.getByApplicationLineIdAndType(context, applicationLineId, Constants.Dynamics.PaymentTypes.CARD_PAYMENT)
+    return this.getByApplicationLineIdAndType(context, applicationLineId, CARD_PAYMENT)
   }
 
   static async getByApplicationLineIdAndType (context, applicationLineId, type) {

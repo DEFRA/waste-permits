@@ -1,8 +1,8 @@
-const Constants = require('../../constants')
+const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
-const {PERMIT_HOLDER_DETAILS: ruleSetId} = Constants.Dynamics.RulesetIds
-const {LIMITED_LIABILITY_PARTNERSHIP} = Constants.Dynamics.PERMIT_HOLDER_TYPES
+const {PERMIT_HOLDER_DETAILS: ruleSetId} = Dynamics.RulesetIds
+const {LIMITED_LIABILITY_PARTNERSHIP} = Dynamics.PERMIT_HOLDER_TYPES
 
 const {
   COMPANY_DECLARE_BANKRUPTCY,

@@ -1,6 +1,6 @@
 'use strict'
 
-const {SHOW_COST_AND_TIME} = require('../../constants').Dynamics.CompletedParamters
+const {SHOW_COST_AND_TIME} = require('../../dynamics').CompletedParamters
 const Completeness = require('./completeness.model')
 
 module.exports = class CostTime extends Completeness {

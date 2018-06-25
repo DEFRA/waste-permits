@@ -9,10 +9,8 @@ const Contact = require('../models/contact.model')
 const Payment = require('../models/payment.model')
 const StandardRule = require('../models/standardRule.model')
 
-const {
-  COOKIE_KEY: {AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID},
-  Dynamics: {PERMIT_HOLDER_TYPES}
-} = require('../constants')
+const {COOKIE_KEY: {AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID}} = require('../constants')
+const {PERMIT_HOLDER_TYPES} = require('../dynamics')
 
 module.exports = class RecoveryService {
   static async recoverOptionalData (context, applicationId, applicationLineId, options) {

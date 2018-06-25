@@ -1,6 +1,6 @@
 'use strict'
 
-const {SAVE_AND_RETURN_EMAIL} = require('../../constants').Dynamics.CompletedParamters
+const {SAVE_AND_RETURN_EMAIL} = require('../../dynamics').CompletedParamters
 const Completeness = require('./completeness.model')
 const Application = require('../application.model')
 

@@ -1,6 +1,7 @@
 'use strict'
 
 const Constants = require('../../constants')
+const Dynamics = require('../../dynamics')
 const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const Payment = require('../../models/payment.model')
@@ -16,7 +17,7 @@ module.exports = class PaymentBacsController extends BaseController {
 
     if (!application.isSubmitted()) {
       return this.redirect({request, h, redirectPath: Routes.NOT_SUBMITTED.path})
-    } else if ((payment && payment.statusCode === Constants.Dynamics.PaymentStatusCodes.ISSUED) || (application && application.paymentReceived)) {
+    } else if ((payment && payment.statusCode === Dynamics.PaymentStatusCodes.ISSUED) || (application && application.paymentReceived)) {
       return this.redirect({request, h, redirectPath: Routes.ALREADY_SUBMITTED.path})
     }
 
@@ -31,10 +32,10 @@ module.exports = class PaymentBacsController extends BaseController {
     const payment = await Payment.getBacsPaymentDetails(context, applicationLine.id)
 
     payment.value = value
-    payment.category = Constants.Dynamics.PAYMENT_CATEGORY
-    payment.statusCode = Constants.Dynamics.PaymentStatusCodes.ISSUED
+    payment.category = Dynamics.PAYMENT_CATEGORY
+    payment.statusCode = Dynamics.PaymentStatusCodes.ISSUED
     payment.applicationId = application.id
-    payment.title = `${Constants.Dynamics.PaymentTitle.BACS_PAYMENT} ${application.applicationNumber}`
+    payment.title = `${Dynamics.PaymentTitle.BACS_PAYMENT} ${application.applicationNumber}`
     await payment.save(context)
 
     return this.redirect({request, h, redirectPath: Constants.APPLICATION_RECEIVED_URL})

@@ -5,10 +5,8 @@ const BaseModel = require('./base.model')
 const ApplicationReturn = require('./applicationReturn.model')
 const LoggingService = require('../services/logging.service')
 
-const {
-  Dynamics: {DIGITAL_SOURCE, PERMIT_HOLDER_TYPES, StatusCode, WASTE_REGIME},
-  SAVE_AND_RETURN_URL
-} = require('../constants')
+const {SAVE_AND_RETURN_URL} = require('../constants')
+const {DIGITAL_SOURCE, PERMIT_HOLDER_TYPES, StatusCode, WASTE_REGIME} = require('../dynamics')
 
 class Application extends BaseModel {
   static get entity () {

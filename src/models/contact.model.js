@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../constants')
+const {AccountRoleCodes} = require('../dynamics')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const Application = require('./application.model')
@@ -33,7 +33,7 @@ class Contact extends BaseModel {
     return super.getById(context, id, ({field}) => field !== 'dob.day')
   }
 
-  static async list (context, permitHolderOrganisationId = undefined, contactType = Constants.Dynamics.AccountRoleCodes.COMPANY_DIRECTOR) {
+  static async list (context, permitHolderOrganisationId = undefined, contactType = AccountRoleCodes.COMPANY_DIRECTOR) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
 
     let filter = `accountrolecode eq ${contactType} and defra_resignedoncompanieshouse eq null`

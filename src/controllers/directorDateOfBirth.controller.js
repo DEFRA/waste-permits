@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 const Constants = require('../constants')
+const Dynamics = require('../dynamics')
 const Routes = require('../routes')
 const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
@@ -40,8 +41,8 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     pageContext.directors = directors
 
     if (directors.length > 1) {
-      pageContext.pageHeading = Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate
-      pageContext.pageTitle = Constants.buildPageTitle(Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate)
+      pageContext.pageHeading = this.route.pageHeadingAlternate
+      pageContext.pageTitle = Constants.buildPageTitle(this.route.pageHeadingAlternate)
 
       // Change page title if there is an error using the following
       if (errors && errors.details) {
@@ -103,7 +104,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
   // Obtains the Directors that relate to an application
   async _getDirectors (context, applicationId, permitHolderOrganisationId) {
-    const directors = await Contact.list(context, permitHolderOrganisationId, Constants.Dynamics.AccountRoleCodes.COMPANY_DIRECTOR)
+    const directors = await Contact.list(context, permitHolderOrganisationId, Dynamics.AccountRoleCodes.COMPANY_DIRECTOR)
     for (let director of directors) {
       director.dateOfBirthFormatted = Utilities.formatDateForDisplay(director.dob)
     }

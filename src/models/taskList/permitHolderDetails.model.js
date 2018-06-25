@@ -1,7 +1,6 @@
 'use strict'
 
-const Constants = require('../../constants')
-const {PERMIT_HOLDER_DETAILS} = Constants.Dynamics.CompletedParamters
+const {PERMIT_HOLDER_DETAILS} = require('../../dynamics').CompletedParamters
 
 const Completeness = require('./completeness.model')
 const LoggingService = require('../../services/logging.service')

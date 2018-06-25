@@ -1,7 +1,6 @@
-const Constants = require('../../constants')
 const BaseCheck = require('./base.check')
 
-const {FIRE_PREVENTION_PLAN: ruleSetId} = Constants.Dynamics.RulesetIds
+const {FIRE_PREVENTION_PLAN: ruleSetId} = require('../../dynamics').RulesetIds
 const {FIRE_PREVENTION_PLAN} = require('../../routes')
 
 module.exports = class FirePreventionPlanCheck extends BaseCheck {

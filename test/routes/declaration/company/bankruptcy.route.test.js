@@ -12,7 +12,8 @@ const Application = require('../../../../src/models/application.model')
 const PermitHolderDetails = require('../../../../src/models/taskList/permitHolderDetails.model')
 const LoggingService = require('../../../../src/services/logging.service')
 const RecoveryService = require('../../../../src/services/recovery.service')
-const {COOKIE_RESULT, Dynamics: {PERMIT_HOLDER_TYPES}} = require('../../../../src/constants')
+const {COOKIE_RESULT} = require('../../../../src/constants')
+const {PERMIT_HOLDER_TYPES} = require('../../../../src/dynamics')
 
 let sandbox
 

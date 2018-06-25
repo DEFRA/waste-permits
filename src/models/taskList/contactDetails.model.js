@@ -1,6 +1,6 @@
 'use strict'
 
-const {CONTACT_DETAILS} = require('../../constants').Dynamics.CompletedParamters
+const {CONTACT_DETAILS} = require('../../dynamics').CompletedParamters
 const Completeness = require('./completeness.model')
 const Contact = require('../../../src/models/contact.model')
 

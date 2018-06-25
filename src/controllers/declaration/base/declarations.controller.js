@@ -3,7 +3,7 @@
 const BaseController = require('../../base.controller')
 const RecoveryService = require('../../../services/recovery.service')
 
-const {Dynamics: {PERMIT_HOLDER_TYPES}} = require('../../../constants')
+const {PERMIT_HOLDER_TYPES} = require('../../../dynamics')
 
 module.exports = class DeclarationsController extends BaseController {
   async doGet (request, h, errors) {

@@ -3,7 +3,7 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const {INDIVIDUAL, SOLE_TRADER, LIMITED_LIABILITY_PARTNERSHIP} = require('../../constants').Dynamics.PERMIT_HOLDER_TYPES
+const {INDIVIDUAL, SOLE_TRADER, LIMITED_LIABILITY_PARTNERSHIP} = require('../../dynamics').PERMIT_HOLDER_TYPES
 const {PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, COMPANY_NUMBER, LLP_COMPANY_NUMBER} = require('../../routes')
 
 module.exports = class PermitHolderDetailsController extends BaseController {
