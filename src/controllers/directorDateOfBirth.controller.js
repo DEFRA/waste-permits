@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 const Constants = require('../constants')
+const Dynamics = require('../dynamics')
 const Routes = require('../routes')
 const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
@@ -103,7 +104,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
   // Obtains the Directors that relate to an application
   async _getDirectors (context, applicationId, permitHolderOrganisationId) {
-    const directors = await Contact.list(context, permitHolderOrganisationId, Constants.Dynamics.AccountRoleCodes.COMPANY_DIRECTOR)
+    const directors = await Contact.list(context, permitHolderOrganisationId, Dynamics.AccountRoleCodes.COMPANY_DIRECTOR)
     for (let director of directors) {
       director.dateOfBirthFormatted = Utilities.formatDateForDisplay(director.dob)
     }

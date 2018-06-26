@@ -4,6 +4,7 @@ const Path = require('path')
 
 const config = require('../../config/config')
 const Constants = require('../../constants')
+const {CompletedParamters, RulesetIds} = require('../../dynamics')
 const Routes = require('../../routes')
 
 const DynamicsDalService = require('../../services/dynamicsDal.service')
@@ -60,37 +61,37 @@ class TaskList extends BaseModel {
         label: Routes.COST_TIME.taskListHeading,
         href: Routes.COST_TIME.path,
         completedLabelId: 'cost-and-time-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.SHOW_COST_AND_TIME,
+        rulesetId: RulesetIds.SHOW_COST_AND_TIME,
         // TODO Set model name
         // taskListModelName: '',
-        completedId: Constants.Dynamics.CompletedParamters.SHOW_COST_AND_TIME,
+        completedId: CompletedParamters.SHOW_COST_AND_TIME,
         available: false
       }, {
         id: 'confirm-that-your-operation-meets-the-rules',
         label: Routes.CONFIRM_RULES.taskListHeading,
         href: Routes.CONFIRM_RULES.path,
         completedLabelId: 'operation-rules-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.CONFIRM_RULES,
+        rulesetId: RulesetIds.CONFIRM_RULES,
         taskListModelName: 'ConfirmRules',
-        completedId: Constants.Dynamics.CompletedParamters.CONFIRM_RULES,
+        completedId: CompletedParamters.CONFIRM_RULES,
         available: false
       }, {
         id: 'confirm-the-drainage-system-for-the-vehicle-storage-area',
         label: Routes.DRAINAGE_TYPE_DRAIN.taskListHeading,
         href: Routes.DRAINAGE_TYPE_DRAIN.path,
         completedLabelId: 'confirm-drainage-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.SURFACE_DRAINAGE,
+        rulesetId: RulesetIds.SURFACE_DRAINAGE,
         taskListModelName: 'DrainageTypeDrain',
-        completedId: Constants.Dynamics.CompletedParamters.SURFACE_DRAINAGE,
+        completedId: CompletedParamters.SURFACE_DRAINAGE,
         available: false
       }, {
         id: 'set-up-save-and-return',
         label: Routes.SAVE_AND_RETURN_EMAIL.taskListHeading,
         href: Routes.SAVE_AND_RETURN_EMAIL.path,
         completedLabelId: 'set-up-save-and-return-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.SAVE_AND_RETURN_EMAIL,
+        rulesetId: RulesetIds.SAVE_AND_RETURN_EMAIL,
         taskListModelName: 'SaveAndReturn',
-        completedId: Constants.Dynamics.CompletedParamters.SAVE_AND_RETURN_EMAIL,
+        completedId: CompletedParamters.SAVE_AND_RETURN_EMAIL,
         available: false
       }]
     }
@@ -104,102 +105,102 @@ class TaskList extends BaseModel {
         label: Routes.WASTE_RECOVERY_PLAN.taskListHeading,
         href: Routes.WASTE_RECOVERY_PLAN.path,
         completedLabelId: 'waste-recovery-plan-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.WASTE_RECOVERY_PLAN,
+        rulesetId: RulesetIds.WASTE_RECOVERY_PLAN,
         // TODO Set model name
         // taskListModelName: '',
-        completedId: Constants.Dynamics.CompletedParamters.WASTE_RECOVERY_PLAN,
+        completedId: CompletedParamters.WASTE_RECOVERY_PLAN,
         available: false
       }, {
         id: 'tell-us-if-youve-discussed-this-application-with-us',
         label: Routes.PRE_APPLICATION.taskListHeading,
         href: Routes.PRE_APPLICATION.path,
         completedLabelId: 'preapp-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.PRE_APPLICATION,
+        rulesetId: RulesetIds.PRE_APPLICATION,
         // TODO Set model name
         // taskListModelName: '',
-        completedId: Constants.Dynamics.CompletedParamters.PRE_APPLICATION,
+        completedId: CompletedParamters.PRE_APPLICATION,
         available: false
       }, {
         id: 'give-contact-details',
         label: Routes.CONTACT_DETAILS.taskListHeading,
         href: Routes.CONTACT_DETAILS.path,
         completedLabelId: 'contact-details-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.CONTACT_DETAILS,
+        rulesetId: RulesetIds.CONTACT_DETAILS,
         taskListModelName: 'ContactDetails',
-        completedId: Constants.Dynamics.CompletedParamters.CONTACT_DETAILS,
+        completedId: CompletedParamters.CONTACT_DETAILS,
         available: false
       }, {
         id: 'give-permit-holder-details',
         label: Routes.PERMIT_HOLDER_DETAILS.taskListHeading,
         href: Routes.PERMIT_HOLDER_DETAILS.path,
         completedLabelId: 'site-operator-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.PERMIT_HOLDER_DETAILS,
+        rulesetId: RulesetIds.PERMIT_HOLDER_DETAILS,
         taskListModelName: 'CompanyDetails',
-        completedId: Constants.Dynamics.CompletedParamters.PERMIT_HOLDER_DETAILS,
+        completedId: CompletedParamters.PERMIT_HOLDER_DETAILS,
         available: false
       }, {
         id: 'give-site-name-and-location',
         label: Routes.SITE_NAME.taskListHeading,
         href: Routes.SITE_NAME.path,
         completedLabelId: 'site-name-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.SITE_NAME_LOCATION,
+        rulesetId: RulesetIds.SITE_NAME_LOCATION,
         taskListModelName: 'SiteNameAndLocation',
-        completedId: Constants.Dynamics.CompletedParamters.SITE_NAME_LOCATION,
+        completedId: CompletedParamters.SITE_NAME_LOCATION,
         available: false
       }, {
         id: 'upload-the-site-plan',
         label: Routes.SITE_PLAN.taskListHeading,
         href: Routes.SITE_PLAN.path,
         completedLabelId: 'site-plan-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.SITE_PLAN,
+        rulesetId: RulesetIds.SITE_PLAN,
         taskListModelName: 'SitePlan',
-        completedId: Constants.Dynamics.CompletedParamters.SITE_PLAN,
+        completedId: CompletedParamters.SITE_PLAN,
         available: false
       }, {
         id: 'upload-technical-management-qualifications',
         label: Routes.TECHNICAL_QUALIFICATION.taskListHeading,
         href: Routes.TECHNICAL_QUALIFICATION.path,
         completedLabelId: 'upload-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.TECHNICAL_QUALIFICATION,
+        rulesetId: RulesetIds.TECHNICAL_QUALIFICATION,
         taskListModelName: 'TechnicalQualification',
-        completedId: Constants.Dynamics.CompletedParamters.TECHNICAL_QUALIFICATION,
+        completedId: CompletedParamters.TECHNICAL_QUALIFICATION,
         available: false
       }, {
         id: 'tell-us-which-management-system-you-use',
         label: Routes.MANAGEMENT_SYSTEM.taskListHeading,
         href: Routes.MANAGEMENT_SYSTEM.path,
         completedLabelId: 'management-system-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.MANAGEMENT_SYSTEM,
+        rulesetId: RulesetIds.MANAGEMENT_SYSTEM,
         // TODO Set model name
         // taskListModelName: '',
-        completedId: Constants.Dynamics.CompletedParamters.MANAGEMENT_SYSTEM,
+        completedId: CompletedParamters.MANAGEMENT_SYSTEM,
         available: false
       }, {
         id: 'upload-the-fire-prevention-plan',
         label: Routes.FIRE_PREVENTION_PLAN.taskListHeading,
         href: Routes.FIRE_PREVENTION_PLAN.path,
         completedLabelId: 'firepp-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.FIRE_PREVENTION_PLAN,
+        rulesetId: RulesetIds.FIRE_PREVENTION_PLAN,
         taskListModelName: 'FirePreventionPlan',
-        completedId: Constants.Dynamics.CompletedParamters.FIRE_PREVENTION_PLAN,
+        completedId: CompletedParamters.FIRE_PREVENTION_PLAN,
         available: true
       }, {
         id: 'confirm-confidentiality-needs',
         label: Routes.CONFIDENTIALITY.taskListHeading,
         href: Routes.CONFIDENTIALITY.path,
         completedLabelId: 'confidentiality-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.CONFIRM_CONFIDENTIALLY,
+        rulesetId: RulesetIds.CONFIRM_CONFIDENTIALLY,
         taskListModelName: 'Confidentiality',
-        completedId: Constants.Dynamics.CompletedParamters.CONFIRM_CONFIDENTIALLY,
+        completedId: CompletedParamters.CONFIRM_CONFIDENTIALLY,
         available: false
       }, {
         id: 'invoicing-details',
         label: Routes.POSTCODE_INVOICE.taskListHeading,
         href: Routes.POSTCODE_INVOICE.path,
         completedLabelId: 'invoicing-details-completed',
-        rulesetId: Constants.Dynamics.RulesetIds.INVOICING_DETAILS,
+        rulesetId: RulesetIds.INVOICING_DETAILS,
         taskListModelName: 'InvoiceAddress',
-        completedId: Constants.Dynamics.CompletedParamters.INVOICING_DETAILS,
+        completedId: CompletedParamters.INVOICING_DETAILS,
         available: false
       }]
     }

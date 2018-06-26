@@ -1,8 +1,7 @@
-const Constants = require('../../constants')
 const BaseCheck = require('./base.check')
 
 const {path} = require('../../routes').CONTACT_DETAILS
-const {CONTACT_DETAILS: ruleSetId} = Constants.Dynamics.RulesetIds
+const {CONTACT_DETAILS: ruleSetId} = require('../../dynamics').RulesetIds
 
 module.exports = class ContactCheck extends BaseCheck {
   static get rulesetId () {

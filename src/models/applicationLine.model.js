@@ -1,7 +1,6 @@
 'use strict'
 
-const Constants = require('../constants')
-const {RulesetIds} = Constants.Dynamics
+const {RulesetIds, PermitTypes} = require('../dynamics')
 const LoggingService = require('../services/logging.service')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
@@ -18,7 +17,7 @@ class ApplicationLine extends BaseModel {
       {field: 'standardRuleId', dynamics: '_defra_standardruleid_value', bind: {id: 'defra_standardruleId', entity: 'defra_standardrules'}},
       {field: 'parametersId', dynamics: '_defra_parametersid_value', readOnly: true},
       {field: 'value', dynamics: 'defra_value', readOnly: true},
-      {field: 'permitType', dynamics: 'defra_permittype', constant: Constants.Dynamics.PermitTypes.STANDARD}
+      {field: 'permitType', dynamics: 'defra_permittype', constant: PermitTypes.STANDARD}
     ]
   }
 

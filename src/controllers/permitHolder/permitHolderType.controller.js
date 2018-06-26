@@ -4,11 +4,8 @@ const BaseController = require('../base.controller')
 const CookieService = require('../../services/cookie.service')
 const RecoveryService = require('../../services/recovery.service')
 
-const {
-  COOKIE_KEY: {STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID},
-  Dynamics: {PERMIT_HOLDER_TYPES}
-} = require('../../constants')
-
+const {COOKIE_KEY: {STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID}} = require('../../constants')
+const {PERMIT_HOLDER_TYPES} = require('../../dynamics')
 const {APPLY_OFFLINE, PERMIT_CATEGORY} = require('../../routes')
 
 module.exports = class PermitHolderTypeController extends BaseController {

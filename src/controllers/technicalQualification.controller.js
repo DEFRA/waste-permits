@@ -1,10 +1,10 @@
 'use strict'
 
-const Constants = require('../constants')
+const Dynamics = require('../dynamics')
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Constants.Dynamics.TechnicalQualification
+const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Dynamics.TechnicalQualification
 
 module.exports = class TechnicalQualificationController extends BaseController {
   async doGet (request, h, errors) {

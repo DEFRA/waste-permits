@@ -1,7 +1,6 @@
-const Constants = require('../../constants')
 const BaseCheck = require('./base.check')
 
-const {SITE_NAME_LOCATION: ruleSetId} = Constants.Dynamics.RulesetIds
+const {SITE_NAME_LOCATION: ruleSetId} = require('../../dynamics').RulesetIds
 const {SITE_NAME, SITE_GRID_REFERENCE, POSTCODE_SITE, MANUAL_SITE} = require('../../routes')
 
 module.exports = class SiteCheck extends BaseCheck {

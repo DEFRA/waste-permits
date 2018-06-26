@@ -1,8 +1,7 @@
 'use strict'
 
-const Constants = require('../constants')
 const BaseModel = require('./base.model')
-const {COMPANY_SECRETARY_EMAIL, DESIGNATED_MEMBER_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER} = Constants.Dynamics.AddressTypes
+const {COMPANY_SECRETARY_EMAIL, DESIGNATED_MEMBER_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER} = require('../dynamics').AddressTypes
 
 class AddressDetail extends BaseModel {
   static get entity () {

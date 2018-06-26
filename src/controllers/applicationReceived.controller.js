@@ -36,7 +36,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
         paymentEmail: Constants.BankAccountDetails.PAYMENT_EMAIL
       }
     } else if (cardPayment) {
-      pageContext.pageHeading = Routes.APPLICATION_RECEIVED.pageHeadingAlternate
+      pageContext.pageHeading = this.route.pageHeadingAlternate
       pageContext.cardPayment = {
         description: cardPayment.description,
         amount: cardPayment.value.toLocaleString()

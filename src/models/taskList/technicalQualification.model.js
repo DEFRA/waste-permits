@@ -1,7 +1,7 @@
 'use strict'
 
 const Constants = require('../../constants')
-const {TECHNICAL_QUALIFICATION} = require('../../constants').Dynamics.CompletedParamters
+const {TECHNICAL_QUALIFICATION} = require('../../dynamics').CompletedParamters
 const Completeness = require('./completeness.model')
 const Annotation = require('../annotation.model')
 

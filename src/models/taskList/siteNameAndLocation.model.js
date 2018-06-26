@@ -1,7 +1,6 @@
 'use strict'
 
-const Constants = require('../../constants')
-const {SITE_NAME_LOCATION} = Constants.Dynamics.CompletedParamters
+const {SITE_NAME_LOCATION} = require('../../dynamics').CompletedParamters
 
 const Completeness = require('./completeness.model')
 const Location = require('../location.model')

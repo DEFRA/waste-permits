@@ -1,6 +1,6 @@
 'use strict'
 
-const {CONFIRM_CONFIDENTIALLY} = require('../../constants').Dynamics.CompletedParamters
+const {CONFIRM_CONFIDENTIALLY} = require('../../dynamics').CompletedParamters
 const Completeness = require('./completeness.model')
 const Application = require('../application.model')
 

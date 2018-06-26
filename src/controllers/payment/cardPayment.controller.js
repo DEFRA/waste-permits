@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../../constants')
+const Dynamics = require('../../dynamics')
 const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const Payment = require('../../models/payment.model')
@@ -23,9 +23,9 @@ module.exports = class CardPaymentController extends BaseController {
     const {value = 0} = applicationLine
     payment.description = `Application charge for a standard rules waste permit: ${standardRule.permitName} ${standardRule.code}`
     payment.value = value
-    payment.category = Constants.Dynamics.PAYMENT_CATEGORY
+    payment.category = Dynamics.PAYMENT_CATEGORY
     payment.applicationId = application.id
-    payment.title = `${Constants.Dynamics.PaymentTitle.CARD_PAYMENT} ${application.applicationNumber}`
+    payment.title = `${Dynamics.PaymentTitle.CARD_PAYMENT} ${application.applicationNumber}`
     await payment.save(context)
 
     // Note - Gov Pay needs an https address to redirect to, otherwise it throws a runtime error

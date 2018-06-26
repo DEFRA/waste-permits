@@ -1,6 +1,6 @@
 'use strict'
 
-const Constants = require('../constants')
+const Dynamics = require('../dynamics')
 const Routes = require('../routes')
 const RecoveryService = require('../services/recovery.service')
 const ApplicationLine = require('../models/applicationLine.model')
@@ -83,7 +83,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     const {application} = await RecoveryService.createApplicationContext(h, {application: true})
 
     application.declaration = true
-    application.statusCode = Constants.Dynamics.StatusCode.APPLICATION_RECEIVED
+    application.statusCode = Dynamics.StatusCode.APPLICATION_RECEIVED
     application.submittedOn = Date.now()
 
     await application.save(request.app.data)

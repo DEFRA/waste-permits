@@ -1,7 +1,6 @@
 'use strict'
 
-const Constants = require('../../constants')
-const {INVOICING_DETAILS} = Constants.Dynamics.CompletedParamters
+const {INVOICING_DETAILS} = require('../../dynamics').CompletedParamters
 
 const Completeness = require('./completeness.model')
 const Address = require('../address.model')

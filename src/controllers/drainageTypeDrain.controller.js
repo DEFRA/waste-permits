@@ -1,12 +1,11 @@
 'use strict'
 
 const Merge = require('deepmerge')
-const Constants = require('../constants')
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const DrainageTypeDrain = require('../models/taskList/drainageTypeDrain.model')
 const RecoveryService = require('../services/recovery.service')
-const DrainageTypes = Merge({}, Constants.Dynamics.DrainageTypes)
+const {DrainageTypes} = require('../dynamics')
 
 const {DRAINAGE_TYPE_FAIL, TASK_LIST} = Routes
 
@@ -25,8 +24,8 @@ module.exports = class drainageTypeController extends BaseController {
 
     const drainageType = pageContext.formValues['drainage-type']
 
-    const drainageTypes = Object.keys(DrainageTypes)
-      .map((key) => DrainageTypes[key])
+    const drainageTypes = Object.entries(Merge({}, DrainageTypes))
+      .map(([type, drainageType]) => drainageType)
 
     drainageTypes.forEach((item) => {
       item.selected = drainageType === item.type
@@ -48,11 +47,9 @@ module.exports = class drainageTypeController extends BaseController {
 
       const type = parseInt(request.payload['drainage-type'])
 
-      const drainageTypes = Constants.Dynamics.DrainageTypes
-
-      const drainageType = Object.keys(drainageTypes)
-        .filter((key) => drainageTypes[key].type === type)
-        .map((key) => drainageTypes[key])
+      const drainageType = Object.entries(Merge({}, DrainageTypes))
+        .map(([type, drainageType]) => drainageType)
+        .filter((drainageType) => drainageType.type === type)
         .pop()
 
       if (!drainageType) {
