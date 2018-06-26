@@ -41,8 +41,8 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     pageContext.directors = directors
 
     if (directors.length > 1) {
-      pageContext.pageHeading = this.route.pageHeadingAlternate
-      pageContext.pageTitle = Constants.buildPageTitle(this.route.pageHeadingAlternate)
+      pageContext.pageHeading = Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate
+      pageContext.pageTitle = Constants.buildPageTitle(Routes.DIRECTOR_DATE_OF_BIRTH.pageHeadingAlternate)
 
       // Change page title if there is an error using the following
       if (errors && errors.details) {
