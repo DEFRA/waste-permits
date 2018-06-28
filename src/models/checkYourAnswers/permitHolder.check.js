@@ -1,7 +1,7 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
-const {PERMIT_HOLDER_DETAILS: ruleSetId} = Dynamics.RulesetIds
+const {PERMIT_HOLDER_DETAILS: ruleSetId} = require('../applicationLine.model').RulesetIds
 const {LIMITED_LIABILITY_PARTNERSHIP} = Dynamics.PERMIT_HOLDER_TYPES
 
 const {

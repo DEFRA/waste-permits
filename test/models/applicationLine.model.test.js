@@ -18,7 +18,7 @@ const applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {
   fakeParameterId = 'PARAMETER_ID'
-  fakeRulesId = 'defra_allowpermitstartdate'
+  fakeRulesId = 'defra_confirmreadrules'
   fakeApplicationLine = new ApplicationLine({
     applicationId: 'APPLICATION_ID',
     standardRuleId: 'STANDARD_RULE_ID',

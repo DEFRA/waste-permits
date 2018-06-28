@@ -1,6 +1,6 @@
 'use strict'
 
-const {PERMIT_HOLDER_DETAILS} = require('../../dynamics').CompletedParamters
+const {PERMIT_HOLDER_DETAILS} = require('../applicationLine.model').CompletedParameters
 
 const Completeness = require('./completeness.model')
 const LoggingService = require('../../services/logging.service')

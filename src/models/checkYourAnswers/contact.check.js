@@ -1,7 +1,7 @@
 const BaseCheck = require('./base.check')
 
 const {path} = require('../../routes').CONTACT_DETAILS
-const {CONTACT_DETAILS: ruleSetId} = require('../../dynamics').RulesetIds
+const {CONTACT_DETAILS: ruleSetId} = require('../applicationLine.model').RulesetIds
 
 module.exports = class ContactCheck extends BaseCheck {
   static get rulesetId () {

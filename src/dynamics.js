@@ -164,54 +164,7 @@ const Dynamics = {
     MEDIUM: 910400002,
     HIGH: 910400003
   },
-  WASTE_REGIME: 910400000,
-
-  RulesetIds: {
-    ALLOW_PERMIT_START_DATE: 'defra_allowpermitstartdate',
-    BASELINE_REPORT: 'defra_baselinereportreq',
-    CONFIRM_CONFIDENTIALLY: 'defra_cnfconfidentialityreq',
-    CONFIRM_RULES: 'defra_confirmreadrules',
-    CONTACT_DETAILS: 'defra_contactdetailsrequired',
-    DEFRA_WASTE_WEIGHT: 'defra_extwasteweightreq',
-    FIRE_PREVENTION_PLAN: 'defra_fireplanrequired',
-    INVOICING_DETAILS: 'defra_invoicingdetailsrequired',
-    MANAGEMENT_SYSTEM: 'defra_mansystemrequired',
-    MINING_WASTE_MANAGEMENT_PLAN: 'defra_miningwastemanplanreq',
-    NHS_SCREENING: 'defra_nhscreeningrequired',
-    PERMIT_HOLDER_DETAILS: 'defra_pholderdetailsrequired',
-    PRE_APPLICATION: 'defra_preapprequired',
-    SAVE_AND_RETURN_EMAIL: 'defra_setupsaveandreturnrequired',
-    SHOW_COST_AND_TIME: 'defra_showcostandtime',
-    SITE_NAME_LOCATION: 'defra_locationrequired',
-    SITE_PLAN: 'defra_siteplanrequired',
-    STACK_HEIGHT: 'defra_stackheightreq',
-    SURFACE_DRAINAGE: 'defra_surfacedrainagereq',
-    TECHNICAL_QUALIFICATION: 'defra_techcompetenceevreq',
-    WASTE_RECOVERY_PLAN: 'defra_wasterecoveryplanreq'
-  },
-  CompletedParamters: {
-    ALLOW_PERMIT_START_DATE: 'defra_allowpermitstartdate_completed',
-    BASELINE_REPORT: 'defra_baselinereportreq_completed',
-    CONFIRM_CONFIDENTIALLY: 'defra_cnfconfidentialityreq_completed',
-    CONFIRM_RULES: 'defra_confirmreadrules_completed',
-    CONTACT_DETAILS: 'defra_contactdetailsrequired_completed',
-    DEFRA_WASTE_WEIGHT: 'defra_extwasteweightreq_completed',
-    FIRE_PREVENTION_PLAN: 'defra_fireplanrequired_completed',
-    INVOICING_DETAILS: 'defra_invoicingdetails_completed',
-    MANAGEMENT_SYSTEM: 'defra_mansystemrequired_completed',
-    MINING_WASTE_MANAGEMENT_PLAN: 'defra_miningwastemanplanreq_completed',
-    NHS_SCREENING: 'defra_nhscreeningrequired_completed',
-    PERMIT_HOLDER_DETAILS: 'defra_pholderdetailsrequired_completed',
-    PRE_APPLICATION: 'defra_preapprequired_completed',
-    SAVE_AND_RETURN_EMAIL: 'defra_setupsaveandreturn_completed',
-    SHOW_COST_AND_TIME: 'defra_showcostandtime_completed',
-    SITE_NAME_LOCATION: 'defra_locationrequired_completed',
-    SITE_PLAN: 'defra_siteplanrequired_completed',
-    STACK_HEIGHT: 'defra_stackheightreq_completed',
-    SURFACE_DRAINAGE: 'defra_surfacedrainagereq_completed',
-    TECHNICAL_QUALIFICATION: 'defra_techcompetenceevreq_completed',
-    WASTE_RECOVERY_PLAN: 'defra_wasterecoveryplanreq_completed'
-  }
+  WASTE_REGIME: 910400000
 }
 
 module.exports = Dynamics

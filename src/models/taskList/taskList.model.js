@@ -4,11 +4,11 @@ const Path = require('path')
 
 const config = require('../../config/config')
 const Constants = require('../../constants')
-const {CompletedParamters, RulesetIds} = require('../../dynamics')
 const Routes = require('../../routes')
 
-const DynamicsDalService = require('../../services/dynamicsDal.service')
 const BaseModel = require('../base.model')
+const ApplicationLine = require('../applicationLine.model')
+const {CompletedParameters, RulesetIds} = ApplicationLine
 const LoggingService = require('../../services/logging.service')
 
 const currentFilename = Path.basename(__filename)
@@ -29,18 +29,12 @@ class TaskList extends BaseModel {
   }
 
   static async getByApplicationLineId (context, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-
     const taskList = new TaskList()
     taskList._defineTaskListSections()
 
-    const query = encodeURI(`defra_applicationlines(${applicationLineId})?` +
-      `$expand=defra_parametersId($select=${taskList._getRulesetIds()})`)
-
     try {
-      const response = await dynamicsDal.search(query)
-
-      taskList._setRulesetAvailabilityAndCompleteness(response.defra_parametersId)
+      const ruleSetIds = await ApplicationLine.getValidRulesetIds(context, applicationLineId)
+      taskList._setRulesetAvailabilityAndCompleteness(ruleSetIds)
     } catch (error) {
       LoggingService.logError(`Unable to get Task List by applicationLineId: ${error}`)
       throw error
@@ -64,7 +58,7 @@ class TaskList extends BaseModel {
         rulesetId: RulesetIds.SHOW_COST_AND_TIME,
         // TODO Set model name
         // taskListModelName: '',
-        completedId: CompletedParamters.SHOW_COST_AND_TIME,
+        completedId: CompletedParameters.SHOW_COST_AND_TIME,
         available: false
       }, {
         id: 'confirm-that-your-operation-meets-the-rules',
@@ -73,7 +67,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'operation-rules-completed',
         rulesetId: RulesetIds.CONFIRM_RULES,
         taskListModelName: 'ConfirmRules',
-        completedId: CompletedParamters.CONFIRM_RULES,
+        completedId: CompletedParameters.CONFIRM_RULES,
         available: false
       }, {
         id: 'confirm-the-drainage-system-for-the-vehicle-storage-area',
@@ -82,7 +76,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'confirm-drainage-completed',
         rulesetId: RulesetIds.SURFACE_DRAINAGE,
         taskListModelName: 'DrainageTypeDrain',
-        completedId: CompletedParamters.SURFACE_DRAINAGE,
+        completedId: CompletedParameters.SURFACE_DRAINAGE,
         available: false
       }, {
         id: 'set-up-save-and-return',
@@ -91,7 +85,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'set-up-save-and-return-completed',
         rulesetId: RulesetIds.SAVE_AND_RETURN_EMAIL,
         taskListModelName: 'SaveAndReturn',
-        completedId: CompletedParamters.SAVE_AND_RETURN_EMAIL,
+        completedId: CompletedParameters.SAVE_AND_RETURN_EMAIL,
         available: false
       }]
     }
@@ -108,7 +102,7 @@ class TaskList extends BaseModel {
         rulesetId: RulesetIds.WASTE_RECOVERY_PLAN,
         // TODO Set model name
         // taskListModelName: '',
-        completedId: CompletedParamters.WASTE_RECOVERY_PLAN,
+        completedId: CompletedParameters.WASTE_RECOVERY_PLAN,
         available: false
       }, {
         id: 'tell-us-if-youve-discussed-this-application-with-us',
@@ -118,7 +112,7 @@ class TaskList extends BaseModel {
         rulesetId: RulesetIds.PRE_APPLICATION,
         // TODO Set model name
         // taskListModelName: '',
-        completedId: CompletedParamters.PRE_APPLICATION,
+        completedId: CompletedParameters.PRE_APPLICATION,
         available: false
       }, {
         id: 'give-contact-details',
@@ -127,7 +121,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'contact-details-completed',
         rulesetId: RulesetIds.CONTACT_DETAILS,
         taskListModelName: 'ContactDetails',
-        completedId: CompletedParamters.CONTACT_DETAILS,
+        completedId: CompletedParameters.CONTACT_DETAILS,
         available: false
       }, {
         id: 'give-permit-holder-details',
@@ -136,7 +130,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'site-operator-completed',
         rulesetId: RulesetIds.PERMIT_HOLDER_DETAILS,
         taskListModelName: 'CompanyDetails',
-        completedId: CompletedParamters.PERMIT_HOLDER_DETAILS,
+        completedId: CompletedParameters.PERMIT_HOLDER_DETAILS,
         available: false
       }, {
         id: 'give-site-name-and-location',
@@ -145,7 +139,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'site-name-completed',
         rulesetId: RulesetIds.SITE_NAME_LOCATION,
         taskListModelName: 'SiteNameAndLocation',
-        completedId: CompletedParamters.SITE_NAME_LOCATION,
+        completedId: CompletedParameters.SITE_NAME_LOCATION,
         available: false
       }, {
         id: 'upload-the-site-plan',
@@ -154,7 +148,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'site-plan-completed',
         rulesetId: RulesetIds.SITE_PLAN,
         taskListModelName: 'SitePlan',
-        completedId: CompletedParamters.SITE_PLAN,
+        completedId: CompletedParameters.SITE_PLAN,
         available: false
       }, {
         id: 'upload-technical-management-qualifications',
@@ -163,7 +157,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'upload-completed',
         rulesetId: RulesetIds.TECHNICAL_QUALIFICATION,
         taskListModelName: 'TechnicalQualification',
-        completedId: CompletedParamters.TECHNICAL_QUALIFICATION,
+        completedId: CompletedParameters.TECHNICAL_QUALIFICATION,
         available: false
       }, {
         id: 'tell-us-which-management-system-you-use',
@@ -173,7 +167,7 @@ class TaskList extends BaseModel {
         rulesetId: RulesetIds.MANAGEMENT_SYSTEM,
         // TODO Set model name
         // taskListModelName: '',
-        completedId: CompletedParamters.MANAGEMENT_SYSTEM,
+        completedId: CompletedParameters.MANAGEMENT_SYSTEM,
         available: false
       }, {
         id: 'upload-the-fire-prevention-plan',
@@ -182,7 +176,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'firepp-completed',
         rulesetId: RulesetIds.FIRE_PREVENTION_PLAN,
         taskListModelName: 'FirePreventionPlan',
-        completedId: CompletedParamters.FIRE_PREVENTION_PLAN,
+        completedId: CompletedParameters.FIRE_PREVENTION_PLAN,
         available: true
       }, {
         id: 'confirm-confidentiality-needs',
@@ -191,7 +185,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'confidentiality-completed',
         rulesetId: RulesetIds.CONFIRM_CONFIDENTIALLY,
         taskListModelName: 'Confidentiality',
-        completedId: CompletedParamters.CONFIRM_CONFIDENTIALLY,
+        completedId: CompletedParameters.CONFIRM_CONFIDENTIALLY,
         available: false
       }, {
         id: 'invoicing-details',
@@ -200,7 +194,7 @@ class TaskList extends BaseModel {
         completedLabelId: 'invoicing-details-completed',
         rulesetId: RulesetIds.INVOICING_DETAILS,
         taskListModelName: 'InvoiceAddress',
-        completedId: CompletedParamters.INVOICING_DETAILS,
+        completedId: CompletedParameters.INVOICING_DETAILS,
         available: false
       }]
     }
@@ -239,15 +233,15 @@ class TaskList extends BaseModel {
     return rulesetIds.join()
   }
 
-  _setRulesetAvailabilityAndCompleteness (rulesets) {
+  _setRulesetAvailabilityAndCompleteness (ruleSetIds) {
     this.taskListModelNames = []
 
     // Iterate through the task list section items
     for (let section of this.sections) {
       for (let sectionItem of section.sectionItems) {
         // Set availability and completeness
-        sectionItem.available = rulesets[sectionItem.rulesetId]
-        sectionItem.complete = rulesets[sectionItem.completedId]
+        sectionItem.available = ruleSetIds.includes(sectionItem.rulesetId)
+        sectionItem.complete = ruleSetIds.includes(sectionItem.completedId)
 
         // Add the Task List model for this section item
         if (sectionItem.available) {
