@@ -17,10 +17,6 @@ class Configuration extends BaseModel {
       {field: 'status', dynamics: 'statuscode'}
     ]
   }
-
-  static async list (context) {
-    return super.listBy(context)
-  }
 }
 
 Configuration.setDefinitions()

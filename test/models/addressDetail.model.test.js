@@ -28,7 +28,7 @@ const fakeAddressDetailData = {
 }
 const testAddressDetailId = 'ADDRESS_DETAIL_ID'
 
-const authToken = 'THE_AUTH_TOKEN'
+const context = {authToken: 'AUTH_TOKEN'}
 
 lab.beforeEach(() => {
   testAddressDetail = new AddressDetail(fakeAddressDetailData)
@@ -85,7 +85,7 @@ lab.experiment('AddressDetail Model tests:', () => {
   lab.test('getByApplicationIdAndType() method returns a single AddressDetail object', async () => {
     const spy = sandbox.spy(DynamicsDalService.prototype, 'search')
     const {applicationId, type, email} = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getByApplicationIdAndType(authToken, applicationId, type)
+    const addressDetail = await AddressDetail.getByApplicationIdAndType(context, applicationId, type)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(addressDetail.email).to.equal(email)
   })
@@ -93,62 +93,62 @@ lab.experiment('AddressDetail Model tests:', () => {
   lab.test(`getCompanySecretaryDetails() method calls getByApplicationIdAndType() method with type of ${COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE}`, async () => {
     const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
     const {applicationId} = fakeAddressDetailData
-    await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
-    Code.expect(spy.calledWith(authToken, applicationId, COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE)).to.equal(true)
+    await AddressDetail.getCompanySecretaryDetails(context, applicationId)
+    Code.expect(spy.calledWith(context, applicationId, COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE)).to.equal(true)
   })
 
   lab.test(`getCompanySecretaryDetails() method creates a new AddressDetail with type of ${COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE}`, async () => {
     sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
     const {applicationId} = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getCompanySecretaryDetails(authToken, applicationId)
+    const addressDetail = await AddressDetail.getCompanySecretaryDetails(context, applicationId)
     Code.expect(addressDetail.type).to.equal(COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE)
   })
 
   lab.test(`getPrimaryContactDetails() method calls getByApplicationIdAndType() method with type of ${PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE}`, async () => {
     const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
     const {applicationId} = fakeAddressDetailData
-    await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
-    Code.expect(spy.calledWith(authToken, applicationId, PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE)).to.equal(true)
+    await AddressDetail.getPrimaryContactDetails(context, applicationId)
+    Code.expect(spy.calledWith(context, applicationId, PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE)).to.equal(true)
   })
 
   lab.test(`getPrimaryContactDetails() method creates a new AddressDetail with type of ${PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE}`, async () => {
     sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
     const {applicationId} = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getPrimaryContactDetails(authToken, applicationId)
+    const addressDetail = await AddressDetail.getPrimaryContactDetails(context, applicationId)
     Code.expect(addressDetail.type).to.equal(PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE)
   })
 
   lab.test(`getBillingInvoicingDetails() method calls getByApplicationIdAndType() method with type of ${BILLING_INVOICING_ADDRESS_TYPE}`, async () => {
     const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
     const {applicationId} = fakeAddressDetailData
-    await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
-    Code.expect(spy.calledWith(authToken, applicationId, BILLING_INVOICING_ADDRESS_TYPE)).to.equal(true)
+    await AddressDetail.getBillingInvoicingDetails(context, applicationId)
+    Code.expect(spy.calledWith(context, applicationId, BILLING_INVOICING_ADDRESS_TYPE)).to.equal(true)
   })
 
   lab.test(`getBillingInvoicingDetails() method creates a new AddressDetail with type of ${BILLING_INVOICING_ADDRESS_TYPE}`, async () => {
     sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
     const {applicationId} = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getBillingInvoicingDetails(authToken, applicationId)
+    const addressDetail = await AddressDetail.getBillingInvoicingDetails(context, applicationId)
     Code.expect(addressDetail.type).to.equal(BILLING_INVOICING_ADDRESS_TYPE)
   })
 
   lab.test(`getIndividualPermitHolderDetails() method calls getByApplicationIdAndType() method with type of ${INDIVIDUAL_PERMIT_HOLDER_TYPE}`, async () => {
     const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
     const {applicationId} = fakeAddressDetailData
-    await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
-    Code.expect(spy.calledWith(authToken, applicationId, INDIVIDUAL_PERMIT_HOLDER_TYPE)).to.equal(true)
+    await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
+    Code.expect(spy.calledWith(context, applicationId, INDIVIDUAL_PERMIT_HOLDER_TYPE)).to.equal(true)
   })
 
   lab.test(`getIndividualPermitHolderDetails() method creates a new AddressDetail with type of ${INDIVIDUAL_PERMIT_HOLDER_TYPE}`, async () => {
     sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
     const {applicationId} = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(authToken, applicationId)
+    const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
     Code.expect(addressDetail.type).to.equal(INDIVIDUAL_PERMIT_HOLDER_TYPE)
   })
 
   lab.test('save() method saves a new AddressDetail object', async () => {
     const spy = sandbox.spy(DynamicsDalService.prototype, 'create')
-    await testAddressDetail.save(authToken)
+    await testAddressDetail.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddressDetail.id).to.equal(testAddressDetailId)
   })
@@ -156,7 +156,7 @@ lab.experiment('AddressDetail Model tests:', () => {
   lab.test('save() method updates an existing AddressDetail object', async () => {
     const spy = sandbox.spy(DynamicsDalService.prototype, 'update')
     testAddressDetail.id = testAddressDetailId
-    await testAddressDetail.save(authToken)
+    await testAddressDetail.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddressDetail.id).to.equal(testAddressDetailId)
   })

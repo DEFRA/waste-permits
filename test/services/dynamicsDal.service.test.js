@@ -112,6 +112,16 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Dynamics Service tests:', () => {
+  lab.test('Instantiating a DynamicsDalService() fails when no token passed', async () => {
+    let message
+    try {
+      dynamicsDal = new DynamicsDalService()
+    } catch (error) {
+      message = error.message
+    }
+    Code.expect(message).to.equal('Auth Token not supplied')
+  })
+
   lab.test('create() can create a new record in Dynamics', async () => {
     const response = await dynamicsDal.create('__DYNAMICS_INSERT_QUERY__', {})
     Code.expect(dynamicsCallSpy.callCount).to.equal(1)

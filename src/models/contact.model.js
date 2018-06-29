@@ -41,7 +41,7 @@ class Contact extends BaseModel {
       filter += ` and parentcustomerid_account/accountid eq ${permitHolderOrganisationId}`
     }
     let orderBy = 'lastname asc,firstname asc'
-    const query = `contacts?$select=${Contact.selectedDynamicsFields()}&$filter=${filter}&$orderby=${orderBy}`
+    const query = `contacts?$select=${Contact.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}&$orderby=${orderBy}`
 
     try {
       const response = await dynamicsDal.search(query)
@@ -91,7 +91,7 @@ class Contact extends BaseModel {
   static async getByFirstnameLastnameEmail (context, firstName, lastName, email) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const filter = `firstname eq '${firstName}' and lastname eq '${lastName}' and emailaddress1 eq '${encodeURIComponent(email)}'`
-    const query = `contacts?$select=${this.selectedDynamicsFields()}&$filter=${filter}`
+    const query = `contacts?$select=${this.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}`
     try {
       const response = await dynamicsDal.search(query)
       const result = response && response.value ? response.value.pop() : undefined

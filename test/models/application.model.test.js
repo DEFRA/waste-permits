@@ -16,7 +16,7 @@ let testApplication
 let sandbox
 
 const testApplicationId = 'APPLICATION_ID'
-const authToken = 'THE_AUTH_TOKEN'
+const context = {authToken: 'AUTH_TOKEN'}
 const submittedOn = '05/01/2018 04:00:00'
 
 const ORGANISATION = 910400001
@@ -138,7 +138,7 @@ lab.afterEach(() => {
 lab.experiment('Application Model tests:', () => {
   lab.test('getById() method correctly retrieves an Application object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const application = await Application.getById('AUTH_TOKEN', testApplicationId)
+    const application = await Application.getById(context, testApplicationId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(application.permitHolderOrganisationId).to.equal(fakeApplicationData.permitHolderOrganisationId)
     Code.expect(application.id).to.equal(testApplicationId)
@@ -150,7 +150,7 @@ lab.experiment('Application Model tests:', () => {
         value: dynamicsApplicationList
       }
     }
-    const applicationList = await Application.listBySaveAndReturnEmail('AUTH_TOKEN', fakeApplicationData.saveAndReturnEmail)
+    const applicationList = await Application.listBySaveAndReturnEmail(context, fakeApplicationData.saveAndReturnEmail)
     Code.expect(Array.isArray(applicationList)).to.be.true()
     Code.expect(applicationList.length).to.equal(3)
     applicationList.forEach((application, index) => {
@@ -162,7 +162,7 @@ lab.experiment('Application Model tests:', () => {
   lab.test('sendSaveAndReturnEmail() method correctly initiates an email call action', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
     const logSpy = sandbox.spy(LoggingService, 'logDebug')
-    await testApplication.sendSaveAndReturnEmail('AUTH_TOKEN', fakeOrigin)
+    await testApplication.sendSaveAndReturnEmail(context, fakeOrigin)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(logSpy.callCount).to.equal(1)
     Code.expect(logSpy.calledWith(`Save and Return Url for Application "${fakeApplicationData.applicationNumber}": ${fakeOrigin}/r/${fakeSlug}`)).to.equal(true)
@@ -175,7 +175,7 @@ lab.experiment('Application Model tests:', () => {
       }
     }
     const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
-    await Application.sendAllRecoveryEmails('AUTH_TOKEN', fakeOrigin, fakeApplicationData.saveAndReturnEmail)
+    await Application.sendAllRecoveryEmails(context, fakeOrigin, fakeApplicationData.saveAndReturnEmail)
     Code.expect(spy.callCount).to.equal(dynamicsApplicationList.length)
   })
 
@@ -184,7 +184,7 @@ lab.experiment('Application Model tests:', () => {
     testApplication.id = undefined
     testApplication.permitHolderIndividualId = undefined
     testApplication.applicantType = ORGANISATION
-    await testApplication.save(authToken)
+    await testApplication.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
   })
@@ -194,7 +194,7 @@ lab.experiment('Application Model tests:', () => {
     testApplication.id = undefined
     testApplication.permitHolderOrganisationId = undefined
     testApplication.applicantType = INDIVIDUAL
-    await testApplication.save(authToken)
+    await testApplication.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
   })
@@ -203,7 +203,7 @@ lab.experiment('Application Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testApplication.permitHolderIndividualId = undefined
     testApplication.applicantType = ORGANISATION
-    await testApplication.save(authToken)
+    await testApplication.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
   })
@@ -212,7 +212,7 @@ lab.experiment('Application Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testApplication.permitHolderOrganisationId = undefined
     testApplication.applicantType = INDIVIDUAL
-    await testApplication.save(authToken)
+    await testApplication.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
   })
@@ -221,7 +221,7 @@ lab.experiment('Application Model tests:', () => {
     let error
     try {
       testApplication.applicantType = ORGANISATION
-      await testApplication.save(authToken)
+      await testApplication.save(context)
     } catch (err) {
       error = err
     }
@@ -232,7 +232,7 @@ lab.experiment('Application Model tests:', () => {
     let error
     try {
       testApplication.applicantType = INDIVIDUAL
-      await testApplication.save(authToken)
+      await testApplication.save(context)
     } catch (err) {
       error = err
     }
