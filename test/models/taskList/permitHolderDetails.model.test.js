@@ -26,9 +26,7 @@ let fakeAddress1
 let fakeAddress2
 let fakeAddress3
 
-const request = {app: {data: {}}}
-
-const authToken = 'THE_AUTH_TOKEN'
+const request = {app: {data: {authToken: 'AUTH_TOKEN'}}}
 const applicationId = 'APPLICATION_ID'
 const applicationLineId = 'APPLICATION_LINE_ID'
 
@@ -131,7 +129,7 @@ const testCompleteness = async (expectedResult) => {
 
 lab.experiment('Model persistence methods:', () => {
   lab.test('getAddress() method correctly retrieves an Address', async () => {
-    const address = await PermitHolderDetails.getAddress(request, authToken, applicationId)
+    const address = await PermitHolderDetails.getAddress(request, applicationId)
     Code.expect(address.uprn).to.be.equal(fakeAddress1.uprn)
   })
 

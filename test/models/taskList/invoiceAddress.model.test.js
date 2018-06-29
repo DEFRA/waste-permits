@@ -15,8 +15,7 @@ const COMPLETENESS_PARAMETER = 'defra_invoicingdetails_completed'
 
 let sandbox
 
-const request = {app: {data: {}}}
-const authToken = 'THE_AUTH_TOKEN'
+const request = {app: {data: {authToken: 'AUTH_TOKEN'}}}
 const applicationId = 'APPLICATION_ID'
 const applicationLineId = 'APPLICATION_LINE_ID'
 
@@ -81,7 +80,7 @@ lab.afterEach(() => {
 lab.experiment('Task List: Invoice Address Model tests:', () => {
   lab.experiment('Model persistence methods:', () => {
     lab.test('getAddress() method correctly retrieves an Address', async () => {
-      const address = await InvoiceAddress.getAddress(request, authToken, applicationId)
+      const address = await InvoiceAddress.getAddress(request, applicationId)
       Code.expect(address.uprn).to.be.equal(fakeAddress1.uprn)
     })
 

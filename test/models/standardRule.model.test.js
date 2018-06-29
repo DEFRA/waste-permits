@@ -10,7 +10,7 @@ const ApplicationLine = require('../../src/models/applicationLine.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let sandbox
-const request = {app: {}}
+const context = {authToken: 'AUTH_TOKEN'}
 
 const fakeStandardRule = {
   id: 'STANDARD_RULE_ID',
@@ -67,7 +67,7 @@ lab.experiment('StandardRule Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const standardRuleList = await StandardRule.list(request)
+    const standardRuleList = await StandardRule.list(context)
     Code.expect(Array.isArray(standardRuleList)).to.be.true()
     Code.expect(standardRuleList.length).to.equal(3)
     standardRuleList.forEach((standardRule, index) => {
@@ -84,7 +84,7 @@ lab.experiment('StandardRule Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const standardRule = await StandardRule.getByCode(request)
+    const standardRule = await StandardRule.getByCode(context)
     Code.expect(standardRule).to.equal(fakeStandardRule)
     Code.expect(spy.callCount).to.equal(1)
   })
@@ -93,7 +93,7 @@ lab.experiment('StandardRule Model tests:', () => {
     DynamicsDalService.prototype.search = () => fakeDynamicsRecord()
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const standardRule = await StandardRule.getByApplicationLineId(request)
+    const standardRule = await StandardRule.getByApplicationLineId(context)
     Code.expect(standardRule).to.equal(fakeStandardRule)
     Code.expect(spy.callCount).to.equal(1)
   })

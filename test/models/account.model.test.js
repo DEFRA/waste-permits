@@ -26,7 +26,7 @@ const fakeApplicationData = {
   tradingName: null
 }
 
-const authToken = 'THE_AUTH_TOKEN'
+const context = {authToken: 'AUTH_TOKEN'}
 const applicationId = fakeApplicationData.id
 
 lab.beforeEach(() => {
@@ -87,7 +87,7 @@ lab.experiment('Account Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const account = await Account.getByApplicationId(authToken, applicationId)
+    const account = await Account.getByApplicationId(context, applicationId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
     Code.expect(account.organisationType).to.equal(fakeAccountData.organisationType)
@@ -109,7 +109,7 @@ lab.experiment('Account Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const account = await Account.getByCompanyNumber(authToken, fakeAccountData.companyNumber)
+    const account = await Account.getByCompanyNumber(context, fakeAccountData.companyNumber)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
     Code.expect(account.organisationType).to.equal(fakeAccountData.organisationType)
@@ -117,7 +117,7 @@ lab.experiment('Account Model tests:', () => {
 
   lab.test('save() method saves a new Account object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testAccount.save(authToken, false)
+    await testAccount.save(context, false)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAccount.id).to.equal(fakeApplicationData.permitHolderOrganisationId)
   })
@@ -125,14 +125,14 @@ lab.experiment('Account Model tests:', () => {
   lab.test('save() method updates an existing Account object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testAccount.id = fakeApplicationData.permitHolderOrganisationId
-    await testAccount.save(authToken, false)
+    await testAccount.save(context, false)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAccount.id).to.equal(fakeApplicationData.permitHolderOrganisationId)
   })
 
   lab.test('confirm() method confirms an Account object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
-    await testAccount.confirm(authToken)
+    await testAccount.confirm(context)
     Code.expect(spy.callCount).to.equal(1)
   })
 })

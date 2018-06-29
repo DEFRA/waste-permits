@@ -14,11 +14,15 @@ module.exports = class PollingService {
     LoggingService.logInfo('Polling Dynamics')
     // Generate a CRM token
     const authToken = await authService.getToken()
-    const configurations = await Configuration.list(authToken)
-    if (configurations && configurations.length) {
-      configurations.forEach(({title, status}) => LoggingService.logInfo(`Polling Dynamics: Configured instance "${title}" found with a status of "${status}"`))
-    } else {
-      LoggingService.logInfo(`Polling Dynamics: failed`)
+    try {
+      const configurations = await Configuration.listBy({authToken})
+      if (configurations && configurations.length) {
+        configurations.forEach(({title, status}) => LoggingService.logInfo(`Polling Dynamics: Configured instance "${title}" found with a status of "${status}"`))
+      } else {
+        throw new Error('No Configurations found')
+      }
+    } catch (error) {
+      LoggingService.logError(`Polling Dynamics: failed: ${error.message}`)
     }
 
     timeoutId = setTimeout(PollingService.poll, timeout)

@@ -9,6 +9,7 @@ const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const Completeness = require('../../../src/models/taskList/completeness.model')
 
+const context = {authToken: 'AUTH_TOKEN'}
 let fakeApplicationLine
 
 let sandbox
@@ -36,7 +37,7 @@ lab.afterEach(() => {
 lab.experiment('Task List: Completeness Model tests:', () => {
   lab.test('updateCompleteness() method updates the task list item completeness', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
-    await Completeness.updateCompleteness()
+    await Completeness.updateCompleteness(context)
     Code.expect(spy.callCount).to.equal(1)
   })
 

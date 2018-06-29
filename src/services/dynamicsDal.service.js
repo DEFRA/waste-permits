@@ -30,6 +30,9 @@ class DalError extends Error {
 
 module.exports = class DynamicsDalService {
   constructor (authToken) {
+    if (!authToken) {
+      throw new Error(`Auth Token not supplied`)
+    }
     this.authToken = authToken
   }
 

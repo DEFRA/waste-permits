@@ -43,8 +43,8 @@ const fakeLocationDetail = {
   addressId: fakeAddress.id
 }
 
-const request = {app: {data: {}}}
-const authToken = 'THE_AUTH_TOKEN'
+const request = {app: {data: {authToken: 'AUTH_TOKEN'}}}
+const context = {authToken: 'AUTH_TOKEN'}
 const applicationId = fakeApplicationLine.applicationId
 const applicationLineId = fakeApplicationLine.id
 
@@ -83,12 +83,12 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
       return undefined
     }
 
-    const result = await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
+    const result = await SiteNameAndLocation.getSiteName(request, applicationId, applicationLineId)
     Code.expect(result).to.be.equal(undefined)
   })
 
   lab.test('getSiteName() method correctly retrieves a site name when there is a saved Location', async () => {
-    const result = await SiteNameAndLocation.getSiteName(request, authToken, applicationId, applicationLineId)
+    const result = await SiteNameAndLocation.getSiteName(request, applicationId, applicationLineId)
     Code.expect(result).to.be.equal(fakeLocation.siteName)
   })
 
@@ -119,12 +119,12 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
 
   lab.test('saveGridReference() method correctly saves a grid reference', async () => {
     const spy = sinon.spy(LocationDetail.prototype, 'save')
-    await SiteNameAndLocation.saveGridReference(request, fakeLocationDetail.gridReference, authToken, applicationId, applicationLineId)
+    await SiteNameAndLocation.saveGridReference(request, fakeLocationDetail.gridReference, applicationId, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
   })
   lab.experiment('Model persistence methods:', () => {
     lab.test('getAddress() method correctly retrieves an Address', async () => {
-      const address = await SiteNameAndLocation.getAddress(request, authToken, applicationId)
+      const address = await SiteNameAndLocation.getAddress(request, applicationId)
       Code.expect(address.uprn).to.be.equal(fakeAddress.uprn)
     })
 
@@ -154,7 +154,7 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
-    const result = await SiteNameAndLocation.checkComplete(authToken, applicationId, applicationLineId)
+    const result = await SiteNameAndLocation.checkComplete(context, applicationId, applicationLineId)
     Code.expect(result).to.be.true()
   })
 

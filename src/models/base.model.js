@@ -244,7 +244,7 @@ module.exports = class BaseModel {
     return !this.id
   }
 
-  static async getById (context, id, customFilter = () => true) {
+  static async getById (context = {}, id, customFilter = () => true) {
     // See the explanation of a custom filter in the method selectedDynamicsFields above
     let model
     let cachedData = context[Utilities.toCamelCase(this.name)]
@@ -266,14 +266,16 @@ module.exports = class BaseModel {
     return model
   }
 
-  static async getBy (context, filterData = {}) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-
-    const filter = Object.entries(filterData)
+  static _buildQuery (context, filterData) {
+    let filter = Object.entries(filterData)
       .map(([field, val]) => `${this[field].dynamics} eq ${this[field].encode ? `'${encodeURIComponent(val)}'` : val}`)
       .join(' and ')
-    const query = `${this.entity}?$select=${this.selectedDynamicsFields()}&$filter=${filter}`
+    return `${this.entity}?$select=${this.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}`
+  }
 
+  static async getBy (context = {}, filterData = {}) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+    const query = this._buildQuery(context, filterData)
     try {
       const response = await dynamicsDal.search(query)
       const result = response && response.value ? response.value.pop() : undefined
@@ -286,14 +288,9 @@ module.exports = class BaseModel {
     }
   }
 
-  static async listBy (context, filterData = {}) {
+  static async listBy (context = {}, filterData = {}) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
-
-    const filter = Object.entries(filterData)
-      .map(([field, val]) => `${this[field].dynamics} eq ${this[field].encode ? `'${encodeURIComponent(val)}'` : val}`)
-      .join(' and ')
-    const query = `${this.entity}?$select=${this.selectedDynamicsFields()}&$filter=${filter}`
-
+    const query = this._buildQuery(context, filterData)
     try {
       const response = await dynamicsDal.search(query)
       return response.value.map((result) => this.dynamicsToModel(result))
@@ -345,7 +342,7 @@ module.exports = class BaseModel {
     }
   }
 
-  async save (context, dataObject = this.modelToDynamics()) {
+  async save (context = {}, dataObject = this.modelToDynamics()) {
     const {entity, readOnly} = this.constructor
     if (readOnly) {
       const errorMessage = `Unable to save ${entity}: Read only!`
@@ -376,15 +373,10 @@ module.exports = class BaseModel {
     }
   }
 
-  async delete (context = undefined, id) {
+  async delete (context = {}, id) {
     const {entity, readOnly} = this.constructor
     if (readOnly) {
       const errorMessage = `Unable to delete ${entity}: Read only!`
-      LoggingService.logError(errorMessage)
-      throw new Error(errorMessage)
-    }
-    if (!context) {
-      const errorMessage = `Unable to delete ${entity}: Context not supplied`
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }

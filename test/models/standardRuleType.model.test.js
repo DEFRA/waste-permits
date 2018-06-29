@@ -9,7 +9,7 @@ const StandardRuleType = require('../../src/models/standardRuleType.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let sandbox
-const request = {app: {}}
+const context = {authToken: 'AUTH_TOKEN'}
 
 const fakeStandardRuleType = {
   id: 'STANDARD_RULE_TYPE_ID',
@@ -51,7 +51,7 @@ lab.experiment('StandardRuleType Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const standardRuleList = await StandardRuleType.list(request)
+    const standardRuleList = await StandardRuleType.list(context)
     Code.expect(Array.isArray(standardRuleList)).to.be.true()
     Code.expect(standardRuleList.length).to.equal(categories.length)
     standardRuleList.forEach((standardRuleType, index) => {
@@ -76,7 +76,7 @@ lab.experiment('StandardRuleType Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const standardRuleList = await StandardRuleType.getCategories(request)
+    const standardRuleList = await StandardRuleType.getCategories(context)
     Code.expect(Array.isArray(standardRuleList)).to.be.true()
     Code.expect(standardRuleList.length).to.equal(categories.length + offlineCategories.length)
     let onlineIndex = 0

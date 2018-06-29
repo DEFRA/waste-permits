@@ -24,7 +24,7 @@ fakeAddressData.fullAddress = `${fakeAddressData.buildingNameOrNumber}, ${fakeAd
 
 const testAddressId = 'ADDRESS_ID'
 
-const authToken = 'THE_AUTH_TOKEN'
+const context = {authToken: 'AUTH_TOKEN'}
 
 lab.beforeEach(() => {
   testAddress = new Address(fakeAddressData)
@@ -107,7 +107,7 @@ lab.experiment('Address Model tests:', () => {
 
   lab.test('getById() method returns a single Address object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const address = await Address.getById(authToken, testAddressId)
+    const address = await Address.getById(context, testAddressId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(address.postcode).to.equal(fakeAddressData.postcode)
   })
@@ -133,21 +133,21 @@ lab.experiment('Address Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const address = await Address.getByUprn(authToken, fakeAddressData.uprn)
+    const address = await Address.getByUprn(context, fakeAddressData.uprn)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(address.uprn).to.equal(fakeAddressData.uprn)
   })
 
   lab.test('listByPostcode() method returns a collection of Address objects', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
-    const addresses = await Address.listByPostcode(authToken, fakeAddressData.postcode)
+    const addresses = await Address.listByPostcode(context, fakeAddressData.postcode)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(addresses.length).to.equal(3)
   })
 
   lab.test('save() method saves a new Address object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testAddress.save(authToken)
+    await testAddress.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddress.id).to.equal(testAddressId)
   })
@@ -155,7 +155,7 @@ lab.experiment('Address Model tests:', () => {
   lab.test('save() method updates an existing Address object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testAddress.id = testAddressId
-    await testAddress.save(authToken)
+    await testAddress.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddress.id).to.equal(testAddressId)
   })
@@ -164,7 +164,7 @@ lab.experiment('Address Model tests:', () => {
     let expectedValue = testAddress.fullAddress
     testAddress.fromAddressLookup = false
     testAddress.fullAddress = undefined
-    await testAddress.save(authToken)
+    await testAddress.save(context)
     Code.expect(testAddress.fullAddress).to.equal(expectedValue)
   })
 })

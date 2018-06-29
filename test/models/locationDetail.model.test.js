@@ -18,7 +18,7 @@ const fakeLocationDetailData = {
 }
 const testLocationDetailId = 'LOCATION_DETAIL_ID'
 
-const authToken = 'THE_AUTH_TOKEN'
+const context = {authToken: 'AUTH_TOKEN'}
 
 lab.beforeEach(() => {
   testLocationDetail = new LocationDetail(fakeLocationDetailData)
@@ -59,14 +59,14 @@ lab.experiment('LocationDetail Model tests:', () => {
 
   lab.test('getByLocationId() method returns a single LocationDetail object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const locationDetail = await LocationDetail.getByLocationId(authToken, fakeLocationDetailData.locationId)
+    const locationDetail = await LocationDetail.getByLocationId(context, fakeLocationDetailData.locationId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(locationDetail.gridReference).to.equal(fakeLocationDetailData.gridReference)
   })
 
   lab.test('save() method saves a new LocationDetail object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await testLocationDetail.save(authToken)
+    await testLocationDetail.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testLocationDetail.id).to.equal(testLocationDetailId)
   })
@@ -74,7 +74,7 @@ lab.experiment('LocationDetail Model tests:', () => {
   lab.test('save() method updates an existing LocationDetail object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'update')
     testLocationDetail.id = testLocationDetailId
-    await testLocationDetail.save(authToken)
+    await testLocationDetail.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testLocationDetail.id).to.equal(testLocationDetailId)
   })

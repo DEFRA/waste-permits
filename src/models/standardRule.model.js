@@ -63,7 +63,7 @@ class StandardRule extends BaseModel {
       filter += ` and _defra_standardruletypeid_value eq ${standardRuleTypeId}`
     }
 
-    const query = encodeURI(`defra_standardrules?$select=${StandardRule.selectedDynamicsFields()}&$filter=${filter}&$orderby=defra_nameinrulesetdocument asc`)
+    const query = encodeURI(`defra_standardrules?$select=${StandardRule.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}&$orderby=defra_nameinrulesetdocument asc`)
     try {
       const response = await dynamicsDal.search(query)
 

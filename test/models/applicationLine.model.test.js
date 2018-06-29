@@ -13,7 +13,7 @@ let fakeParameterId
 let fakeRulesId
 let sandbox
 
-const authToken = 'THE_AUTH_TOKEN'
+const context = {authToken: 'AUTH_TOKEN'}
 const applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {
@@ -89,7 +89,7 @@ lab.afterEach(() => {
 lab.experiment('ApplicationLine Model tests:', () => {
   lab.test('getById() method correctly retrieves an ApplicationLine object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const applicationLine = await ApplicationLine.getById('AUTH_TOKEN', applicationLineId)
+    const applicationLine = await ApplicationLine.getById(context, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(applicationLine.applicationId).to.equal(fakeApplicationLine.applicationId)
     Code.expect(applicationLine.standardRuleId).to.equal(fakeApplicationLine.standardRuleId)
@@ -99,21 +99,21 @@ lab.experiment('ApplicationLine Model tests:', () => {
 
   lab.test('getCompleted() method correctly retrieves the completed flag from the ApplicationLine object for the specified parameter', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const completed = await ApplicationLine.getCompleted('AUTH_TOKEN', applicationLineId, fakeParameterId)
+    const completed = await ApplicationLine.getCompleted(context, applicationLineId, fakeParameterId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(completed).to.equal(true)
   })
 
   lab.test('getValidRulesetIds() method correctly retrieves the completed flag from the ApplicationLine object for the specified parameter', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const ruleSetIds = await ApplicationLine.getValidRulesetIds('AUTH_TOKEN', applicationLineId)
+    const ruleSetIds = await ApplicationLine.getValidRulesetIds(context, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(ruleSetIds).to.equal([fakeRulesId])
   })
 
   lab.test('save() method saves a new ApplicationLine object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await fakeApplicationLine.save(authToken)
+    await fakeApplicationLine.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(fakeApplicationLine.id).to.equal(applicationLineId)
   })

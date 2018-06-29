@@ -44,7 +44,7 @@ class Payment extends BaseModel {
     if (applicationLineId) {
       const dynamicsDal = new DynamicsDalService(context.authToken)
       const filter = `_defra_applicationlineid_value eq ${applicationLineId} and defra_type eq ${type}`
-      const query = `defra_payments?$select=${Payment.selectedDynamicsFields()}&$filter=${filter}`
+      const query = `defra_payments?$select=${Payment.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}`
       try {
         const response = await dynamicsDal.search(query)
         const result = response && response.value ? response.value.pop() : undefined

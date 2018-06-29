@@ -8,7 +8,7 @@ const sinon = require('sinon')
 const DynamicsSolution = require('../../src/models/dynamicsSolution.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
-const request = {app: {}}
+const context = {authToken: 'AUTH_TOKEN'}
 
 let dynamicsSearchStub
 
@@ -49,7 +49,7 @@ lab.afterEach(() => {
 lab.experiment('DynamicsSolution Model tests:', () => {
   lab.test('get() method returns the correct DynamicsSolution objects', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const dynamicsVersionInfo = await DynamicsSolution.get(request)
+    const dynamicsVersionInfo = await DynamicsSolution.get(context)
     Code.expect(spy.callCount).to.equal(1)
 
     Code.expect(dynamicsVersionInfo.length).to.equal(3)
