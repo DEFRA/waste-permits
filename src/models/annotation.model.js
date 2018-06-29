@@ -13,18 +13,8 @@ class Annotation extends BaseModel {
       {field: 'id', dynamics: 'annotationid'},
       {field: 'subject', dynamics: 'subject', encode: true},
       {field: 'filename', dynamics: 'filename', encode: true, length: {max: 255}},
-      {field: 'documentBody', dynamics: 'documentbody'}
+      {field: 'documentBody', dynamics: 'documentbody', writeOnly: true}
     ]
-  }
-
-  static selectedDynamicsFields (customFilter) {
-    return super.selectedDynamicsFields(customFilter)
-      // Do not retrieve the document body
-      .filter((field) => field !== 'documentBody')
-  }
-
-  static async getById (context, id) {
-    return super.getById(context, id, ({field}) => field !== 'documentBody')
   }
 
   static async getByApplicationIdSubjectAndFilename (context, applicationId, subject, filename) {
@@ -33,11 +23,6 @@ class Annotation extends BaseModel {
 
   static async listByApplicationIdAndSubject (context, applicationId, subject) {
     return super.listBy(context, {applicationId, subject})
-  }
-
-  async save (context) {
-    const dataObject = this.modelToDynamics()
-    await super.save(context, dataObject)
   }
 }
 

@@ -29,7 +29,6 @@ const fakeDynamicsRecord = (options = {}) => {
   return {
     filename: annotation.filename,
     subject: annotation.subject,
-    documentbody: annotation.documentBody,
     annotationid: annotation.id,
     '_objectid_value': annotation.applicationId
   }
@@ -61,8 +60,8 @@ lab.experiment('Annotation Model tests:', () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const annotation = await Annotation.getById(context, testAnnotationId)
     Code.expect(spy.callCount).to.equal(1)
-    Code.expect(annotation.applicationId).to.equal(fakeAnnotation.applicationId)
-    Code.expect(annotation.id).to.equal(testAnnotationId)
+    testAnnotation.id = testAnnotationId
+    Code.expect(annotation).to.equal(testAnnotation)
   })
 
   lab.test('listByApplicationIdAndSubject() method returns a list of Annotation objects', async () => {

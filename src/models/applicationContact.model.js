@@ -19,11 +19,6 @@ class ApplicationContact extends BaseModel {
   static async get (context, applicationId, contactId) {
     return super.getBy(context, {applicationId, contactId})
   }
-
-  async save (context) {
-    const dataObject = this.modelToDynamics()
-    await super.save(context, dataObject)
-  }
 }
 
 ApplicationContact.setDefinitions()

@@ -75,8 +75,8 @@ module.exports = class BaseModel {
     //
     return this.mapping
       .filter(customFilter)
-      // ignore readonly values as they will only be set when reading from dynamics
-      .filter(({constant}) => !constant)
+      // ignore constant and writeonly values as they will not be retrieved from dynamics
+      .filter(({constant, writeOnly}) => !constant && !writeOnly)
       .map(({dynamics}) => dynamics)
   }
 
@@ -266,31 +266,54 @@ module.exports = class BaseModel {
     return model
   }
 
-  static _buildQuery (context, filterData) {
+  static _buildQuery (filterData = {}, orderByFields = '') {
+    // This method builds a search query based on filter data, orderby fields and mapping.
+    //
+    // For example, when the mapping for Account is:
+    // [
+    //    {field: 'id', dynamics: 'defra_id'},
+    //    {field: 'age', dynamics: 'defra_age'},
+    //    {field: 'firstName', dynamics: 'defra_firstname', encode: true},
+    //    {field: 'lastName', dynamics: 'defra_lastname', encode: true},
+    //    {field: 'date.day', dynamics: 'defra_date_day', readOnly: true},
+    //    {field: 'date.month', dynamics: 'defra_date_month', readOnly: true},
+    //    {field: 'date.year', dynamics: 'defra_date_year', readOnly: true},
+    //    {field: 'type', dynamics: 'defra_type', constant: 'TYPE'}
+    //    {field: 'secret', dynamics: 'defra_secret', writeOnly: true}
+    //    {field: 'contactId', dynamics: '_defra_primarycontactid_value', bind: {id: 'defra_primarycontactid', entity: 'contacts'}}
+    // ]
+    //
+    // And the filterData is:
+    // {
+    //    age: '30',
+    //    firstName: 'Fred',
+    //    lastName: 'Blogs'
+    // }
+    //
+    // And the orderBy is 'age, lastName'
+    //
+    // Then the query that is generated within the code below will be:
+    // "accounts?$select=defra_id, defra_age, defra_firstname, defra_lastname, defra_date_day, defra_date_month, defra_date_year, _defra_primarycontactid_value&$filter=defra_age eq 30 and defra_firstname eq 'Fred' and defra_lastname eq 'Blogs'&$orderby=defra_age asc defra_lastname asc"
+    //
     let filter = Object.entries(filterData)
       .map(([field, val]) => `${this[field].dynamics} eq ${this[field].encode ? `'${encodeURIComponent(val)}'` : val}`)
       .join(' and ')
-    return `${this.entity}?$select=${this.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}`
+
+    let orderBy = orderByFields.split(' ')
+      .filter((fieldName) => fieldName)
+      .map((fieldName) => `${this[fieldName].dynamics} asc`)
+      .join(' ')
+
+    return `${this.entity}?$select=${this.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}${orderBy ? `&$orderby=${orderBy}` : ''}`
   }
 
   static async getBy (context = {}, filterData = {}) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    const query = this._buildQuery(context, filterData)
-    try {
-      const response = await dynamicsDal.search(query)
-      const result = response && response.value ? response.value.pop() : undefined
-      if (result) {
-        return this.dynamicsToModel(result)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to get ${this.name} by ${JSON.stringify(filterData)}: ${error}`)
-      throw error
-    }
+    return (await this.listBy(context, filterData)).pop()
   }
 
-  static async listBy (context = {}, filterData = {}) {
+  static async listBy (context = {}, filterData = {}, orderByFields = '') {
     const dynamicsDal = new DynamicsDalService(context.authToken)
-    const query = this._buildQuery(context, filterData)
+    const query = this._buildQuery(filterData, orderByFields)
     try {
       const response = await dynamicsDal.search(query)
       return response.value.map((result) => this.dynamicsToModel(result))

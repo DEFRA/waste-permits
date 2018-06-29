@@ -14,23 +14,12 @@ class Contact extends BaseModel {
   static get mapping () {
     return [
       {field: 'id', dynamics: 'contactid'},
-      {field: 'firstName', dynamics: 'firstname', length: {max: 50}},
-      {field: 'lastName', dynamics: 'lastname', length: {max: 50}},
-      {field: 'email', dynamics: 'emailaddress1', length: {max: 100}},
-      {field: 'dob.day', dynamics: 'defra_dateofbirthdaycompanieshouse', readOnly: true},
+      {field: 'firstName', dynamics: 'firstname', encode: true, length: {max: 50}},
+      {field: 'lastName', dynamics: 'lastname', encode: true, length: {max: 50}},
+      {field: 'email', dynamics: 'emailaddress1', encode: true, length: {max: 100}},
       {field: 'dob.month', dynamics: 'defra_dobmonthcompanieshouse', readOnly: true},
       {field: 'dob.year', dynamics: 'defra_dobyearcompanieshouse', readOnly: true}
     ]
-  }
-
-  static selectedDynamicsFields (customFilter) {
-    return super.selectedDynamicsFields(customFilter)
-    // Do not retrieve the director date of birth
-      .filter((field) => field !== 'dob.day')
-  }
-
-  static async getById (context, id) {
-    return super.getById(context, id, ({field}) => field !== 'dob.day')
   }
 
   static async list (context, permitHolderOrganisationId = undefined, contactType = AccountRoleCodes.COMPANY_DIRECTOR) {
@@ -55,53 +44,22 @@ class Contact extends BaseModel {
   }
 
   static async getIndividualPermitHolderByApplicationId (context, applicationId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const application = await Application.getById(context, applicationId)
-    if (application.individualPermitHolderId()) {
-      try {
-        const query = encodeURI(`contacts(${application.individualPermitHolderId()})?$select=${Contact.selectedDynamicsFields()}`)
-        const result = await dynamicsDal.search(query)
-        if (result) {
-          return Contact.dynamicsToModel(result)
-        }
-      } catch (error) {
-        LoggingService.logError(`Unable to get Individual Permit Holder by application ID: ${error}`)
-        throw error
-      }
+    const individualPermitHolderId = application.individualPermitHolderId()
+    if (individualPermitHolderId) {
+      return Contact.getById(context, individualPermitHolderId)
     }
   }
 
   static async getByApplicationId (context, applicationId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const application = await Application.getById(context, applicationId)
     if (application.contactId) {
-      try {
-        const query = encodeURI(`contacts(${application.contactId})?$select=${Contact.selectedDynamicsFields()}`)
-        const result = await dynamicsDal.search(query)
-        if (result) {
-          return Contact.dynamicsToModel(result)
-        }
-      } catch (error) {
-        LoggingService.logError(`Unable to get Contact by application ID: ${error}`)
-        throw error
-      }
+      return Contact.getById(context, application.contactId)
     }
   }
 
   static async getByFirstnameLastnameEmail (context, firstName, lastName, email) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    const filter = `firstname eq '${firstName}' and lastname eq '${lastName}' and emailaddress1 eq '${encodeURIComponent(email)}'`
-    const query = `contacts?$select=${this.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}`
-    try {
-      const response = await dynamicsDal.search(query)
-      const result = response && response.value ? response.value.pop() : undefined
-      if (result) {
-        return this.dynamicsToModel(result)
-      }
-    } catch (error) {
-      LoggingService.logError(`Unable to get ${this.name} by firstName(${firstName}) and lastName(${lastName}) and email(${email})): ${error}`)
-      throw error
-    }
+    return this.getBy(context, {firstName, lastName, email})
   }
 
   async save (context) {

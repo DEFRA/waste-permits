@@ -2,8 +2,6 @@
 
 const {OFFLINE_CATEGORIES} = require('../constants')
 const BaseModel = require('./base.model')
-const DynamicsDalService = require('../services/dynamicsDal.service')
-const LoggingService = require('../services/logging.service')
 
 class StandardRuleType extends BaseModel {
   static get entity () {
@@ -24,19 +22,7 @@ class StandardRuleType extends BaseModel {
   }
 
   static async list (context) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    const orderBy = 'defra_category asc'
-
-    const query = encodeURI(`defra_standardruletypes?$select=${StandardRuleType.selectedDynamicsFields()}&$orderby=${orderBy}`)
-    try {
-      const response = await dynamicsDal.search(query)
-
-      // Parse response into Standard Rule Type objects
-      return response.value.map((standardRuleType) => StandardRuleType.dynamicsToModel(standardRuleType))
-    } catch (error) {
-      LoggingService.logError(`Unable to list StandardRuleTypes: ${error}`)
-      throw error
-    }
+    return this.listBy(context, {}, 'category')
   }
 
   static async getCategories (context) {

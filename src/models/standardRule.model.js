@@ -1,9 +1,7 @@
 'use strict'
 
-const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const ApplicationLine = require('./applicationLine.model')
-const LoggingService = require('../services/logging.service')
 
 class StandardRule extends BaseModel {
   static get entity () {
@@ -39,40 +37,14 @@ class StandardRule extends BaseModel {
   }
 
   static async getByApplicationLineId (context, applicationLineId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-
-    try {
-      const {standardRuleId} = await ApplicationLine.getById(context, applicationLineId)
-      const query = encodeURI(`defra_standardrules(${standardRuleId})?$select=${StandardRule.selectedDynamicsFields()}`)
-      const result = await dynamicsDal.search(query)
-      return StandardRule.dynamicsToModel(result)
-    } catch (error) {
-      LoggingService.logError(`Unable to get StandardRule by ApplicationLine ID: ${error}`)
-      throw error
+    const {standardRuleId} = await ApplicationLine.getById(context, applicationLineId)
+    if (standardRuleId) {
+      return StandardRule.getById(context, standardRuleId)
     }
   }
 
   static async list (context, standardRuleTypeId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-
-    let filter =
-      // Must be open for applications
-      `defra_canapplyfor eq true`
-
-    if (standardRuleTypeId) {
-      filter += ` and _defra_standardruletypeid_value eq ${standardRuleTypeId}`
-    }
-
-    const query = encodeURI(`defra_standardrules?$select=${StandardRule.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}&$orderby=defra_nameinrulesetdocument asc`)
-    try {
-      const response = await dynamicsDal.search(query)
-
-      // Parse response into Standard Rule objects
-      return response.value.map((standardRule) => StandardRule.dynamicsToModel(standardRule))
-    } catch (error) {
-      LoggingService.logError(`Unable to list StandardRules: ${error}`)
-      throw error
-    }
+    return this.listBy(context, {canApplyFor: true, standardRuleTypeId}, 'permitName')
   }
 
   // Transform the code into kebab-case for ID

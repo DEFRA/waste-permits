@@ -3,9 +3,14 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 
 const BaseModel = require('../../src/models/base.model')
+const DynamicsDalService = require('../../src/services/dynamicsDal.service')
+const context = {authToken: 'AUTH_TOKEN'}
 
+// Create fake Model class for tests
+// ---------------------------------
 class Model extends BaseModel {
   static get entity () {
     return 'accounts'
@@ -19,6 +24,7 @@ class Model extends BaseModel {
       {field: 'dob.month', dynamics: 'dynamicsDobMonth'},
       {field: 'dob.year', dynamics: 'dynamicsDobYear'},
       {field: 'ref', dynamics: 'dynamicsRef', readOnly: true},
+      {field: 'secret', dynamics: 'dynamicsSecret', writeOnly: true},
       {field: 'regime', dynamics: 'dynamicsRegime', constant: 'REGIME'},
       {field: 'optionalData', dynamics: 'dynamicsOptionalData'}
     ]
@@ -26,6 +32,9 @@ class Model extends BaseModel {
 }
 
 Model.setDefinitions()
+// ---------------------------------
+
+let sandbox
 
 const modelData = {
   id: 'ID',
@@ -37,6 +46,7 @@ const modelData = {
   },
   ref: 'REF',
   regime: 'REGIME',
+  secret: 'SECRET',
   optionalData: undefined
 }
 
@@ -47,6 +57,7 @@ const dynamicsRequestData = {
   dynamicsDobMonth: 'MONTH',
   dynamicsDobYear: 'YEAR',
   dynamicsRegime: 'REGIME',
+  dynamicsSecret: 'SECRET',
   dynamicsOptionalData: undefined
 }
 
@@ -60,6 +71,19 @@ const dynamicsReplyData = {
 }
 
 lab.experiment('Base Model tests:', () => {
+  lab.beforeEach(() => {
+    // Create a sinon sandbox to stub methods
+    sandbox = sinon.createSandbox()
+
+    // Stub methods
+    sandbox.stub(DynamicsDalService.prototype, 'search').value(() => dynamicsReplyData)
+  })
+
+  lab.afterEach(() => {
+    // Restore the sandbox to make sure the stubs are removed correctly
+    sandbox.restore()
+  })
+
   lab.test('toString() method serialises the base model object correctly', () => {
     const modelObject = new BaseModel()
     modelObject.additionalProperty = 'foo'
@@ -69,7 +93,7 @@ lab.experiment('Base Model tests:', () => {
 
   lab.test('toString() method serialises  test model object correctly', () => {
     const model = new Model(modelData)
-    Code.expect(model.toString()).to.equal('Model: {\n  "id": "ID", "otherId": "OTHERID", "modelName": "MODEL_NAME", "dob": {\n  "month": "MONTH", "year": "YEAR"\n}, "ref": "REF", "regime": "REGIME"\n}')
+    Code.expect(model.toString()).to.equal('Model: {\n  "id": "ID", "otherId": "OTHERID", "modelName": "MODEL_NAME", "dob": {\n  "month": "MONTH", "year": "YEAR"\n}, "ref": "REF", "regime": "REGIME", "secret": "SECRET"\n}')
   })
 
   lab.test('isNew() correctly identifies if the instance has a Dynamics ID', () => {
@@ -114,7 +138,15 @@ lab.experiment('Base Model tests:', () => {
   })
 
   lab.test('dynamicsToModel() method converts the dynamics data to the model', () => {
-    Code.expect(Model.dynamicsToModel(dynamicsReplyData)).to.equal(modelData)
+    const testModel = new Model(modelData)
+    testModel.secret = undefined
+    Code.expect(Model.dynamicsToModel(dynamicsReplyData)).to.equal(testModel)
+  })
+
+  lab.test('getById() method returns a model without constant or writeonly fields', async () => {
+    const testModel = new Model(modelData)
+    testModel.secret = undefined
+    Code.expect(await Model.getById(context, modelData.id)).to.equal(testModel)
   })
 
   lab.test('_deleteBoundReferences() method to delete a bound reference to another entity ', async () => {

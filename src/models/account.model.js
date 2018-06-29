@@ -23,17 +23,9 @@ class Account extends BaseModel {
   }
 
   static async getByApplicationId (context, applicationId) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const application = await Application.getById(context, applicationId)
     if (application && application.permitHolderOrganisationId) {
-      try {
-        const query = encodeURI(`accounts(${application.permitHolderOrganisationId})?$select=${Account.selectedDynamicsFields()}`)
-        const result = await dynamicsDal.search(query)
-        return Account.dynamicsToModel(result)
-      } catch (error) {
-        LoggingService.logError(`Unable to get Account by application ID: ${error}`)
-        throw error
-      }
+      return Account.getById(context, application.permitHolderOrganisationId)
     }
   }
 
