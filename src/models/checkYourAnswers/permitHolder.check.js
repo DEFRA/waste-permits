@@ -11,6 +11,8 @@ const {
   COMPANY_NUMBER,
   DIRECTOR_DATE_OF_BIRTH,
   LLP_COMPANY_DESIGNATED_MEMBER_EMAIL,
+  LLP_MEMBER_DATE_OF_BIRTH,
+  LLP_COMPANY_NUMBER,
   PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH,
   PERMIT_HOLDER_TYPE
 } = require('../../routes')
@@ -46,6 +48,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
         return Promise.all([
           this.getTypeLine(),
           this.getCompanyLine(),
+          this.getDesignatedMembersLine(),
           this.getDesignatedMemberEmailLine(),
           this.getConvictionsLine(),
           this.getBankruptcyLine()
@@ -76,10 +79,27 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
+  getAddressLine (address) {
+    const {
+      buildingNameOrNumber = '',
+      addressLine1 = '',
+      addressLine2 = '',
+      townOrCity = '',
+      postcode = ''
+    } = address
+    let firstLine = buildingNameOrNumber
+    if (firstLine && addressLine1) {
+      firstLine += ', '
+    }
+    firstLine += addressLine1
+    return [firstLine, addressLine2, townOrCity, postcode]
+  }
+
   async getIndividualLine () {
     const {path} = PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH
     const {firstName = '', lastName = '', email = ''} = await this.getIndividualPermitHolder()
     const {dateOfBirth = 'unknown', telephone = 'unknown'} = await this.getIndividualPermitHolderDetails()
+    const address = this.getAddressLine(await this.getIndividualPermitHolderAddress())
     const {tradingName = ''} = await this.getApplication()
     const [year, month, day] = dateOfBirth.split('-')
     const dob = {day, month, year}
@@ -92,7 +112,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     answers.push(`Telephone: ${telephone}`)
     answers.push(`Date of birth: ${Utilities.formatFullDateForDisplay(dob)}`)
     answers.push(blankLine)
-    answers = answers.concat(await this.getPermitHolderAddressLine())
+    answers = answers.concat(address)
     return this.buildLine({
       heading: 'Permit holder',
       prefix: 'individual',
@@ -101,33 +121,17 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
-  async getPermitHolderAddressLine () {
-    const {
-      buildingNameOrNumber = '',
-      addressLine1 = '',
-      addressLine2 = '',
-      townOrCity = '',
-      postcode = ''
-    } = await this.getIndividualPermitHolderAddress()
-    let firstLine = buildingNameOrNumber
-    if (firstLine && addressLine1) {
-      firstLine += ', '
-    }
-    firstLine += addressLine1
-    return [firstLine, addressLine2, townOrCity, postcode]
-  }
-
   async getCompanyLine () {
-    const {path} = COMPANY_NUMBER
-    const {companyNumber = ''} = await this.getCompanyAccount()
-    const {name = '', address = ''} = await this.getCompany()
-    const {useTradingName, tradingName = ''} = await this.getApplication()
-    const answers = []
-    answers.push(name)
-    if (useTradingName) {
+    const {path} = await this.getPermitHolderType() === LIMITED_LIABILITY_PARTNERSHIP ? LLP_COMPANY_NUMBER : COMPANY_NUMBER
+    const {companyNumber = '', accountName = ''} = await this.getCompanyAccount()
+    const address = this.getAddressLine(await this.getCompanyRegisteredAddress())
+    const {tradingName = ''} = await this.getApplication()
+    let answers = []
+    answers.push(accountName)
+    if (tradingName) {
       answers.push(`Trading as: ${tradingName}`)
     }
-    answers.push(address)
+    answers = answers.concat(address)
     answers.push(`Company number: ${companyNumber}`)
     return this.buildLine({
       heading: 'Permit holder',
@@ -151,9 +155,26 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
+  async getDesignatedMembersLine () {
+    const {path} = LLP_MEMBER_DATE_OF_BIRTH
+    const {companyNumber = ''} = await this.getCompanyAccount()
+    // Only load the designated members (people and companies) if the company has been entered
+    const members = companyNumber ? await this.getMembers() : []
+    const companies = companyNumber ? await this.getCompanies() : []
+    const answers = members
+      .map(({firstName, lastName, dob}) => `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay(dob)}`)
+      .concat(companies.map(({accountName}) => accountName))
+    return this.buildLine({
+      heading: `Designated members' dates of birth`,
+      prefix: 'designated-member',
+      answers: answers,
+      links: [{path, type: `designated member's date of birth`}]
+    })
+  }
+
   async getDesignatedMemberEmailLine () {
     const {path} = LLP_COMPANY_DESIGNATED_MEMBER_EMAIL
-    const {email = ''} = await this.getCompanySecretaryDetails()
+    const {email = ''} = await this.getDesignatedMemberDetails()
     return this.buildLine({
       heading: 'Designated Member email',
       prefix: 'designated-member-email',

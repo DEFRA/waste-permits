@@ -16,7 +16,6 @@ const Contact = require('../../../src/models/contact.model')
 const Location = require('../../../src/models/location.model')
 const LocationDetail = require('../../../src/models/locationDetail.model')
 const StandardRule = require('../../../src/models/standardRule.model')
-const CompanyLookupService = require('../../../src/services/companyLookup.service')
 
 const BaseCheck = require('../../../src/models/checkYourAnswers/base.check')
 const day = 1
@@ -33,7 +32,8 @@ const fakeAccount = {
 const fakeApplication = {
   id: 'APPLICATION_ID',
   agentId: 'AGENT_ID',
-  contactId: 'CONTACT_ID'
+  contactId: 'CONTACT_ID',
+  declaration: true
 }
 const fakeApplicationContact = {
   directorDob: `${year}-${month}-${day}`
@@ -41,9 +41,7 @@ const fakeApplicationContact = {
 const fakeContact = {
   id: 'CONTACT_ID'
 }
-const fakeCompany = {
-  id: 'COMPANY_ID'
-}
+const fakeCompanies = [new Account(fakeAccount)]
 const fakeCompanySecretary = {
   id: 'COMPANY_SECRETARY_ID'
 }
@@ -56,11 +54,18 @@ const fakeIndividualPermitHolder = {
 const fakeIndividualPermitHolderDetails = {
   id: 'PERMIT_HOLDER_DETAILS_ID'
 }
+const fakeRegisteredComapanyAddressDetails = {
+  id: 'REGISTERED_ADDRESS_ID'
+}
+const fakeDesignatedMemberDetails = {
+  id: 'DESIGNATED_MEMBER_ID'
+}
 const fakeBillingInvoicing = {
   id: 'BILLING_INVOICING_ID'
 }
 const fakeLocation = {
-  id: 'LOCATION_ID'
+  id: 'LOCATION_ID',
+  applicationLineId: 'APPLICATION_LINE_ID'
 }
 const fakeLocationDetail = {
   id: 'LOCATION_DETAIL_ID'
@@ -69,7 +74,9 @@ const fakeAddress = {
   id: 'ADDRESS_ID'
 }
 const fakeStandardRule = {
-  id: 'STANDARD_RULE_ID'
+  id: 'STANDARD_RULE_ID',
+  code: 'CODE',
+  codeForId: 'code'
 }
 const fakeAnnotation = {
   id: 'ANNOTATION_ID'
@@ -84,23 +91,25 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(Account, 'getById').value(() => Merge({}, fakeAccount))
-  sandbox.stub(Account, 'getByApplicationId').value(() => Merge({}, fakeAccount))
-  sandbox.stub(Address, 'getById').value(() => Merge({}, fakeAddress))
-  sandbox.stub(AddressDetail, 'getCompanySecretaryDetails').value(() => Merge({}, fakeCompanySecretary))
-  sandbox.stub(AddressDetail, 'getPrimaryContactDetails').value(() => Merge({}, fakePrimaryContact))
-  sandbox.stub(AddressDetail, 'getBillingInvoicingDetails').value(() => Merge({}, fakeBillingInvoicing))
-  sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => Merge({}, fakeIndividualPermitHolderDetails))
-  sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [Merge({}, fakeAnnotation)])
-  sandbox.stub(Application, 'getById').value(() => Merge({}, fakeApplication))
-  sandbox.stub(ApplicationContact, 'get').value(() => Merge({}, fakeApplicationContact))
-  sandbox.stub(Contact, 'getById').value(() => Merge({}, fakeContact))
-  sandbox.stub(Contact, 'getIndividualPermitHolderByApplicationId').value(() => Merge({}, fakeIndividualPermitHolder))
-  sandbox.stub(Contact, 'list').value(() => [Merge({}, fakeDirector)])
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => Merge({}, fakeStandardRule))
-  sandbox.stub(Location, 'getByApplicationId').value(() => Merge({}, fakeLocation))
-  sandbox.stub(LocationDetail, 'getByLocationId').value(() => Merge({}, fakeLocationDetail))
-  sandbox.stub(CompanyLookupService, 'getCompany').value(() => Merge({}, fakeCompany))
+  sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
+  sandbox.stub(Account, 'getByApplicationId').value(() => new Account(fakeAccount))
+  sandbox.stub(Account.prototype, 'listChildren').value(() => [new Account(fakeAccount)])
+  sandbox.stub(AddressDetail, 'getCompanyRegisteredDetails').value(() => new AddressDetail(fakeRegisteredComapanyAddressDetails))
+  sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
+  sandbox.stub(AddressDetail, 'getCompanySecretaryDetails').value(() => new AddressDetail(fakeCompanySecretary))
+  sandbox.stub(AddressDetail, 'getPrimaryContactDetails').value(() => new AddressDetail(fakePrimaryContact))
+  sandbox.stub(AddressDetail, 'getBillingInvoicingDetails').value(() => new AddressDetail(fakeBillingInvoicing))
+  sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeIndividualPermitHolderDetails))
+  sandbox.stub(AddressDetail, 'getDesignatedMemberDetails').value(() => new AddressDetail(fakeDesignatedMemberDetails))
+  sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [new Annotation(fakeAnnotation)])
+  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(ApplicationContact, 'get').value(() => new ApplicationContact(fakeApplicationContact))
+  sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
+  sandbox.stub(Contact, 'getIndividualPermitHolderByApplicationId').value(() => new Contact(fakeIndividualPermitHolder))
+  sandbox.stub(Contact, 'list').value(() => [new Contact(fakeDirector)])
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
+  sandbox.stub(Location, 'getByApplicationId').value(() => new Location(fakeLocation))
+  sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(fakeLocationDetail))
 })
 
 lab.afterEach(() => {
@@ -152,16 +161,40 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(contact).to.equal(fakeContact)
   })
 
-  lab.test('getCompany works correctly', async () => {
-    const check = new BaseCheck(context)
-    const company = await check.getCompany()
-    Code.expect(company).to.equal(fakeCompany)
-  })
-
   lab.test('getCompanySecretaryDetails works correctly', async () => {
     const check = new BaseCheck(context)
     const companySecretary = await check.getCompanySecretaryDetails()
     Code.expect(companySecretary).to.equal(fakeCompanySecretary)
+  })
+
+  lab.test('getCompanyRegisteredAddress works correctly', async () => {
+    const check = new BaseCheck(context)
+    const companyRegisteredAddress = await check.getCompanyRegisteredAddress()
+    Code.expect(companyRegisteredAddress).to.equal(fakeAddress)
+  })
+
+  lab.test('getCompanies works correctly', async () => {
+    const check = new BaseCheck(context)
+    const companies = await check.getCompanies()
+    Code.expect(companies).to.equal(fakeCompanies)
+  })
+
+  lab.test('getDesignatedMemberDetails works correctly', async () => {
+    const check = new BaseCheck(context)
+    const designatedMember = await check.getDesignatedMemberDetails()
+    Code.expect(designatedMember).to.equal(fakeDesignatedMemberDetails)
+  })
+
+  lab.test('getIndividualPermitHolderDetails works correctly', async () => {
+    const check = new BaseCheck(context)
+    const individualPermitHolder = await check.getIndividualPermitHolderDetails()
+    Code.expect(individualPermitHolder).to.equal(fakeIndividualPermitHolderDetails)
+  })
+
+  lab.test('getMembers works correctly', async () => {
+    const check = new BaseCheck(context)
+    const members = await check.getMembers()
+    Code.expect(members).to.equal([new ApplicationContact(Merge({dob: {day}}, fakeDirector))])
   })
 
   lab.test('getPrimaryContactDetails works correctly', async () => {
@@ -174,12 +207,6 @@ lab.experiment('Base Check tests:', () => {
     const check = new BaseCheck(context)
     const individualPermitHolder = await check.getIndividualPermitHolder()
     Code.expect(individualPermitHolder).to.equal(fakeIndividualPermitHolder)
-  })
-
-  lab.test('getIndividualPermitHolderDetails works correctly', async () => {
-    const check = new BaseCheck(context)
-    const individualPermitHolderDetails = await check.getIndividualPermitHolderDetails()
-    Code.expect(individualPermitHolderDetails).to.equal(fakeIndividualPermitHolderDetails)
   })
 
   lab.test('getIndividualPermitHolderAddress works correctly', async () => {
@@ -197,7 +224,7 @@ lab.experiment('Base Check tests:', () => {
   lab.test('getDirectors works correctly', async () => {
     const check = new BaseCheck(context)
     const directors = await check.getDirectors()
-    Code.expect(directors).to.equal([Merge({dob: {day}}, fakeDirector)])
+    Code.expect(directors).to.equal([new ApplicationContact(Merge({dob: {day}}, fakeDirector))])
   })
 
   lab.test('getLocation works correctly', async () => {

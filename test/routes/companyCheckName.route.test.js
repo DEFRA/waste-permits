@@ -33,7 +33,7 @@ const routes = {
   'Limited Liability Partnership': {
     pageHeading: 'Is this the right limited liability partnership?',
     routePath: '/permit-holder/limited-liability-partnership/check-name',
-    nextPath: '/permit-holder/limited-liability-partnership/designated-member-email'
+    nextPath: '/permit-holder/limited-liability-partnership/member-date-of-birth'
   }
 }
 

@@ -1,6 +1,5 @@
 'use strict'
 
-const {AccountRoleCodes} = require('../dynamics')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const Application = require('./application.model')
@@ -22,7 +21,7 @@ class Contact extends BaseModel {
     ]
   }
 
-  static async list (context, permitHolderOrganisationId = undefined, contactType = AccountRoleCodes.COMPANY_DIRECTOR) {
+  static async list (context, permitHolderOrganisationId = undefined, contactType) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
 
     let filter = `accountrolecode eq ${contactType} and defra_resignedoncompanieshouse eq null`

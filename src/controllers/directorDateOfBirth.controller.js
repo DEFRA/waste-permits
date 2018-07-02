@@ -2,11 +2,9 @@
 
 const moment = require('moment')
 const Constants = require('../constants')
-const Dynamics = require('../dynamics')
 const Routes = require('../routes')
 const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
-const DirectorDateOfBirthValidator = require('../validators/directorDateOfBirth.validator')
 const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
 const ApplicationContact = require('../models/applicationContact.model')
@@ -25,6 +23,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     // Get the directors that relate to this application
     const directors = await this._getDirectors(context, applicationId, account.id)
+    const companies = await account.listChildren(context)
 
     // Add the day of birth to each Director's date of birth from the ApplicationContact (if we have it)
     for (let director of directors) {
@@ -34,11 +33,13 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       }
     }
 
-    const directorDateOfBirthValidator = new DirectorDateOfBirthValidator()
-    directorDateOfBirthValidator.setErrorMessages(directors)
+    const validator = new this.validator.constructor()
 
-    const pageContext = this.createPageContext(errors, directorDateOfBirthValidator)
+    validator.setErrorMessages(directors)
+
+    const pageContext = this.createPageContext(errors, validator)
     pageContext.directors = directors
+    pageContext.companies = companies
 
     if (directors.length > 1) {
       pageContext.pageHeading = this.route.pageHeadingAlternate
@@ -104,7 +105,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
   // Obtains the Directors that relate to an application
   async _getDirectors (context, applicationId, permitHolderOrganisationId) {
-    const directors = await Contact.list(context, permitHolderOrganisationId, Dynamics.AccountRoleCodes.COMPANY_DIRECTOR)
+    const directors = await Contact.list(context, permitHolderOrganisationId, this.route.officerRole)
     for (let director of directors) {
       director.dateOfBirthFormatted = Utilities.formatDateForDisplay(director.dob)
     }

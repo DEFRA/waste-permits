@@ -27,8 +27,13 @@
                 {{> directorDateOfBirthRow this errors=@root.errors}}
               {{/each}}
             {{else}}
+              {{#unless companies.length}}
               <p id="no-directors">No data</p>
+              {{/unless}}
             {{/if}}
+            {{#each companies}}
+              {{> companyDateOfBirthRow}}
+            {{/each}}
           </dl>
         </fieldset>
 

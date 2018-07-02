@@ -266,7 +266,7 @@ module.exports = class BaseModel {
     return model
   }
 
-  static _buildQuery (filterData = {}, orderByFields = '') {
+  static _buildQuerySelect (filterData = {}, orderByFields = '') {
     // This method builds a search query based on filter data, orderby fields and mapping.
     //
     // For example, when the mapping for Account is:
@@ -292,8 +292,8 @@ module.exports = class BaseModel {
     //
     // And the orderBy is 'age, lastName'
     //
-    // Then the query that is generated within the code below will be:
-    // "accounts?$select=defra_id, defra_age, defra_firstname, defra_lastname, defra_date_day, defra_date_month, defra_date_year, _defra_primarycontactid_value&$filter=defra_age eq 30 and defra_firstname eq 'Fred' and defra_lastname eq 'Blogs'&$orderby=defra_age asc defra_lastname asc"
+    // Then the select portion of the query that is generated within the code below will be:
+    // "$select=defra_id, defra_age, defra_firstname, defra_lastname, defra_date_day, defra_date_month, defra_date_year, _defra_primarycontactid_value&$filter=defra_age eq 30 and defra_firstname eq 'Fred' and defra_lastname eq 'Blogs'&$orderby=defra_age asc defra_lastname asc"
     //
     let filter = Object.entries(Utilities.convertToDynamics(filterData))
       .map(([field, val]) => `${this[field].dynamics} eq ${this[field].encode ? `'${encodeURIComponent(val)}'` : val}`)
@@ -304,7 +304,7 @@ module.exports = class BaseModel {
       .map((fieldName) => `${this[fieldName].dynamics} asc`)
       .join(' ')
 
-    return `${this.entity}?$select=${this.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}${orderBy ? `&$orderby=${orderBy}` : ''}`
+    return `$select=${this.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}${orderBy ? `&$orderby=${orderBy}` : ''}`
   }
 
   static async getBy (context = {}, filterData = {}) {
@@ -313,10 +313,23 @@ module.exports = class BaseModel {
 
   static async listBy (context = {}, filterData = {}, orderByFields = '') {
     const dynamicsDal = new DynamicsDalService(context.authToken)
-    const query = this._buildQuery(filterData, orderByFields)
+    const query = `${this.entity}?${this._buildQuerySelect(filterData, orderByFields)}`
     try {
       const response = await dynamicsDal.search(query)
       return response.value.map((result) => this.dynamicsToModel(result))
+    } catch (error) {
+      LoggingService.logError(`Unable to list ${this.name} by ${JSON.stringify(filterData)}: ${error}`)
+      throw error
+    }
+  }
+
+  async listChildren (context = {}, filterData = {}, orderByFields = '') {
+    const {entity, id: {relationship}} = this.constructor
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+    const query = `${entity}(${this.id})/${relationship}?${this.constructor._buildQuerySelect(filterData, orderByFields)}`
+    try {
+      const response = await dynamicsDal.search(query)
+      return response.value.map((result) => this.constructor.dynamicsToModel(result))
     } catch (error) {
       LoggingService.logError(`Unable to list ${this.name} by ${JSON.stringify(filterData)}: ${error}`)
       throw error

@@ -9,9 +9,8 @@ const Contact = require('../contact.model')
 const Location = require('../location.model')
 const LocationDetail = require('../locationDetail.model')
 const StandardRule = require('../standardRule.model')
-const CompanyLookupService = require('../../services/companyLookup.service')
 const Utilities = require('../../utilities/utilities')
-const {COMPANY_DIRECTOR} = require('../../dynamics').AccountRoleCodes
+const {COMPANY_DIRECTOR, LLP_DESIGNATED_MEMBER} = require('../../dynamics').AccountRoleCodes
 const {TECHNICAL_QUALIFICATION, SITE_PLAN, FIRE_PREVENTION_PLAN, WASTE_RECOVERY_PLAN} = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -59,14 +58,6 @@ module.exports = class BaseCheck {
     return this.data.agentAccount || {}
   }
 
-  async getCompany () {
-    const {companyNumber, company} = await this.getCompanyAccount()
-    if (!company) {
-      this.data.company = await CompanyLookupService.getCompany(companyNumber)
-    }
-    return this.data.company || {}
-  }
-
   async getCompanyAccount () {
     const {applicationId, companyAccount} = this.data
     if (!companyAccount) {
@@ -83,6 +74,33 @@ module.exports = class BaseCheck {
     return this.data.companySecretaryDetails || {}
   }
 
+  async getCompanyRegisteredAddress () {
+    const {companyRegisteredAddress} = this.data
+    if (!companyRegisteredAddress) {
+      const {id} = await this.getCompanyAccount()
+      const addressDetail = await AddressDetail.getCompanyRegisteredDetails(this.data, id)
+      this.data.companyRegisteredAddress = addressDetail ? await Address.getById(this.data, addressDetail.addressId) : undefined
+    }
+    return this.data.companyRegisteredAddress || {}
+  }
+
+  async getCompanies () {
+    const {companies} = this.data
+    if (!companies) {
+      const company = await this.getCompanyAccount()
+      this.data.companies = await company.listChildren(this.data)
+    }
+    return this.data.companies || []
+  }
+
+  async getDesignatedMemberDetails () {
+    const {applicationId, designatedMemberDetails} = this.data
+    if (!designatedMemberDetails) {
+      this.data.designatedMemberDetails = await AddressDetail.getDesignatedMemberDetails(this.data, applicationId)
+    }
+    return this.data.designatedMemberDetails || {}
+  }
+
   async getDirectors () {
     const {applicationId, directors} = this.data
     const {id} = await this.getCompanyAccount()
@@ -96,6 +114,21 @@ module.exports = class BaseCheck {
       }))
     }
     return this.data.directors || []
+  }
+
+  async getMembers () {
+    const {applicationId, members} = this.data
+    const {id} = await this.getCompanyAccount()
+    if (!members) {
+      this.data.members = await Contact.list(this.data, id, LLP_DESIGNATED_MEMBER)
+      await Promise.all(this.data.members.map(async (member) => {
+        let applicationContact = await ApplicationContact.get(this.data, applicationId, member.id)
+        if (applicationContact && applicationContact.directorDob) {
+          member.dob.day = Utilities.extractDayFromDate(applicationContact.directorDob)
+        }
+      }))
+    }
+    return this.data.members || []
   }
 
   async getPrimaryContactDetails () {
@@ -128,9 +161,9 @@ module.exports = class BaseCheck {
   }
 
   async getIndividualPermitHolderAddress () {
-    const {individualPermitHolderAddress} = this.data
+    const {applicationId, individualPermitHolderAddress} = this.data
     if (!individualPermitHolderAddress) {
-      const permitHolderDetails = await this.getIndividualPermitHolderDetails()
+      const permitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(this.data, applicationId)
       this.data.individualPermitHolderAddress = await Address.getById(this.data, permitHolderDetails.addressId)
     }
     return this.data.individualPermitHolderAddress || {}
