@@ -1,3 +1,4 @@
+const Features = require('./config/featureConfig')
 
 const Dynamics = {
   AccountRoleCodes: {
@@ -119,7 +120,7 @@ const Dynamics = {
     LIMITED_LIABILITY_PARTNERSHIP: {
       id: 'limited-liability-partnership',
       type: 'Limited liability partnership',
-      canApplyOnline: false, // ToDo This has been implemented so will work when this is set to true
+      canApplyOnline: Features.hasLLPFeature, // ToDo This has been implemented so will work when this is set to true
       dynamicsApplicantTypeId: 910400001,
       dynamicsOrganisationTypeId: 910400005
     },
