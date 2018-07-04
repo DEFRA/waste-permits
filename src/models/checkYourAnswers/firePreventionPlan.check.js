@@ -1,6 +1,6 @@
 const BaseCheck = require('./base.check')
 
-const {FIRE_PREVENTION_PLAN: ruleSetId} = require('../../dynamics').RulesetIds
+const {FIRE_PREVENTION_PLAN: ruleSetId} = require('../applicationLine.model').RulesetIds
 const {FIRE_PREVENTION_PLAN} = require('../../routes')
 
 module.exports = class FirePreventionPlanCheck extends BaseCheck {

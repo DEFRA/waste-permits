@@ -12,6 +12,12 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 let sandbox
 const context = {authToken: 'AUTH_TOKEN'}
 
+const fakeApplicationLine = {
+  id: 'APPLICATION_LINE_ID',
+  standardRuleId: 'STANDARD_RULE_ID',
+  permitType: 910400000
+}
+
 const fakeStandardRule = {
   id: 'STANDARD_RULE_ID',
   permitName: 'STANDARD_RULE_NAME',
@@ -46,7 +52,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
-  sandbox.stub(ApplicationLine, 'getById').value(() => ({standardRuleId: 'STANDARD_RULE_ID'}))
+  sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
 })
 
 lab.afterEach(() => {

@@ -1,6 +1,6 @@
 const BaseCheck = require('./base.check')
 
-const {INVOICING_DETAILS: ruleSetId} = require('../../dynamics').RulesetIds
+const {INVOICING_DETAILS: ruleSetId} = require('../applicationLine.model').RulesetIds
 const {POSTCODE_INVOICE, MANUAL_INVOICE} = require('../../routes')
 
 module.exports = class InvoiceCheck extends BaseCheck {

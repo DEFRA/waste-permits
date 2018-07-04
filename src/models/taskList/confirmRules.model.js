@@ -1,6 +1,6 @@
 'use strict'
 
-const {CONFIRM_RULES} = require('../../dynamics').CompletedParamters
+const {CONFIRM_RULES} = require('../applicationLine.model').CompletedParameters
 const Completeness = require('./completeness.model')
 
 module.exports = class ConfirmRules extends Completeness {
