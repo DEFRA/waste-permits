@@ -54,8 +54,9 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       let contact
 
       // Get an existing contact if we have it, but use a new contact if any details have changed
-      if (application.individualPermitHolderId()) {
-        contact = await Contact.getIndividualPermitHolderByApplicationId(context, application.id)
+      const individualPermitHolderId = application.individualPermitHolderId()
+      if (individualPermitHolderId) {
+        contact = await Contact.getById(context, individualPermitHolderId)
         if (contact.firstName !== firstName || contact.lastName !== lastName) {
           contact = undefined
         }

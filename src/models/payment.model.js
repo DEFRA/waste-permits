@@ -40,23 +40,9 @@ class Payment extends BaseModel {
   }
 
   static async getByApplicationLineIdAndType (context, applicationLineId, type) {
-    let payment
     if (applicationLineId) {
-      const dynamicsDal = new DynamicsDalService(context.authToken)
-      const filter = `_defra_applicationlineid_value eq ${applicationLineId} and defra_type eq ${type}`
-      const query = `defra_payments?$select=${Payment.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}`
-      try {
-        const response = await dynamicsDal.search(query)
-        const result = response && response.value ? response.value.pop() : undefined
-        if (result) {
-          payment = Payment.dynamicsToModel(result)
-        }
-      } catch (error) {
-        LoggingService.logError(`Unable to get Payment by Application Line ID and Type(${type}): ${error}`)
-        throw error
-      }
+      return this.getBy(context, {applicationLineId, type})
     }
-    return payment
   }
 
   static async getBacsPaymentDetails (context, applicationLineId) {

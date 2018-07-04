@@ -66,7 +66,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(Contact.prototype, 'save').value(() => undefined)
-  sandbox.stub(Contact, 'getIndividualPermitHolderByApplicationId').value(() => new Contact())
+  sandbox.stub(Contact, 'getById').value(() => new Contact())
   sandbox.stub(AddressDetail.prototype, 'save').value(() => undefined)
   sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeIndividualPermitHolderDetails))
 })

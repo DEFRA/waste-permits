@@ -21,7 +21,7 @@ class DynamicsSolution extends BaseModel {
       friendlyname eq 'Licensing and Permitting' or
       friendlyname eq 'Waste Permits'`
 
-    const query = encodeURI(`solutions?$select=friendlyname,version${filter ? `&$filter=${filter}` : ''}`)
+    const query = encodeURI(`solutions?$select=friendlyname,version&$filter=${filter}`)
     try {
       const response = await dynamicsDal.search(query)
 
