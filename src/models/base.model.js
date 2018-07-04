@@ -295,7 +295,7 @@ module.exports = class BaseModel {
     // Then the query that is generated within the code below will be:
     // "accounts?$select=defra_id, defra_age, defra_firstname, defra_lastname, defra_date_day, defra_date_month, defra_date_year, _defra_primarycontactid_value&$filter=defra_age eq 30 and defra_firstname eq 'Fred' and defra_lastname eq 'Blogs'&$orderby=defra_age asc defra_lastname asc"
     //
-    let filter = Object.entries(filterData)
+    let filter = Object.entries(Utilities.convertToDynamics(filterData))
       .map(([field, val]) => `${this[field].dynamics} eq ${this[field].encode ? `'${encodeURIComponent(val)}'` : val}`)
       .join(' and ')
 
