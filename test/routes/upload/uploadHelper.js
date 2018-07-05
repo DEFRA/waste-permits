@@ -109,8 +109,10 @@ module.exports = class UploadTestHelper {
         Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal(`${options.fileTypes.join(', ')} or ${lastFileType}`)
         Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
         Code.expect(doc.getElementById('has-annotations')).to.not.exist()
-        Code.expect(doc.getElementById('has-no-annotations')).to.exist()
-        Code.expect(doc.getElementById(options.descriptionId)).to.exist()
+        if (options.descriptionId) {
+          Code.expect(doc.getElementById('has-no-annotations')).to.exist()
+          Code.expect(doc.getElementById(options.descriptionId)).to.exist()
+        }
       })
 
       lab.test('when there are annotations', async () => {

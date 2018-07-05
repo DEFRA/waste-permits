@@ -2,6 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
+const config = require('../config/config')
 
 const { Stream } = require('stream')
 const UPLOAD_PATH = path.resolve(`${process.cwd()}/temp`)
@@ -38,7 +39,9 @@ module.exports = class UploadService {
 
     await UploadService._saveFilesToDisk(fileData)
 
-    await UploadService._scanFiles(fileData)
+    if (!config.bypassVirusScan) {
+      await UploadService._scanFiles(fileData)
+    }
 
     await UploadService._uploadFilestoDynamics(authToken, application, subject, fileData)
   }
