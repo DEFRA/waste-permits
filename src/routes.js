@@ -718,13 +718,33 @@ const Routes = {
     cookieValidationRequired: false,
     applicationRequired: false
   },
+  WASTE_RECOVERY_PLAN_APPROVAL: {
+    path: '/waste-recovery-plan/approval',
+    view: 'wasteRecoveryPlanApproval',
+    pageHeading: 'You need to upload your waste recovery plan',
+    taskListHeading: 'Upload the waste recovery plan',
+    controller: 'wasteRecoveryPlanApproval',
+    validator: 'wasteRecoveryPlanApproval',
+    nextRoute: 'WASTE_RECOVERY_PLAN',
+    types: 'GET, POST'
+  },
   WASTE_RECOVERY_PLAN: {
     path: '/waste-recovery-plan',
-    view: 'wasteRecoveryPlan',
-    pageHeading: 'Have we checked your waste recovery plan?',
-    taskListHeading: 'Get your waste recovery plan checked',
-    controller: 'wasteRecoveryPlan',
-    types: 'GET, POST'
+    view: 'upload/wasteRecoveryPlan/wasteRecoveryPlan',
+    pageHeading: 'Upload the waste recovery plan',
+    controller: 'upload/wasteRecoveryPlan/wasteRecoveryPlan',
+    validator: 'upload/upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    validatorOptions: {
+      fileTypes: [
+        {type: 'PDF', mimeType: 'application/pdf'},
+        {type: 'DOC', mimeType: 'application/msword'},
+        {type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'},
+        {type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text'}
+      ]
+    }
   }
 }
 

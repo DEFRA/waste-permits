@@ -10,6 +10,7 @@ const PermitCheck = require('../models/checkYourAnswers/permit.check')
 const DrainageCheck = require('../models/checkYourAnswers/drainage.check')
 const SiteCheck = require('../models/checkYourAnswers/site.check')
 const SitePlanCheck = require('../models/checkYourAnswers/sitePlan.check')
+const WasteRecoveryPlanCheck = require('../models/checkYourAnswers/wasteRecoveryPlan.check')
 const FirePreventionPlanCheck = require('../models/checkYourAnswers/firePreventionPlan.check')
 const TechnicalCompetenceCheck = require('../models/checkYourAnswers/technicalCompetence.check')
 const ContactCheck = require('../models/checkYourAnswers/contact.check')
@@ -29,6 +30,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       PermitHolderCheck,
       SiteCheck,
       SitePlanCheck,
+      WasteRecoveryPlanCheck,
       TechnicalCompetenceCheck,
       FirePreventionPlanCheck,
       ConfidentialityCheck,

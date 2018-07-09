@@ -12,6 +12,9 @@
         <div>
           <dt>
             <h2 id="cost-to-apply-heading" class="bold">Cost to apply</h2>
+            {{#if includesWasteRecoveryPlan}}
+            <span id="includes-waste-recovery-plan">This covers the application charge and the assessment of the waste recovery plan.</span>
+            {{/if}}
             <span id="cost-to-apply-description">You pay this when you send your application.</span>
           </dt>
           <dd class="bold-medium">£<span id="cost">{{cost}}</span></dd>

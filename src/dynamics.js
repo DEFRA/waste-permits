@@ -1,4 +1,5 @@
 const Features = require('./config/featureConfig')
+const {VEHICLE_DISMANTLING_LESS_THAN_75000_TONS} = require('./constants').PermitTypes.STANDARD_RULES
 
 const Dynamics = {
   AccountRoleCodes: {
@@ -50,7 +51,7 @@ const Dynamics = {
       description: 'An oil separator, interceptor or other drainage system that is appropriately designed, operated and maintained',
       hint: 'If you use this system you can only store undamaged vehicles on the area. The drainage system must be designed, constructed and maintained to ensure the discharge does not adversely impact the water quality of the receiving water body.',
       allowed: true,
-      exceptions: ['SR2015 No 13']
+      exceptions: [VEHICLE_DISMANTLING_LESS_THAN_75000_TONS]
     },
     WATERCOURSE: {
       id: 'watercourse',
@@ -130,6 +131,20 @@ const Dynamics = {
       canApplyOnline: false,
       dynamicsApplicantTypeId: 910400001,
       dynamicsOrganisationTypeId: 910400006
+    }
+  },
+  RecoveryPlanAssessmentStatus: {
+    ALREADY_ASSESSED: {
+      TYPE: 910400000,
+      DESCRIPTION: 'plan agreed and there are no changes'
+    },
+    PLAN_HAS_CHANGED: {
+      TYPE: 910400001,
+      DESCRIPTION: 'plan assessed but the plan has changed'
+    },
+    NOT_ASSESSED: {
+      TYPE: 910400003,
+      DESCRIPTION: 'plan not assessed before'
     }
   },
   StatusCode: {

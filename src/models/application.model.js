@@ -34,6 +34,7 @@ class Application extends BaseModel {
       {field: 'regime', dynamics: 'defra_regime', constant: WASTE_REGIME},
       {field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration'},
       {field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails', length: {max: 2000}},
+      {field: 'recoveryPlanAssessmentStatus', dynamics: 'defra_plan_assessment_status'},
       {field: 'source', dynamics: 'defra_source', constant: DIGITAL_SOURCE},
       {field: 'statusCode', dynamics: 'statuscode'},
       {field: 'submittedOn', dynamics: 'defra_submittedon', isDate: true},

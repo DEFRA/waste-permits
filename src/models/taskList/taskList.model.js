@@ -96,8 +96,8 @@ class TaskList extends BaseModel {
       sectionName: Constants.TaskList.SectionHeadings.PREPARE_APPLICATION,
       sectionItems: [{
         id: 'waste-recovery-plan',
-        label: Routes.WASTE_RECOVERY_PLAN.taskListHeading,
-        href: Routes.WASTE_RECOVERY_PLAN.path,
+        label: Routes.WASTE_RECOVERY_PLAN_APPROVAL.taskListHeading,
+        href: Routes.WASTE_RECOVERY_PLAN_APPROVAL.path,
         completedLabelId: 'waste-recovery-plan-completed',
         rulesetId: RulesetIds.WASTE_RECOVERY_PLAN,
         // TODO Set model name

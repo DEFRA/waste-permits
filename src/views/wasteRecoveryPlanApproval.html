@@ -1,0 +1,60 @@
+<main id="content" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p id="recovery-plan-paragraph-1">Your waste recovery plan must prove that you will be recovering waste and not disposing of waste. We will assess your plan and tell you if we agree that what you are planning is waste recovery.</p>
+
+      <p id="recovery-plan-paragraph-2">Check the <a id="recovery-plan-guidence-link" href="https://www.gov.uk/guidance/waste-recovery-plans-and-permits#waste-recovery-plan" target="_blank">waste recovery plan guidance (opens new tab)</a> to make sure that your plan includes all the information we need.</p>
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <p id="selection-hint-text">Have we already assessed your waste recovery plan?</p>
+
+          <div id="selection" class="form-group {{#getFormErrorGroupClass errors.selection}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='selection-error' message=errors.selection }}
+
+            <div class="multiple-choice">
+              <input id="selection-yes-input" type="radio" name="selection" value="{{alreadyAssessed}}" {{#if isAlreadyAssessed}}checked="checked"{{/if}}>
+              <label id="selection-yes-label" class="selection-button-radio" for="selection-yes-input">
+                <span id="selection-yes-label-text">Yes. The Environment Agency agreed that what we are planning is waste recovery. There have been no changes to the agreed plan.</span>
+              </label>
+            </div>
+
+            <div class="multiple-choice" data-target="selection-changed-hint">
+              <input id="selection-changed-input" type="radio" name="selection" value="{{planHasChanged}}" {{#if isPlanHasChanged}}checked="checked"{{/if}}>
+              <label id="selection-changed-label" class="selection-button-radio" for="selection-changed-input">
+                <span id="selection-changed-label-text">The Environment Agency assessed a plan but we are submitting a new plan.</span>
+                <span id="selection-changed-hint" class="panel panel-border-narrow js-hidden">Summarise the changes and list them at the start of your revised plan. Highlight or mark the sections that have changed.</span>
+              </label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="selection-no-input" type="radio" name="selection" value="{{notAssessed}}" {{#if isNotAssessed}}checked="checked"{{/if}}>
+              <label id="selection-no-label" class="selection-button-radio" for="selection-no-input">
+                <span id="selection-no-label-text">No, we have not sent a plan for assessment.</span>
+              </label>
+            </div>
+          </div>
+
+        </fieldset>
+
+        {{> common/submitButton }}
+
+      </form>
+
+    </div>
+  </div>
+</main>
