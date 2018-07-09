@@ -11,15 +11,15 @@ module.exports = class WasteRecoveryPlanApprovalController extends BaseControlle
 
     pageContext.formValues = request.payload || {}
 
-    pageContext.alreadyAssessed = ALREADY_ASSESSED
-    pageContext.notAssessed = NOT_ASSESSED
-    pageContext.planHasChanged = PLAN_HAS_CHANGED
+    pageContext.alreadyAssessed = ALREADY_ASSESSED.TYPE
+    pageContext.notAssessed = NOT_ASSESSED.TYPE
+    pageContext.planHasChanged = PLAN_HAS_CHANGED.TYPE
 
     const status = application.recoveryPlanAssessmentStatus
 
-    pageContext.isAlreadyAssessed = status === ALREADY_ASSESSED
-    pageContext.isPlanHasChanged = status === PLAN_HAS_CHANGED
-    pageContext.isNotAssessed = status === NOT_ASSESSED
+    pageContext.isAlreadyAssessed = status === ALREADY_ASSESSED.TYPE
+    pageContext.isPlanHasChanged = status === PLAN_HAS_CHANGED.TYPE
+    pageContext.isNotAssessed = status === NOT_ASSESSED.TYPE
 
     return this.showView({request, h, pageContext})
   }

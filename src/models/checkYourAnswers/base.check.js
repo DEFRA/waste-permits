@@ -12,7 +12,7 @@ const StandardRule = require('../standardRule.model')
 const CompanyLookupService = require('../../services/companyLookup.service')
 const Utilities = require('../../utilities/utilities')
 const {COMPANY_DIRECTOR} = require('../../dynamics').AccountRoleCodes
-const {TECHNICAL_QUALIFICATION, SITE_PLAN, FIRE_PREVENTION_PLAN} = Constants.UploadSubject
+const {TECHNICAL_QUALIFICATION, SITE_PLAN, FIRE_PREVENTION_PLAN, WASTE_RECOVERY_PLAN} = Constants.UploadSubject
 
 module.exports = class BaseCheck {
   constructor (data) {
@@ -201,6 +201,14 @@ module.exports = class BaseCheck {
       this.data.sitePlan = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, SITE_PLAN)
     }
     return this.data.sitePlan || {}
+  }
+
+  async getWasteRecoveryPlan () {
+    const {applicationId, wasteRecoveryPlan} = this.data
+    if (!wasteRecoveryPlan) {
+      this.data.wasteRecoveryPlan = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, WASTE_RECOVERY_PLAN)
+    }
+    return this.data.wasteRecoveryPlan || {}
   }
 
   async getFirePreventionPlan () {
