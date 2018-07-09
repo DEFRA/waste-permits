@@ -53,6 +53,20 @@ lab.afterEach(() => {
 lab.experiment('Cost and time for this permit page tests:', () => {
   new GeneralTestHelper(lab, routePath).test()
 
+  const checkCommonElements = (doc) => {
+    GeneralTestHelper.checkElementsExist(doc, [
+      'back-link',
+      'submit-button',
+      'cost-to-apply-heading',
+      'cost-to-apply-description',
+      'time-to-wait-text',
+      'more-info-text',
+      'length-of-time-text',
+      'no-vat-text',
+      'vat-abbr'
+    ])
+  }
+
   lab.experiment(`GET ${routePath}`, () => {
     let getRequest
 
@@ -64,19 +78,19 @@ lab.experiment('Cost and time for this permit page tests:', () => {
       }
     })
 
-    lab.test(`GET ${routePath} success`, async () => {
-      const doc = await GeneralTestHelper.getDoc(getRequest)
-      GeneralTestHelper.checkElementsExist(doc, [
-        'back-link',
-        'submit-button',
-        'cost-to-apply-heading',
-        'cost-to-apply-description',
-        'time-to-wait-text',
-        'more-info-text',
-        'length-of-time-text',
-        'no-vat-text',
-        'vat-abbr'
-      ])
+    lab.experiment('success', () => {
+      lab.test(`when standard rule is not a recovery plan`, async () => {
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
+        Code.expect(doc.getElementById('includes-waste-recovery-plan')).to.not.exist()
+      })
+
+      lab.test(`when standard rule is a recovery plan`, async () => {
+        fakeStandardRule.code = 'SR2015 No 39'
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
+        Code.expect(doc.getElementById('includes-waste-recovery-plan')).to.exist()
+      })
     })
   })
 

@@ -42,18 +42,6 @@ Constants.LogLevels = {
   DEBUG: 'DEBUG'
 }
 
-Constants.ALLOWED_PERMITS = [
-  'SR2008 No 27',
-  'SR2010 No 4',
-  'SR2010 No 5',
-  'SR2010 No 6',
-  'SR2010 No 11',
-  'SR2010 No 12',
-  'SR2015 No 17'
-  // *** Must be a mobile permit so this is temporarily removed ***
-  // 'SR2015 No 18'
-]
-
 Constants.OFFLINE_CATEGORIES = {
   FLOOD_RISK_ACTIVITIES: {
     id: 'offline-category-flood',
@@ -108,7 +96,9 @@ Constants.PermitTypes = {
     cost: {
       lower: 720,
       upper: 1690
-    }
+    },
+    VEHICLE_DISMANTLING_LESS_THAN_75000_TONS: 'SR2015 No 13',
+    WASTE_IN_DEPOSIT_FOR_RECOVERY: 'SR2015 No 39'
   }
 }
 
@@ -144,6 +134,7 @@ Constants.UploadSubject = {
   TECHNICAL_QUALIFICATION: 'technical qualification',
   SITE_PLAN: 'site plan',
   FIRE_PREVENTION_PLAN: 'fire prevention plan',
+  WASTE_RECOVERY_PLAN: 'waste recovery plan',
   TECHNICAL_MANAGERS: 'technical managers'
 }
 
