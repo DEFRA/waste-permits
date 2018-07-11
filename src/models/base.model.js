@@ -247,7 +247,7 @@ module.exports = class BaseModel {
   static async getById (context = {}, id, customFilter = () => true) {
     // See the explanation of a custom filter in the method selectedDynamicsFields above
     let model
-    let cachedData = context[Utilities.toCamelCase(this.name)]
+    let cachedData = context[Utilities.firstCharToLowercase(this.name)]
     if (id) {
       if (cachedData && cachedData.id === id) {
         return cachedData
