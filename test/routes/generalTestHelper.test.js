@@ -160,6 +160,16 @@ module.exports = class GeneralTestHelper {
           Code.expect(element).to.exist()
         })
 
+        lab.test(`GET ${routePath} page should have the tabindex set on the main content`, async () => {
+          const res = await server.inject(getRequest)
+
+          const parser = new DOMParser()
+          const doc = parser.parseFromString(res.payload, 'text/html')
+
+          let element = doc.getElementById('content')
+          Code.expect(element.getAttribute('tabindex')).to.equal('-1')
+        })
+
         lab.test(`GET ${routePath} page should have the privacy footer link`, async () => {
           const res = await server.inject(getRequest)
 
