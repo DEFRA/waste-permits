@@ -134,9 +134,18 @@ const Dynamics = {
     }
   },
   RecoveryPlanAssessmentStatus: {
-    ALREADY_ASSESSED: 910400000,
-    PLAN_HAS_CHANGED: 910400001,
-    NOT_ASSESSED: 910400003
+    ALREADY_ASSESSED: {
+      TYPE: 910400000,
+      DESCRIPTION: 'plan agreed and there are no changes'
+    },
+    PLAN_HAS_CHANGED: {
+      TYPE: 910400001,
+      DESCRIPTION: 'plan assessed but the plan has changed'
+    },
+    NOT_ASSESSED: {
+      TYPE: 910400003,
+      DESCRIPTION: 'plan not assessed before'
+    }
   },
   StatusCode: {
     APPLICATION_RECEIVED: 910400000,
