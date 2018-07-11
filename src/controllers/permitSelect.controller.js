@@ -5,6 +5,7 @@ const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const RecoveryService = require('../services/recovery.service')
+const {firstCharToLowercase} = require('../utilities/utilities')
 const StandardRule = require('../models/standardRule.model')
 const StandardRuleType = require('../models/standardRuleType.model')
 const ApplicationLine = require('../models/applicationLine.model')
@@ -18,7 +19,7 @@ module.exports = class PermitSelectController extends BaseController {
 
     const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
     const {category = 'all categories'} = await StandardRuleType.getById(context, standardRuleTypeId)
-    pageContext.category = category.toLowerCase()
+    pageContext.category = firstCharToLowercase(category)
 
     pageContext.standardRules = await StandardRule.list(context, standardRuleTypeId)
     pageContext.permitCategoryRoute = Routes.PERMIT_CATEGORY.path
