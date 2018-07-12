@@ -60,6 +60,8 @@ Constants.OFFLINE_CATEGORIES = {
   }
 }
 
+Constants.PAYMENT_CONFIGURATION_PREFIX = 'WastePermits.ECOM.'
+
 Constants.DEFRA_COOKIE_KEY = 'DefraSession'
 
 Constants.COOKIE_RESULT = {

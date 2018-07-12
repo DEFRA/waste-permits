@@ -19,15 +19,18 @@ let testPayment
 let fakePaymentData
 
 const testPaymentId = 'PAYMENT_ID'
+const CONFIGURATION_PREFIX = 'WastePermits.ECOM.'
 
 const context = {authToken: 'AUTH_TOKEN'}
 
 lab.beforeEach(() => {
   fakePaymentData = {
+    id: 'PAYMENT_ID',
     applicationId: 'APPLICATION_ID',
     applicationLineId: 'APPLICATION_LINE_ID',
     category: 'CATEGORY',
     statusCode: 'STATUS_CODE',
+    referenceNumber: 'REFERENCE_NUMBER',
     type: 'TYPE',
     title: 'TITLE',
     value: 'VALUE'
@@ -131,8 +134,44 @@ lab.experiment('Payment Model tests:', () => {
     Code.expect(payment.type).to.equal(BACS_PAYMENT)
   })
 
+  lab.test(`getCardPaymentResult() method is successful`, async () => {
+    const expectedActionDataObject = {
+      ConfigurationPrefix: CONFIGURATION_PREFIX,
+      LookupByPaymentReference: fakePaymentData.referenceNumber
+    }
+    sandbox.stub(DynamicsDalService.prototype, 'callAction').callsFake(async (action, actionDataObject) => {
+      Code.expect(action).to.equal('defra_get_payment_status')
+      Code.expect(actionDataObject).to.equal(expectedActionDataObject)
+      return {Status: true}
+    })
+    Code.expect(await testPayment.getCardPaymentResult(context)).to.equal(true)
+  })
+
+  lab.test(`makeCardPayment() method is successful`, async () => {
+    const description = 'DESCRIPTION'
+    const returnUrl = 'RETURN_URL'
+    const expectedActionDataObject = {
+      ConfigurationPrefix: CONFIGURATION_PREFIX,
+      Amount: fakePaymentData.value,
+      ReturnUrl: returnUrl,
+      Description: description,
+      PaymentRecord: {
+        '@odata.type': 'Microsoft.Dynamics.CRM.defra_payment',
+        defra_paymentid: fakePaymentData.id
+      }
+    }
+
+    sandbox.stub(DynamicsDalService.prototype, 'callAction').callsFake(async (action, actionDataObject) => {
+      Code.expect(action).to.equal('defra_create_payment_transaction')
+      Code.expect(actionDataObject).to.equal(expectedActionDataObject)
+      return {PaymentNextUrlHref: returnUrl}
+    })
+    Code.expect(await testPayment.makeCardPayment(context, description, returnUrl)).to.equal(returnUrl)
+  })
+
   lab.test('save() method saves a new Payment object', async () => {
     const spy = sandbox.spy(DynamicsDalService.prototype, 'create')
+    delete testPayment.id
     await testPayment.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testPayment.id).to.equal(testPaymentId)
