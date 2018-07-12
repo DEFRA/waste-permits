@@ -1,5 +1,6 @@
 'use strict'
 
+const {PAYMENT_CONFIGURATION_PREFIX} = require('../constants')
 const {PaymentStatusCodes, PaymentTypes} = require('../dynamics')
 const Utilities = require('../utilities/utilities')
 const DynamicsDalService = require('../services/dynamicsDal.service')
@@ -56,6 +57,7 @@ class Payment extends BaseModel {
   async makeCardPayment (context, description, returnUrl) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
+      ConfigurationPrefix: PAYMENT_CONFIGURATION_PREFIX,
       Amount: this.value,
       ReturnUrl: returnUrl,
       Description: description,
@@ -78,6 +80,7 @@ class Payment extends BaseModel {
   async getCardPaymentResult (context) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
+      ConfigurationPrefix: PAYMENT_CONFIGURATION_PREFIX,
       LookupByPaymentReference: this.referenceNumber
     }
     try {
