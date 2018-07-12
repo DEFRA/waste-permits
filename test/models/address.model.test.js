@@ -20,7 +20,16 @@ const fakeAddressData = {
   townOrCity: 'TEST TOWN',
   postcode: 'BS1 5AH'
 }
-fakeAddressData.fullAddress = `${fakeAddressData.buildingNameOrNumber}, ${fakeAddressData.addressLine1}, ${fakeAddressData.addressLine2}, ${fakeAddressData.townOrCity}, ${fakeAddressData.postcode}`
+
+const fakeFullAddress = (address) => {
+  return [
+    address.buildingNameOrNumber,
+    address.addressLine1,
+    address.addressLine2,
+    address.townOrCity,
+    address.postcode
+  ].filter((item) => item).join(', ')
+}
 
 const testAddressId = 'ADDRESS_ID'
 
@@ -160,11 +169,22 @@ lab.experiment('Address Model tests:', () => {
     Code.expect(testAddress.id).to.equal(testAddressId)
   })
 
-  lab.test('save() method creates the name (fullAddress) property correctly for manually created addresses', async () => {
-    let expectedValue = testAddress.fullAddress
-    testAddress.fromAddressLookup = false
-    testAddress.fullAddress = undefined
-    await testAddress.save(context)
-    Code.expect(testAddress.fullAddress).to.equal(expectedValue)
+  lab.experiment('save() method creates the name (fullAddress) property correctly for manually created addresses', () => {
+    lab.beforeEach(async () => {
+      testAddress.fromAddressLookup = false
+      testAddress.fullAddress = undefined
+    })
+
+    lab.test('when all address fields are filled in', async () => {
+      await testAddress.save(context)
+      Code.expect(testAddress.fullAddress).to.equal(fakeFullAddress(testAddress))
+    })
+
+    lab.test('when not all address fields are filled in', async () => {
+      testAddress.addressLine2 = undefined
+      testAddress.postcode = undefined
+      await testAddress.save(context)
+      Code.expect(testAddress.fullAddress).to.equal(fakeFullAddress(testAddress))
+    })
   })
 })
