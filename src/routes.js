@@ -1,4 +1,5 @@
 const Constants = require('./constants')
+const {AccountRoleCodes} = require('./dynamics')
 
 const Routes = {
   ROOT: {
@@ -166,8 +167,9 @@ const Routes = {
   DIRECTOR_DATE_OF_BIRTH: {
     path: '/permit-holder/company/director-date-of-birth',
     view: 'directorDateOfBirth',
-    pageHeading: 'What is the director\'s date of birth?',
-    pageHeadingAlternate: 'What are the directors\' dates of birth?',
+    pageHeading: `What is the director's date of birth?`,
+    pageHeadingAlternate: `What are the directors' dates of birth?`,
+    officerRole: AccountRoleCodes.COMPANY_DIRECTOR,
     controller: 'directorDateOfBirth',
     validator: 'directorDateOfBirth',
     nextRoute: 'COMPANY_DIRECTOR_EMAIL',
@@ -179,7 +181,7 @@ const Routes = {
     pageHeading: 'Is this the right limited liability partnership?',
     controller: 'companyCheckName',
     validator: 'companyCheckName',
-    nextRoute: 'LLP_COMPANY_DESIGNATED_MEMBER_EMAIL',
+    nextRoute: 'LLP_MEMBER_DATE_OF_BIRTH',
     companyRoute: 'LLP_COMPANY_NUMBER',
     types: 'GET, POST'
   },
@@ -210,6 +212,17 @@ const Routes = {
     companyRoute: 'LLP_COMPANY_NUMBER',
     validator: true,
     types: 'GET'
+  },
+  LLP_MEMBER_DATE_OF_BIRTH: {
+    path: '/permit-holder/limited-liability-partnership/member-date-of-birth',
+    view: 'directorDateOfBirth',
+    pageHeading: `What is the member's date of birth?`,
+    pageHeadingAlternate: `What are the members' dates of birth?`,
+    officerRole: AccountRoleCodes.LLP_DESIGNATED_MEMBER,
+    controller: 'directorDateOfBirth',
+    validator: 'directorDateOfBirth',
+    nextRoute: 'LLP_COMPANY_DESIGNATED_MEMBER_EMAIL',
+    types: 'GET, POST'
   },
   PERMIT_HOLDER_DETAILS: {
     path: '/permit-holder/details',

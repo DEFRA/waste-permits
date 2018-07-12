@@ -48,6 +48,8 @@ module.exports = class CompanyCheckNameController extends BaseController {
       const {application, account} = context
 
       if (application && account) {
+        const alreadyConfirmed = account.isValidatedWithCompaniesHouse
+
         const company = await CompanyLookupService.getCompany(account.companyNumber)
 
         account.accountName = company.name
@@ -55,7 +57,9 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         await account.save(context, false)
 
-        await account.confirm(context)
+        if (!alreadyConfirmed) {
+          await account.confirm(context)
+        }
 
         // The company trading name is only set if the corresponding checkbox is ticked
         if (request.payload['use-business-trading-name'] === 'on') {

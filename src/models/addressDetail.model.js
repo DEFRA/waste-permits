@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseModel = require('./base.model')
-const {COMPANY_SECRETARY_EMAIL, DESIGNATED_MEMBER_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER} = require('../dynamics').AddressTypes
+const {COMPANY_SECRETARY_EMAIL, COMPANY_REGISTERED_ADDRESS, DESIGNATED_MEMBER_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER} = require('../dynamics').AddressTypes
 
 class AddressDetail extends BaseModel {
   static get entity () {
@@ -15,6 +15,7 @@ class AddressDetail extends BaseModel {
       {field: 'addressId', dynamics: '_defra_address_value', bind: {id: 'defra_Address', relationship: 'defra_address_defra_addressdetails', entity: 'defra_addresses'}},
       {field: 'addressName', dynamics: 'defra_name'},
       {field: 'dateOfBirth', dynamics: 'defra_dob'},
+      {field: 'customerId', dynamics: '_defra_customer_value', readOnly: true},
       {field: 'email', dynamics: 'emailaddress', length: {max: 100}},
       {field: 'telephone', dynamics: 'defra_phone', length: {min: 10, max: 30, maxDigits: 17}}, // Max digits is the maximum length when spaces have been stripped out
       {field: 'type', dynamics: 'defra_addresstype'}
@@ -40,6 +41,10 @@ class AddressDetail extends BaseModel {
 
   static async getCompanySecretaryDetails (context, applicationId) {
     return this.getDetails(context, applicationId, COMPANY_SECRETARY_EMAIL)
+  }
+
+  static async getCompanyRegisteredDetails (context, customerId) {
+    return AddressDetail.getBy(context, {customerId, type: COMPANY_REGISTERED_ADDRESS.TYPE})
   }
 
   static async getPrimaryContactDetails (context, applicationId) {

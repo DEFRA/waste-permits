@@ -34,12 +34,12 @@ const getMonth = (month) => [
 ][month - 1]
 
 let fakeApplication
-let fakeCompany
 let fakeCompanyAccount
 let fakeDirector
 let fakeIndividualPermitHolder
 let fakeIndividualPermitHolderDetails
 let fakeIndividualPermitHolderAddress
+let fakeCompanyRegisteredAddress
 let fakePermitHolderType
 let fakeCompanySecretary
 
@@ -55,12 +55,8 @@ lab.beforeEach(() => {
     bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS'
   }
 
-  fakeCompany = {
-    name: 'NAME',
-    address: 'ADDRESS'
-  }
-
   fakeCompanyAccount = {
+    accountName: 'COMPANY_NAME',
     companyNumber: 'COMPANY_NUMBER'
   }
 
@@ -97,6 +93,14 @@ lab.beforeEach(() => {
     postcode: 'BS1 6AD'
   }
 
+  fakeCompanyRegisteredAddress = {
+    buildingNameOrNumber: '10',
+    addressLine1: 'A STREET',
+    addressLine2: 'A SUBURB',
+    townOrCity: 'A CITY',
+    postcode: 'SB14 6QG'
+  }
+
   fakePermitHolderType = {
     type: 'Limited company'
   }
@@ -107,13 +111,13 @@ lab.beforeEach(() => {
   // Stub the asynchronous base methods
   sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => Merge({}, fakeApplication))
   sandbox.stub(BaseCheck.prototype, 'getPermitHolderType').value(() => Merge({}, fakePermitHolderType))
-  sandbox.stub(BaseCheck.prototype, 'getCompany').value(() => Merge({}, fakeCompany))
   sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(() => Merge({}, fakeCompanyAccount))
   sandbox.stub(BaseCheck.prototype, 'getCompanySecretaryDetails').value(() => Merge({}, fakeCompanySecretary))
+  sandbox.stub(BaseCheck.prototype, 'getCompanyRegisteredAddress').value(() => Merge({}, fakeCompanyRegisteredAddress))
   sandbox.stub(BaseCheck.prototype, 'getDirectors').value(() => [Merge({}, fakeDirector)])
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolder').value(() => Merge({}, fakeIndividualPermitHolder))
-  sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderDetails').value(() => Merge({}, fakeIndividualPermitHolderDetails))
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderAddress').value(() => Merge({}, fakeIndividualPermitHolderAddress))
+  sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderDetails').value(() => Merge({}, fakeIndividualPermitHolderDetails))
 })
 
 lab.afterEach(() => {
@@ -156,22 +160,31 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {name, address} = fakeCompany
+      const {buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode} = fakeCompanyRegisteredAddress
       const {tradingName} = fakeApplication
-      const {companyNumber} = fakeCompanyAccount
+      const {accountName, companyNumber} = fakeCompanyAccount
       answers.forEach(({answer, answerId}, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
           case 0:
-            Code.expect(answer).to.equal(name)
+            Code.expect(answer).to.equal(accountName)
             break
           case 1:
             Code.expect(answer).to.equal(`Trading as: ${tradingName}`)
             break
           case 2:
-            Code.expect(answer).to.equal(address)
+            Code.expect(answer).to.equal(`${buildingNameOrNumber}, ${addressLine1}`)
             break
           case 3:
+            Code.expect(answer).to.equal(addressLine2)
+            break
+          case 4:
+            Code.expect(answer).to.equal(townOrCity)
+            break
+          case 5:
+            Code.expect(answer).to.equal(postcode)
+            break
+          case 6:
             Code.expect(answer).to.equal(`Company number: ${companyNumber}`)
             break
         }
@@ -190,6 +203,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
+      const {buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode} = fakeIndividualPermitHolderAddress
       const {tradingName} = fakeApplication
       const {firstName, lastName, email} = fakeIndividualPermitHolder
       const {telephone, dateOfBirth} = fakeIndividualPermitHolderDetails
@@ -216,16 +230,16 @@ lab.experiment('PermitHolder Check tests:', () => {
             Code.expect(answer).to.equal({blankLine: true})
             break
           case 6:
-            Code.expect(answer).to.equal(`5, A ROAD`)
+            Code.expect(answer).to.equal(`${buildingNameOrNumber}, ${addressLine1}`)
             break
           case 7:
-            Code.expect(answer).to.equal(`AN AREA`)
+            Code.expect(answer).to.equal(addressLine2)
             break
           case 8:
-            Code.expect(answer).to.equal(`A TOWN`)
+            Code.expect(answer).to.equal(townOrCity)
             break
           case 9:
-            Code.expect(answer).to.equal(`BS1 6AD`)
+            Code.expect(answer).to.equal(postcode)
             break
         }
       })

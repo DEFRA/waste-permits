@@ -13,7 +13,7 @@ class Account extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'id', dynamics: 'accountid'},
+      {field: 'id', dynamics: 'accountid', relationship: 'defra_parent_child_account_relationship'},
       {field: 'companyNumber', dynamics: 'defra_companyhouseid', encode: true, length: {max: 8, min: 8}},
       {field: 'accountName', dynamics: 'name', length: {max: 160}},
       {field: 'organisationType', dynamics: 'defra_organisation_type'},

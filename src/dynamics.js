@@ -1,10 +1,10 @@
-const Features = require('./config/featureConfig')
 const {VEHICLE_DISMANTLING_LESS_THAN_75000_TONS} = require('./constants').PermitTypes.STANDARD_RULES
 
 const Dynamics = {
   AccountRoleCodes: {
     COMPANY_DIRECTOR: 910400000,
-    MEMBER: 910400001
+    LLP_DESIGNATED_MEMBER: 910400001,
+    LLP_MEMBER: 910400002
   },
   AccountTypes: {
     AGENT: 910400000
@@ -21,6 +21,10 @@ const Dynamics = {
     COMPANY_SECRETARY_EMAIL: {
       TYPE: 910400006,
       NAME: 'Company Secretary Email Address'
+    },
+    COMPANY_REGISTERED_ADDRESS: {
+      TYPE: 910400005,
+      NAME: 'Company Registered Address'
     },
     PRIMARY_CONTACT_TELEPHONE_NUMBER: {
       TYPE: 910400007,
@@ -121,7 +125,7 @@ const Dynamics = {
     LIMITED_LIABILITY_PARTNERSHIP: {
       id: 'limited-liability-partnership',
       type: 'Limited liability partnership',
-      canApplyOnline: Features.hasLLPFeature, // ToDo This has been implemented so will work when this is set to true
+      canApplyOnline: true,
       dynamicsApplicantTypeId: 910400001,
       dynamicsOrganisationTypeId: 910400005
     },
