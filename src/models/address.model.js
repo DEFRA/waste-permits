@@ -64,7 +64,13 @@ class Address extends BaseModel {
   async save (context) {
     // Build the address name (i.e. the full address) if it is a manual address entry
     if (!this.fromAddressLookup) {
-      this.fullAddress = `${this.buildingNameOrNumber}, ${this.addressLine1}, ${this.addressLine2}, ${this.townOrCity}, ${this.postcode}`
+      this.fullAddress = [
+        this.buildingNameOrNumber,
+        this.addressLine1,
+        this.addressLine2,
+        this.townOrCity,
+        this.postcode
+      ].filter((item) => item).join(', ')
     }
     const dataObject = this.modelToDynamics()
 
