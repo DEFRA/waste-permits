@@ -73,6 +73,9 @@ const fakeLocationDetail = {
 const fakeAddress = {
   id: 'ADDRESS_ID'
 }
+const fakePermitHolderType = {
+  id: 'PERMIT_HOLDER_TYPE'
+}
 const fakeStandardRule = {
   id: 'STANDARD_RULE_ID',
   code: 'CODE',
@@ -147,131 +150,168 @@ lab.experiment('Base Check tests:', () => {
     const check = new BaseCheck(context)
     const application = await check.getApplication()
     Code.expect(application).to.equal(fakeApplication)
+    Code.expect(context.application).to.equal(await check.getApplication())
   })
 
   lab.test('getAgentAccount works correctly', async () => {
     const check = new BaseCheck(context)
-    const account = await check.getAgentAccount()
-    Code.expect(account).to.equal(fakeAccount)
+    const agentAccount = await check.getAgentAccount()
+    Code.expect(agentAccount).to.equal(fakeAccount)
+    Code.expect(context.agentAccount).to.equal(await check.getAgentAccount())
   })
 
   lab.test('getContact works correctly', async () => {
     const check = new BaseCheck(context)
     const contact = await check.getContact()
     Code.expect(contact).to.equal(fakeContact)
+    Code.expect(context.contact).to.equal(await check.getContact())
   })
 
   lab.test('getCompanySecretaryDetails works correctly', async () => {
     const check = new BaseCheck(context)
-    const companySecretary = await check.getCompanySecretaryDetails()
-    Code.expect(companySecretary).to.equal(fakeCompanySecretary)
+    const companySecretaryDetails = await check.getCompanySecretaryDetails()
+    Code.expect(companySecretaryDetails).to.equal(fakeCompanySecretary)
+    Code.expect(context.companySecretaryDetails).to.equal(await check.getCompanySecretaryDetails())
   })
 
   lab.test('getCompanyRegisteredAddress works correctly', async () => {
     const check = new BaseCheck(context)
     const companyRegisteredAddress = await check.getCompanyRegisteredAddress()
     Code.expect(companyRegisteredAddress).to.equal(fakeAddress)
+    Code.expect(context.companyRegisteredAddress).to.equal(await check.getCompanyRegisteredAddress())
   })
 
   lab.test('getCompanies works correctly', async () => {
     const check = new BaseCheck(context)
     const companies = await check.getCompanies()
     Code.expect(companies).to.equal(fakeCompanies)
+    Code.expect(context.companies).to.equal(await check.getCompanies())
   })
 
   lab.test('getDesignatedMemberDetails works correctly', async () => {
     const check = new BaseCheck(context)
-    const designatedMember = await check.getDesignatedMemberDetails()
-    Code.expect(designatedMember).to.equal(fakeDesignatedMemberDetails)
+    const designatedMemberDetails = await check.getDesignatedMemberDetails()
+    Code.expect(designatedMemberDetails).to.equal(fakeDesignatedMemberDetails)
+    Code.expect(context.designatedMemberDetails).to.equal(await check.getDesignatedMemberDetails())
   })
 
   lab.test('getIndividualPermitHolderDetails works correctly', async () => {
     const check = new BaseCheck(context)
-    const individualPermitHolder = await check.getIndividualPermitHolderDetails()
-    Code.expect(individualPermitHolder).to.equal(fakeIndividualPermitHolderDetails)
+    const individualPermitHolderDetails = await check.getIndividualPermitHolderDetails()
+    Code.expect(individualPermitHolderDetails).to.equal(fakeIndividualPermitHolderDetails)
+    Code.expect(context.individualPermitHolderDetails).to.equal(await check.getIndividualPermitHolderDetails())
   })
 
   lab.test('getMembers works correctly', async () => {
     const check = new BaseCheck(context)
     const members = await check.getMembers()
     Code.expect(members).to.equal([new ApplicationContact(Merge({dob: {day}}, fakeDirector))])
+    Code.expect(context.members).to.equal(await check.getMembers())
+  })
+
+  lab.test('getPermitHolderType works correctly', async () => {
+    context.permitHolderType = fakePermitHolderType
+    const check = new BaseCheck(context)
+    const permitHolderType = await check.getPermitHolderType()
+    Code.expect(permitHolderType).to.equal(fakePermitHolderType)
+    Code.expect(context.permitHolderType).to.equal(await check.getPermitHolderType())
   })
 
   lab.test('getPrimaryContactDetails works correctly', async () => {
     const check = new BaseCheck(context)
-    const primaryContact = await check.getPrimaryContactDetails()
-    Code.expect(primaryContact).to.equal(fakePrimaryContact)
+    const primaryContactDetails = await check.getPrimaryContactDetails()
+    Code.expect(primaryContactDetails).to.equal(fakePrimaryContact)
+    Code.expect(context.primaryContactDetails).to.equal(await check.getPrimaryContactDetails())
   })
 
   lab.test('getIndividualPermitHolder works correctly', async () => {
     const check = new BaseCheck(context)
     const individualPermitHolder = await check.getIndividualPermitHolder()
     Code.expect(individualPermitHolder).to.equal(fakeIndividualPermitHolder)
+    Code.expect(context.individualPermitHolder).to.equal(await check.getIndividualPermitHolder())
   })
 
   lab.test('getIndividualPermitHolderAddress works correctly', async () => {
     const check = new BaseCheck(context)
     const individualPermitHolderAddress = await check.getIndividualPermitHolderAddress()
     Code.expect(individualPermitHolderAddress).to.equal(fakeAddress)
+    Code.expect(context.individualPermitHolderAddress).to.equal(await check.getIndividualPermitHolderAddress())
   })
 
   lab.test('getBillingInvoicingDetails works correctly', async () => {
     const check = new BaseCheck(context)
-    const billingInvoicing = await check.getBillingInvoicingDetails()
-    Code.expect(billingInvoicing).to.equal(fakeBillingInvoicing)
+    const billingInvoicingDetails = await check.getBillingInvoicingDetails()
+    Code.expect(billingInvoicingDetails).to.equal(fakeBillingInvoicing)
+    Code.expect(context.billingInvoicingDetails).to.equal(await check.getBillingInvoicingDetails())
   })
 
   lab.test('getDirectors works correctly', async () => {
     const check = new BaseCheck(context)
     const directors = await check.getDirectors()
     Code.expect(directors).to.equal([new ApplicationContact(Merge({dob: {day}}, fakeDirector))])
+    Code.expect(context.directors).to.equal(await check.getDirectors())
   })
 
   lab.test('getLocation works correctly', async () => {
     const check = new BaseCheck(context)
     const location = await check.getLocation()
     Code.expect(location).to.equal(fakeLocation)
+    Code.expect(context.location).to.equal(await check.getLocation())
   })
 
   lab.test('getLocationDetail works correctly', async () => {
     const check = new BaseCheck(context)
     const locationDetail = await check.getLocationDetail()
     Code.expect(locationDetail).to.equal(fakeLocationDetail)
+    Code.expect(context.locationDetail).to.equal(await check.getLocationDetail())
   })
 
   lab.test('getLocationAddress works correctly', async () => {
     const check = new BaseCheck(context)
     const locationAddress = await check.getLocationAddress()
     Code.expect(locationAddress).to.equal(fakeAddress)
+    Code.expect(context.locationAddress).to.equal(await check.getLocationAddress())
   })
 
   lab.test('getInvoiceAddress works correctly', async () => {
     const check = new BaseCheck(context)
     const invoiceAddress = await check.getInvoiceAddress()
     Code.expect(invoiceAddress).to.equal(fakeAddress)
+    Code.expect(context.invoiceAddress).to.equal(await check.getInvoiceAddress())
   })
 
   lab.test('getStandardRule works correctly', async () => {
     const check = new BaseCheck(context)
     const standardRule = await check.getStandardRule()
     Code.expect(standardRule).to.equal(fakeStandardRule)
+    Code.expect(context.standardRule).to.equal(await check.getStandardRule())
   })
 
   lab.test('getTechnicalCompetenceEvidence works correctly', async () => {
     const check = new BaseCheck(context)
     const technicalCompetenceEvidence = await check.getTechnicalCompetenceEvidence()
     Code.expect(technicalCompetenceEvidence).to.equal([fakeAnnotation])
+    Code.expect(context.technicalCompetenceEvidence).to.equal(await check.getTechnicalCompetenceEvidence())
   })
 
   lab.test('getSitePlan works correctly', async () => {
     const check = new BaseCheck(context)
     const sitePlan = await check.getSitePlan()
     Code.expect(sitePlan).to.equal([fakeAnnotation])
+    Code.expect(context.sitePlan).to.equal(await check.getSitePlan())
   })
 
   lab.test('getFirePreventionPlan works correctly', async () => {
     const check = new BaseCheck(context)
-    const sitePlan = await check.getFirePreventionPlan()
-    Code.expect(sitePlan).to.equal([fakeAnnotation])
+    const firePreventionPlan = await check.getFirePreventionPlan()
+    Code.expect(firePreventionPlan).to.equal([fakeAnnotation])
+    Code.expect(context.firePreventionPlan).to.equal(await check.getFirePreventionPlan())
+  })
+
+  lab.test('getWasteRecoveryPlan works correctly', async () => {
+    const check = new BaseCheck(context)
+    const wasteRecoveryPlan = await check.getWasteRecoveryPlan()
+    Code.expect(wasteRecoveryPlan).to.equal([fakeAnnotation])
+    Code.expect(context.wasteRecoveryPlan).to.equal(await check.getWasteRecoveryPlan())
   })
 })
