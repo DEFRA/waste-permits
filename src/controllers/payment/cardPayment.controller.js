@@ -1,7 +1,6 @@
 'use strict'
 
 const Dynamics = require('../../dynamics')
-const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const Payment = require('../../models/payment.model')
 const LoggingService = require('../../services/logging.service')
@@ -15,10 +14,6 @@ module.exports = class CardPaymentController extends BaseController {
     let {returnUrl} = request.query
 
     let payment = await Payment.getCardPaymentDetails(context, applicationLine.id)
-
-    if (!application.isSubmitted()) {
-      return this.redirect({request, h, redirectPath: Routes.NOT_SUBMITTED.path})
-    }
 
     const {value = 0} = applicationLine
     payment.description = `Application charge for a standard rules waste permit: ${standardRule.permitName} ${standardRule.code}`
