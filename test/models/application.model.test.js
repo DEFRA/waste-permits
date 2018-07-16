@@ -26,7 +26,6 @@ const fakeApplicationData = {
   permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
   agentId: 'AGENT_ID',
   applicantType: 'APPLICANT_TYPE',
-  applicationName: 'APPLICATION_NAME',
   applicationNumber: 'APPLICATION_NUMBER',
   bankruptcy: 'BANKRUPTCY',
   bankruptcyDetails: 'BANKRUPTCY_DETAILS',
@@ -61,7 +60,6 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
   return {
     _defra_customerid_value: application.applicantType === ORGANISATION ? application.permitHolderOrganisationId : application.permitHolderIndividualId,
     _defra_agentid_value: application.agentId,
-    defra_name: application.applicationName,
     defra_applicant_type: application.applicantType,
     defra_applicant_organisation_type: application.organisationType,
     defra_applicationnumber: application.applicationNumber,

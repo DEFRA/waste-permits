@@ -26,7 +26,7 @@ let sandbox
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID',
-    applicationName: 'APPLICATION_NAME'
+    applicationNumber: 'APPLICATION_NUMBER'
   }
 
   fakePermitHolderType = {

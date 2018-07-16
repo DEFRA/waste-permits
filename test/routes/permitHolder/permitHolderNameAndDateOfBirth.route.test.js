@@ -31,7 +31,7 @@ let fakeIndividualPermitHolderDetailsId = 'INDIVIDUAL_PERMIT_HOLDER_ID'
 
 const fakeApplication = {
   id: 'APPLICATION_ID',
-  applicationName: 'APPLICATION_NAME'
+  applicationNumber: 'APPLICATION_NUMBER'
 }
 
 lab.beforeEach(() => {

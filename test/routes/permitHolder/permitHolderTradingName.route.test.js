@@ -31,7 +31,7 @@ let fakeApplication
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID',
-    applicationName: 'APPLICATION_NAME',
+    applicationNumber: 'APPLICATION_NUMBER',
     applicantType: 910400000
   }
 

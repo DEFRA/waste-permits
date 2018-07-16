@@ -47,7 +47,7 @@ let fakeAnnotationId = 'ANNOTATION_ID'
 
 const fakeApplication = {
   id: 'APPLICATION/ID', // Include a slash to prove creation and deletion of directories will work ok
-  applicationName: 'APPLICATION_NAME'
+  applicationNumber: 'APPLICATION_NUMBER'
 }
 
 module.exports = class UploadTestHelper {
@@ -70,7 +70,7 @@ module.exports = class UploadTestHelper {
     sandbox.stub(Annotation, 'getByApplicationIdSubjectAndFilename').value(() => Promise.resolve(new Annotation(fakeAnnotation)))
     sandbox.stub(Annotation.prototype, 'delete').value(() => Promise.resolve({}))
     sandbox.stub(Annotation.prototype, 'save').value(() => Promise.resolve({}))
-    sandbox.stub(Application, 'getById').value(() => Promise.resolve({applicationName: 'APPLICATION_REFERENCE'}))
+    sandbox.stub(Application, 'getById').value(() => Promise.resolve({applicationNumber: 'APPLICATION_REFERENCE'}))
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)

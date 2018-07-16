@@ -16,7 +16,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
     const bacsPayment = await Payment.getBacsPayment(context, applicationLineId)
     const cardPayment = await Payment.getCardPayment(context, applicationLineId)
 
-    pageContext.applicationName = application.applicationName
+    pageContext.applicationNumber = application.applicationNumber
     if (contact && contact.email) {
       pageContext.contactEmail = contact.email
     } else {
@@ -26,7 +26,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
 
     if (bacsPayment) {
       pageContext.bacs = {
-        paymentReference: `WP-${application.applicationName}`,
+        paymentReference: `WP-${application.applicationNumber}`,
         amount: bacsPayment.value.toLocaleString(),
         sortCode: Constants.BankAccountDetails.SORT_CODE,
         accountNumber: Constants.BankAccountDetails.ACCOUNT_NUMBER,

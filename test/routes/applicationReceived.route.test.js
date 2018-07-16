@@ -30,7 +30,7 @@ const routePath = `/done/${fakeSlug}`
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID',
-    applicationName: 'APPLICATION_NAME',
+    applicationNumber: 'APPLICATION_NUMBER',
     paymentReceived: 1
   }
 
@@ -51,7 +51,7 @@ lab.beforeEach(() => {
   }
 
   fakeBacs = {
-    paymentReference: `WP-${fakeApplication.applicationName}`,
+    paymentReference: `WP-${fakeApplication.applicationNumber}`,
     amount: '1,000.99',
     sortCode: '60-70-80',
     accountNumber: '1001 4411',
@@ -103,7 +103,7 @@ lab.experiment('ApplicationReceived page tests:', () => {
 
     const checkCommonElements = async (doc, heading = 'Application received') => {
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(heading)
-      Code.expect(doc.getElementById('application-name').firstChild.nodeValue).to.equal(fakeApplication.applicationName)
+      Code.expect(doc.getElementById('application-name').firstChild.nodeValue).to.equal(fakeApplication.applicationNumber)
 
       return doc
     }

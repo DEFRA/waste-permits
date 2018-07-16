@@ -57,7 +57,7 @@ Object.entries(routes).forEach(([companyType, {singleDirectorPageHeading, multip
 
       fakeApplication = {
         id: 'APPLICATION_ID',
-        applicationName: 'APPLICATION_NAME'
+        applicationNumber: 'APPLICATION_NUMBER'
       }
 
       fakeAccountData = {
