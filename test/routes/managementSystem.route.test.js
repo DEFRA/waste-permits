@@ -25,7 +25,7 @@ const getRequest = {
 
 const fakeApplication = {
   id: 'APPLICATION_ID',
-  applicationName: 'APPLICATION_NAME'
+  applicationNumber: 'APPLICATION_NUMBER'
 }
 
 lab.beforeEach(() => {

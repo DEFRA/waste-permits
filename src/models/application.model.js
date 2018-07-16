@@ -19,7 +19,6 @@ class Application extends BaseModel {
       {field: 'agentId', dynamics: '_defra_agentid_value', bind: {id: 'defra_agentid_account', relationship: 'defra_account_defra_application_agentid', entity: 'accounts'}},
       {field: 'applicantType', dynamics: 'defra_applicant_type'},
       {field: 'organisationType', dynamics: 'defra_applicant_organisation_type'},
-      {field: 'applicationName', dynamics: 'defra_name', readOnly: true},
       {field: 'applicationNumber', dynamics: 'defra_applicationnumber', readOnly: true},
       {field: 'bankruptcy', dynamics: 'defra_bankruptcydeclaration'},
       {field: 'bankruptcyDetails', dynamics: 'defra_bankruptcydeclarationdetails', length: {max: 2000}},

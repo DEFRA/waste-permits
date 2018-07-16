@@ -40,7 +40,7 @@ let postRequest
 
 const fakeApplication = {
   id: 'APPLICATION_ID',
-  applicationName: 'APPLICATION_NAME'
+  applicationNumber: 'APPLICATION_NUMBER'
 }
 
 const fakeAddress1 = {

@@ -27,7 +27,7 @@ module.exports = class UploadService {
     const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, application.id, subject)
 
     // create temporary uploads directory
-    const uploadPath = path.resolve(UPLOAD_PATH, UploadService._buildUploadDir(application.applicationName))
+    const uploadPath = path.resolve(UPLOAD_PATH, UploadService._buildUploadDir(application.applicationNumber))
     UploadService._createTempUploadDirectory(uploadPath)
 
     const fileData = UploadService._getFileData(file, uploadPath)
@@ -126,19 +126,19 @@ module.exports = class UploadService {
     const uploadPromises = fileData.map(async ({file, filename, path}) => {
       const annotation = new Annotation({subject, filename, applicationId: application.id})
       await annotation.save(authToken)
-      UploadService._uploadFileDataToDynamics(authToken, file, path, application.applicationName, annotation)
+      UploadService._uploadFileDataToDynamics(authToken, file, path, application.applicationNumber, annotation)
       return Promise.resolve(annotation)
     })
     await Promise.all(uploadPromises)
   }
 
-  static _uploadFileDataToDynamics (authToken, file, path, applicationName, {applicationId, subject, filename}) {
+  static _uploadFileDataToDynamics (authToken, file, path, applicationNumber, {applicationId, subject, filename}) {
     setImmediate(async () => {
       try {
         const annotation = await Annotation.getByApplicationIdSubjectAndFilename(authToken, applicationId, subject, filename)
         annotation.documentBody = await UploadService._streamFile(file, filename, path)
         await annotation.save(authToken)
-        LoggingService.logInfo(`Successfully uploaded ${filename} in dynamics for ${applicationName}`)
+        LoggingService.logInfo(`Successfully uploaded ${filename} in dynamics for ${applicationNumber}`)
       } catch (err) {
         LoggingService.logError(err.message)
       }
