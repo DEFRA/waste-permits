@@ -66,7 +66,7 @@
     "handlebars": "^4.0.11",
     "hapi": "^17.5.1",
     "hapi-alive": "^2.0.0",
-    "hapi-dev-errors": "^2.2.0",
+    "hapi-dev-errors": "^3.0.0",
     "hapi-robots": "^3.0.0",
     "hapi-router": "^4.0.0",
     "hapi-sanitize-payload": "^2.0.0",
