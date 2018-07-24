@@ -13,9 +13,9 @@ class Address extends BaseModel {
     return [
       {field: 'id', dynamics: 'defra_addressid'},
       {field: 'buildingNameOrNumber', dynamics: 'defra_premises', length: {max: 50}},
-      {field: 'addressLine1', dynamics: 'defra_street', length: {max: 100}},
-      {field: 'addressLine2', dynamics: 'defra_locality', length: {max: 100}},
-      {field: 'townOrCity', dynamics: 'defra_towntext', length: {max: 70}},
+      {field: 'addressLine1', dynamics: 'defra_street', length: {max: 80}},
+      {field: 'addressLine2', dynamics: 'defra_locality', length: {max: 80}},
+      {field: 'townOrCity', dynamics: 'defra_towntext', length: {max: 30}},
       {field: 'postcode', dynamics: 'defra_postcode', length: {max: 8}},
       {field: 'uprn', dynamics: 'defra_uprn', encode: true, length: {max: 20}},
       {field: 'fromAddressLookup', dynamics: 'defra_fromaddresslookup'},
