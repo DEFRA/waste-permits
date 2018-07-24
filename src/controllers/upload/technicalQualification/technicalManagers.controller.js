@@ -10,9 +10,9 @@ module.exports = class TechnicalManagersController extends UploadController {
     return TECHNICAL_MANAGERS
   }
 
-  async getSpecificPageContext () {
+  async getSpecificPageContext (h, pageContext) {
     return {
-      fileTypesHidden: true
+      fileTypesHidden: !pageContext.annotations.length
     }
   }
 

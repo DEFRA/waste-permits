@@ -28,7 +28,7 @@ module.exports = class UploadController extends BaseController {
     pageContext.subject = this.subject
 
     if (this.getSpecificPageContext) {
-      Object.assign(pageContext, await this.getSpecificPageContext(h))
+      Object.assign(pageContext, await this.getSpecificPageContext(h, pageContext))
     }
 
     return this.showView({request, h, pageContext})
