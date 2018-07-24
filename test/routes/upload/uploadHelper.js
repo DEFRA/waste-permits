@@ -118,8 +118,8 @@ module.exports = class UploadTestHelper {
       lab.test('when there are annotations', async () => {
         Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const doc = await getDoc(options)
-        Code.expect(doc.getElementById('file-types')).to.not.exist()
-        Code.expect(doc.getElementById('max-size')).to.not.exist()
+        Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal(`${options.fileTypes.join(', ')} or ${lastFileType}`)
+        Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
         Code.expect(doc.getElementById('has-annotations')).to.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.not.exist()
         Code.expect(doc.getElementById(options.descriptionId)).to.not.exist()
