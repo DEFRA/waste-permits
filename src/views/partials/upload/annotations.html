@@ -4,7 +4,7 @@
   </h2>
   <dl class="govuk-check-your-answers cya-questions-short cya-questions-fileupload">
     {{#each annotations}}
-    <div>
+    <div id="file-{{@index}}">
       <dt class="cya-answer">
         {{this.filename}}
       </dt>
