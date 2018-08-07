@@ -50,13 +50,17 @@ module.exports = class LoggingService {
     }
   }
 
-  static async _log (level, message, request) {
+  static async _log (level, error, request) {
     if (Config.isTest) {
       return
     }
     if (level === ERROR) {
-      await LoggingService.airbrake.notify(message)
+      if (typeof error === 'object') {
+        await LoggingService.airbrake.notify(JSON.stringify(error))
+      } else {
+        await LoggingService.airbrake.notify(error)
+      }
     }
-    log(level, message, request)
+    log(level, error, request)
   }
 }
