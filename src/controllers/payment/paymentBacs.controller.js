@@ -1,6 +1,5 @@
 'use strict'
 
-const Constants = require('../../constants')
 const Dynamics = require('../../dynamics')
 const Routes = require('../../routes')
 const BaseController = require('../base.controller')
@@ -38,6 +37,6 @@ module.exports = class PaymentBacsController extends BaseController {
     payment.title = `${Dynamics.PaymentTitle.BACS_PAYMENT} ${application.applicationNumber}`
     await payment.save(context)
 
-    return this.redirect({request, h, redirectPath: Constants.APPLICATION_RECEIVED_URL})
+    return this.redirect({request, h, redirectPath: Routes.APPLICATION_RECEIVED.path})
   }
 }

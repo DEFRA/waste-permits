@@ -5,7 +5,7 @@ const BaseModel = require('./base.model')
 const ApplicationReturn = require('./applicationReturn.model')
 const LoggingService = require('../services/logging.service')
 
-const {SAVE_AND_RETURN_URL} = require('../constants')
+const {SAVE_AND_RETURN_RECOVER} = require('../routes')
 const {DIGITAL_SOURCE, PERMIT_HOLDER_TYPES, StatusCode, WASTE_REGIME} = require('../dynamics')
 
 class Application extends BaseModel {
@@ -93,14 +93,14 @@ class Application extends BaseModel {
   async sendSaveAndReturnEmail (context, origin) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
-      saveAndReturnUrl: `${origin}${SAVE_AND_RETURN_URL}`
+      saveAndReturnUrl: `${origin}${SAVE_AND_RETURN_RECOVER.path}`
     }
     try {
       // Call Dynamics save and return email action
       let action = `${this.constructor.entity}(${this.id})/Microsoft.Dynamics.CRM.defra_saveandreturnemail`
       await dynamicsDal.callAction(action, actionDataObject)
       const applicationReturn = await ApplicationReturn.getByApplicationId(context, this.id)
-      LoggingService.logDebug(`Save and Return Url for Application "${this.applicationNumber}": ${origin}${SAVE_AND_RETURN_URL}/${applicationReturn.slug}`)
+      LoggingService.logDebug(`Save and Return Url for Application "${this.applicationNumber}": ${origin}${SAVE_AND_RETURN_RECOVER.path}/${applicationReturn.slug}`)
     } catch (error) {
       LoggingService.logError(`Unable to call Dynamics Save and Return Email action: ${error}`)
       throw error

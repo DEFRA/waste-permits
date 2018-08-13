@@ -1,7 +1,6 @@
 'use strict'
 
 const config = require('../../config/config')
-const Constants = require('../../constants')
 const Dynamics = require('../../dynamics')
 const Routes = require('../../routes')
 const BaseController = require('../base.controller')
@@ -54,7 +53,7 @@ module.exports = class PaymentTypeController extends BaseController {
       switch (paymentType) {
         case CARD_PAYMENT:
           let origin = config.wastePermitsAppUrl || request.headers.origin
-          let returnUrl = `${origin}${Constants.PAYMENT_RESULT_URL}/${applicationReturn.slug}`
+          let returnUrl = `${origin}${Routes.PAYMENT_RESULT.path}/${applicationReturn.slug}`
           nextPath = `${Routes.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
           break
         case BACS_PAYMENT:

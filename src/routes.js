@@ -1,4 +1,3 @@
-const Constants = require('./constants')
 const {AccountRoleCodes} = require('./dynamics')
 
 const Routes = {
@@ -281,7 +280,8 @@ const Routes = {
     submittedRequired: true
   },
   CARD_PROBLEM: {
-    path: `${Constants.PAYMENT_CARD_PROBLEM_URL}/{slug?}`,
+    path: '/pay/card-problem',
+    params: ['slug?'],
     view: 'payment/cardProblem',
     pageHeading: 'Your card payment failed',
     controller: 'payment/paymentType',
@@ -291,7 +291,8 @@ const Routes = {
     submittedRequired: true
   },
   PAYMENT_RESULT: {
-    path: `${Constants.PAYMENT_RESULT_URL}/{slug?}`,
+    path: '/pay/result',
+    params: ['slug?'],
     pageHeading: 'Your card payment failed',
     controller: 'payment/paymentResult',
     types: 'GET, POST',
@@ -311,12 +312,14 @@ const Routes = {
   // ERRORS
   // ******
   ALREADY_SUBMITTED: {
-    path: `${Constants.ALREADY_SUBMITTED_URL}/{slug?}`,
+    path: '/errors/order/done-cant-go-back',
+    params: ['slug?'],
     view: 'error/alreadySubmitted',
     pageHeading: 'You have sent your application so you cannot go back and change it',
     controller: 'error/alreadySubmitted',
     types: 'GET',
-    cookieValidationRequired: false
+    cookieValidationRequired: false,
+    applicationRequired: false
   },
   COOKIES_DISABLED: {
     path: '/errors/cookies-off',
@@ -389,7 +392,8 @@ const Routes = {
   // OTHER
   // *****
   APPLICATION_RECEIVED: {
-    path: `${Constants.APPLICATION_RECEIVED_URL}/{slug?}`,
+    path: '/done',
+    params: ['slug?'],
     view: 'applicationReceived',
     pageHeading: 'Application received',
     pageHeadingAlternate: 'Application and card payment received',
@@ -555,7 +559,8 @@ const Routes = {
     types: 'GET, POST'
   },
   SAVE_AND_RETURN_RECOVER: {
-    path: `${Constants.SAVE_AND_RETURN_URL}/{slug}`,
+    path: '/r',
+    params: ['slug?'],
     view: 'saveAndReturn/recover',
     pageHeading: 'We found your application',
     controller: 'saveAndReturn/recover',

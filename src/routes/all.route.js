@@ -1,3 +1,4 @@
+const Merge = require('deepmerge')
 const Routes = require('../routes')
 
 const routes = []
@@ -5,10 +6,17 @@ const routes = []
 /** Using the Route constants, generate the routing configuration for each route including the instantiation of the controllers and validators if required **/
 
 Object.entries(Routes)
-  .forEach(([id, route]) => {
-    let {types, controller, validator, baseRoute = 'baseRoute', cookieValidationRequired, applicationRequired, paymentRequired, submittedRequired, validatorOptions = {}} = route
+  .forEach(([id, options]) => {
+    let {types, controller, validator, baseRoute = 'baseRoute', cookieValidationRequired, applicationRequired, paymentRequired, submittedRequired, validatorOptions = {}} = options
     if (controller) {
       try {
+        // Add parameters to the route path eg "/recover/application/{slug?}" where "slug?" is an item in the route params and "/recover/application" was the original path
+        const route = Merge({}, options)
+        if (route.params) {
+          route.params.forEach((param) => {
+            route.path += `/{${param}}`
+          })
+        }
         // Instantiate the validator (if required)
         if (validator && typeof validator === 'string') {
           const Validator = require(`../validators/${validator}.validator`)
