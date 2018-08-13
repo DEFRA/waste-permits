@@ -69,8 +69,7 @@ class Payment extends BaseModel {
     try {
       // Call the Dynamics 'create payment' action
       let action = `defra_create_payment_transaction`
-      const actionResult = await dynamicsDal.callAction(action, actionDataObject)
-      return actionResult ? actionResult.PaymentNextUrlHref : undefined
+      return await dynamicsDal.callAction(action, actionDataObject)
     } catch (error) {
       LoggingService.logError(`Unable to call Dynamics card payment action: ${error}`)
       throw error
