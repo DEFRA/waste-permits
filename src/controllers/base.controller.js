@@ -86,8 +86,8 @@ module.exports = class BaseController {
           // The application needs to be paid for
           return NOT_PAID.path
         }
-        if (this.route !== ALREADY_SUBMITTED) {
-          return `${Constants.ALREADY_SUBMITTED_URL}${slug ? '/' + slug : ''}`
+        if (this.route.path !== ALREADY_SUBMITTED.path) {
+          return `${ALREADY_SUBMITTED.path}${slug ? '/' + slug : ''}`
         }
       }
     }
