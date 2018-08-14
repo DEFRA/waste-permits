@@ -8,7 +8,7 @@ const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class PaymentBacsController extends BaseController {
   async doGet (request, h) {
-    const pageContext = this.createPageContext()
+    const pageContext = this.createPageContext(request)
     const context = await RecoveryService.createApplicationContext(h, {application: true})
     const {applicationLineId, application} = context
 

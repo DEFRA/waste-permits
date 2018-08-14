@@ -9,7 +9,7 @@ const {TRADING_NAME_USAGE} = require('../dynamics')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const {application, account} = await RecoveryService.createApplicationContext(h, {application: true, account: true})
 
     if (!application || !account) {

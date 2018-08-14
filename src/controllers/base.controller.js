@@ -44,13 +44,13 @@ module.exports = class BaseController {
     this.applicationRequired = applicationRequired
   }
 
-  createPageContext (errors, validator) {
+  createPageContext (request, errors, validator) {
     validator = validator || this.validator
     const pageContext = {
       skipLinkMessage: Constants.SKIP_LINK_MESSAGE,
       pageTitle: Constants.buildPageTitle(this.route.pageHeading),
       pageHeading: this.route.pageHeading,
-      formAction: this.path
+      formAction: request.path
     }
     pageContext.encodedPageTitle = encodeURI(pageContext.pageTitle)
 

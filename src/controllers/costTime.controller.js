@@ -8,7 +8,7 @@ const RecoveryService = require('../services/recovery.service')
 
 module.exports = class CostTimeController extends BaseController {
   async doGet (request, h) {
-    const pageContext = this.createPageContext()
+    const pageContext = this.createPageContext(request)
     const context = await RecoveryService.createApplicationContext(h, {applicationLine: true, standardRule: true})
     const {applicationLine = {}, standardRule = {}} = context
 

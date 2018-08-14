@@ -7,7 +7,7 @@ const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class EmailSentController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h, {application: true})
     const {applicationId, applicationLineId, application} = context
 

@@ -62,7 +62,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
   }
 
   async doGet (request, h) {
-    const pageContext = this.createPageContext()
+    const pageContext = this.createPageContext(request)
     const context = request.app.data
     await RecoveryService.createApplicationContext(h, {application: true})
     const {applicationId, applicationLineId} = context

@@ -11,7 +11,7 @@ const {PERMIT_HOLDER_CONTACT_DETAILS, PERMIT_HOLDER_TRADING_NAME} = require('../
 
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
     const { application, individualPermitHolder = new Contact() } = context
 

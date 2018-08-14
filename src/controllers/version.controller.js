@@ -10,7 +10,7 @@ const DynamicsSolution = require('../models/dynamicsSolution.model')
 
 module.exports = class VersionController extends BaseController {
   async doGet (request, h) {
-    const pageContext = this.createPageContext()
+    const pageContext = this.createPageContext(request)
 
     let context = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
 

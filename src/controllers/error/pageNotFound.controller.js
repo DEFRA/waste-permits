@@ -7,7 +7,7 @@ const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class PageNotFoundController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
 
     const {application, applicationLine} = await RecoveryService.createApplicationContext(h, {application: true, applicationLine: true})
 

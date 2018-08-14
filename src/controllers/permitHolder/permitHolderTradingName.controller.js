@@ -8,7 +8,7 @@ const {PERMIT_HOLDER_CONTACT_DETAILS} = require('../../routes')
 
 module.exports = class PermitHolderContactTradingNameController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const {application} = await RecoveryService.createApplicationContext(h, {application: true})
 
     if (request.payload) {

@@ -52,7 +52,7 @@ module.exports = class CompanyStatusController extends BaseController {
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({
       companyStatus: companyStatus
     })
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
 
     pageContext.companyNumber = account.companyNumber
     pageContext.companyName = company.name

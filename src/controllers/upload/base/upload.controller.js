@@ -11,7 +11,7 @@ const Annotation = require('../../../models/annotation.model')
 
 module.exports = class UploadController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h)
     const {applicationId} = context
 

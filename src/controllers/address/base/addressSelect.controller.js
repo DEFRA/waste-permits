@@ -7,7 +7,7 @@ const Address = require('../../../models/address.model')
 
 module.exports = class AddressSelectController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h)
     const {applicationId, applicationLineId} = context
     let addresses, address

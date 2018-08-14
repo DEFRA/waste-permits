@@ -66,7 +66,7 @@ module.exports = class ApplyOfflineController extends BaseController {
     const chosenOption = ApplyOfflineController.getChosenOption(offlineCategory, standardRule, permitHolderType)
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({chosenOption})
 
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
 
     pageContext.changeSelectionLink = ApplyOfflineController.getChangeSelectionRoute(offlineCategory, standardRule).path
 

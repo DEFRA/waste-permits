@@ -17,7 +17,7 @@ module.exports = class PaymentTypeController extends BaseController {
     }
 
     this.path = this.path.replace('{slug?}', applicationReturn ? applicationReturn.slug : '')
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
 
     const {status} = request.query || {}
     if (status === 'error') {

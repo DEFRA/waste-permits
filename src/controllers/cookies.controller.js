@@ -67,7 +67,7 @@ const sections = [
 
 module.exports = class CookiesController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     pageContext.sections = sections
     return this.showView({request, h, pageContext})
   }

@@ -12,7 +12,7 @@ const ApplicationLine = require('../models/applicationLine.model')
 
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h)
 
     pageContext.formValues = request.payload
