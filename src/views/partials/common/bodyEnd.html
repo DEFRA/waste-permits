@@ -1,0 +1,11 @@
+<script>
+  // Prevent multiple submissions of a form if the submit button is clicked multiple times.
+  var submitted = false;
+  $('form').on('submit', function() {
+    if (submitted) {
+      return false
+    } else {
+      submitted = true;
+    }
+  })
+</script>
