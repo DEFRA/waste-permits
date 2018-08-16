@@ -161,12 +161,14 @@ lab.experiment('Payment Model tests:', () => {
       }
     }
 
+    const actionResult = {PaymentNextUrlHref: returnUrl}
+
     sandbox.stub(DynamicsDalService.prototype, 'callAction').callsFake(async (action, actionDataObject) => {
       Code.expect(action).to.equal('defra_create_payment_transaction')
       Code.expect(actionDataObject).to.equal(expectedActionDataObject)
-      return {PaymentNextUrlHref: returnUrl}
+      return actionResult
     })
-    Code.expect(await testPayment.makeCardPayment(context, description, returnUrl)).to.equal(returnUrl)
+    Code.expect(await testPayment.makeCardPayment(context, description, returnUrl)).to.equal(actionResult)
   })
 
   lab.test('save() method saves a new Payment object', async () => {
