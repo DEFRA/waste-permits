@@ -1,0 +1,12 @@
+<script>
+  // Prevent multiple submissions of a form if the submit button is clicked multiple times.
+  // ToDo: Temporarily targets only the permit select form.  Needs the selector to be changed to just 'form' to work for all forms on all pages.
+  var submitted = false;
+  $('#permit-select-form').on('submit', function() {
+    if (submitted) {
+      return false
+    } else {
+      submitted = true;
+    }
+  })
+</script>
