@@ -4,23 +4,16 @@ const moment = require('moment')
 const config = require('../config/config')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const CookieService = require('../services/cookie.service')
+const RecoveryService = require('../services/recovery.service')
 
 const DynamicsSolution = require('../models/dynamicsSolution.model')
 
 module.exports = class VersionController extends BaseController {
   async doGet (request, h) {
+    const recoveredApplication = await RecoveryService.createApplicationContext(h, {application: true, applicationReturn: true})
     const pageContext = this.createPageContext(request)
 
-    let context = CookieService.get(request, Constants.COOKIE_KEY.AUTH_TOKEN)
-
-    // If we didn't get an Auth token from the cookie then create a new one
-    if (!context) {
-      const cookie = await CookieService.generateCookie(h)
-      context = cookie.context
-    }
-
-    pageContext.dynamicsSolution = await DynamicsSolution.get(context)
+    pageContext.dynamicsSolution = await DynamicsSolution.get(recoveredApplication)
 
     pageContext.applicationVersion = Constants.getVersion()
     pageContext.githubRef = config.gitSha
