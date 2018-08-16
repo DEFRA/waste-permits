@@ -147,7 +147,7 @@ const Dynamics = {
       DESCRIPTION: 'plan assessed but the plan has changed'
     },
     NOT_ASSESSED: {
-      TYPE: 910400003,
+      TYPE: 910400002,
       DESCRIPTION: 'plan not assessed before'
     }
   },
