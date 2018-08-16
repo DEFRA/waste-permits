@@ -8,7 +8,7 @@ const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_
 
 module.exports = class TechnicalQualificationController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const {application} = await RecoveryService.createApplicationContext(h, {application: true})
 
     if (request.payload) {

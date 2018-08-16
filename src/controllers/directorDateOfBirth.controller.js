@@ -37,7 +37,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     validator.setErrorMessages(directors)
 
-    const pageContext = this.createPageContext(errors, validator)
+    const pageContext = this.createPageContext(request, errors, validator)
     pageContext.directors = directors
     pageContext.companies = companies
 

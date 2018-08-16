@@ -10,7 +10,7 @@ module.exports = class AddressManualController extends BaseController {
     if (addressLookupFailed) {
       errors = this.setCustomError('custom.address.lookup.failed', 'building-name-or-number', {supressField: true})
     }
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     pageContext.errorSummaryTitle = addressLookupFailed ? 'Our address finder is not working' : ''
     const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 

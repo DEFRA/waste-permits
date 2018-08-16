@@ -9,7 +9,7 @@ const RecoveryService = require('../services/recovery.service')
 
 module.exports = class CompanyTypeController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const {account} = await RecoveryService.createApplicationContext(h, {account: true})
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)

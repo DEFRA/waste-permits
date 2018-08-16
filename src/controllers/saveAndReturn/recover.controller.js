@@ -14,7 +14,8 @@ module.exports = class RecoverController extends BaseController {
     const applicationNumber = application.applicationNumber
     const {id: standardRuleId, standardRuleTypeId, code, permitName} = standardRule || {}
     const slug = applicationReturn.slug
-    const pageContext = this.createPageContext()
+    const pageContext = this.createPageContext(request)
+    pageContext.formAction = request.path
     Object.assign(pageContext, {slug, applicationNumber, standardRuleId, standardRuleTypeId, code, permitName})
     return this.showView({request, h, pageContext})
   }

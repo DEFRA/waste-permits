@@ -6,7 +6,7 @@ const RecoveryService = require('../services/recovery.service')
 
 module.exports = class WasteRecoveryPlanApprovalController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const {application} = await RecoveryService.createApplicationContext(h, {application: true})
 
     pageContext.formValues = request.payload || {}

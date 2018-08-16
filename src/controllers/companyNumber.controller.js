@@ -7,7 +7,7 @@ const RecoveryService = require('../services/recovery.service')
 
 module.exports = class CompanyNumberController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const {account} = await RecoveryService.createApplicationContext(h, {account: true})
 
     if (request.payload) {

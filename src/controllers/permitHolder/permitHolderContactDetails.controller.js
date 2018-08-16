@@ -9,7 +9,7 @@ const AddressDetail = require('../../models/addressDetail.model')
 
 module.exports = class PermitHolderContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
 
     if (request.payload) {
       pageContext.formValues = request.payload

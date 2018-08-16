@@ -9,7 +9,7 @@ const Application = require('../../models/application.model')
 
 module.exports = class CheckYourEmailController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
 
     pageContext.formValues = request.payload || {}
     pageContext.email = CookieService.get(request, Constants.COOKIE_KEY.SAVE_AND_RETURN_EMAIL)

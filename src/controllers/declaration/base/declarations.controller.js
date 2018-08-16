@@ -7,7 +7,7 @@ const {PERMIT_HOLDER_TYPES} = require('../../../dynamics')
 
 module.exports = class DeclarationsController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const {application, permitHolderType} = await RecoveryService.createApplicationContext(h, {application: true})
 
     switch (permitHolderType) {

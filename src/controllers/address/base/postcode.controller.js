@@ -7,7 +7,7 @@ const Address = require('../../../models/address.model')
 
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
     const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {

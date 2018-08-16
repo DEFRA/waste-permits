@@ -12,7 +12,7 @@ const {DRAINAGE_TYPE_FAIL, TASK_LIST} = Routes
 module.exports = class drainageTypeController extends BaseController {
   async doGet (request, h, errors) {
     const {application} = await RecoveryService.createApplicationContext(h, {application: true})
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
 
     if (request.payload) {
       pageContext.formValues = request.payload

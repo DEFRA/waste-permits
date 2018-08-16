@@ -6,7 +6,7 @@ const BaseController = require('../base.controller')
 
 module.exports = class TimeoutController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(errors)
+    const pageContext = this.createPageContext(request, errors)
 
     pageContext.startAgainLink = Routes.START_OR_OPEN_SAVED.path
     pageContext.cookieTimeout = config.cookieTimeout / (1000 * 60 * 60)
