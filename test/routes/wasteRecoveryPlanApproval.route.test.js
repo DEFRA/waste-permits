@@ -21,7 +21,7 @@ const errorPath = '/errors/technical-problem'
 
 const ALREADY_ASSESSED = 910400000
 const PLAN_HAS_CHANGED = 910400001
-const NOT_ASSESSED = 910400003
+const NOT_ASSESSED = 910400002
 
 let getRequest
 let fakeApplication
