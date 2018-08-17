@@ -41,6 +41,13 @@ module.exports = class BaseModel {
     return []
   }
 
+  static get relationships () {
+    return {
+      // The following example links the Model to the Account model via the dynamics relationship defra_contact_account:
+      // Account: 'defra_contact_account'
+    }
+  }
+
   static setDefinitions () {
     // This method adds properties to the model class itself to allow a reference to each field definition in the mapping.
     // For example if the mapping for "class Model" contains a mapping definition of [{field: 'blah', dynamics: 'defra_blah'}]
@@ -323,15 +330,16 @@ module.exports = class BaseModel {
     }
   }
 
-  async listChildren (context = {}, filterData = {}, orderByFields = '') {
-    const { entity, id: { relationship } } = this.constructor
+  async listLinked (context = {}, linked = this, filterData = {}, orderByFields = '') {
+    const { entity, relationships } = this.constructor
+    const { name: linkedModel } = linked.constructor
     const dynamicsDal = new DynamicsDalService(context.authToken)
-    const query = `${entity}(${this.id})/${relationship}?${this.constructor._buildQuerySelect(filterData, orderByFields)}`
+    const query = `${entity}(${this.id})/${relationships[linkedModel]}?${linked.constructor._buildQuerySelect(filterData, orderByFields)}`
     try {
       const response = await dynamicsDal.search(query)
-      return response.value.map((result) => this.constructor.dynamicsToModel(result))
+      return response.value.map((result) => linked.constructor.dynamicsToModel(result))
     } catch (error) {
-      LoggingService.logError(`Unable to list ${this.name} by ${JSON.stringify(filterData)}: ${error}`)
+      LoggingService.logError(`Unable to list linked ${linked.name} by ${JSON.stringify(filterData)}: ${error}`)
       throw error
     }
   }
@@ -409,7 +417,7 @@ module.exports = class BaseModel {
     }
   }
 
-  async delete (context = {}, id) {
+  async delete (context = {}, id = this.id) {
     const { entity, readOnly } = this.constructor
     if (readOnly) {
       const errorMessage = `Unable to delete ${entity}: Read only!`
@@ -424,5 +432,24 @@ module.exports = class BaseModel {
       LoggingService.logError(`Unable to delete ${entity} with id ${id}: ${error}`)
       throw error
     }
+  }
+
+  async link (context = {}, linked) {
+    const { entity, relationships } = this.constructor
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+    const { entity: linkedEntity, name: linkedModel } = linked.constructor
+    const association = {
+      '@odata.id': `${dynamicsDal.dynamicsPath}${linkedEntity}(${linked.id})`
+    }
+    const query = `${entity}(${this.id})/${relationships[linkedModel]}/$ref`
+    return dynamicsDal.link(query, association)
+  }
+
+  async unLink (context = {}, linked) {
+    const { entity, relationships } = this.constructor
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+    const { name: linkedModel } = linked.constructor
+    const query = `${entity}(${this.id})/${relationships[linkedModel]}(${linked.id})/$ref`
+    return dynamicsDal.delete(query)
   }
 }

@@ -62,6 +62,10 @@ class Application extends BaseModel {
     return this.applicantType === PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId || this.organisationType === PERMIT_HOLDER_TYPES.SOLE_TRADER.dynamicsOrganisationTypeId
   }
 
+  get isPartnership () {
+    return this.organisationType === PERMIT_HOLDER_TYPES.PARTNERSHIP.dynamicsOrganisationTypeId
+  }
+
   individualPermitHolderId () {
     return this.isIndividual ? this.permitHolderIndividualId : undefined
   }

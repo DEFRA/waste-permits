@@ -39,7 +39,9 @@ const fakeApplicationContact = {
   directorDob: `${year}-${month}-${day}`
 }
 const fakeContact = {
-  id: 'CONTACT_ID'
+  id: 'CONTACT_ID',
+  firstName: 'FIRSTNAME',
+  lastName: 'LASTNAME'
 }
 const fakeCompanies = [new Account(fakeAccount)]
 const fakeCompanySecretary = {
@@ -59,6 +61,11 @@ const fakeRegisteredComapanyAddressDetails = {
 }
 const fakeDesignatedMemberDetails = {
   id: 'DESIGNATED_MEMBER_ID'
+}
+const fakePartnerDetails = {
+  id: 'PARTNER_DETAILS_ID',
+  email: 'EMAIL',
+  telephone: 'TELEPHONE'
 }
 const fakeBillingInvoicing = {
   id: 'BILLING_INVOICING_ID'
@@ -96,7 +103,7 @@ lab.beforeEach(() => {
   // Stub the asynchronous model methods
   sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
   sandbox.stub(Account, 'getByApplicationId').value(() => new Account(fakeAccount))
-  sandbox.stub(Account.prototype, 'listChildren').value(() => [new Account(fakeAccount)])
+  sandbox.stub(Account.prototype, 'listLinked').value(() => [new Account(fakeAccount)])
   sandbox.stub(AddressDetail, 'getCompanyRegisteredDetails').value(() => new AddressDetail(fakeRegisteredComapanyAddressDetails))
   sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
   sandbox.stub(AddressDetail, 'getCompanySecretaryDetails').value(() => new AddressDetail(fakeCompanySecretary))
@@ -104,9 +111,11 @@ lab.beforeEach(() => {
   sandbox.stub(AddressDetail, 'getBillingInvoicingDetails').value(() => new AddressDetail(fakeBillingInvoicing))
   sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeIndividualPermitHolderDetails))
   sandbox.stub(AddressDetail, 'getDesignatedMemberDetails').value(() => new AddressDetail(fakeDesignatedMemberDetails))
+  sandbox.stub(AddressDetail, 'getPartnerDetails').value(() => new AddressDetail(fakePartnerDetails))
   sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [new Annotation(fakeAnnotation)])
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(ApplicationContact, 'get').value(() => new ApplicationContact(fakeApplicationContact))
+  sandbox.stub(ApplicationContact, 'listByApplicationId').value(() => [new ApplicationContact(fakeApplicationContact)])
   sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
   sandbox.stub(Contact, 'getIndividualPermitHolderByApplicationId').value(() => new Contact(fakeIndividualPermitHolder))
   sandbox.stub(Contact, 'list').value(() => [new Contact(fakeDirector)])
@@ -207,6 +216,19 @@ lab.experiment('Base Check tests:', () => {
     const members = await check.getMembers()
     Code.expect(members).to.equal([new ApplicationContact(Merge({ dob: { day } }, fakeDirector))])
     Code.expect(context.members).to.equal(await check.getMembers())
+  })
+
+  lab.test('getPartners works correctly', async () => {
+    const check = new BaseCheck(context)
+    const partners = await check.getPartners()
+    Code.expect(partners).to.equal([ {
+      name: `${fakeContact.firstName} ${fakeContact.lastName}`,
+      email: fakePartnerDetails.email,
+      telephone: fakePartnerDetails.telephone,
+      dob: '01/02/1998',
+      address: fakeAddress
+    }])
+    Code.expect(context.partners).to.equal(await check.getPartners())
   })
 
   lab.test('getPermitHolderType works correctly', async () => {

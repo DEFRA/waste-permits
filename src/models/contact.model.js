@@ -21,6 +21,12 @@ class Contact extends BaseModel {
     ]
   }
 
+  static get relationships () {
+    return {
+      Account: 'defra_contact_account'
+    }
+  }
+
   static async list (context, permitHolderOrganisationId = undefined, contactType) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
 

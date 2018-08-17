@@ -146,7 +146,7 @@ lab.experiment('Permit holder postcode page tests:', () => {
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the postcode page correctly when there is no saved postcode`, async () => {
       PermitHolderDetails.getAddress = () => undefined
-      checkPageElements(getRequest, '')
+      await checkPageElements(getRequest, '')
     })
 
     lab.test('GET ' + routePath + ' returns the Postcode page correctly when there is an existing postcode', async () => {

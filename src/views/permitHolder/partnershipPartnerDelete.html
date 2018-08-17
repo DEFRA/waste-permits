@@ -1,0 +1,19 @@
+<main id="content" tabindex="-1" role="main">
+
+    {{> common/betaBanner }} {{> common/backLink }}
+  
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {{> common/errorSummary }} {{> common/pageHeading pageHeading }}
+        <form method="POST" action="{{formAction}}" novalidate="novalidate">
+          {{> common/csrfToken token=DefraCsrfToken}}
+
+          {{#> common/submitButton text='Delete this partner'}}
+          <a id="skip-delete-partner-link" href="{{skipDeletePartnerLink}}">Do not delete</a>
+          {{/ common/submitButton}}
+
+        </form>
+      </div>
+    </div>
+  
+  </main>

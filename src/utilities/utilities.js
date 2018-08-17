@@ -77,6 +77,17 @@ module.exports = class Utilities {
     return `${inputDate.year}-${inputDate.month}-${inputDate.day}`
   }
 
+  // Formats the date object (e.g. { day: 31, month: 1, year: 1970 }) into DD/MM/YYYY format (e.g. 31/01/1970) for display
+  static formatDate (inputDate) {
+    let returnValue
+    if (inputDate && inputDate.day && inputDate.month && inputDate.year) {
+      returnValue = moment(`${inputDate.year}-${Utilities._leftPad(inputDate.month, 2, 0)}-${Utilities._leftPad(inputDate.day, 2, 0)}`).format('DD/MM/YYYY')
+    } else {
+      returnValue = 'Unknown date'
+    }
+    return returnValue
+  }
+
   // Formats the date object (e.g. { day: 31, month: 1, year: 1970 }) into MMMM YYYY format (e.g. January 1970) for display
   static formatDateForDisplay (inputDate) {
     let returnValue

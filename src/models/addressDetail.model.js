@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseModel = require('./base.model')
-const { COMPANY_SECRETARY_EMAIL, COMPANY_REGISTERED_ADDRESS, DESIGNATED_MEMBER_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER } = require('../dynamics').AddressTypes
+const { COMPANY_SECRETARY_EMAIL, COMPANY_REGISTERED_ADDRESS, DESIGNATED_MEMBER_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER, PARTNER_CONTACT_DETAILS } = require('../dynamics').AddressTypes
 
 class AddressDetail extends BaseModel {
   static get entity () {
@@ -15,7 +15,7 @@ class AddressDetail extends BaseModel {
       { field: 'addressId', dynamics: '_defra_address_value', bind: { id: 'defra_Address', relationship: 'defra_address_defra_addressdetails', entity: 'defra_addresses' } },
       { field: 'addressName', dynamics: 'defra_name' },
       { field: 'dateOfBirth', dynamics: 'defra_dob' },
-      { field: 'customerId', dynamics: '_defra_customer_value', readOnly: true },
+      { field: 'customerId', dynamics: '_defra_customer_value', bind: { id: 'defra_Customer_contact', relationship: 'defra_contact_defra_addressdetails', entity: 'contacts' } },
       { field: 'email', dynamics: 'emailaddress', length: { max: 100 } },
       { field: 'telephone', dynamics: 'defra_phone', length: { min: 10, max: 30, maxDigits: 17 } }, // Max digits is the maximum length when spaces have been stripped out
       { field: 'type', dynamics: 'defra_addresstype' }
@@ -32,7 +32,7 @@ class AddressDetail extends BaseModel {
   }
 
   static async getDetails (context, applicationId, type) {
-    return (await AddressDetail.getByApplicationIdAndType(context, applicationId, type.TYPE)) || new AddressDetail({ applicationId, addressDetail: type.NAME, type: type.TYPE })
+    return (await AddressDetail.getByApplicationIdAndType(context, applicationId, type.TYPE)) || new AddressDetail({ applicationId, addressName: type.NAME, type: type.TYPE })
   }
 
   static async getDesignatedMemberDetails (context, applicationId) {
@@ -57,6 +57,11 @@ class AddressDetail extends BaseModel {
 
   static async getIndividualPermitHolderDetails (context, applicationId) {
     return this.getDetails(context, applicationId, INDIVIDUAL_PERMIT_HOLDER)
+  }
+
+  static async getPartnerDetails (context, applicationId, customerId) {
+    const { NAME: addressName, TYPE: type } = PARTNER_CONTACT_DETAILS
+    return (await super.getBy(context, { applicationId, customerId, type })) || new AddressDetail({ applicationId, customerId, addressName, type })
   }
 }
 

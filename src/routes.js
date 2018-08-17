@@ -21,6 +21,16 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
+  MANUAL_PARTNER: {
+    path: '/permit-holder/partners/address/address-manual',
+    params: ['partnerId'],
+    view: 'address/manualEntry',
+    pageHeading: 'What is the address for {{name}}?',
+    controller: 'address/permitHolder/addressManualPartner',
+    validator: 'address/addressManual',
+    nextRoute: 'PARTNERSHIP_PARTNER_LIST',
+    types: 'GET, POST'
+  },
   MANUAL_PERMIT_HOLDER: {
     path: '/permit-holder/address/address-manual',
     view: 'address/manualEntry',
@@ -49,6 +59,16 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
+  POSTCODE_PARTNER: {
+    path: '/permit-holder/partners/address/postcode',
+    params: ['partnerId'],
+    view: 'address/postcode',
+    pageHeading: 'What is the address for {{name}}?',
+    controller: 'address/permitHolder/postcodePartner',
+    validator: 'address/postcode',
+    nextRoute: 'PARTNERSHIP_PARTNER_LIST',
+    types: 'GET, POST'
+  },
   POSTCODE_PERMIT_HOLDER: {
     path: '/permit-holder/address/postcode',
     view: 'address/postcode',
@@ -74,6 +94,16 @@ const Routes = {
     controller: 'address/invoice/selectInvoice',
     validator: 'address/addressSelect',
     nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
+  SELECT_PARTNER: {
+    path: '/permit-holder/partners/address/select-address',
+    params: ['partnerId'],
+    view: 'address/selectAddress',
+    pageHeading: 'What is the address for {{name}}?',
+    controller: 'address/permitHolder/selectPartner',
+    validator: 'address/addressSelect',
+    nextRoute: 'PARTNERSHIP_PARTNER_LIST',
     types: 'GET, POST'
   },
   SELECT_PERMIT_HOLDER: {
@@ -260,6 +290,55 @@ const Routes = {
     pageHeading: 'Who will be the permit holder?',
     controller: 'permitHolder/permitHolderType',
     validator: 'permitHolder/permitHolderType',
+    types: 'GET, POST'
+  },
+  PARTNERSHIP_TRADING_NAME: {
+    path: '/permit-holder/partners/trading-name',
+    view: 'permitHolder/partnershipTradingName',
+    pageHeading: 'What name do you use for the partnership?',
+    controller: 'permitHolder/partnershipTradingName',
+    validator: 'permitHolder/partnershipTradingName',
+    nextRoute: 'PARTNERSHIP_PARTNER_LIST',
+    types: 'GET, POST'
+  },
+  PARTNERSHIP_NAME_AND_DATE_OF_BIRTH: {
+    path: '/permit-holder/partners/name',
+    params: ['partnerId'],
+    view: 'permitHolder/permitHolderNameAndDateOfBirth',
+    pageHeading: 'Add the first partner',
+    pageHeadingAdd: 'Add another partner',
+    pageHeadingEdit: 'Edit this partner',
+    controller: 'permitHolder/partnershipNameAndDateOfBirth',
+    validator: 'permitHolder/permitHolderNameAndDateOfBirth',
+    nextRoute: 'PARTNERSHIP_CONTACT_DETAILS',
+    types: 'GET, POST'
+  },
+  PARTNERSHIP_CONTACT_DETAILS: {
+    path: '/permit-holder/partners/details',
+    params: ['partnerId'],
+    view: 'permitHolder/permitHolderContactDetails',
+    pageHeading: 'What are the contact details for {{name}}?',
+    controller: 'permitHolder/partnershipContactDetails',
+    validator: 'permitHolder/permitHolderContactDetails',
+    nextRoute: 'PERMIT_HOLDER_CONTACT_DETAILS',
+    types: 'GET, POST'
+  },
+  PARTNERSHIP_PARTNER_LIST: {
+    path: '/permit-holder/partners/list',
+    params: ['addAnotherPartner?'],
+    view: 'permitHolder/partnershipPartnerList',
+    pageHeading: 'Business partners you have added to this application',
+    controller: 'permitHolder/partnershipPartnerList',
+    nextRoute: 'COMPANY_DECLARE_OFFENCES',
+    types: 'GET, POST'
+  },
+  PARTNERSHIP_DELETE_PARTNER: {
+    path: '/permit-holder/partners/delete',
+    params: ['partnerId'],
+    view: 'permitHolder/partnershipPartnerDelete',
+    pageHeading: 'Confirm you want to delete {{name}}',
+    controller: 'permitHolder/partnershipPartnerDelete',
+    nextRoute: 'PARTNERSHIP_PARTNER_LIST',
     types: 'GET, POST'
   },
 
