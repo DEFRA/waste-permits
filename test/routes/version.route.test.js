@@ -3,13 +3,13 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const DynamicsSolution = require('../../src/models/dynamicsSolution.model')
-const CookieService = require('../../src/services/cookie.service')
+const RecoveryService = require('../../src/services/recovery.service')
 
-let generateCookieStub
-let dynamicSolutionGetStub
+let sandbox
 
 const routePath = '/version'
 
@@ -31,24 +31,18 @@ const dynamicsVersionInfo = [{
   version: '7.8.9'
 }]
 
-const fakeCookie = {
-  applicationId: 'my_application_id',
-  authToken: 'my_auth_token'
-}
-
 lab.beforeEach(() => {
-  // Stub methods
-  generateCookieStub = CookieService.generateCookie
-  CookieService.generateCookie = () => fakeCookie
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
 
-  dynamicSolutionGetStub = DynamicsSolution.get
-  DynamicsSolution.get = () => dynamicsVersionInfo
+  // Stub methods
+  sandbox.stub(DynamicsSolution, 'get').value(() => dynamicsVersionInfo)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => {})
 })
 
 lab.afterEach(() => {
-  // Restore stubbed methods
-  this.generateCookie = generateCookieStub
-  DynamicsSolution.get = dynamicSolutionGetStub
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
 })
 
 lab.experiment('Version page tests:', () => {
