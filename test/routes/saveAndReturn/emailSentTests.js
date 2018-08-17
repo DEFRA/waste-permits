@@ -7,12 +7,15 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 const server = require('../../../server')
 
 const Application = require('../../../src/models/application.model')
+const ApplicationReturn = require('../../../src/models/applicationReturn.model')
 const SaveAndReturn = require('../../../src/models/taskList/saveAndReturn.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
+const Config = require('../../../src/config/featureConfig')
 const {COOKIE_RESULT} = require('../../../src/constants')
 
 let fakeApplication
+let fakeApplicationReturn
 let sandbox
 
 module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
@@ -20,6 +23,10 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
     fakeApplication = {
       id: 'APPLICATION_ID',
       saveAndReturnEmail: 'valid@email.com'
+    }
+
+    fakeApplicationReturn = {
+      slug: 'SLUG'
     }
 
     // Create a sinon sandbox to stub methods
@@ -31,8 +38,10 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
     sandbox.stub(Application.prototype, 'sendSaveAndReturnEmail').value(() => {})
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(Application.prototype, 'save').value(() => {})
+    sandbox.stub(ApplicationReturn, 'getByApplicationId').value(() => new ApplicationReturn(fakeApplicationReturn))
     sandbox.stub(SaveAndReturn, 'isComplete').value(() => false)
     sandbox.stub(SaveAndReturn, 'updateCompleteness').value(() => {})
+    sandbox.stub(Config, 'hasDisplayRecoveryLinkFeature').value(false)
   })
 
   lab.afterEach(() => {
@@ -77,6 +86,16 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
           SaveAndReturn.isComplete = () => true
           const doc = await GeneralTestHelper.getDoc(getRequest)
           await checkCommonElements(doc)
+          Code.expect(doc.getElementById('recovery-link')).to.not.exist()
+          Code.expect(doc.getElementById('got-email').getAttribute('checked')).to.equal('checked')
+        })
+
+        lab.test('when complete and display recovery link feature is true', async () => {
+          SaveAndReturn.isComplete = () => true
+          Config.hasDisplayRecoveryLinkFeature = true
+          const doc = await GeneralTestHelper.getDoc(getRequest)
+          await checkCommonElements(doc)
+          Code.expect(doc.getElementById('recovery-link').getAttribute('href')).to.include(`/r/${fakeApplicationReturn.slug}`)
           Code.expect(doc.getElementById('got-email').getAttribute('checked')).to.equal('checked')
         })
 
