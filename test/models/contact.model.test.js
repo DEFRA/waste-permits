@@ -37,7 +37,7 @@ lab.beforeEach(() => {
         emailaddress1: 'Amparo.Abbott49@example.com',
         defra_dateofbirthdaycompanieshouse: 1,
         defra_dobmonthcompanieshouse: 2,
-        defra_dobyearcompanieshouse: 1970
+        defra_dobyearcompanieshouse_text: '1970'
       },
       {
         '@odata.etag': 'W/"1155506"',
@@ -48,7 +48,7 @@ lab.beforeEach(() => {
         emailaddress1: 'Mike9@example.com',
         defra_dateofbirthdaycompanieshouse: 3,
         defra_dobmonthcompanieshouse: 4,
-        defra_dobyearcompanieshouse: 1970
+        defra_dobyearcompanieshouse_text: '1970'
       },
       {
         '@odata.etag': 'W/"1273787"',
@@ -59,7 +59,7 @@ lab.beforeEach(() => {
         emailaddress1: 'Danielle.Howell@example.com',
         defra_dateofbirthdaycompanieshouse: 5,
         defra_dobmonthcompanieshouse: 6,
-        defra_dobyearcompanieshouse: 1970
+        defra_dobyearcompanieshouse_text: '1970'
       }
     ]
   }
@@ -89,7 +89,7 @@ lab.experiment('Contact Model tests:', () => {
       emailaddress1: 'Amparo.Abbott49@example.com',
       defra_dateofbirthdaycompanieshouse: 1,
       defra_dobmonthcompanieshouse: 2,
-      defra_dobyearcompanieshouse: 1970
+      defra_dobyearcompanieshouse_text: '1970'
     }
     DynamicsDalService.prototype.search = () => {
       // Dynamics Contact objects
@@ -105,7 +105,7 @@ lab.experiment('Contact Model tests:', () => {
       email: dynamicsData.emailaddress1,
       dob: {
         month: dynamicsData.defra_dobmonthcompanieshouse,
-        year: dynamicsData.defra_dobyearcompanieshouse
+        year: dynamicsData.defra_dobyearcompanieshouse_text
       }
     })
     Code.expect(spy.callCount).to.equal(1)
