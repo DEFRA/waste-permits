@@ -31,7 +31,7 @@ const Dynamics = {
       NAME: 'Primary Contact Telephone Number'
     },
     DESIGNATED_MEMBER_EMAIL: {
-      TYPE: 910400004,
+      TYPE: 910400008,
       NAME: 'Designated Member Email Address'
     }
   },

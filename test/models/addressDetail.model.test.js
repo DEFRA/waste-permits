@@ -8,6 +8,7 @@ const INDIVIDUAL_PERMIT_HOLDER_TYPE = 910400002
 const BILLING_INVOICING_ADDRESS_TYPE = 910400004
 const COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE = 910400006
 const PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE = 910400007
+const DESIGNATED_MEMBER_EMAIL_ADDRESS_TYPE = 910400008
 
 const AddressDetail = require('../../src/models/addressDetail.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
@@ -130,6 +131,20 @@ lab.experiment('AddressDetail Model tests:', () => {
     const {applicationId} = fakeAddressDetailData
     const addressDetail = await AddressDetail.getBillingInvoicingDetails(context, applicationId)
     Code.expect(addressDetail.type).to.equal(BILLING_INVOICING_ADDRESS_TYPE)
+  })
+
+  lab.test(`getDesignatedMemberDetails() method calls getByApplicationIdAndType() method with type of ${DESIGNATED_MEMBER_EMAIL_ADDRESS_TYPE}`, async () => {
+    const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
+    const {applicationId} = fakeAddressDetailData
+    await AddressDetail.getDesignatedMemberDetails(context, applicationId)
+    Code.expect(spy.calledWith(context, applicationId, DESIGNATED_MEMBER_EMAIL_ADDRESS_TYPE)).to.equal(true)
+  })
+
+  lab.test(`getDesignatedMemberDetails() method creates a new AddressDetail with type of ${DESIGNATED_MEMBER_EMAIL_ADDRESS_TYPE}`, async () => {
+    sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
+    const {applicationId} = fakeAddressDetailData
+    const addressDetail = await AddressDetail.getDesignatedMemberDetails(context, applicationId)
+    Code.expect(addressDetail.type).to.equal(DESIGNATED_MEMBER_EMAIL_ADDRESS_TYPE)
   })
 
   lab.test(`getIndividualPermitHolderDetails() method calls getByApplicationIdAndType() method with type of ${INDIVIDUAL_PERMIT_HOLDER_TYPE}`, async () => {
