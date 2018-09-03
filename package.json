@@ -41,7 +41,7 @@
     "gulp-standard": "^11.0.0",
     "gulp-uglify": "^3.0.1",
     "gulp-watch": "^5.0.1",
-    "htmlhint": "^0.9.13",
+    "htmlhint": "^0.10.0",
     "lab": "^15.5.0",
     "nock": "^9.6.0",
     "run-sequence": "^2.2.1",
