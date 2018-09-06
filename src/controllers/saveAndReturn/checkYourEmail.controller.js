@@ -6,6 +6,7 @@ const BaseController = require('../base.controller')
 const CookieService = require('../../services/cookie.service')
 const RecoveryService = require('../../services/recovery.service')
 const Application = require('../../models/application.model')
+const config = require('../../config/config')
 
 module.exports = class CheckYourEmailController extends BaseController {
   async doGet (request, h, errors) {
@@ -23,7 +24,8 @@ module.exports = class CheckYourEmailController extends BaseController {
       const context = await RecoveryService.createApplicationContext(h)
       const saveAndReturnEmail = request.payload['save-and-return-email']
       try {
-        const totalSent = await Application.sendAllRecoveryEmails(context, request.headers.origin, saveAndReturnEmail)
+        const origin = config.wastePermitsAppUrl || request.headers.origin
+        const totalSent = await Application.sendAllRecoveryEmails(context, origin, saveAndReturnEmail)
         if (totalSent === 0) {
           return this.doGet(request, h, this.setCustomError('custom.missing', 'save-and-return-email'))
         }

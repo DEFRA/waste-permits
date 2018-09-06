@@ -11,15 +11,21 @@ const ApplicationReturn = require('../../../src/models/applicationReturn.model')
 const SaveAndReturn = require('../../../src/models/taskList/saveAndReturn.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
-const Config = require('../../../src/config/featureConfig')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const FeatureConfig = require('../../../src/config/featureConfig')
+const Config = require('../../../src/config/config')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 let fakeApplication
 let fakeApplicationReturn
+let fakeAppUrl
+let fakeRecoveryLink
+let origin
 let sandbox
 
-module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
+module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHeading }) => {
   lab.beforeEach(() => {
+    fakeAppUrl = 'http://Waste-Permits-Url'
+
     fakeApplication = {
       id: 'APPLICATION_ID',
       saveAndReturnEmail: 'valid@email.com'
@@ -29,19 +35,26 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
       slug: 'SLUG'
     }
 
+    fakeRecoveryLink = `${fakeAppUrl}/r/${fakeApplicationReturn.slug}`
+
+    origin = undefined
+
     // Create a sinon sandbox to stub methods
     sandbox = sinon.createSandbox()
 
     // Stub methods
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-    sandbox.stub(Application.prototype, 'sendSaveAndReturnEmail').value(() => {})
+    sandbox.stub(Application.prototype, 'sendSaveAndReturnEmail').value(() => {
+      origin = fakeAppUrl
+    })
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(Application.prototype, 'save').value(() => {})
     sandbox.stub(ApplicationReturn, 'getByApplicationId').value(() => new ApplicationReturn(fakeApplicationReturn))
     sandbox.stub(SaveAndReturn, 'isComplete').value(() => false)
     sandbox.stub(SaveAndReturn, 'updateCompleteness').value(() => {})
-    sandbox.stub(Config, 'hasDisplayRecoveryLinkFeature').value(false)
+    sandbox.stub(FeatureConfig, 'hasDisplayRecoveryLinkFeature').value(false)
+    sandbox.stub(Config, 'wastePermitsAppUrl').value(fakeAppUrl)
   })
 
   lab.afterEach(() => {
@@ -92,10 +105,10 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
 
         lab.test('when complete and display recovery link feature is true', async () => {
           SaveAndReturn.isComplete = () => true
-          Config.hasDisplayRecoveryLinkFeature = true
+          FeatureConfig.hasDisplayRecoveryLinkFeature = true
           const doc = await GeneralTestHelper.getDoc(getRequest)
           await checkCommonElements(doc)
-          Code.expect(doc.getElementById('recovery-link').getAttribute('href')).to.include(`/r/${fakeApplicationReturn.slug}`)
+          Code.expect(doc.getElementById('recovery-link').getAttribute('href')).to.equal(fakeRecoveryLink)
           Code.expect(doc.getElementById('got-email').getAttribute('checked')).to.equal('checked')
         })
 
@@ -121,10 +134,24 @@ module.exports = (lab, {routePath, nextRoutePath, errorPath, pageHeading}) => {
         }
       })
 
-      lab.test('success', async () => {
-        const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      lab.experiment('success', () => {
+        lab.test('when got email selected', async () => {
+          const res = await server.inject(postRequest)
+          Code.expect(origin).to.equal(undefined)
+          Code.expect(res.statusCode).to.equal(302)
+          Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        })
+
+        lab.test('when not got email selected', async () => {
+          postRequest.payload = {
+            'got-email': 'false',
+            'save-and-return-email': 'valid@email.com'
+          }
+          const res = await server.inject(postRequest)
+          Code.expect(origin).to.equal(fakeAppUrl)
+          Code.expect(res.statusCode).to.equal(302)
+          Code.expect(res.headers['location']).to.equal(resentPath)
+        })
       })
 
       lab.experiment('invalid', () => {
