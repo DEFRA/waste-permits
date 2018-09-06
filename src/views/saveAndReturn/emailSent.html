@@ -54,6 +54,12 @@
           </div>
         </fieldset>
 
+        {{#if recoveryLink}}
+        <p>
+          <label>Recovery Link: </label>
+          <a href="{{ recoveryLink }}" id="recovery-link" target="_blank" rel="noopener noreferrer" >{{ recoveryLink }}</a>
+        </p>
+        {{/if}}
 
         {{> common/submitButton }}
       </form>
