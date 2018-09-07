@@ -22,7 +22,7 @@ let fakeRecoveryLink
 let origin
 let sandbox
 
-module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHeading }) => {
+module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHeading, firstTime }) => {
   lab.beforeEach(() => {
     fakeAppUrl = 'http://Waste-Permits-Url'
 
@@ -69,7 +69,6 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
       GeneralTestHelper.checkElementsExist(doc, [
         'back-link',
         'email-sent-paragraph-1',
-        'email-sent-paragraph-2',
         'save-and-return-email-label',
         'find-email-list-item-1',
         'find-email-list-item-2',
@@ -81,6 +80,12 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
       Code.expect(doc.getElementById('email-sent').firstChild.nodeValue).to.equal(fakeApplication.saveAndReturnEmail)
       Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+
+      if (firstTime) {
+        Code.expect(doc.getElementById('spam-hint')).to.exist()
+      } else {
+        Code.expect(doc.getElementById('spam-hint')).to.not.exist()
+      }
     }
 
     lab.experiment(`GET ${routePath}`, () => {
