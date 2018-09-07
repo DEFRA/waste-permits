@@ -5,7 +5,7 @@ const SaveAndReturn = require('../../models/taskList/saveAndReturn.model')
 const RecoveryService = require('../../services/recovery.service')
 const featureConfig = require('../../config/featureConfig')
 const config = require('../../config/config')
-const { SAVE_AND_RETURN_RECOVER, SAVE_AND_RETURN_SENT_RESENT, TASK_LIST } = require('../../routes')
+const { SAVE_AND_RETURN_RECOVER, SAVE_AND_RETURN_SENT_CHECK, SAVE_AND_RETURN_SENT_RESENT, TASK_LIST } = require('../../routes')
 
 module.exports = class EmailSentController extends BaseController {
   async doGet (request, h, errors) {
@@ -31,6 +31,10 @@ module.exports = class EmailSentController extends BaseController {
       } else {
         pageContext.notGotEmail = true
       }
+    }
+
+    if (this.path === SAVE_AND_RETURN_SENT_CHECK.path) {
+      pageContext.firstTime = true
     }
 
     if (featureConfig.hasDisplayRecoveryLinkFeature && applicationReturn.slug) {
