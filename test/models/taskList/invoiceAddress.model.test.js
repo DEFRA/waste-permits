@@ -15,7 +15,7 @@ const COMPLETENESS_PARAMETER = 'defra_invoicingdetails_completed'
 
 let sandbox
 
-const request = {app: {data: {authToken: 'AUTH_TOKEN'}}}
+const request = { app: { data: { authToken: 'AUTH_TOKEN' } } }
 const applicationId = 'APPLICATION_ID'
 const applicationLineId = 'APPLICATION_LINE_ID'
 

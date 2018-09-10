@@ -12,13 +12,13 @@ const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const UploadService = require('../../../src/services/upload.service')
 const ClamWrapper = require('../../../src/utilities/clamWrapper')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 const defaultFileTypes = 'PDF,DOC,DOCX,XLS,XLSX,JPG,ODT,ODS'
 
 const server = require('../../../server')
 
-const getDoc = async ({pageHeading, submitButton}) => {
+const getDoc = async ({ pageHeading, submitButton }) => {
   const doc = await GeneralTestHelper.getDoc(getRequest)
   Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(pageHeading)
   Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal(submitButton)
@@ -51,7 +51,7 @@ const fakeApplication = {
 }
 
 module.exports = class UploadTestHelper {
-  constructor (lab, {routePath, uploadPath, removePath, nextRoutePath}) {
+  constructor (lab, { routePath, uploadPath, removePath, nextRoutePath }) {
     this.lab = lab
     this.routePath = routePath
     this.uploadPath = uploadPath
@@ -70,19 +70,19 @@ module.exports = class UploadTestHelper {
     sandbox.stub(Annotation, 'getByApplicationIdSubjectAndFilename').value(() => Promise.resolve(new Annotation(fakeAnnotation)))
     sandbox.stub(Annotation.prototype, 'delete').value(() => Promise.resolve({}))
     sandbox.stub(Annotation.prototype, 'save').value(() => Promise.resolve({}))
-    sandbox.stub(Application, 'getById').value(() => Promise.resolve({applicationNumber: 'APPLICATION_REFERENCE'}))
+    sandbox.stub(Application, 'getById').value(() => Promise.resolve({ applicationNumber: 'APPLICATION_REFERENCE' }))
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(ClamWrapper, 'isInfected').value(() => Promise.resolve({isInfected: false}))
+    sandbox.stub(ClamWrapper, 'isInfected').value(() => Promise.resolve({ isInfected: false }))
     sandbox.stub(LoggingService, 'logError').value(() => {})
     sandbox.stub(Payment, 'getBacsPayment').value(() => {})
     sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   }
 
   getSuccess (options = {}, additionalTests = []) {
-    const {lab, routePath} = this
-    options = Object.assign({}, {fileTypes: defaultFileTypes.split(',')}, options)
+    const { lab, routePath } = this
+    options = Object.assign({}, { fileTypes: defaultFileTypes.split(',') }, options)
     const lastFileType = options.fileTypes.pop()
     lab.experiment('success', () => {
       lab.beforeEach(() => {
@@ -125,7 +125,7 @@ module.exports = class UploadTestHelper {
         Code.expect(doc.getElementById(options.descriptionId)).to.not.exist()
       })
 
-      additionalTests.forEach(({title, stubs, test}) => lab.test(title, async () => {
+      additionalTests.forEach(({ title, stubs, test }) => lab.test(title, async () => {
         if (stubs) {
           stubs()
         }
@@ -136,7 +136,7 @@ module.exports = class UploadTestHelper {
   }
 
   getFailure () {
-    const {lab} = this
+    const { lab } = this
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the annotation ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
@@ -152,7 +152,7 @@ module.exports = class UploadTestHelper {
   }
 
   _removeRequest () {
-    const {removePath} = this
+    const { removePath } = this
     return {
       method: 'GET',
       url: removePath,
@@ -161,7 +161,7 @@ module.exports = class UploadTestHelper {
   }
 
   removeSuccess () {
-    const {lab, routePath, removePath} = this
+    const { lab, routePath, removePath } = this
     lab.experiment('success', () => {
       lab.test('when annotation is removed', async () => {
         const req = this._removeRequest(removePath)
@@ -172,8 +172,8 @@ module.exports = class UploadTestHelper {
     })
   }
 
-  _uploadRequest ({filename = 'CIMG3456.JPG', fileSize = 2897308, contentType = 'image/jpeg', isUpload = 'on'}) {
-    const {uploadPath} = this
+  _uploadRequest ({ filename = 'CIMG3456.JPG', fileSize = 2897308, contentType = 'image/jpeg', isUpload = 'on' }) {
+    const { uploadPath } = this
     return {
       method: 'POST',
       url: uploadPath,
@@ -204,10 +204,10 @@ module.exports = class UploadTestHelper {
   }
 
   uploadSuccess (contentType = 'image/jpeg') {
-    const {lab, routePath} = this
+    const { lab, routePath } = this
     lab.experiment('success', () => {
       lab.test('when annotation is saved', async () => {
-        const req = this._uploadRequest({contentType})
+        const req = this._uploadRequest({ contentType })
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(routePath)
@@ -228,33 +228,33 @@ module.exports = class UploadTestHelper {
   }
 
   uploadInvalid (options = {}, contentType = 'image/jpeg') {
-    const {lab} = this
-    options = Object.assign({}, {fileTypes: defaultFileTypes.split(',')}, options)
+    const { lab } = this
+    options = Object.assign({}, { fileTypes: defaultFileTypes.split(',') }, options)
     const lastFileType = options.fileTypes.pop()
     lab.experiment('invalid', () => {
       lab.test('when invalid content type', async () => {
-        const req = this._uploadRequest({contentType: 'application/octet-stream'})
+        const req = this._uploadRequest({ contentType: 'application/octet-stream' })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `You can only upload ${options.fileTypes.join(', ')} or ${lastFileType} files`)
       })
 
       lab.test('when duplicate file', async () => {
         Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
-        const req = this._uploadRequest({filename: fakeAnnotation.filename, contentType})
+        const req = this._uploadRequest({ filename: fakeAnnotation.filename, contentType })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, 'That file has the same name as one you have already uploaded. Choose another file or rename the file before uploading it again.')
       })
 
       lab.test('when the filename is too long', async () => {
         Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
-        const req = this._uploadRequest({filename: `${'a'.repeat(252)}.jpg`, contentType})
+        const req = this._uploadRequest({ filename: `${'a'.repeat(252)}.jpg`, contentType })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
       })
 
       lab.test('when the file has a virus', async () => {
-        ClamWrapper.isInfected = () => Promise.resolve({isInfected: true})
-        const req = this._uploadRequest({filename: `virus.pdf`, contentType})
+        ClamWrapper.isInfected = () => Promise.resolve({ isInfected: true })
+        const req = this._uploadRequest({ filename: `virus.pdf`, contentType })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `Our scanner detected a virus in that file. It has not been uploaded. Please use your own virus scanner to check and clean the file. You should either upload a clean copy of the file or contact us if you think that the file does not have a virus.`)
       })
@@ -262,12 +262,12 @@ module.exports = class UploadTestHelper {
   }
 
   uploadFailure (contentType = 'image/jpeg') {
-    const {lab, errorPath} = this
+    const { lab, errorPath } = this
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
         Annotation.prototype.save = () => Promise.reject(new Error('save failed'))
-        const req = this._uploadRequest({contentType})
+        const req = this._uploadRequest({ contentType })
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
@@ -277,8 +277,8 @@ module.exports = class UploadTestHelper {
     })
   }
 
-  _postRequest ({payload}) {
-    const {uploadPath} = this
+  _postRequest ({ payload }) {
+    const { uploadPath } = this
     let data = []
     Object.keys(payload).forEach((prop) => {
       data = data.concat([
@@ -303,7 +303,7 @@ module.exports = class UploadTestHelper {
   }
 
   postSuccess (options) {
-    const {lab, nextRoutePath} = this
+    const { lab, nextRoutePath } = this
     lab.experiment('success', () => {
       lab.test(`when continue button pressed and there are files uploaded`, async () => {
         Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])

@@ -17,7 +17,7 @@ const fakeLocationData = {
 }
 const testLocationId = 'LOCATION_ID'
 
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 const applicationId = fakeLocationData.applicationId
 const applicationLineId = 'APPLICATION_LINE_ID'
 

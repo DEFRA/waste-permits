@@ -15,7 +15,7 @@ const ApplicationLine = require('../../src/models/applicationLine.model')
 const Payment = require('../../src/models/payment.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const StandardRuleType = require('../../src/models/standardRuleType.model')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/permit/select'
 const nextRoutePath = '/task-list'
@@ -98,10 +98,10 @@ lab.experiment('Select a permit page tests:', () => {
 
       lab.beforeEach(() => {
         permits = [
-          newPermit({id: 'permit-0', permitName: 'Permit one', limits: '', code: 'permit code 0', codeForId: 'permit-code-0'}),
-          newPermit({id: 'permit-1', permitName: 'Permit two', limits: 'limit two', code: 'permit code 1', codeForId: 'permit-code-1'}),
-          newPermit({id: 'permit-2', permitName: 'Permit three', limits: '', code: 'permit code 2', codeForId: 'permit-code-2'}),
-          newPermit({id: 'permit-3', permitName: 'Permit four', limits: '', code: 'permit code 3', codeForId: 'permit-code-3'})
+          newPermit({ id: 'permit-0', permitName: 'Permit one', limits: '', code: 'permit code 0', codeForId: 'permit-code-0' }),
+          newPermit({ id: 'permit-1', permitName: 'Permit two', limits: 'limit two', code: 'permit code 1', codeForId: 'permit-code-1' }),
+          newPermit({ id: 'permit-2', permitName: 'Permit three', limits: '', code: 'permit code 2', codeForId: 'permit-code-2' }),
+          newPermit({ id: 'permit-3', permitName: 'Permit four', limits: '', code: 'permit code 3', codeForId: 'permit-code-3' })
         ]
         StandardRule.list = () => permits
       })
@@ -110,7 +110,7 @@ lab.experiment('Select a permit page tests:', () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
-        permits.forEach(({id, permitName, code, limits, codeForId}) => {
+        permits.forEach(({ id, permitName, code, limits, codeForId }) => {
           const prefix = `chosen-permit-${codeForId}`
           Code.expect(doc.getElementById(`${prefix}-input`).getAttribute('value')).to.equal(code)
           Code.expect(doc.getElementById(`${prefix}-label`)).to.exist()

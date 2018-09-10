@@ -10,7 +10,7 @@ const ApplicationLine = require('../../src/models/applicationLine.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let sandbox
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 
 const fakeApplicationLine = {
   id: 'APPLICATION_LINE_ID',
@@ -66,9 +66,9 @@ lab.experiment('StandardRule Model tests:', () => {
     DynamicsDalService.prototype.search = () => {
       return {
         value: [
-          fakeDynamicsRecord({code: codes[0], codeForId: StandardRule.transformPermitCode(codes[0])}),
-          fakeDynamicsRecord({code: codes[1], codeForId: StandardRule.transformPermitCode(codes[1])}),
-          fakeDynamicsRecord({code: codes[2], codeForId: StandardRule.transformPermitCode(codes[2])})]
+          fakeDynamicsRecord({ code: codes[0], codeForId: StandardRule.transformPermitCode(codes[0]) }),
+          fakeDynamicsRecord({ code: codes[1], codeForId: StandardRule.transformPermitCode(codes[1]) }),
+          fakeDynamicsRecord({ code: codes[2], codeForId: StandardRule.transformPermitCode(codes[2]) })]
       }
     }
 
@@ -77,7 +77,7 @@ lab.experiment('StandardRule Model tests:', () => {
     Code.expect(Array.isArray(standardRuleList)).to.be.true()
     Code.expect(standardRuleList.length).to.equal(3)
     standardRuleList.forEach((standardRule, index) => {
-      Code.expect(standardRule).to.equal(Object.assign({}, fakeStandardRule, {code: codes[index], codeForId: StandardRule.transformPermitCode(codes[index])}))
+      Code.expect(standardRule).to.equal(Object.assign({}, fakeStandardRule, { code: codes[index], codeForId: StandardRule.transformPermitCode(codes[index]) }))
     })
     Code.expect(spy.callCount).to.equal(1)
   })

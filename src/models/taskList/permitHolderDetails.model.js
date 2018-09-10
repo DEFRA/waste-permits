@@ -1,6 +1,6 @@
 'use strict'
 
-const {PERMIT_HOLDER_DETAILS} = require('../applicationLine.model').CompletedParameters
+const { PERMIT_HOLDER_DETAILS } = require('../applicationLine.model').CompletedParameters
 
 const Completeness = require('./completeness.model')
 const LoggingService = require('../../services/logging.service')
@@ -99,7 +99,7 @@ module.exports = class PermitHolderDetails extends Completeness {
   }
 
   static async checkComplete (context, applicationId) {
-    const {isIndividual, permitHolderOrganisationId, permitHolderIndividualId} = await Application.getById(context, applicationId)
+    const { isIndividual, permitHolderOrganisationId, permitHolderIndividualId } = await Application.getById(context, applicationId)
 
     if (isIndividual) {
       // Get the Contact for this application

@@ -6,7 +6,7 @@ const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const RecoveryService = require('../services/recovery.service')
 const StandardRuleType = require('../models/standardRuleType.model')
-const {OFFLINE_CATEGORIES} = Constants
+const { OFFLINE_CATEGORIES } = Constants
 
 module.exports = class PermitCategoryController extends BaseController {
   static isOfflineCategory (categoryId) {
@@ -27,7 +27,7 @@ module.exports = class PermitCategoryController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
@@ -40,9 +40,9 @@ module.exports = class PermitCategoryController extends BaseController {
       CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID, standardRuleTypeId)
 
       if (PermitCategoryController.isOfflineCategory(standardRuleTypeId)) {
-        return this.redirect({request, h, redirectPath: Routes.APPLY_OFFLINE.path})
+        return this.redirect({ request, h, redirectPath: Routes.APPLY_OFFLINE.path })
       } else {
-        return this.redirect({request, h, redirectPath: Routes.PERMIT_SELECT.path})
+        return this.redirect({ request, h, redirectPath: Routes.PERMIT_SELECT.path })
       }
     }
   }

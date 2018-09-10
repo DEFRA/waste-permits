@@ -12,7 +12,7 @@ const Application = require('../../../src/models/application.model')
 const SaveAndReturn = require('../../../src/models/taskList/saveAndReturn.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 const routePath = '/save-return/confirm'
 const nextRoutePath = '/save-return/email-sent-check'

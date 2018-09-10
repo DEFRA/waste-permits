@@ -11,6 +11,6 @@ module.exports = class TimeoutController extends BaseController {
     pageContext.startAgainLink = Routes.START_OR_OPEN_SAVED.path
     pageContext.cookieTimeout = config.cookieTimeout / (1000 * 60 * 60)
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 }

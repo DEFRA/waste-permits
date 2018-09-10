@@ -12,7 +12,7 @@ const Application = require('../../src/models/application.model')
 const AddressDetail = require('../../src/models/addressDetail.model')
 const Payment = require('../../src/models/payment.model')
 const CookieService = require('../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 
@@ -149,7 +149,7 @@ lab.experiment('Contact details page tests:', () => {
           value: 'john"hardman"harding@securityguards.com',
           messages: ['Enter a valid email address']
         }]
-      fieldErrorTests.forEach(({field, value, messages, isAgent}) => {
+      fieldErrorTests.forEach(({ field, value, messages }) => {
         lab.test(`error messages when ${field} has a value of "${value}"`, async () => {
           request.payload[field] = value
           const doc = await GeneralTestHelper.getDoc(request)

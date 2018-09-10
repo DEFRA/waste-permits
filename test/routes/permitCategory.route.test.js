@@ -12,7 +12,7 @@ const Payment = require('../../src/models/payment.model')
 const StandardRuleType = require('../../src/models/standardRuleType.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/permit/category'
 const nextRoutePath = '/permit/select'
@@ -106,10 +106,10 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
       lab.beforeEach(() => {
         categories = [
-          {id: 'category-0', categoryName: 'electrical', category: 'Electrical insulating oil storage', hint: ''},
-          {id: 'category-1', categoryName: 'metal', category: 'Metal recycling, scrap metal and WEEE', hint: 'not cars or vehicles'},
-          {id: 'category-2', categoryName: 'mining', category: 'Mining, oil and gas', hint: ''},
-          {id: 'category-3', categoryName: 'transfer', category: 'Waste transfer station or amenity site', hint: 'with or without treatment'}
+          { id: 'category-0', categoryName: 'electrical', category: 'Electrical insulating oil storage', hint: '' },
+          { id: 'category-1', categoryName: 'metal', category: 'Metal recycling, scrap metal and WEEE', hint: 'not cars or vehicles' },
+          { id: 'category-2', categoryName: 'mining', category: 'Mining, oil and gas', hint: '' },
+          { id: 'category-3', categoryName: 'transfer', category: 'Waste transfer station or amenity site', hint: 'with or without treatment' }
         ]
 
         StandardRuleType.getCategories = () => categories
@@ -119,7 +119,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
-        categories.forEach(({id, categoryName, category, hint}) => {
+        categories.forEach(({ id, categoryName, category, hint }) => {
           const prefix = `chosen-category-${categoryName}`
           Code.expect(doc.getElementById(`${prefix}-input`).getAttribute('value')).to.equal(id)
           Code.expect(doc.getElementById(`${prefix}-label`)).to.exist()

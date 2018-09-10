@@ -3,7 +3,7 @@
 const Config = require('../config/config')
 const Constants = require('../constants')
 const AirbrakeClient = require('airbrake-js')
-const {ERROR, INFO, DEBUG} = Constants.LogLevels
+const { ERROR, INFO, DEBUG } = Constants.LogLevels
 
 let airbrake
 let log = (level, message, request) => {
@@ -19,7 +19,7 @@ module.exports = class LoggingService {
   static get airbrake () {
     if (!airbrake) {
       if (Config.ERRBIT_ENABLED) {
-        airbrake = new AirbrakeClient({projectId: true, projectKey: Config.ERRBIT_API_KEY, host: Config.ERRBIT_HOST})
+        airbrake = new AirbrakeClient({ projectId: true, projectKey: Config.ERRBIT_API_KEY, host: Config.ERRBIT_HOST })
       } else {
         airbrake = {
           notify: (message) => {

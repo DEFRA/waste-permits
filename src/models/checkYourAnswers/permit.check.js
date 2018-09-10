@@ -1,6 +1,6 @@
 const BaseCheck = require('./base.check')
 
-const {path} = require('../../routes').PERMIT_CATEGORY
+const { path } = require('../../routes').PERMIT_CATEGORY
 
 module.exports = class PermitCheck extends BaseCheck {
   get prefix () {
@@ -12,11 +12,11 @@ module.exports = class PermitCheck extends BaseCheck {
   }
 
   async getPermitLine () {
-    const {code = '', permitName = ''} = await this.getStandardRule()
+    const { code = '', permitName = '' } = await this.getStandardRule()
     return this.buildLine({
       heading: 'Permit',
       answers: [`${permitName} ${code}`],
-      links: [{path, type: 'contact details'}]
+      links: [{ path, type: 'contact details' }]
     })
   }
 }

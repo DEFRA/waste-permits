@@ -9,8 +9,8 @@ const Contact = require('../models/contact.model')
 const Payment = require('../models/payment.model')
 const StandardRule = require('../models/standardRule.model')
 
-const {COOKIE_KEY: {AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID}} = require('../constants')
-const {PERMIT_HOLDER_TYPES} = require('../dynamics')
+const { COOKIE_KEY: { AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID } } = require('../constants')
+const { PERMIT_HOLDER_TYPES } = require('../dynamics')
 
 module.exports = class RecoveryService {
   static async recoverOptionalData (context, applicationId, applicationLineId, options) {
@@ -27,12 +27,12 @@ module.exports = class RecoveryService {
       options.standardRule ? StandardRule.getByApplicationLineId(context, applicationLineId) : Promise.resolve(undefined)
     ])
 
-    return {application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule}
+    return { application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule }
   }
 
   static getPermitHolderType (application) {
     return Object.entries(PERMIT_HOLDER_TYPES)
-      .filter(([key, {dynamicsApplicantTypeId, dynamicsOrganisationTypeId}]) => application && dynamicsApplicantTypeId === application.applicantType && dynamicsOrganisationTypeId === application.organisationType)
+      .filter(([key, { dynamicsApplicantTypeId, dynamicsOrganisationTypeId }]) => application && dynamicsApplicantTypeId === application.applicantType && dynamicsOrganisationTypeId === application.organisationType)
       .map(([key, permitHolderType]) => permitHolderType)
       .pop()
   }
@@ -49,9 +49,9 @@ module.exports = class RecoveryService {
     const permitHolderType = RecoveryService.getPermitHolderType(application)
 
     // Query in parallel for optional entities
-    const {applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule} = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
+    const { applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule } = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
 
-    Object.assign(context, {slug, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType})
+    Object.assign(context, { slug, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType })
 
     return context
   }
@@ -78,12 +78,12 @@ module.exports = class RecoveryService {
       // Always load the standard rule when restoring
       options.standardRule = true
 
-      const {account, contact, individualPermitHolder, payment, cardPayment, standardRule} = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
-      const {id: standardRuleId, standardRuleTypeId} = standardRule || {}
+      const { account, contact, individualPermitHolder, payment, cardPayment, standardRule } = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
+      const { id: standardRuleId, standardRuleTypeId } = standardRule || {}
 
       const permitHolderType = RecoveryService.getPermitHolderType(application)
 
-      Object.assign(context, {slug, cookie, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType})
+      Object.assign(context, { slug, cookie, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, individualPermitHolder, payment, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType })
 
       // Setup all the cookies as if the user hadn't left
       cookie[AUTH_TOKEN] = context.authToken
@@ -101,8 +101,8 @@ module.exports = class RecoveryService {
   }
 
   static async createApplicationContext (h, options = {}) {
-    let {request} = h
-    let {slug = ''} = request.params
+    let { request } = h
+    let { slug = '' } = request.params
 
     if (!request.app.data) {
       request.app.data = {}

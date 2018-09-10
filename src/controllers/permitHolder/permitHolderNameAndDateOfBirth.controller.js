@@ -6,8 +6,8 @@ const RecoveryService = require('../../services/recovery.service')
 const Contact = require('../../models/contact.model')
 const AddressDetail = require('../../models/addressDetail.model')
 
-const {SOLE_TRADER} = require('../../dynamics').PERMIT_HOLDER_TYPES
-const {PERMIT_HOLDER_CONTACT_DETAILS, PERMIT_HOLDER_TRADING_NAME} = require('../../routes')
+const { SOLE_TRADER } = require('../../dynamics').PERMIT_HOLDER_TYPES
+const { PERMIT_HOLDER_CONTACT_DETAILS, PERMIT_HOLDER_TRADING_NAME } = require('../../routes')
 
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {

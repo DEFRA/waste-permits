@@ -13,7 +13,7 @@ const CostTime = require('../../src/models/taskList/costTime.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/costs-times'
 const nextRoutePath = '/task-list'

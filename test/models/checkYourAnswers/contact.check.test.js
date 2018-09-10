@@ -60,30 +60,30 @@ lab.experiment('Contact Check tests:', () => {
     })
 
     lab.test('(contact line) works correctly', async () => {
-      const {heading, headingId, answers, links} = lines[CONTACT_LINE]
+      const { heading, headingId, answers, links } = lines[CONTACT_LINE]
       const linePrefix = `${prefix}-name`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {answer, answerId} = answers.pop()
-      const {firstName, lastName} = fakeContact
+      const { answer, answerId } = answers.pop()
+      const { firstName, lastName } = fakeContact
       Code.expect(answer).to.equal(`${firstName} ${lastName}`)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/contact-details')
       Code.expect(linkType).to.equal('contact details')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
     lab.test('(agent line) works correctly', async () => {
-      const {heading, headingId, answers, links} = lines[AGENT_LINE]
+      const { heading, headingId, answers, links } = lines[AGENT_LINE]
       const linePrefix = `${prefix}-agent`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {description, accountName} = fakeAgentAccount
-      answers.forEach(({answer, answerId}, answerIndex) => {
+      const { description, accountName } = fakeAgentAccount
+      answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
           case 0: {
@@ -97,41 +97,41 @@ lab.experiment('Contact Check tests:', () => {
         }
       })
 
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/contact-details')
       Code.expect(linkType).to.equal(`agent details`)
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
     lab.test('(telephone line) works correctly', async () => {
-      const {heading, headingId, answers, links} = lines[TELEPHONE_LINE]
+      const { heading, headingId, answers, links } = lines[TELEPHONE_LINE]
       const linePrefix = `${prefix}-telephone`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {answer, answerId} = answers.pop()
-      const {telephone} = fakePrimaryContact
+      const { answer, answerId } = answers.pop()
+      const { telephone } = fakePrimaryContact
       Code.expect(answer).to.equal(telephone)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/contact-details')
       Code.expect(linkType).to.equal('contact telephone number')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
     lab.test('(main contact email line) works correctly', async () => {
-      const {heading, headingId, answers, links} = lines[EMAIL_LINE]
+      const { heading, headingId, answers, links } = lines[EMAIL_LINE]
       const linePrefix = `${prefix}-email`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {answer, answerId} = answers.pop()
-      const {email} = fakeContact
+      const { answer, answerId } = answers.pop()
+      const { email } = fakeContact
       Code.expect(answer).to.equal(email)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/contact-details')
       Code.expect(linkType).to.equal('main contact email')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)

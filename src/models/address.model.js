@@ -11,20 +11,20 @@ class Address extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'id', dynamics: 'defra_addressid'},
-      {field: 'buildingNameOrNumber', dynamics: 'defra_premises', length: {max: 50}},
-      {field: 'addressLine1', dynamics: 'defra_street', length: {max: 80}},
-      {field: 'addressLine2', dynamics: 'defra_locality', length: {max: 80}},
-      {field: 'townOrCity', dynamics: 'defra_towntext', length: {max: 30}},
-      {field: 'postcode', dynamics: 'defra_postcode', length: {max: 8}},
-      {field: 'uprn', dynamics: 'defra_uprn', encode: true, length: {max: 20}},
-      {field: 'fromAddressLookup', dynamics: 'defra_fromaddresslookup'},
-      {field: 'fullAddress', dynamics: 'defra_name', length: {max: 450}}
+      { field: 'id', dynamics: 'defra_addressid' },
+      { field: 'buildingNameOrNumber', dynamics: 'defra_premises', length: { max: 50 } },
+      { field: 'addressLine1', dynamics: 'defra_street', length: { max: 80 } },
+      { field: 'addressLine2', dynamics: 'defra_locality', length: { max: 80 } },
+      { field: 'townOrCity', dynamics: 'defra_towntext', length: { max: 30 } },
+      { field: 'postcode', dynamics: 'defra_postcode', length: { max: 8 } },
+      { field: 'uprn', dynamics: 'defra_uprn', encode: true, length: { max: 20 } },
+      { field: 'fromAddressLookup', dynamics: 'defra_fromaddresslookup' },
+      { field: 'fullAddress', dynamics: 'defra_name', length: { max: 450 } }
     ]
   }
 
   static async getByUprn (context, uprn) {
-    return super.getBy(context, {uprn})
+    return super.getBy(context, { uprn })
   }
 
   static async listByPostcode (context, postcode) {

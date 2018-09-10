@@ -35,9 +35,9 @@ lab.afterEach(() => {
 
 lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
   new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
-    excludeCookiePostTests: true})
+    excludeCookiePostTests: true })
 
-  const {uploadPath, removePath} = paths
+  const { uploadPath, removePath } = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
@@ -79,6 +79,6 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'technical-qualification': 'deemed-evidence'}})
+    helper.postSuccess({ payload: { 'technical-qualification': 'deemed-evidence' } })
   })
 })

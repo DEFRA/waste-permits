@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseModel = require('./base.model')
-const {COMPANY_SECRETARY_EMAIL, COMPANY_REGISTERED_ADDRESS, DESIGNATED_MEMBER_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER} = require('../dynamics').AddressTypes
+const { COMPANY_SECRETARY_EMAIL, COMPANY_REGISTERED_ADDRESS, DESIGNATED_MEMBER_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER } = require('../dynamics').AddressTypes
 
 class AddressDetail extends BaseModel {
   static get entity () {
@@ -10,20 +10,20 @@ class AddressDetail extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'id', dynamics: 'defra_addressdetailsid'},
-      {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationId', relationship: 'defra_application_defra_addressdetails', entity: 'defra_applications'}},
-      {field: 'addressId', dynamics: '_defra_address_value', bind: {id: 'defra_Address', relationship: 'defra_address_defra_addressdetails', entity: 'defra_addresses'}},
-      {field: 'addressName', dynamics: 'defra_name'},
-      {field: 'dateOfBirth', dynamics: 'defra_dob'},
-      {field: 'customerId', dynamics: '_defra_customer_value', readOnly: true},
-      {field: 'email', dynamics: 'emailaddress', length: {max: 100}},
-      {field: 'telephone', dynamics: 'defra_phone', length: {min: 10, max: 30, maxDigits: 17}}, // Max digits is the maximum length when spaces have been stripped out
-      {field: 'type', dynamics: 'defra_addresstype'}
+      { field: 'id', dynamics: 'defra_addressdetailsid' },
+      { field: 'applicationId', dynamics: '_defra_applicationid_value', bind: { id: 'defra_applicationId', relationship: 'defra_application_defra_addressdetails', entity: 'defra_applications' } },
+      { field: 'addressId', dynamics: '_defra_address_value', bind: { id: 'defra_Address', relationship: 'defra_address_defra_addressdetails', entity: 'defra_addresses' } },
+      { field: 'addressName', dynamics: 'defra_name' },
+      { field: 'dateOfBirth', dynamics: 'defra_dob' },
+      { field: 'customerId', dynamics: '_defra_customer_value', readOnly: true },
+      { field: 'email', dynamics: 'emailaddress', length: { max: 100 } },
+      { field: 'telephone', dynamics: 'defra_phone', length: { min: 10, max: 30, maxDigits: 17 } }, // Max digits is the maximum length when spaces have been stripped out
+      { field: 'type', dynamics: 'defra_addresstype' }
     ]
   }
 
   static async getByApplicationIdAndType (context, applicationId, type) {
-    return super.getBy(context, {applicationId, type})
+    return super.getBy(context, { applicationId, type })
   }
 
   async save (context) {
@@ -32,7 +32,7 @@ class AddressDetail extends BaseModel {
   }
 
   static async getDetails (context, applicationId, type) {
-    return (await AddressDetail.getByApplicationIdAndType(context, applicationId, type.TYPE)) || new AddressDetail({applicationId, addressDetail: type.NAME, type: type.TYPE})
+    return (await AddressDetail.getByApplicationIdAndType(context, applicationId, type.TYPE)) || new AddressDetail({ applicationId, addressDetail: type.NAME, type: type.TYPE })
   }
 
   static async getDesignatedMemberDetails (context, applicationId) {
@@ -44,7 +44,7 @@ class AddressDetail extends BaseModel {
   }
 
   static async getCompanyRegisteredDetails (context, customerId) {
-    return AddressDetail.getBy(context, {customerId, type: COMPANY_REGISTERED_ADDRESS.TYPE})
+    return AddressDetail.getBy(context, { customerId, type: COMPANY_REGISTERED_ADDRESS.TYPE })
   }
 
   static async getPrimaryContactDetails (context, applicationId) {

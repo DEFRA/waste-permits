@@ -9,7 +9,7 @@ const StandardRuleType = require('../../src/models/standardRuleType.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
 let sandbox
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 
 const fakeStandardRuleType = {
   id: 'STANDARD_RULE_TYPE_ID',
@@ -46,7 +46,7 @@ lab.experiment('StandardRuleType Model tests:', () => {
     const categories = ['Electrical', 'Metal', 'Plastic']
     DynamicsDalService.prototype.search = () => {
       return {
-        value: categories.map((category) => fakeDynamicsRecord({category}))
+        value: categories.map((category) => fakeDynamicsRecord({ category }))
       }
     }
 
@@ -55,7 +55,7 @@ lab.experiment('StandardRuleType Model tests:', () => {
     Code.expect(Array.isArray(standardRuleList)).to.be.true()
     Code.expect(standardRuleList.length).to.equal(categories.length)
     standardRuleList.forEach((standardRuleType, index) => {
-      Code.expect(standardRuleType).to.equal(Object.assign({}, fakeStandardRuleType, {category: categories[index]}))
+      Code.expect(standardRuleType).to.equal(Object.assign({}, fakeStandardRuleType, { category: categories[index] }))
     })
     Code.expect(spy.callCount).to.equal(1)
   })
@@ -64,14 +64,14 @@ lab.experiment('StandardRuleType Model tests:', () => {
     const categories = ['Electrical', 'Metal', 'Plastic']
 
     const offlineCategories = [
-      {categoryName: 'Flood', category: 'Flood risk activities'},
-      {categoryName: 'Radioactive', category: 'Radioactive substances for non-nuclear sites'},
-      {categoryName: 'Water', category: 'Water discharges'}
+      { categoryName: 'Flood', category: 'Flood risk activities' },
+      { categoryName: 'Radioactive', category: 'Radioactive substances for non-nuclear sites' },
+      { categoryName: 'Water', category: 'Water discharges' }
     ]
 
     DynamicsDalService.prototype.search = () => {
       return {
-        value: categories.map((category) => fakeDynamicsRecord({category}))
+        value: categories.map((category) => fakeDynamicsRecord({ category }))
       }
     }
 
@@ -93,7 +93,7 @@ lab.experiment('StandardRuleType Model tests:', () => {
         onlineIndex++
       } else {
         // Offline category
-        const {category, categoryName} = offlineCategories[offlineIndex]
+        const { category, categoryName } = offlineCategories[offlineIndex]
         Code.expect(standardRuleType).to.equal({
           id: `offline-category-${categoryName.toLowerCase()}`,
           categoryName,

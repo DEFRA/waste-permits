@@ -9,7 +9,7 @@ const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const Completeness = require('../../../src/models/taskList/completeness.model')
 
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 let fakeApplicationLine
 
 let sandbox

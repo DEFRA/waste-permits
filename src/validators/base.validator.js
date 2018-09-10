@@ -5,8 +5,8 @@ const ObjectPath = require('object-path')
 const _getRequired = (errors) => {
   const requiredFields = {}
   errors
-    .filter(({type}) => type === 'any.required' || type === 'any.empty')
-    .forEach(({type, path}) => {
+    .filter(({ type }) => type === 'any.required' || type === 'any.empty')
+    .forEach(({ type, path }) => {
       requiredFields[path[0]] = true
     })
   return requiredFields
@@ -23,7 +23,7 @@ const _customValidate = async (data, errors, validators, errorMessages) => {
         const validatorFunction = validators[field][type]
         const result = await validatorFunction(data[field] || '', data)
         if (result) {
-          return ({message: errorMessages[field][type], path: [field], type})
+          return ({ message: errorMessages[field][type], path: [field], type })
         }
       })
     ))
@@ -51,14 +51,14 @@ module.exports = class BaseValidator {
       const details = []
       for (let fieldName in this.errorMessages) {
         currentErrors
-          .filter(({path}) => path[0] === fieldName)
+          .filter(({ path }) => path[0] === fieldName)
           .forEach((error) => details.push(error))
         customErrors
-          .filter(({path}) => path[0] === fieldName)
+          .filter(({ path }) => path[0] === fieldName)
           .forEach((error) => details.push(error))
       }
       // Set errors to the structure expected by Hapi
-      errors = {details}
+      errors = { details }
     }
     return errors
   }
@@ -74,7 +74,7 @@ module.exports = class BaseValidator {
       if (error.path.length) {
         const fieldName = error.path[0] // field that the error is to be associated with.
         const propertyWithError = error.path.pop() // the descendant in the path where the error can be found.
-        const {supressField = false} = error.options || {}
+        const { supressField = false } = error.options || {}
         if (!supressField && !pageContext.errors[fieldName]) {
           // Create an array to hold all the errors that will refer to this fieldName
           pageContext.errors[fieldName] = []

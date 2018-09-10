@@ -28,9 +28,9 @@ const Qualifications = {
 }
 
 const fakeTechnicalCompetenceEvidence = [
-  {filename: 'EVIDENCE_FILENAME_1'},
-  {filename: 'EVIDENCE_FILENAME_2'},
-  {filename: 'EVIDENCE_FILENAME_3'}
+  { filename: 'EVIDENCE_FILENAME_1' },
+  { filename: 'EVIDENCE_FILENAME_2' },
+  { filename: 'EVIDENCE_FILENAME_3' }
 ]
 
 const prefix = 'section-technical-competence'
@@ -57,22 +57,22 @@ lab.experiment('TechnicalCompetence Check tests:', () => {
 
   for (let qualification in Qualifications) {
     lab.experiment('buildlines', () => {
-      const {technicalQualification, description} = Qualifications[qualification]
+      const { technicalQualification, description } = Qualifications[qualification]
       let check
       let lines
 
       lab.beforeEach(async () => {
-        sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => ({technicalQualification}))
+        sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => ({ technicalQualification }))
         check = new TechnicalCompetenceCheck()
         lines = await check.buildLines()
       })
 
       lab.test(`(${description} line) works correctly`, async () => {
-        const {heading, headingId, answers, links} = lines.pop()
+        const { heading, headingId, answers, links } = lines.pop()
         Code.expect(heading).to.equal(heading)
         Code.expect(headingId).to.equal(`${prefix}-heading`)
 
-        answers.forEach(({answer, answerId}, answerIndex) => {
+        answers.forEach(({ answer, answerId }, answerIndex) => {
           Code.expect(answerId).to.equal(`${prefix}-answer-${answerIndex + 1}`)
           switch (answerIndex) {
             case 0: {
@@ -84,14 +84,14 @@ lab.experiment('TechnicalCompetence Check tests:', () => {
               break
             }
             default: {
-              const {filename} = fakeTechnicalCompetenceEvidence[answerIndex - 2]
+              const { filename } = fakeTechnicalCompetenceEvidence[answerIndex - 2]
               Code.expect(answer).to.equal(filename)
               break
             }
           }
         })
 
-        const {link, linkId, linkType} = links.pop()
+        const { link, linkId, linkType } = links.pop()
         Code.expect(link).to.equal('/technical-competence')
         Code.expect(linkType).to.equal('technical management qualification')
         Code.expect(linkId).to.equal(`${prefix}-link`)

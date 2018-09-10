@@ -15,7 +15,7 @@ const Contact = require('../../src/models/contact.model')
 const Payment = require('../../src/models/payment.model')
 const ContactDetails = require('../../src/models/taskList/contactDetails.model')
 const CookieService = require('../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 
@@ -293,7 +293,7 @@ lab.experiment('Contact details page tests:', () => {
           isAgent: true,
           messages: ['Enter a shorter trading, business or company name with no more than 160 characters']
         }]
-      fieldErrorTests.forEach(({field, value, messages, isAgent}) => {
+      fieldErrorTests.forEach(({ field, value, messages, isAgent }) => {
         lab.test(`error messages when ${field} has a value of "${value}"`, async () => {
           request.payload[field] = value
           if (isAgent) {

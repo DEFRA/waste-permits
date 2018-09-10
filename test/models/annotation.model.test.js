@@ -34,7 +34,7 @@ const fakeDynamicsRecord = (options = {}) => {
   }
 }
 
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 
 lab.beforeEach(() => {
   testAnnotation = new Annotation(fakeAnnotation)
@@ -69,9 +69,9 @@ lab.experiment('Annotation Model tests:', () => {
     DynamicsDalService.prototype.search = () => {
       return {
         value: [
-          fakeDynamicsRecord({id: ids[0]}),
-          fakeDynamicsRecord({id: ids[1]}),
-          fakeDynamicsRecord({id: ids[2]})]
+          fakeDynamicsRecord({ id: ids[0] }),
+          fakeDynamicsRecord({ id: ids[1] }),
+          fakeDynamicsRecord({ id: ids[2] })]
       }
     }
 
@@ -80,7 +80,7 @@ lab.experiment('Annotation Model tests:', () => {
     Code.expect(Array.isArray(annotationList)).to.be.true()
     Code.expect(annotationList.length).to.equal(3)
     annotationList.forEach((annotation, index) => {
-      Code.expect(annotation).to.equal(Object.assign({}, fakeAnnotation, {id: ids[index]}))
+      Code.expect(annotation).to.equal(Object.assign({}, fakeAnnotation, { id: ids[index] }))
     })
     Code.expect(spy.callCount).to.equal(1)
   })

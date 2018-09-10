@@ -12,7 +12,7 @@ const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const Application = require('../../../src/models/application.model')
 const Payment = require('../../../src/models/payment.model')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 
@@ -159,7 +159,7 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
 
     lab.experiment('success', () => {
       lab.test('when own name is selected', async () => {
-        postRequest.payload = {'use-trading-name': NO.toString()}
+        postRequest.payload = { 'use-trading-name': NO.toString() }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
@@ -184,7 +184,7 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
       })
 
       lab.test('when trade name usage is selected without entering the trade name', async () => {
-        postRequest.payload = {'use-trading-name': YES}
+        postRequest.payload = { 'use-trading-name': YES }
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await GeneralTestHelper.checkValidationMessage(doc, 'trading-name', 'Enter a trading or business name')
       })

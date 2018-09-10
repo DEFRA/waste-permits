@@ -1,7 +1,7 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 
-const {SURFACE_DRAINAGE: ruleSetId} = require('../applicationLine.model').RulesetIds
+const { SURFACE_DRAINAGE: ruleSetId } = require('../applicationLine.model').RulesetIds
 const path = require('../../routes').DRAINAGE_TYPE_DRAIN.path
 const DrainageTypes = Dynamics.DrainageTypes
 
@@ -19,7 +19,7 @@ module.exports = class DrainageCheck extends BaseCheck {
   }
 
   async getDrainageLine () {
-    const {drainageType: type = ''} = await this.getApplication()
+    const { drainageType: type = '' } = await this.getApplication()
 
     const drainageType = Object.keys(DrainageTypes)
       .filter((key) => DrainageTypes[key].type === type)
@@ -31,7 +31,7 @@ module.exports = class DrainageCheck extends BaseCheck {
     return this.buildLine({
       heading: 'Vehicle storage area drainage',
       answers: [`Drains to ${description}`],
-      links: [{path, type: 'drainage system'}]
+      links: [{ path, type: 'drainage system' }]
     })
   }
 }

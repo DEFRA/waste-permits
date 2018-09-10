@@ -9,7 +9,7 @@ const ApplicationLine = require('../../src/models/applicationLine.model')
 const ApplicationReturn = require('../../src/models/applicationReturn.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 let fakeApplicationLine
 let fakeApplicationReturn
 

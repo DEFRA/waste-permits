@@ -141,7 +141,7 @@ module.exports = class DynamicsDalService {
                   if (crmResponse && crmResponse.error && crmResponse.error.message) {
                     crmMessage = crmResponse.error.message
                     if (crmResponse.error.innererror) {
-                      const {message, stacktrace, type} = crmResponse.error.innererror
+                      const { message, stacktrace, type } = crmResponse.error.innererror
                       LoggingService.logError(`${type}: ${message}\n${stacktrace}`)
                       reject(new DalError(message, options.path, dataObject, stacktrace))
                     }
@@ -156,7 +156,7 @@ module.exports = class DynamicsDalService {
         })
       })
       crmRequest.on('error', (error) => {
-        const {message, stack, code} = error
+        const { message, stack, code } = error
         LoggingService.logError(`${code}: ${message}\n${stack}`)
         reject(new DalError(message, options.path, dataObject, stack))
       })

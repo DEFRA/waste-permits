@@ -8,7 +8,7 @@ const sinon = require('sinon')
 const DynamicsSolution = require('../../src/models/dynamicsSolution.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 
 let dynamicsSearchStub
 

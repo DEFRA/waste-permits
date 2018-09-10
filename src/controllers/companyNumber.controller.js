@@ -8,7 +8,7 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class CompanyNumberController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const {account} = await RecoveryService.createApplicationContext(h, {account: true})
+    const { account } = await RecoveryService.createApplicationContext(h, { account: true })
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -19,15 +19,15 @@ module.exports = class CompanyNumberController extends BaseController {
         }
       }
     }
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const context = await RecoveryService.createApplicationContext(h, {application: true})
-      const {application} = context
+      const context = await RecoveryService.createApplicationContext(h, { application: true })
+      const { application } = context
 
       const companyNumber = Utilities.stripWhitespace(request.payload['company-number'])
 
@@ -46,7 +46,7 @@ module.exports = class CompanyNumberController extends BaseController {
         await application.save(context)
       }
 
-      return this.redirect({request, h, redirectPath: this.nextPath})
+      return this.redirect({ request, h, redirectPath: this.nextPath })
     }
   }
 }

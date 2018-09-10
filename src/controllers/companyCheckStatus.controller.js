@@ -1,23 +1,23 @@
 'use strict'
 
 const Handlebars = require('handlebars')
-const {Status} = require('../constants').Company
+const { Status } = require('../constants').Company
 const Routes = require('../routes')
-const {COMPANY_CHECK_STATUS, LLP_COMPANY_CHECK_STATUS} = require('../routes')
+const { COMPANY_CHECK_STATUS, LLP_COMPANY_CHECK_STATUS } = require('../routes')
 const BaseController = require('./base.controller')
 const CompanyLookupService = require('../services/companyLookup.service')
 const RecoveryService = require('../services/recovery.service')
 
 module.exports = class CompanyStatusController extends BaseController {
   async doGet (request, h, errors) {
-    const {account} = await RecoveryService.createApplicationContext(h, {account: true})
+    const { account } = await RecoveryService.createApplicationContext(h, { account: true })
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
     const companyPath = Routes[this.route.companyRoute].path
 
     if (!company) {
-      return this.redirect({request, h, redirectPath: companyPath})
+      return this.redirect({ request, h, redirectPath: companyPath })
     }
 
     let companyStatus
@@ -36,7 +36,7 @@ module.exports = class CompanyStatusController extends BaseController {
       }
 
       if (active.length) {
-        return this.redirect({request, h, redirectPath: this.nextPath})
+        return this.redirect({ request, h, redirectPath: this.nextPath })
       } else {
         switch (this.route.path) {
           case COMPANY_CHECK_STATUS.path:
@@ -59,6 +59,6 @@ module.exports = class CompanyStatusController extends BaseController {
     pageContext.companyStatus = companyStatus
     pageContext.enterCompanyNumberRoute = companyPath
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 }

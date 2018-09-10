@@ -8,6 +8,6 @@ module.exports = class NotSubmittedController extends BaseController {
     const pageContext = this.createPageContext(request, errors)
     pageContext.checkYourAnswersRoute = Routes.CHECK_BEFORE_SENDING.path
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 }

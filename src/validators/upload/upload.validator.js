@@ -9,7 +9,7 @@ module.exports = class UploadValidator extends BaseValidator {
   constructor (options = {}) {
     super()
 
-    this._validatorOptions = {...Constants.DEFAULT_UPLOAD_OPTIONS, ...options}
+    this._validatorOptions = { ...Constants.DEFAULT_UPLOAD_OPTIONS, ...options }
 
     this.errorMessages = {
       'file': {
@@ -35,7 +35,7 @@ module.exports = class UploadValidator extends BaseValidator {
           'headers': Joi.object().keys({
             'content-type': Joi.string(),
             'content-disposition': Joi.string().required()
-          }).required().when('filename', {is: Joi.string().required(), then: Joi.object({'content-type': Joi.valid(this.listValidMimeTypes())})})
+          }).required().when('filename', { is: Joi.string().required(), then: Joi.object({ 'content-type': Joi.valid(this.listValidMimeTypes()) }) })
         })
       }).optional()
     return {
@@ -46,8 +46,8 @@ module.exports = class UploadValidator extends BaseValidator {
   customValidators () {
     return {
       'file': {
-        'custom.max.filename': ({hapi: {filename}}) => filename.length > Annotation.filename.length.max,
-        'custom.empty': ({hapi: {filename}}, {'is-upload-file': isUpload}) => {
+        'custom.max.filename': ({ hapi: { filename } }) => filename.length > Annotation.filename.length.max,
+        'custom.empty': ({ hapi: { filename } }, { 'is-upload-file': isUpload }) => {
           return isUpload && !filename
         }
       }
@@ -58,7 +58,7 @@ module.exports = class UploadValidator extends BaseValidator {
     if (this._validatorOptions.fileTypes) {
       const types = this._validatorOptions
         .fileTypes
-        .map(({type}) => type)
+        .map(({ type }) => type)
       const lastType = types.pop()
       if (types.length) {
         return `${types.join(', ')} or ${lastType}`
@@ -73,7 +73,7 @@ module.exports = class UploadValidator extends BaseValidator {
     if (this._validatorOptions.fileTypes) {
       return this._validatorOptions
         .fileTypes
-        .map(({mimeType}) => mimeType)
+        .map(({ mimeType }) => mimeType)
     } else {
       return ''
     }

@@ -44,9 +44,9 @@ lab.afterEach(() => {
 
 lab.experiment('Company Declare Upload Course registration tests:', () => {
   new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
-    excludeCookiePostTests: true})
+    excludeCookiePostTests: true })
 
-  const {uploadPath, removePath} = paths
+  const { uploadPath, removePath } = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
@@ -60,14 +60,14 @@ lab.experiment('Company Declare Upload Course registration tests:', () => {
       // Additional tests
       {
         title: 'displays WAMITAB medium or high risk information',
-        stubs: () => (StandardRule.getByApplicationLineId = () => ({wamitabRiskLevel: WamitabRiskLevel.MEDIUM})),
+        stubs: () => (StandardRule.getByApplicationLineId = () => ({ wamitabRiskLevel: WamitabRiskLevel.MEDIUM })),
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
           'wamitab-risk-is-medium-or-high',
           'wamitab-risk-is-medium-or-high-abbr'])
       },
       {
         title: 'displays WAMITAB low risk information',
-        stubs: () => (StandardRule.getByApplicationLineId = () => ({wamitabRiskLevel: WamitabRiskLevel.LOW})),
+        stubs: () => (StandardRule.getByApplicationLineId = () => ({ wamitabRiskLevel: WamitabRiskLevel.LOW })),
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
           'wamitab-risk-is-low'])
       },
@@ -99,6 +99,6 @@ lab.experiment('Company Declare Upload Course registration tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'technical-qualification': 'course-registration'}})
+    helper.postSuccess({ payload: { 'technical-qualification': 'course-registration' } })
   })
 })

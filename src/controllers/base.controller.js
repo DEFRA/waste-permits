@@ -5,7 +5,7 @@ const Routes = require('../routes')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
-const {COOKIE_RESULT} = Constants
+const { COOKIE_RESULT } = Constants
 
 module.exports = class BaseController {
   constructor ({
@@ -65,7 +65,7 @@ module.exports = class BaseController {
   }
 
   async checkRouteAccess (slug, application, payment) {
-    const {ALREADY_SUBMITTED, NOT_SUBMITTED, NOT_PAID, RECOVERY_FAILED} = Routes
+    const { ALREADY_SUBMITTED, NOT_SUBMITTED, NOT_PAID, RECOVERY_FAILED } = Routes
     if (!application) {
       return RECOVERY_FAILED.path
     }
@@ -93,7 +93,7 @@ module.exports = class BaseController {
     }
   }
 
-  redirect ({request, h, redirectPath, cookie, error}) {
+  redirect ({ request, h, redirectPath, cookie, error }) {
     if (!cookie) {
       cookie = request.state[Constants.DEFRA_COOKIE_KEY]
     }
@@ -105,7 +105,7 @@ module.exports = class BaseController {
       .state(Constants.DEFRA_COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 
-  showView ({request, h, pageContext, code = 200}) {
+  showView ({ request, h, pageContext, code = 200 }) {
     return h
       .view(this.route.view, pageContext)
       .code(code)
@@ -136,7 +136,7 @@ module.exports = class BaseController {
   }
 
   async handler (request, h, errors) {
-    const {START_AT_BEGINNING, TECHNICAL_PROBLEM, TIMEOUT} = Routes
+    const { START_AT_BEGINNING, TECHNICAL_PROBLEM, TIMEOUT } = Routes
     if (this.cookieValidationRequired) {
       // Validate the cookie
       const cookieValidationResult = await CookieService.validateCookie(request)
@@ -155,20 +155,20 @@ module.exports = class BaseController {
       }
 
       if (redirectPath) {
-        return this.redirect({request, h, redirectPath, error: {message: cookieValidationResult}})
+        return this.redirect({ request, h, redirectPath, error: { message: cookieValidationResult } })
       }
     }
 
     if (this.applicationRequired) {
       try {
-        const {slug, application, payment} = await RecoveryService.createApplicationContext(h, {application: true, payment: true}) || {}
+        const { slug, application, payment } = await RecoveryService.createApplicationContext(h, { application: true, payment: true }) || {}
         const redirectPath = await this.checkRouteAccess(slug, application, payment)
         if (redirectPath) {
-          return this.redirect({request, h, redirectPath})
+          return this.redirect({ request, h, redirectPath })
         }
       } catch (error) {
         LoggingService.logError(error, request)
-        return this.redirect({request, h, redirectPath: TECHNICAL_PROBLEM.path, error})
+        return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path, error })
       }
     }
 
@@ -182,7 +182,7 @@ module.exports = class BaseController {
           return response
         } catch (error) {
           LoggingService.logError(error, request)
-          return this.redirect({request, h, redirectPath: TECHNICAL_PROBLEM.path, error})
+          return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path, error })
         }
     }
   }

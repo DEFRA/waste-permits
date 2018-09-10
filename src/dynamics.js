@@ -1,4 +1,4 @@
-const {VEHICLE_DISMANTLING_LESS_THAN_75000_TONS} = require('./constants').PermitTypes.STANDARD_RULES
+const { VEHICLE_DISMANTLING_LESS_THAN_75000_TONS } = require('./constants').PermitTypes.STANDARD_RULES
 
 const Dynamics = {
   AccountRoleCodes: {

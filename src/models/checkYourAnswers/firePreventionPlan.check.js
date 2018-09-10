@@ -1,7 +1,7 @@
 const BaseCheck = require('./base.check')
 
-const {FIRE_PREVENTION_PLAN: ruleSetId} = require('../applicationLine.model').RulesetIds
-const {FIRE_PREVENTION_PLAN} = require('../../routes')
+const { FIRE_PREVENTION_PLAN: ruleSetId } = require('../applicationLine.model').RulesetIds
+const { FIRE_PREVENTION_PLAN } = require('../../routes')
 
 module.exports = class FirePreventionPlanCheck extends BaseCheck {
   static get rulesetId () {
@@ -22,7 +22,7 @@ module.exports = class FirePreventionPlanCheck extends BaseCheck {
       heading: 'Fire prevention plan',
       answers: evidence.map((file) => file.filename),
       links: [
-        {path: FIRE_PREVENTION_PLAN.path, type: 'fire prevention plan'}
+        { path: FIRE_PREVENTION_PLAN.path, type: 'fire prevention plan' }
       ]
     })
   }

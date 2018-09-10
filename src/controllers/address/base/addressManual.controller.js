@@ -6,13 +6,13 @@ const RecoveryService = require('../../../services/recovery.service')
 
 module.exports = class AddressManualController extends BaseController {
   async doGet (request, h, errors) {
-    const {addressLookupFailed} = request.query || {}
+    const { addressLookupFailed } = request.query || {}
     if (addressLookupFailed) {
-      errors = this.setCustomError('custom.address.lookup.failed', 'building-name-or-number', {supressField: true})
+      errors = this.setCustomError('custom.address.lookup.failed', 'building-name-or-number', { supressField: true })
     }
     const pageContext = this.createPageContext(request, errors)
     pageContext.errorSummaryTitle = addressLookupFailed ? 'Our address finder is not working' : ''
-    const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+    const { applicationId, applicationLineId } = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
@@ -39,14 +39,14 @@ module.exports = class AddressManualController extends BaseController {
       }
     }
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+      const { applicationId, applicationLineId } = await RecoveryService.createApplicationContext(h)
 
       const addressDto = {
         buildingNameOrNumber: request.payload['building-name-or-number'],
@@ -58,7 +58,7 @@ module.exports = class AddressManualController extends BaseController {
 
       await this.getModel().saveManualAddress(request, applicationId, applicationLineId, addressDto)
 
-      return this.redirect({request, h, redirectPath: this.nextPath})
+      return this.redirect({ request, h, redirectPath: this.nextPath })
     }
   }
 }

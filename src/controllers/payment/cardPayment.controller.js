@@ -1,7 +1,7 @@
 'use strict'
 
 const Dynamics = require('../../dynamics')
-const {CARD_PROBLEM} = require('../../routes')
+const { CARD_PROBLEM } = require('../../routes')
 const BaseController = require('../base.controller')
 const Payment = require('../../models/payment.model')
 const LoggingService = require('../../services/logging.service')
@@ -9,14 +9,14 @@ const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class CardPaymentController extends BaseController {
   async doGet (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, {application: true, applicationLine: true, standardRule: true})
-    const {application, applicationLine, standardRule, slug} = context
+    const context = await RecoveryService.createApplicationContext(h, { application: true, applicationLine: true, standardRule: true })
+    const { application, applicationLine, standardRule, slug } = context
 
-    let {returnUrl} = request.query
+    let { returnUrl } = request.query
 
     let payment = await Payment.getCardPaymentDetails(context, applicationLine.id)
 
-    const {value = 0} = applicationLine
+    const { value = 0 } = applicationLine
     payment.description = `Application charge for a standard rules waste permit: ${standardRule.permitName} ${standardRule.code}`
     payment.value = value
     payment.category = Dynamics.PAYMENT_CATEGORY
@@ -33,12 +33,12 @@ module.exports = class CardPaymentController extends BaseController {
 
     if (paymentStatus === 'error') {
       const redirectPath = `${CARD_PROBLEM.path}/${slug}?status=${encodeURIComponent(paymentStatus)}`
-      return this.redirect({request, h, redirectPath})
+      return this.redirect({ request, h, redirectPath })
     }
 
     LoggingService.logDebug(`Gov.UK Pay card payment URL: ${result.PaymentNextUrlHref}`)
 
     // Re-direct off to Gov.UK Pay to take the payment
-    return this.redirect({request, h, redirectPath: result.PaymentNextUrlHref})
+    return this.redirect({ request, h, redirectPath: result.PaymentNextUrlHref })
   }
 }

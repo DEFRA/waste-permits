@@ -9,7 +9,7 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const Application = require('../../../src/models/application.model')
 const CookieService = require('../../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 
@@ -40,7 +40,7 @@ lab.afterEach(() => {
 lab.experiment('Not Paid page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true})
+    excludeAlreadySubmittedTest: true })
 
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)

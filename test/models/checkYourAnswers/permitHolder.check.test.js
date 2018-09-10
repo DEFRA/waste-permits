@@ -138,16 +138,16 @@ lab.experiment('PermitHolder Check tests:', () => {
 
     lab.test('(permit holder type) works correctly', async () => {
       const lines = await buildLines()
-      const {heading, headingId, answers, links} = lines[PERMIT_HOLDER_TYPE_LINE]
+      const { heading, headingId, answers, links } = lines[PERMIT_HOLDER_TYPE_LINE]
       const linePrefix = `${prefix}-type`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {answer, answerId} = answers.pop()
+      const { answer, answerId } = answers.pop()
       Code.expect(answer).to.equal('Limited company')
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder')
       Code.expect(linkType).to.equal(`permit holder`)
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
@@ -155,15 +155,15 @@ lab.experiment('PermitHolder Check tests:', () => {
 
     lab.test('(company line) works correctly', async () => {
       const lines = await buildLines()
-      const {heading, headingId, answers, links} = lines[PERMIT_HOLDER_LINE]
+      const { heading, headingId, answers, links } = lines[PERMIT_HOLDER_LINE]
       const linePrefix = `${prefix}-company`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode} = fakeCompanyRegisteredAddress
-      const {tradingName} = fakeApplication
-      const {accountName, companyNumber} = fakeCompanyAccount
-      answers.forEach(({answer, answerId}, answerIndex) => {
+      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = fakeCompanyRegisteredAddress
+      const { tradingName } = fakeApplication
+      const { accountName, companyNumber } = fakeCompanyAccount
+      answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
           case 0:
@@ -189,7 +189,7 @@ lab.experiment('PermitHolder Check tests:', () => {
             break
         }
       })
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/company/number')
       Code.expect(linkType).to.equal('company details')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
@@ -198,17 +198,17 @@ lab.experiment('PermitHolder Check tests:', () => {
     lab.test('(individual line) works correctly', async () => {
       fakeApplication.isIndividual = true
       const lines = await buildLines()
-      const {heading, headingId, answers, links} = lines[PERMIT_HOLDER_LINE]
+      const { heading, headingId, answers, links } = lines[PERMIT_HOLDER_LINE]
       const linePrefix = `${prefix}-individual`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode} = fakeIndividualPermitHolderAddress
-      const {tradingName} = fakeApplication
-      const {firstName, lastName, email} = fakeIndividualPermitHolder
-      const {telephone, dateOfBirth} = fakeIndividualPermitHolderDetails
+      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = fakeIndividualPermitHolderAddress
+      const { tradingName } = fakeApplication
+      const { firstName, lastName, email } = fakeIndividualPermitHolder
+      const { telephone, dateOfBirth } = fakeIndividualPermitHolderDetails
       const [year, month, day] = dateOfBirth.split('-')
-      answers.forEach(({answer, answerId}, answerIndex) => {
+      answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
           case 0:
@@ -227,7 +227,7 @@ lab.experiment('PermitHolder Check tests:', () => {
             Code.expect(answer).to.equal(`Date of birth: ${day} ${getMonth(month)} ${year}`)
             break
           case 5:
-            Code.expect(answer).to.equal({blankLine: true})
+            Code.expect(answer).to.equal({ blankLine: true })
             break
           case 6:
             Code.expect(answer).to.equal(`${buildingNameOrNumber}, ${addressLine1}`)
@@ -243,7 +243,7 @@ lab.experiment('PermitHolder Check tests:', () => {
             break
         }
       })
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/name')
       Code.expect(linkType).to.equal('individual details')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
@@ -251,17 +251,17 @@ lab.experiment('PermitHolder Check tests:', () => {
 
     lab.test('(directors line) works correctly', async () => {
       const lines = await buildLines()
-      const {heading, headingId, answers, links} = lines[DIRECTORS_LINE]
+      const { heading, headingId, answers, links } = lines[DIRECTORS_LINE]
       const linePrefix = `${prefix}-director`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {answer, answerId} = answers.pop()
-      const {firstName, lastName, dob: {day, month, year}} = fakeDirector
+      const { answer, answerId } = answers.pop()
+      const { firstName, lastName, dob: { day, month, year } } = fakeDirector
       Code.expect(answer).to.equal(`${firstName} ${lastName}: ${day} ${getMonth(month)} ${year}`)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/company/director-date-of-birth')
       Code.expect(linkType).to.equal(`director's date of birth`)
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
@@ -269,17 +269,17 @@ lab.experiment('PermitHolder Check tests:', () => {
 
     lab.test('(company secretary email line) works correctly', async () => {
       const lines = await buildLines()
-      const {heading, headingId, answers, links} = lines[COMPANY_SECRETARY_EMAIL_LINE]
+      const { heading, headingId, answers, links } = lines[COMPANY_SECRETARY_EMAIL_LINE]
       const linePrefix = `${prefix}-company-secretary-email`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {answer, answerId} = answers.pop()
-      const {email} = fakeCompanySecretary
+      const { answer, answerId } = answers.pop()
+      const { email } = fakeCompanySecretary
       Code.expect(answer).to.equal(email)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/company/director-email')
       Code.expect(linkType).to.equal('company secretary or director email')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
@@ -287,13 +287,13 @@ lab.experiment('PermitHolder Check tests:', () => {
 
     lab.test('(convictions line) works correctly', async () => {
       const lines = await buildLines()
-      const {heading, headingId, answers, links} = lines[CONVICTIONS_LINE]
+      const { heading, headingId, answers, links } = lines[CONVICTIONS_LINE]
       const linePrefix = `${prefix}-convictions`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {relevantOffencesDetails} = fakeApplication
-      answers.forEach(({answer, answerId}, answerIndex) => {
+      const { relevantOffencesDetails } = fakeApplication
+      answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
           case 0:
@@ -307,7 +307,7 @@ lab.experiment('PermitHolder Check tests:', () => {
             break
         }
       })
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/company/declare-offences')
       Code.expect(linkType).to.equal('offences')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
@@ -315,13 +315,13 @@ lab.experiment('PermitHolder Check tests:', () => {
 
     lab.test('(bankruptcy line) works correctly', async () => {
       const lines = await buildLines()
-      const {heading, headingId, answers, links} = lines[BANKRUPTCY_LINE]
+      const { heading, headingId, answers, links } = lines[BANKRUPTCY_LINE]
       const linePrefix = `${prefix}-bankruptcy-or-insolvency`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {bankruptcyDetails} = fakeApplication
-      answers.forEach(({answer, answerId}, answerIndex) => {
+      const { bankruptcyDetails } = fakeApplication
+      answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
           case 0:
@@ -335,7 +335,7 @@ lab.experiment('PermitHolder Check tests:', () => {
             break
         }
       })
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/company/bankruptcy-insolvency')
       Code.expect(linkType).to.equal('bankruptcy or insolvency')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)

@@ -5,13 +5,13 @@ const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const DrainageTypeDrain = require('../models/taskList/drainageTypeDrain.model')
 const RecoveryService = require('../services/recovery.service')
-const {DrainageTypes} = require('../dynamics')
+const { DrainageTypes } = require('../dynamics')
 
-const {DRAINAGE_TYPE_FAIL, TASK_LIST} = Routes
+const { DRAINAGE_TYPE_FAIL, TASK_LIST } = Routes
 
 module.exports = class drainageTypeController extends BaseController {
   async doGet (request, h, errors) {
-    const {application} = await RecoveryService.createApplicationContext(h, {application: true})
+    const { application } = await RecoveryService.createApplicationContext(h, { application: true })
     const pageContext = this.createPageContext(request, errors)
 
     if (request.payload) {
@@ -33,7 +33,7 @@ module.exports = class drainageTypeController extends BaseController {
 
     pageContext.drainageTypes = drainageTypes
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
@@ -42,8 +42,8 @@ module.exports = class drainageTypeController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const context = await RecoveryService.createApplicationContext(h, {application: true, standardRule: true})
-      const {applicationId, applicationLineId, application, standardRule} = context
+      const context = await RecoveryService.createApplicationContext(h, { application: true, standardRule: true })
+      const { applicationId, applicationLineId, application, standardRule } = context
 
       const type = parseInt(request.payload['drainage-type'])
 
@@ -71,7 +71,7 @@ module.exports = class drainageTypeController extends BaseController {
         redirectPath = DRAINAGE_TYPE_FAIL.path
       }
 
-      return this.redirect({request, h, redirectPath})
+      return this.redirect({ request, h, redirectPath })
     }
   }
 }

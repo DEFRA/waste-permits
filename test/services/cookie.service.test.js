@@ -7,7 +7,7 @@ const Code = require('code')
 const Constants = require('../../src/constants')
 const ActiveDirectoryAuthService = require('../../src/services/activeDirectoryAuth.service')
 const CookieService = require('../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let fakeRequest
 let authServiceGetTokenStub

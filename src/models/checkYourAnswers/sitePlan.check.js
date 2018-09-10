@@ -1,7 +1,7 @@
 const BaseCheck = require('./base.check')
 
-const {SITE_PLAN: ruleSetId} = require('../applicationLine.model').RulesetIds
-const {SITE_PLAN} = require('../../routes')
+const { SITE_PLAN: ruleSetId } = require('../applicationLine.model').RulesetIds
+const { SITE_PLAN } = require('../../routes')
 
 module.exports = class SitePlanCheck extends BaseCheck {
   static get rulesetId () {
@@ -22,7 +22,7 @@ module.exports = class SitePlanCheck extends BaseCheck {
       heading: 'Site plan',
       answers: evidence.map((file) => file.filename),
       links: [
-        {path: SITE_PLAN.path, type: 'site plan'}
+        { path: SITE_PLAN.path, type: 'site plan' }
       ]
     })
   }

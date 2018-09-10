@@ -1,7 +1,7 @@
 const BaseCheck = require('./base.check')
 
-const {INVOICING_DETAILS: ruleSetId} = require('../applicationLine.model').RulesetIds
-const {POSTCODE_INVOICE, MANUAL_INVOICE} = require('../../routes')
+const { INVOICING_DETAILS: ruleSetId } = require('../applicationLine.model').RulesetIds
+const { POSTCODE_INVOICE, MANUAL_INVOICE } = require('../../routes')
 
 module.exports = class InvoiceCheck extends BaseCheck {
   static get rulesetId () {
@@ -27,7 +27,7 @@ module.exports = class InvoiceCheck extends BaseCheck {
       townOrCity = '',
       postcode = ''
     } = await this.getInvoiceAddress()
-    const {path} = fromAddressLookup ? POSTCODE_INVOICE : MANUAL_INVOICE
+    const { path } = fromAddressLookup ? POSTCODE_INVOICE : MANUAL_INVOICE
     let firstLine = buildingNameOrNumber
     if (firstLine && addressLine1) {
       firstLine += ', '
@@ -37,7 +37,7 @@ module.exports = class InvoiceCheck extends BaseCheck {
       heading: 'Invoice address',
       prefix: 'address',
       answers: [firstLine, addressLine2, townOrCity, postcode],
-      links: [{path, type: 'invoice address'}]
+      links: [{ path, type: 'invoice address' }]
     })
   }
 }

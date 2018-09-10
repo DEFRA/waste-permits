@@ -40,9 +40,9 @@ lab.afterEach(() => {
 lab.experiment('FirePrevention Upload FirePrevention plan tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true})
+    excludeAlreadySubmittedTest: true })
 
-  const {uploadPath, removePath} = paths
+  const { uploadPath, removePath } = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
@@ -70,6 +70,6 @@ lab.experiment('FirePrevention Upload FirePrevention plan tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'fire-prevention-plan': 'fire-prevention-plan'}})
+    helper.postSuccess({ payload: { 'fire-prevention-plan': 'fire-prevention-plan' } })
   })
 })

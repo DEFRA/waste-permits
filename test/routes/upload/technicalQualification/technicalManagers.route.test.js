@@ -39,9 +39,9 @@ lab.afterEach(() => {
 
 lab.experiment('Upload details for all technically competent managers tests:', () => {
   new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
-    excludeCookiePostTests: true})
+    excludeCookiePostTests: true })
 
-  const {uploadPath, removePath} = paths
+  const { uploadPath, removePath } = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
@@ -80,12 +80,12 @@ lab.experiment('Upload details for all technically competent managers tests:', (
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
     helper.uploadSuccess('application/msword')
-    helper.uploadInvalid({fileTypes: ['DOC', 'DOCX', 'PDF', 'ODT']}, 'application/msword')
+    helper.uploadInvalid({ fileTypes: ['DOC', 'DOCX', 'PDF', 'ODT'] }, 'application/msword')
     helper.uploadFailure('application/msword')
   })
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'technical-qualification': 'technical-managers'}})
+    helper.postSuccess({ payload: { 'technical-qualification': 'technical-managers' } })
   })
 })

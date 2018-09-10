@@ -10,14 +10,14 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class CompanyTypeController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const {account} = await RecoveryService.createApplicationContext(h, {account: true})
+    const { account } = await RecoveryService.createApplicationContext(h, { account: true })
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
     const companyType = company ? Constants.Company.Type[company.type] : undefined
 
     if (!companyType) {
-      return this.redirect({request, h, redirectPath: this.nextPath})
+      return this.redirect({ request, h, redirectPath: this.nextPath })
     }
 
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({
@@ -29,6 +29,6 @@ module.exports = class CompanyTypeController extends BaseController {
     pageContext.companyType = companyType
     pageContext.enterCompanyNumberRoute = Routes[this.route.companyRoute].path
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 }

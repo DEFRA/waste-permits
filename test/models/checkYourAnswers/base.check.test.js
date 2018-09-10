@@ -23,7 +23,7 @@ const month = 2
 const year = 1998
 const fakeDirector = {
   id: 'DIRECTOR_ID',
-  dob: {month, year}
+  dob: { month, year }
 }
 const fakeAccount = {
   id: 'ACCOUNT_ID',
@@ -126,18 +126,18 @@ lab.experiment('Base Check tests:', () => {
     const prefix = 'check-test'
     const heading = 'SECTION_HEADING'
     const answers = ['ANSWER-1', 'ANSWER-2']
-    const links = [{path: '/path-1', type: 'type 1'}, {path: '/path-2', type: 'type 2'}]
-    const line = check.buildLine({heading, prefix, answers, links})
+    const links = [{ path: '/path-1', type: 'type 1' }, { path: '/path-2', type: 'type 2' }]
+    const line = check.buildLine({ heading, prefix, answers, links })
 
     Code.expect(line.heading).to.equal(heading)
     Code.expect(line.headingId).to.equal(`section-${prefix}-heading`)
 
-    line.answers.forEach(({answer, answerId}, index) => {
+    line.answers.forEach(({ answer, answerId }, index) => {
       Code.expect(answer).to.equal(answers[index])
       Code.expect(answerId).to.equal(`section-${prefix}-answer-${index + 1}`)
     })
 
-    line.links.forEach(({link, linkId, linkType}, index) => {
+    line.links.forEach(({ link, linkId, linkType }, index) => {
       Code.expect(link).to.equal(links[index].path)
       Code.expect(linkType).to.equal(links[index].type)
       Code.expect(linkId).to.equal(`section-${prefix}-link-${index + 1}`)
@@ -205,7 +205,7 @@ lab.experiment('Base Check tests:', () => {
   lab.test('getMembers works correctly', async () => {
     const check = new BaseCheck(context)
     const members = await check.getMembers()
-    Code.expect(members).to.equal([new ApplicationContact(Merge({dob: {day}}, fakeDirector))])
+    Code.expect(members).to.equal([new ApplicationContact(Merge({ dob: { day } }, fakeDirector))])
     Code.expect(context.members).to.equal(await check.getMembers())
   })
 
@@ -248,7 +248,7 @@ lab.experiment('Base Check tests:', () => {
   lab.test('getDirectors works correctly', async () => {
     const check = new BaseCheck(context)
     const directors = await check.getDirectors()
-    Code.expect(directors).to.equal([new ApplicationContact(Merge({dob: {day}}, fakeDirector))])
+    Code.expect(directors).to.equal([new ApplicationContact(Merge({ dob: { day } }, fakeDirector))])
     Code.expect(context.directors).to.equal(await check.getDirectors())
   })
 

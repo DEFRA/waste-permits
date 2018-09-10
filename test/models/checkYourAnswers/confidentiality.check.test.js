@@ -32,13 +32,13 @@ lab.experiment('Confidentiality Check tests:', () => {
   lab.test('buildlines works correctly', async () => {
     const check = new ConfidentialityCheck()
     const lines = await check.buildLines()
-    const {heading, headingId, answers, links} = lines.pop()
+    const { heading, headingId, answers, links } = lines.pop()
 
     Code.expect(heading).to.equal(heading)
     Code.expect(headingId).to.equal(`${prefix}-heading`)
 
-    const {confidentialityDetails} = fakeApplication
-    answers.forEach(({answer, answerId}, answerIndex) => {
+    const { confidentialityDetails } = fakeApplication
+    answers.forEach(({ answer, answerId }, answerIndex) => {
       Code.expect(answerId).to.equal(`${prefix}-answer-${answerIndex + 1}`)
       switch (answerIndex) {
         case 0:
@@ -53,7 +53,7 @@ lab.experiment('Confidentiality Check tests:', () => {
       }
     })
 
-    const {link, linkId, linkType} = links.pop()
+    const { link, linkId, linkType } = links.pop()
     Code.expect(link).to.equal('/confidentiality')
     Code.expect(linkType).to.equal('commercial confidentiality')
     Code.expect(linkId).to.equal(`${prefix}-link`)

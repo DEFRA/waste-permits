@@ -10,7 +10,7 @@ const Contact = require('../../models/contact.model')
 const PLUSES_AND_SPACES_REGEX = /(\+|\s)/g
 const PLUSES_SPACES_AND_NUMBERS_REGEX = /^[0-9 +]*$/
 const PLUSES_CANNOT_PRECEED_ZERO = /^(\+[ ]*[1-9][0-9 ]*|[^+][0-9 ]*)$/
-const {EMAIL_VALID_REGEX} = Constants.Validation
+const { EMAIL_VALID_REGEX } = Constants.Validation
 
 module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValidator {
   constructor (options) {

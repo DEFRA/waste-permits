@@ -13,7 +13,7 @@ const ApplicationReturn = require('../../../src/models/applicationReturn.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 const PaymentTypes = {
   CARD_PAYMENT: 910400000,
@@ -162,14 +162,14 @@ lab.experiment(`How do you want to pay?:`, () => {
 
     lab.experiment('success', () => {
       lab.test('when payment is selected as bacs', async () => {
-        postRequest.payload = {'payment-type': PaymentTypes.BACS_PAYMENT}
+        postRequest.payload = { 'payment-type': PaymentTypes.BACS_PAYMENT }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal('/pay/bacs')
       })
 
       lab.test('when payment is selected as card', async () => {
-        postRequest.payload = {'payment-type': PaymentTypes.CARD_PAYMENT}
+        postRequest.payload = { 'payment-type': PaymentTypes.CARD_PAYMENT }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.startWith('/pay/card')

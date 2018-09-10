@@ -10,7 +10,7 @@ const server = require('../../server')
 const Application = require('../../src/models/application.model')
 const Payment = require('../../src/models/payment.model')
 const CookieService = require('../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 

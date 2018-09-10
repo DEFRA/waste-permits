@@ -11,8 +11,8 @@ const CookieService = require('../../../../src/services/cookie.service')
 const Application = require('../../../../src/models/application.model')
 const LoggingService = require('../../../../src/services/logging.service')
 const RecoveryService = require('../../../../src/services/recovery.service')
-const {COOKIE_RESULT} = require('../../../../src/constants')
-const {PERMIT_HOLDER_TYPES} = require('../../../../src/dynamics')
+const { COOKIE_RESULT } = require('../../../../src/constants')
+const { PERMIT_HOLDER_TYPES } = require('../../../../src/dynamics')
 
 let sandbox
 
@@ -188,12 +188,12 @@ lab.experiment('Company Declare Offences tests:', () => {
       })
 
       lab.test('when offences set to yes and no details entered', async () => {
-        postRequest.payload = {'declared': 'yes'}
+        postRequest.payload = { 'declared': 'yes' }
         await checkValidationMessage('declaration-details', 'Enter details of the convictions', true)
       })
 
       lab.test('when offences set to yes and details entered with 2001 characters', async () => {
-        postRequest.payload = {'declared': 'yes', 'declaration-details': 'a'.repeat(2001)}
+        postRequest.payload = { 'declared': 'yes', 'declaration-details': 'a'.repeat(2001) }
         await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you have written', true)
       })
     })

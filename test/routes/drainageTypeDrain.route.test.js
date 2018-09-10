@@ -13,7 +13,7 @@ const Payment = require('../../src/models/payment.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 const DrainageTypes = {
   SEWER: '910400000',
@@ -40,7 +40,7 @@ const checkCommonElements = async (doc) => {
 
   Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
 
-  const {BLIND_SUMP, OIL_SEPARATOR, SEWER, WATERCOURSE} = DrainageTypes
+  const { BLIND_SUMP, OIL_SEPARATOR, SEWER, WATERCOURSE } = DrainageTypes
 
   Code.expect(doc.getElementById('sewer').getAttribute('value')).to.equal(SEWER)
   Code.expect(doc.getElementById('blind-sump').getAttribute('value')).to.equal(BLIND_SUMP)
@@ -127,7 +127,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
   })
 
   lab.experiment(`POST ${routePath}`, () => {
-    const {BLIND_SUMP, OIL_SEPARATOR, SEWER, WATERCOURSE} = DrainageTypes
+    const { BLIND_SUMP, OIL_SEPARATOR, SEWER, WATERCOURSE } = DrainageTypes
     let postRequest
 
     lab.beforeEach(() => {

@@ -14,7 +14,7 @@ const Account = require('../../src/models/account.model')
 const Payment = require('../../src/models/payment.model')
 const LoggingService = require('../../src/services/logging.service')
 
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 const COMPANY_TYPES = {
   UK_ESTABLISHMENT: 'a UK establishment company'
 }
@@ -70,7 +70,7 @@ lab.afterEach(() => {
 lab.experiment('Check company type page tests:', () => {
   // There is no POST for this route
   new GeneralTestHelper(lab, routePath).test({
-    excludeCookiePostTests: true})
+    excludeCookiePostTests: true })
 
   lab.experiment(`GET ${routePath}`, () => {
     let getRequest

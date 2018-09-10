@@ -4,12 +4,12 @@ const Dynamics = require('../dynamics')
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Dynamics.TechnicalQualification
+const { WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS } = Dynamics.TechnicalQualification
 
 module.exports = class TechnicalQualificationController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const {application} = await RecoveryService.createApplicationContext(h, {application: true})
+    const { application } = await RecoveryService.createApplicationContext(h, { application: true })
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -41,20 +41,20 @@ module.exports = class TechnicalQualificationController extends BaseController {
         break
     }
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const context = await RecoveryService.createApplicationContext(h, {application: true})
-      const {application} = context
+      const context = await RecoveryService.createApplicationContext(h, { application: true })
+      const { application } = context
 
       application.technicalQualification = request.payload['technical-qualification']
       await application.save(context)
 
-      return this.redirect({request, h, redirectPath: await TechnicalQualificationController._getPath(application.technicalQualification)})
+      return this.redirect({ request, h, redirectPath: await TechnicalQualificationController._getPath(application.technicalQualification) })
     }
   }
 

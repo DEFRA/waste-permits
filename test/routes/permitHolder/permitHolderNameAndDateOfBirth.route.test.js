@@ -12,7 +12,7 @@ const Application = require('../../../src/models/application.model')
 const Payment = require('../../../src/models/payment.model')
 const Contact = require('../../../src/models/contact.model')
 const AddressDetail = require('../../../src/models/addressDetail.model')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 

@@ -12,7 +12,7 @@ const ApplicationLine = require('../../../src/models/applicationLine.model')
 const Payment = require('../../../src/models/payment.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 
@@ -66,7 +66,7 @@ lab.afterEach(() => {
 
 lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
   new GeneralTestHelper(lab, routePath).test({
-    excludeAlreadySubmittedTest: true})
+    excludeAlreadySubmittedTest: true })
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc

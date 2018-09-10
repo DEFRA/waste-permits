@@ -16,7 +16,7 @@ const Payment = require('../../../src/models/payment.model')
 const StandardRule = require('../../../src/models/standardRule.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 const fakeSlug = 'SLUG'
 
@@ -64,7 +64,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CookieService, 'generateCookie').value(() => ({authToken: 'AUTH_TOKEN'}))
+  sandbox.stub(CookieService, 'generateCookie').value(() => ({ authToken: 'AUTH_TOKEN' }))
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(ApplicationLine, 'getByApplicationId').value(() => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(ApplicationReturn, 'getBySlug').value(() => new ApplicationReturn(fakeApplicationReturn))

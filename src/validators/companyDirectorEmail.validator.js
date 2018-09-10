@@ -4,7 +4,7 @@ const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 const Constants = require('../constants')
 const AddressDetail = require('../models/addressDetail.model')
-const {EMAIL_VALID_REGEX} = Constants.Validation
+const { EMAIL_VALID_REGEX } = Constants.Validation
 
 module.exports = class ContactDetailsValidator extends BaseValidator {
   constructor (options) {

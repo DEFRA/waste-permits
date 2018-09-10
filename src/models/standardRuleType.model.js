@@ -1,6 +1,6 @@
 'use strict'
 
-const {OFFLINE_CATEGORIES} = require('../constants')
+const { OFFLINE_CATEGORIES } = require('../constants')
 const BaseModel = require('./base.model')
 
 class StandardRuleType extends BaseModel {
@@ -14,10 +14,10 @@ class StandardRuleType extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'id', dynamics: 'defra_standardruletypeid'},
-      {field: 'category', dynamics: 'defra_category'},
-      {field: 'hint', dynamics: 'defra_hint'},
-      {field: 'categoryName', dynamics: 'defra_name'}
+      { field: 'id', dynamics: 'defra_standardruletypeid' },
+      { field: 'category', dynamics: 'defra_category' },
+      { field: 'hint', dynamics: 'defra_hint' },
+      { field: 'categoryName', dynamics: 'defra_name' }
     ]
   }
 
@@ -28,13 +28,13 @@ class StandardRuleType extends BaseModel {
   static async getCategories (context) {
     const categories = Object.keys(OFFLINE_CATEGORIES)
       .map((key) => {
-        const {id, category, name: categoryName, hint = ''} = OFFLINE_CATEGORIES[key]
-        return {id, categoryName, category, hint}
+        const { id, category, name: categoryName, hint = '' } = OFFLINE_CATEGORIES[key]
+        return { id, categoryName, category, hint }
       })
 
     const standardRuleTypes = await StandardRuleType.list(context)
-    standardRuleTypes.forEach(({id = '', categoryName = '', category = '', hint = ''}) => {
-      categories.push({id, categoryName: categoryName.toLowerCase(), category, hint})
+    standardRuleTypes.forEach(({ id = '', categoryName = '', category = '', hint = '' }) => {
+      categories.push({ id, categoryName: categoryName.toLowerCase(), category, hint })
     })
 
     categories.sort((a, b) => {

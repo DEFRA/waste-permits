@@ -5,15 +5,15 @@ const CompanyLookupService = require('../services/companyLookup.service')
 const RecoveryService = require('../services/recovery.service')
 
 const Routes = require('../routes')
-const {TRADING_NAME_USAGE} = require('../dynamics')
+const { TRADING_NAME_USAGE } = require('../dynamics')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const {application, account} = await RecoveryService.createApplicationContext(h, {application: true, account: true})
+    const { application, account } = await RecoveryService.createApplicationContext(h, { application: true, account: true })
 
     if (!application || !account) {
-      return this.redirect({request, h, redirectPath: Routes.TASK_LIST.path})
+      return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -37,15 +37,15 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
     pageContext.enterCompanyNumberRoute = Routes[this.route.companyRoute].path
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const context = await RecoveryService.createApplicationContext(h, {application: true, account: true})
-      const {application, account} = context
+      const context = await RecoveryService.createApplicationContext(h, { application: true, account: true })
+      const { application, account } = context
 
       if (application && account) {
         const alreadyConfirmed = account.isValidatedWithCompaniesHouse
@@ -72,7 +72,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         await application.save(context)
       }
-      return this.redirect({request, h, redirectPath: this.nextPath})
+      return this.redirect({ request, h, redirectPath: this.nextPath })
     }
   }
 }

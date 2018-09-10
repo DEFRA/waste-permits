@@ -15,9 +15,9 @@ module.exports = class PollingService {
     // Generate a CRM token
     const authToken = await authService.getToken()
     try {
-      const configurations = await Configuration.listBy({authToken})
+      const configurations = await Configuration.listBy({ authToken })
       if (configurations && configurations.length) {
-        configurations.forEach(({title, status}) => LoggingService.logInfo(`Polling Dynamics: Configured instance "${title}" found with a status of "${status}"`))
+        configurations.forEach(({ title, status }) => LoggingService.logInfo(`Polling Dynamics: Configured instance "${title}" found with a status of "${status}"`))
       } else {
         throw new Error('No Configurations found')
       }

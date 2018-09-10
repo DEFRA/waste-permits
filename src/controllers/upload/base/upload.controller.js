@@ -13,7 +13,7 @@ module.exports = class UploadController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h)
-    const {applicationId} = context
+    const { applicationId } = context
 
     const list = await Annotation.listByApplicationIdAndSubject(context, applicationId, this.subject)
 
@@ -22,7 +22,7 @@ module.exports = class UploadController extends BaseController {
     }
 
     pageContext.uploadFormAction = `${this.path}/upload`
-    pageContext.annotations = list.map(({filename, id}) => ({filename, removeAction: `${this.path}/remove/${id}`}))
+    pageContext.annotations = list.map(({ filename, id }) => ({ filename, removeAction: `${this.path}/remove/${id}` }))
     pageContext.fileTypes = this.validator.formatValidTypes()
     pageContext.maxSize = this.validator.getMaxSize()
     pageContext.subject = this.subject
@@ -31,7 +31,7 @@ module.exports = class UploadController extends BaseController {
       Object.assign(pageContext, await this.getSpecificPageContext(h, pageContext))
     }
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
@@ -39,7 +39,7 @@ module.exports = class UploadController extends BaseController {
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h)
-      const {applicationId, applicationLineId} = context
+      const { applicationId, applicationLineId } = context
 
       const list = await Annotation.listByApplicationIdAndSubject(context, applicationId, this.subject)
       if (!list.length) {
@@ -48,7 +48,7 @@ module.exports = class UploadController extends BaseController {
       if (this.updateCompleteness) {
         await this.updateCompleteness(context, applicationId, applicationLineId)
       }
-      return this.redirect({request, h, redirectPath: this.nextPath})
+      return this.redirect({ request, h, redirectPath: this.nextPath })
     }
   }
 
@@ -58,7 +58,7 @@ module.exports = class UploadController extends BaseController {
       if (!CookieService.validateCookie(request)) {
         const message = 'Upload failed validating cookie'
         LoggingService.logError(message, request)
-        return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: {message}})
+        return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
       }
 
       // Post if it's not an attempt to upload a file
@@ -75,8 +75,8 @@ module.exports = class UploadController extends BaseController {
         return this.doGet(request, h, errors)
       }
 
-      const context = await RecoveryService.createApplicationContext(h, {application: true})
-      const {application} = context
+      const context = await RecoveryService.createApplicationContext(h, { application: true })
+      const { application } = context
 
       try {
         await UploadService.upload(context, application, request.payload.file, this.subject)
@@ -90,10 +90,10 @@ module.exports = class UploadController extends BaseController {
         }
       }
 
-      return this.redirect({request, h, redirectPath: this.path})
+      return this.redirect({ request, h, redirectPath: this.path })
     } catch (error) {
       LoggingService.logError(error, request)
-      return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error})
+      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error })
     }
   }
 
@@ -102,11 +102,11 @@ module.exports = class UploadController extends BaseController {
     if (!CookieService.validateCookie(request)) {
       const message = 'Remove failed validating cookie'
       LoggingService.logError(message, request)
-      return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: {message}})
+      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
     }
 
     const context = await RecoveryService.createApplicationContext(h)
-    const {applicationId} = context
+    const { applicationId } = context
     const annotationId = request.params.id
     const annotation = await Annotation.getById(context, annotationId)
 
@@ -114,10 +114,10 @@ module.exports = class UploadController extends BaseController {
     if (annotation.applicationId !== applicationId) {
       const message = 'Annotation and application mismatch'
       LoggingService.logError(message, request)
-      return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: {message}})
+      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
     }
     await annotation.delete(context, annotationId)
-    return this.redirect({request, h, redirectPath: this.path})
+    return this.redirect({ request, h, redirectPath: this.path })
   }
 
   async uploadFailAction (request, h, errors) {

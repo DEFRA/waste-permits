@@ -13,7 +13,7 @@ const Application = require('../../../src/models/application.model')
 const Contact = require('../../../src/models/contact.model')
 const Payment = require('../../../src/models/payment.model')
 const AddressDetail = require('../../../src/models/addressDetail.model')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 
@@ -146,7 +146,7 @@ lab.experiment('Permit Holder Contact Details page tests:', () => {
     })
 
     lab.test(`GET ${routePath} returns the permit holder contact details page correctly when it is a new application where the permit holder exists`, async () => {
-      const {email} = fakePermitHolder
+      const { email } = fakePermitHolder
       checkPageElements(getRequest, email, '')
     })
   })

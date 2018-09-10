@@ -74,8 +74,8 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value)
       },
       'dob-day': {
-        'custom.invalid': (dobDay, {'dob-month': dobMonth, 'dob-year': dobYear}) => !getAge(dobDay, dobMonth, dobYear),
-        'custom.range': (dobDay, {'dob-month': dobMonth, 'dob-year': dobYear}) => {
+        'custom.invalid': (dobDay, { 'dob-month': dobMonth, 'dob-year': dobYear }) => !getAge(dobDay, dobMonth, dobYear),
+        'custom.range': (dobDay, { 'dob-month': dobMonth, 'dob-year': dobYear }) => {
           const age = getAge(dobDay, dobMonth, dobYear)
           return !(age > MIN_AGE && age < MAX_AGE)
         }

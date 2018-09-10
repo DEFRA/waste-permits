@@ -39,9 +39,9 @@ lab.afterEach(() => {
 
 lab.experiment('Site Upload Site plan tests:', () => {
   new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
-    excludeCookiePostTests: true})
+    excludeCookiePostTests: true })
 
-  const {uploadPath, removePath} = paths
+  const { uploadPath, removePath } = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
@@ -69,6 +69,6 @@ lab.experiment('Site Upload Site plan tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'site-plan': 'site-plan'}})
+    helper.postSuccess({ payload: { 'site-plan': 'site-plan' } })
   })
 })

@@ -76,8 +76,8 @@ module.exports = class BaseModel {
     return this.mapping
       .filter(customFilter)
       // ignore constant and writeonly values as they will not be retrieved from dynamics
-      .filter(({constant, writeOnly}) => !constant && !writeOnly)
-      .map(({dynamics}) => dynamics)
+      .filter(({ constant, writeOnly }) => !constant && !writeOnly)
+      .map(({ dynamics }) => dynamics)
   }
 
   static dynamicsToModel (dynamicsData, customFilter = () => true) {
@@ -128,7 +128,7 @@ module.exports = class BaseModel {
     this.mapping
     // See the explanation of a custom filter in the method selectedDynamicsFields above.
       .filter(customFilter)
-      .forEach(({field, dynamics, constant, isDate}) => {
+      .forEach(({ field, dynamics, constant, isDate }) => {
         // set values in javascript objects by specifying a path eg 'dob.month'.
         // if the path doesn't exist yet, it will be created.
         let val = dynamicsData[dynamics]
@@ -185,14 +185,14 @@ module.exports = class BaseModel {
     // - The defra_type field has been added with the value of 'TYPE' as specified in the mapping.
     // - The dynamics account entity has been bound to the contacts entity via the contactId
     //
-    const {mapping, name} = this.constructor
+    const { mapping, name } = this.constructor
     const dynamicsData = {}
     mapping
     // See the explanation of a custom filter in the method selectedDynamicsFields above
       .filter(customFilter)
       // ignore readonly values as they will only be set when reading from dynamics
-      .filter(({readOnly}) => !readOnly)
-      .forEach(({field, dynamics, constant, bind, isDate, length}) => {
+      .filter(({ readOnly }) => !readOnly)
+      .forEach(({ field, dynamics, constant, bind, isDate, length }) => {
         const value = this[field]
         // check the value in the field meets the length constraints if applicable
         if (length && typeof value === 'string') {
@@ -230,7 +230,7 @@ module.exports = class BaseModel {
     const className = this.constructor.name
 
     // Properties
-    const model = {...this}
+    const model = { ...this }
     let properties = JSON.stringify(model).replace(/{/g, '{\n  ')
     properties = properties.replace(/}/g, '\n}')
     properties = properties.replace(/,/g, ', ')
@@ -324,7 +324,7 @@ module.exports = class BaseModel {
   }
 
   async listChildren (context = {}, filterData = {}, orderByFields = '') {
-    const {entity, id: {relationship}} = this.constructor
+    const { entity, id: { relationship } } = this.constructor
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const query = `${entity}(${this.id})/${relationship}?${this.constructor._buildQuerySelect(filterData, orderByFields)}`
     try {
@@ -356,17 +356,17 @@ module.exports = class BaseModel {
     // Then the deleteQuery that is generated within the code below will be:
     // 'contacts(10b88e9b-abaa-e711-8114-5065f38a3b21)/defra_contact_defra_application_primarycontactid(43acb872-19ca-e711-8112-5065f38a5b01)/$ref'
     //
-    const {entity, mapping} = this.constructor
+    const { entity, mapping } = this.constructor
     const boundMapping = mapping
-      .filter(({bind}) => bind && bind.relationship) // only those fields that have a relationship with another entity
-      .filter(({field}) => !this[field]) // only those where the value of the field has been cleared
+      .filter(({ bind }) => bind && bind.relationship) // only those fields that have a relationship with another entity
+      .filter(({ field }) => !this[field]) // only those where the value of the field has been cleared
     if (boundMapping.length) {
       // select all the cleared references of entities bound to this entity and get their original values
-      const selectedFields = boundMapping.map(({dynamics}) => dynamics).join(',')
+      const selectedFields = boundMapping.map(({ dynamics }) => dynamics).join(',')
       const entityQuery = `${entity}(${this.id})?$select=${selectedFields}`
       const result = await dynamicsDal.search(entityQuery)
       // using the original value of each reference, build the query and delete the bound reference
-      let deleteCalls = boundMapping.map(async ({dynamics, bind: {relationship, entity}}) => {
+      let deleteCalls = boundMapping.map(async ({ dynamics, bind: { relationship, entity } }) => {
         const ref = result[dynamics]
         if (ref) {
           const deleteQuery = `${entity}(${ref})/${relationship}(${this.id})/$ref`
@@ -379,7 +379,7 @@ module.exports = class BaseModel {
   }
 
   async save (context = {}, dataObject = this.modelToDynamics()) {
-    const {entity, readOnly} = this.constructor
+    const { entity, readOnly } = this.constructor
     if (readOnly) {
       const errorMessage = `Unable to save ${entity}: Read only!`
       LoggingService.logError(errorMessage)
@@ -410,7 +410,7 @@ module.exports = class BaseModel {
   }
 
   async delete (context = {}, id) {
-    const {entity, readOnly} = this.constructor
+    const { entity, readOnly } = this.constructor
     if (readOnly) {
       const errorMessage = `Unable to delete ${entity}: Read only!`
       LoggingService.logError(errorMessage)

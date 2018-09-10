@@ -43,8 +43,8 @@ const fakeLocationDetail = {
   addressId: fakeAddress.id
 }
 
-const request = {app: {data: {authToken: 'AUTH_TOKEN'}}}
-const context = {authToken: 'AUTH_TOKEN'}
+const request = { app: { data: { authToken: 'AUTH_TOKEN' } } }
+const context = { authToken: 'AUTH_TOKEN' }
 const applicationId = fakeApplicationLine.applicationId
 const applicationLineId = fakeApplicationLine.id
 
