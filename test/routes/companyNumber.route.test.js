@@ -12,7 +12,7 @@ const Application = require('../../src/models/application.model')
 const Account = require('../../src/models/account.model')
 const RecoveryService = require('../../src/services/recovery.service')
 const LoggingService = require('../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 
@@ -39,7 +39,7 @@ const routes = {
   }
 }
 
-Object.entries(routes).forEach(([companyType, {pageHeading, routePath, nextPath, errorPath, validCompanyNumber, invalidCompanyNumberMessage}]) => {
+Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath, errorPath, validCompanyNumber, invalidCompanyNumberMessage }]) => {
   lab.experiment(companyType, () => {
     lab.beforeEach(() => {
       fakeAccount = {
@@ -125,7 +125,7 @@ Object.entries(routes).forEach(([companyType, {pageHeading, routePath, nextPath,
             method: 'POST',
             url: routePath,
             headers: {},
-            payload: {'company-number': fakeAccount.companyNumber}
+            payload: { 'company-number': fakeAccount.companyNumber }
           }
         })
 

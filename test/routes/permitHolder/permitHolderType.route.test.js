@@ -12,7 +12,7 @@ const Payment = require('../../../src/models/payment.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const PermitHolderTypeController = require('../../../src/controllers/permitHolder/permitHolderType.controller')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 const routePath = '/permit-holder'
 const nextRoutePath = '/permit/category'
@@ -80,17 +80,17 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
     lab.experiment('success', () => {
       let holderTypes = [
-        {id: 'limited-company', type: 'Limited company', canApplyOnline: true},
-        {id: 'individual', type: 'Individual', canApplyOnline: true},
-        {id: 'sole-trader', type: 'Sole trader', canApplyOnline: false},
-        {id: 'local-authority', type: 'Local authority or public body', canApplyOnline: false},
-        {id: 'partnership', type: 'Partnership', canApplyOnline: false},
-        {id: 'registered-charity', type: 'Registered charity', canApplyOnline: false},
-        {id: 'limited-liability-partnership', type: 'Limited liability partnership', canApplyOnline: false},
-        {id: 'other-organisation', type: 'Other organisation, for example a club or association', canApplyOnline: false}
+        { id: 'limited-company', type: 'Limited company', canApplyOnline: true },
+        { id: 'individual', type: 'Individual', canApplyOnline: true },
+        { id: 'sole-trader', type: 'Sole trader', canApplyOnline: false },
+        { id: 'local-authority', type: 'Local authority or public body', canApplyOnline: false },
+        { id: 'partnership', type: 'Partnership', canApplyOnline: false },
+        { id: 'registered-charity', type: 'Registered charity', canApplyOnline: false },
+        { id: 'limited-liability-partnership', type: 'Limited liability partnership', canApplyOnline: false },
+        { id: 'other-organisation', type: 'Other organisation, for example a club or association', canApplyOnline: false }
       ]
 
-      holderTypes.forEach(({id, type}) => {
+      holderTypes.forEach(({ id, type }) => {
         lab.test(`should include option for ${type}`, async () => {
           const doc = await GeneralTestHelper.getDoc(getRequest)
           checkCommonElements(doc)

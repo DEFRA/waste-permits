@@ -31,16 +31,16 @@ lab.experiment('Drainage Check tests:', () => {
   lab.test('buildlines works correctly', async () => {
     const check = new DrainageCheck()
     const lines = await check.buildLines()
-    const {heading, headingId, answers, links} = lines.pop()
+    const { heading, headingId, answers, links } = lines.pop()
 
     Code.expect(heading).to.equal(heading)
     Code.expect(headingId).to.equal(`${prefix}-heading`)
 
-    const {answer, answerId} = answers.pop()
+    const { answer, answerId } = answers.pop()
     Code.expect(answer).to.equal('Drains to a sewer under a consent from the local water company')
     Code.expect(answerId).to.equal(`${prefix}-answer`)
 
-    const {link, linkId, linkType} = links.pop()
+    const { link, linkId, linkType } = links.pop()
     Code.expect(link).to.equal('/drainage-type/drain')
     Code.expect(linkType).to.equal('drainage system')
     Code.expect(linkId).to.equal(`${prefix}-link`)

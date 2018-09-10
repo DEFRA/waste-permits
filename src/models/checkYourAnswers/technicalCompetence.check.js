@@ -1,9 +1,9 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 
-const {TECHNICAL_QUALIFICATION: ruleSetId} = require('../applicationLine.model').RulesetIds
-const {TECHNICAL_QUALIFICATION} = require('../../routes')
-const {WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS} = Dynamics.TechnicalQualification
+const { TECHNICAL_QUALIFICATION: ruleSetId } = require('../applicationLine.model').RulesetIds
+const { TECHNICAL_QUALIFICATION } = require('../../routes')
+const { WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS } = Dynamics.TechnicalQualification
 
 module.exports = class TechnicalCheck extends BaseCheck {
   static get rulesetId () {
@@ -34,14 +34,14 @@ module.exports = class TechnicalCheck extends BaseCheck {
   }
 
   async getQualificationLine () {
-    const {technicalQualification = ''} = await this.getApplication()
-    const {NAME: technicalQualificationName = ''} = TechnicalCheck._getDetails(technicalQualification) || {}
+    const { technicalQualification = '' } = await this.getApplication()
+    const { NAME: technicalQualificationName = '' } = TechnicalCheck._getDetails(technicalQualification) || {}
     const evidence = await this.getTechnicalCompetenceEvidence()
     return this.buildLine({
       heading: 'Technical competence evidence',
       answers: evidence.length ? [technicalQualificationName, 'Evidence files uploaded:'].concat(evidence.map((file) => file.filename)) : [],
       links: [
-        {path: TECHNICAL_QUALIFICATION.path, type: 'technical management qualification'}
+        { path: TECHNICAL_QUALIFICATION.path, type: 'technical management qualification' }
       ]
     })
   }

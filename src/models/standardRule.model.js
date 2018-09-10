@@ -14,15 +14,15 @@ class StandardRule extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'id', dynamics: 'defra_standardruleid'},
-      {field: 'standardRuleTypeId', dynamics: '_defra_standardruletypeid_value'},
-      {field: 'permitName', dynamics: 'defra_rulesnamegovuk'},
-      {field: 'limits', dynamics: 'defra_limits'},
-      {field: 'code', dynamics: 'defra_code', encode: true},
-      {field: 'wamitabRiskLevel', dynamics: 'defra_wamitabrisklevel'},
-      {field: 'guidanceUrl', dynamics: 'defra_guidanceurl'},
-      {field: 'canApplyFor', dynamics: 'defra_canapplyfor'},
-      {field: 'canApplyOnline', dynamics: 'defra_canapplyonline'}
+      { field: 'id', dynamics: 'defra_standardruleid' },
+      { field: 'standardRuleTypeId', dynamics: '_defra_standardruletypeid_value' },
+      { field: 'permitName', dynamics: 'defra_rulesnamegovuk' },
+      { field: 'limits', dynamics: 'defra_limits' },
+      { field: 'code', dynamics: 'defra_code', encode: true },
+      { field: 'wamitabRiskLevel', dynamics: 'defra_wamitabrisklevel' },
+      { field: 'guidanceUrl', dynamics: 'defra_guidanceurl' },
+      { field: 'canApplyFor', dynamics: 'defra_canapplyfor' },
+      { field: 'canApplyOnline', dynamics: 'defra_canapplyonline' }
     ]
   }
 
@@ -33,18 +33,18 @@ class StandardRule extends BaseModel {
   }
 
   static async getByCode (context, code) {
-    return super.getBy(context, {code})
+    return super.getBy(context, { code })
   }
 
   static async getByApplicationLineId (context, applicationLineId) {
-    const {standardRuleId} = await ApplicationLine.getById(context, applicationLineId)
+    const { standardRuleId } = await ApplicationLine.getById(context, applicationLineId)
     if (standardRuleId) {
       return StandardRule.getById(context, standardRuleId)
     }
   }
 
   static async list (context, standardRuleTypeId) {
-    return this.listBy(context, {canApplyFor: true, standardRuleTypeId}, 'permitName')
+    return this.listBy(context, { canApplyFor: true, standardRuleTypeId }, 'permitName')
   }
 
   // Transform the code into kebab-case for ID

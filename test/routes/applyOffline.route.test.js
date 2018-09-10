@@ -13,7 +13,7 @@ const StandardRule = require('../../src/models/standardRule.model')
 const StandardRuleType = require('../../src/models/standardRuleType.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 const permitSelectRoute = '/permit/select'
 const permitCategoryRoute = '/permit/category'
@@ -121,7 +121,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Apply Offline: Download and fill in these forms to apply for that permit page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test({excludeCookiePostTests: true})
+  new GeneralTestHelper(lab, routePath).test({ excludeCookiePostTests: true })
 
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('how-to-apply')).to.exist()

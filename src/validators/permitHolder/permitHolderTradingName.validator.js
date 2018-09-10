@@ -4,7 +4,7 @@ const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 const Application = require('../../models/application.model')
 
-const {TRADING_NAME_USAGE} = require('../../dynamics')
+const { TRADING_NAME_USAGE } = require('../../dynamics')
 
 module.exports = class PermitHolderTradingNameValidator extends BaseValidator {
   constructor () {

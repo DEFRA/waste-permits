@@ -1,4 +1,4 @@
-const {AccountRoleCodes} = require('./dynamics')
+const { AccountRoleCodes } = require('./dynamics')
 
 const Routes = {
   ROOT: {
@@ -680,10 +680,10 @@ const Routes = {
     baseRoute: 'uploadRoute',
     validatorOptions: {
       fileTypes: [
-        {type: 'DOC', mimeType: 'application/msword'},
-        {type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'},
-        {type: 'PDF', mimeType: 'application/pdf'},
-        {type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text'}
+        { type: 'DOC', mimeType: 'application/msword' },
+        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+        { type: 'PDF', mimeType: 'application/pdf' },
+        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
       ]
     }
   },
@@ -757,10 +757,10 @@ const Routes = {
     baseRoute: 'uploadRoute',
     validatorOptions: {
       fileTypes: [
-        {type: 'PDF', mimeType: 'application/pdf'},
-        {type: 'DOC', mimeType: 'application/msword'},
-        {type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'},
-        {type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text'}
+        { type: 'PDF', mimeType: 'application/pdf' },
+        { type: 'DOC', mimeType: 'application/msword' },
+        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
       ]
     }
   }

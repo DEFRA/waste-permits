@@ -7,7 +7,7 @@ const sinon = require('sinon')
 
 const BaseModel = require('../../src/models/base.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 
 // Create fake Model class for tests
 // ---------------------------------
@@ -18,15 +18,15 @@ class Model extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'id', dynamics: 'dynamicsId'},
-      {field: 'otherId', dynamics: '_dynamicsOtherId_value', bind: {id: 'dynamicsOtherId', relationship: 'dynamicsOtherModelDynamicsOtherId', entity: 'dynamicsOtherModel'}},
-      {field: 'modelName', dynamics: 'dynamicsName', length: {max: 15, min: 10}},
-      {field: 'dob.month', dynamics: 'dynamicsDobMonth'},
-      {field: 'dob.year', dynamics: 'dynamicsDobYear'},
-      {field: 'ref', dynamics: 'dynamicsRef', readOnly: true},
-      {field: 'secret', dynamics: 'dynamicsSecret', writeOnly: true},
-      {field: 'regime', dynamics: 'dynamicsRegime', constant: 'REGIME'},
-      {field: 'optionalData', dynamics: 'dynamicsOptionalData'}
+      { field: 'id', dynamics: 'dynamicsId' },
+      { field: 'otherId', dynamics: '_dynamicsOtherId_value', bind: { id: 'dynamicsOtherId', relationship: 'dynamicsOtherModelDynamicsOtherId', entity: 'dynamicsOtherModel' } },
+      { field: 'modelName', dynamics: 'dynamicsName', length: { max: 15, min: 10 } },
+      { field: 'dob.month', dynamics: 'dynamicsDobMonth' },
+      { field: 'dob.year', dynamics: 'dynamicsDobYear' },
+      { field: 'ref', dynamics: 'dynamicsRef', readOnly: true },
+      { field: 'secret', dynamics: 'dynamicsSecret', writeOnly: true },
+      { field: 'regime', dynamics: 'dynamicsRegime', constant: 'REGIME' },
+      { field: 'optionalData', dynamics: 'dynamicsOptionalData' }
     ]
   }
 }

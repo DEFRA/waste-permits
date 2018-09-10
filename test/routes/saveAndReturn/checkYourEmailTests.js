@@ -8,14 +8,14 @@ const server = require('../../../server')
 
 const Application = require('../../../src/models/application.model')
 const CookieService = require('../../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 let fakeEmail
 let fakeApplication
 let numberOfMatchingEmails
 let sandbox
 
-module.exports = (lab, {routePath, nextPath, errorPath, pageHeading}) => {
+module.exports = (lab, { routePath, nextPath, errorPath, pageHeading }) => {
   lab.beforeEach(() => {
     fakeEmail = 'valid@email.com'
 

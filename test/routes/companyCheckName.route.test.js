@@ -14,7 +14,7 @@ const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
 const Account = require('../../src/models/account.model')
 const Payment = require('../../src/models/payment.model')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 
@@ -37,7 +37,7 @@ const routes = {
   }
 }
 
-Object.entries(routes).forEach(([companyType, {pageHeading, routePath, nextPath}]) => {
+Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath }]) => {
   lab.experiment(companyType, () => {
     lab.beforeEach(() => {
       fakeApplication = {

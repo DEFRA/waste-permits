@@ -42,7 +42,7 @@ const serviceResponse = {
       type: 'dormant'
     },
     overdue: false,
-    accounting_reference_date: {month: '03', day: '31'},
+    accounting_reference_date: { month: '03', day: '31' },
     next_made_up_to: '2018-03-31',
     next_accounts: {
       period_start_on: '2017-04-01',
@@ -127,7 +127,7 @@ lab.experiment('Company Lookup Service tests:', () => {
     lab.experiment('return the correct company status', () => {
       Object.keys(COMPANY_STATUSES).forEach((status) => {
         lab.test(`for ${status}`, async () => {
-          const serviceResponse = new ServiceResponse({company_status: status})
+          const serviceResponse = new ServiceResponse({ company_status: status })
           mockResponse(serviceResponse)
           const company = await CompanyLookupService.getCompany('07421224')
           Code.expect(company.status).to.equal(COMPANY_STATUSES[status])
@@ -135,7 +135,7 @@ lab.experiment('Company Lookup Service tests:', () => {
       })
 
       lab.test(`for unknown status`, async () => {
-        const serviceResponse = new ServiceResponse({company_status: 'unknown status'})
+        const serviceResponse = new ServiceResponse({ company_status: 'unknown status' })
         mockResponse(serviceResponse)
         const company = await CompanyLookupService.getCompany('07421224')
         Code.expect(company.status).to.equal(DEFAULT_COMPANY_STATUS)
@@ -145,7 +145,7 @@ lab.experiment('Company Lookup Service tests:', () => {
     lab.experiment('return the correct isActive value', () => {
       Object.keys(COMPANY_STATUSES).forEach((status) => {
         lab.test(`for ${status}`, async () => {
-          const serviceResponse = new ServiceResponse({company_status: status})
+          const serviceResponse = new ServiceResponse({ company_status: status })
           mockResponse(serviceResponse)
           const company = await CompanyLookupService.getCompany('07421224')
           Code.expect(company.isActive).to.equal(status === 'active')
@@ -164,18 +164,18 @@ lab.experiment('Company Lookup Service tests:', () => {
     lab.test('return a list of active directors when the company exists', async () => {
       const serviceResponse = {
         items: [
-          {officer_role: 'director', name: 'Jack'},
-          {officer_role: 'secretary', name: 'Bill'},
-          {officer_role: 'director', name: 'Jill'},
-          {officer_role: 'secretary', name: 'Ben', resigned_on: '1996-08-29'},
-          {officer_role: 'director', name: 'James', resigned_on: '2001-10-09'}
+          { officer_role: 'director', name: 'Jack' },
+          { officer_role: 'secretary', name: 'Bill' },
+          { officer_role: 'director', name: 'Jill' },
+          { officer_role: 'secretary', name: 'Ben', resigned_on: '1996-08-29' },
+          { officer_role: 'director', name: 'James', resigned_on: '2001-10-09' }
         ]
       }
       mockOfficersResponse(serviceResponse)
       const directors = await CompanyLookupService.getActiveDirectors('07421224')
       Code.expect(directors).to.equal([
-        {officer_role: 'director', name: 'Jack'},
-        {officer_role: 'director', name: 'Jill'}
+        { officer_role: 'director', name: 'Jack' },
+        { officer_role: 'director', name: 'Jill' }
       ])
     })
   })

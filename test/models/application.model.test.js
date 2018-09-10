@@ -16,7 +16,7 @@ let testApplication
 let sandbox
 
 const testApplicationId = 'APPLICATION_ID'
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 const submittedOn = '05/01/2018 04:00:00'
 
 const ORGANISATION = 910400001

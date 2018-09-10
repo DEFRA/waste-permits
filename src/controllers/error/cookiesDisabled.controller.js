@@ -8,6 +8,6 @@ module.exports = class CookiesDisabledController extends BaseController {
     const pageContext = this.createPageContext(request, errors)
     pageContext.cookieInfoLink = Routes.COOKIES.path
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 }

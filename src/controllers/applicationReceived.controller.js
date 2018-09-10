@@ -10,8 +10,8 @@ const LoggingService = require('../services/logging.service')
 module.exports = class ApplicationReceivedController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext(request)
-    const context = await RecoveryService.createApplicationContext(h, {application: true, contact: true})
-    const {applicationId, applicationLineId, application, contact} = context
+    const context = await RecoveryService.createApplicationContext(h, { application: true, contact: true })
+    const { applicationId, applicationLineId, application, contact } = context
 
     const bacsPayment = await Payment.getBacsPayment(context, applicationLineId)
     const cardPayment = await Payment.getCardPayment(context, applicationLineId)
@@ -44,10 +44,10 @@ module.exports = class ApplicationReceivedController extends BaseController {
     }
 
     if (bacsPayment || cardPayment || application.isPaid()) {
-      return this.showView({request, h, pageContext})
+      return this.showView({ request, h, pageContext })
     } else {
       // If the application has not been paid for
-      return this.redirect({request, h, redirectPath: Routes.NOT_PAID.path})
+      return this.redirect({ request, h, redirectPath: Routes.NOT_PAID.path })
     }
   }
 }

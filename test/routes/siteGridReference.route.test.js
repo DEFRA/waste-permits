@@ -13,7 +13,7 @@ const Location = require('../../src/models/location.model')
 const LocationDetail = require('../../src/models/locationDetail.model')
 const Payment = require('../../src/models/payment.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 
@@ -120,7 +120,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Site grid reference page correctly when the grid reference has not been entered yet`, async () => {
-      LocationDetail.getByLocationId = (authToken, locationId) => {
+      LocationDetail.getByLocationId = () => {
         return undefined
       }
 
@@ -175,7 +175,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
         postRequest.payload['site-grid-reference'] = '      A       B   123  4 5 6 789         0      '
 
         // Empty location details response
-        LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
+        LocationDetail.getByLocationId = () => {
           return undefined
         }
 
@@ -188,7 +188,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
         postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
 
         // Empty location details response
-        LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
+        LocationDetail.getByLocationId = () => {
           return undefined
         }
 
@@ -211,7 +211,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
         postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
 
         // Empty location details response
-        LocationDetail.getByLocationId = (authToken, applicationId, applicationLineId) => {
+        LocationDetail.getByLocationId = () => {
           return undefined
         }
 

@@ -43,7 +43,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
   }
 
   async _buildSections (context) {
-    const {applicationLineId} = context
+    const { applicationLineId } = context
     const applicableRuleSetIds = await ApplicationLine.getValidRulesetIds(context, applicationLineId)
     const sections = await Promise.all(
       this.Checks
@@ -64,8 +64,8 @@ module.exports = class CheckBeforeSendingController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext(request)
     const context = request.app.data
-    await RecoveryService.createApplicationContext(h, {application: true})
-    const {applicationId, applicationLineId} = context
+    await RecoveryService.createApplicationContext(h, { application: true })
+    const { applicationId, applicationLineId } = context
 
     pageContext.sections = await this._buildSections(context)
 
@@ -75,14 +75,14 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
     // If the task list is not complete then redirect back to it and show a validation error
     if (!isComplete) {
-      return this.redirect({request, h, redirectPath: `${Routes.TASK_LIST.path}?showError=true`})
+      return this.redirect({ request, h, redirectPath: `${Routes.TASK_LIST.path}?showError=true` })
     }
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h) {
-    const {application} = await RecoveryService.createApplicationContext(h, {application: true})
+    const { application } = await RecoveryService.createApplicationContext(h, { application: true })
 
     application.declaration = true
     application.statusCode = Dynamics.StatusCode.APPLICATION_RECEIVED
@@ -90,6 +90,6 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
     await application.save(request.app.data)
 
-    return this.redirect({request, h, redirectPath: Routes.PAYMENT_TYPE.path})
+    return this.redirect({ request, h, redirectPath: Routes.PAYMENT_TYPE.path })
   }
 }

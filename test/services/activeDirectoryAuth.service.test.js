@@ -75,7 +75,7 @@ lab.experiment('Active Directory Auth Service tests:', () => {
       const authService = new ActiveDirectoryAuthService()
       err = new Error('Failed')
       let msg
-      await authService.getToken().catch(({message}) => {
+      await authService.getToken().catch(({ message }) => {
         msg = message
       })
       Code.expect(msg).to.equal('Failed')
@@ -83,9 +83,9 @@ lab.experiment('Active Directory Auth Service tests:', () => {
 
     lab.test('should return invalid authentication token', async () => {
       const authService = new ActiveDirectoryAuthService()
-      tokenResponse = {broken: true}
+      tokenResponse = { broken: true }
       let msg
-      await authService.getToken().catch(({message}) => {
+      await authService.getToken().catch(({ message }) => {
         msg = message
       })
       Code.expect(msg).to.equal(`Error obtaining Active Directory auth token: ${JSON.stringify(tokenResponse)}`)

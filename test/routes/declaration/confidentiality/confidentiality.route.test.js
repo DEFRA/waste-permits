@@ -13,7 +13,7 @@ const Confidentiality = require('../../../../src/models/taskList/confidentiality
 const Payment = require('../../../../src/models/payment.model')
 const LoggingService = require('../../../../src/services/logging.service')
 const RecoveryService = require('../../../../src/services/recovery.service')
-const {COOKIE_RESULT} = require('../../../../src/constants')
+const { COOKIE_RESULT } = require('../../../../src/constants')
 
 let sandbox
 
@@ -145,12 +145,12 @@ lab.experiment('Is part of your application commercially confidential? page test
       })
 
       lab.test('when confidentiality set to yes and no details entered', async () => {
-        postRequest.payload = {'declared': 'yes'}
+        postRequest.payload = { 'declared': 'yes' }
         await checkValidationMessage('declaration-details', 'Explain what information is confidential and why', true)
       })
 
       lab.test('when confidentiality set to yes and details entered with 2001 characters', async () => {
-        postRequest.payload = {'declared': 'yes', 'declaration-details': 'a'.repeat(2001)}
+        postRequest.payload = { 'declared': 'yes', 'declaration-details': 'a'.repeat(2001) }
         await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you have written', true)
       })
     })

@@ -13,7 +13,7 @@ let fakeParameterId
 let fakeRulesId
 let sandbox
 
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 const applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {

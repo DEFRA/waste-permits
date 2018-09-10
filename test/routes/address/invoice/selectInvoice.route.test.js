@@ -12,7 +12,7 @@ const Address = require('../../../../src/models/address.model')
 const Application = require('../../../../src/models/application.model')
 const Payment = require('../../../../src/models/payment.model')
 const InvoiceAddress = require('../../../../src/models/taskList/invoiceAddress.model')
-const {COOKIE_RESULT} = require('../../../../src/constants')
+const { COOKIE_RESULT } = require('../../../../src/constants')
 
 let sandbox
 

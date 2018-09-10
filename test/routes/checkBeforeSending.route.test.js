@@ -39,8 +39,8 @@ lab.beforeEach(() => {
     heading: 'TEST',
     answers: ['test1', 'test2'],
     links: [
-      {path: '/test-1', type: 'test details 1'},
-      {path: '/test-2', type: 'test details 2'}
+      { path: '/test-1', type: 'test details 1' },
+      { path: '/test-2', type: 'test details 2' }
     ]
   }
 
@@ -88,7 +88,7 @@ lab.experiment('Check your answers before sending your application page tests:',
   new GeneralTestHelper(lab, routePath).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true})
+    excludeAlreadySubmittedTest: true })
 
   lab.experiment(`GET ${routePath}`, () => {
     let request
@@ -132,14 +132,14 @@ lab.experiment('Check your answers before sending your application page tests:',
     lab.test('returns the check before sending page dynamic content correctly', async () => {
       const doc = await GeneralTestHelper.getDoc(request)
 
-      const {heading, answers, links} = fakeLineData
+      const { heading, answers, links } = fakeLineData
       Code.expect(doc.getElementById('section-test-heading').firstChild.nodeValue.trim()).to.equal(heading)
       answers.forEach((answer, index) => {
         Code.expect(doc.getElementById(`section-test-answer-${index + 1}`).firstChild.nodeValue.trim()).to.equal(answers[index])
       })
       links.forEach((answer, index) => {
         const id = `section-test-link-${index + 1}`
-        const {path, type} = links[index]
+        const { path, type } = links[index]
         Code.expect(doc.getElementById(id).getAttribute('href')).to.equal(path)
         Code.expect(doc.getElementById(id).firstChild.nodeValue.trim()).to.equal('Change')
         Code.expect(doc.getElementById(`${id}-type`).firstChild.nodeValue.trim()).to.equal(type)

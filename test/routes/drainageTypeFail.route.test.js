@@ -13,7 +13,7 @@ const Payment = require('../../src/models/payment.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 const DrainageTypes = {
   SEWER: 910400000,
@@ -84,7 +84,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Your drainage system is not suitable - please contact us page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test({excludeCookiePostTests: true})
+  new GeneralTestHelper(lab, routePath).test({ excludeCookiePostTests: true })
 
   lab.experiment(`GET ${routePath}`, () => {
     let request

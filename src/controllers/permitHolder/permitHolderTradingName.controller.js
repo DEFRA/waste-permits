@@ -3,13 +3,13 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const {TRADING_NAME_USAGE} = require('../../dynamics')
-const {PERMIT_HOLDER_CONTACT_DETAILS} = require('../../routes')
+const { TRADING_NAME_USAGE } = require('../../dynamics')
+const { PERMIT_HOLDER_CONTACT_DETAILS } = require('../../routes')
 
 module.exports = class PermitHolderContactTradingNameController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const {application} = await RecoveryService.createApplicationContext(h, {application: true})
+    const { application } = await RecoveryService.createApplicationContext(h, { application: true })
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -34,8 +34,8 @@ module.exports = class PermitHolderContactTradingNameController extends BaseCont
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const context = await RecoveryService.createApplicationContext(h, {application: true})
-      const {application} = context
+      const context = await RecoveryService.createApplicationContext(h, { application: true })
+      const { application } = context
 
       // The trading name is only set if the corresponding checkbox is ticked
       application.useTradingName = parseInt(request.payload['use-trading-name'])

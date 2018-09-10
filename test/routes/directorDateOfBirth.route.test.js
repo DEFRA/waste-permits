@@ -13,7 +13,7 @@ const Account = require('../../src/models/account.model')
 const Application = require('../../src/models/application.model')
 const ApplicationContact = require('../../src/models/applicationContact.model')
 const Contact = require('../../src/models/contact.model')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 
@@ -35,7 +35,7 @@ const routes = {
   }
 }
 
-Object.entries(routes).forEach(([companyType, {singleDirectorPageHeading, multipleDirectorPageHeading, routePath, nextPath, errorPath}]) => {
+Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multipleDirectorPageHeading, routePath, nextPath, errorPath }]) => {
   lab.experiment(companyType, () => {
     let getRequest
     let postRequest
@@ -105,9 +105,9 @@ Object.entries(routes).forEach(([companyType, {singleDirectorPageHeading, multip
       ]
 
       fakeCompanies = [
-        new Account({companyName: 'COMPANY_NAME_1'}),
-        new Account({companyName: 'COMPANY_NAME_2'}),
-        new Account({companyName: 'COMPANY_NAME_3'})
+        new Account({ companyName: 'COMPANY_NAME_1' }),
+        new Account({ companyName: 'COMPANY_NAME_2' }),
+        new Account({ companyName: 'COMPANY_NAME_3' })
       ]
 
       fakeRecovery = () => ({
@@ -180,7 +180,7 @@ Object.entries(routes).forEach(([companyType, {singleDirectorPageHeading, multip
         Code.expect(element).to.exist()
 
         element = doc.getElementById(`director-dob-day-${index}`)
-        const {day = ''} = contact.dob
+        const { day = '' } = contact.dob
         Code.expect(element.getAttribute('value')).to.equal(`${day}`)
       })
 

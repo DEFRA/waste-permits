@@ -9,9 +9,9 @@ const BaseCheck = require('../../../src/models/checkYourAnswers/base.check')
 const SitePlanCheck = require('../../../src/models/checkYourAnswers/sitePlan.check')
 
 const fakeSitePlans = [
-  {filename: 'FILENAME_1'},
-  {filename: 'FILENAME_2'},
-  {filename: 'FILENAME_3'}
+  { filename: 'FILENAME_1' },
+  { filename: 'FILENAME_2' },
+  { filename: 'FILENAME_3' }
 ]
 
 const prefix = 'section-site-plan'
@@ -47,17 +47,17 @@ lab.experiment('SitePlan Check tests:', () => {
     })
 
     lab.test(`(site plan line) works correctly`, async () => {
-      const {heading, headingId, answers, links} = lines.pop()
+      const { heading, headingId, answers, links } = lines.pop()
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${prefix}-heading`)
 
-      answers.forEach(({answer, answerId}, answerIndex) => {
+      answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${prefix}-answer-${answerIndex + 1}`)
-        const {filename} = fakeSitePlans[answerIndex]
+        const { filename } = fakeSitePlans[answerIndex]
         Code.expect(answer).to.equal(filename)
       })
 
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/site-plan')
       Code.expect(linkType).to.equal('site plan')
       Code.expect(linkId).to.equal(`${prefix}-link`)

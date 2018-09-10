@@ -6,7 +6,7 @@ const Constants = module.exports = {}
 
 Constants.SERVICE_NAME = 'Apply for a standard rules environmental permit'
 Constants.GDS_NAME = 'GOV.UK'
-Constants.COOKIE_PATH = {path: '/'}
+Constants.COOKIE_PATH = { path: '/' }
 Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
 Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
@@ -16,14 +16,14 @@ Constants.MAX_FILE_SIZE = 31457280 // 30MB
 Constants.DEFAULT_UPLOAD_OPTIONS = {
   maxSize: '30MB',
   fileTypes: [
-    {type: 'PDF', mimeType: 'application/pdf'},
-    {type: 'DOC', mimeType: 'application/msword'},
-    {type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'},
-    {type: 'XLS', mimeType: 'application/vnd.ms-excel'},
-    {type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'},
-    {type: 'JPG', mimeType: 'image/jpeg'},
-    {type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text'},
-    {type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet'}
+    { type: 'PDF', mimeType: 'application/pdf' },
+    { type: 'DOC', mimeType: 'application/msword' },
+    { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+    { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
+    { type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+    { type: 'JPG', mimeType: 'image/jpeg' },
+    { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' },
+    { type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet' }
   ]
 }
 

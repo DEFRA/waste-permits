@@ -18,7 +18,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
@@ -27,14 +27,14 @@ module.exports = class StartOrOpenSavedController extends BaseController {
     }
 
     const cookie = await CookieService.generateCookie(h)
-    const {authToken} = cookie
+    const { authToken } = cookie
 
     let nextPage
     if (request.payload['started-application'] === 'new') {
       // Create new application in Dynamics and set the applicationId in the cookie
       const application = new Application()
       application.statusCode = Dynamics.StatusCode.DRAFT
-      await application.save({authToken})
+      await application.save({ authToken })
 
       // Set the application ID in the cookie
       cookie.applicationId = application.id
@@ -44,6 +44,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       nextPage = Routes.SEARCH_YOUR_EMAIL
     }
 
-    return this.redirect({request, h, redirectPath: nextPage.path, cookie})
+    return this.redirect({ request, h, redirectPath: nextPage.path, cookie })
   }
 }

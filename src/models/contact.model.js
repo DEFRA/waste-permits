@@ -12,12 +12,12 @@ class Contact extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'id', dynamics: 'contactid'},
-      {field: 'firstName', dynamics: 'firstname', encode: true, length: {max: 50}},
-      {field: 'lastName', dynamics: 'lastname', encode: true, length: {max: 50}},
-      {field: 'email', dynamics: 'emailaddress1', encode: true, length: {max: 100}},
-      {field: 'dob.month', dynamics: 'defra_dobmonthcompanieshouse', readOnly: true},
-      {field: 'dob.year', dynamics: 'defra_dobyearcompanieshouse_text', readOnly: true}
+      { field: 'id', dynamics: 'contactid' },
+      { field: 'firstName', dynamics: 'firstname', encode: true, length: { max: 50 } },
+      { field: 'lastName', dynamics: 'lastname', encode: true, length: { max: 50 } },
+      { field: 'email', dynamics: 'emailaddress1', encode: true, length: { max: 100 } },
+      { field: 'dob.month', dynamics: 'defra_dobmonthcompanieshouse', readOnly: true },
+      { field: 'dob.year', dynamics: 'defra_dobyearcompanieshouse_text', readOnly: true }
     ]
   }
 
@@ -58,7 +58,7 @@ class Contact extends BaseModel {
   }
 
   static async getByFirstnameLastnameEmail (context, firstName, lastName, email) {
-    return this.getBy(context, {firstName, lastName, email})
+    return this.getBy(context, { firstName, lastName, email })
   }
 
   async save (context) {

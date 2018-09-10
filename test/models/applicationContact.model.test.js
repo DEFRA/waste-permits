@@ -13,7 +13,7 @@ let dynamicsCreateStub
 let dynamicsUpdateStub
 let dynamicsSearchStub
 
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 const applicationContactId = 'APPLICATION_CONTACT_ID'
 const applicationId = 'APPLICATION_ID'
 const contactId = 'CONTACT_ID'

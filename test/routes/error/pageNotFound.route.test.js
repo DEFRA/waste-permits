@@ -11,7 +11,7 @@ const CookieService = require('../../../src/services/cookie.service')
 const Application = require('../../../src/models/application.model')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const PageNotFoundController = require('../../../src/controllers/error/pageNotFound.controller')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 
@@ -47,7 +47,7 @@ lab.afterEach(() => {
 lab.experiment('Page Not Found (404) page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true})
+    excludeAlreadySubmittedTest: true })
 
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest, 404)

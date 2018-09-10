@@ -26,7 +26,7 @@ const fakeApplicationData = {
   tradingName: null
 }
 
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 const applicationId = fakeApplicationData.id
 
 lab.beforeEach(() => {

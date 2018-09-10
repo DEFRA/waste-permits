@@ -3,7 +3,7 @@
 const Constants = require('../constants')
 const BaseValidator = require('./base.validator')
 
-const {EMAIL_VALID_REGEX} = Constants.Validation
+const { EMAIL_VALID_REGEX } = Constants.Validation
 
 module.exports = class SaveAndReturnConfirmValidator extends BaseValidator {
   constructor () {
@@ -25,11 +25,11 @@ module.exports = class SaveAndReturnConfirmValidator extends BaseValidator {
   customValidators () {
     return {
       'got-email': {
-        'custom.required': (value, {'is-complete': isComplete}) => isComplete !== 'true' && !value
+        'custom.required': (value, { 'is-complete': isComplete }) => isComplete !== 'true' && !value
       },
       'save-and-return-email': {
-        'custom.required': (value, {'got-email': gotEmail}) => gotEmail === 'false' ? !value : false,
-        'custom.invalid': (value, {'got-email': gotEmail}) => gotEmail === 'false' && Boolean(value) ? !(EMAIL_VALID_REGEX).test(value) : false
+        'custom.required': (value, { 'got-email': gotEmail }) => gotEmail === 'false' ? !value : false,
+        'custom.invalid': (value, { 'got-email': gotEmail }) => gotEmail === 'false' && Boolean(value) ? !(EMAIL_VALID_REGEX).test(value) : false
       }
     }
   }

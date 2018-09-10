@@ -1,6 +1,6 @@
 'use strict'
 
-const {PermitTypes} = require('../dynamics')
+const { PermitTypes } = require('../dynamics')
 const LoggingService = require('../services/logging.service')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
@@ -95,18 +95,18 @@ class ApplicationLine extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'id', dynamics: 'defra_applicationlineid', readOnly: true},
-      {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationId', entity: 'defra_applications'}},
-      {field: 'standardRuleId', dynamics: '_defra_standardruleid_value', bind: {id: 'defra_standardruleId', entity: 'defra_standardrules'}},
-      {field: 'parametersId', dynamics: '_defra_parametersid_value', readOnly: true},
-      {field: 'value', dynamics: 'defra_value', readOnly: true},
-      {field: 'permitType', dynamics: 'defra_permittype', constant: PermitTypes.STANDARD}
+      { field: 'id', dynamics: 'defra_applicationlineid', readOnly: true },
+      { field: 'applicationId', dynamics: '_defra_applicationid_value', bind: { id: 'defra_applicationId', entity: 'defra_applications' } },
+      { field: 'standardRuleId', dynamics: '_defra_standardruleid_value', bind: { id: 'defra_standardruleId', entity: 'defra_standardrules' } },
+      { field: 'parametersId', dynamics: '_defra_parametersid_value', readOnly: true },
+      { field: 'value', dynamics: 'defra_value', readOnly: true },
+      { field: 'permitType', dynamics: 'defra_permittype', constant: PermitTypes.STANDARD }
     ]
   }
 
   static get RulesetIds () {
     const ruleSetIds = {}
-    Object.entries(RuleSet).forEach(([prop, {RuleSetId}]) => {
+    Object.entries(RuleSet).forEach(([prop, { RuleSetId }]) => {
       ruleSetIds[prop] = RuleSetId
     })
     return ruleSetIds
@@ -114,20 +114,20 @@ class ApplicationLine extends BaseModel {
 
   static get CompletedParameters () {
     const completedParameters = {}
-    Object.entries(RuleSet).forEach(([prop, {CompletedId}]) => {
+    Object.entries(RuleSet).forEach(([prop, { CompletedId }]) => {
       completedParameters[prop] = CompletedId
     })
     return completedParameters
   }
 
   static async getByApplicationId (context, applicationId) {
-    return super.getBy(context, {applicationId})
+    return super.getBy(context, { applicationId })
   }
 
   static async getValidRulesetIds (context, applicationLineId) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const rulesetIds = []
-    Object.entries(RuleSet).map(([prop, {RuleSetId, CompletedId}]) => {
+    Object.entries(RuleSet).map(([prop, { RuleSetId, CompletedId }]) => {
       rulesetIds.push(RuleSetId)
       rulesetIds.push(CompletedId)
     })

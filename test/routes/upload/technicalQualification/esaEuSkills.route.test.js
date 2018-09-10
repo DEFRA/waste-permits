@@ -39,9 +39,9 @@ lab.afterEach(() => {
 
 lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
   new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
-    excludeCookiePostTests: true})
+    excludeCookiePostTests: true })
 
-  const {uploadPath, removePath} = paths
+  const { uploadPath, removePath } = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
@@ -79,6 +79,6 @@ lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'technical-qualification': 'esa-eu-skills'}})
+    helper.postSuccess({ payload: { 'technical-qualification': 'esa-eu-skills' } })
   })
 })

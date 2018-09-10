@@ -39,13 +39,13 @@ const checkErrorMessages = (fieldName, errorMessages) => {
   const pageContext = {}
 
   const validationErrors = {
-    details: errorMessages.map(({type}) => ({path: [fieldName], type: type}))
+    details: errorMessages.map(({ type }) => ({ path: [fieldName], type: type }))
   }
 
   validator.addErrorsToPageContext(validationErrors, pageContext)
   const errors = {}
-  errors[fieldName] = errorMessages.map(({message}) => message)
-  const errorList = errorMessages.map(({message}) => ({fieldName, message}))
+  errors[fieldName] = errorMessages.map(({ message }) => message)
+  const errorList = errorMessages.map(({ message }) => ({ fieldName, message }))
 
   Code.expect(pageContext.errors).to.equal(errors)
   Code.expect(pageContext.errorList).to.equal(errorList)
@@ -102,14 +102,14 @@ lab.experiment('Base Validator tests:', () => {
           telephone: '++++'
         }
       }
-      const errors = [{path: ['telephone'], type: 'min', message: 'Too small'}]
-      const updatedErrors = await validator.customValidate(request, {details: errors})
+      const errors = [{ path: ['telephone'], type: 'min', message: 'Too small' }]
+      const updatedErrors = await validator.customValidate(request, { details: errors })
       Code.expect(updatedErrors).to.equal({
         details: [
-          {path: ['telephone'], type: 'min', message: 'Too small'},
-          {path: ['telephone'], type: 'custom.invalid', message: 'Telephone number is invalid'},
-          {path: ['telephone'], type: 'custom.test', message: 'Telephone Test failed'},
-          {path: ['telephone'], type: 'custom.async.test', message: 'Telephone Test failed asynchronously'}
+          { path: ['telephone'], type: 'min', message: 'Too small' },
+          { path: ['telephone'], type: 'custom.invalid', message: 'Telephone number is invalid' },
+          { path: ['telephone'], type: 'custom.test', message: 'Telephone Test failed' },
+          { path: ['telephone'], type: 'custom.async.test', message: 'Telephone Test failed asynchronously' }
         ]
       })
     })
@@ -121,9 +121,9 @@ lab.experiment('Base Validator tests:', () => {
           telephone: '++++'
         }
       }
-      const errors = [{path: ['telephone'], type: 'any.required', message: 'Telephone required'}]
-      const updatedErrors = await validator.customValidate(request, {details: errors})
-      Code.expect(updatedErrors).to.equal({details: errors})
+      const errors = [{ path: ['telephone'], type: 'any.required', message: 'Telephone required' }]
+      const updatedErrors = await validator.customValidate(request, { details: errors })
+      Code.expect(updatedErrors).to.equal({ details: errors })
     })
   })
 })

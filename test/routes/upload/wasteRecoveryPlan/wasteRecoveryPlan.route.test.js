@@ -39,9 +39,9 @@ lab.afterEach(() => {
 
 lab.experiment('Waste recovery plan upload tests:', () => {
   new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
-    excludeCookiePostTests: true})
+    excludeCookiePostTests: true })
 
-  const {uploadPath, removePath} = paths
+  const { uploadPath, removePath } = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
@@ -63,12 +63,12 @@ lab.experiment('Waste recovery plan upload tests:', () => {
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
     helper.uploadSuccess('application/msword')
-    helper.uploadInvalid({fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']}, 'application/msword')
+    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT'] }, 'application/msword')
     helper.uploadFailure('application/msword')
   })
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'waste-recovery-plan': 'waste-recovery-plan'}})
+    helper.postSuccess({ payload: { 'waste-recovery-plan': 'waste-recovery-plan' } })
   })
 })

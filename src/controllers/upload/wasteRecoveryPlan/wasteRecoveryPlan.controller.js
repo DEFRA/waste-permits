@@ -3,7 +3,7 @@
 const UploadController = require('../base/upload.controller')
 const WasteRecoveryPlan = require('../../../models/taskList/wasteRecoveryPlan.model')
 const Constants = require('../../../constants')
-const {WASTE_RECOVERY_PLAN} = Constants.UploadSubject
+const { WASTE_RECOVERY_PLAN } = Constants.UploadSubject
 
 module.exports = class WasteRecoveryPlanController extends UploadController {
   get subject () {

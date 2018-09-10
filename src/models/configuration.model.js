@@ -13,8 +13,8 @@ class Configuration extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'title', dynamics: 'defra_name'},
-      {field: 'status', dynamics: 'statuscode'}
+      { field: 'title', dynamics: 'defra_name' },
+      { field: 'status', dynamics: 'statuscode' }
     ]
   }
 }

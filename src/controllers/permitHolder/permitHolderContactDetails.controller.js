@@ -14,8 +14,8 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const context = await RecoveryService.createApplicationContext(h, {individualPermitHolder: true})
-      const {individualPermitHolder, applicationId} = context
+      const context = await RecoveryService.createApplicationContext(h, { individualPermitHolder: true })
+      const { individualPermitHolder, applicationId } = context
 
       // If we don't have a permit holder at this point something has gone wrong
       if (!individualPermitHolder) {
@@ -55,7 +55,7 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
       contact = await Contact.getByFirstnameLastnameEmail(context, firstName, lastName, email)
 
       if (!contact) {
-        contact = new Contact({firstName, lastName, email})
+        contact = new Contact({ firstName, lastName, email })
         await contact.save(context)
       }
 

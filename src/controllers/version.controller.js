@@ -10,7 +10,7 @@ const DynamicsSolution = require('../models/dynamicsSolution.model')
 
 module.exports = class VersionController extends BaseController {
   async doGet (request, h) {
-    const recoveredApplication = await RecoveryService.createApplicationContext(h, {application: true, applicationReturn: true})
+    const recoveredApplication = await RecoveryService.createApplicationContext(h, { application: true, applicationReturn: true })
     const pageContext = this.createPageContext(request)
 
     pageContext.dynamicsSolution = await DynamicsSolution.get(recoveredApplication)
@@ -20,6 +20,6 @@ module.exports = class VersionController extends BaseController {
     pageContext.githubUrl = `${Constants.GITHUB_LOCATION}/commit/${config.gitSha}`
     pageContext.renderTimestamp = moment().format(Constants.TIMESTAMP_FORMAT)
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 }

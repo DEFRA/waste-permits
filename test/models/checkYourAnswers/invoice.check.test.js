@@ -57,13 +57,13 @@ lab.experiment('Invoice Check tests:', () => {
     })
 
     lab.test('(invoice address line) works correctly', async () => {
-      const {heading, headingId, answers, links} = lines[INVOICE_ADDRESS_LINE]
+      const { heading, headingId, answers, links } = lines[INVOICE_ADDRESS_LINE]
       const linePrefix = `${prefix}-address`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const {buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode} = fakeInvoiceAddress
-      answers.forEach(({answer, answerId}, answerIndex) => {
+      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = fakeInvoiceAddress
+      answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
           case 0: {
@@ -85,7 +85,7 @@ lab.experiment('Invoice Check tests:', () => {
         }
       })
 
-      const {link, linkId, linkType} = links.pop()
+      const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/invoice/address/postcode')
       Code.expect(linkType).to.equal('invoice address')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)

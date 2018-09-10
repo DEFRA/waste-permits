@@ -26,7 +26,7 @@ lab.experiment('Technical Problem page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true})
+    excludeAlreadySubmittedTest: true })
 
   lab.test(`GET ${routePath} returns the technical problem page correctly`, async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)

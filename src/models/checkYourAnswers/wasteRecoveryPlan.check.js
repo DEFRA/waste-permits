@@ -1,8 +1,8 @@
 const BaseCheck = require('./base.check')
 
-const {WASTE_RECOVERY_PLAN: ruleSetId} = require('../applicationLine.model').RulesetIds
-const {WASTE_RECOVERY_PLAN_APPROVAL} = require('../../routes')
-const {RecoveryPlanAssessmentStatus} = require('../../dynamics')
+const { WASTE_RECOVERY_PLAN: ruleSetId } = require('../applicationLine.model').RulesetIds
+const { WASTE_RECOVERY_PLAN_APPROVAL } = require('../../routes')
+const { RecoveryPlanAssessmentStatus } = require('../../dynamics')
 
 module.exports = class WasteRecoveryPlanCheck extends BaseCheck {
   static get rulesetId () {
@@ -19,11 +19,11 @@ module.exports = class WasteRecoveryPlanCheck extends BaseCheck {
 
   async getWasteRecoveryPlanLine () {
     const evidence = await this.getWasteRecoveryPlan()
-    const {recoveryPlanAssessmentStatus} = await this.getApplication()
+    const { recoveryPlanAssessmentStatus } = await this.getApplication()
     const answers = evidence.map((file) => file.filename)
     const assessment = Object.entries(RecoveryPlanAssessmentStatus)
       .map(([status, assessment]) => assessment)
-      .find(({TYPE}) => TYPE === recoveryPlanAssessmentStatus)
+      .find(({ TYPE }) => TYPE === recoveryPlanAssessmentStatus)
     if (assessment) {
       answers.push('Assessment:')
       answers.push(assessment.DESCRIPTION)
@@ -32,7 +32,7 @@ module.exports = class WasteRecoveryPlanCheck extends BaseCheck {
       heading: 'Waste recovery plan',
       answers,
       links: [
-        {path: WASTE_RECOVERY_PLAN_APPROVAL.path, type: 'waste recovery plan'}
+        { path: WASTE_RECOVERY_PLAN_APPROVAL.path, type: 'waste recovery plan' }
       ]
     })
   }

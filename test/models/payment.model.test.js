@@ -21,7 +21,7 @@ let fakePaymentData
 const testPaymentId = 'PAYMENT_ID'
 const CONFIGURATION_PREFIX = 'WastePermits.ECOM.'
 
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 
 lab.beforeEach(() => {
   fakePaymentData = {
@@ -77,14 +77,14 @@ lab.experiment('Payment Model tests:', () => {
     const emptyPayment = new Payment({})
     Code.expect(emptyPayment.applicationId).to.be.undefined()
 
-    const {type, applicationId} = fakePaymentData
+    const { type, applicationId } = fakePaymentData
     Code.expect(testPayment.type).to.equal(type)
     Code.expect(testPayment.applicationId).to.equal(applicationId)
   })
 
   lab.test('getByApplicationLineIdAndType() method returns a single Payment object', async () => {
     const spy = sandbox.spy(DynamicsDalService.prototype, 'search')
-    const {applicationLineId, type} = fakePaymentData
+    const { applicationLineId, type } = fakePaymentData
     const payment = await Payment.getByApplicationLineIdAndType(context, applicationLineId, type)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(payment.applicationLineId).to.equal(applicationLineId)
@@ -92,7 +92,7 @@ lab.experiment('Payment Model tests:', () => {
 
   lab.test(`getCardPaymentDetails() method calls getByApplicationLineIdAndType() method with type of ${CARD_PAYMENT}`, async () => {
     const spy = sandbox.spy(Payment, 'getByApplicationLineIdAndType')
-    const {applicationId, applicationLineId, category, statusCode, type, title, value} = fakePaymentData
+    const { applicationId, applicationLineId, category, statusCode, type, title, value } = fakePaymentData
     const payment = await Payment.getCardPaymentDetails(context, applicationLineId)
     Code.expect(spy.calledWith(context, applicationLineId, CARD_PAYMENT)).to.equal(true)
     Code.expect(payment.applicationId).to.equal(applicationId)
@@ -106,7 +106,7 @@ lab.experiment('Payment Model tests:', () => {
 
   lab.test(`getCardPaymentDetails() method creates a new Payment with type of ${CARD_PAYMENT}`, async () => {
     sandbox.stub(Payment, 'getByApplicationLineIdAndType').callsFake(() => {})
-    const {applicationLineId} = fakePaymentData
+    const { applicationLineId } = fakePaymentData
     const payment = await Payment.getCardPaymentDetails(context, applicationLineId)
     Code.expect(payment.applicationLineId).to.equal(applicationLineId)
     Code.expect(payment.type).to.equal(CARD_PAYMENT)
@@ -114,7 +114,7 @@ lab.experiment('Payment Model tests:', () => {
 
   lab.test(`getBacsPaymentDetails() method calls getByApplicationLineIdAndType() method with type of ${BACS_PAYMENT}`, async () => {
     const spy = sandbox.spy(Payment, 'getByApplicationLineIdAndType')
-    const {applicationId, applicationLineId, category, statusCode, type, title, value} = fakePaymentData
+    const { applicationId, applicationLineId, category, statusCode, type, title, value } = fakePaymentData
     const payment = await Payment.getBacsPaymentDetails(context, applicationLineId)
     Code.expect(spy.calledWith(context, applicationLineId, BACS_PAYMENT)).to.equal(true)
     Code.expect(payment.applicationId).to.equal(applicationId)
@@ -128,7 +128,7 @@ lab.experiment('Payment Model tests:', () => {
 
   lab.test(`getBacsPaymentDetails() method creates a new Payment with type of ${BACS_PAYMENT}`, async () => {
     sandbox.stub(Payment, 'getByApplicationLineIdAndType').callsFake(() => {})
-    const {applicationLineId} = fakePaymentData
+    const { applicationLineId } = fakePaymentData
     const payment = await Payment.getBacsPaymentDetails(context, applicationLineId)
     Code.expect(payment.applicationLineId).to.equal(applicationLineId)
     Code.expect(payment.type).to.equal(BACS_PAYMENT)
@@ -142,7 +142,7 @@ lab.experiment('Payment Model tests:', () => {
     sandbox.stub(DynamicsDalService.prototype, 'callAction').callsFake(async (action, actionDataObject) => {
       Code.expect(action).to.equal('defra_get_payment_status')
       Code.expect(actionDataObject).to.equal(expectedActionDataObject)
-      return {Status: true}
+      return { Status: true }
     })
     Code.expect(await testPayment.getCardPaymentResult(context)).to.equal(true)
   })
@@ -161,7 +161,7 @@ lab.experiment('Payment Model tests:', () => {
       }
     }
 
-    const actionResult = {PaymentNextUrlHref: returnUrl}
+    const actionResult = { PaymentNextUrlHref: returnUrl }
 
     sandbox.stub(DynamicsDalService.prototype, 'callAction').callsFake(async (action, actionDataObject) => {
       Code.expect(action).to.equal('defra_create_payment_transaction')

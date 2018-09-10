@@ -9,7 +9,7 @@ module.exports = class AddressSelectController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h)
-    const {applicationId, applicationLineId} = context
+    const { applicationId, applicationLineId } = context
     let addresses, address
     let postcode = CookieService.get(request, this.getPostcodeCookieKey())
     if (postcode) {
@@ -44,7 +44,7 @@ module.exports = class AddressSelectController extends BaseController {
     pageContext.changePostcodeLink = this.getPostcodeRoute()
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
@@ -52,7 +52,7 @@ module.exports = class AddressSelectController extends BaseController {
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h)
-      const {applicationId, applicationLineId} = context
+      const { applicationId, applicationLineId } = context
 
       const addressDto = {
         uprn: request.payload['select-address'],
@@ -60,7 +60,7 @@ module.exports = class AddressSelectController extends BaseController {
       }
       await this.getModel().saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
 
-      return this.redirect({request, h, redirectPath: this.nextPath})
+      return this.redirect({ request, h, redirectPath: this.nextPath })
     }
   }
 }

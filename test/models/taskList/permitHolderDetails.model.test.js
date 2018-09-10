@@ -26,7 +26,7 @@ let fakeAddress1
 let fakeAddress2
 let fakeAddress3
 
-const request = {app: {data: {authToken: 'AUTH_TOKEN'}}}
+const request = { app: { data: { authToken: 'AUTH_TOKEN' } } }
 const applicationId = 'APPLICATION_ID'
 const applicationLineId = 'APPLICATION_LINE_ID'
 

@@ -5,21 +5,21 @@ const Dynamics = require('../../dynamics')
 const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
-const {CARD_PAYMENT, BACS_PAYMENT} = Dynamics.PaymentTypes
+const { CARD_PAYMENT, BACS_PAYMENT } = Dynamics.PaymentTypes
 
 module.exports = class PaymentTypeController extends BaseController {
   async doGet (request, h, errors) {
-    const context = await RecoveryService.createApplicationContext(h, {application: true, applicationLine: true, applicationReturn: true})
-    const {application, applicationLine, applicationReturn} = context
+    const context = await RecoveryService.createApplicationContext(h, { application: true, applicationLine: true, applicationReturn: true })
+    const { application, applicationLine, applicationReturn } = context
 
     if (!application.isSubmitted()) {
-      return this.redirect({request, h, redirectPath: Routes.NOT_SUBMITTED.path})
+      return this.redirect({ request, h, redirectPath: Routes.NOT_SUBMITTED.path })
     }
 
     this.path = this.path.replace('{slug?}', applicationReturn ? applicationReturn.slug : '')
     const pageContext = this.createPageContext(request, errors)
 
-    const {status} = request.query || {}
+    const { status } = request.query || {}
     if (status === 'error') {
       pageContext.error = true
     }
@@ -36,11 +36,11 @@ module.exports = class PaymentTypeController extends BaseController {
     })
 
     // Default to 0 when the balance hasn't been set
-    const {value = 0} = applicationLine || {}
+    const { value = 0 } = applicationLine || {}
 
     pageContext.cost = value.toLocaleString()
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
@@ -48,7 +48,7 @@ module.exports = class PaymentTypeController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const {cookie, applicationReturn} = await RecoveryService.createApplicationContext(h, {applicationReturn: true})
+      const { cookie, applicationReturn } = await RecoveryService.createApplicationContext(h, { applicationReturn: true })
       const paymentType = parseInt(request.payload['payment-type'])
       switch (paymentType) {
         case CARD_PAYMENT:
@@ -62,7 +62,7 @@ module.exports = class PaymentTypeController extends BaseController {
         default:
           throw new Error(`Unexpected payment type (${paymentType})`)
       }
-      return this.redirect({request, h, redirectPath: nextPath, cookie})
+      return this.redirect({ request, h, redirectPath: nextPath, cookie })
     }
   }
 }

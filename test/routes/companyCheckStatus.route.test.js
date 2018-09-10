@@ -14,7 +14,7 @@ const Application = require('../../src/models/application.model')
 const Payment = require('../../src/models/payment.model')
 const LoggingService = require('../../src/services/logging.service')
 
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 const COMPANY_STATUSES = {
   DISSOLVED: 'has been dissolved',
   LIQUIDATION: 'has gone into liquidation',
@@ -49,7 +49,7 @@ const routes = {
   }
 }
 
-Object.entries(routes).forEach(([companyType, {pageHeading, routePath, nextPath, errorPath, requiredOfficers}]) => {
+Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath, errorPath, requiredOfficers }]) => {
   lab.experiment(companyType, () => {
     lab.beforeEach(() => {
       fakeApplication = {

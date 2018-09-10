@@ -8,7 +8,7 @@ const StandardRule = require('../models/standardRule.model')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
-const {OFFLINE_CATEGORIES} = Constants
+const { OFFLINE_CATEGORIES } = Constants
 
 module.exports = class ApplyOfflineController extends BaseController {
   static getOfflineCategory (categoryId) {
@@ -20,7 +20,7 @@ module.exports = class ApplyOfflineController extends BaseController {
   }
 
   static getChangeSelectionRoute (offlineCategory = {}, standardRule = {}) {
-    const {PERMIT_CATEGORY, PERMIT_SELECT, PERMIT_HOLDER_TYPE} = Routes
+    const { PERMIT_CATEGORY, PERMIT_SELECT, PERMIT_HOLDER_TYPE } = Routes
     if (standardRule.permitName) {
       return PERMIT_SELECT
     } else if (offlineCategory.category) {
@@ -46,7 +46,7 @@ module.exports = class ApplyOfflineController extends BaseController {
 
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
-    const {standardRuleId, permitHolderType} = context
+    const { standardRuleId, permitHolderType } = context
 
     let offlineCategory
     let standardRule
@@ -59,12 +59,12 @@ module.exports = class ApplyOfflineController extends BaseController {
       }
       if ((!standardRule && !offlineCategory) || (standardRule && standardRule.canApplyOnline)) {
         LoggingService.logError(`Unable to get offline category for : ${standardRuleTypeId}`)
-        return this.redirect({request, h, redirectPath: Routes.START_AT_BEGINNING.path})
+        return this.redirect({ request, h, redirectPath: Routes.START_AT_BEGINNING.path })
       }
     }
 
     const chosenOption = ApplyOfflineController.getChosenOption(offlineCategory, standardRule, permitHolderType)
-    this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({chosenOption})
+    this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({ chosenOption })
 
     const pageContext = this.createPageContext(request, errors)
 
@@ -88,6 +88,6 @@ module.exports = class ApplyOfflineController extends BaseController {
       pageContext.offlineCategoryOther = true
     }
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 }

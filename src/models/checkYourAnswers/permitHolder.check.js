@@ -1,8 +1,8 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
-const {PERMIT_HOLDER_DETAILS: ruleSetId} = require('../applicationLine.model').RulesetIds
-const {LIMITED_LIABILITY_PARTNERSHIP} = Dynamics.PERMIT_HOLDER_TYPES
+const { PERMIT_HOLDER_DETAILS: ruleSetId } = require('../applicationLine.model').RulesetIds
+const { LIMITED_LIABILITY_PARTNERSHIP } = Dynamics.PERMIT_HOLDER_TYPES
 
 const {
   COMPANY_DECLARE_BANKRUPTCY,
@@ -17,7 +17,7 @@ const {
   PERMIT_HOLDER_TYPE
 } = require('../../routes')
 
-const blankLine = {blankLine: true}
+const blankLine = { blankLine: true }
 
 module.exports = class PermitHolderCheck extends BaseCheck {
   static get rulesetId () {
@@ -29,7 +29,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
   }
 
   async buildLines () {
-    const {isIndividual} = await this.getApplication()
+    const { isIndividual } = await this.getApplication()
 
     if (isIndividual) {
       return Promise.all([
@@ -69,13 +69,13 @@ module.exports = class PermitHolderCheck extends BaseCheck {
   }
 
   async getTypeLine () {
-    const {path} = PERMIT_HOLDER_TYPE
-    const {type} = await this.getPermitHolderType()
+    const { path } = PERMIT_HOLDER_TYPE
+    const { type } = await this.getPermitHolderType()
     return this.buildLine({
       heading: 'Permit holder type',
       prefix: 'type',
       answers: [type],
-      links: [{path, type: 'permit holder'}]
+      links: [{ path, type: 'permit holder' }]
     })
   }
 
@@ -96,13 +96,13 @@ module.exports = class PermitHolderCheck extends BaseCheck {
   }
 
   async getIndividualLine () {
-    const {path} = PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH
-    const {firstName = '', lastName = '', email = ''} = await this.getIndividualPermitHolder()
-    const {dateOfBirth = 'unknown', telephone = 'unknown'} = await this.getIndividualPermitHolderDetails()
+    const { path } = PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH
+    const { firstName = '', lastName = '', email = '' } = await this.getIndividualPermitHolder()
+    const { dateOfBirth = 'unknown', telephone = 'unknown' } = await this.getIndividualPermitHolderDetails()
     const address = this.getAddressLine(await this.getIndividualPermitHolderAddress())
-    const {tradingName = ''} = await this.getApplication()
+    const { tradingName = '' } = await this.getApplication()
     const [year, month, day] = dateOfBirth.split('-')
-    const dob = {day, month, year}
+    const dob = { day, month, year }
     let answers = []
     answers.push(`${firstName} ${lastName}`)
     if (tradingName) {
@@ -117,15 +117,15 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       heading: 'Permit holder',
       prefix: 'individual',
       answers,
-      links: [{path, type: 'individual details'}]
+      links: [{ path, type: 'individual details' }]
     })
   }
 
   async getCompanyLine () {
-    const {path} = await this.getPermitHolderType() === LIMITED_LIABILITY_PARTNERSHIP ? LLP_COMPANY_NUMBER : COMPANY_NUMBER
-    const {companyNumber = '', accountName = ''} = await this.getCompanyAccount()
+    const { path } = await this.getPermitHolderType() === LIMITED_LIABILITY_PARTNERSHIP ? LLP_COMPANY_NUMBER : COMPANY_NUMBER
+    const { companyNumber = '', accountName = '' } = await this.getCompanyAccount()
     const address = this.getAddressLine(await this.getCompanyRegisteredAddress())
-    const {tradingName = ''} = await this.getApplication()
+    const { tradingName = '' } = await this.getApplication()
     let answers = []
     answers.push(accountName)
     if (tradingName) {
@@ -137,66 +137,66 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       heading: 'Permit holder',
       prefix: 'company',
       answers,
-      links: [{path, type: 'company details'}]
+      links: [{ path, type: 'company details' }]
     })
   }
 
   async getDirectorsLine () {
-    const {path} = DIRECTOR_DATE_OF_BIRTH
-    const {companyNumber = ''} = await this.getCompanyAccount()
+    const { path } = DIRECTOR_DATE_OF_BIRTH
+    const { companyNumber = '' } = await this.getCompanyAccount()
     // Only load the directors if the company has been entered
     const directors = companyNumber ? await this.getDirectors() : []
-    const answers = directors.map(({firstName, lastName, dob}) => `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay(dob)}`)
+    const answers = directors.map(({ firstName, lastName, dob }) => `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay(dob)}`)
     return this.buildLine({
       heading: `Directors' dates of birth`,
       prefix: 'director',
       answers: answers,
-      links: [{path, type: `director's date of birth`}]
+      links: [{ path, type: `director's date of birth` }]
     })
   }
 
   async getDesignatedMembersLine () {
-    const {path} = LLP_MEMBER_DATE_OF_BIRTH
-    const {companyNumber = ''} = await this.getCompanyAccount()
+    const { path } = LLP_MEMBER_DATE_OF_BIRTH
+    const { companyNumber = '' } = await this.getCompanyAccount()
     // Only load the designated members (people and companies) if the company has been entered
     const members = companyNumber ? await this.getMembers() : []
     const companies = companyNumber ? await this.getCompanies() : []
     const answers = members
-      .map(({firstName, lastName, dob}) => `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay(dob)}`)
-      .concat(companies.map(({accountName}) => accountName))
+      .map(({ firstName, lastName, dob }) => `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay(dob)}`)
+      .concat(companies.map(({ accountName }) => accountName))
     return this.buildLine({
       heading: `Designated members' dates of birth`,
       prefix: 'designated-member',
       answers: answers,
-      links: [{path, type: `designated member's date of birth`}]
+      links: [{ path, type: `designated member's date of birth` }]
     })
   }
 
   async getDesignatedMemberEmailLine () {
-    const {path} = LLP_COMPANY_DESIGNATED_MEMBER_EMAIL
-    const {email = ''} = await this.getDesignatedMemberDetails()
+    const { path } = LLP_COMPANY_DESIGNATED_MEMBER_EMAIL
+    const { email = '' } = await this.getDesignatedMemberDetails()
     return this.buildLine({
       heading: 'Designated Member email',
       prefix: 'designated-member-email',
       answers: [email],
-      links: [{path, type: 'designated member email'}]
+      links: [{ path, type: 'designated member email' }]
     })
   }
 
   async getCompanySecretaryEmailLine () {
-    const {path} = COMPANY_DIRECTOR_EMAIL
-    const {email = ''} = await this.getCompanySecretaryDetails()
+    const { path } = COMPANY_DIRECTOR_EMAIL
+    const { email = '' } = await this.getCompanySecretaryDetails()
     return this.buildLine({
       heading: 'Company Secretary or director email',
       prefix: 'company-secretary-email',
       answers: [email],
-      links: [{path, type: 'company secretary or director email'}]
+      links: [{ path, type: 'company secretary or director email' }]
     })
   }
 
   async getConvictionsLine () {
-    const {path} = COMPANY_DECLARE_OFFENCES
-    const {relevantOffences = false, relevantOffencesDetails = ''} = await this.getApplication()
+    const { path } = COMPANY_DECLARE_OFFENCES
+    const { relevantOffences = false, relevantOffencesDetails = '' } = await this.getApplication()
     const answers = []
     if (relevantOffences) {
       answers.push('You have declared these convictions:')
@@ -208,13 +208,13 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       heading: 'Convictions',
       prefix: 'convictions',
       answers,
-      links: [{path, type: 'offences'}]
+      links: [{ path, type: 'offences' }]
     })
   }
 
   async getBankruptcyLine () {
-    const {path} = COMPANY_DECLARE_BANKRUPTCY
-    const {bankruptcy = false, bankruptcyDetails = ''} = await this.getApplication()
+    const { path } = COMPANY_DECLARE_BANKRUPTCY
+    const { bankruptcy = false, bankruptcyDetails = '' } = await this.getApplication()
     const answers = []
     if (bankruptcy) {
       answers.push('You have declared these bankruptcy or insolvency proceedings:')
@@ -226,7 +226,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       heading: 'Bankruptcy or insolvency',
       prefix: 'bankruptcy-or-insolvency',
       answers,
-      links: [{path, type: 'bankruptcy or insolvency'}]
+      links: [{ path, type: 'bankruptcy or insolvency' }]
     })
   }
 }

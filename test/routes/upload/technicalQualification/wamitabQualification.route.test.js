@@ -35,9 +35,9 @@ lab.afterEach(() => {
 
 lab.experiment('Company Declare Upload Wamitab tests:', () => {
   new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
-    excludeCookiePostTests: true})
+    excludeCookiePostTests: true })
 
-  const {uploadPath, removePath} = paths
+  const { uploadPath, removePath } = paths
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
@@ -78,6 +78,6 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({payload: {'technical-qualification': 'WAMITAB-QUALIFICATION'}})
+    helper.postSuccess({ payload: { 'technical-qualification': 'WAMITAB-QUALIFICATION' } })
   })
 })

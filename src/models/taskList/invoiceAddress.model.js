@@ -1,6 +1,6 @@
 'use strict'
 
-const {INVOICING_DETAILS} = require('../applicationLine.model').CompletedParameters
+const { INVOICING_DETAILS } = require('../applicationLine.model').CompletedParameters
 
 const Completeness = require('./completeness.model')
 const Address = require('../address.model')

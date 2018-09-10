@@ -3,7 +3,7 @@
 const UploadController = require('../base/upload.controller')
 const FirePreventionPlan = require('../../../models/taskList/firePreventionPlan.model')
 const Constants = require('../../../constants')
-const {FIRE_PREVENTION_PLAN} = Constants.UploadSubject
+const { FIRE_PREVENTION_PLAN } = Constants.UploadSubject
 
 module.exports = class FirePlanController extends UploadController {
   get subject () {

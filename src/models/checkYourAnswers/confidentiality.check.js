@@ -1,8 +1,8 @@
 const BaseCheck = require('./base.check')
 
-const {path} = require('../../routes').CONFIDENTIALITY
+const { path } = require('../../routes').CONFIDENTIALITY
 const ApplicationLine = require('../applicationLine.model')
-const {CONFIRM_CONFIDENTIALLY: ruleSetId} = ApplicationLine.RulesetIds
+const { CONFIRM_CONFIDENTIALLY: ruleSetId } = ApplicationLine.RulesetIds
 
 module.exports = class ConfidentialityCheck extends BaseCheck {
   static get rulesetId () {
@@ -18,7 +18,7 @@ module.exports = class ConfidentialityCheck extends BaseCheck {
   }
 
   async getConfidentialityLine () {
-    const {confidentiality = false, confidentialityDetails = ''} = await this.getApplication()
+    const { confidentiality = false, confidentialityDetails = '' } = await this.getApplication()
     const answers = []
     if (confidentiality) {
       answers.push('You are claiming confidentiality for these reasons:')
@@ -29,7 +29,7 @@ module.exports = class ConfidentialityCheck extends BaseCheck {
     return this.buildLine({
       heading: 'Commercial confidentiality',
       answers,
-      links: [{path, type: 'commercial confidentiality'}]
+      links: [{ path, type: 'commercial confidentiality' }]
     })
   }
 }

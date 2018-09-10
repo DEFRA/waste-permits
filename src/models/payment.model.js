@@ -1,12 +1,12 @@
 'use strict'
 
-const {PAYMENT_CONFIGURATION_PREFIX} = require('../constants')
-const {PaymentStatusCodes, PaymentTypes} = require('../dynamics')
+const { PAYMENT_CONFIGURATION_PREFIX } = require('../constants')
+const { PaymentStatusCodes, PaymentTypes } = require('../dynamics')
 const Utilities = require('../utilities/utilities')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
 const LoggingService = require('../services/logging.service')
-const {BACS_PAYMENT, CARD_PAYMENT} = PaymentTypes
+const { BACS_PAYMENT, CARD_PAYMENT } = PaymentTypes
 
 class Payment extends BaseModel {
   static get entity () {
@@ -15,16 +15,16 @@ class Payment extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'id', dynamics: 'defra_paymentid'},
-      {field: 'applicationId', dynamics: '_defra_applicationid_value', bind: {id: 'defra_applicationid', entity: 'defra_applications'}},
-      {field: 'applicationLineId', dynamics: '_defra_applicationlineid_value', bind: {id: 'defra_applicationlineid', entity: 'defra_applicationlines'}},
-      {field: 'category', dynamics: 'defra_paymentcategory'},
-      {field: 'description', dynamics: 'defra_description'},
-      {field: 'referenceNumber', dynamics: 'defra_reference_number', readOnly: true},
-      {field: 'statusCode', dynamics: 'statuscode'},
-      {field: 'type', dynamics: 'defra_type'},
-      {field: 'title', dynamics: 'defra_title'},
-      {field: 'value', dynamics: 'defra_paymentvalue'}
+      { field: 'id', dynamics: 'defra_paymentid' },
+      { field: 'applicationId', dynamics: '_defra_applicationid_value', bind: { id: 'defra_applicationid', entity: 'defra_applications' } },
+      { field: 'applicationLineId', dynamics: '_defra_applicationlineid_value', bind: { id: 'defra_applicationlineid', entity: 'defra_applicationlines' } },
+      { field: 'category', dynamics: 'defra_paymentcategory' },
+      { field: 'description', dynamics: 'defra_description' },
+      { field: 'referenceNumber', dynamics: 'defra_reference_number', readOnly: true },
+      { field: 'statusCode', dynamics: 'statuscode' },
+      { field: 'type', dynamics: 'defra_type' },
+      { field: 'title', dynamics: 'defra_title' },
+      { field: 'value', dynamics: 'defra_paymentvalue' }
     ]
   }
 
@@ -42,16 +42,16 @@ class Payment extends BaseModel {
 
   static async getByApplicationLineIdAndType (context, applicationLineId, type) {
     if (applicationLineId) {
-      return this.getBy(context, {applicationLineId, type})
+      return this.getBy(context, { applicationLineId, type })
     }
   }
 
   static async getBacsPaymentDetails (context, applicationLineId) {
-    return (await Payment.getByApplicationLineIdAndType(context, applicationLineId, BACS_PAYMENT)) || new Payment({applicationLineId, type: BACS_PAYMENT})
+    return (await Payment.getByApplicationLineIdAndType(context, applicationLineId, BACS_PAYMENT)) || new Payment({ applicationLineId, type: BACS_PAYMENT })
   }
 
   static async getCardPaymentDetails (context, applicationLineId) {
-    return (await Payment.getByApplicationLineIdAndType(context, applicationLineId, CARD_PAYMENT)) || new Payment({applicationLineId, type: CARD_PAYMENT})
+    return (await Payment.getByApplicationLineIdAndType(context, applicationLineId, CARD_PAYMENT)) || new Payment({ applicationLineId, type: CARD_PAYMENT })
   }
 
   async makeCardPayment (context, description, returnUrl) {

@@ -12,7 +12,7 @@ module.exports = class Completeness {
       const applicationLine = await ApplicationLine.getById(context, applicationLineId)
 
       const query = `defra_wasteparamses(${applicationLine.parametersId})`
-      await dynamicsDal.update(query, {[this.completenessParameter]: value && await this.checkComplete(context, applicationId, applicationLineId)})
+      await dynamicsDal.update(query, { [this.completenessParameter]: value && await this.checkComplete(context, applicationId, applicationLineId) })
     } catch (error) {
       LoggingService.logError(`Unable set ${this.name} completeness to ${value}: ${error}`)
       throw error

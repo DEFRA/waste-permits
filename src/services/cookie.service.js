@@ -6,7 +6,7 @@ const Routes = require('../routes')
 const LoggingService = require('../services/logging.service')
 const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
 const authService = new ActiveDirectoryAuthService()
-const {COOKIE_RESULT} = require('../constants')
+const { COOKIE_RESULT } = require('../constants')
 
 module.exports = class CookieService {
   static _calculateExpiryDate () {
@@ -26,7 +26,7 @@ module.exports = class CookieService {
       }
     } catch (error) {
       LoggingService.logError(error)
-      return this.redirect({h, redirectPath: Routes.SAVE_AND_RETURN_COMPLETE.path, error})
+      return this.redirect({ h, redirectPath: Routes.SAVE_AND_RETURN_COMPLETE.path, error })
     }
   }
 

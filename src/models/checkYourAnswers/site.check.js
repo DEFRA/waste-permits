@@ -1,7 +1,7 @@
 const BaseCheck = require('./base.check')
 
-const {SITE_NAME_LOCATION: ruleSetId} = require('../applicationLine.model').RulesetIds
-const {SITE_NAME, SITE_GRID_REFERENCE, POSTCODE_SITE, MANUAL_SITE} = require('../../routes')
+const { SITE_NAME_LOCATION: ruleSetId } = require('../applicationLine.model').RulesetIds
+const { SITE_NAME, SITE_GRID_REFERENCE, POSTCODE_SITE, MANUAL_SITE } = require('../../routes')
 
 module.exports = class SiteCheck extends BaseCheck {
   static get rulesetId () {
@@ -21,24 +21,24 @@ module.exports = class SiteCheck extends BaseCheck {
   }
 
   async getSiteNameLine () {
-    const {path} = SITE_NAME
-    const {siteName = ''} = await this.getLocation()
+    const { path } = SITE_NAME
+    const { siteName = '' } = await this.getLocation()
     return this.buildLine({
       heading: 'Site name',
       prefix: 'name',
       answers: [siteName],
-      links: [{path, type: 'site name'}]
+      links: [{ path, type: 'site name' }]
     })
   }
 
   async getGridReferenceLine () {
-    const {path} = SITE_GRID_REFERENCE
-    const {gridReference = ''} = await this.getLocationDetail()
+    const { path } = SITE_GRID_REFERENCE
+    const { gridReference = '' } = await this.getLocationDetail()
     return this.buildLine({
       heading: 'Grid reference',
       prefix: 'grid-reference',
       answers: [gridReference],
-      links: [{path, type: 'grid reference'}]
+      links: [{ path, type: 'grid reference' }]
     })
   }
 
@@ -56,12 +56,12 @@ module.exports = class SiteCheck extends BaseCheck {
       firstLine += ', '
     }
     firstLine += addressLine1
-    const {path} = fromAddressLookup ? POSTCODE_SITE : MANUAL_SITE
+    const { path } = fromAddressLookup ? POSTCODE_SITE : MANUAL_SITE
     return this.buildLine({
       heading: 'Site address',
       prefix: 'address',
       answers: [firstLine, addressLine2, townOrCity, postcode],
-      links: [{path, type: 'site address'}]
+      links: [{ path, type: 'site address' }]
     })
   }
 }

@@ -12,13 +12,13 @@ const Contact = require('../models/contact.model')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
-    const context = await RecoveryService.createApplicationContext(h, {account: true})
-    const {applicationId, account} = context
+    const context = await RecoveryService.createApplicationContext(h, { account: true })
+    const { applicationId, account } = context
 
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
       LoggingService.logError(message, request)
-      return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: {message}})
+      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
     }
 
     // Get the directors that relate to this application
@@ -58,16 +58,16 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       }
     }
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
-    const context = await RecoveryService.createApplicationContext(h, {account: true})
-    const {applicationId, account} = context
+    const context = await RecoveryService.createApplicationContext(h, { account: true })
+    const { applicationId, account } = context
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
       LoggingService.logError(message, request)
-      return this.redirect({request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: {message}})
+      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
     }
 
     const directors = await this._getDirectors(context, applicationId, account.id)
@@ -99,7 +99,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         await applicationContact.save(context)
       }
 
-      return this.redirect({request, h, redirectPath: this.nextPath})
+      return this.redirect({ request, h, redirectPath: this.nextPath })
     }
   }
 

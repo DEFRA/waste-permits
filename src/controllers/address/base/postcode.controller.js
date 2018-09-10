@@ -8,7 +8,7 @@ const Address = require('../../../models/address.model')
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const {applicationId, applicationLineId} = await RecoveryService.createApplicationContext(h)
+    const { applicationId, applicationLineId } = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
@@ -18,7 +18,7 @@ module.exports = class PostcodeController extends BaseController {
       if (address) {
         // If the manual entry flag is set then redirect off to the mamual address entry page instead
         if (!address.fromAddressLookup) {
-          return this.redirect({request, h, redirectPath: this.getManualEntryRoute()})
+          return this.redirect({ request, h, redirectPath: this.getManualEntryRoute() })
         }
         pageContext.formValues = {
           postcode: address.postcode
@@ -38,7 +38,7 @@ module.exports = class PostcodeController extends BaseController {
     this.customisePageContext(pageContext)
     pageContext.manualAddressLink = this.getManualEntryRoute()
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
@@ -57,7 +57,7 @@ module.exports = class PostcodeController extends BaseController {
     try {
       addresses = await Address.listByPostcode(context, postcode)
     } catch (error) {
-      return this.redirect({request, h, redirectPath: `${this.getManualEntryRoute()}?addressLookupFailed=true`})
+      return this.redirect({ request, h, redirectPath: `${this.getManualEntryRoute()}?addressLookupFailed=true` })
     }
 
     if (!errors && addresses && addresses.length === 0) {
@@ -68,7 +68,7 @@ module.exports = class PostcodeController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      return this.redirect({request, h, redirectPath: this.getAddressSelectionPath()})
+      return this.redirect({ request, h, redirectPath: this.getAddressSelectionPath() })
     }
   }
 

@@ -9,7 +9,7 @@ const TaskList = require('../../../src/models/taskList/taskList.model')
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 
 lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods

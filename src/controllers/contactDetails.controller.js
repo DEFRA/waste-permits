@@ -11,8 +11,8 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const context = await RecoveryService.createApplicationContext(h, {application: true})
-    const {applicationId, application} = context
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { applicationId, application } = context
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -34,15 +34,15 @@ module.exports = class ContactDetailsController extends BaseController {
       }
     }
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 
   async doPost (request, h, errors) {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const context = await RecoveryService.createApplicationContext(h, {application: true})
-      const {applicationId, applicationLineId, application} = context
+      const context = await RecoveryService.createApplicationContext(h, { application: true })
+      const { applicationId, applicationLineId, application } = context
       const {
         'first-name': firstName,
         'last-name': lastName,
@@ -65,7 +65,7 @@ module.exports = class ContactDetailsController extends BaseController {
       }
 
       if (!contact) {
-        contact = new Contact({firstName, lastName, email})
+        contact = new Contact({ firstName, lastName, email })
       }
 
       await contact.save(context)
@@ -89,7 +89,7 @@ module.exports = class ContactDetailsController extends BaseController {
 
       await ContactDetails.updateCompleteness(context, applicationId, applicationLineId)
 
-      return this.redirect({request, h, redirectPath: Routes.TASK_LIST.path})
+      return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
     }
   }
 }

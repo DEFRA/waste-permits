@@ -11,7 +11,7 @@ const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
 const Payment = require('../../src/models/payment.model')
 const LoggingService = require('../../src/services/logging.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let fakeApplication
 

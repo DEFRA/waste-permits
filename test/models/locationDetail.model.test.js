@@ -18,7 +18,7 @@ const fakeLocationDetailData = {
 }
 const testLocationDetailId = 'LOCATION_DETAIL_ID'
 
-const context = {authToken: 'AUTH_TOKEN'}
+const context = { authToken: 'AUTH_TOKEN' }
 
 lab.beforeEach(() => {
   testLocationDetail = new LocationDetail(fakeLocationDetailData)

@@ -9,7 +9,7 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const Application = require('../../../src/models/application.model')
 const CookieService = require('../../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../../src/constants')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 
@@ -48,7 +48,7 @@ lab.experiment('Already Submitted page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true})
+    excludeAlreadySubmittedTest: true })
 
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)

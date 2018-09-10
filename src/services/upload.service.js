@@ -89,7 +89,7 @@ module.exports = class UploadService {
 
   static async _saveFilesToDisk (fileData) {
     // Save each file as an attachment to an annotation
-    const fileSavePromises = fileData.map(async ({file, path}) => {
+    const fileSavePromises = fileData.map(async ({ file, path }) => {
       return new Promise((resolve, reject) => {
         const fileStream = fs.createWriteStream(path)
         fileStream.on('error', (err) => reject(err))
@@ -104,7 +104,7 @@ module.exports = class UploadService {
   }
 
   static async _scanFiles (fileData) {
-    const isInfectedPromises = fileData.map(async ({path}) => ClamWrapper.isInfected(path).then(results => {
+    const isInfectedPromises = fileData.map(async ({ path }) => ClamWrapper.isInfected(path).then(results => {
       LoggingService.logInfo(`Scanned ${path} and found that it is ${results.isInfected ? 'infected' : 'not infected'}`)
       return Promise.resolve(results.isInfected)
     }).catch(error => {
@@ -123,8 +123,8 @@ module.exports = class UploadService {
 
   static async _uploadFilestoDynamics (authToken, application, subject, fileData) {
     // Save each file as an attachment to an annotation
-    const uploadPromises = fileData.map(async ({file, filename, path}) => {
-      const annotation = new Annotation({subject, filename, applicationId: application.id})
+    const uploadPromises = fileData.map(async ({ file, filename, path }) => {
+      const annotation = new Annotation({ subject, filename, applicationId: application.id })
       await annotation.save(authToken)
       UploadService._uploadFileDataToDynamics(authToken, file, path, application.applicationNumber, annotation)
       return Promise.resolve(annotation)
@@ -132,7 +132,7 @@ module.exports = class UploadService {
     await Promise.all(uploadPromises)
   }
 
-  static _uploadFileDataToDynamics (authToken, file, path, applicationNumber, {applicationId, subject, filename}) {
+  static _uploadFileDataToDynamics (authToken, file, path, applicationNumber, { applicationId, subject, filename }) {
     setImmediate(async () => {
       try {
         const annotation = await Annotation.getByApplicationIdSubjectAndFilename(authToken, applicationId, subject, filename)
@@ -151,7 +151,7 @@ module.exports = class UploadService {
   }
 
   static _haveDuplicateFiles (listA, listB) {
-    const haveDuplicateFiles = listA.filter(({filename}) => UploadService._containsFilename(filename, listB))
+    const haveDuplicateFiles = listA.filter(({ filename }) => UploadService._containsFilename(filename, listB))
     return Boolean(haveDuplicateFiles.length)
   }
 

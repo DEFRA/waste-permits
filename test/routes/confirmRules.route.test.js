@@ -13,7 +13,7 @@ const ConfirmRules = require('../../src/models/taskList/confirmRules.model')
 const Payment = require('../../src/models/payment.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/confirm-rules'
 const nextRoutePath = '/task-list'

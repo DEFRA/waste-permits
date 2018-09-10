@@ -10,7 +10,7 @@ const CookieService = require('../../src/services/cookie.service')
 
 const Application = require('../../src/models/application.model')
 
-const {PERMIT_HOLDER_TYPES} = require('../../src/dynamics')
+const { PERMIT_HOLDER_TYPES } = require('../../src/dynamics')
 
 const GeneralTestHelper = require('../routes/generalTestHelper.test')
 

@@ -13,17 +13,17 @@ class ApplicationReturn extends BaseModel {
 
   static get mapping () {
     return [
-      {field: 'applicationId', dynamics: '_defra_application_value'},
-      {field: 'slug', dynamics: 'defra_suffix', encode: true}
+      { field: 'applicationId', dynamics: '_defra_application_value' },
+      { field: 'slug', dynamics: 'defra_suffix', encode: true }
     ]
   }
 
   static async getByApplicationId (context, applicationId) {
-    return super.getBy(context, {applicationId})
+    return super.getBy(context, { applicationId })
   }
 
   static async getBySlug (context, slug) {
-    return super.getBy(context, {slug})
+    return super.getBy(context, { slug })
   }
 }
 

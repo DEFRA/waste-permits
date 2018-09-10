@@ -9,7 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/models/application.model')
 const CookieService = require('../../src/services/cookie.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 
@@ -54,7 +54,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true})
+    excludeAlreadySubmittedTest: true })
 
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a standard rules environmental permit')

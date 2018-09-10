@@ -8,7 +8,7 @@ const Routes = require('../../routes')
 
 const BaseModel = require('../base.model')
 const ApplicationLine = require('../applicationLine.model')
-const {CompletedParameters, RulesetIds} = ApplicationLine
+const { CompletedParameters, RulesetIds } = ApplicationLine
 const LoggingService = require('../../services/logging.service')
 
 const currentFilename = Path.basename(__filename)

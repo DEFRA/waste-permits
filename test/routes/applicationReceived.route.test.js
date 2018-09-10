@@ -13,7 +13,7 @@ const Payment = require('../../src/models/payment.model')
 const Contact = require('../../src/models/contact.model')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
-const {COOKIE_RESULT} = require('../../src/constants')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 const fakeSlug = 'SLUG'
@@ -75,7 +75,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(RecoveryService, 'recoverFromSlug').value((slug, {request}) => {
+  sandbox.stub(RecoveryService, 'recoverFromSlug').value((slug, { request }) => {
     Object.assign(request.app.data, fakeRecovery())
   })
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
@@ -96,7 +96,7 @@ lab.experiment('ApplicationReceived page tests:', () => {
   new GeneralTestHelper(lab, routePath).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true})
+    excludeAlreadySubmittedTest: true })
 
   lab.experiment(`GET ${routePath}`, () => {
     let request

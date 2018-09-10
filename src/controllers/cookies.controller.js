@@ -12,7 +12,7 @@ const sections = [
         id: 'defra-session-cookie',
         name: 'DefraSession',
         purpose: `Used to store encrypted information that we need to help you complete your application. For example, to link securely to the data you have already entered.`,
-        expires: 'After 3 hours of inactivity or when you close your browser'},
+        expires: 'After 3 hours of inactivity or when you close your browser' },
       {
         id: 'defra-csrf-token-cookie',
         name: 'DefraCsrfToken',
@@ -69,6 +69,6 @@ module.exports = class CookiesController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     pageContext.sections = sections
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 }

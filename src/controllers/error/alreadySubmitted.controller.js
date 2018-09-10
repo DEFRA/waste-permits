@@ -7,11 +7,11 @@ const RecoveryService = require('../../services/recovery.service')
 module.exports = class AlreadySubmittedController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const {application} = await RecoveryService.createApplicationContext(h, {application: true})
+    const { application } = await RecoveryService.createApplicationContext(h, { application: true })
 
     pageContext.startOpenOrSavedRoute = Routes.START_OR_OPEN_SAVED.path
     pageContext.applicationRef = application.applicationNumber
 
-    return this.showView({request, h, pageContext})
+    return this.showView({ request, h, pageContext })
   }
 }
