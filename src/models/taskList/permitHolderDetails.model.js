@@ -129,7 +129,7 @@ module.exports = class PermitHolderDetails extends Completeness {
         return false
       }
 
-      // for each contact here
+      // list all contacts completeness as true or false
       const contactsComplete = await Promise.all(list.map(async ({ contactId }) => {
         const addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
         return this.isContactComplete(context, contactId, addressDetail)

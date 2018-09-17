@@ -2,12 +2,13 @@
 
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
-const CryptoService = require('../../services/crypto.service')
-const Constants = require('../../constants')
-const Routes = require('../../routes')
 
 const ApplicationContact = require('../../models/applicationContact.model')
 const Contact = require('../../models/contact.model')
+const PartnerDetails = require('../../models/taskList/partnerDetails.model')
+
+const Constants = require('../../constants')
+const { TECHNICAL_PROBLEM } = require('../../routes')
 
 module.exports = class PartnershipNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
@@ -19,16 +20,12 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
       pageContext.formValues = {}
       const context = await RecoveryService.createApplicationContext(h, { application: true })
       const { applicationId } = context
-      const { partnerId } = request.params
 
-      let applicationContact
       const applicationContacts = await ApplicationContact.listByApplicationId(context, applicationId)
-
-      const applicationContactId = CryptoService.decrypt(partnerId)
-      applicationContact = applicationContacts.filter((applicationContact) => applicationContact.id === applicationContactId).pop()
+      const applicationContact = await PartnerDetails.getApplicationContact(request)
 
       if (!applicationContact) {
-        return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path })
+        return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
       }
 
       const { contactId, directorDob } = applicationContact
@@ -59,7 +56,6 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h, { application: true, account: true })
-      let { partnerId } = request.params
       const {
         'first-name': firstName,
         'last-name': lastName,
@@ -69,8 +65,11 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
       } = request.payload
 
       const directorDob = [dobYear, dobMonth, dobDay].join('-')
-      const applicationContactId = CryptoService.decrypt(partnerId)
-      let applicationContact = await ApplicationContact.getById(context, applicationContactId)
+      const applicationContact = await PartnerDetails.getApplicationContact(request)
+
+      if (!applicationContact) {
+        return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
+      }
 
       // Create a new contact if the name has changed
 
@@ -88,9 +87,7 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
       applicationContact.directorDob = directorDob
       await applicationContact.save(context)
 
-      partnerId = CryptoService.encrypt(applicationContact.id)
-
-      return this.redirect({ request, h, redirectPath: `${this.nextPath}/${partnerId}` })
+      return this.redirect({ request, h, redirectPath: `${this.nextPath}/${request.params.partnerId}` })
     }
   }
 }

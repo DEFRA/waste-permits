@@ -9,13 +9,12 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 const server = require('../../../server')
 const { formatDateForPersistence } = require('../../../src/utilities/utilities')
 const CookieService = require('../../../src/services/cookie.service')
-const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
-const CryptoService = require('../../../src/services/crypto.service')
 const Application = require('../../../src/models/application.model')
 const Contact = require('../../../src/models/contact.model')
 const AddressDetail = require('../../../src/models/addressDetail.model')
 const ApplicationContact = require('../../../src/models/applicationContact.model')
+const PartnerDetails = require('../../../src/models/taskList/partnerDetails.model')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
@@ -95,16 +94,15 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
-  sandbox.stub(CryptoService, 'decrypt').value(() => fakeApplicationContact.id)
-  sandbox.stub(CryptoService, 'encrypt').value(() => fakeApplicationContact.id)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(ApplicationContact, 'getById').value(() => new ApplicationContact(fakeApplicationContact))
   sandbox.stub(ApplicationContact, 'listByApplicationId').value(() => fakeApplicationContactList())
   sandbox.stub(ApplicationContact.prototype, 'save').value(() => undefined)
   sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
   sandbox.stub(Contact, 'getByFirstnameLastnameEmail').value(() => fakeContact ? new Contact(fakeContact) : undefined)
   sandbox.stub(Contact.prototype, 'save').value(() => undefined)
+  sandbox.stub(PartnerDetails, 'getApplicationContact').value(() => new ApplicationContact(fakeApplicationContact))
+  sandbox.stub(PartnerDetails, 'getPageHeading').value((request, heading) => heading.replace('{{name}}', `${fakeContact.firstName} ${fakeContact.lastName}`))
   sandbox.stub(AddressDetail, 'getPartnerDetails').value(() => new AddressDetail(fakeAddressDetail))
   sandbox.stub(AddressDetail.prototype, 'save').value(() => undefined)
 })
@@ -196,7 +194,7 @@ lab.experiment('Partner Name and Date of Birth page tests:', () => {
 
     lab.experiment('Failure:', () => {
       lab.test(`when the applicationContact does not exist`, async () => {
-        const stub = sinon.stub(ApplicationContact, 'listByApplicationId').value(() => [])
+        const stub = sinon.stub(PartnerDetails, 'getApplicationContact').value(() => undefined)
         const res = await server.inject(getRequest)
         stub.restore()
         Code.expect(res.statusCode).to.equal(302)
@@ -251,10 +249,8 @@ lab.experiment('Partner Name and Date of Birth page tests:', () => {
 
     lab.experiment('Failure:', () => {
       lab.test(`when the applicationContact does not exist`, async () => {
-        const stub = sinon.stub(ApplicationContact, 'getById').value(() => undefined)
-        const logErrorSpy = sandbox.spy(LoggingService, 'logError')
+        const stub = sinon.stub(PartnerDetails, 'getApplicationContact').value(() => undefined)
         const res = await server.inject(postRequest)
-        Code.expect(logErrorSpy.callCount).to.equal(1)
         stub.restore()
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)

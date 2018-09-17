@@ -39,8 +39,10 @@ module.exports = class PartnershipPartnerListController extends BaseController {
       await application.save(context)
     }
 
+    // Get a list of partners associated with this application
     const list = await ApplicationContact.listByApplicationId(context, applicationId)
 
+    // Redirect to adding a new partner if the suffix "/add" is on the url or there are no partners for this application
     if (addAnotherPartner === addPartnerParam || !list.length) {
       const partnerId = await this.createPartner(context, application.id)
 
@@ -76,10 +78,13 @@ module.exports = class PartnershipPartnerListController extends BaseController {
     const { applicationId } = context
     const list = await ApplicationContact.listByApplicationId(context, applicationId)
     if (list.length < minPartners) {
+      // In this case the submit button would have been labeled "Add another Partner"
       const partnerId = await this.createPartner(context, applicationId)
       return this.redirect({ request, h, redirectPath: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
     }
 
+    // In this case the submit button would have been labeled "All Partners added - continue"
+    // Adding another partner is still possible by clicking the "Add another Partner" link in the page
     return this.redirect({ request, h, redirectPath: this.nextPath })
   }
 }

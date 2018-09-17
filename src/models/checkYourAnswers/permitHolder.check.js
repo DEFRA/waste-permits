@@ -46,9 +46,6 @@ module.exports = class PermitHolderCheck extends BaseCheck {
 
     switch (type) {
       case LIMITED_LIABILITY_PARTNERSHIP.type:
-        // path = LLP_COMPANY_DESIGNATED_MEMBER_EMAIL.path
-        // heading = 'Designated member email'
-        // prefix = 'company-secretary-email'
         return Promise.all([
           this.getTypeLine(),
           this.getCompanyLine(),
@@ -66,9 +63,6 @@ module.exports = class PermitHolderCheck extends BaseCheck {
           this.getBankruptcyLine()
         ])
       default:
-      //   path = COMPANY_DIRECTOR_EMAIL.path
-      //   heading = 'Company secretary or director email'
-      //   prefix = 'designated-member-email'
         return Promise.all([
           this.getTypeLine(),
           this.getCompanyLine(),

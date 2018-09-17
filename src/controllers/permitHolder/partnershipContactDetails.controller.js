@@ -1,32 +1,24 @@
 'use strict'
 
-const Handlebars = require('handlebars')
-const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
-const CryptoService = require('../../services/crypto.service')
 
 const Contact = require('../../models/contact.model')
 const AddressDetail = require('../../models/addressDetail.model')
-const ApplicationContact = require('../../models/applicationContact.model')
+const PartnerDetails = require('../../models/taskList/partnerDetails.model')
+
+const { TECHNICAL_PROBLEM, POSTCODE_PARTNER } = require('../../routes')
 
 module.exports = class PartnershipContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
-    let { partnerId } = request.params
-
-    const applicationContactId = CryptoService.decrypt(partnerId)
     const context = await RecoveryService.createApplicationContext(h)
-    const applicationContact = await ApplicationContact.getById(context, applicationContactId)
+    const applicationContact = await PartnerDetails.getApplicationContact(request)
 
     if (!applicationContact) {
-      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path })
+      return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
     }
 
-    const { firstName, lastName } = await Contact.getById(context, applicationContact.contactId)
-    this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({
-      name: `${firstName} ${lastName}`
-    })
-
+    this.route.pageHeading = await PartnerDetails.getPageHeading(request, this.orginalPageHeading)
     const pageContext = this.createPageContext(request, errors)
 
     if (request.payload) {
@@ -48,11 +40,13 @@ module.exports = class PartnershipContactDetailsController extends BaseControlle
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      let { partnerId } = request.params
-
-      const applicationContactId = CryptoService.decrypt(partnerId)
       const context = await RecoveryService.createApplicationContext(h, { account: true })
-      const applicationContact = await ApplicationContact.getById(context, applicationContactId)
+      const applicationContact = await PartnerDetails.getApplicationContact(request)
+
+      if (!applicationContact) {
+        return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
+      }
+
       let contact = await Contact.getById(context, applicationContact.contactId)
       const { applicationId, account: partnership } = context
       const {
@@ -85,7 +79,7 @@ module.exports = class PartnershipContactDetailsController extends BaseControlle
         await contact.link(context, partnership)
       }
 
-      return this.redirect({ request, h, redirectPath: `${Routes.POSTCODE_PARTNER.path}/${partnerId}` })
+      return this.redirect({ request, h, redirectPath: `${POSTCODE_PARTNER.path}/${request.params.partnerId}` })
     }
   }
 }
