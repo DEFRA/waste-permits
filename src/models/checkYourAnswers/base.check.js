@@ -88,7 +88,7 @@ module.exports = class BaseCheck {
     const { companies } = this.data
     if (!companies) {
       const company = await this.getCompanyAccount()
-      this.data.companies = await company.listChildren(this.data)
+      this.data.companies = await company.listLinked(this.data)
     }
     return this.data.companies || []
   }
@@ -129,6 +129,23 @@ module.exports = class BaseCheck {
       }))
     }
     return this.data.members || []
+  }
+
+  async getPartners () {
+    const { applicationId, partners } = this.data
+    if (!partners) {
+      const list = await ApplicationContact.listByApplicationId(this.data, applicationId)
+      this.data.partners = await Promise.all(list.map(async ({ id, contactId, directorDob }) => {
+        const { firstName, lastName } = await Contact.getById(this.data, contactId)
+        const name = `${firstName} ${lastName}`
+        const [year, month, day] = directorDob.split('-')
+        const dob = Utilities.formatDate({ year, month, day })
+        const { email, telephone, addressId } = await AddressDetail.getPartnerDetails(this.data, applicationId, contactId)
+        const address = await Address.getById(this.data, addressId)
+        return { name, email, telephone, dob, address }
+      }))
+    }
+    return this.data.partners || {}
   }
 
   async getPrimaryContactDetails () {

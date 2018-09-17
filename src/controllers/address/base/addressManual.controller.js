@@ -39,6 +39,10 @@ module.exports = class AddressManualController extends BaseController {
       }
     }
 
+    if (this.customisePageContext) {
+      await this.customisePageContext(pageContext, request)
+    }
+
     return this.showView({ request, h, pageContext })
   }
 

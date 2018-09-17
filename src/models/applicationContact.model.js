@@ -19,6 +19,10 @@ class ApplicationContact extends BaseModel {
   static async get (context, applicationId, contactId) {
     return super.getBy(context, { applicationId, contactId })
   }
+
+  static async listByApplicationId (context, applicationId) {
+    return super.listBy(context, { applicationId })
+  }
 }
 
 ApplicationContact.setDefinitions()

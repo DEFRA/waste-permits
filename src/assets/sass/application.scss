@@ -226,3 +226,19 @@ textarea+ .form-hint {
     min-width: 5em;
   }
 }
+
+.normal-weight {
+  font-weight: normal;
+}
+
+#submit-button+ a {
+    display: inline-block;
+    padding: 0.4em 0;
+    margin: 0 1.5em;
+    text-align: center;
+    @include media (mobile) {
+      width: 100%;
+      margin: 1em 0;
+      text-align: center;
+    }
+}

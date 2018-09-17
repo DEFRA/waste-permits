@@ -2,7 +2,7 @@ const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
 const { PERMIT_HOLDER_DETAILS: ruleSetId } = require('../applicationLine.model').RulesetIds
-const { LIMITED_LIABILITY_PARTNERSHIP } = Dynamics.PERMIT_HOLDER_TYPES
+const { LIMITED_LIABILITY_PARTNERSHIP, PARTNERSHIP } = Dynamics.PERMIT_HOLDER_TYPES
 
 const {
   COMPANY_DECLARE_BANKRUPTCY,
@@ -13,6 +13,8 @@ const {
   LLP_COMPANY_DESIGNATED_MEMBER_EMAIL,
   LLP_MEMBER_DATE_OF_BIRTH,
   LLP_COMPANY_NUMBER,
+  PARTNERSHIP_PARTNER_LIST,
+  PARTNERSHIP_TRADING_NAME,
   PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH,
   PERMIT_HOLDER_TYPE
 } = require('../../routes')
@@ -40,11 +42,10 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       ])
     }
 
-    switch (await this.getPermitHolderType()) {
-      case LIMITED_LIABILITY_PARTNERSHIP:
-        // path = LLP_COMPANY_DESIGNATED_MEMBER_EMAIL.path
-        // heading = 'Designated member email'
-        // prefix = 'company-secretary-email'
+    const { type } = await this.getPermitHolderType()
+
+    switch (type) {
+      case LIMITED_LIABILITY_PARTNERSHIP.type:
         return Promise.all([
           this.getTypeLine(),
           this.getCompanyLine(),
@@ -53,10 +54,15 @@ module.exports = class PermitHolderCheck extends BaseCheck {
           this.getConvictionsLine(),
           this.getBankruptcyLine()
         ])
+      case PARTNERSHIP.type:
+        return Promise.all([
+          this.getTypeLine(),
+          this.getPartnershipLine(),
+          this.getPartnersLine(),
+          this.getConvictionsLine(),
+          this.getBankruptcyLine()
+        ])
       default:
-      //   path = COMPANY_DIRECTOR_EMAIL.path
-      //   heading = 'Company secretary or director email'
-      //   prefix = 'designated-member-email'
         return Promise.all([
           this.getTypeLine(),
           this.getCompanyLine(),
@@ -141,6 +147,19 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
+  async getPartnershipLine () {
+    const { path } = PARTNERSHIP_TRADING_NAME
+    const { tradingName = '' } = await this.getApplication()
+    let answers = []
+    answers.push(tradingName)
+    return this.buildLine({
+      heading: `Partnership name`,
+      prefix: 'partnership-name',
+      answers,
+      links: [{ path, type: 'partnership name' }]
+    })
+  }
+
   async getDirectorsLine () {
     const { path } = DIRECTOR_DATE_OF_BIRTH
     const { companyNumber = '' } = await this.getCompanyAccount()
@@ -169,6 +188,27 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       prefix: 'designated-member',
       answers: answers,
       links: [{ path, type: `designated member's date of birth` }]
+    })
+  }
+
+  async getPartnersLine () {
+    const { path } = PARTNERSHIP_PARTNER_LIST
+    const partners = await this.getPartners()
+    let answers = ['The partners will be the permit holders and each will be responsible for the operation of the permit.']
+    partners.forEach(({ name, email, telephone, dob, address }) => {
+      answers.push(blankLine)
+      answers.push(name)
+      answers.push(address.fullAddress)
+      answers.push(email)
+      answers.push(`Telephone: ${telephone}`)
+      const [day, month, year] = dob.split('/')
+      answers.push(`Date of birth: ${Utilities.formatFullDateForDisplay({ day, month, year })}`)
+    })
+    return this.buildLine({
+      heading: 'Permit holder',
+      prefix: 'partner',
+      answers: answers,
+      links: [{ path, type: `partners` }]
     })
   }
 

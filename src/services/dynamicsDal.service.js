@@ -36,11 +36,15 @@ module.exports = class DynamicsDalService {
     this.authToken = authToken
   }
 
+  get dynamicsPath () {
+    return `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}`
+  }
+
   async callAction (action, dataObject) {
     let result
     const options = {
       method: 'POST',
-      uri: `https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}${action}`,
+      uri: `${this.dynamicsPath}${action}`,
       json: true,
       body: dataObject,
       headers: {
@@ -57,6 +61,12 @@ module.exports = class DynamicsDalService {
         throw error
       })
     return result
+  }
+
+  async link (query, association) {
+    const options = this._requestOptions(this.authToken, query, 'POST', association)
+    LoggingService.logDebug('Dynamics POST options', options)
+    return this._call(options, association)
   }
 
   async create (query, dataObject) {
@@ -91,7 +101,7 @@ module.exports = class DynamicsDalService {
   }
 
   _requestOptions (authToken, query, method, dataObject = undefined) {
-    const options = url.parse(`https://${config.dynamicsWebApiHost}${config.dynamicsWebApiPath}${query}`)
+    const options = url.parse(`${this.dynamicsPath}${query}`)
     options.method = method
     options.headers = {
       'Authorization': `Bearer ${authToken}`,

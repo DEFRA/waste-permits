@@ -41,8 +41,12 @@ module.exports = class AddressSelectController extends BaseController {
       addresses: addresses
     }
 
-    pageContext.changePostcodeLink = this.getPostcodeRoute()
-    pageContext.manualAddressLink = this.getManualEntryRoute()
+    if (this.customisePageContext) {
+      await this.customisePageContext(pageContext, request)
+    }
+
+    pageContext.changePostcodeLink = this.getPostcodeRoute(request.params)
+    pageContext.manualAddressLink = this.getManualEntryRoute(request.params)
 
     return this.showView({ request, h, pageContext })
   }

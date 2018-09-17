@@ -1,25 +1,39 @@
 'use strict'
 
-const { PERMIT_HOLDER_DETAILS } = require('../applicationLine.model').CompletedParameters
+const Handlebars = require('handlebars')
 
 const Completeness = require('./completeness.model')
 const LoggingService = require('../../services/logging.service')
-const Account = require('../account.model')
-const Application = require('../application.model')
+const CryptoService = require('../../services/crypto.service')
 const ApplicationContact = require('../applicationContact.model')
 const Contact = require('../contact.model')
 const Address = require('../address.model')
 const AddressDetail = require('../addressDetail.model')
 
-const minPartners = 2
+module.exports = class PartnerDetails extends Completeness {
+  static async getApplicationContact (request) {
+    const context = request.app.data
+    let { partnerId } = request.params
+    const applicationContactId = CryptoService.decrypt(partnerId)
+    return ApplicationContact.getById(context, applicationContactId)
+  }
 
-module.exports = class PermitHolderDetails extends Completeness {
+  static async getPageHeading (request, pageHeading) {
+    const context = request.app.data
+    const { contactId } = await this.getApplicationContact(request)
+    const { firstName, lastName } = await Contact.getById(context, contactId)
+    return Handlebars.compile(pageHeading)({
+      name: `${firstName} ${lastName}`
+    })
+  }
+
   static async getAddress (request, applicationId) {
     let address
     try {
       const context = request.app.data
+      const { contactId } = await this.getApplicationContact(request)
       // Get the AddressDetail for this application
-      const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
+      const addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
 
       if (addressDetail && addressDetail.addressId !== undefined) {
         // Get the Address for this AddressDetail
@@ -44,7 +58,9 @@ module.exports = class PermitHolderDetails extends Completeness {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    let addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
+    const { contactId } = await this.getApplicationContact(request)
+
+    let addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
     if (!addressDetail.addressId) {
       await addressDetail.save(context)
     }
@@ -73,8 +89,10 @@ module.exports = class PermitHolderDetails extends Completeness {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
+    const { contactId } = await this.getApplicationContact(request)
+
     // Get the AddressDetail for this Application (if there is one)
-    let addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
+    let addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
     if (!addressDetail.addressId) {
       await addressDetail.save(context)
     }
@@ -95,50 +113,5 @@ module.exports = class PermitHolderDetails extends Completeness {
       addressDetail.addressId = address.id
       await addressDetail.save(context)
     }
-  }
-
-  static get completenessParameter () {
-    return PERMIT_HOLDER_DETAILS
-  }
-
-  static async isContactComplete (context, contactId, addressDetail) {
-    const address = await Address.getById(context, addressDetail.addressId)
-    const contact = await Contact.getById(context, contactId)
-
-    let isContactComplete = contact && contact.firstName && contact.lastName
-    let isContactDetailComplete = addressDetail.dateOfBirth && addressDetail.telephone
-
-    return Boolean(isContactComplete && isContactDetailComplete && address)
-  }
-
-  static async checkComplete (context, applicationId) {
-    const { isIndividual, isPartnership, permitHolderOrganisationId, permitHolderIndividualId } = await Application.getById(context, applicationId)
-
-    if (isIndividual) {
-      // Get the Contact for this application
-      const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
-      return this.isContactComplete(context, permitHolderIndividualId, addressDetail)
-    }
-
-    // Get the Account for this application
-    const account = await Account.getById(context, permitHolderOrganisationId)
-
-    if (isPartnership) {
-      const list = await ApplicationContact.listByApplicationId(context, applicationId)
-      if (list.length < minPartners) {
-        return false
-      }
-
-      // list all contacts completeness as true or false
-      const contactsComplete = await Promise.all(list.map(async ({ contactId }) => {
-        const addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
-        return this.isContactComplete(context, contactId, addressDetail)
-      }))
-
-      return Boolean(contactsComplete.filter((complete) => !complete).length)
-    }
-
-    // When other organisation types
-    return Boolean(account && account.accountName)
   }
 }

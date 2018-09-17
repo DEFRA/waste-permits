@@ -151,20 +151,6 @@ lab.experiment('Permit Holder Contact Details page tests:', () => {
     })
   })
 
-  lab.experiment('Failure:', () => {
-    lab.experiment(`Get ${routePath} fails`, () => {
-      lab.test(`when the application does not contain an individual permit holder`, async () => {
-        const stub = sinon.stub(Contact, 'getIndividualPermitHolderByApplicationId').value(() => undefined)
-        const logErrorSpy = sandbox.spy(LoggingService, 'logError')
-        const res = await server.inject(getRequest)
-        Code.expect(logErrorSpy.callCount).to.equal(1)
-        stub.restore()
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
-      })
-    })
-  })
-
   lab.experiment('POST:', () => {
     lab.experiment('Success:', () => {
       lab.experiment(`POST ${routePath} (new Permit Holder) redirects to the next route ${nextRoutePath}`, () => {

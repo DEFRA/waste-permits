@@ -135,7 +135,7 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
 
       // Stub methods
       sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-      sandbox.stub(Account.prototype, 'listChildren').value(() => fakeCompanies)
+      sandbox.stub(Account.prototype, 'listLinked').value(() => fakeCompanies)
       sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
       sandbox.stub(ApplicationContact, 'get').value(() => undefined)
       sandbox.stub(ApplicationContact.prototype, 'save').value(() => undefined)

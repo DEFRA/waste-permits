@@ -21,6 +21,11 @@ class Account extends BaseModel {
       { field: 'isValidatedWithCompaniesHouse', dynamics: 'defra_validatedwithcompanyhouse' }
     ]
   }
+  static get relationships () {
+    return {
+      Account: 'defra_parent_child_account_relationship'
+    }
+  }
 
   static async getByApplicationId (context, applicationId) {
     const application = await Application.getById(context, applicationId)

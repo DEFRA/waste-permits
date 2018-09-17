@@ -11,6 +11,8 @@ const PermitHolderCheck = require('../../../src/models/checkYourAnswers/permitHo
 
 const PERMIT_HOLDER_TYPE_LINE = 0
 const PERMIT_HOLDER_LINE = 1
+const PARTNERSHIP_NAME_LINE = 1
+const PARTNERSHIP_PERMIT_HOLDER_LINE = 2
 const DIRECTORS_LINE = 2
 const COMPANY_SECRETARY_EMAIL_LINE = 3
 const CONVICTIONS_LINE = 4
@@ -36,6 +38,7 @@ const getMonth = (month) => [
 let fakeApplication
 let fakeCompanyAccount
 let fakeDirector
+let fakePartner
 let fakeIndividualPermitHolder
 let fakeIndividualPermitHolderDetails
 let fakeIndividualPermitHolderAddress
@@ -71,6 +74,16 @@ lab.beforeEach(() => {
       day: 1,
       month: 2,
       year: 2003
+    }
+  }
+
+  fakePartner = {
+    name: 'NAME',
+    email: 'PARTNER_EMAIL',
+    telephone: 'PARTNER_TELEPHONE',
+    dob: '11/02/2003',
+    address: {
+      fullAddress: 'FULL_ADDRESS'
     }
   }
 
@@ -115,6 +128,7 @@ lab.beforeEach(() => {
   sandbox.stub(BaseCheck.prototype, 'getCompanySecretaryDetails').value(() => Merge({}, fakeCompanySecretary))
   sandbox.stub(BaseCheck.prototype, 'getCompanyRegisteredAddress').value(() => Merge({}, fakeCompanyRegisteredAddress))
   sandbox.stub(BaseCheck.prototype, 'getDirectors').value(() => [Merge({}, fakeDirector)])
+  sandbox.stub(BaseCheck.prototype, 'getPartners').value(() => [Merge({}, fakePartner)])
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolder').value(() => Merge({}, fakeIndividualPermitHolder))
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderAddress').value(() => Merge({}, fakeIndividualPermitHolderAddress))
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderDetails').value(() => Merge({}, fakeIndividualPermitHolderDetails))
@@ -192,6 +206,70 @@ lab.experiment('PermitHolder Check tests:', () => {
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/company/number')
       Code.expect(linkType).to.equal('company details')
+      Code.expect(linkId).to.equal(`${linePrefix}-link`)
+    })
+
+    lab.test('(partnership name line) works correctly', async () => {
+      fakePermitHolderType.type = 'Partnership'
+      const lines = await buildLines()
+      const { heading, headingId, answers, links } = lines[PARTNERSHIP_NAME_LINE]
+      const linePrefix = `${prefix}-partnership-name`
+      Code.expect(heading).to.equal(heading)
+      Code.expect(headingId).to.equal(`${linePrefix}-heading`)
+
+      const { answer, answerId } = answers.pop()
+      const { tradingName } = fakeApplication
+      Code.expect(answer).to.equal(tradingName)
+      Code.expect(answerId).to.equal(`${linePrefix}-answer`)
+
+      const { link, linkId, linkType } = links.pop()
+      Code.expect(link).to.equal('/permit-holder/partners/trading-name')
+      Code.expect(linkType).to.equal('partnership name')
+      Code.expect(linkId).to.equal(`${linePrefix}-link`)
+    })
+
+    lab.test('(partners line) works correctly', async () => {
+      fakePermitHolderType.type = 'Partnership'
+      const lines = await buildLines()
+      const { heading, headingId, answers, links } = lines[PARTNERSHIP_PERMIT_HOLDER_LINE]
+      const linePrefix = `${prefix}-partner`
+      Code.expect(heading).to.equal(heading)
+      Code.expect(headingId).to.equal(`${linePrefix}-heading`)
+
+      const { answer, answerId } = answers.shift()
+      Code.expect(answer).to.equal('The partners will be the permit holders and each will be responsible for the operation of the permit.')
+      Code.expect(answerId).to.equal(`${linePrefix}-answer-1`)
+
+      const { name, email, telephone, dob, address: { fullAddress } } = fakePartner
+      const [day, month, year] = dob.split('/')
+
+      answers.forEach(({ answer, answerId }, answerIndex) => {
+        Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 2}`)
+        switch (answerIndex) {
+          case 0:
+            Code.expect(answer).to.equal({ blankLine: true })
+            break
+          case 1:
+            Code.expect(answer).to.equal(name)
+            break
+          case 2:
+            Code.expect(answer).to.equal(fullAddress)
+            break
+          case 3:
+            Code.expect(answer).to.equal(email)
+            break
+          case 4:
+            Code.expect(answer).to.equal(`Telephone: ${telephone}`)
+            break
+          case 5:
+            Code.expect(answer).to.equal(`Date of birth: ${day} ${getMonth(month)} ${year}`)
+            break
+        }
+      })
+
+      const { link, linkId, linkType } = links.pop()
+      Code.expect(link).to.equal('/permit-holder/partners/list')
+      Code.expect(linkType).to.equal('partners')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 

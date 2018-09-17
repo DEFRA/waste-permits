@@ -23,7 +23,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     // Get the directors that relate to this application
     const directors = await this._getDirectors(context, applicationId, account.id)
-    const companies = await account.listChildren(context)
+    const companies = await account.listLinked(context)
 
     // Add the day of birth to each Director's date of birth from the ApplicationContact (if we have it)
     for (let director of directors) {

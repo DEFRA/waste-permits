@@ -33,6 +33,10 @@ const Dynamics = {
     DESIGNATED_MEMBER_EMAIL: {
       TYPE: 910400008,
       NAME: 'Designated Member Email Address'
+    },
+    PARTNER_CONTACT_DETAILS: {
+      TYPE: 910400009,
+      NAME: 'Partner contact details'
     }
   },
   DIGITAL_SOURCE: 910400000,
@@ -111,7 +115,7 @@ const Dynamics = {
     PARTNERSHIP: {
       id: 'partnership',
       type: 'Partnership',
-      canApplyOnline: false,
+      canApplyOnline: true,
       dynamicsApplicantTypeId: 910400001,
       dynamicsOrganisationTypeId: 910400003
     },
