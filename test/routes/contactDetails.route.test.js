@@ -112,7 +112,6 @@ lab.experiment('Contact details page tests:', () => {
 
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who should we contact about this application?')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
-      Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
 
       // Test for the existence of expected static content
       GeneralTestHelper.checkElementsExist(doc, [

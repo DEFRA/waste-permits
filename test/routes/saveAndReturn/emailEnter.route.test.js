@@ -71,11 +71,9 @@ lab.experiment('Save and return email page tests:', () => {
         GeneralTestHelper.checkElementsExist(doc, [
           'back-link',
           'submit-button',
-          'save-and-return-email-label',
-          'privacy-link'
+          'save-and-return-email-label'
         ])
         Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
-        Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
         Code.expect(doc.getElementById('got-email').getAttribute('value')).to.equal('false')
       })
     })
