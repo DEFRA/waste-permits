@@ -42,27 +42,41 @@ module.exports = class PartnershipPartnerListController extends BaseController {
     // Get a list of partners associated with this application
     const list = await ApplicationContact.listByApplicationId(context, applicationId)
 
-    // Redirect to adding a new partner if the suffix "/add" is on the url or there are no partners for this application
-    if (addAnotherPartner === addPartnerParam || !list.length) {
+    const partners = await Promise.all(list.map(async (partner) => {
+      const { id, contactId, directorDob } = partner
+      if (contactId && directorDob) {
+        const { firstName, lastName } = await Contact.getById(context, contactId)
+        const name = `${firstName} ${lastName}`
+        const [year, month, day] = directorDob.split('-')
+        const partnerId = CryptoService.encrypt(id)
+        const dob = Utilities.formatDate({ year, month, day })
+        const addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
+        if (addressDetail) {
+          const { email, telephone, addressId } = addressDetail
+          if (addressId) {
+            const { fullAddress } = await Address.getById(context, addressId)
+            const changeLink = `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}`
+            const deleteLink = `${PARTNERSHIP_DELETE_PARTNER.path}/${partnerId}`
+            return { partnerId, name, email, telephone, dob, changeLink, deleteLink, fullAddress }
+          }
+        }
+        // Remove any incomplete partners
+        await partner.delete(context)
+        return false
+      }
+    }))
+
+    // Filter out the incomplete partners
+    pageContext.partners = partners.filter((partner) => partner)
+
+    // Redirect to adding a new partner if the suffix "/add" is on the url or there are no partners or there are incomplete partners for this application
+    if (addAnotherPartner === addPartnerParam || !pageContext.partners.length) {
       const partnerId = await this.createPartner(context, application.id)
 
       return this.redirect({ request, h, redirectPath: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
     }
 
-    pageContext.partners = await Promise.all(list.map(async ({ id, contactId, directorDob }) => {
-      const { firstName, lastName } = await Contact.getById(context, contactId)
-      const name = `${firstName} ${lastName}`
-      const [year, month, day] = directorDob.split('-')
-      const partnerId = CryptoService.encrypt(id)
-      const dob = Utilities.formatDate({ year, month, day })
-      const changeLink = `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}`
-      const deleteLink = `${PARTNERSHIP_DELETE_PARTNER.path}/${partnerId}`
-      const { email, telephone, addressId } = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
-      const { fullAddress = '' } = await Address.getById(context, addressId)
-      return { partnerId, name, email, telephone, dob, changeLink, deleteLink, fullAddress }
-    }))
-
-    if (list.length < minPartners) {
+    if (pageContext.partners.length < minPartners) {
       pageContext.submitButtonTitle = addButtonTitle
     } else {
       pageContext.addAnotherPartnerLink = `${PARTNERSHIP_PARTNER_LIST.path}/${addPartnerParam}`
