@@ -50,7 +50,8 @@ module.exports = class BaseController {
       skipLinkMessage: Constants.SKIP_LINK_MESSAGE,
       pageTitle: Constants.buildPageTitle(this.route.pageHeading),
       pageHeading: this.route.pageHeading,
-      formAction: request.path
+      formAction: request.path,
+      browserIsIE: request.plugins.scooter.family.toUpperCase() === 'IE'
     }
     pageContext.encodedPageTitle = encodeURI(pageContext.pageTitle)
 

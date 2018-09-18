@@ -14,12 +14,19 @@ lab.experiment('Base Controller tests:', () => {
       path: 'THE_ROUTE_PATH'
     }
 
+    const plugins = {
+      scooter: {
+        family: 'IE'
+      }
+    }
+
     const controller = new BaseController({ route })
 
-    const pageContext = controller.createPageContext(route)
+    const pageContext = controller.createPageContext({ path: route.path, plugins })
 
     Code.expect(pageContext.pageHeading).to.equal(route.pageHeading)
     Code.expect(pageContext.pageTitle).to.equal(route.pageTitle)
     Code.expect(pageContext.formAction).to.equal(route.path)
+    Code.expect(pageContext.browserIsIE).to.equal(true)
   })
 })

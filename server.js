@@ -21,6 +21,7 @@ const Disinfect = require('disinfect')
 const SanitizePayload = require('hapi-sanitize-payload')
 const HapiAlive = require('hapi-alive')
 const Good = require('good')
+const Scooter = require('scooter')
 const HapiDevErrors = require('hapi-dev-errors')
 const Crumb = require('crumb')
 
@@ -151,6 +152,12 @@ const registerPlugins = async () => server.register([
   {
     plugin: Good,
     options: logConfig.options
+  },
+
+  // Plugin for retrieving the browser useragent
+  // See https://www.npmjs.com/package/scooter
+  {
+    plugin: Scooter
   },
 
   // Plugin for CSRF tokens

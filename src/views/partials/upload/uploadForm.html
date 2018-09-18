@@ -37,5 +37,19 @@
     {{#> @partial-block }}{{/@partial-block }}
 
     {{> common/submitButton }}
+
+    {{#if browserIsIE}}
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#file').on('keypress', function (event) {
+          if (event.which === 13) {
+            // Enter key is keyCode 13
+            event.preventDefault();
+            $('#file').click();
+          }
+        })
+      })
+    </script>
+    {{/if}}
   </div>
 </form>
