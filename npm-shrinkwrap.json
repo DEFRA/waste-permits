@@ -10552,8 +10552,7 @@
     "os-tmpdir": {
       "version": "1.0.2",
       "resolved": "https://registry.npmjs.org/os-tmpdir/-/os-tmpdir-1.0.2.tgz",
-      "integrity": "sha1-u+Z0BseaqFxc/sdm/lc0VV36EnQ=",
-      "dev": true
+      "integrity": "sha1-u+Z0BseaqFxc/sdm/lc0VV36EnQ="
     },
     "osenv": {
       "version": "0.1.5",
@@ -11961,6 +11960,15 @@
       "integrity": "sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==",
       "dev": true
     },
+    "scooter": {
+      "version": "5.0.0",
+      "resolved": "https://registry.npmjs.org/scooter/-/scooter-5.0.0.tgz",
+      "integrity": "sha512-nIbq/DHQ3eZCHG3eXuIGkv2L6S/Pf9TSUfqQ0uDJ7jPZdGYHEXgrn0VCaZDBOYKeTMIAwf0Wd+qi5ADjZ8Td7A==",
+      "requires": {
+        "semver": "5.x.x",
+        "useragent": "2.x.x"
+      }
+    },
     "scss-tokenizer": {
       "version": "0.2.3",
       "resolved": "https://registry.npmjs.org/scss-tokenizer/-/scss-tokenizer-0.2.3.tgz",
@@ -12006,8 +12014,7 @@
     "semver": {
       "version": "5.5.0",
       "resolved": "https://registry.npmjs.org/semver/-/semver-5.5.0.tgz",
-      "integrity": "sha512-4SJ3dm0WAwWy/NVeioZh5AntkdJoWKxHxcmyP622fOkgHa4z3R0TdBJICINyaSDE6uNwVc8gZr+ZinwZAH4xIA==",
-      "dev": true
+      "integrity": "sha512-4SJ3dm0WAwWy/NVeioZh5AntkdJoWKxHxcmyP622fOkgHa4z3R0TdBJICINyaSDE6uNwVc8gZr+ZinwZAH4xIA=="
     },
     "semver-diff": {
       "version": "2.1.0",
@@ -14099,7 +14106,6 @@
       "version": "0.0.33",
       "resolved": "https://registry.npmjs.org/tmp/-/tmp-0.0.33.tgz",
       "integrity": "sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==",
-      "dev": true,
       "requires": {
         "os-tmpdir": "~1.0.2"
       }
@@ -14577,6 +14583,15 @@
       "resolved": "https://registry.npmjs.org/user-home/-/user-home-1.1.1.tgz",
       "integrity": "sha1-K1viOjK2Onyd640PKNSFcko98ZA=",
       "dev": true
+    },
+    "useragent": {
+      "version": "2.3.0",
+      "resolved": "https://registry.npmjs.org/useragent/-/useragent-2.3.0.tgz",
+      "integrity": "sha512-4AoH4pxuSvHCjqLO04sU6U/uE65BYza8l/KKBS0b0hnUPWi+cQ2BpeTEwejCSx9SPV5/U03nniDTrWx5NrmKdw==",
+      "requires": {
+        "lru-cache": "4.1.x",
+        "tmp": "0.0.x"
+      }
     },
     "util": {
       "version": "0.10.3",
