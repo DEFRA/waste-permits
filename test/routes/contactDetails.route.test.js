@@ -12,7 +12,6 @@ const Application = require('../../src/models/application.model')
 const Account = require('../../src/models/account.model')
 const AddressDetail = require('../../src/models/addressDetail.model')
 const Contact = require('../../src/models/contact.model')
-const Payment = require('../../src/models/payment.model')
 const ContactDetails = require('../../src/models/taskList/contactDetails.model')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -77,8 +76,6 @@ lab.beforeEach(() => {
   sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
   sandbox.stub(Contact.prototype, 'save').value(() => {})
   sandbox.stub(ContactDetails, 'updateCompleteness').value(() => {})
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -87,7 +84,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Contact details page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let request

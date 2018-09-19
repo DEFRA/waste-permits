@@ -12,7 +12,6 @@ const LoggingService = require('../../src/services/logging.service')
 
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
-const Payment = require('../../src/models/payment.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const StandardRuleType = require('../../src/models/standardRuleType.model')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -58,8 +57,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(ApplicationLine, 'getById').value(() => undefined)
   sandbox.stub(ApplicationLine.prototype, 'save').value(() => {})
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(StandardRule, 'list').value(() => [fakeStandardRule])
   sandbox.stub(StandardRule, 'getByCode').value(() => fakeStandardRule)
   sandbox.stub(StandardRuleType, 'getById').value(() => new Application(fakeStandardRuleType))
@@ -71,7 +68,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Select a permit page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Select a permit')
@@ -98,10 +95,34 @@ lab.experiment('Select a permit page tests:', () => {
 
       lab.beforeEach(() => {
         permits = [
-          newPermit({ id: 'permit-0', permitName: 'Permit one', limits: '', code: 'permit code 0', codeForId: 'permit-code-0' }),
-          newPermit({ id: 'permit-1', permitName: 'Permit two', limits: 'limit two', code: 'permit code 1', codeForId: 'permit-code-1' }),
-          newPermit({ id: 'permit-2', permitName: 'Permit three', limits: '', code: 'permit code 2', codeForId: 'permit-code-2' }),
-          newPermit({ id: 'permit-3', permitName: 'Permit four', limits: '', code: 'permit code 3', codeForId: 'permit-code-3' })
+          newPermit({
+            id: 'permit-0',
+            permitName: 'Permit one',
+            limits: '',
+            code: 'permit code 0',
+            codeForId: 'permit-code-0'
+          }),
+          newPermit({
+            id: 'permit-1',
+            permitName: 'Permit two',
+            limits: 'limit two',
+            code: 'permit code 1',
+            codeForId: 'permit-code-1'
+          }),
+          newPermit({
+            id: 'permit-2',
+            permitName: 'Permit three',
+            limits: '',
+            code: 'permit code 2',
+            codeForId: 'permit-code-2'
+          }),
+          newPermit({
+            id: 'permit-3',
+            permitName: 'Permit four',
+            limits: '',
+            code: 'permit code 3',
+            codeForId: 'permit-code-3'
+          })
         ]
         StandardRule.list = () => permits
       })

@@ -8,7 +8,6 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/models/application.model')
-const Payment = require('../../src/models/payment.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const StandardRuleType = require('../../src/models/standardRuleType.model')
 const CookieService = require('../../src/services/cookie.service')
@@ -111,8 +110,6 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRule, 'getById').value(() => new Application(fakeStandardRule))
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -121,7 +118,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Apply Offline: Download and fill in these forms to apply for that permit page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test({ excludeCookiePostTests: true })
+  new GeneralTestHelper({ lab, routePath }).test({ excludeCookiePostTests: true })
 
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('how-to-apply')).to.exist()

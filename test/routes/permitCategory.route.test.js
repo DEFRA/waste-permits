@@ -8,7 +8,6 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/models/application.model')
-const Payment = require('../../src/models/payment.model')
 const StandardRuleType = require('../../src/models/standardRuleType.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
@@ -59,8 +58,6 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
@@ -71,7 +68,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('What do you want the permit for? (permit category) page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What do you want the permit for?')
@@ -107,9 +104,19 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       lab.beforeEach(() => {
         categories = [
           { id: 'category-0', categoryName: 'electrical', category: 'Electrical insulating oil storage', hint: '' },
-          { id: 'category-1', categoryName: 'metal', category: 'Metal recycling, scrap metal and WEEE', hint: 'not cars or vehicles' },
+          {
+            id: 'category-1',
+            categoryName: 'metal',
+            category: 'Metal recycling, scrap metal and WEEE',
+            hint: 'not cars or vehicles'
+          },
           { id: 'category-2', categoryName: 'mining', category: 'Mining, oil and gas', hint: '' },
-          { id: 'category-3', categoryName: 'transfer', category: 'Waste transfer station or amenity site', hint: 'with or without treatment' }
+          {
+            id: 'category-3',
+            categoryName: 'transfer',
+            category: 'Waste transfer station or amenity site',
+            hint: 'with or without treatment'
+          }
         ]
 
         StandardRuleType.getCategories = () => categories

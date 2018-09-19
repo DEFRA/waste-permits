@@ -26,7 +26,6 @@ const fakeSlug = 'SLUG'
 
 const routePath = `/pay/type`
 const errorPath = '/errors/technical-problem'
-const notSubmittedRoutePath = '/errors/order/check-answers-not-complete'
 
 let fakeApplication
 let fakeApplicationLine
@@ -60,7 +59,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
@@ -73,9 +72,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment(`How do you want to pay?:`, () => {
-  new GeneralTestHelper(lab, routePath).test({
-    excludeAlreadySubmittedTest: true
-  })
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let getRequest
@@ -134,16 +131,6 @@ lab.experiment(`How do you want to pay?:`, () => {
         Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
-
-    lab.experiment('invalid', () => {
-      lab.test('redirects to the Not Submitted screen if the application has not been submitted', async () => {
-        sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
-      })
-    })
   })
 
   lab.experiment(`POST ${routePath}`, () => {
@@ -181,16 +168,6 @@ lab.experiment(`How do you want to pay?:`, () => {
         postRequest.payload = {}
         const doc = await GeneralTestHelper.getDoc(postRequest)
         GeneralTestHelper.checkValidationMessage(doc, 'payment-type', 'Select how you want to pay')
-      })
-
-      lab.test('redirects to error screen when an unexpected payment type is selected', async () => {
-        const spy = sandbox.spy(LoggingService, 'logError')
-        postRequest.payload['payment-type'] = '99999999'
-
-        const res = await server.inject(postRequest)
-        Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
       })
     })
   })

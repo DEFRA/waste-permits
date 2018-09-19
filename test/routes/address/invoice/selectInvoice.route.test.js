@@ -10,7 +10,6 @@ const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
 const Application = require('../../../../src/models/application.model')
-const Payment = require('../../../../src/models/payment.model')
 const InvoiceAddress = require('../../../../src/models/taskList/invoiceAddress.model')
 const { COOKIE_RESULT } = require('../../../../src/constants')
 
@@ -95,8 +94,6 @@ lab.beforeEach(() => {
   ])
   sandbox.stub(InvoiceAddress, 'getAddress').value(() => new Address(fakeAddress1))
   sandbox.stub(InvoiceAddress, 'saveSelectedAddress').value(() => undefined)
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -129,7 +126,7 @@ const checkPageElements = async (getRequest) => {
 }
 
 lab.experiment('Invoice address select page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Address Select page correctly`, async () => {

@@ -35,7 +35,7 @@ const routes = {
   }
 }
 
-Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multipleDirectorPageHeading, routePath, nextPath, errorPath }]) => {
+Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multipleDirectorPageHeading, routePath, nextPath }]) => {
   lab.experiment(companyType, () => {
     let getRequest
     let postRequest
@@ -221,7 +221,7 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
     }
 
     lab.experiment('Director Date Of Birth page tests:', () => {
-      new GeneralTestHelper(lab, routePath).test()
+      new GeneralTestHelper({ lab, routePath }).test()
 
       lab.experiment(`GET ${routePath} returns the Director DOB page correctly`, () => {
         lab.test(`when there are no Directors or Companies`, async () => {

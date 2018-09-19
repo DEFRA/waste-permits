@@ -30,6 +30,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application({}))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -38,10 +39,11 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Start at Beginning page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test({
+  new GeneralTestHelper({ lab, routePath }).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true })
+    excludeAlreadySubmittedTest: true
+  })
 
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)

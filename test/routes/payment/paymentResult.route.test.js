@@ -24,7 +24,6 @@ const routePath = `/pay/result`
 const nextRoutePath = `/done/${fakeSlug}`
 const errorPath = '/errors/technical-problem'
 const problemRoutePath = '/pay/card-problem/SLUG'
-const notSubmittedRoutePath = '/errors/order/check-answers-not-complete'
 
 let fakeApplication
 let fakeApplicationLine
@@ -35,7 +34,7 @@ let fakeRecovery
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID',
-    submitted: true
+    submitted: false
   }
 
   fakeApplicationLine = {
@@ -81,8 +80,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment(`How do you want to pay?:`, () => {
-  new GeneralTestHelper(lab, routePath).test({
-    excludeAlreadySubmittedTest: true,
+  new GeneralTestHelper({ lab, routePath }).test({
     excludeHtmlTests: true,
     excludeCookieGetTests: true,
     excludeCookiePostTests: true
@@ -113,13 +111,6 @@ lab.experiment(`How do you want to pay?:`, () => {
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(`${problemRoutePath}?status=problem`)
       })
-
-      lab.test('redirects when application not submitted', async () => {
-        fakeApplication.submitted = false
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
-      })
     })
 
     lab.experiment('failure', () => {
@@ -133,16 +124,6 @@ lab.experiment(`How do you want to pay?:`, () => {
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)
-      })
-    })
-
-    lab.experiment('invalid', () => {
-      lab.test('redirects to the Not Submitted screen if the application has not been submitted', async () => {
-        sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
       })
     })
   })

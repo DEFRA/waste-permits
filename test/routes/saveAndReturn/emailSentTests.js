@@ -63,7 +63,7 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
   })
 
   lab.experiment('Save and return email sent check page tests:', () => {
-    new GeneralTestHelper(lab, routePath).test()
+    new GeneralTestHelper({ lab, routePath }).test()
 
     const checkCommonElements = async (doc) => {
       GeneralTestHelper.checkElementsExist(doc, [

@@ -107,7 +107,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Partners List page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   const checkElements = async (doc, data) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Business partners you have added to this application')

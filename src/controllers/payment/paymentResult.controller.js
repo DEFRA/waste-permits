@@ -7,17 +7,18 @@ const RecoveryService = require('../../services/recovery.service')
 module.exports = class PaymentResultController extends BaseController {
   async doGet (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { application: true, applicationReturn: true, cardPayment: true })
-    const { application, applicationReturn, cardPayment } = context
+    const { application, cardPayment, applicationReturn: { slug } } = context
 
     const paymentStatus = await cardPayment.getCardPaymentResult(context)
-    let redirectPath = `${APPLICATION_RECEIVED.path}/${applicationReturn.slug}`
+    let redirectPath = `${APPLICATION_RECEIVED.path}/${slug}`
 
     // Look at the result of the payment and redirect off to the appropriate result screen
     if (paymentStatus === 'success') {
       application.paymentReceived = true
+      application.submittedOn = Date.now()
       await application.save(context)
     } else {
-      redirectPath = `${CARD_PROBLEM.path}/${applicationReturn.slug}?status=${encodeURIComponent(paymentStatus)}`
+      redirectPath = `${CARD_PROBLEM.path}/${slug}?status=${encodeURIComponent(paymentStatus)}`
     }
 
     return this.redirect({ request, h, redirectPath })

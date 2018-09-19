@@ -11,7 +11,6 @@ const CookieService = require('../../src/services/cookie.service')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Account = require('../../src/models/account.model')
 const Application = require('../../src/models/application.model')
-const Payment = require('../../src/models/payment.model')
 const LoggingService = require('../../src/services/logging.service')
 
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -80,8 +79,6 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
       sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
       sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
       sandbox.stub(Account.prototype, 'save').value(() => fakeAccount)
-      sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-      sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
     })
 
     lab.afterEach(() => {
@@ -91,7 +88,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
 
     lab.experiment('Company status page tests:', () => {
       // There is no POST for this route
-      new GeneralTestHelper(lab, routePath).test({
+      new GeneralTestHelper({ lab, routePath }).test({
         excludeCookiePostTests: true
       })
 

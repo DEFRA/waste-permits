@@ -183,7 +183,7 @@ const checkValidationError = async (fieldId, expectedErrorMessage, fieldIndex = 
 }
 
 lab.experiment('Partner manual address entry page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the manual address entry page correctly on first visit to the page`, async () => {

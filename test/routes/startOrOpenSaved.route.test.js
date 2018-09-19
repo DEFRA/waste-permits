@@ -51,10 +51,11 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Start or Open Saved page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test({
+  new GeneralTestHelper({ lab, routePath }).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true })
+    excludeAlreadySubmittedTest: true
+  })
 
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a standard rules environmental permit')

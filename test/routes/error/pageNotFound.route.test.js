@@ -45,9 +45,10 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Page Not Found (404) page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test({
+  new GeneralTestHelper({ lab, routePath }).test({
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true })
+    excludeAlreadySubmittedTest: true
+  })
 
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest, 404)

@@ -153,7 +153,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Partner postcode page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     lab.test(`when returns the postcode page correctly when there is no saved postcode`, async () => {

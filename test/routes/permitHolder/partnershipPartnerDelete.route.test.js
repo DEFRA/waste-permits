@@ -123,7 +123,7 @@ const checkPageElements = async (request, name) => {
 }
 
 lab.experiment('Partner Delete page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`Get ${routePath}`, () => {
     lab.experiment('Success:', () => {

@@ -10,7 +10,6 @@ const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
 const Application = require('../../../../src/models/application.model')
-const Payment = require('../../../../src/models/payment.model')
 const SiteNameAndLocation = require('../../../../src/models/taskList/siteNameAndLocation.model')
 const { COOKIE_RESULT } = require('../../../../src/constants')
 
@@ -87,8 +86,6 @@ lab.beforeEach(() => {
     new Address(fakeAddress3)
   ])
   sandbox.stub(SiteNameAndLocation, 'saveSelectedAddress').value(() => undefined)
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -141,7 +138,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Site postcode page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the postcode page correctly when there is no saved postcode`, async () => {

@@ -10,11 +10,7 @@ const { CARD_PAYMENT, BACS_PAYMENT } = Dynamics.PaymentTypes
 module.exports = class PaymentTypeController extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h, { application: true, applicationLine: true, applicationReturn: true })
-    const { application, applicationLine, applicationReturn } = context
-
-    if (!application.isSubmitted()) {
-      return this.redirect({ request, h, redirectPath: Routes.NOT_SUBMITTED.path })
-    }
+    const { applicationLine, applicationReturn } = context
 
     this.path = this.path.replace('{slug?}', applicationReturn ? applicationReturn.slug : '')
     const pageContext = this.createPageContext(request, errors)

@@ -23,7 +23,6 @@ let fakeLineData
 
 const routePath = '/check-before-sending'
 const nextRoutePath = '/pay/type'
-const notCompleteRoutePath = '/task-list?showError=true'
 
 let sandbox
 
@@ -73,6 +72,7 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => true)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(ApplicationLine, 'getValidRulesetIds').value(() => [fakeValidRulesetId])
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
   sandbox.stub(TaskList, 'getByApplicationLineId').value(() => new TaskList())
@@ -85,10 +85,10 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Check your answers before sending your application page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test({
+  new GeneralTestHelper({ lab, routePath }).test({
     excludeCookieGetTests: true,
-    excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true })
+    excludeCookiePostTests: true
+  })
 
   lab.experiment(`GET ${routePath}`, () => {
     let request
@@ -144,14 +144,6 @@ lab.experiment('Check your answers before sending your application page tests:',
         Code.expect(doc.getElementById(id).firstChild.nodeValue.trim()).to.equal('Change')
         Code.expect(doc.getElementById(`${id}-type`).firstChild.nodeValue.trim()).to.equal(type)
       })
-    })
-
-    lab.test('Redirects to the Task List screen showing a validation error if the application has not been completed', async () => {
-      sandbox.stub(TaskList.prototype, 'isComplete').value(() => false)
-
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(notCompleteRoutePath)
     })
   })
 

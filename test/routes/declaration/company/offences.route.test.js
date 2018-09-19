@@ -56,7 +56,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Offences tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc

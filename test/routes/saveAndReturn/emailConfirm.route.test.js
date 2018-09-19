@@ -45,7 +45,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Save and return confirm page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let getRequest

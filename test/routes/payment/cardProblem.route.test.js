@@ -26,7 +26,6 @@ const fakeSlug = 'SLUG'
 
 const routePath = `/pay/card-problem/${fakeSlug}`
 const errorPath = '/errors/technical-problem'
-const notSubmittedRoutePath = '/errors/order/check-answers-not-complete'
 
 let fakeApplication
 let fakeApplicationLine
@@ -60,7 +59,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
@@ -73,10 +72,9 @@ lab.afterEach(() => {
 })
 
 lab.experiment(`Your card payment failed:`, () => {
-  new GeneralTestHelper(lab, routePath).test({
+  new GeneralTestHelper({ lab, routePath }).test({
     excludeCookieGetTests: true,
-    excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true
+    excludeCookiePostTests: true
   })
 
   lab.experiment(`GET ${routePath}`, () => {
@@ -132,16 +130,6 @@ lab.experiment(`Your card payment failed:`, () => {
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)
-      })
-    })
-
-    lab.experiment('invalid', () => {
-      lab.test('redirects to the Not Submitted screen if the application has not been submitted', async () => {
-        sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
       })
     })
   })

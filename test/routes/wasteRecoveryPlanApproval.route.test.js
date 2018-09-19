@@ -61,7 +61,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Waste Recovery Plan Approval page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     lab.experiment('success', () => {

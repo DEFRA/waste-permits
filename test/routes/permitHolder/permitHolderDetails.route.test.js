@@ -8,7 +8,6 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const Application = require('../../../src/models/application.model')
-const Payment = require('../../../src/models/payment.model')
 const CookieService = require('../../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
@@ -31,8 +30,6 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
 
@@ -42,7 +39,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Permit holder details: Redirect to correct details flow', () => {
-  new GeneralTestHelper(lab, routePath).test({ excludeCookiePostTests: true, excludeHtmlTests: true })
+  new GeneralTestHelper({ lab, routePath }).test({ excludeCookiePostTests: true, excludeHtmlTests: true })
 
   lab.experiment(`GET ${routePath}`, () => {
     let getRequest

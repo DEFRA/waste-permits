@@ -72,7 +72,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
     })
 
     lab.experiment('Company number page tests:', () => {
-      new GeneralTestHelper(lab, routePath).test()
+      new GeneralTestHelper({ lab, routePath }).test()
 
       lab.experiment(`GET ${routePath}`, () => {
         let doc

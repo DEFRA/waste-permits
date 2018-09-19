@@ -9,7 +9,6 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
-const Payment = require('../../src/models/payment.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const TaskList = require('../../src/models/taskList/taskList.model')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -17,7 +16,6 @@ const { COOKIE_RESULT } = require('../../src/constants')
 let sandbox
 
 const routePath = '/task-list'
-const notPaidForRoute = '/errors/order/card-payment-not-complete'
 const alreadySubmittedRoutePath = '/errors/order/done-cant-go-back'
 
 let getRequest
@@ -233,8 +231,6 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'isPaid').value(() => false)
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => fakeStandardRule)
   sandbox.stub(StandardRule, 'getByCode').value(() => fakeStandardRule)
   sandbox.stub(TaskList, 'getByApplicationLineId').value(() => fakeTaskList)
@@ -246,9 +242,9 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test({
-    excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true })
+  new GeneralTestHelper({ lab, routePath }).test({
+    excludeCookiePostTests: true
+  })
 
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
@@ -272,18 +268,8 @@ lab.experiment('Task List page tests:', () => {
     checkElement(doc.getElementById('select-a-different-permit'))
   })
 
-  lab.test(`GET ${routePath} redirects to the Not Paid route ${notPaidForRoute} if the applicaiton has been submitted but not paid for yet`, async () => {
+  lab.test(`GET ${routePath} redirects to the Already Submitted route ${alreadySubmittedRoutePath} if the application has been submitted`, async () => {
     Application.prototype.isSubmitted = () => true
-    Application.prototype.isPaid = () => false
-
-    const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal(notPaidForRoute)
-  })
-
-  lab.test(`GET ${routePath} redirects to the Already Submitted route ${alreadySubmittedRoutePath} if the application has been submitted and paid for`, async () => {
-    Application.prototype.isSubmitted = () => true
-    Application.prototype.isPaid = () => true
 
     const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(302)
