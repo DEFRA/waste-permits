@@ -40,7 +40,9 @@ class Application extends BaseModel {
       { field: 'technicalQualification', dynamics: 'defra_technicalability' },
       { field: 'tradingName', dynamics: 'defra_tradingname', length: { max: 170 } },
       { field: 'useTradingName', dynamics: 'defra_tradingnameused' },
-      { field: 'saveAndReturnEmail', dynamics: 'defra_saveandreturnemail', length: { max: 100 }, encode: true }
+      { field: 'saveAndReturnEmail', dynamics: 'defra_saveandreturnemail', length: { max: 100 }, encode: true },
+      { field: 'miningWasteWeight', dynamics: 'defra_miningwasteweight', length: { max: 20 } },
+      { field: 'miningWastePlan', dynamics: 'defra_miningwasteplan' }
     ]
   }
 

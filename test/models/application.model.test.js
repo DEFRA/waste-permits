@@ -48,7 +48,9 @@ const fakeApplicationData = {
   technicalQualification: 'TECHNICAL_QUALIFICATIONS',
   tradingName: 'TRADING_NAME',
   saveAndReturnEmail: 'fake@email.com',
-  useTradingName: 'USE_TRADING_NAME'
+  useTradingName: 'USE_TRADING_NAME',
+  miningWastePlan: 'MINING_WASTE_PLAN',
+  miningWasteWeight: 'MINING_WASTE_WEIGHT'
 }
 const fakeApplicationReturnData = {
   applicationId: testApplicationId,
@@ -82,7 +84,9 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
     defra_technicalability: application.technicalQualification,
     defra_tradingname: application.tradingName,
     defra_saveandreturnemail: application.saveAndReturnEmail,
-    defra_tradingnameused: application.useTradingName
+    defra_tradingnameused: application.useTradingName,
+    defra_miningwasteweight: application.miningWasteWeight,
+    defra_miningwasteplan: application.miningWastePlan
   }
 }
 

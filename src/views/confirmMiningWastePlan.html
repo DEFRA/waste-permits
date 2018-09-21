@@ -1,0 +1,52 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group">
+          <p id="mining-waste-paragraph">
+            You must follow one of the two approved <a id="mining-waste-link" target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/publications/sr2014-no-2-the-management-of-extractive-waste">mining waste management plans (opens new tab)</a>.
+          </p>
+        </div>
+
+        <fieldset>
+
+          <legend id="legend" class="visuallyhidden">{{pageHeading}}</legend>
+
+          <div id="mining-waste-plan" class="form-group {{#getFormErrorGroupClass errors.mining-waste-plan}}{{/getFormErrorGroupClass}}">
+
+            {{> common/fieldError fieldId='mining-waste-plan-error' message=errors.mining-waste-plan }}
+
+            {{#each miningWastePlans}}
+            <div class="multiple-choice">
+              <input id="{{id}}" type="radio" name="mining-waste-plan" value="{{type}}" {{#if selected}}checked="checked"{{/if}}>
+              <label for="{{id}}">
+                <span id="{{id}}-label">{{description}}</span>
+                {{#if hint}}
+                <span id="{{id}}-label-hint" class="form-hint">{{hint}}</span>
+                {{/if}}
+              </label>
+            </div>
+            {{/each}}
+
+          </div>
+
+        </fieldset>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>

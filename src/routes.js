@@ -511,6 +511,16 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
+  CONFIRM_MINING_WASTE_PLAN: {
+    path: '/mining-waste/plan',
+    view: 'confirmMiningWastePlan',
+    pageHeading: 'Which mining waste plan will you use?',
+    taskListHeading: 'Confirm mining waste plan and weight of waste',
+    controller: 'confirmMiningWastePlan',
+    validator: 'confirmMiningWastePlan',
+    nextRoute: 'MINING_WASTE_WEIGHT',
+    types: 'GET, POST'
+  },
   CONFIRM_RULES: {
     path: '/confirm-rules',
     view: 'confirmRules',
@@ -579,6 +589,15 @@ const Routes = {
     view: 'managementSystem',
     pageHeading: 'Which management system will you use?',
     controller: 'managementSystem',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
+  MINING_WASTE_WEIGHT: {
+    path: '/mining-waste/weight',
+    view: 'miningWasteWeight',
+    pageHeading: 'How much extractive waste will you produce?',
+    controller: 'miningWasteWeight',
+    validator: 'miningWasteWeight',
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },

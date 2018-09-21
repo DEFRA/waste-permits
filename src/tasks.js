@@ -51,6 +51,15 @@ const tasks = {
     completedId: 'defra_invoicingdetails_completed',
     taskListModel: 'invoiceAddress'
   },
+  MINING_DATA: {
+    id: 'confirm-mining-data',
+    label: 'Confirm mining waste plan and weight of waste',
+    route: Routes.CONFIRM_MINING_WASTE_PLAN,
+    completedLabelId: 'mining-data-completed',
+    ruleSetId: 'defra_miningdatarequired',
+    completedId: 'defra_miningdatarequired_completed',
+    taskListModelName: 'miningWasteDetails'
+  },
   MANAGEMENT_SYSTEM: {
     id: 'tell-us-which-management-system-you-use',
     label: 'Tell us which management system you use',
@@ -188,6 +197,7 @@ const sections = [
       tasks.CONTACT_DETAILS,
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.SITE_NAME_LOCATION,
+      tasks.MINING_DATA,
       tasks.SITE_PLAN,
       tasks.TECHNICAL_QUALIFICATION,
       tasks.MANAGEMENT_SYSTEM,
