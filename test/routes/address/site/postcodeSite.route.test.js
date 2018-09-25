@@ -7,6 +7,6 @@ postcodeTests(lab, {
   routePath: '/site/address/postcode',
   nextRoutePath: '/site/address/select-address',
   nextRoutePathManual: '/site/address/address-manual',
-  TaskModel: require('../../../../src/models/taskList/siteNameAndLocation.model'),
+  TaskModel: require('../../../../src/models/taskList/siteNameAndLocation.task'),
   PostCodeCookie: 'SITE_POSTCODE'
 })

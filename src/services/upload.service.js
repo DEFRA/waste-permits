@@ -6,7 +6,7 @@ const config = require('../config/config')
 
 const { Stream } = require('stream')
 const UPLOAD_PATH = path.resolve(`${process.cwd()}/temp`)
-const Annotation = require('../models/annotation.model')
+const Annotation = require('../persistence/entities/annotation.entity')
 const LoggingService = require('./logging.service')
 const ClamWrapper = require('../utilities/clamWrapper')
 

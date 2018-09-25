@@ -2,7 +2,7 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const MiningWasteDetails = require('../models/taskList/miningWasteDetails.model')
+const MiningWasteDetails = require('../models/taskList/miningWasteDetails.task')
 
 module.exports = class MiningWasteWeightController extends BaseController {
   async doGet (request, h, errors) {

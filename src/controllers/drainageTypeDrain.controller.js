@@ -3,7 +3,7 @@
 const Merge = require('deepmerge')
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
-const DrainageTypeDrain = require('../models/taskList/drainageTypeDrain.model')
+const DrainageTypeDrain = require('../models/taskList/drainageTypeDrain.task')
 const RecoveryService = require('../services/recovery.service')
 const { DrainageTypes } = require('../dynamics')
 

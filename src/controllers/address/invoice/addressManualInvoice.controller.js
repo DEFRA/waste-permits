@@ -2,7 +2,7 @@
 
 const Constants = require('../../../constants')
 const AddressManualController = require('../base/addressManual.controller')
-const InvoiceAddress = require('../../../models/taskList/invoiceAddress.model')
+const InvoiceAddress = require('../../../models/taskList/invoiceAddress.task')
 
 module.exports = class AddressManualInvoiceController extends AddressManualController {
   getPostcodeCookieKey () {

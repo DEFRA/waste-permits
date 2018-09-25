@@ -8,7 +8,7 @@ const GeneralTestHelper = require('../../generalTestHelper.test')
 
 const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
-const Application = require('../../../../src/models/application.model')
+const Application = require('../../../../src/persistence/entities/application.entity')
 const LoggingService = require('../../../../src/services/logging.service')
 const RecoveryService = require('../../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../../src/constants')

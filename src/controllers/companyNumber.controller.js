@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseController = require('./base.controller')
-const Account = require('../models/account.model')
+const Account = require('../persistence/entities/account.entity')
 const Utilities = require('../utilities/utilities')
 const RecoveryService = require('../services/recovery.service')
 

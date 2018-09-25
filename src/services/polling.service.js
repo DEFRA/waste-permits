@@ -1,6 +1,6 @@
 'use strict'
 
-const Configuration = require('../models/configuration.model')
+const Configuration = require('../persistence/entities/configuration.entity')
 const ActiveDirectoryAuthService = require('./activeDirectoryAuth.service')
 const LoggingService = require('./logging.service')
 const authService = new ActiveDirectoryAuthService()

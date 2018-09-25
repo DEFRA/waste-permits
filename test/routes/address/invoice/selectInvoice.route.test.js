@@ -6,6 +6,6 @@ selectAddressTests(lab, {
   pageHeading: 'Where should we send invoices for the annual costs after the permit has been issued?',
   routePath: '/invoice/address/select-address',
   nextRoutePath: '/task-list',
-  TaskModel: require('../../../../src/models/taskList/invoiceAddress.model'),
+  TaskModel: require('../../../../src/models/taskList/invoiceAddress.task'),
   PostCodeCookie: 'INVOICE_POSTCODE'
 })

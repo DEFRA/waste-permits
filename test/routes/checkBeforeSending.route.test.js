@@ -8,9 +8,9 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 
-const Application = require('../../src/models/application.model')
-const TaskList = require('../../src/models/taskList/taskList.model')
-const BaseCheck = require('../../src/models/checkYourAnswers/base.check')
+const Application = require('../../src/persistence/entities/application.entity')
+const TaskList = require('../../src/models/taskList/taskList')
+const BaseCheck = require('../../src/models/checkList/base.check')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
 const CookieService = require('../../src/services/cookie.service')
 

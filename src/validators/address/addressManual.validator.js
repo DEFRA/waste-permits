@@ -2,7 +2,7 @@
 
 const Joi = require('joi')
 const BaseValidator = require('../base.validator')
-const Address = require('../../models/address.model')
+const Address = require('../../persistence/entities/address.entity')
 
 // Can’t start or end with a hyphen
 const STARTS_OR_ENDS_WITH_HYPHEN_REGEX = /^-|-$/

@@ -3,10 +3,10 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const AddressDetail = require('../../models/addressDetail.model')
-const Contact = require('../../models/contact.model')
-const PartnerDetails = require('../../models/taskList/partnerDetails.model')
-const PermitHolderDetails = require('../../models/taskList/permitHolderDetails.model')
+const AddressDetail = require('../../persistence/entities/addressDetail.entity')
+const Contact = require('../../persistence/entities/contact.entity')
+const PartnerDetails = require('../../models/taskList/partnerDetails.task')
+const PermitHolderDetails = require('../../models/taskList/permitHolderDetails.task')
 
 const { TECHNICAL_PROBLEM } = require('../../routes')
 

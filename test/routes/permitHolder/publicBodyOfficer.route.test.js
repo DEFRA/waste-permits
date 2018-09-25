@@ -8,9 +8,9 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 
-const Application = require('../../../src/models/application.model')
-const PublicBodyDetails = require('../../../src/models/taskList/publicBodyDetails.model')
-const ContactDetailService = require('../../../src/services/contactDetail.service')
+const Application = require('../../../src/persistence/entities/application.entity')
+const PublicBodyDetails = require('../../../src/models/taskList/publicBodyDetails.task')
+const ContactDetail = require('../../../src/models/contactDetail.model')
 const CookieService = require('../../../src/services/cookie.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
@@ -61,8 +61,8 @@ lab.beforeEach(() => {
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(ContactDetailService, 'get').value(() => new ContactDetailService(fakeContactDetail))
-  sandbox.stub(ContactDetailService.prototype, 'save').value(() => {})
+  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => {})
   sandbox.stub(PublicBodyDetails, 'updateCompleteness').value(() => {})
 })
 

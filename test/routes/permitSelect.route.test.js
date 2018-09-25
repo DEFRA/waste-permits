@@ -10,10 +10,10 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
 
-const Application = require('../../src/models/application.model')
-const ApplicationLine = require('../../src/models/applicationLine.model')
-const StandardRule = require('../../src/models/standardRule.model')
-const StandardRuleType = require('../../src/models/standardRuleType.model')
+const Application = require('../../src/persistence/entities/application.entity')
+const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
+const StandardRule = require('../../src/persistence/entities/standardRule.entity')
+const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/permit/select'

@@ -8,9 +8,9 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const CookieService = require('../../../src/services/cookie.service')
-const Application = require('../../../src/models/application.model')
-const Contact = require('../../../src/models/contact.model')
-const AddressDetail = require('../../../src/models/addressDetail.model')
+const Application = require('../../../src/persistence/entities/application.entity')
+const Contact = require('../../../src/persistence/entities/contact.entity')
+const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox

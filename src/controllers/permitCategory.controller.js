@@ -5,7 +5,7 @@ const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const RecoveryService = require('../services/recovery.service')
-const StandardRuleType = require('../models/standardRuleType.model')
+const StandardRuleType = require('../persistence/entities/standardRuleType.entity')
 const { OFFLINE_CATEGORIES } = Constants
 
 module.exports = class PermitCategoryController extends BaseController {

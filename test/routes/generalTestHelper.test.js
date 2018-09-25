@@ -4,8 +4,8 @@ const Code = require('code')
 const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 
-const Application = require('../../src/models/application.model')
-const TaskList = require('../../src/models/taskList/taskList.model')
+const Application = require('../../src/persistence/entities/application.entity')
+const TaskList = require('../../src/models/taskList/taskList')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 

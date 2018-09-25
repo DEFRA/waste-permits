@@ -6,7 +6,7 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 
-const DynamicsSolution = require('../models/dynamicsSolution.model')
+const DynamicsSolution = require('../persistence/entities/dynamicsSolution.entity')
 
 module.exports = class VersionController extends BaseController {
   async doGet (request, h) {

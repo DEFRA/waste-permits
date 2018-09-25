@@ -3,7 +3,7 @@
 const Constants = require('../../../constants')
 const Routes = require('../../../routes')
 const PostcodeController = require('../base/postcode.controller')
-const PartnerDetails = require('../../../models/taskList/partnerDetails.model')
+const PartnerDetails = require('../../../models/taskList/partnerDetails.task')
 
 module.exports = class PostcodePartnerController extends PostcodeController {
   getPostcodeCookieKey () {

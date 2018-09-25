@@ -3,9 +3,9 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const Contact = require('../../models/contact.model')
-const AddressDetail = require('../../models/addressDetail.model')
-const PartnerDetails = require('../../models/taskList/partnerDetails.model')
+const Contact = require('../../persistence/entities/contact.entity')
+const AddressDetail = require('../../persistence/entities/addressDetail.entity')
+const PartnerDetails = require('../../models/taskList/partnerDetails.task')
 
 const { TECHNICAL_PROBLEM, POSTCODE_PARTNER } = require('../../routes')
 

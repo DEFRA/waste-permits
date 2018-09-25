@@ -3,7 +3,7 @@
 const { WASTE_IN_DEPOSIT_FOR_RECOVERY } = require('../constants').PermitTypes.STANDARD_RULES
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
-const CostTime = require('../models/taskList/costTime.model')
+const CostTime = require('../models/taskList/costTime.task')
 const RecoveryService = require('../services/recovery.service')
 
 module.exports = class CostTimeController extends BaseController {

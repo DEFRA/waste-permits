@@ -3,7 +3,7 @@
 const BaseController = require('../../base.controller')
 const CookieService = require('../../../services/cookie.service')
 const RecoveryService = require('../../../services/recovery.service')
-const Address = require('../../../models/address.model')
+const Address = require('../../../persistence/entities/address.entity')
 
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, h, errors) {

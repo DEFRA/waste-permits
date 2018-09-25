@@ -4,7 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const WasteRecoveryPlan = require('../../../../src/models/taskList/wasteRecoveryPlan.model')
+const WasteRecoveryPlan = require('../../../../src/models/taskList/wasteRecoveryPlan.task')
 
 const GeneralTestHelper = require('../../generalTestHelper.test')
 const UploadTestHelper = require('../uploadHelper')

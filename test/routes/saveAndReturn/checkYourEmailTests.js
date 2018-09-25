@@ -6,7 +6,7 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 
-const Application = require('../../../src/models/application.model')
+const Application = require('../../../src/persistence/entities/application.entity')
 const CookieService = require('../../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 

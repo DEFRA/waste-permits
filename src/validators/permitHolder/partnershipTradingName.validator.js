@@ -1,6 +1,6 @@
 
 const TradingNameValidator = require('./tradingName.validator')
-const Application = require('../../models/application.model')
+const Application = require('../../persistence/entities/application.entity')
 
 module.exports = class PartnershipTradingNameValidator extends TradingNameValidator {
   get errorMessages () {

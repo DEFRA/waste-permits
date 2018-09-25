@@ -7,7 +7,7 @@ const CookieService = require('../../../services/cookie.service')
 const LoggingService = require('../../../services/logging.service')
 const RecoveryService = require('../../../services/recovery.service')
 const UploadService = require('../../../services/upload.service')
-const Annotation = require('../../../models/annotation.model')
+const Annotation = require('../../../persistence/entities/annotation.entity')
 
 module.exports = class UploadController extends BaseController {
   async doGet (request, h, errors) {

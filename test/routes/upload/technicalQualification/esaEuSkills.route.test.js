@@ -4,7 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.model')
+const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.task')
 
 const GeneralTestHelper = require('../../generalTestHelper.test')
 const UploadTestHelper = require('../uploadHelper')

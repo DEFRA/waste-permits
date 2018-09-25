@@ -1,7 +1,7 @@
 'use strict'
 
 const UploadController = require('../base/upload.controller')
-const FirePreventionPlan = require('../../../models/taskList/firePreventionPlan.model')
+const FirePreventionPlan = require('../../../models/taskList/firePreventionPlan.task')
 const Constants = require('../../../constants')
 const { FIRE_PREVENTION_PLAN } = Constants.UploadSubject
 

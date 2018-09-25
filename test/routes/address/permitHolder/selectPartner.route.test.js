@@ -9,6 +9,6 @@ selectAddressTests(lab, {
   routePath: `/permit-holder/partners/address/select-address/${applicationContactId}`,
   nextRoutePath: '/permit-holder/partners/list',
   applicationContactId,
-  TaskModel: require('../../../../src/models/taskList/partnerDetails.model'),
+  TaskModel: require('../../../../src/models/taskList/partnerDetails.task'),
   PostCodeCookie: 'PARTNER_POSTCODE'
 })

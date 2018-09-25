@@ -10,6 +10,6 @@ postcodeTests(lab, {
   nextRoutePath: `/permit-holder/partners/address/select-address/${applicationContactId}`,
   nextRoutePathManual: `/permit-holder/partners/address/address-manual/${applicationContactId}`,
   applicationContactId,
-  TaskModel: require('../../../../src/models/taskList/partnerDetails.model'),
+  TaskModel: require('../../../../src/models/taskList/partnerDetails.task'),
   PostCodeCookie: 'PARTNER_POSTCODE'
 })

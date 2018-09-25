@@ -5,7 +5,7 @@ const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const CookieService = require('../../services/cookie.service')
 const RecoveryService = require('../../services/recovery.service')
-const Application = require('../../models/application.model')
+const Application = require('../../persistence/entities/application.entity')
 const config = require('../../config/config')
 
 module.exports = class CheckYourEmailController extends BaseController {

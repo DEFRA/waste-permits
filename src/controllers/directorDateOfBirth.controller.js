@@ -7,8 +7,8 @@ const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
 const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
-const ApplicationContact = require('../models/applicationContact.model')
-const Contact = require('../models/contact.model')
+const ApplicationContact = require('../persistence/entities/applicationContact.entity')
+const Contact = require('../persistence/entities/contact.entity')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {

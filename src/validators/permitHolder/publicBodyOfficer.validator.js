@@ -1,8 +1,8 @@
 const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 const Constants = require('../../constants')
-const Contact = require('../../models/contact.model')
-const AddressDetail = require('../../models/addressDetail.model')
+const Contact = require('../../persistence/entities/contact.entity')
+const AddressDetail = require('../../persistence/entities/addressDetail.entity')
 
 const {
   EMAIL_VALID_REGEX,

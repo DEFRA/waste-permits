@@ -4,8 +4,8 @@ const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const Contact = require('../../models/contact.model')
-const AddressDetail = require('../../models/addressDetail.model')
+const Contact = require('../../persistence/entities/contact.entity')
+const AddressDetail = require('../../persistence/entities/addressDetail.entity')
 
 module.exports = class PermitHolderContactDetailsController extends BaseController {
   async doGet (request, h, errors) {

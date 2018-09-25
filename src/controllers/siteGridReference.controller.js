@@ -2,7 +2,7 @@
 
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
-const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.model')
+const SiteNameAndLocation = require('../models/taskList/siteNameAndLocation.task')
 const RecoveryService = require('../services/recovery.service')
 
 module.exports = class SiteGridReferenceController extends BaseController {

@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseController = require('./base.controller')
-const AddressDetail = require('../models/addressDetail.model')
+const AddressDetail = require('../persistence/entities/addressDetail.entity')
 const RecoveryService = require('../services/recovery.service')
 
 module.exports = class ContactDetailsController extends BaseController {

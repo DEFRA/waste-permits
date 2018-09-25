@@ -6,9 +6,9 @@ const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const RecoveryService = require('../services/recovery.service')
 const { firstCharToLowercase } = require('../utilities/utilities')
-const StandardRule = require('../models/standardRule.model')
-const StandardRuleType = require('../models/standardRuleType.model')
-const ApplicationLine = require('../models/applicationLine.model')
+const StandardRule = require('../persistence/entities/standardRule.entity')
+const StandardRuleType = require('../persistence/entities/standardRuleType.entity')
+const ApplicationLine = require('../persistence/entities/applicationLine.entity')
 
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, h, errors) {

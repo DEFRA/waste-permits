@@ -2,7 +2,7 @@
 
 const Joi = require('joi')
 const BaseValidator = require('../base.validator')
-const Application = require('../../models/application.model')
+const Application = require('../../persistence/entities/application.entity')
 
 const { TRADING_NAME_USAGE } = require('../../dynamics')
 
