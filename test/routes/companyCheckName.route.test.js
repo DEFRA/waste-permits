@@ -13,7 +13,6 @@ const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Application = require('../../src/models/application.model')
 const ApplicationLine = require('../../src/models/applicationLine.model')
 const Account = require('../../src/models/account.model')
-const Payment = require('../../src/models/payment.model')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
@@ -84,8 +83,6 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
       sandbox.stub(Account.prototype, 'save').value(() => {})
       sandbox.stub(Application.prototype, 'save').value(() => {})
       sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-      sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
-      sandbox.stub(Payment, 'getBacsPayment').value(() => {})
     })
 
     lab.afterEach(() => {
@@ -161,7 +158,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
     }
 
     lab.experiment('Company name page tests:', () => {
-      new GeneralTestHelper(lab, routePath).test()
+      new GeneralTestHelper({ lab, routePath }).test()
 
       lab.experiment(`GET ${routePath} page tests`, () => {
         lab.test('Check page elements - no existing trading name saved', async () => {

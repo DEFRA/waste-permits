@@ -10,7 +10,6 @@ const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Application = require('../../../../src/models/application.model')
 const Confidentiality = require('../../../../src/models/taskList/confidentiality.model')
-const Payment = require('../../../../src/models/payment.model')
 const LoggingService = require('../../../../src/services/logging.service')
 const RecoveryService = require('../../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../../src/constants')
@@ -45,7 +44,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => {})
   sandbox.stub(Application.prototype, 'save').value(() => false)
   sandbox.stub(Confidentiality, 'updateCompleteness').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
 })
 
@@ -55,7 +53,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Is part of your application commercially confidential? page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc

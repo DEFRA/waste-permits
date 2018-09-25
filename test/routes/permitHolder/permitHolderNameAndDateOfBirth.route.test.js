@@ -9,7 +9,6 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 const server = require('../../../server')
 const CookieService = require('../../../src/services/cookie.service')
 const Application = require('../../../src/models/application.model')
-const Payment = require('../../../src/models/payment.model')
 const Contact = require('../../../src/models/contact.model')
 const AddressDetail = require('../../../src/models/addressDetail.model')
 const { COOKIE_RESULT } = require('../../../src/constants')
@@ -60,9 +59,6 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(Contact.prototype, 'save').value(() => undefined)
@@ -121,7 +117,7 @@ const checkValidationErrors = async (field, expectedErrors) => {
 }
 
 lab.experiment('Permit Holder Name page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the permit holder name page correctly when it is a new application`, async () => {

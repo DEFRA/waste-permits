@@ -13,8 +13,7 @@ module.exports = class BaseController {
     validator,
     cookieValidationRequired = true,
     applicationRequired = true,
-    submittedRequired = false,
-    paymentRequired = false
+    submittedRequired = false
   }) {
     if (!route) {
       console.error(`Error - Unable to find Routes for: ${Object.getPrototypeOf(this).constructor.name}`)
@@ -40,7 +39,6 @@ module.exports = class BaseController {
 
     this.cookieValidationRequired = cookieValidationRequired
     this.submittedRequired = submittedRequired
-    this.paymentRequired = paymentRequired
     this.applicationRequired = applicationRequired
   }
 
@@ -65,31 +63,15 @@ module.exports = class BaseController {
     return pageContext
   }
 
-  async checkRouteAccess (slug, application, payment) {
-    const { ALREADY_SUBMITTED, NOT_SUBMITTED, NOT_PAID, RECOVERY_FAILED } = Routes
+  checkRouteAccess (slug, application) {
+    const { ALREADY_SUBMITTED, APPLICATION_RECEIVED, RECOVERY_FAILED } = Routes
     if (!application) {
       return RECOVERY_FAILED.path
     }
-    if (this.submittedRequired) {
-      if (!application.isSubmitted()) {
-        return NOT_SUBMITTED.path
-      }
-      if (this.paymentRequired) {
-        if (!(application.isPaid() || (payment && payment.isPaid()))) {
-          // The application needs to be paid for
-          return NOT_PAID.path
-        }
-      }
-    } else {
-      // If the application has been submitted
-      if (application.isSubmitted()) {
-        if (!(application.isPaid() || (payment && payment.isPaid()))) {
-          // The application needs to be paid for
-          return NOT_PAID.path
-        }
-        if (this.route.path !== ALREADY_SUBMITTED.path) {
-          return `${ALREADY_SUBMITTED.path}${slug ? '/' + slug : ''}`
-        }
+    // If the application has been submitted
+    if (application.isSubmitted()) {
+      if (this.route.path.indexOf(ALREADY_SUBMITTED.path) && this.route.path.indexOf(APPLICATION_RECEIVED.path) !== 0) {
+        return `${ALREADY_SUBMITTED.path}${slug ? '/' + slug : ''}`
       }
     }
   }
@@ -162,8 +144,8 @@ module.exports = class BaseController {
 
     if (this.applicationRequired) {
       try {
-        const { slug, application, payment } = await RecoveryService.createApplicationContext(h, { application: true, payment: true }) || {}
-        const redirectPath = await this.checkRouteAccess(slug, application, payment)
+        const { slug, application } = await RecoveryService.createApplicationContext(h, { application: true }) || {}
+        const redirectPath = this.checkRouteAccess(slug, application)
         if (redirectPath) {
           return this.redirect({ request, h, redirectPath })
         }

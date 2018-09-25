@@ -7,7 +7,7 @@ const routes = []
 
 Object.entries(Routes)
   .forEach(([id, options]) => {
-    let { types, controller, validator, baseRoute = 'baseRoute', cookieValidationRequired, applicationRequired, paymentRequired, submittedRequired, validatorOptions = {} } = options
+    let { types, controller, validator, baseRoute = 'baseRoute', cookieValidationRequired, applicationRequired, submittedRequired, validatorOptions = {} } = options
     if (controller) {
       try {
         // Add parameters to the route path eg "/recover/application/{slug?}" where "slug?" is an item in the route params and "/recover/application" was the original path
@@ -25,7 +25,7 @@ Object.entries(Routes)
 
         // Instantiate the controller
         const Controller = require(`../controllers/${controller}.controller`)
-        controller = new Controller({ route, validator, cookieValidationRequired, applicationRequired, paymentRequired, submittedRequired })
+        controller = new Controller({ route, validator, cookieValidationRequired, applicationRequired, submittedRequired })
 
         // Get the appropriate base route
         const BaseRoute = require(`./${baseRoute}`)

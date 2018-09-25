@@ -19,7 +19,6 @@ let sandbox
 const routePath = '/pay/bacs'
 const nextRoutePath = '/done'
 const errorPath = '/errors/technical-problem'
-const notSubmittedRoutePath = '/errors/order/check-answers-not-complete'
 
 const fakeApplication = {
   id: 'APPLICATION_ID'
@@ -53,8 +52,9 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
-  sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
   sandbox.stub(Payment, 'getBacsPaymentDetails').value(() => new Payment(fakePayment))
   sandbox.stub(Payment.prototype, 'save').value(() => {})
 })
@@ -65,8 +65,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
-  new GeneralTestHelper(lab, routePath).test({
-    excludeAlreadySubmittedTest: true })
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc
@@ -137,14 +136,6 @@ lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(errorPath)
-      })
-
-      lab.test('Redirects to the Not Submitted screen if the application has not been submitted', async () => {
-        sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
       })
     })
   })

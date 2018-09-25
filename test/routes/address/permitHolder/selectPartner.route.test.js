@@ -144,7 +144,7 @@ const checkPageElements = async (request, name) => {
 }
 
 lab.experiment('Partner address select page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     lab.experiment('Success:', () => {

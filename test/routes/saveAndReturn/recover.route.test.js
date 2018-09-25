@@ -80,10 +80,9 @@ lab.afterEach(() => {
 })
 
 lab.experiment('We found your application:', () => {
-  new GeneralTestHelper(lab, routePath).test({
+  new GeneralTestHelper({ lab, routePath, routeParams: [fakeSlug] }).test({
     excludeCookieGetTests: true,
-    excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true
+    excludeCookiePostTests: true
   })
 
   lab.experiment(`GET ${routePath}`, () => {

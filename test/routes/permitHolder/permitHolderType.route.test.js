@@ -8,7 +8,6 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const Application = require('../../../src/models/application.model')
-const Payment = require('../../../src/models/payment.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const PermitHolderTypeController = require('../../../src/controllers/permitHolder/permitHolderType.controller')
@@ -43,8 +42,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
 
@@ -54,7 +51,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Permit holder type: Who will be the permit holder? page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who will be the permit holder?')

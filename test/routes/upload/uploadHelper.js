@@ -7,7 +7,6 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 const fs = require('fs')
 const Annotation = require('../../../src/models/annotation.model')
 const Application = require('../../../src/models/application.model')
-const Payment = require('../../../src/models/payment.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const UploadService = require('../../../src/services/upload.service')
@@ -76,8 +75,6 @@ module.exports = class UploadTestHelper {
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(ClamWrapper, 'isInfected').value(() => Promise.resolve({ isInfected: false }))
     sandbox.stub(LoggingService, 'logError').value(() => {})
-    sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-    sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   }
 
   getSuccess (options = {}, additionalTests = []) {

@@ -38,8 +38,10 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Upload details for all technically competent managers tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
-    excludeCookiePostTests: true })
+  const { routePath, nextRoutePath } = paths
+  new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
+    excludeCookiePostTests: true
+  })
 
   const { uploadPath, removePath } = paths
 

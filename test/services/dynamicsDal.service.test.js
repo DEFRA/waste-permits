@@ -25,19 +25,24 @@ lab.beforeEach(() => {
     .reply(200, {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
       value: [
-        { '@odata.etag': 'W/"1155486"',
+        {
+          '@odata.etag': 'W/"1155486"',
           contactid: '7a8e4354-4f24-e711-80fd-5065f38a1b01',
           firstname: 'Marlon',
           lastname: 'Herzog',
           telephone1: '055 8767 0835',
-          emailaddress1: 'Amparo.Abbott49@example.com' },
-        { '@odata.etag': 'W/"1155506"',
+          emailaddress1: 'Amparo.Abbott49@example.com'
+        },
+        {
+          '@odata.etag': 'W/"1155506"',
           contactid: '8e8e4354-4f24-e711-80fd-5065f38a1b01',
           firstname: 'Kelvin',
           lastname: 'Rice',
           telephone1: '055 8301 2280',
-          emailaddress1: 'Mike9@example.com' },
-        { '@odata.etag': 'W/"1273787"',
+          emailaddress1: 'Mike9@example.com'
+        },
+        {
+          '@odata.etag': 'W/"1273787"',
           contactid: '9d8e4354-4f24-e711-80fd-5065f38a1b01',
           firstname: 'Maximo',
           lastname: 'Wisoky',

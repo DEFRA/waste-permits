@@ -349,14 +349,13 @@ const Routes = {
     view: 'payment/paymentBacs',
     pageHeading: 'You have chosen to pay by bank transfer using Bacs',
     controller: 'payment/paymentBacs',
-    types: 'GET, POST',
-    submittedRequired: true
+    nextRoute: 'APPLICATION_RECEIVED',
+    types: 'GET, POST'
   },
   CARD_PAYMENT: {
     path: '/pay/card',
     controller: 'payment/cardPayment',
-    types: 'GET',
-    submittedRequired: true
+    types: 'GET'
   },
   CARD_PROBLEM: {
     path: '/pay/card-problem',
@@ -366,8 +365,7 @@ const Routes = {
     controller: 'payment/paymentType',
     validator: 'paymentType',
     types: 'GET, POST',
-    cookieValidationRequired: false,
-    submittedRequired: true
+    cookieValidationRequired: false
   },
   PAYMENT_RESULT: {
     path: '/pay/result',
@@ -375,8 +373,7 @@ const Routes = {
     pageHeading: 'Your card payment failed',
     controller: 'payment/paymentResult',
     types: 'GET, POST',
-    cookieValidationRequired: false,
-    submittedRequired: true
+    cookieValidationRequired: false
   },
   PAYMENT_TYPE: {
     path: '/pay/type',
@@ -384,8 +381,7 @@ const Routes = {
     pageHeading: 'How do you want to pay?',
     controller: 'payment/paymentType',
     validator: 'paymentType',
-    types: 'GET, POST',
-    submittedRequired: true
+    types: 'GET, POST'
   },
 
   // ERRORS
@@ -408,13 +404,6 @@ const Routes = {
     types: 'GET',
     cookieValidationRequired: false,
     applicationRequired: false
-  },
-  NOT_PAID: {
-    path: '/errors/order/card-payment-not-complete',
-    view: 'error/notPaid',
-    pageHeading: 'You need to pay for your application',
-    controller: 'error/notPaid',
-    types: 'GET'
   },
   NOT_SUBMITTED: {
     path: '/errors/order/check-answers-not-complete',
@@ -447,7 +436,8 @@ const Routes = {
     pageHeading: 'Please start at the beginning of the application',
     controller: 'error/startAtBeginning',
     types: 'GET',
-    cookieValidationRequired: false
+    cookieValidationRequired: false,
+    applicationRequired: false
   },
   TECHNICAL_PROBLEM: {
     path: '/errors/technical-problem',
@@ -479,8 +469,7 @@ const Routes = {
     controller: 'applicationReceived',
     types: 'GET',
     cookieValidationRequired: false,
-    submittedRequired: true,
-    paymentRequired: true
+    submittedRequired: true
   },
   APPLY_OFFLINE: {
     path: '/start/apply-offline',
@@ -495,6 +484,7 @@ const Routes = {
     pageHeading: 'Check your answers',
     taskListHeading: 'Send application and pay',
     controller: 'checkBeforeSending',
+    nextRoute: 'PAYMENT_TYPE',
     types: 'GET, POST'
   },
   CHECK_YOUR_EMAIL: {
@@ -644,8 +634,7 @@ const Routes = {
     pageHeading: 'We found your application',
     controller: 'saveAndReturn/recover',
     types: 'GET, POST',
-    cookieValidationRequired: false,
-    paymentRequired: false
+    cookieValidationRequired: false
   },
   SAVE_AND_RETURN_CONFIRM: {
     path: '/save-return/confirm',

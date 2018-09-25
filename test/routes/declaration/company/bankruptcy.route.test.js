@@ -58,7 +58,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Bankruptcy tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc

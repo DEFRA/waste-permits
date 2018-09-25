@@ -9,7 +9,6 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const Application = require('../../src/models/application.model')
 const DrainageTypeDrain = require('../../src/models/taskList/drainageTypeDrain.model')
-const Payment = require('../../src/models/payment.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
@@ -73,8 +72,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(DrainageTypeDrain, 'isComplete').value(() => false)
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
 })
 
@@ -84,7 +81,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Your drainage system is not suitable - please contact us page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test({ excludeCookiePostTests: true })
+  new GeneralTestHelper({ lab, routePath }).test({ excludeCookiePostTests: true })
 
   lab.experiment(`GET ${routePath}`, () => {
     let request

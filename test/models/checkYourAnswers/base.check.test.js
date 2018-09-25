@@ -221,7 +221,7 @@ lab.experiment('Base Check tests:', () => {
   lab.test('getPartners works correctly', async () => {
     const check = new BaseCheck(context)
     const partners = await check.getPartners()
-    Code.expect(partners).to.equal([ {
+    Code.expect(partners).to.equal([{
       name: `${fakeContact.firstName} ${fakeContact.lastName}`,
       email: fakePartnerDetails.email,
       telephone: fakePartnerDetails.telephone,

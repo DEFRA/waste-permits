@@ -9,7 +9,6 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const Application = require('../../src/models/application.model')
 const DrainageTypeDrain = require('../../src/models/taskList/drainageTypeDrain.model')
-const Payment = require('../../src/models/payment.model')
 const StandardRule = require('../../src/models/standardRule.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
@@ -82,8 +81,6 @@ lab.beforeEach(() => {
   sandbox.stub(DrainageTypeDrain, 'isComplete').value(() => false)
   sandbox.stub(DrainageTypeDrain, 'updateCompleteness').value(() => {})
   sandbox.stub(DrainageTypeDrain, 'clearCompleteness').value(() => {})
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
 })
 
@@ -93,7 +90,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Where does the vehicle storage area drain to? page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
     let request

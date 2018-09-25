@@ -38,8 +38,10 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
-  new GeneralTestHelper(lab, paths.routePath, paths.nextRoutePath).test({
-    excludeCookiePostTests: true })
+  const { routePath, nextRoutePath } = paths
+  new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
+    excludeCookiePostTests: true
+  })
 
   const { uploadPath, removePath } = paths
 

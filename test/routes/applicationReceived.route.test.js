@@ -6,8 +6,6 @@ const Code = require('code')
 const sinon = require('sinon')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
-const server = require('../../server')
-
 const Application = require('../../src/models/application.model')
 const Payment = require('../../src/models/payment.model')
 const Contact = require('../../src/models/contact.model')
@@ -79,12 +77,10 @@ lab.beforeEach(() => {
     Object.assign(request.app.data, fakeRecovery())
   })
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
-  sandbox.stub(Application.prototype, 'isPaid').value(() => true)
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
   sandbox.stub(Payment, 'getBacsPayment').value(() => new Payment(fakePayment))
   sandbox.stub(Payment, 'getCardPayment').value(() => undefined)
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -93,10 +89,11 @@ lab.afterEach(() => {
 })
 
 lab.experiment('ApplicationReceived page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test({
+  new GeneralTestHelper({ lab, routePath }).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true })
+    excludeAlreadySubmittedTest: true
+  })
 
   lab.experiment(`GET ${routePath}`, () => {
     let request
@@ -190,19 +187,6 @@ lab.experiment('ApplicationReceived page tests:', () => {
         'application-received-warning',
         'give-feedback-link'
       ])
-    })
-
-    lab.test('Redirects to the Not Paid screen if bacs has not been selected for payment and the application has not been paid for yet', async () => {
-      Application.prototype.isPaid = () => false
-      Payment.prototype.isPaid = () => false
-      Payment.getCardPayment = () => undefined
-      Payment.getCardPayment = () => undefined
-      fakeApplication.paymentReceived = 0
-      request.url = '/done'
-
-      const res = await server.inject(request)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal('/errors/order/card-payment-not-complete')
     })
   })
 })

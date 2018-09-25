@@ -171,14 +171,17 @@ lab.experiment('Base Model tests:', () => {
 
   lab.experiment('readOnly property on model set to true should', () => {
     const entity = 'read_only_entity'
+
     class ReadOnlyModel extends BaseModel {
       static get entity () {
         return entity
       }
+
       static get readOnly () {
         return true
       }
     }
+
     const model = new ReadOnlyModel(modelData)
 
     lab.test('prevent saving', async () => {

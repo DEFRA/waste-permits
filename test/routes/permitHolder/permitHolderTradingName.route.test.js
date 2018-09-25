@@ -11,7 +11,6 @@ const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const Application = require('../../../src/models/application.model')
-const Payment = require('../../../src/models/payment.model')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
@@ -54,7 +53,6 @@ lab.beforeEach(() => {
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -63,7 +61,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Permit Holder Trading Name page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Do they do business using their own name or a trading name?')

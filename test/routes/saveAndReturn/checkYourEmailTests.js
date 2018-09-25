@@ -15,7 +15,7 @@ let fakeApplication
 let numberOfMatchingEmails
 let sandbox
 
-module.exports = (lab, { routePath, nextPath, errorPath, pageHeading }) => {
+module.exports = (lab, { routePath, nextPath, errorPath, pageHeading, excludeAlreadySubmittedTest }) => {
   lab.beforeEach(() => {
     fakeEmail = 'valid@email.com'
 
@@ -47,10 +47,10 @@ module.exports = (lab, { routePath, nextPath, errorPath, pageHeading }) => {
   })
 
   lab.experiment(`Check your email: Search for 'standard rules permit application' in your email page tests:`, () => {
-    new GeneralTestHelper(lab, routePath).test({
+    new GeneralTestHelper({ lab, routePath }).test({
       excludeCookieGetTests: true,
       excludeCookiePostTests: true,
-      excludeAlreadySubmittedTest: true
+      excludeAlreadySubmittedTest
     })
 
     const checkCommonElements = async (doc) => {

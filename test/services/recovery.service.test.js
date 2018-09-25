@@ -24,7 +24,6 @@ const fakeApplicationReturn = {}
 const fakeCardPayment = {}
 const fakeContact = {}
 const fakeIndividualPermitHolder = {}
-const fakePayment = {}
 const fakeStandardRule = { id: 'FAKE_STANDARD_RULE_ID', type: 'FAKE_STANDARD_RULE_TYPE_ID' }
 const fakeSlug = {}
 const fakeRequest = { app: { data: {} } }
@@ -54,7 +53,17 @@ lab.afterEach(() => {
 lab.experiment('RecoveryService tests:', () => {
   lab.test('recoverFromCookies() should return all application data', async () => {
     sandbox.stub(RecoveryService, 'getPermitHolderType').value((application) => application.type)
-    sandbox.stub(RecoveryService, 'recoverOptionalData').value(() => { return { applicationLine: fakeApplicationLine, applicationReturn: fakeApplicationReturn, account: fakeAccount, contact: fakeContact, individualPermitHolder: fakeIndividualPermitHolder, payment: fakePayment, cardPayment: fakeCardPayment, standardRule: fakeStandardRule } })
+    sandbox.stub(RecoveryService, 'recoverOptionalData').value(() => {
+      return {
+        applicationLine: fakeApplicationLine,
+        applicationReturn: fakeApplicationReturn,
+        account: fakeAccount,
+        contact: fakeContact,
+        individualPermitHolder: fakeIndividualPermitHolder,
+        cardPayment: fakeCardPayment,
+        standardRule: fakeStandardRule
+      }
+    })
 
     const recovery = await RecoveryService.recoverFromCookies(fakeSlug, fakeRequest)
 
@@ -67,7 +76,6 @@ lab.experiment('RecoveryService tests:', () => {
     Code.expect(recovery.account).to.equal(fakeAccount)
     Code.expect(recovery.contact).to.equal(fakeContact)
     Code.expect(recovery.individualPermitHolder).to.equal(fakeIndividualPermitHolder)
-    Code.expect(recovery.payment).to.equal(fakePayment)
     Code.expect(recovery.cardPayment).to.equal(fakeCardPayment)
     Code.expect(recovery.standardRule).to.equal(fakeStandardRule)
     Code.expect(recovery.standardRuleTypeId).to.equal(fakeStandardRule.type)

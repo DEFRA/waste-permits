@@ -25,7 +25,6 @@ const paymentErrorStatus = 'error'
 const routePath = `/pay/card`
 const errorPath = '/errors/technical-problem'
 const cardProblemPath = `/pay/card-problem/${slug}?status=${paymentErrorStatus}`
-const notSubmittedRoutePath = '/errors/order/check-answers-not-complete'
 const returnFromGovPayUrl = '/return/from/govr/pay/url'
 
 let fakeApplication
@@ -39,7 +38,7 @@ let fakeRecovery
 lab.beforeEach(() => {
   fakeApplication = {
     id: 'APPLICATION_ID',
-    submitted: true
+    submitted: false
   }
 
   fakeApplicationLine = {
@@ -93,8 +92,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment(`How do you want to pay?:`, () => {
-  new GeneralTestHelper(lab, routePath).test({
-    excludeAlreadySubmittedTest: true,
+  new GeneralTestHelper({ lab, routePath }).test({
     excludeHtmlTests: true,
     excludeCookieGetTests: true,
     excludeCookiePostTests: true
@@ -124,13 +122,6 @@ lab.experiment(`How do you want to pay?:`, () => {
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(cardProblemPath)
-      })
-
-      lab.test('redirects when application not submitted', async () => {
-        fakeApplication.submitted = false
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(notSubmittedRoutePath)
       })
     })
 

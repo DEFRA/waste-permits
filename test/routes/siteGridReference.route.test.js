@@ -11,7 +11,6 @@ const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/models/application.model')
 const Location = require('../../src/models/location.model')
 const LocationDetail = require('../../src/models/locationDetail.model')
-const Payment = require('../../src/models/payment.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.model')
 const { COOKIE_RESULT } = require('../../src/constants')
 
@@ -61,8 +60,6 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Location.prototype, 'save').value(() => {})
   sandbox.stub(LocationDetail.prototype, 'save').value(() => {})
@@ -116,7 +113,7 @@ const checkValidationError = async (expectedErrorMessage) => {
 }
 
 lab.experiment('Site Grid Reference page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Site grid reference page correctly when the grid reference has not been entered yet`, async () => {

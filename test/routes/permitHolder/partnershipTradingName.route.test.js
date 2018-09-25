@@ -51,7 +51,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Partnership Trading Name page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   const checkCommonElements = async (doc) => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What name do you use for the partnership?')

@@ -1,7 +1,7 @@
 'use strict'
 
 const { PAYMENT_CONFIGURATION_PREFIX } = require('../constants')
-const { PaymentStatusCodes, PaymentTypes } = require('../dynamics')
+const { PaymentTypes } = require('../dynamics')
 const Utilities = require('../utilities/utilities')
 const DynamicsDalService = require('../services/dynamicsDal.service')
 const BaseModel = require('./base.model')
@@ -26,10 +26,6 @@ class Payment extends BaseModel {
       { field: 'title', dynamics: 'defra_title' },
       { field: 'value', dynamics: 'defra_paymentvalue' }
     ]
-  }
-
-  isPaid () {
-    return Boolean(this.statusCode === PaymentStatusCodes.ISSUED)
   }
 
   static async getBacsPayment (context, applicationLineId) {

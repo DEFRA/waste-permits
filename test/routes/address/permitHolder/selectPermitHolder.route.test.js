@@ -10,7 +10,6 @@ const server = require('../../../../server')
 const CookieService = require('../../../../src/services/cookie.service')
 const Address = require('../../../../src/models/address.model')
 const Application = require('../../../../src/models/application.model')
-const Payment = require('../../../../src/models/payment.model')
 const PermitHolderDetails = require('../../../../src/models/taskList/permitHolderDetails.model')
 const { COOKIE_RESULT } = require('../../../../src/constants')
 
@@ -95,9 +94,6 @@ lab.beforeEach(() => {
   ])
   sandbox.stub(PermitHolderDetails, 'getAddress').value(() => new Address(fakeAddress1))
   sandbox.stub(PermitHolderDetails, 'saveSelectedAddress').value(() => undefined)
-
-  sandbox.stub(Payment, 'getBacsPayment').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -130,7 +126,7 @@ const checkPageElements = async (getRequest) => {
 }
 
 lab.experiment('Permit holder address select page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the Address Select page correctly`, async () => {

@@ -155,7 +155,7 @@ const checkValidationErrors = async (field, expectedErrors) => {
 }
 
 lab.experiment('Partner Name and Date of Birth page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`Get ${routePath}`, () => {
     lab.experiment('Success:', () => {

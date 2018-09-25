@@ -51,7 +51,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Cost and time for this permit page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   const checkCommonElements = (doc) => {
     GeneralTestHelper.checkElementsExist(doc, [

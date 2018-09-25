@@ -54,10 +54,6 @@ class Application extends BaseModel {
     return this.statusCode && (this.statusCode === StatusCode.APPLICATION_RECEIVED)
   }
 
-  isPaid () {
-    return Boolean(this.paymentReceived)
-  }
-
   get isIndividual () {
     return this.applicantType === PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId || this.organisationType === PERMIT_HOLDER_TYPES.SOLE_TRADER.dynamicsOrganisationTypeId
   }

@@ -107,7 +107,6 @@ lab.beforeEach(() => {
   sandbox.stub(SiteNameAndLocation, 'getAddress').value(() => new Address(fakeAddress1))
   sandbox.stub(SiteNameAndLocation, 'saveManualAddress').value(() => undefined)
   sandbox.stub(Payment, 'getByApplicationLineIdAndType').value(() => {})
-  sandbox.stub(Payment.prototype, 'isPaid').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -176,7 +175,7 @@ const checkValidationError = async (fieldId, expectedErrorMessage, fieldIndex = 
 }
 
 lab.experiment('Address select page tests:', () => {
-  new GeneralTestHelper(lab, routePath).test()
+  new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the manual address entry page correctly on first visit to the page`, async () => {

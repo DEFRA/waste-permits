@@ -122,7 +122,8 @@ lab.experiment('Address Model tests:', () => {
   })
 
   lab.test('getByUprn() method returns a single Address object', async () => {
-    const responseData = { '@odata.context': 'https://ea-lp-crm-devmaster.crm4.dynamics.com/api/data/v8.2/$metadata#defra_addresses(defra_addressid,defra_premises,defra_street,defra_locality,defra_towntext,defra_postcode,defra_uprn,defra_fromaddresslookup)',
+    const responseData = {
+      '@odata.context': 'https://ea-lp-crm-devmaster.crm4.dynamics.com/api/data/v8.2/$metadata#defra_addresses(defra_addressid,defra_premises,defra_street,defra_locality,defra_towntext,defra_postcode,defra_uprn,defra_fromaddresslookup)',
       value: [{
         '@odata.etag': 'W/"123456"',
         defra_addressid: 'ADDRESS_ID',
