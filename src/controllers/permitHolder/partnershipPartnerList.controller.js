@@ -60,10 +60,10 @@ module.exports = class PartnershipPartnerListController extends BaseController {
             return { partnerId, name, email, telephone, dob, changeLink, deleteLink, fullAddress }
           }
         }
-        // Remove any incomplete partners
-        await partner.delete(context)
-        return false
       }
+      // Remove any incomplete partners
+      await partner.delete(context)
+      return false
     }))
 
     // Filter out the incomplete partners
