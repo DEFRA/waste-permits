@@ -3,8 +3,8 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const { INDIVIDUAL, PARTNERSHIP, SOLE_TRADER, LIMITED_LIABILITY_PARTNERSHIP } = require('../../dynamics').PERMIT_HOLDER_TYPES
-const { PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, COMPANY_NUMBER, LLP_COMPANY_NUMBER, PARTNERSHIP_TRADING_NAME } = require('../../routes')
+const { INDIVIDUAL, PARTNERSHIP, SOLE_TRADER, LIMITED_LIABILITY_PARTNERSHIP, PUBLIC_BODY } = require('../../dynamics').PERMIT_HOLDER_TYPES
+const { PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, COMPANY_NUMBER, LLP_COMPANY_NUMBER, PARTNERSHIP_TRADING_NAME, PUBLIC_BODY_TRADING_NAME } = require('../../routes')
 
 module.exports = class PermitHolderDetailsController extends BaseController {
   async doGet (request, h) {
@@ -20,6 +20,9 @@ module.exports = class PermitHolderDetailsController extends BaseController {
       case LIMITED_LIABILITY_PARTNERSHIP:
         // Re-direct to limited liability partnership details flow
         return this.redirect({ request, h, redirectPath: LLP_COMPANY_NUMBER.path })
+      case PUBLIC_BODY:
+        // Re-direct to partnership details flow
+        return this.redirect({ request, h, redirectPath: PUBLIC_BODY_TRADING_NAME.path })
       case PARTNERSHIP:
         // Re-direct to partnership details flow
         return this.redirect({ request, h, redirectPath: PARTNERSHIP_TRADING_NAME.path })

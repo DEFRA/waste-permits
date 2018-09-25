@@ -1,9 +1,11 @@
 'use strict'
 
 const { PERMIT_HOLDER_DETAILS } = require('../taskList/taskList.model').CompletedParameters
+const { RESPONSIBLE_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 
 const Completeness = require('./completeness.model')
 const LoggingService = require('../../services/logging.service')
+const ContactDetailService = require('../../services/contactDetail.service')
 const Account = require('../account.model')
 const Application = require('../application.model')
 const ApplicationContact = require('../applicationContact.model')
@@ -112,12 +114,18 @@ module.exports = class PermitHolderDetails extends Completeness {
   }
 
   static async checkComplete (context, applicationId) {
-    const { isIndividual, isPartnership, permitHolderOrganisationId, permitHolderIndividualId } = await Application.getById(context, applicationId)
+    const { isIndividual, isPartnership, isPublicBody, permitHolderOrganisationId, permitHolderIndividualId } = await Application.getById(context, applicationId)
 
     if (isIndividual) {
       // Get the Contact for this application
       const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
       return this.isContactComplete(context, permitHolderIndividualId, addressDetail)
+    }
+
+    if (isPublicBody) {
+      const type = RESPONSIBLE_CONTACT_DETAILS.TYPE
+      const { firstName, lastName, email, jobTitle } = await ContactDetailService.get(context, { type }) || {}
+      return Boolean(firstName && lastName && email && jobTitle)
     }
 
     // Get the Account for this application

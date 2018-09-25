@@ -15,13 +15,9 @@ const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 
-const routePath = '/permit-holder/trading-name'
+const routePath = '/permit-holder/public-body/name'
 const errorPath = '/errors/technical-problem'
-const nextRoutePath = '/permit-holder/contact-details'
-
-// Trading name used
-const YES = 910400000
-const NO = 910400001
+const nextRoutePath = '/permit-holder/public-body/address/postcode'
 
 let fakeRecovery
 let fakeApplication
@@ -54,20 +50,16 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Permit Holder Trading Name page tests:', () => {
+lab.experiment('Partnership Trading Name page tests:', () => {
   new GeneralTestHelper({ lab, routePath }).test()
 
   const checkCommonElements = async (doc) => {
-    Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Do they do business using their own name or a trading name?')
+    Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What is the name of the local authority or public body?')
     Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
 
     // Test for the existence of expected static content
     GeneralTestHelper.checkElementsExist(doc, [
-      'use-trading-name-on-label',
-      'use-trading-name-off-label',
-      'use-trading-name-hint',
-      'trading-name-label',
-      'trading-name-hint'
+      'trading-name-label'
     ])
   }
 
@@ -90,35 +82,17 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
         Code.expect(element).to.exist()
       })
 
-      lab.test('returns the contact page correctly on first load when nothing is selected', async () => {
+      lab.test('returns the contact page on first load correctly', async () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
-
-        Code.expect(doc.getElementById('use-trading-name-on').getAttribute('checked')).to.equal('')
-        Code.expect(doc.getElementById('use-trading-name-off').getAttribute('checked')).to.equal('')
         Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal('')
       })
 
-      lab.test(`returns the contact page correctly on first load when don't use trading name is selected`, async () => {
-        fakeApplication.useTradingName = NO
-
-        const doc = await GeneralTestHelper.getDoc(getRequest)
-        checkCommonElements(doc)
-
-        Code.expect(doc.getElementById('use-trading-name-on').getAttribute('checked')).to.equal('')
-        Code.expect(doc.getElementById('use-trading-name-off').getAttribute('checked')).to.equal('checked')
-        Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal('')
-      })
-
-      lab.test(`returns the contact page correctly on first load when use trading name is selected`, async () => {
-        fakeApplication.useTradingName = YES
+      lab.test(`returns the contact page correctly when trading name has already been entered previously`, async () => {
         fakeApplication.tradingName = 'TRADING_NAME'
 
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
-
-        Code.expect(doc.getElementById('use-trading-name-on').getAttribute('checked')).to.equal('checked')
-        Code.expect(doc.getElementById('use-trading-name-off').getAttribute('checked')).to.equal('')
         Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal('TRADING_NAME')
       })
     })
@@ -150,16 +124,8 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
     })
 
     lab.experiment('success', () => {
-      lab.test('when own name is selected', async () => {
-        postRequest.payload = { 'use-trading-name': NO.toString() }
-        const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-      })
-
-      lab.test('when trade name usage is selected with a trade name entered', async () => {
+      lab.test('when trade name is entered', async () => {
         postRequest.payload = {
-          'use-trading-name': YES,
           'trading-name': 'TRADING_NAME'
         }
         const res = await server.inject(postRequest)
@@ -169,16 +135,10 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
     })
 
     lab.experiment('invalid', () => {
-      lab.test('when own name or trade name usage are not selected', async () => {
+      lab.test('when trade name has not been entered', async () => {
         postRequest.payload = {}
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'use-trading-name', 'Select own name or a trading name')
-      })
-
-      lab.test('when trade name usage is selected without entering the trade name', async () => {
-        postRequest.payload = { 'use-trading-name': YES }
-        const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'trading-name', 'Enter a trading or business name')
+        await GeneralTestHelper.checkValidationMessage(doc, 'trading-name', 'Enter a name')
       })
     })
 

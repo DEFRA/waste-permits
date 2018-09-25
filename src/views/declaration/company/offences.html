@@ -43,6 +43,13 @@
           <li>other companies, if the members of the partnership were officers of that other company when they were convicted</li>
         </ul>
         {{/if}}
+
+        {{#if operatorTypeIsPublicBody}}
+        <ul id="operator-type-is-public-body" class="list list-bullet">
+          <li>the body itself</li>
+          <li>any person who holds a position in the public body</li>
+        </ul>
+        {{/if}}
       </div>
 
       <div id="declare-offences-hint" class="form-group">

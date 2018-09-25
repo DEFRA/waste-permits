@@ -1,10 +1,8 @@
-'use strict'
 
-const Joi = require('joi')
-const BaseValidator = require('../base.validator')
+const TradingNameValidator = require('./tradingName.validator')
 const Application = require('../../models/application.model')
 
-module.exports = class PermitHolderTradingNameValidator extends BaseValidator {
+module.exports = class PermitHolderTradingNameValidator extends TradingNameValidator {
   get errorMessages () {
     return {
       'trading-name': {
@@ -12,15 +10,6 @@ module.exports = class PermitHolderTradingNameValidator extends BaseValidator {
         'any.required': `Enter a name for the partnership`,
         'string.max': `Enter a shorter partnership name with no more than ${Application.tradingName.length.max} characters`
       }
-    }
-  }
-
-  get formValidators () {
-    return {
-      'trading-name': Joi
-        .string()
-        .max(Application.tradingName.length.max)
-        .required()
     }
   }
 }

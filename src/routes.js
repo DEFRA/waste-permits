@@ -40,6 +40,15 @@ const Routes = {
     nextRoute: 'COMPANY_DECLARE_OFFENCES',
     types: 'GET, POST'
   },
+  MANUAL_PUBLIC_BODY: {
+    path: '/permit-holder/public-body/address/address-manual',
+    view: 'address/manualEntry',
+    pageHeading: 'What is the main address for the local authority or public body?',
+    controller: 'address/permitHolder/addressManualPublicBody',
+    validator: 'address/addressManual',
+    nextRoute: 'PUBLIC_BODY_OFFICER',
+    types: 'GET, POST'
+  },
   MANUAL_SITE: {
     path: '/site/address/address-manual',
     view: 'address/manualEntry',
@@ -77,6 +86,15 @@ const Routes = {
     nextRoute: 'COMPANY_DECLARE_OFFENCES',
     types: 'GET, POST'
   },
+  POSTCODE_PUBLIC_BODY: {
+    path: '/permit-holder/public-body/address/postcode',
+    view: 'address/postcode',
+    pageHeading: 'What is the main address for the local authority or public body?',
+    controller: 'address/permitHolder/postcodePublicBody',
+    validator: 'address/postcode',
+    nextRoute: 'PUBLIC_BODY_OFFICER',
+    types: 'GET, POST'
+  },
   POSTCODE_SITE: {
     path: '/site/address/postcode',
     view: 'address/postcode',
@@ -112,6 +130,15 @@ const Routes = {
     controller: 'address/permitHolder/selectPermitHolder',
     validator: 'address/addressSelect',
     nextRoute: 'COMPANY_DECLARE_OFFENCES',
+    types: 'GET, POST'
+  },
+  SELECT_PUBLIC_BODY: {
+    path: '/permit-holder/public-body/address/select-address',
+    view: 'address/selectAddress',
+    pageHeading: 'What is the main address for the local authority or public body?',
+    controller: 'address/permitHolder/selectPublicBody',
+    validator: 'address/addressSelect',
+    nextRoute: 'PUBLIC_BODY_OFFICER',
     types: 'GET, POST'
   },
   SELECT_SITE: {
@@ -252,6 +279,42 @@ const Routes = {
     nextRoute: 'LLP_COMPANY_DESIGNATED_MEMBER_EMAIL',
     types: 'GET, POST'
   },
+  PUBLIC_BODY_TRADING_NAME: {
+    path: '/permit-holder/public-body/name',
+    view: 'permitHolder/tradingName',
+    pageHeading: 'What is the name of the local authority or public body?',
+    controller: 'permitHolder/tradingName',
+    validator: 'permitHolder/tradingName',
+    nextRoute: 'POSTCODE_PUBLIC_BODY',
+    types: 'GET, POST'
+  },
+  PUBLIC_BODY_OFFICER: {
+    path: '/permit-holder/public-body/officer',
+    view: 'permitHolder/publicBodyOfficer',
+    pageHeading: 'Who is the responsible officer or executive?',
+    controller: 'permitHolder/publicBodyOfficer',
+    validator: 'permitHolder/publicBodyOfficer',
+    nextRoute: 'PUBLIC_BODY_DECLARE_OFFENCES',
+    types: 'GET, POST'
+  },
+  PUBLIC_BODY_DECLARE_OFFENCES: {
+    path: '/permit-holder/public-body/declare-offences',
+    view: 'declaration/company/offences',
+    pageHeading: 'Does anyone connected with the public body or local authority have a conviction for a relevant offence?',
+    controller: 'declaration/company/offences',
+    validator: 'declaration/company/offences',
+    nextRoute: 'PUBLIC_BODY_DECLARE_BANKRUPTCY',
+    types: 'GET, POST'
+  },
+  PUBLIC_BODY_DECLARE_BANKRUPTCY: {
+    path: '/permit-holder/public-body/bankruptcy-insolvency',
+    view: 'declaration/company/bankruptcy',
+    pageHeading: 'Does anyone connected with the public body or local authority have current or past bankruptcy or insolvency proceedings to declare?',
+    controller: 'declaration/company/bankruptcy',
+    validator: 'declaration/company/bankruptcy',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   PERMIT_HOLDER_DETAILS: {
     path: '/permit-holder/details',
     controller: 'permitHolder/permitHolderDetails',
@@ -260,7 +323,7 @@ const Routes = {
   PERMIT_HOLDER_CONTACT_DETAILS: {
     path: '/permit-holder/contact-details',
     view: 'permitHolder/permitHolderContactDetails',
-    pageHeading: 'What are the permit holder\'s contact details?',
+    pageHeading: `What are the permit holder's contact details?`,
     controller: 'permitHolder/permitHolderContactDetails',
     validator: 'permitHolder/permitHolderContactDetails',
     types: 'GET, POST'
@@ -294,7 +357,7 @@ const Routes = {
     path: '/permit-holder/partners/trading-name',
     view: 'permitHolder/partnershipTradingName',
     pageHeading: 'What name do you use for the partnership?',
-    controller: 'permitHolder/partnershipTradingName',
+    controller: 'permitHolder/tradingName',
     validator: 'permitHolder/partnershipTradingName',
     nextRoute: 'PARTNERSHIP_PARTNER_LIST',
     types: 'GET, POST'

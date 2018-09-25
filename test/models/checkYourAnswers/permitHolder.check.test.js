@@ -13,6 +13,7 @@ const PERMIT_HOLDER_TYPE_LINE = 0
 const PERMIT_HOLDER_LINE = 1
 const PARTNERSHIP_NAME_LINE = 1
 const PARTNERSHIP_PERMIT_HOLDER_LINE = 2
+const RESPONSIBLE_OFFICER_LINE = 2
 const DIRECTORS_LINE = 2
 const COMPANY_SECRETARY_EMAIL_LINE = 3
 const CONVICTIONS_LINE = 4
@@ -45,6 +46,8 @@ let fakeIndividualPermitHolderAddress
 let fakeCompanyRegisteredAddress
 let fakePermitHolderType
 let fakeCompanySecretary
+let fakeMainAddress
+let fakeResponsibleOfficer
 
 let sandbox
 
@@ -93,6 +96,13 @@ lab.beforeEach(() => {
     email: 'EMAIL'
   }
 
+  fakeResponsibleOfficer = {
+    firstName: 'FIRSTNAME',
+    lastName: 'LASTNAME',
+    jobTitle: 'JOB_TITLE',
+    email: 'EMAIL'
+  }
+
   fakeIndividualPermitHolderDetails = {
     dateOfBirth: '1999-11-23',
     telephone: 'TELEPHONE'
@@ -114,6 +124,14 @@ lab.beforeEach(() => {
     postcode: 'SB14 6QG'
   }
 
+  fakeMainAddress = {
+    buildingNameOrNumber: '25',
+    addressLine1: 'A CLOSE',
+    addressLine2: 'A SUBURB',
+    townOrCity: 'A MAIN CITY',
+    postcode: 'SB16 7GB'
+  }
+
   fakePermitHolderType = {
     type: 'Limited company'
   }
@@ -129,6 +147,8 @@ lab.beforeEach(() => {
   sandbox.stub(BaseCheck.prototype, 'getCompanyRegisteredAddress').value(() => Merge({}, fakeCompanyRegisteredAddress))
   sandbox.stub(BaseCheck.prototype, 'getDirectors').value(() => [Merge({}, fakeDirector)])
   sandbox.stub(BaseCheck.prototype, 'getPartners').value(() => [Merge({}, fakePartner)])
+  sandbox.stub(BaseCheck.prototype, 'getResponsibleOfficer').value(() => Merge({}, fakeResponsibleOfficer))
+  sandbox.stub(BaseCheck.prototype, 'getMainAddress').value(() => Merge({}, fakeMainAddress))
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolder').value(() => Merge({}, fakeIndividualPermitHolder))
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderAddress').value(() => Merge({}, fakeIndividualPermitHolderAddress))
   sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderDetails').value(() => Merge({}, fakeIndividualPermitHolderDetails))
@@ -324,6 +344,72 @@ lab.experiment('PermitHolder Check tests:', () => {
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/name')
       Code.expect(linkType).to.equal('individual details')
+      Code.expect(linkId).to.equal(`${linePrefix}-link`)
+    })
+
+    lab.test('(responsible officer line) works correctly', async () => {
+      fakePermitHolderType.type = 'Local authority or public body'
+      const lines = await buildLines()
+      const { heading, headingId, answers, links } = lines[RESPONSIBLE_OFFICER_LINE]
+      const linePrefix = `${prefix}-responsible-officer`
+      Code.expect(heading).to.equal(heading)
+      Code.expect(headingId).to.equal(`${linePrefix}-heading`)
+
+      const { firstName, lastName, jobTitle } = fakeResponsibleOfficer
+
+      answers.forEach(({ answer, answerId }, answerIndex) => {
+        Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
+        switch (answerIndex) {
+          case 0:
+            Code.expect(answer).to.equal(`${firstName} ${lastName}`)
+            break
+          case 1:
+            Code.expect(answer).to.equal(jobTitle)
+            break
+        }
+      })
+
+      const { link, linkId, linkType } = links.pop()
+      Code.expect(link).to.equal('/permit-holder/public-body/officer')
+      Code.expect(linkType).to.equal(`responsible officer`)
+      Code.expect(linkId).to.equal(`${linePrefix}-link`)
+    })
+
+    lab.test('(public body line) works correctly', async () => {
+      fakePermitHolderType.type = 'Local authority or public body'
+      const lines = await buildLines()
+      const { heading, headingId, answers, links } = lines[PERMIT_HOLDER_LINE]
+      const linePrefix = `${prefix}-permit-holder`
+      Code.expect(heading).to.equal(heading)
+      Code.expect(headingId).to.equal(`${linePrefix}-heading`)
+
+      const { tradingName } = fakeApplication
+      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = fakeMainAddress
+
+      answers.forEach(({ answer, answerId }, answerIndex) => {
+        Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
+        switch (answerIndex) {
+          case 0:
+            Code.expect(answer).to.equal(tradingName)
+            break
+          case 1:
+            Code.expect(answer).to.equal(`${buildingNameOrNumber}, ${addressLine1}`)
+            break
+          case 2:
+            Code.expect(answer).to.equal(addressLine2)
+            break
+          case 3:
+            Code.expect(answer).to.equal(townOrCity)
+            break
+          case 4:
+            Code.expect(answer).to.equal(postcode)
+            break
+        }
+      })
+
+      const { link, linkId, linkType } = links.pop()
+      Code.expect(link).to.equal('/permit-holder/public-body/name')
+      Code.expect(linkType).to.equal(`permit holder`)
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
