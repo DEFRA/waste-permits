@@ -1,6 +1,6 @@
 'use strict'
 
-const { SITE_NAME_LOCATION } = require('../applicationLine.model').CompletedParameters
+const { SITE_NAME_LOCATION } = require('../taskList/taskList.model').CompletedParameters
 
 const Completeness = require('./completeness.model')
 const Location = require('../location.model')

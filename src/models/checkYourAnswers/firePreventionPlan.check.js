@@ -1,10 +1,10 @@
 const BaseCheck = require('./base.check')
 
-const { FIRE_PREVENTION_PLAN: ruleSetId } = require('../applicationLine.model').RulesetIds
+const { FIRE_PREVENTION_PLAN: ruleSetId } = require('../taskList/taskList.model').RuleSetIds
 const { FIRE_PREVENTION_PLAN } = require('../../routes')
 
 module.exports = class FirePreventionPlanCheck extends BaseCheck {
-  static get rulesetId () {
+  static get ruleSetId () {
     return ruleSetId
   }
 

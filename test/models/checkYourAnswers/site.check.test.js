@@ -46,8 +46,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Site Check tests:', () => {
-  lab.test('rulesetId works correctly', async () => {
-    Code.expect(SiteCheck.rulesetId).to.equal('defra_locationrequired')
+  lab.test('ruleSetId works correctly', async () => {
+    Code.expect(SiteCheck.ruleSetId).to.equal('defra_locationrequired')
   })
 
   lab.experiment('buildlines', () => {

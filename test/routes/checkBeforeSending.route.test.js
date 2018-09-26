@@ -9,7 +9,6 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 
 const Application = require('../../src/models/application.model')
-const ApplicationLine = require('../../src/models/applicationLine.model')
 const TaskList = require('../../src/models/taskList/taskList.model')
 const BaseCheck = require('../../src/models/checkYourAnswers/base.check')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
@@ -17,8 +16,8 @@ const CookieService = require('../../src/services/cookie.service')
 
 let fakeApplicationId = 'APPLICATION_ID'
 let fakeApplication
-let fakeValidRulesetId
-let fakeInvalidRulesetId
+let fakeValidRuleSetId
+let fakeInvalidRuleSetId
 let fakeLineData
 
 const routePath = '/check-before-sending'
@@ -32,8 +31,8 @@ lab.beforeEach(() => {
     declaration: true
   }
 
-  fakeValidRulesetId = 'TEST_RULESETID'
-  fakeInvalidRulesetId = 'TEST_INVALID_RULESETID'
+  fakeValidRuleSetId = 'TEST_RULESETID'
+  fakeInvalidRuleSetId = 'TEST_INVALID_RULESETID'
   fakeLineData = {
     heading: 'TEST',
     answers: ['test1', 'test2'],
@@ -45,8 +44,8 @@ lab.beforeEach(() => {
 
   // Should be included in page
   class ValidCheck extends BaseCheck {
-    static get rulesetId () {
-      return fakeValidRulesetId
+    static get ruleSetId () {
+      return fakeValidRuleSetId
     }
 
     get prefix () {
@@ -60,8 +59,8 @@ lab.beforeEach(() => {
 
   // Should not be included in page
   class InvalidCheck extends BaseCheck {
-    static get rulesetId () {
-      return fakeInvalidRulesetId
+    static get ruleSetId () {
+      return fakeInvalidRuleSetId
     }
   }
 
@@ -73,10 +72,10 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(ApplicationLine, 'getValidRulesetIds').value(() => [fakeValidRulesetId])
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
+  sandbox.stub(TaskList, 'getValidRuleSetIds').value(() => [fakeValidRuleSetId])
   sandbox.stub(TaskList, 'getByApplicationLineId').value(() => new TaskList())
-  sandbox.stub(TaskList.prototype, 'isComplete').value(() => true)
+  sandbox.stub(TaskList, 'isComplete').value(() => true)
 })
 
 lab.afterEach(() => {

@@ -51,9 +51,8 @@ const fakeTaskList = {
           label: 'Check costs and processing time',
           href: '/cost-time',
           completedLabelId: 'cost-and-time-completed',
-          rulesetId: 'defra_showcostandtime',
+          ruleSetId: 'defra_showcostandtime',
           completedId: 'defra_showcostandtime',
-          available: true,
           complete: false
         },
         {
@@ -61,9 +60,8 @@ const fakeTaskList = {
           label: 'Confirm that your operation meets the rules',
           href: '/confirm-rules',
           completedLabelId: 'operation-rules-completed',
-          rulesetId: 'defra_confirmreadrules',
+          ruleSetId: 'defra_confirmreadrules',
           completedId: 'defra_confirmreadrules_completed',
-          available: true,
           complete: false
         },
         {
@@ -71,9 +69,8 @@ const fakeTaskList = {
           label: 'Get your waste recovery plan checked',
           href: '/waste-recovery-plan',
           completedLabelId: 'waste-recovery-plan-completed',
-          rulesetId: 'defra_wasterecoveryplanreq',
+          ruleSetId: 'defra_wasterecoveryplanreq',
           completedId: 'defra_wasterecoveryplanreq_completed',
-          available: false,
           complete: false
         },
         {
@@ -81,9 +78,8 @@ const fakeTaskList = {
           label: `Tell us if you have discussed this application with us`,
           href: '/pre-application',
           completedLabelId: 'preapp-completed',
-          rulesetId: 'defra_preapprequired',
+          ruleSetId: 'defra_preapprequired',
           completedId: 'defra_preapprequired_completed',
-          available: true,
           complete: false
         },
         {
@@ -91,9 +87,8 @@ const fakeTaskList = {
           label: 'Give contact details',
           href: '/contact-details',
           completedLabelId: 'contact-details-completed',
-          rulesetId: 'defra_contactdetailsrequired',
+          ruleSetId: 'defra_contactdetailsrequired',
           completedId: 'defra_contactdetailsrequired_completed',
-          available: true,
           complete: false
         },
         {
@@ -101,9 +96,8 @@ const fakeTaskList = {
           label: 'Give permit holder details',
           href: '/permit-holder/company/number',
           completedLabelId: 'site-operator-completed',
-          rulesetId: 'defra_pholderdetailsrequired',
+          ruleSetId: 'defra_pholderdetailsrequired',
           completedId: 'defra_pholderdetailsrequired_completed',
-          available: true,
           complete: false
         },
         {
@@ -111,9 +105,8 @@ const fakeTaskList = {
           label: 'Give site name and location',
           href: '/site/site-name',
           completedLabelId: 'site-name-completed',
-          rulesetId: 'defra_locationrequired',
+          ruleSetId: 'defra_locationrequired',
           completedId: 'defra_locationrequired_completed',
-          available: true,
           complete: true
         },
         {
@@ -121,18 +114,17 @@ const fakeTaskList = {
           label: 'Upload the site plan',
           href: '/site-plan',
           completedLabelId: 'site-plan-completed',
-          rulesetId: 'defra_siteplanrequired',
+          ruleSetId: 'defra_siteplanrequired',
           completedId: 'defra_siteplanrequired_completed',
-          available: false
+          complete: false
         },
         {
           id: 'upload-technical-management-qualifications',
           label: 'Upload technical management qualifications',
           href: '/technical-competence',
           completedLabelId: 'technical-qualification-completed',
-          rulesetId: 'defra_techcompetenceevreq',
+          ruleSetId: 'defra_techcompetenceevreq',
           completedId: 'defra_techcompetenceevreq_completed',
-          available: true,
           complete: false
         },
         {
@@ -140,9 +132,8 @@ const fakeTaskList = {
           label: 'Tell us which management system you use',
           href: '/management-system',
           completedLabelId: 'management-system-completed',
-          rulesetId: 'defra_mansystemrequired',
+          ruleSetId: 'defra_mansystemrequired',
           completedId: 'defra_mansystemrequired_completed',
-          available: true,
           complete: false
         },
         {
@@ -150,9 +141,8 @@ const fakeTaskList = {
           label: 'Upload the fire prevention plan',
           href: '/fire-prevention-plan',
           completedLabelId: 'firepp-completed',
-          rulesetId: 'defra_fireplanrequired',
+          ruleSetId: 'defra_fireplanrequired',
           completedId: 'defra_fireplanrequired_completed',
-          available: true,
           complete: false
         },
         {
@@ -160,9 +150,8 @@ const fakeTaskList = {
           label: 'Confirm the drainage system for your site',
           href: '/drainage-type/drain',
           completedLabelId: 'confirm-drainage-completed',
-          rulesetId: 'defra_surfacedrainagereq',
+          ruleSetId: 'defra_surfacedrainagereq',
           completedId: 'defra_surfacedrainagereq_completed',
-          available: true,
           complete: false
         },
         {
@@ -170,9 +159,8 @@ const fakeTaskList = {
           label: 'Confirm confidentiality needs',
           href: '/confidentiality',
           completedLabelId: 'confidentiality-completed',
-          rulesetId: 'defra_cnfconfidentialityreq',
+          ruleSetId: 'defra_cnfconfidentialityreq',
           completedId: 'defra_cnfconfidentialityreq_completed',
-          available: true,
           complete: false
         },
         {
@@ -180,9 +168,8 @@ const fakeTaskList = {
           label: 'Give invoicing details',
           href: '/billing/invoice-postcode',
           completedLabelId: 'invoicing-details-completed',
-          rulesetId: 'defra_invoicingdetailsrequired',
+          ruleSetId: 'defra_invoicingdetailsrequired',
           completedId: 'defra_invoicingdetails_completed',
-          available: true,
           complete: false
         }
       ]
@@ -197,7 +184,6 @@ const fakeTaskList = {
           label: 'Send application and pay',
           href: '/check-before-sending',
           completedLabelId: 'submit-and-pay',
-          available: true,
           complete: false
         }
       ]
@@ -287,20 +273,15 @@ lab.experiment('Task List page tests:', () => {
           checkElement(doc.getElementById(`${section.id}-number`), `${section.sectionNumber}.`)
           checkElement(doc.getElementById(`${section.id}-heading`), section.sectionName)
 
-          if (sectionItem.available) {
-            // The task list item should exist
-            checkElement(doc.getElementById(sectionItem.id))
-            checkElement(doc.getElementById(`${sectionItem.id}-link`), sectionItem.label, sectionItem.href)
-            if (sectionItem.complete) {
-              // The task list item complete flag should exist
-              checkElement(doc.getElementById(sectionItem.completedLabelId))
-            } else {
-              // The task list item complete flag should not exist
-              Code.expect(doc.getElementById(sectionItem.completedLabelId)).to.not.exist()
-            }
+          // The task list item should exist
+          checkElement(doc.getElementById(sectionItem.id))
+          checkElement(doc.getElementById(`${sectionItem.id}-link`), sectionItem.label, sectionItem.href)
+          if (sectionItem.complete) {
+            // The task list item complete flag should exist
+            checkElement(doc.getElementById(sectionItem.completedLabelId))
           } else {
-            // The task list item should not exist
-            Code.expect(doc.getElementById(sectionItem.id)).to.not.exist()
+            // The task list item complete flag should not exist
+            Code.expect(doc.getElementById(sectionItem.completedLabelId)).to.not.exist()
           }
         })
       })

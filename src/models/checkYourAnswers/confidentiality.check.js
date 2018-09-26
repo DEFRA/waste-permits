@@ -1,11 +1,10 @@
 const BaseCheck = require('./base.check')
 
 const { path } = require('../../routes').CONFIDENTIALITY
-const ApplicationLine = require('../applicationLine.model')
-const { CONFIRM_CONFIDENTIALLY: ruleSetId } = ApplicationLine.RulesetIds
+const { CONFIRM_CONFIDENTIALLY: ruleSetId } = require('../taskList/taskList.model').RuleSetIds
 
 module.exports = class ConfidentialityCheck extends BaseCheck {
-  static get rulesetId () {
+  static get ruleSetId () {
     return ruleSetId
   }
 

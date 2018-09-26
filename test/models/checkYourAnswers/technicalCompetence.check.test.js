@@ -51,8 +51,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('TechnicalCompetence Check tests:', () => {
-  lab.test('rulesetId works correctly', async () => {
-    Code.expect(TechnicalCompetenceCheck.rulesetId).to.equal('defra_techcompetenceevreq')
+  lab.test('ruleSetId works correctly', async () => {
+    Code.expect(TechnicalCompetenceCheck.ruleSetId).to.equal('defra_techcompetenceevreq')
   })
 
   for (let qualification in Qualifications) {

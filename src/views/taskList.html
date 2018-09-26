@@ -14,7 +14,8 @@
 
       <p class="text">
         <span id="standard-rule-name-and-code">{{standardRule.permitName}} - {{standardRule.code}}</span><br>
-        <a id="select-a-different-permit" class="font-small" href="{{ permitCategoryRoute }}">Select a different permit</a>
+        <a id="select-a-different-permit" class="font-small" href="{{ permitCategoryRoute }}">Select a different
+          permit</a>
       </p>
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate" name="tasklist">
@@ -25,18 +26,18 @@
           {{#each taskList.sections}}
           <li>
             <h2 id="{{this.id}}" class="task-list-section">
-              <span id="{{this.id}}-number" class="task-list-section-number">{{this.sectionNumber}}. </span><span id="{{this.id}}-heading">{{this.sectionName}}</span>
+              <span id="{{this.id}}-number" class="task-list-section-number">{{this.sectionNumber}}. </span><span
+                id="{{this.id}}-heading">{{this.sectionName}}</span>
             </h2>
 
             <ul class="task-list-items">
               {{#each this.sectionItems}}
-                {{#if this.available}}
-                  {{> common/taskListItem
-                    id=this.id
-                    label=this.label
-                    href=this.href
-                    completedLabelId=this.completedLabelId }}
-                {{/if}}
+                {{> common/taskListItem
+                  id=this.id
+                  label=this.label
+                  href=this.href
+                  completedLabelId=this.completedLabelId
+                }}
               {{/each}}
             </ul>
           </li>

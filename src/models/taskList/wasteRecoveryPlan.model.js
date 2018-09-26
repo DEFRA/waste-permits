@@ -1,7 +1,7 @@
 'use strict'
 
 const Constants = require('../../constants')
-const { WASTE_RECOVERY_PLAN } = require('../applicationLine.model').CompletedParameters
+const { WASTE_RECOVERY_PLAN } = require('../taskList/taskList.model').CompletedParameters
 const Completeness = require('./completeness.model')
 const Annotation = require('../annotation.model')
 
