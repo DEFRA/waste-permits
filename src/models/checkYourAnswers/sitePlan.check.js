@@ -1,10 +1,10 @@
 const BaseCheck = require('./base.check')
 
-const { SITE_PLAN: ruleSetId } = require('../applicationLine.model').RulesetIds
+const { SITE_PLAN: ruleSetId } = require('../taskList/taskList.model').RuleSetIds
 const { SITE_PLAN } = require('../../routes')
 
 module.exports = class SitePlanCheck extends BaseCheck {
-  static get rulesetId () {
+  static get ruleSetId () {
     return ruleSetId
   }
 

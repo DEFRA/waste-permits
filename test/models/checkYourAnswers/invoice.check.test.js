@@ -43,8 +43,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Invoice Check tests:', () => {
-  lab.test('rulesetId works correctly', async () => {
-    Code.expect(InvoiceCheck.rulesetId).to.equal('defra_invoicingdetailsrequired')
+  lab.test('ruleSetId works correctly', async () => {
+    Code.expect(InvoiceCheck.ruleSetId).to.equal('defra_invoicingdetailsrequired')
   })
 
   lab.experiment('buildlines', () => {

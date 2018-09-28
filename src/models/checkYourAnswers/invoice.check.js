@@ -1,10 +1,10 @@
 const BaseCheck = require('./base.check')
 
-const { INVOICING_DETAILS: ruleSetId } = require('../applicationLine.model').RulesetIds
+const { INVOICING_DETAILS: ruleSetId } = require('../taskList/taskList.model').RuleSetIds
 const { POSTCODE_INVOICE, MANUAL_INVOICE } = require('../../routes')
 
 module.exports = class InvoiceCheck extends BaseCheck {
-  static get rulesetId () {
+  static get ruleSetId () {
     return ruleSetId
   }
 

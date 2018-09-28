@@ -1,6 +1,6 @@
 'use strict'
 
-const { CONFIRM_CONFIDENTIALLY } = require('../applicationLine.model').CompletedParameters
+const { CONFIRM_CONFIDENTIALLY } = require('../taskList/taskList.model').CompletedParameters
 const Completeness = require('./completeness.model')
 const Application = require('../application.model')
 

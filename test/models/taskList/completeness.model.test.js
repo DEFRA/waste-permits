@@ -7,6 +7,7 @@ const sinon = require('sinon')
 
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
+const TaskList = require('../../../src/models/taskList/taskList.model')
 const Completeness = require('../../../src/models/taskList/completeness.model')
 
 const context = { authToken: 'AUTH_TOKEN' }
@@ -26,7 +27,7 @@ lab.beforeEach(() => {
   // Stub the asynchronous model methods
   sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
   sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
-  sandbox.stub(ApplicationLine, 'getCompleted').value(() => false)
+  sandbox.stub(TaskList, 'getCompleted').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -47,7 +48,7 @@ lab.experiment('Task List: Completeness Model tests:', () => {
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
-    ApplicationLine.getCompleted = () => true
+    TaskList.getCompleted = () => true
     const result = await Completeness.isComplete()
     Code.expect(result).to.equal(true)
   })

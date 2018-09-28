@@ -1,6 +1,6 @@
 'use strict'
 
-const { SURFACE_DRAINAGE } = require('../applicationLine.model').CompletedParameters
+const { SURFACE_DRAINAGE } = require('../taskList/taskList.model').CompletedParameters
 const Completeness = require('./completeness.model')
 
 module.exports = class DrainageTypeDrain extends Completeness {

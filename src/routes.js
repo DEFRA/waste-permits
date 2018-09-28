@@ -53,7 +53,6 @@ const Routes = {
     path: '/invoice/address/postcode',
     view: 'address/postcode',
     pageHeading: 'Where should we send invoices for the annual costs after the permit has been issued?',
-    taskListHeading: 'Give invoicing details',
     controller: 'address/invoice/postcodeInvoice',
     validator: 'address/postcode',
     nextRoute: 'TASK_LIST',
@@ -255,7 +254,6 @@ const Routes = {
   },
   PERMIT_HOLDER_DETAILS: {
     path: '/permit-holder/details',
-    taskListHeading: 'Give permit holder details',
     controller: 'permitHolder/permitHolderDetails',
     types: 'GET'
   },
@@ -482,7 +480,6 @@ const Routes = {
     path: '/check-before-sending',
     view: 'checkBeforeSending',
     pageHeading: 'Check your answers',
-    taskListHeading: 'Send application and pay',
     controller: 'checkBeforeSending',
     nextRoute: 'PAYMENT_TYPE',
     types: 'GET, POST'
@@ -491,7 +488,6 @@ const Routes = {
     path: '/save-return/check-your-email',
     view: 'saveAndReturn/checkYourEmail',
     pageHeading: 'Check your email',
-    taskListHeading: 'Check your email',
     controller: 'saveAndReturn/checkYourEmail',
     validator: 'saveAndReturn',
     nextRoute: 'TASK_LIST',
@@ -503,7 +499,6 @@ const Routes = {
     path: '/confidentiality',
     view: 'declaration/confidentiality/confidentiality',
     pageHeading: 'Is part of your application commercially confidential?',
-    taskListHeading: 'Confirm confidentiality needs',
     controller: 'declaration/confidentiality/confidentiality',
     validator: 'declaration/confidentiality/confidentiality',
     nextRoute: 'TASK_LIST',
@@ -513,7 +508,6 @@ const Routes = {
     path: '/confirm-rules',
     view: 'confirmRules',
     pageHeading: 'Confirm your operation meets the rules',
-    taskListHeading: 'Confirm you can meet the rules',
     controller: 'confirmRules',
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
@@ -522,7 +516,6 @@ const Routes = {
     path: '/contact-details',
     view: 'contactDetails',
     pageHeading: 'Who should we contact about this application?',
-    taskListHeading: 'Give contact details',
     controller: 'contactDetails',
     validator: 'contactDetails',
     nextRoute: 'TASK_LIST',
@@ -541,7 +534,6 @@ const Routes = {
     path: '/costs-times',
     view: 'costTime',
     pageHeading: 'Costs and processing time',
-    taskListHeading: 'Check costs and processing time',
     controller: 'costTime',
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
@@ -557,7 +549,6 @@ const Routes = {
     path: '/drainage-type/drain',
     view: 'drainageTypeDrain',
     pageHeading: 'Where does the vehicle storage area drain to?',
-    taskListHeading: 'Confirm you have a suitable vehicle storage area',
     controller: 'drainageTypeDrain',
     validator: 'drainageTypeDrain',
     types: 'GET, POST'
@@ -566,7 +557,6 @@ const Routes = {
     path: '/fire-prevention-plan',
     view: 'upload/firePreventionPlan/firePreventionPlan',
     pageHeading: 'Upload the fire prevention plan',
-    taskListHeading: 'Upload the fire prevention plan',
     controller: 'upload/firePreventionPlan/firePreventionPlan',
     validator: 'upload/upload',
     nextRoute: 'TASK_LIST',
@@ -581,7 +571,6 @@ const Routes = {
     path: '/management-system',
     view: 'managementSystem',
     pageHeading: 'Which management system will you use?',
-    taskListHeading: 'Tell us which management system you use',
     controller: 'managementSystem',
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
@@ -606,7 +595,6 @@ const Routes = {
     path: '/pre-application',
     view: 'preApplication',
     pageHeading: 'Have you discussed this application with us?',
-    taskListHeading: 'Tell us if you have discussed this application with us',
     controller: 'preApplication',
     types: 'GET, POST'
   },
@@ -664,7 +652,6 @@ const Routes = {
     path: '/save-return/email',
     view: 'saveAndReturn/emailEnter',
     pageHeading: 'Save your application',
-    taskListHeading: 'Save your application',
     controller: 'saveAndReturn/enterEmail',
     validator: 'saveAndReturn',
     types: 'GET, POST'
@@ -673,7 +660,6 @@ const Routes = {
     path: '/save-return/search-your-email',
     view: 'saveAndReturn/checkYourEmail',
     pageHeading: 'Search for ’standard rules permit application’ in your emails',
-    taskListHeading: 'Search for ’standard rules permit application’ in your emails',
     controller: 'saveAndReturn/checkYourEmail',
     validator: 'saveAndReturn',
     types: 'GET, POST',
@@ -693,7 +679,6 @@ const Routes = {
     path: '/site-plan',
     view: 'upload/sitePlan/sitePlan',
     pageHeading: 'Upload the site plan',
-    taskListHeading: 'Upload the site plan',
     controller: 'upload/sitePlan/sitePlan',
     validator: 'upload/upload',
     nextRoute: 'TASK_LIST',
@@ -704,7 +689,6 @@ const Routes = {
     path: '/site/site-name',
     view: 'siteName',
     pageHeading: 'What is the site name?',
-    taskListHeading: 'Give site name and location',
     controller: 'siteName',
     validator: 'siteName',
     nextRoute: 'SITE_GRID_REFERENCE',
@@ -732,7 +716,6 @@ const Routes = {
     path: '/technical-competence',
     view: 'technicalQualification',
     pageHeading: 'What evidence of technical competence do you have?',
-    taskListHeading: 'Prove technical competence',
     controller: 'technicalQualification',
     validator: 'technicalQualification',
     types: 'GET, POST'
@@ -808,7 +791,6 @@ const Routes = {
     path: '/waste-recovery-plan/approval',
     view: 'wasteRecoveryPlanApproval',
     pageHeading: 'You need to upload your waste recovery plan',
-    taskListHeading: 'Upload the waste recovery plan',
     controller: 'wasteRecoveryPlanApproval',
     validator: 'wasteRecoveryPlanApproval',
     nextRoute: 'WASTE_RECOVERY_PLAN',

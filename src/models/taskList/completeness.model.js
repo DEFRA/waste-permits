@@ -3,6 +3,7 @@
 const DynamicsDalService = require('../../services/dynamicsDal.service')
 const LoggingService = require('../../services/logging.service')
 const ApplicationLine = require('../applicationLine.model')
+const TaskList = require('../taskList/taskList.model')
 
 module.exports = class Completeness {
   static async _updateCompleteness (context = {}, applicationId, applicationLineId, value) {
@@ -36,7 +37,7 @@ module.exports = class Completeness {
     let isComplete = false
     try {
       // Get the completed flag
-      const completed = await ApplicationLine.getCompleted(context, applicationLineId, this.completenessParameter)
+      const completed = await TaskList.getCompleted(context, applicationLineId, this.completenessParameter)
 
       isComplete = Boolean(completed && await this.checkComplete(context, applicationId, applicationLineId))
     } catch (error) {

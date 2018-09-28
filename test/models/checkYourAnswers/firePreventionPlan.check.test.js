@@ -32,8 +32,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('FirePreventionPlan Check tests:', () => {
-  lab.test('rulesetId works correctly', async () => {
-    Code.expect(FirePreventionPlanCheck.rulesetId).to.equal('defra_fireplanrequired')
+  lab.test('ruleSetId works correctly', async () => {
+    Code.expect(FirePreventionPlanCheck.ruleSetId).to.equal('defra_fireplanrequired')
   })
 
   lab.experiment('buildlines', () => {
