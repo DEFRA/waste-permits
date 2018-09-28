@@ -1,6 +1,5 @@
 'use strict'
 
-const { TASK_LIST } = require('../routes')
 const RecoveryService = require('../services/recovery.service')
 const BaseController = require('./base.controller')
 const PermitCheck = require('../models/checkYourAnswers/permit.check')
@@ -62,15 +61,6 @@ module.exports = class CheckBeforeSendingController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext(request)
     pageContext.sections = await this._buildSections(request.app.data)
-    const context = await RecoveryService.createApplicationContext(h)
-    const { applicationId, applicationLineId } = context
-
-    const isComplete = await TaskList.isComplete(context, applicationId, applicationLineId)
-
-    // If the task list is not complete then redirect back to it and show a validation error
-    if (!isComplete) {
-      return this.redirect({ request, h, redirectPath: `${TASK_LIST.path}?showError=true` })
-    }
 
     return this.showView({ request, h, pageContext })
   }

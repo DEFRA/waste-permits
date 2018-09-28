@@ -10,6 +10,7 @@ const server = require('../../../server')
 const Application = require('../../../src/models/application.model')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const ApplicationReturn = require('../../../src/models/applicationReturn.model')
+const TaskList = require('../../../src/models/taskList/taskList.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
@@ -47,6 +48,7 @@ lab.beforeEach(() => {
   }
 
   fakeRecovery = () => ({
+    slug: fakeSlug,
     authToken: 'AUTH_TOKEN',
     applicationId: fakeApplication.id,
     applicationLineId: fakeApplicationLine.id,
@@ -64,6 +66,7 @@ lab.beforeEach(() => {
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(TaskList, 'isComplete').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -74,7 +77,8 @@ lab.afterEach(() => {
 lab.experiment(`Your card payment failed:`, () => {
   new GeneralTestHelper({ lab, routePath }).test({
     excludeCookieGetTests: true,
-    excludeCookiePostTests: true
+    excludeCookiePostTests: true,
+    includeTasksNotCompleteTest: true
   })
 
   lab.experiment(`GET ${routePath}`, () => {

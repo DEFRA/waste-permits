@@ -11,6 +11,7 @@ const Application = require('../../../src/models/application.model')
 const ApplicationLine = require('../../../src/models/applicationLine.model')
 const ApplicationReturn = require('../../../src/models/applicationReturn.model')
 const Payment = require('../../../src/models/payment.model')
+const TaskList = require('../../../src/models/taskList/taskList.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
@@ -72,6 +73,7 @@ lab.beforeEach(() => {
   sandbox.stub(Payment.prototype, 'getCardPaymentResult').value(() => fakePayment.status)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(TaskList, 'isComplete').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -83,7 +85,8 @@ lab.experiment(`How do you want to pay?:`, () => {
   new GeneralTestHelper({ lab, routePath }).test({
     excludeHtmlTests: true,
     excludeCookieGetTests: true,
-    excludeCookiePostTests: true
+    excludeCookiePostTests: true,
+    includeTasksNotCompleteTest: true
   })
 
   lab.experiment(`GET ${routePath}`, () => {

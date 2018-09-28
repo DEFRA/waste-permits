@@ -61,6 +61,7 @@ lab.beforeEach(() => {
   }
 
   fakeRecovery = () => ({
+    slug: fakeSlug,
     authToken: 'AUTH_TOKEN',
     applicationId: fakeApplication.id,
     applicationLineId: fakeApplicationLine.id,
@@ -73,12 +74,9 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(RecoveryService, 'recoverFromSlug').value((slug, { request }) => {
-    Object.assign(request.app.data, fakeRecovery())
-  })
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
   sandbox.stub(Payment, 'getBacsPayment').value(() => new Payment(fakePayment))
   sandbox.stub(Payment, 'getCardPayment').value(() => undefined)
 })

@@ -5,12 +5,14 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 
 const Application = require('../../src/models/application.model')
+const TaskList = require('../../src/models/taskList/taskList.model')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const cookieTimeoutPath = '/errors/timeout'
 const startAtBeginningRoutePath = '/errors/order/start-at-beginning'
 const applicationReceivedRoutePath = '/done'
+const incompleteTaskListRoutePath = '/task-list?showError=true'
 
 let getRequest, postRequest
 
@@ -63,11 +65,13 @@ module.exports = class GeneralTestHelper {
     })
   }
 
-  test (options = {
-    excludeCookieGetTests: true,
-    excludeCookiePostTests: true,
-    excludeAlreadySubmittedTest: true
-  }) {
+  test (options) {
+    options = Object.assign({
+      excludeCookieGetTests: false,
+      excludeCookiePostTests: false,
+      excludeAlreadySubmittedTest: false,
+      includeTasksNotCompleteTest: false
+    }, options)
     const { lab, routePath } = this
 
     lab.beforeEach(() => {
@@ -131,6 +135,16 @@ module.exports = class GeneralTestHelper {
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.contains(applicationReceivedRoutePath)
+        })
+      }
+
+      if (options.includeTasksNotCompleteTest) {
+        lab.test('Redirects to the Task list page with an error', async () => {
+          TaskList.isComplete = () => false
+
+          const res = await server.inject(getRequest)
+          Code.expect(res.statusCode).to.equal(302)
+          Code.expect(res.headers['location']).to.contains(incompleteTaskListRoutePath)
         })
       }
 
