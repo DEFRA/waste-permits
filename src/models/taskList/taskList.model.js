@@ -16,7 +16,7 @@ class TaskList {
     return files
       // Ignore this file
       .filter((file) => file !== currentFilename)
-      // Only include files that are required
+      // Only include files that are required for this permit type
       .filter((file) => !requiredModels || (requiredModels && requiredModels.includes(file.split('.')[0])))
       // Return the model
       .map((file) => require(Path.join(__dirname, file)))
