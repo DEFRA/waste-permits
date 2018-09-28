@@ -13,7 +13,7 @@ module.exports = class PaymentBacsController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { application: true, applicationLine: true })
-    const { application, applicationLine } = context
+    const { slug, application, applicationLine } = context
 
     const { value = 0 } = applicationLine
     const payment = await Payment.getBacsPaymentDetails(context, applicationLine.id)
@@ -28,6 +28,6 @@ module.exports = class PaymentBacsController extends BaseController {
     application.submittedOn = Date.now()
     await application.save(context)
 
-    return this.redirect({ request, h, redirectPath: this.nextPath })
+    return this.redirect({ request, h, redirectPath: `${this.nextPath}/${slug}` })
   }
 }

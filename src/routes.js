@@ -348,12 +348,14 @@ const Routes = {
     pageHeading: 'You have chosen to pay by bank transfer using Bacs',
     controller: 'payment/paymentBacs',
     nextRoute: 'APPLICATION_RECEIVED',
-    types: 'GET, POST'
+    types: 'GET, POST',
+    tasksCompleteRequired: true
   },
   CARD_PAYMENT: {
     path: '/pay/card',
     controller: 'payment/cardPayment',
-    types: 'GET'
+    types: 'GET',
+    tasksCompleteRequired: true
   },
   CARD_PROBLEM: {
     path: '/pay/card-problem',
@@ -363,7 +365,8 @@ const Routes = {
     controller: 'payment/paymentType',
     validator: 'paymentType',
     types: 'GET, POST',
-    cookieValidationRequired: false
+    cookieValidationRequired: false,
+    tasksCompleteRequired: true
   },
   PAYMENT_RESULT: {
     path: '/pay/result',
@@ -371,7 +374,8 @@ const Routes = {
     pageHeading: 'Your card payment failed',
     controller: 'payment/paymentResult',
     types: 'GET, POST',
-    cookieValidationRequired: false
+    cookieValidationRequired: false,
+    tasksCompleteRequired: true
   },
   PAYMENT_TYPE: {
     path: '/pay/type',
@@ -379,7 +383,8 @@ const Routes = {
     pageHeading: 'How do you want to pay?',
     controller: 'payment/paymentType',
     validator: 'paymentType',
-    types: 'GET, POST'
+    types: 'GET, POST',
+    tasksCompleteRequired: true
   },
 
   // ERRORS
@@ -392,7 +397,8 @@ const Routes = {
     controller: 'error/alreadySubmitted',
     types: 'GET',
     cookieValidationRequired: false,
-    applicationRequired: false
+    applicationRequired: false,
+    submittedRequired: true
   },
   COOKIES_DISABLED: {
     path: '/errors/cookies-off',
@@ -482,7 +488,8 @@ const Routes = {
     pageHeading: 'Check your answers',
     controller: 'checkBeforeSending',
     nextRoute: 'PAYMENT_TYPE',
-    types: 'GET, POST'
+    types: 'GET, POST',
+    tasksCompleteRequired: true
   },
   CHECK_YOUR_EMAIL: {
     path: '/save-return/check-your-email',

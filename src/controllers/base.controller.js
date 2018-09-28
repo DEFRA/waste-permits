@@ -2,6 +2,7 @@
 const Config = require('../config/config')
 const Constants = require('../constants')
 const Routes = require('../routes')
+const TaskList = require('../models/taskList/taskList.model')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
@@ -13,6 +14,7 @@ module.exports = class BaseController {
     validator,
     cookieValidationRequired = true,
     applicationRequired = true,
+    tasksCompleteRequired = false,
     submittedRequired = false
   }) {
     if (!route) {
@@ -40,6 +42,7 @@ module.exports = class BaseController {
     this.cookieValidationRequired = cookieValidationRequired
     this.submittedRequired = submittedRequired
     this.applicationRequired = applicationRequired
+    this.tasksCompleteRequired = tasksCompleteRequired
   }
 
   createPageContext (request, errors, validator) {
@@ -63,15 +66,29 @@ module.exports = class BaseController {
     return pageContext
   }
 
-  checkRouteAccess (slug, application) {
-    const { ALREADY_SUBMITTED, APPLICATION_RECEIVED, RECOVERY_FAILED } = Routes
+  async checkRouteAccess (context) {
+    const { ALREADY_SUBMITTED, NOT_SUBMITTED, RECOVERY_FAILED, TASK_LIST } = Routes
+    const { slug, application, applicationId, applicationLineId } = context
     if (!application) {
       return RECOVERY_FAILED.path
     }
     // If the application has been submitted
-    if (application.isSubmitted()) {
-      if (this.route.path.indexOf(ALREADY_SUBMITTED.path) && this.route.path.indexOf(APPLICATION_RECEIVED.path) !== 0) {
+    if (this.submittedRequired) {
+      if (!application.isSubmitted()) {
+        return `${NOT_SUBMITTED.path}${slug ? '/' + slug : ''}`
+      }
+    } else {
+      if (application.isSubmitted()) {
         return `${ALREADY_SUBMITTED.path}${slug ? '/' + slug : ''}`
+      }
+    }
+
+    if (this.tasksCompleteRequired) {
+      const isComplete = await TaskList.isComplete(context, applicationId, applicationLineId)
+
+      // If the task list is not complete then redirect back to it and show a validation error
+      if (!isComplete) {
+        return `${TASK_LIST.path}?showError=true`
       }
     }
   }
@@ -144,8 +161,8 @@ module.exports = class BaseController {
 
     if (this.applicationRequired) {
       try {
-        const { slug, application } = await RecoveryService.createApplicationContext(h, { application: true }) || {}
-        const redirectPath = this.checkRouteAccess(slug, application)
+        const context = await RecoveryService.createApplicationContext(h, { application: true }) || {}
+        const redirectPath = await this.checkRouteAccess(context)
         if (redirectPath) {
           return this.redirect({ request, h, redirectPath })
         }
