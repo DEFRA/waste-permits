@@ -61,7 +61,7 @@ class Address extends BaseModel {
     return addresses
   }
 
-  async save (context) {
+  async save (context, fields) {
     // Build the address name (i.e. the full address) if it is a manual address entry
     if (!this.fromAddressLookup) {
       this.fullAddress = [
@@ -71,10 +71,13 @@ class Address extends BaseModel {
         this.townOrCity,
         this.postcode
       ].filter((item) => item).join(', ')
+      // Make sure the full address will be included if the fields to save have been listed
+      if (fields && fields.indexOf('fullAddress') === -1) {
+        fields.push('fullAddress')
+      }
     }
-    const dataObject = this.modelToDynamics()
 
-    await super.save(context, dataObject)
+    await super.save(context, fields)
   }
 }
 

@@ -26,11 +26,6 @@ class AddressDetail extends BaseModel {
     return super.getBy(context, { applicationId, type })
   }
 
-  async save (context) {
-    const dataObject = this.modelToDynamics()
-    await super.save(context, dataObject)
-  }
-
   static async getDetails (context, applicationId, type) {
     return (await AddressDetail.getByApplicationIdAndType(context, applicationId, type.TYPE)) || new AddressDetail({ applicationId, addressName: type.NAME, type: type.TYPE })
   }

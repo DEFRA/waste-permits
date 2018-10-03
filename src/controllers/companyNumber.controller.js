@@ -37,7 +37,8 @@ module.exports = class CompanyNumberController extends BaseController {
       if (account.isNew()) {
         account.companyNumber = companyNumber
         account.organisationType = application.organisationType
-        await account.save(context, true)
+        account.isDraft = true
+        await account.save(context)
       }
 
       // Update the Application with the Account (if it has changed)

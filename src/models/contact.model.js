@@ -66,11 +66,6 @@ class Contact extends BaseModel {
   static async getByFirstnameLastnameEmail (context, firstName, lastName, email) {
     return this.getBy(context, { firstName, lastName, email })
   }
-
-  async save (context) {
-    const dataObject = this.modelToDynamics()
-    await super.save(context, dataObject)
-  }
 }
 
 Contact.setDefinitions()

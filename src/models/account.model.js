@@ -38,11 +38,13 @@ class Account extends BaseModel {
     return super.getBy(context, { companyNumber })
   }
 
-  async save (context, isDraft) {
-    const dataObject = this.modelToDynamics()
-    dataObject.defra_companyhouseid = dataObject.defra_companyhouseid ? Utilities.stripWhitespace(dataObject.defra_companyhouseid).toUpperCase() : undefined
-    dataObject.defra_draft = isDraft
-    await super.save(context, dataObject)
+  async save (context, fields) {
+    this.companyNumber = this.companyNumber ? Utilities.stripWhitespace(this.companyNumber).toUpperCase() : undefined
+    // Make sure the company number will be included if the fields to save have been listed
+    if (fields && fields.indexOf('companyNumber') === -1) {
+      fields.push('companyNumber')
+    }
+    await super.save(context, fields)
   }
 
   async confirm (context) {
