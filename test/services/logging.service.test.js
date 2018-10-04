@@ -24,7 +24,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('LoggingService tests:', () => {
-  lab.test('When LOG_LEVEL is ERROR', () => {
+  lab.test('When LOG_LEVEL is ERROR', async () => {
     sandbox.stub(config, 'LOG_LEVEL').value('ERROR')
 
     LoggingService.logError('An error has occurred')
@@ -39,7 +39,7 @@ lab.experiment('LoggingService tests:', () => {
     Code.expect(spy.threw()).to.equal(false)
   })
 
-  lab.test('When LOG_LEVEL is DEBUG', () => {
+  lab.test('When LOG_LEVEL is DEBUG', async () => {
     sandbox.stub(config, 'LOG_LEVEL').value('DEBUG')
 
     LoggingService.logError('An error has occurred')
