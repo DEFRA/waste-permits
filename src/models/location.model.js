@@ -9,7 +9,7 @@ class Location extends BaseModel {
 
   static get mapping () {
     return [
-      { field: 'id', dynamics: 'defra_locationid' },
+      { field: 'id', dynamics: 'defra_locationid', readOnly: true },
       { field: 'applicationId', dynamics: '_defra_applicationid_value', bind: { id: 'defra_applicationId', entity: 'defra_applications' } },
       { field: 'siteName', dynamics: 'defra_name', length: { max: 170 } }
     ]
@@ -29,11 +29,6 @@ class Location extends BaseModel {
       location.applicationLineId = applicationLineId
     }
     return location
-  }
-
-  async save (context) {
-    const dataObject = this.modelToDynamics(({ field }) => field !== 'id')
-    await super.save(context, dataObject)
   }
 }
 

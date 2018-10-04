@@ -54,8 +54,9 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
         account.accountName = company.name
         account.isValidatedWithCompaniesHouse = true
+        account.isDraft = false
 
-        await account.save(context, false)
+        await account.save(context)
 
         if (!alreadyConfirmed) {
           await account.confirm(context)

@@ -107,15 +107,6 @@ class Application extends BaseModel {
     }
   }
 
-  async save (context) {
-    const dataObject = this.modelToDynamics()
-    const isNew = this.isNew()
-    await super.save(context, dataObject)
-    if (isNew) {
-      LoggingService.logInfo(`Created application with ID: ${this.id}`)
-    }
-  }
-
   static async sendAllRecoveryEmails (context, origin, saveAndReturnEmail) {
     const applicationList = await this.listBySaveAndReturnEmail(context, saveAndReturnEmail)
     if (Array.isArray(applicationList)) {

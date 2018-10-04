@@ -386,18 +386,28 @@ module.exports = class BaseModel {
     }
   }
 
-  async save (context = {}, dataObject = this.modelToDynamics()) {
+  async save (context = {}, fields) {
+    let fieldsFilter
+    if (fields) {
+      // Only include those fields listed
+      fieldsFilter = ({ field }) => fields.indexOf(field) !== -1
+    }
+
+    const dataObject = this.modelToDynamics(fieldsFilter)
+
     const { entity, readOnly } = this.constructor
     if (readOnly) {
       const errorMessage = `Unable to save ${entity}: Read only!`
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }
+
     if (!context) {
       const errorMessage = `Unable to save ${entity}: Context not supplied`
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }
+
     const dynamicsDal = new DynamicsDalService(context.authToken)
     try {
       let query

@@ -23,8 +23,8 @@ module.exports = class UploadService {
     return 'virusScanError'
   }
 
-  static async upload (authToken, application, file, subject) {
-    const annotationsList = await Annotation.listByApplicationIdAndSubject(authToken, application.id, subject)
+  static async upload (context, application, file, subject) {
+    const annotationsList = await Annotation.listByApplicationIdAndSubject(context, application.id, subject)
 
     // create temporary uploads directory
     const uploadPath = path.resolve(UPLOAD_PATH, UploadService._buildUploadDir(application.applicationNumber))
@@ -43,7 +43,7 @@ module.exports = class UploadService {
       await UploadService._scanFiles(fileData)
     }
 
-    await UploadService._uploadFilestoDynamics(authToken, application, subject, fileData)
+    await UploadService._uploadFilestoDynamics(context, application, subject, fileData)
   }
 
   static _buildUploadDir (applicationReference) {
@@ -121,23 +121,23 @@ module.exports = class UploadService {
     }
   }
 
-  static async _uploadFilestoDynamics (authToken, application, subject, fileData) {
+  static async _uploadFilestoDynamics (context, application, subject, fileData) {
     // Save each file as an attachment to an annotation
     const uploadPromises = fileData.map(async ({ file, filename, path }) => {
       const annotation = new Annotation({ subject, filename, applicationId: application.id })
-      await annotation.save(authToken)
-      UploadService._uploadFileDataToDynamics(authToken, file, path, application.applicationNumber, annotation)
+      await annotation.save(context)
+      UploadService._uploadFileDataToDynamics(context, file, path, application.applicationNumber, annotation)
       return Promise.resolve(annotation)
     })
     await Promise.all(uploadPromises)
   }
 
-  static _uploadFileDataToDynamics (authToken, file, path, applicationNumber, { applicationId, subject, filename }) {
+  static _uploadFileDataToDynamics (context, file, path, applicationNumber, { applicationId, subject, filename }) {
     setImmediate(async () => {
       try {
-        const annotation = await Annotation.getByApplicationIdSubjectAndFilename(authToken, applicationId, subject, filename)
+        const annotation = await Annotation.getByApplicationIdSubjectAndFilename(context, applicationId, subject, filename)
         annotation.documentBody = await UploadService._streamFile(file, filename, path)
-        await annotation.save(authToken)
+        await annotation.save(context)
         LoggingService.logInfo(`Successfully uploaded ${filename} in dynamics for ${applicationNumber}`)
       } catch (err) {
         LoggingService.logError(err.message)

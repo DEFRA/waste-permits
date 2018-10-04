@@ -35,48 +35,52 @@ Model.setDefinitions()
 // ---------------------------------
 
 let sandbox
-
-const modelData = {
-  id: 'ID',
-  otherId: 'OTHERID',
-  modelName: 'MODEL_NAME',
-  dob: {
-    month: 'MONTH',
-    year: 'YEAR'
-  },
-  ref: 'REF',
-  regime: 'REGIME',
-  secret: 'SECRET',
-  optionalData: undefined
-}
-
-const dynamicsRequestData = {
-  dynamicsId: 'ID',
-  'dynamicsOtherId@odata.bind': 'dynamicsOtherModel(OTHERID)',
-  dynamicsName: 'MODEL_NAME',
-  dynamicsDobMonth: 'MONTH',
-  dynamicsDobYear: 'YEAR',
-  dynamicsRegime: 'REGIME',
-  dynamicsSecret: 'SECRET',
-  dynamicsOptionalData: undefined
-}
-
-const dynamicsReplyData = {
-  dynamicsId: 'ID',
-  '_dynamicsOtherId_value': 'OTHERID',
-  dynamicsName: 'MODEL_NAME',
-  dynamicsDobMonth: 'MONTH',
-  dynamicsDobYear: 'YEAR',
-  dynamicsRef: 'REF'
-}
+let modelData
+let dynamicsRequestData
+let dynamicsReplyData
 
 lab.experiment('Base Model tests:', () => {
   lab.beforeEach(() => {
+    modelData = {
+      id: 'ID',
+      otherId: 'OTHERID',
+      modelName: 'MODEL_NAME',
+      dob: {
+        month: 'MONTH',
+        year: 'YEAR'
+      },
+      ref: 'REF',
+      regime: 'REGIME',
+      secret: 'SECRET',
+      optionalData: undefined
+    }
+
+    dynamicsRequestData = {
+      dynamicsId: 'ID',
+      'dynamicsOtherId@odata.bind': 'dynamicsOtherModel(OTHERID)',
+      dynamicsName: 'MODEL_NAME',
+      dynamicsDobMonth: 'MONTH',
+      dynamicsDobYear: 'YEAR',
+      dynamicsRegime: 'REGIME',
+      dynamicsSecret: 'SECRET',
+      dynamicsOptionalData: undefined
+    }
+
+    dynamicsReplyData = {
+      dynamicsId: 'ID',
+      '_dynamicsOtherId_value': 'OTHERID',
+      dynamicsName: 'MODEL_NAME',
+      dynamicsDobMonth: 'MONTH',
+      dynamicsDobYear: 'YEAR',
+      dynamicsRef: 'REF'
+    }
+
     // Create a sinon sandbox to stub methods
     sandbox = sinon.createSandbox()
 
     // Stub methods
     sandbox.stub(DynamicsDalService.prototype, 'search').value(() => dynamicsReplyData)
+    sandbox.stub(DynamicsDalService.prototype, 'update').value(() => dynamicsReplyData)
   })
 
   lab.afterEach(() => {
@@ -202,6 +206,34 @@ lab.experiment('Base Model tests:', () => {
         message = error.message
       }
       Code.expect(message).to.equal(`Unable to delete ${entity}: Read only!`)
+    })
+  })
+
+  lab.test('save() method updates a Model object', async () => {
+    let dataObject
+    sinon.stub(DynamicsDalService.prototype, 'update').value((key, data) => {
+      dataObject = data
+    })
+    const testModel = new Model(modelData)
+
+    await testModel.save(context)
+
+    Code.expect(dataObject).to.equal(dynamicsRequestData)
+  })
+
+  lab.test('save() method updates a Model object with only the specified fields', async () => {
+    let dataObject
+    sinon.stub(DynamicsDalService.prototype, 'update').value((key, data) => {
+      dataObject = data
+    })
+    modelData.optionalData = 'OPTIONAL_DATA'
+    const testModel = new Model(modelData)
+
+    await testModel.save(context, ['modelName', 'optionalData'])
+
+    Code.expect(dataObject).to.equal({
+      dynamicsName: modelData.modelName,
+      dynamicsOptionalData: modelData.optionalData
     })
   })
 })
