@@ -36,15 +36,11 @@ const _customValidate = async (data, errors, validators, errorMessages) => {
 }
 
 module.exports = class BaseValidator {
-  constructor () {
-    this.errorMessages = {}
-  }
-
   async customValidate (data, errors) {
     // Get current errors
     const currentErrors = ObjectPath.get(errors, 'details') || []
     // Get custom errors
-    let customErrors = (await _customValidate(data, currentErrors, this.customValidators(), this.errorMessages))
+    let customErrors = (await _customValidate(data, currentErrors, this.customValidators, this.errorMessages))
       .filter((error) => error)
     if (customErrors.length) {
       // Now merge the errors based on the order of the fields within the errorMessages definition

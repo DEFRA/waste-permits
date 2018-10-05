@@ -20,11 +20,8 @@ function getAge (day, month, year) {
 }
 
 module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValidator {
-  constructor (options) {
-    super()
-    this.validatorOptions = options
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'first-name': {
         'any.empty': `Enter a first name`,
         'any.required': `Enter a first name`,
@@ -48,7 +45,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'first-name': Joi
         .string()
@@ -63,7 +60,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
     }
   }
 
-  customValidators () {
+  get customValidators () {
     return {
       'first-name': {
         'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value),

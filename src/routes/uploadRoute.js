@@ -50,7 +50,7 @@ class UploadRoute extends BaseRoute {
           options: {
             allowUnknown: true
           },
-          payload: controller.validator.getFormValidators(),
+          payload: controller.validator.formValidators,
           failAction: controller.failAction
         }
       }

@@ -9,10 +9,8 @@ const BaseValidator = require('./base.validator')
 const COMPANY_REG_NUMBER_REGEX = /^(([a-zA-Z]{1}[\s]*){2}|([\d+]{1}[\s]*){2})([\d+]{1}[\s]*){6}$/
 
 module.exports = class CompanyNumberValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'company-number': {
         'any.empty': `Enter a company registration number`,
         'any.required': `Enter a company registration number`,
@@ -21,7 +19,7 @@ module.exports = class CompanyNumberValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'company-number': Joi
         .string()

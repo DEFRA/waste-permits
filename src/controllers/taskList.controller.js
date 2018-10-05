@@ -14,9 +14,7 @@ module.exports = class TaskListController extends BaseController {
 
     const showError = Boolean(request.query.showError)
     if (showError && firstTimeIn) {
-      errors = await this._buildError(request)
-      // We have to call the doGet() method again to make the error message appear in the page
-      return this.doGet(request, h, errors, false)
+      return this.doGet(request, h, this.setCustomError('any.required', 'task-list-not-complete'), false)
     }
 
     pageContext.standardRule = standardRule
@@ -27,20 +25,5 @@ module.exports = class TaskListController extends BaseController {
     pageContext.permitCategoryRoute = Routes.PERMIT_CATEGORY.path
 
     return this.showView({ request, h, pageContext })
-  }
-
-  async _buildError (request) {
-    let errors
-    const errorPath = 'task-list-not-complete'
-    errors = {
-      details: [
-        {
-          message: `"${errorPath}" is required`,
-          path: [errorPath],
-          type: 'any.required',
-          context: { key: errorPath, label: errorPath }
-        }]
-    }
-    return errors
   }
 }

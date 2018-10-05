@@ -5,12 +5,6 @@ const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class DirectorDateOfBirthValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {}
-  }
-
   setErrorMessages (directors) {
     this.errorMessages = {
       'director-dobs-not-entered': {
@@ -40,7 +34,7 @@ module.exports = class DirectorDateOfBirthValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     // Validation is carried out in the controller instead because the
     // fields to be validated are created dynamically. There doesn't appear to be
     // any way to validate dynamically created fields using Joi

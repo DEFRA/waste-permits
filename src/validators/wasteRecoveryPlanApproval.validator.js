@@ -4,10 +4,8 @@ const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class PermitCategoryValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'selection': {
         'any.empty': 'Tell us if we have assessed your waste recovery plan',
         'any.required': 'Tell us if we have assessed your waste recovery plan'
@@ -15,7 +13,7 @@ module.exports = class PermitCategoryValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'selection': Joi
         .required()

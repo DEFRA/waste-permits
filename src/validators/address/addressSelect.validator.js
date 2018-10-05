@@ -4,17 +4,15 @@ const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 
 module.exports = class AddressSelectValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'select-address': {
         'any.required': `Select an address`
       }
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'select-address': Joi.string().required()
     }

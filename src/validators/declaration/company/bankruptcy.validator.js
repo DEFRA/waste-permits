@@ -5,10 +5,8 @@ const BaseValidator = require('../../base.validator')
 const Application = require('../../../models/application.model')
 
 module.exports = class BankruptcyValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'declared': {
         'any.empty': `Select yes if you have bankruptcy or insolvency to declare or no if you do not`,
         'any.required': `Select yes if you have bankruptcy or insolvency to declare or no if you do not`
@@ -25,7 +23,7 @@ module.exports = class BankruptcyValidator extends BaseValidator {
     return Application.bankruptcyDetails.length.max
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'declared': Joi
         .required(),

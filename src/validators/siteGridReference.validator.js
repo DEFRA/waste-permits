@@ -9,10 +9,8 @@ const BaseValidator = require('./base.validator')
 const GRID_REFERENCE_REGEX = /^(([a-zA-Z]{1}[\s]*){2}([\d+]{1}[\s]*){10})$/
 
 module.exports = class SiteGridReferenceValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'site-grid-reference': {
         'any.empty': `Enter a grid reference`,
         'any.required': `Enter a grid reference`,
@@ -21,7 +19,7 @@ module.exports = class SiteGridReferenceValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'site-grid-reference': Joi
         .string()

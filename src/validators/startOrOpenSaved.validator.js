@@ -4,17 +4,15 @@ const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class StartOrOpenSavedValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'started-application': {
         'any.required': `Select start new or open a saved application`
       }
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'started-application': Joi.string().required()
     }

@@ -7,11 +7,8 @@ const AddressDetail = require('../models/addressDetail.model')
 const { EMAIL_VALID_REGEX } = Constants.Validation
 
 module.exports = class ContactDetailsValidator extends BaseValidator {
-  constructor (options) {
-    super()
-    this.validatorOptions = options
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       email: {
         'any.empty': `Enter a valid email address`,
         'any.required': `Enter a valid email address`,
@@ -21,7 +18,7 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       email: Joi
         .string()
