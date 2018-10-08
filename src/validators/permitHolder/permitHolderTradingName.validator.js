@@ -7,10 +7,8 @@ const Application = require('../../models/application.model')
 const { TRADING_NAME_USAGE } = require('../../dynamics')
 
 module.exports = class PermitHolderTradingNameValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'use-trading-name': {
         'any.empty': 'Select own name or a trading name',
         'any.required': 'Select own name or a trading name'
@@ -23,7 +21,7 @@ module.exports = class PermitHolderTradingNameValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'use-trading-name': Joi
         .required(),

@@ -35,12 +35,12 @@ class Route {
         security: Constants.SecurityOptions
       }
     }
-    if (validator && validator.getFormValidators) {
+    if (validator && validator.formValidators) {
       route.options.validate = {
         options: {
           allowUnknown: true
         },
-        payload: validator.getFormValidators(),
+        payload: validator.formValidators,
         failAction: controller.failAction
       }
     }

@@ -5,10 +5,8 @@ const BaseValidator = require('./base.validator')
 const Application = require('../models/application.model')
 
 module.exports = class CompanyCheckNameValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'business-trading-name': {
         'any.empty': `Enter a business trading name`,
         'any.required': `Enter a business trading name`,
@@ -17,7 +15,7 @@ module.exports = class CompanyCheckNameValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'business-trading-name': Joi
         .string()

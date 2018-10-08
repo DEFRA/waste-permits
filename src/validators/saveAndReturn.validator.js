@@ -6,10 +6,8 @@ const BaseValidator = require('./base.validator')
 const { EMAIL_VALID_REGEX } = Constants.Validation
 
 module.exports = class SaveAndReturnConfirmValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'got-email': {
         'custom.required': `Select you got the email or cannot find it`
       },
@@ -22,7 +20,7 @@ module.exports = class SaveAndReturnConfirmValidator extends BaseValidator {
     }
   }
 
-  customValidators () {
+  get customValidators () {
     return {
       'got-email': {
         'custom.required': (value, { 'is-complete': isComplete }) => isComplete !== 'true' && !value

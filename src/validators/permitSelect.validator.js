@@ -4,17 +4,15 @@ const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class PermitSelectValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'chosen-permit': {
         'any.required': `Select the permit you want`
       }
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'chosen-permit': Joi
         .string()

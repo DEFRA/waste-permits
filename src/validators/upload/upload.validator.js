@@ -10,8 +10,10 @@ module.exports = class UploadValidator extends BaseValidator {
     super()
 
     this._validatorOptions = { ...Constants.DEFAULT_UPLOAD_OPTIONS, ...options }
+  }
 
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'file': {
         'custom.max.filename': `That file’s name is greater than ${Annotation.filename.length.max} characters - please rename the file with a shorter name before uploading it again.`,
         'custom.empty': 'Choose and upload a file',
@@ -28,7 +30,7 @@ module.exports = class UploadValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     const fileSchema =
       Joi.object().keys({
         'hapi': Joi.object().keys({
@@ -43,7 +45,7 @@ module.exports = class UploadValidator extends BaseValidator {
     }
   }
 
-  customValidators () {
+  get customValidators () {
     return {
       'file': {
         'custom.max.filename': ({ hapi: { filename } }) => filename.length > Annotation.filename.length.max,

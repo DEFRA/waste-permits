@@ -8,10 +8,8 @@ const DISALLOWED_CHARACTERS = '^ | _ ~ ¬ `'
 const DISALLOWED_CHARACTERS_REGEX = /[\^|_~¬`]/
 
 module.exports = class SiteNameValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'site-name': {
         'any.empty': `Enter the site name`,
         'any.required': `Enter the site name`,
@@ -21,7 +19,7 @@ module.exports = class SiteNameValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'site-name': Joi
         .string()
@@ -30,7 +28,7 @@ module.exports = class SiteNameValidator extends BaseValidator {
     }
   }
 
-  customValidators () {
+  get customValidators () {
     return {
       'site-name': {
         'custom.invalid': (value) => (DISALLOWED_CHARACTERS_REGEX).test(value)

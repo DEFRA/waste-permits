@@ -4,10 +4,8 @@ const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 
 module.exports = class PostcodeValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'postcode': {
         'any.empty': `Enter a postcode`,
         'any.required': `Enter a postcode`,
@@ -17,7 +15,7 @@ module.exports = class PostcodeValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'postcode': Joi
         .string()

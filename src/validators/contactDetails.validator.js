@@ -15,11 +15,8 @@ const LETTERS_HYPHENS_AND_APOSTROPHES_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+$/
 const { EMAIL_VALID_REGEX } = Constants.Validation
 
 module.exports = class ContactDetailsValidator extends BaseValidator {
-  constructor (options) {
-    super()
-    this.validatorOptions = options
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'first-name': {
         'any.empty': `Enter a first name`,
         'any.required': `Enter a first name`,
@@ -59,7 +56,7 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'first-name': Joi
         .string()
@@ -90,7 +87,7 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
     }
   }
 
-  customValidators () {
+  get customValidators () {
     return {
       'first-name': {
         'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value),

@@ -4,10 +4,8 @@ const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class DrainageTypeDrainValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'drainage-type': {
         'any.empty': 'Select where the area drains to',
         'any.required': 'Select where the area drains to'
@@ -15,7 +13,7 @@ module.exports = class DrainageTypeDrainValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'drainage-type': Joi
         .string()

@@ -4,17 +4,15 @@ const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class PaymentTypeValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'payment-type': {
         'any.required': 'Select how you want to pay'
       }
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'payment-type': Joi
         .string()

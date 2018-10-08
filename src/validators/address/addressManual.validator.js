@@ -21,10 +21,8 @@ const INVALID_CHARS_ERROR_MESSAGE = `<FIELD> contains text we cannot accept - en
 const INVALID_CHARS_ERROR_MESSAGE_NO_NUMBERS = `<FIELD> contains text we cannot accept - enter only letters, apostrophes, dashes and spaces`
 
 module.exports = class AddressManualValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'building-name-or-number': {
         'any.empty': `Enter the building name or number`,
         'any.required': `Enter the building name or number`,
@@ -58,7 +56,7 @@ module.exports = class AddressManualValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'building-name-or-number': Joi
         .string()
@@ -81,7 +79,7 @@ module.exports = class AddressManualValidator extends BaseValidator {
     }
   }
 
-  customValidators () {
+  get customValidators () {
     return {
       'building-name-or-number': {
         'custom.starts.or.ends.hyphen': (value) => (STARTS_OR_ENDS_WITH_HYPHEN_REGEX).test(value),

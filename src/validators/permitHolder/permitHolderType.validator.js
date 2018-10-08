@@ -4,10 +4,8 @@ const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 
 module.exports = class PermitHolderTypeValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'chosen-holder-type': {
         'any.empty': 'Select who will be the permit holder',
         'any.required': 'Select who will be the permit holder'
@@ -15,7 +13,7 @@ module.exports = class PermitHolderTypeValidator extends BaseValidator {
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'chosen-holder-type': Joi
         .string()

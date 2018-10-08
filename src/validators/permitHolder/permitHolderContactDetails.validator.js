@@ -13,11 +13,8 @@ const PLUSES_CANNOT_PRECEED_ZERO = /^(\+[ ]*[1-9][0-9 ]*|[^+][0-9 ]*)$/
 const { EMAIL_VALID_REGEX } = Constants.Validation
 
 module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValidator {
-  constructor (options) {
-    super()
-    this.validatorOptions = options
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'email': {
         'any.empty': `Enter an email address`,
         'any.required': `Enter an email address`,
@@ -36,7 +33,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
     }
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'email': Joi
         .string()
@@ -50,7 +47,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
     }
   }
 
-  customValidators () {
+  get customValidators () {
     return {
       'telephone': {
         'custom.invalid': (value) => !(PLUSES_SPACES_AND_NUMBERS_REGEX).test(value),

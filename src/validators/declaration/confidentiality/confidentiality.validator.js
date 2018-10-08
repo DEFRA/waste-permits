@@ -5,10 +5,8 @@ const BaseValidator = require('../../base.validator')
 const Application = require('../../../models/application.model')
 
 module.exports = class ConfidentialityValidator extends BaseValidator {
-  constructor () {
-    super()
-
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'declared': {
         'any.empty': `Select yes if you want to claim confidentiality or no if you do not`,
         'any.required': `Select yes if you want to claim confidentiality or no if you do not`
@@ -25,7 +23,7 @@ module.exports = class ConfidentialityValidator extends BaseValidator {
     return Application.confidentialityDetails.length.max
   }
 
-  getFormValidators () {
+  get formValidators () {
     return {
       'declared': Joi
         .required(),

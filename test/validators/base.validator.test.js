@@ -10,8 +10,10 @@ class TestValidator extends BaseValidator {
   constructor (options) {
     super()
     this.validatorOptions = options
+  }
 
-    this.errorMessages = {
+  get errorMessages () {
+    return {
       'telephone': {
         'any.empty': `Enter a telephone number`,
         'any.required': `Enter a telephone number`,
@@ -23,7 +25,7 @@ class TestValidator extends BaseValidator {
     }
   }
 
-  customValidators () {
+  get customValidators () {
     return {
       'telephone': {
         'custom.invalid': () => true,
