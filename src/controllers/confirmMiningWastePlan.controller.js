@@ -6,24 +6,6 @@ const RecoveryService = require('../services/recovery.service')
 const { MiningWastePlans } = require('../dynamics')
 
 module.exports = class ConfirmMiningWastePlanController extends BaseController {
-/*
-  async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
-
-    pageContext.formValues = request.payload
-
-    return this.showView({ request, h, pageContext })
-  }
-
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    }
-
-    return this.redirect({ request, h, redirectPath: this.nextPath })
-  }
-*/
-
   async doGet (request, h, errors) {
     const { application } = await RecoveryService.createApplicationContext(h, { application: true })
     const pageContext = this.createPageContext(request, errors)
