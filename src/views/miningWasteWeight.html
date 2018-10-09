@@ -1,0 +1,35 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">{{pageHeading}}</legend>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.mining-waste-weight}}{{/getFormErrorGroupClass}}">
+            <label id="mining-waste-weight-label" class="form-label" for="mining-waste-weight">
+              Estimated total weight of extractive waste that will be generated - in tonnes
+            </label>
+            {{> common/fieldError fieldId='mining-waste-weight-error' message=errors.mining-waste-weight }}
+            <input class="form-control form-control-char-15 {{#if errors.mining-waste-weight}}form-control-error{{/if}}" id="mining-waste-weight" name="mining-waste-weight" type="text" aria-describedby="mining-waste-weight-unit" value="{{formValues.mining-waste-weight}}">
+              <span id="mining-waste-weight-unit">tonnes</span>
+          </div>
+        </fieldset>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>

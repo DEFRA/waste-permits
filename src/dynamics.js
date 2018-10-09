@@ -68,6 +68,18 @@ const Dynamics = {
       allowed: false
     }
   },
+  MiningWastePlans: {
+    WATER_BASED: {
+      id: 'water-based',
+      type: 910400000,
+      description: 'Water-based drilling mud mining waste management plan (WMP1)'
+    },
+    WATER_AND_OIL_BASED: {
+      id: 'water-and-oil-based',
+      type: 910400001,
+      description: 'Oil- and water-based drilling mud mining waste management plan (WMP2)'
+    }
+  },
   PAYMENT_CATEGORY: 910400000,
   PaymentTypes: {
     CARD_PAYMENT: 910400000,

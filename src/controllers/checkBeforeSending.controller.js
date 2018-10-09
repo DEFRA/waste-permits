@@ -13,6 +13,7 @@ const ContactCheck = require('../models/checkYourAnswers/contact.check')
 const PermitHolderCheck = require('../models/checkYourAnswers/permitHolder.check')
 const ConfidentialityCheck = require('../models/checkYourAnswers/confidentiality.check')
 const InvoiceCheck = require('../models/checkYourAnswers/invoice.check')
+const MiningWasteCheck = require('../models/checkYourAnswers/miningWaste.check')
 const TaskList = require('../models/taskList/taskList.model')
 
 module.exports = class CheckBeforeSendingController extends BaseController {
@@ -28,6 +29,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       SiteCheck,
       SitePlanCheck,
       WasteRecoveryPlanCheck,
+      MiningWasteCheck,
       TechnicalCompetenceCheck,
       FirePreventionPlanCheck,
       ConfidentialityCheck,
