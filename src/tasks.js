@@ -58,7 +58,7 @@ const tasks = {
     completedLabelId: 'mining-data-completed',
     ruleSetId: 'defra_miningdatarequired',
     completedId: 'defra_miningdatarequired_completed',
-    taskListModelName: 'miningWasteDetails'
+    taskListModel: 'miningWasteDetails'
   },
   MANAGEMENT_SYSTEM: {
     id: 'tell-us-which-management-system-you-use',

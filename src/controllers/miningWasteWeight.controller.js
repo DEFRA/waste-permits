@@ -28,7 +28,7 @@ module.exports = class MiningWasteWeightController extends BaseController {
     const { application, applicationId, applicationLineId } = context
 
     application.miningWasteWeight = request.payload['mining-waste-weight']
-    await application.save(context, ['miningWasteWeight'])
+    await application.save(context)
 
     await MiningWasteDetails.updateCompleteness(context, applicationId, applicationLineId)
 
