@@ -1,13 +1,14 @@
 const crypto = require('crypto')
 const { cookieValidationPassword } = require('../config/config')
 
-const iv = crypto.randomBytes(16)
-const hash = crypto.createHash('sha1')
+const hash = crypto.createHash('sha256')
 
+// Todo: Fix this to create a random iv correctly.
 hash.update(cookieValidationPassword)
 
-// `hash.digest()` returns a Buffer by default when no encoding is given
-let key = hash.digest().slice(0, 16)
+const digest = hash.digest()
+let key = digest.slice(0, 16)
+let iv = digest.slice(16, 32)
 
 const algorithm = 'aes-128-cbc'
 
