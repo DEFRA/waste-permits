@@ -344,7 +344,7 @@ module.exports = class BaseModel {
     }
   }
 
-  async _deleteBoundReferences (dynamicsDal) {
+  async _deleteBoundReferences (dynamicsDal, fields) {
     // This method deletes any bound references as specified in the mapping method if the new value of any key is undefined.
     //
     // For example, when the mapping for Account is:
@@ -367,6 +367,7 @@ module.exports = class BaseModel {
     const { entity, mapping } = this.constructor
     const boundMapping = mapping
       .filter(({ bind }) => bind && bind.relationship) // only those fields that have a relationship with another entity
+      .filter(({ field }) => !fields || fields.indexOf(field) !== -1) // only those in the fields array if it has been entered
       .filter(({ field }) => !this[field]) // only those where the value of the field has been cleared
     if (boundMapping.length) {
       // select all the cleared references of entities bound to this entity and get their original values
@@ -416,7 +417,7 @@ module.exports = class BaseModel {
         query = entity
         this.id = await dynamicsDal.create(query, dataObject)
       } else {
-        await this._deleteBoundReferences(dynamicsDal)
+        await this._deleteBoundReferences(dynamicsDal, fields)
         // Update Entity
         query = `${entity}(${this.id})`
         await dynamicsDal.update(query, dataObject)

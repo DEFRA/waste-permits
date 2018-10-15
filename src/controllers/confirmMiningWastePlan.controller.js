@@ -51,7 +51,7 @@ module.exports = class ConfirmMiningWastePlanController extends BaseController {
       }
 
       application.miningWastePlan = miningWastePlan.type
-      await application.save(context)
+      await application.save(context, ['miningWastePlan'])
 
       return this.redirect({ request, h, redirectPath: this.nextPath })
     }
