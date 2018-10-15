@@ -1,1 +1,12 @@
-<a id="back-link" href="javascript:history.back()" class="link-back no-js">Back</a>
+<a id="back-link" href="#" class="link-back no-js">Back</a>
+<script>
+  $(document).ready(function fixBackLink () {
+    var backCount = -1
+    $('#back-link').on('click', function () {
+      history.go(backCount)
+    })
+    $('a[href="#content"]').on('click', function () {
+      backCount = -2
+    })
+  })
+</script>
