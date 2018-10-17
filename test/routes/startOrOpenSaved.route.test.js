@@ -14,14 +14,16 @@ const { COOKIE_RESULT } = require('../../src/constants')
 let sandbox
 
 const routePath = '/start/start-or-open-saved'
-const nextRoutePath = '/permit-holder'
+const nextRoutePath = '/bespoke-or-standard-rules'
 const checkEmailRoutePath = '/save-return/search-your-email'
 
-const getRequest = {
-  method: 'GET',
-  url: routePath,
-  headers: {}
-}
+const permitTypeQuery = '?permit-type='
+const bespokeQuery = `${permitTypeQuery}bespoke`
+const standardRulesQuery = `${permitTypeQuery}standard-rules`
+const invalidValueQuery = `${permitTypeQuery}invalid-value`
+const invalidParameterQuery = '?invalid-parameter=invalid-value'
+
+let getRequest
 let postRequest
 
 const fakeCookie = {
@@ -30,6 +32,11 @@ const fakeCookie = {
 }
 
 lab.beforeEach(() => {
+  getRequest = {
+    method: 'GET',
+    url: routePath,
+    headers: {}
+  }
   postRequest = {
     method: 'POST',
     url: routePath,
@@ -83,8 +90,32 @@ lab.experiment('Start or Open Saved page tests:', () => {
 
   lab.experiment('GET:', () => {
     lab.test('GET returns the Start or Open Saved page correctly', async () => {
-      const doc = await GeneralTestHelper.getDoc(postRequest)
+      const doc = await GeneralTestHelper.getDoc(getRequest)
       await checkCommonElements(doc)
+    })
+
+    lab.test('GET correctly includes the bespoke parameter for next action', async () => {
+      getRequest.url = `${getRequest.url}${bespokeQuery}`
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(`${routePath}${bespokeQuery}`)
+    })
+
+    lab.test('GET correctly includes the standard rules parameter for next action', async () => {
+      getRequest.url = `${getRequest.url}${standardRulesQuery}`
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(`${routePath}${standardRulesQuery}`)
+    })
+
+    lab.test('GET does not include an invalid parameter value for next action', async () => {
+      getRequest.url = `${getRequest.url}${invalidValueQuery}`
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
+    })
+
+    lab.test('GET does not include an invalid parameter for next action', async () => {
+      getRequest.url = `${getRequest.url}${invalidParameterQuery}`
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
     })
   })
 
@@ -112,6 +143,46 @@ lab.experiment('Start or Open Saved page tests:', () => {
       const doc = await GeneralTestHelper.getDoc(postRequest)
       await checkCommonElements(doc)
       await GeneralTestHelper.checkValidationMessage(doc, 'started-application', 'Select start new or open a saved application')
+    })
+
+    lab.test('POST Start or Open Saved page passes on bespoke parameter', async () => {
+      postRequest.url = `${postRequest.url}${bespokeQuery}`
+      postRequest.payload = {
+        'started-application': 'new'
+      }
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(`${nextRoutePath}${bespokeQuery}`)
+    })
+
+    lab.test('POST Start or Open Saved page passes on standard rules parameter', async () => {
+      postRequest.url = `${postRequest.url}${standardRulesQuery}`
+      postRequest.payload = {
+        'started-application': 'new'
+      }
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(`${nextRoutePath}${standardRulesQuery}`)
+    })
+
+    lab.test('POST Start or Open Saved does not pass on invalid parameter value', async () => {
+      postRequest.url = `${postRequest.url}${invalidValueQuery}`
+      postRequest.payload = {
+        'started-application': 'new'
+      }
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+    })
+
+    lab.test('POST Start or Open Saved does not pass on invalid parameter', async () => {
+      postRequest.url = `${postRequest.url}${invalidParameterQuery}`
+      postRequest.payload = {
+        'started-application': 'new'
+      }
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(nextRoutePath)
     })
   })
 })

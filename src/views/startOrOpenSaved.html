@@ -9,7 +9,7 @@
 
       {{> common/pageHeading pageHeading }}
 
-      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+      <form id="form" method="POST" action="{{formAction}}{{formActionQueryString}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <fieldset>

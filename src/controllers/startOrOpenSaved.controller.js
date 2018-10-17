@@ -18,6 +18,13 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
     pageContext.formValues = request.payload
 
+    // If there is a permit type parameter indicating bespoke or standard rules then pass it through
+    const permitType = request.query['permit-type']
+    pageContext.formActionQueryString = ''
+    if (permitType && (permitType === 'bespoke' || permitType === 'standard-rules')) {
+      pageContext.formActionQueryString = `?permit-type=${permitType}`
+    }
+
     return this.showView({ request, h, pageContext })
   }
 
@@ -29,7 +36,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
     const cookie = await CookieService.generateCookie(h)
     const { authToken } = cookie
 
-    let nextPage
+    let redirectPath
     if (request.payload['started-application'] === 'new') {
       // Create new application in Dynamics and set the applicationId in the cookie
       const application = new Application()
@@ -39,11 +46,17 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       // Set the application ID in the cookie
       cookie.applicationId = application.id
 
-      nextPage = Routes.PERMIT_HOLDER_TYPE
+      redirectPath = Routes.BESPOKE_OR_STANDARD_RULES.path
+
+      // If there is a permit type parameter indicating bespoke or standard rules then pass it through
+      const permitType = request.query['permit-type']
+      if (permitType && (permitType === 'bespoke' || permitType === 'standard-rules')) {
+        redirectPath = `${redirectPath}?permit-type=${permitType}`
+      }
     } else {
-      nextPage = Routes.SEARCH_YOUR_EMAIL
+      redirectPath = Routes.SEARCH_YOUR_EMAIL.path
     }
 
-    return this.redirect({ request, h, redirectPath: nextPage.path, cookie })
+    return this.redirect({ request, h, redirectPath, cookie })
   }
 }
