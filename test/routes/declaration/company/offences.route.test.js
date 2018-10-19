@@ -96,6 +96,7 @@ lab.experiment('Company Declare Offences tests:', () => {
         Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()
         Code.expect(doc.getElementById('operator-type-is-partnership')).to.not.exist()
         Code.expect(doc.getElementById('operator-type-is-limited-liability-partnership')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-public-body')).to.not.exist()
       })
 
       lab.test('with operator type of individual shows correct conditional content', async () => {
@@ -106,6 +107,7 @@ lab.experiment('Company Declare Offences tests:', () => {
         Code.expect(doc.getElementById('operator-type-is-limited-company')).to.not.exist()
         Code.expect(doc.getElementById('operator-type-is-partnership')).to.not.exist()
         Code.expect(doc.getElementById('operator-type-is-limited-liability-partnership')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-public-body')).to.not.exist()
       })
 
       lab.test('with operator type of partnership shows correct conditional content', async () => {
@@ -116,6 +118,7 @@ lab.experiment('Company Declare Offences tests:', () => {
         Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()
         Code.expect(doc.getElementById('operator-type-is-limited-company')).to.not.exist()
         Code.expect(doc.getElementById('operator-type-is-limited-liability-partnership')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-public-body')).to.not.exist()
       })
 
       lab.test('with operator type of limited liability partnership shows correct conditional content', async () => {
@@ -125,6 +128,18 @@ lab.experiment('Company Declare Offences tests:', () => {
         Code.expect(doc.getElementById('operator-type-is-limited-liability-partnership')).to.exist()
         Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()
         Code.expect(doc.getElementById('operator-type-is-limited-company')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-partnership')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-public-body')).to.not.exist()
+      })
+
+      lab.test('with operator type of public body shows correct conditional content', async () => {
+        fakePermitHolderType = PERMIT_HOLDER_TYPES.PUBLIC_BODY
+        doc = await GeneralTestHelper.getDoc(getRequest)
+
+        Code.expect(doc.getElementById('operator-type-is-public-body')).to.exist()
+        Code.expect(doc.getElementById('operator-type-is-individual')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-limited-company')).to.not.exist()
+        Code.expect(doc.getElementById('operator-type-is-limited-liability-partnership')).to.not.exist()
         Code.expect(doc.getElementById('operator-type-is-partnership')).to.not.exist()
       })
     })

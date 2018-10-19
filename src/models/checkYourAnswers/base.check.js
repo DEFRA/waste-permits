@@ -9,8 +9,10 @@ const Contact = require('../contact.model')
 const Location = require('../location.model')
 const LocationDetail = require('../locationDetail.model')
 const StandardRule = require('../standardRule.model')
+const ContactDetailService = require('../../services/contactDetail.service')
 const Utilities = require('../../utilities/utilities')
 const { COMPANY_DIRECTOR, LLP_DESIGNATED_MEMBER } = require('../../dynamics').AccountRoleCodes
+const { RESPONSIBLE_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 const { TECHNICAL_QUALIFICATION, SITE_PLAN, FIRE_PREVENTION_PLAN, WASTE_RECOVERY_PLAN } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -84,6 +86,15 @@ module.exports = class BaseCheck {
     return this.data.companyRegisteredAddress || {}
   }
 
+  async getMainAddress () {
+    const { applicationId, mainAddress } = this.data
+    if (!mainAddress) {
+      const addressDetail = await AddressDetail.getPublicBodyDetails(this.data, applicationId)
+      this.data.mainAddress = addressDetail ? await Address.getById(this.data, addressDetail.addressId) : undefined
+    }
+    return this.data.mainAddress || {}
+  }
+
   async getCompanies () {
     const { companies } = this.data
     if (!companies) {
@@ -146,6 +157,15 @@ module.exports = class BaseCheck {
       }))
     }
     return this.data.partners || {}
+  }
+
+  async getResponsibleOfficer () {
+    const { responsibleOfficer } = this.data
+    if (!responsibleOfficer) {
+      const type = RESPONSIBLE_CONTACT_DETAILS.TYPE
+      this.data.responsibleOfficer = await ContactDetailService.get(this.data, { type })
+    }
+    return this.data.responsibleOfficer || {}
   }
 
   async getPrimaryContactDetails () {

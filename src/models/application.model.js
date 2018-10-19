@@ -64,6 +64,10 @@ class Application extends BaseModel {
     return this.organisationType === PERMIT_HOLDER_TYPES.PARTNERSHIP.dynamicsOrganisationTypeId
   }
 
+  get isPublicBody () {
+    return this.organisationType === PERMIT_HOLDER_TYPES.PUBLIC_BODY.dynamicsOrganisationTypeId
+  }
+
   individualPermitHolderId () {
     return this.isIndividual ? this.permitHolderIndividualId : undefined
   }

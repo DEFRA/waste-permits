@@ -31,9 +31,9 @@ module.exports = class GeneralTestHelper {
     elementIds.forEach((id) => Code.expect(doc.getElementById(id)).to.not.exist())
   }
 
-  static checkValidationMessage (doc, fieldId, expectedErrorMessage, shouldHaveErrorClass) {
+  static checkValidationMessage (doc, fieldId, expectedErrorMessage, shouldHaveErrorClass = false, fieldIndex = 0) {
     // Panel summary error item
-    Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
+    Code.expect(doc.getElementById(`error-summary-list-item-${fieldIndex}`).firstChild.nodeValue).to.equal(expectedErrorMessage)
 
     // Relevant field error
     if (shouldHaveErrorClass) {

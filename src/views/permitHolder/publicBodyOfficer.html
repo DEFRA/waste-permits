@@ -1,0 +1,54 @@
+<main id="content" tabindex="-1" role="main">
+
+    {{> common/betaBanner }} {{> common/backLink }}
+  
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {{> common/errorSummary }} {{> common/pageHeading pageHeading }}
+        <form method="POST" action="{{formAction}}" novalidate="novalidate">
+          {{> common/csrfToken token=DefraCsrfToken}}
+
+          <p id="paragraph-1">This should be someone who has authority to sign on behalf of the local authority or public body.</p>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.first-name}}{{/getFormErrorGroupClass}}">
+            <label id="first-name-label" class="form-label" for="first-name">
+              First name
+            </label>
+            {{> common/fieldError fieldId='first-name-error' message=errors.first-name }}
+            <input class="form-control form-control-char-15 {{#if errors.first-name}}form-control-error{{/if}}" id="first-name" name="first-name"
+                   type="text" value="{{formValues.first-name}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.last-name}}{{/getFormErrorGroupClass}}">
+            <label id="last-name-label" class="form-label" for="last-name">
+              Last name
+            </label>
+            {{> common/fieldError fieldId='last-name-error' message=errors.last-name }}
+            <input class="form-control form-control-char-15 {{#if errors.last-name}}form-control-error{{/if}}" id="last-name" name="last-name"
+                   type="text" value="{{formValues.last-name}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.job-title}}{{/getFormErrorGroupClass}}">
+            <label id="job-title-label" class="form-label" for="job-title">
+              Position or job title
+            </label>
+            {{> common/fieldError fieldId='job-title-error' message=errors.job-title }}
+            <input class="form-control form-control-char-30 {{#if errors.job-title}}form-control-error{{/if}}" id="job-title" name="job-title"
+                   type="text" value="{{formValues.job-title}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.email}}{{/getFormErrorGroupClass}}">
+            <label id="email-label" class="form-label" for="email">
+              Email address
+              <span id="email-hint" class="form-hint">Used to send a copy of the permit and any official notices</span>
+            </label>
+            {{> common/fieldError fieldId='email-error' message=errors.email }}
+            <input class="form-control form-control-char-35 {{#if errors.email}}form-control-error{{/if}}" id="email" name="email" type="email" value="{{formValues.email}}">
+          </div>
+  
+          {{> common/submitButton }}
+        </form>
+      </div>
+    </div>
+  
+  </main>

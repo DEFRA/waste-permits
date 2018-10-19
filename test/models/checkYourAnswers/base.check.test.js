@@ -17,6 +17,8 @@ const Location = require('../../../src/models/location.model')
 const LocationDetail = require('../../../src/models/locationDetail.model')
 const StandardRule = require('../../../src/models/standardRule.model')
 
+const ContactDetailService = require('../../../src/services/contactDetail.service')
+
 const BaseCheck = require('../../../src/models/checkYourAnswers/base.check')
 const day = 1
 const month = 2
@@ -53,6 +55,9 @@ const fakePrimaryContact = {
 const fakeIndividualPermitHolder = {
   id: 'PERMIT_HOLDER_ID'
 }
+const fakePublicBodyDetails = {
+  id: 'PUBLIC_BODY_ID'
+}
 const fakeIndividualPermitHolderDetails = {
   id: 'PERMIT_HOLDER_DETAILS_ID'
 }
@@ -64,6 +69,12 @@ const fakeDesignatedMemberDetails = {
 }
 const fakePartnerDetails = {
   id: 'PARTNER_DETAILS_ID',
+  email: 'EMAIL',
+  telephone: 'TELEPHONE'
+}
+const fakeContactDetails = {
+  id: 'CONTACT_DETAILS_ID',
+
   email: 'EMAIL',
   telephone: 'TELEPHONE'
 }
@@ -108,6 +119,7 @@ lab.beforeEach(() => {
   sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
   sandbox.stub(AddressDetail, 'getCompanySecretaryDetails').value(() => new AddressDetail(fakeCompanySecretary))
   sandbox.stub(AddressDetail, 'getPrimaryContactDetails').value(() => new AddressDetail(fakePrimaryContact))
+  sandbox.stub(AddressDetail, 'getPublicBodyDetails').value(() => new AddressDetail(fakePublicBodyDetails))
   sandbox.stub(AddressDetail, 'getBillingInvoicingDetails').value(() => new AddressDetail(fakeBillingInvoicing))
   sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeIndividualPermitHolderDetails))
   sandbox.stub(AddressDetail, 'getDesignatedMemberDetails').value(() => new AddressDetail(fakeDesignatedMemberDetails))
@@ -122,6 +134,7 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
   sandbox.stub(Location, 'getByApplicationId').value(() => new Location(fakeLocation))
   sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(fakeLocationDetail))
+  sandbox.stub(ContactDetailService, 'get').value(() => new Contact(fakeContactDetails))
 })
 
 lab.afterEach(() => {
@@ -211,6 +224,13 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(context.individualPermitHolderDetails).to.equal(await check.getIndividualPermitHolderDetails())
   })
 
+  lab.test('getResponsibleOfficer works correctly', async () => {
+    const check = new BaseCheck(context)
+    const responsibleOfficer = await check.getResponsibleOfficer()
+    Code.expect(responsibleOfficer).to.equal(fakeContactDetails)
+    Code.expect(context.responsibleOfficer).to.equal(await check.getResponsibleOfficer())
+  })
+
   lab.test('getMembers works correctly', async () => {
     const check = new BaseCheck(context)
     const members = await check.getMembers()
@@ -286,6 +306,13 @@ lab.experiment('Base Check tests:', () => {
     const locationDetail = await check.getLocationDetail()
     Code.expect(locationDetail).to.equal(fakeLocationDetail)
     Code.expect(context.locationDetail).to.equal(await check.getLocationDetail())
+  })
+
+  lab.test('getMainAddress works correctly', async () => {
+    const check = new BaseCheck(context)
+    const mainAddress = await check.getMainAddress()
+    Code.expect(mainAddress).to.equal(fakeAddress)
+    Code.expect(context.mainAddress).to.equal(await check.getMainAddress())
   })
 
   lab.test('getLocationAddress works correctly', async () => {

@@ -2,7 +2,7 @@ const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
 const { PERMIT_HOLDER_DETAILS: ruleSetId } = require('../taskList/taskList.model').RuleSetIds
-const { LIMITED_LIABILITY_PARTNERSHIP, PARTNERSHIP } = Dynamics.PERMIT_HOLDER_TYPES
+const { LIMITED_LIABILITY_PARTNERSHIP, PARTNERSHIP, PUBLIC_BODY } = Dynamics.PERMIT_HOLDER_TYPES
 
 const {
   COMPANY_DECLARE_BANKRUPTCY,
@@ -16,7 +16,11 @@ const {
   PARTNERSHIP_PARTNER_LIST,
   PARTNERSHIP_TRADING_NAME,
   PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH,
-  PERMIT_HOLDER_TYPE
+  PERMIT_HOLDER_TYPE,
+  PUBLIC_BODY_DECLARE_BANKRUPTCY,
+  PUBLIC_BODY_DECLARE_OFFENCES,
+  PUBLIC_BODY_OFFICER,
+  PUBLIC_BODY_NAME
 } = require('../../routes')
 
 const blankLine = { blankLine: true }
@@ -61,6 +65,14 @@ module.exports = class PermitHolderCheck extends BaseCheck {
           this.getPartnersLine(),
           this.getConvictionsLine(),
           this.getBankruptcyLine()
+        ])
+      case PUBLIC_BODY.type:
+        return Promise.all([
+          this.getTypeLine(),
+          this.getPublicBodyLine(),
+          this.getResponsibleOfficerLine(),
+          this.getConvictionsLine(PUBLIC_BODY_DECLARE_OFFENCES),
+          this.getBankruptcyLine(PUBLIC_BODY_DECLARE_BANKRUPTCY)
         ])
       default:
         return Promise.all([
@@ -160,6 +172,21 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
+  async getPublicBodyLine () {
+    const { path } = PUBLIC_BODY_NAME
+    const { tradingName = '' } = await this.getApplication()
+    const address = this.getAddressLine(await this.getMainAddress())
+    let answers = []
+    answers.push(tradingName)
+    answers = answers.concat(address)
+    return this.buildLine({
+      heading: `Permit holder`,
+      prefix: 'permit-holder',
+      answers,
+      links: [{ path, type: 'permit holder' }]
+    })
+  }
+
   async getDirectorsLine () {
     const { path } = DIRECTOR_DATE_OF_BIRTH
     const { companyNumber = '' } = await this.getCompanyAccount()
@@ -212,6 +239,18 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
+  async getResponsibleOfficerLine () {
+    const { path } = PUBLIC_BODY_OFFICER
+    const { firstName, lastName, jobTitle, email } = await this.getResponsibleOfficer()
+    const name = `${firstName} ${lastName}`
+    return this.buildLine({
+      heading: 'Responsible officer or executive',
+      prefix: 'responsible-officer',
+      answers: [name, jobTitle, email],
+      links: [{ path, type: `responsible officer` }]
+    })
+  }
+
   async getDesignatedMemberEmailLine () {
     const { path } = LLP_COMPANY_DESIGNATED_MEMBER_EMAIL
     const { email = '' } = await this.getDesignatedMemberDetails()
@@ -234,8 +273,8 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
-  async getConvictionsLine () {
-    const { path } = COMPANY_DECLARE_OFFENCES
+  async getConvictionsLine (route) {
+    const { path } = route || COMPANY_DECLARE_OFFENCES
     const { relevantOffences = false, relevantOffencesDetails = '' } = await this.getApplication()
     const answers = []
     if (relevantOffences) {
@@ -252,8 +291,8 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
-  async getBankruptcyLine () {
-    const { path } = COMPANY_DECLARE_BANKRUPTCY
+  async getBankruptcyLine (route) {
+    const { path } = route || COMPANY_DECLARE_BANKRUPTCY
     const { bankruptcy = false, bankruptcyDetails = '' } = await this.getApplication()
     const answers = []
     if (bankruptcy) {

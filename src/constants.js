@@ -139,6 +139,7 @@ Constants.UploadSubject = {
 Constants.CookieValue = {
   INVOICE_POSTCODE: 'INVOICE_POSTCODE',
   PARTNER_POSTCODE: 'PARTNER_POSTCODE',
+  PUBLIC_BODY_POSTCODE: 'PUBLIC_BODY_POSTCODE',
   PERMIT_HOLDER_POSTCODE: 'PERMIT_HOLDER_POSTCODE',
   SITE_POSTCODE: 'SITE_POSTCODE'
 }
@@ -162,7 +163,12 @@ Constants.buildPageTitle = (pageHeading) => {
 }
 
 Constants.Validation = {
-  EMAIL_VALID_REGEX: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  EMAIL_VALID_REGEX: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  LEADING_AND_TRAILING_DASHES_REGEX: /(^-.*$|^.*-$)/,
+  LETTERS_HYPHENS_AND_APOSTROPHES_REGEX: /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+$/,
+  PLUSES_AND_SPACES_REGEX: /(\+|\s)/g,
+  PLUSES_SPACES_AND_NUMBERS_REGEX: /^[0-9 +]*$/,
+  PLUSES_CANNOT_PRECEDE_ZERO: /^(\+[ ]*[1-9][0-9 ]*|[^+][0-9 ]*)$/
 }
 
 Constants.getVersion = () => {

@@ -10,6 +10,10 @@ const Dynamics = {
     AGENT: 910400000
   },
   AddressTypes: {
+    PUBLIC_BODY_MAIN_ADDRESS: {
+      TYPE: 910400001,
+      NAME: 'Public body main address'
+    },
     INDIVIDUAL_PERMIT_HOLDER: {
       TYPE: 910400002,
       NAME: 'Individual Permit Holder'
@@ -37,6 +41,10 @@ const Dynamics = {
     PARTNER_CONTACT_DETAILS: {
       TYPE: 910400009,
       NAME: 'Partner contact details'
+    },
+    RESPONSIBLE_CONTACT_DETAILS: {
+      TYPE: 910400009,
+      NAME: 'Responsible contact details'
     }
   },
   DIGITAL_SOURCE: 910400000,
@@ -117,10 +125,10 @@ const Dynamics = {
       canApplyOnline: true,
       dynamicsApplicantTypeId: 910400000
     },
-    LOCAL_AUTHORITY: {
-      id: 'local-authority',
+    PUBLIC_BODY: {
+      id: 'public-body',
       type: 'Local authority or public body',
-      canApplyOnline: false,
+      canApplyOnline: true,
       dynamicsApplicantTypeId: 910400001,
       dynamicsOrganisationTypeId: 910400002
     },

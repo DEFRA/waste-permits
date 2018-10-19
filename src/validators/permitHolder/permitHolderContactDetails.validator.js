@@ -7,12 +7,14 @@ const BaseValidator = require('../base.validator')
 const AddressDetail = require('../../models/addressDetail.model')
 const Contact = require('../../models/contact.model')
 
-const PLUSES_AND_SPACES_REGEX = /(\+|\s)/g
-const PLUSES_SPACES_AND_NUMBERS_REGEX = /^[0-9 +]*$/
-const PLUSES_CANNOT_PRECEED_ZERO = /^(\+[ ]*[1-9][0-9 ]*|[^+][0-9 ]*)$/
-const { EMAIL_VALID_REGEX } = Constants.Validation
+const {
+  EMAIL_VALID_REGEX,
+  PLUSES_AND_SPACES_REGEX,
+  PLUSES_CANNOT_PRECEDE_ZERO,
+  PLUSES_SPACES_AND_NUMBERS_REGEX
+} = Constants.Validation
 
-module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValidator {
+module.exports = class PermitHolderContactDetailsValidator extends BaseValidator {
   get errorMessages () {
     return {
       'email': {
@@ -51,7 +53,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
     return {
       'telephone': {
         'custom.invalid': (value) => !(PLUSES_SPACES_AND_NUMBERS_REGEX).test(value),
-        'custom.plus-zero': (value) => !(PLUSES_CANNOT_PRECEED_ZERO).test(value),
+        'custom.plus-zero': (value) => !(PLUSES_CANNOT_PRECEDE_ZERO).test(value),
         'custom.min': (value) => value.replace(PLUSES_AND_SPACES_REGEX, '').length < AddressDetail.telephone.length.min,
         'custom.max': (value) => value.replace(PLUSES_AND_SPACES_REGEX, '').length > AddressDetail.telephone.length.max
       }

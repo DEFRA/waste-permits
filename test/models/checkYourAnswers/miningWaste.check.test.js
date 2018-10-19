@@ -1,6 +1,5 @@
 'use strict'
 
-const Merge = require('deepmerge')
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
@@ -40,7 +39,6 @@ lab.experiment('Mining Waste Check tests:', () => {
   })
 
   lab.experiment('buildlines', () => {
-
     let check
     let lines
 

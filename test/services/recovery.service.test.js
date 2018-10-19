@@ -106,10 +106,10 @@ lab.experiment('RecoveryService tests:', () => {
 
     lab.test('a permit holder type if there is a permit holder type matching application types', () => {
       let application = {
-        applicantType: PERMIT_HOLDER_TYPES.LOCAL_AUTHORITY.dynamicsApplicantTypeId,
-        organisationType: PERMIT_HOLDER_TYPES.LOCAL_AUTHORITY.dynamicsOrganisationTypeId
+        applicantType: PERMIT_HOLDER_TYPES.PUBLIC_BODY.dynamicsApplicantTypeId,
+        organisationType: PERMIT_HOLDER_TYPES.PUBLIC_BODY.dynamicsOrganisationTypeId
       }
-      Code.expect(RecoveryService.getPermitHolderType(application)).to.equal(PERMIT_HOLDER_TYPES.LOCAL_AUTHORITY)
+      Code.expect(RecoveryService.getPermitHolderType(application)).to.equal(PERMIT_HOLDER_TYPES.PUBLIC_BODY)
     })
   })
 })
