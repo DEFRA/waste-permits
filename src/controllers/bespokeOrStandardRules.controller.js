@@ -2,11 +2,6 @@
 
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
-// const { COOKIE_KEY } = require('../constants')
-// const { PermitTypes } = require('../dynamics')
-// const CookieService = require('../services/cookie.service')
-// const RecoveryService = require('../services/recovery.service')
-// const ApplicationLine = require('../models/applicationLine.model')
 
 module.exports = class BespokeOrStandardRulesController extends BaseController {
   async doGet (request, h, errors) {

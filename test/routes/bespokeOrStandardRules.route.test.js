@@ -8,12 +8,10 @@ const server = require('../../server')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/models/application.model')
-const StandardRule = require('../../src/models/standardRule.model')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 let fakeApplication
-let fakeStandardRule
 let sandbox
 
 const routePath = '/bespoke-or-standard-rules'
@@ -60,11 +58,6 @@ lab.beforeEach(() => {
     id: 'APPLICATION_ID'
   }
 
-  fakeStandardRule = {
-    code: 'STANDARD_RULE_CODE',
-    guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL'
-  }
-
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
@@ -72,8 +65,6 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
 })
 
 lab.afterEach(() => {
