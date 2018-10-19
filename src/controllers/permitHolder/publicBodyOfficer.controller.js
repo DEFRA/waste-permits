@@ -33,7 +33,8 @@ module.exports = class PublicBodyOfficerController extends BaseController {
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const contactDetail = (await ContactDetailService.get(context, { type: RESPONSIBLE_CONTACT_DETAILS.TYPE })) || new ContactDetailService({ type: RESPONSIBLE_CONTACT_DETAILS.TYPE })
+      const { applicationId } = context
+      let contactDetail = (await ContactDetailService.get(context, { type: RESPONSIBLE_CONTACT_DETAILS.TYPE })) || new ContactDetailService({ applicationId, type: RESPONSIBLE_CONTACT_DETAILS.TYPE })
 
       const {
         'first-name': firstName,

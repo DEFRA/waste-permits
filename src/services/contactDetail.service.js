@@ -6,6 +6,7 @@ module.exports = class ContactDetailService {
   static get fields () {
     return {
       id: { entity: AddressDetail },
+      applicationId: { entity: AddressDetail },
       type: { entity: AddressDetail },
       jobTitle: { entity: AddressDetail },
       email: { entity: AddressDetail },
@@ -40,15 +41,13 @@ module.exports = class ContactDetailService {
       const { id, customerId, jobTitle, email, telephone, type } = addressDetail
       const { firstName, lastName } = customerId ? await Contact.getById(context, customerId) : {}
 
-      return new ContactDetailService({ id, firstName, lastName, jobTitle, email, telephone, type })
+      return new ContactDetailService({ id, applicationId, firstName, lastName, jobTitle, email, telephone, type })
     }
   }
 
   async save (context) {
-    const { firstName, lastName, jobTitle, telephone, email, type } = this
+    const { applicationId, firstName, lastName, jobTitle, telephone, email, type } = this
     let { id } = this
-
-    const { applicationId } = context
 
     if (!id && !type) {
       throw new Error('Expected either contact details id or type to be declared')
@@ -82,9 +81,9 @@ module.exports = class ContactDetailService {
   }
 
   async delete (context) {
-    const { applicationId } = context
+    const { id, applicationId } = this
 
-    const addressDetail = await AddressDetail.getById(context, this.id)
+    const addressDetail = await AddressDetail.getById(context, id)
     if (!addressDetail) {
       return
     }

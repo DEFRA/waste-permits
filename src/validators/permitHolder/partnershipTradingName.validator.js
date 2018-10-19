@@ -2,7 +2,7 @@
 const TradingNameValidator = require('./tradingName.validator')
 const Application = require('../../models/application.model')
 
-module.exports = class PermitHolderTradingNameValidator extends TradingNameValidator {
+module.exports = class PartnershipTradingNameValidator extends TradingNameValidator {
   get errorMessages () {
     return {
       'trading-name': {

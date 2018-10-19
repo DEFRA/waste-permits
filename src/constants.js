@@ -168,7 +168,7 @@ Constants.Validation = {
   LETTERS_HYPHENS_AND_APOSTROPHES_REGEX: /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+$/,
   PLUSES_AND_SPACES_REGEX: /(\+|\s)/g,
   PLUSES_SPACES_AND_NUMBERS_REGEX: /^[0-9 +]*$/,
-  PLUSES_CANNOT_PROCEED_ZERO: /^(\+[ ]*[1-9][0-9 ]*|[^+][0-9 ]*)$/
+  PLUSES_CANNOT_PRECEDE_ZERO: /^(\+[ ]*[1-9][0-9 ]*|[^+][0-9 ]*)$/
 }
 
 Constants.getVersion = () => {

@@ -20,7 +20,7 @@ const {
   PUBLIC_BODY_DECLARE_BANKRUPTCY,
   PUBLIC_BODY_DECLARE_OFFENCES,
   PUBLIC_BODY_OFFICER,
-  PUBLIC_BODY_TRADING_NAME
+  PUBLIC_BODY_NAME
 } = require('../../routes')
 
 const blankLine = { blankLine: true }
@@ -173,7 +173,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
   }
 
   async getPublicBodyLine () {
-    const { path } = PUBLIC_BODY_TRADING_NAME
+    const { path } = PUBLIC_BODY_NAME
     const { tradingName = '' } = await this.getApplication()
     const address = this.getAddressLine(await this.getMainAddress())
     let answers = []
@@ -273,8 +273,8 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
-  async getConvictionsLine (type) {
-    const { path } = type || COMPANY_DECLARE_OFFENCES
+  async getConvictionsLine (route) {
+    const { path } = route || COMPANY_DECLARE_OFFENCES
     const { relevantOffences = false, relevantOffencesDetails = '' } = await this.getApplication()
     const answers = []
     if (relevantOffences) {
@@ -291,8 +291,8 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     })
   }
 
-  async getBankruptcyLine (type) {
-    const { path } = type || COMPANY_DECLARE_BANKRUPTCY
+  async getBankruptcyLine (route) {
+    const { path } = route || COMPANY_DECLARE_BANKRUPTCY
     const { bankruptcy = false, bankruptcyDetails = '' } = await this.getApplication()
     const answers = []
     if (bankruptcy) {

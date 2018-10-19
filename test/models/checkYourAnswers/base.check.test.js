@@ -308,14 +308,14 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(context.locationDetail).to.equal(await check.getLocationDetail())
   })
 
-  lab.test('getLocationAddress works correctly', async () => {
+  lab.test('getMainAddress works correctly', async () => {
     const check = new BaseCheck(context)
     const mainAddress = await check.getMainAddress()
     Code.expect(mainAddress).to.equal(fakeAddress)
     Code.expect(context.mainAddress).to.equal(await check.getMainAddress())
   })
 
-  lab.test('getMainAddress works correctly', async () => {
+  lab.test('getLocationAddress works correctly', async () => {
     const check = new BaseCheck(context)
     const locationAddress = await check.getLocationAddress()
     Code.expect(locationAddress).to.equal(fakeAddress)

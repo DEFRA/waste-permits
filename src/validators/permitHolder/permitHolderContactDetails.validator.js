@@ -10,7 +10,7 @@ const Contact = require('../../models/contact.model')
 const {
   EMAIL_VALID_REGEX,
   PLUSES_AND_SPACES_REGEX,
-  PLUSES_CANNOT_PROCEED_ZERO,
+  PLUSES_CANNOT_PRECEDE_ZERO,
   PLUSES_SPACES_AND_NUMBERS_REGEX
 } = Constants.Validation
 
@@ -53,7 +53,7 @@ module.exports = class PermitHolderContactDetailsValidator extends BaseValidator
     return {
       'telephone': {
         'custom.invalid': (value) => !(PLUSES_SPACES_AND_NUMBERS_REGEX).test(value),
-        'custom.plus-zero': (value) => !(PLUSES_CANNOT_PROCEED_ZERO).test(value),
+        'custom.plus-zero': (value) => !(PLUSES_CANNOT_PRECEDE_ZERO).test(value),
         'custom.min': (value) => value.replace(PLUSES_AND_SPACES_REGEX, '').length < AddressDetail.telephone.length.min,
         'custom.max': (value) => value.replace(PLUSES_AND_SPACES_REGEX, '').length > AddressDetail.telephone.length.max
       }

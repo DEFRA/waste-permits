@@ -279,9 +279,9 @@ const Routes = {
     nextRoute: 'LLP_COMPANY_DESIGNATED_MEMBER_EMAIL',
     types: 'GET, POST'
   },
-  PUBLIC_BODY_TRADING_NAME: {
+  PUBLIC_BODY_NAME: {
     path: '/permit-holder/public-body/name',
-    view: 'permitHolder/tradingName',
+    view: 'permitHolder/publicBodyName',
     pageHeading: 'What is the name of the local authority or public body?',
     controller: 'permitHolder/tradingName',
     validator: 'permitHolder/tradingName',
