@@ -482,6 +482,22 @@ const Routes = {
     controller: 'applyOffline',
     types: 'GET'
   },
+  BESPOKE_APPLY_OFFLINE: {
+    path: '/bespoke-apply-offline',
+    view: 'bespokeApplyOffline',
+    pageHeading: 'Apply for a bespoke permit',
+    controller: 'bespokeApplyOffline',
+    types: 'GET'
+  },
+  BESPOKE_OR_STANDARD_RULES: {
+    path: '/bespoke-or-standard-rules',
+    view: 'bespokeOrStandardRules',
+    pageHeading: 'Confirm the type of permit you want',
+    controller: 'bespokeOrStandardRules',
+    validator: 'bespokeOrStandardRules',
+    nextRoute: 'PERMIT_HOLDER_TYPE',
+    types: 'GET, POST'
+  },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',
     view: 'checkBeforeSending',

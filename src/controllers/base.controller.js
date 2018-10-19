@@ -98,7 +98,7 @@ module.exports = class BaseController {
       cookie = request.state[Constants.DEFRA_COOKIE_KEY]
     }
     if (Config.isDevelopment && error) {
-      redirectPath = `${redirectPath}?error=${JSON.stringify(error)}`
+      redirectPath = redirectPath.includes('?') ? `${redirectPath}&error=${JSON.stringify(error)}` : `${redirectPath}?error=${JSON.stringify(error)}`
     }
     return h
       .redirect(redirectPath)

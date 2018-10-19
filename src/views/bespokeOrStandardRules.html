@@ -1,0 +1,58 @@
+<main id="content" tabindex="-1" role="main">
+
+    {{> common/betaBanner }}
+
+    {{> common/backLink }}
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+
+            {{> common/errorSummary }}
+
+            {{> common/pageHeading pageHeading }}
+
+            <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+                {{> common/csrfToken token=DefraCsrfToken}}
+
+                <fieldset>
+                    <legend id="legend" class="visuallyhidden">{{pageHeading}}</legend>
+
+                    <div id="permit-type" class="form-group {{#getFormErrorGroupClass errors.permit-type}}{{/getFormErrorGroupClass}}">
+                        {{> common/fieldError fieldId='permit-type-error' message=errors.permit-type }}
+
+                        <div class="multiple-choice">
+                            <input id="standard-rules-permit-type" type="radio" name="permit-type" value="standard-rules"{{#if selectedStandardRulesPermitType}} checked="checked"{{/if}}>
+                            <label id="standard-rules-permit-type-label" for="standard-rules-permit-type">Standard rules</label>
+                        </div>
+
+                        <div class="multiple-choice">
+                            <input id="bespoke-permit-type" type="radio" name="permit-type" value="bespoke"{{#if selectedBespokePermitType}} checked="checked"{{/if}}>
+                            <label id="bespoke-permit-type-label" for="bespoke-permit-type">Bespoke</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="form-group">
+                    <details role="group" class="form-hint-details">
+                        <summary role="button" aria-controls="details-content-0" aria-expanded="false">
+                            <span id="summary" class="summary">I don't know</span>
+                        </summary>
+                        <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true">
+                            <p id="hint-paragraph-1"><a id="hint-link" href="https://www.gov.uk/topic/environmental-management/environmental-permits">Read more about waste environmental permits on GOV.UK</a> or contact the Environment Agency.</p>
+                            <p id="hint-paragraph-2">We are open Monday to Friday, 8am to 6pm.</p>
+                            <p>
+                                <span id="hint-email">Email <a id="hint-mail-link" href="mailto:enquiries@environment-agency.gov.uk">enquiries@environment-agency.gov.uk</a></span><br>
+                                <span id="hint-telephone">Telephone 03708 506 506</span><br>
+                                <span id="hint-outside-uk-telephone">Telephone from outside the UK +44 (0) 114 282 5312</span><br>
+                                <span id="hint-minicom">Minicom (for the hard of hearing) 03702 422 549</span>
+                            </p>
+                        </div>
+                    </details>
+                </div>
+
+                {{> common/submitButton }}
+            </form>
+
+        </div>
+    </div>
+</main>

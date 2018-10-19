@@ -5,7 +5,14 @@ const BaseController = require('./base.controller')
 
 module.exports = class RootController extends BaseController {
   async doGet (request, h) {
-    // For now we are re-directing off to the 'Apply for a standard rules permit' page
-    return this.redirect({ request, h, redirectPath: Routes.START_OR_OPEN_SAVED.path })
+    // If there is a permit type parameter indicating bespoke or standard rules then pass it through
+    const permitType = request.query['permit-type']
+    let permitTypeParamText = ''
+    if (permitType && (permitType === 'bespoke' || permitType === 'standard-rules')) {
+      permitTypeParamText = `?permit-type=${permitType}`
+    }
+
+    // We always start by asking if there is an existing application to continue with
+    return this.redirect({ request, h, redirectPath: Routes.START_OR_OPEN_SAVED.path + permitTypeParamText })
   }
 }
