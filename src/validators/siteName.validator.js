@@ -2,7 +2,7 @@
 
 const Joi = require('joi')
 const BaseValidator = require('./base.validator')
-const Location = require('../models/location.model')
+const Location = require('../persistence/entities/location.entity')
 
 const DISALLOWED_CHARACTERS = '^ | _ ~ ¬ `'
 const DISALLOWED_CHARACTERS_REGEX = /[\^|_~¬`]/

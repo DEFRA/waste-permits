@@ -2,7 +2,7 @@
 
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
-const TaskList = require('../models/taskList/taskList.model')
+const TaskList = require('../models/taskList/taskList')
 const RecoveryService = require('../services/recovery.service')
 
 module.exports = class TaskListController extends BaseController {

@@ -8,7 +8,7 @@ const sinon = require('sinon')
 const RecoveryService = require('../../src/services/recovery.service')
 const CookieService = require('../../src/services/cookie.service')
 
-const Application = require('../../src/models/application.model')
+const Application = require('../../src/persistence/entities/application.entity')
 
 const { PERMIT_HOLDER_TYPES } = require('../../src/dynamics')
 

@@ -5,7 +5,7 @@ const Dynamics = require('../dynamics')
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
-const Application = require('../models/application.model')
+const Application = require('../persistence/entities/application.entity')
 
 module.exports = class StartOrOpenSavedController extends BaseController {
   async doGet (request, h, errors) {

@@ -1,13 +1,13 @@
 'use strict'
 
 const CookieService = require('../services/cookie.service')
-const Account = require('../models/account.model')
-const Application = require('../models/application.model')
-const ApplicationLine = require('../models/applicationLine.model')
-const ApplicationReturn = require('../models/applicationReturn.model')
-const Contact = require('../models/contact.model')
-const Payment = require('../models/payment.model')
-const StandardRule = require('../models/standardRule.model')
+const Account = require('../persistence/entities/account.entity')
+const Application = require('../persistence/entities/application.entity')
+const ApplicationLine = require('../persistence/entities/applicationLine.entity')
+const ApplicationReturn = require('../persistence/entities/applicationReturn.entity')
+const Contact = require('../persistence/entities/contact.entity')
+const Payment = require('../persistence/entities/payment.entity')
+const StandardRule = require('../persistence/entities/standardRule.entity')
 
 const { COOKIE_KEY: { AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID } } = require('../constants')
 const { PERMIT_HOLDER_TYPES } = require('../dynamics')

@@ -1,7 +1,7 @@
 'use strict'
 
 const UploadController = require('../base/upload.controller')
-const SitePlan = require('../../../models/taskList/sitePlan.model')
+const SitePlan = require('../../../models/taskList/sitePlan.task')
 const Constants = require('../../../constants')
 const { SITE_PLAN } = Constants.UploadSubject
 

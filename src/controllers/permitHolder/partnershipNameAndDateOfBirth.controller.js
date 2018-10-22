@@ -3,9 +3,9 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const ApplicationContact = require('../../models/applicationContact.model')
-const Contact = require('../../models/contact.model')
-const PartnerDetails = require('../../models/taskList/partnerDetails.model')
+const ApplicationContact = require('../../persistence/entities/applicationContact.entity')
+const Contact = require('../../persistence/entities/contact.entity')
+const PartnerDetails = require('../../models/taskList/partnerDetails.task')
 
 const Constants = require('../../constants')
 const { TECHNICAL_PROBLEM } = require('../../routes')

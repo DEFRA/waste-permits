@@ -2,7 +2,7 @@
 
 const Constants = require('../../../constants')
 const AddressManualController = require('../base/addressManual.controller')
-const PublicBodyDetails = require('../../../models/taskList/publicBodyDetails.model')
+const PublicBodyDetails = require('../../../models/taskList/publicBodyDetails.task')
 
 module.exports = class AddressManualPublicBodyController extends AddressManualController {
   getPostcodeCookieKey () {

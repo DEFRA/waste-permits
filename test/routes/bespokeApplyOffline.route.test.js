@@ -6,8 +6,8 @@ const Code = require('code')
 const sinon = require('sinon')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
-const Application = require('../../src/models/application.model')
-const StandardRule = require('../../src/models/standardRule.model')
+const Application = require('../../src/persistence/entities/application.entity')
+const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 

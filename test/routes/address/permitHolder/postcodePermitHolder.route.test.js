@@ -7,6 +7,6 @@ postcodeTests(lab, {
   routePath: '/permit-holder/address/postcode',
   nextRoutePath: '/permit-holder/address/select-address',
   nextRoutePathManual: '/permit-holder/address/address-manual',
-  TaskModel: require('../../../../src/models/taskList/permitHolderDetails.model'),
+  TaskModel: require('../../../../src/models/taskList/permitHolderDetails.task'),
   PostCodeCookie: 'PERMIT_HOLDER_POSTCODE'
 })

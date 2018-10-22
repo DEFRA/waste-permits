@@ -2,7 +2,7 @@ const BaseController = require('../base.controller')
 const { RESPONSIBLE_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 const RecoveryService = require('../../services/recovery.service')
 
-const ContactDetailService = require('../../services/contactDetail.service')
+const ContactDetail = require('../../models/contactDetail.model')
 
 module.exports = class PublicBodyOfficerController extends BaseController {
   async doGet (request, h, errors) {
@@ -12,7 +12,7 @@ module.exports = class PublicBodyOfficerController extends BaseController {
       pageContext.formValues = request.payload
     } else {
       const context = await RecoveryService.createApplicationContext(h)
-      const contactDetail = await ContactDetailService.get(context, { type: RESPONSIBLE_CONTACT_DETAILS.TYPE })
+      const contactDetail = await ContactDetail.get(context, { type: RESPONSIBLE_CONTACT_DETAILS.TYPE })
 
       if (contactDetail) {
         const { firstName, lastName, jobTitle, email } = contactDetail
@@ -34,7 +34,7 @@ module.exports = class PublicBodyOfficerController extends BaseController {
     } else {
       const context = await RecoveryService.createApplicationContext(h, { application: true })
       const { applicationId } = context
-      let contactDetail = (await ContactDetailService.get(context, { type: RESPONSIBLE_CONTACT_DETAILS.TYPE })) || new ContactDetailService({ applicationId, type: RESPONSIBLE_CONTACT_DETAILS.TYPE })
+      let contactDetail = (await ContactDetail.get(context, { type: RESPONSIBLE_CONTACT_DETAILS.TYPE })) || new ContactDetail({ applicationId, type: RESPONSIBLE_CONTACT_DETAILS.TYPE })
 
       const {
         'first-name': firstName,

@@ -7,6 +7,6 @@ postcodeTests(lab, {
   routePath: '/invoice/address/postcode',
   nextRoutePath: '/invoice/address/select-address',
   nextRoutePathManual: '/invoice/address/address-manual',
-  TaskModel: require('../../../../src/models/taskList/invoiceAddress.model'),
+  TaskModel: require('../../../../src/models/taskList/invoiceAddress.task'),
   PostCodeCookie: 'INVOICE_POSTCODE'
 })

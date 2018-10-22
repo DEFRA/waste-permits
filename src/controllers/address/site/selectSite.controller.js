@@ -3,7 +3,7 @@
 const Constants = require('../../../constants')
 const Routes = require('../../../routes')
 const AddressSelectController = require('../base/addressSelect.controller')
-const SiteNameAndLocation = require('../../../models/taskList/siteNameAndLocation.model')
+const SiteNameAndLocation = require('../../../models/taskList/siteNameAndLocation.task')
 
 module.exports = class AddressSelectSiteController extends AddressSelectController {
   getPostcodeCookieKey () {

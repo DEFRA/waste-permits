@@ -3,7 +3,7 @@
 const Dynamics = require('../../dynamics')
 const { CARD_PROBLEM } = require('../../routes')
 const BaseController = require('../base.controller')
-const Payment = require('../../models/payment.model')
+const Payment = require('../../persistence/entities/payment.entity')
 const LoggingService = require('../../services/logging.service')
 const RecoveryService = require('../../services/recovery.service')
 

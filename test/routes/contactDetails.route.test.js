@@ -8,11 +8,11 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 
-const Application = require('../../src/models/application.model')
-const Account = require('../../src/models/account.model')
-const AddressDetail = require('../../src/models/addressDetail.model')
-const Contact = require('../../src/models/contact.model')
-const ContactDetails = require('../../src/models/taskList/contactDetails.model')
+const Application = require('../../src/persistence/entities/application.entity')
+const Account = require('../../src/persistence/entities/account.entity')
+const AddressDetail = require('../../src/persistence/entities/addressDetail.entity')
+const Contact = require('../../src/persistence/entities/contact.entity')
+const ContactDetails = require('../../src/models/taskList/contactDetails.task')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 

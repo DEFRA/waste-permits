@@ -2,10 +2,10 @@
 
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
-const Contact = require('../models/contact.model')
-const AddressDetail = require('../models/addressDetail.model')
-const Account = require('../models/account.model')
-const ContactDetails = require('../models/taskList/contactDetails.model')
+const Contact = require('../persistence/entities/contact.entity')
+const AddressDetail = require('../persistence/entities/addressDetail.entity')
+const Account = require('../persistence/entities/account.entity')
+const ContactDetails = require('../models/taskList/contactDetails.task')
 const RecoveryService = require('../services/recovery.service')
 
 module.exports = class ContactDetailsController extends BaseController {

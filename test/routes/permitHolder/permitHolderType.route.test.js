@@ -7,7 +7,7 @@ const sinon = require('sinon')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
-const Application = require('../../../src/models/application.model')
+const Application = require('../../../src/persistence/entities/application.entity')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const PermitHolderTypeController = require('../../../src/controllers/permitHolder/permitHolderType.controller')

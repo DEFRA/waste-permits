@@ -2,7 +2,7 @@
 
 const Joi = require('joi')
 const BaseValidator = require('../base.validator')
-const Annotation = require('../../models/annotation.model')
+const Annotation = require('../../persistence/entities/annotation.entity')
 const Constants = require('../../constants')
 
 module.exports = class UploadValidator extends BaseValidator {

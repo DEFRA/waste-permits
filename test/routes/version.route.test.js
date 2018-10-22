@@ -6,7 +6,7 @@ const Code = require('code')
 const sinon = require('sinon')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
-const DynamicsSolution = require('../../src/models/dynamicsSolution.model')
+const DynamicsSolution = require('../../src/persistence/entities/dynamicsSolution.entity')
 const RecoveryService = require('../../src/services/recovery.service')
 
 let sandbox

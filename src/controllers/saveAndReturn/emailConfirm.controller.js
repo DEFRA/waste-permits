@@ -2,7 +2,7 @@
 
 const Routes = require('../../routes')
 const BaseController = require('../base.controller')
-const SaveAndReturn = require('../../models/taskList/saveAndReturn.model')
+const SaveAndReturn = require('../../models/taskList/saveAndReturn.task')
 const RecoveryService = require('../../services/recovery.service')
 const config = require('../../config/config')
 

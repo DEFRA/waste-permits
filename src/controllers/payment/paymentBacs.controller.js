@@ -2,7 +2,7 @@
 
 const Dynamics = require('../../dynamics')
 const BaseController = require('../base.controller')
-const Payment = require('../../models/payment.model')
+const Payment = require('../../persistence/entities/payment.entity')
 const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class PaymentBacsController extends BaseController {

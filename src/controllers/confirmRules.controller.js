@@ -2,7 +2,7 @@
 
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
-const ConfirmRules = require('../models/taskList/confirmRules.model')
+const ConfirmRules = require('../models/taskList/confirmRules.task')
 const RecoveryService = require('../services/recovery.service')
 
 module.exports = class ConfirmRulesController extends BaseController {

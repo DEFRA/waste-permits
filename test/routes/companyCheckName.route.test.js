@@ -10,9 +10,9 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
 
-const Application = require('../../src/models/application.model')
-const ApplicationLine = require('../../src/models/applicationLine.model')
-const Account = require('../../src/models/account.model')
+const Application = require('../../src/persistence/entities/application.entity')
+const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
+const Account = require('../../src/persistence/entities/account.entity')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox

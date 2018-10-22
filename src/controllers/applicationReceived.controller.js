@@ -2,7 +2,7 @@
 
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const Payment = require('../models/payment.model')
+const Payment = require('../persistence/entities/payment.entity')
 const RecoveryService = require('../services/recovery.service')
 const LoggingService = require('../services/logging.service')
 
