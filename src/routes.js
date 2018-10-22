@@ -10,6 +10,73 @@ const Routes = {
     applicationRequired: false
   },
 
+  // TRIAGE
+  // ******
+  TRIAGE_PERMIT_TYPE: {
+    path: '/triage',
+    view: 'triage/permitType',
+    pageHeading: 'Confirm the type of permit you want',
+    controller: 'triage/triage',
+    validator: 'triage/permitType',
+    nextRoute: 'TRIAGE_PERMIT_HOLDER_TYPE',
+    types: 'GET, POST',
+    cookieValidationRequired: false,
+    applicationRequired: false
+  },
+  TRIAGE_PERMIT_HOLDER_TYPE: {
+    path: '/triage',
+    params: ['permitType'],
+    view: 'triage/permitHolderType',
+    pageHeading: 'Who will be the permit holder?',
+    controller: 'triage/triage',
+    validator: 'triage/permitHolderType',
+    types: 'GET, POST',
+    cookieValidationRequired: false,
+    applicationRequired: false
+  },
+  TRIAGE_FACILITY_TYPE: {
+    path: '/triage',
+    params: ['permitType', 'permitHolderType'],
+    view: 'triage/facilityType',
+    pageHeading: 'What type of facility do you want the permit for?',
+    controller: 'triage/triage',
+    validator: 'triage/facilityType',
+    types: 'GET, POST',
+    cookieValidationRequired: false,
+    applicationRequired: false
+  },
+  TRIAGE_ACTIVITY: {
+    path: '/triage',
+    params: ['permitType', 'permitHolderType', 'facilityType'],
+    view: 'triage/activity',
+    pageHeading: 'Select all the activities you want the permit to cover',
+    controller: 'triage/triage',
+    validator: 'triage/activity',
+    types: 'GET, POST',
+    cookieValidationRequired: false,
+    applicationRequired: false
+  },
+  TRIAGE_ASSESSMENT: {
+    path: '/triage',
+    params: ['permitType', 'permitHolderType', 'facilityType', 'activity'],
+    view: 'triage/assessment',
+    pageHeading: 'Select the plans we need you to produce',
+    controller: 'triage/triage',
+    types: 'GET, POST',
+    cookieValidationRequired: false,
+    applicationRequired: false
+  },
+  TRIAGE_BESPOKE_END_TRIAGE: {
+    path: '/triage',
+    params: ['permitType', 'permitHolderType', 'facilityType', 'activity', 'assessment'],
+    view: 'triage/bespokeEndTriage',
+    pageHeading: 'Apply for a bespoke permit',
+    controller: 'triage/triage',
+    types: 'GET',
+    cookieValidationRequired: false,
+    applicationRequired: false
+  },
+
   // ADDRESS
   // *******
   MANUAL_INVOICE: {
@@ -550,7 +617,9 @@ const Routes = {
     view: 'bespokeApplyOffline',
     pageHeading: 'Apply for a bespoke permit',
     controller: 'bespokeApplyOffline',
-    types: 'GET'
+    types: 'GET',
+    cookieValidationRequired: false,
+    applicationRequired: false
   },
   BESPOKE_OR_STANDARD_RULES: {
     path: '/bespoke-or-standard-rules',
