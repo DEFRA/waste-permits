@@ -10,39 +10,32 @@ const CryptoService = require('../../../src/services/crypto.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const Address = require('../../../src/persistence/entities/address.entity')
 const Application = require('../../../src/persistence/entities/application.entity')
-const ApplicationContact = require('../../../src/persistence/entities/applicationContact.entity')
-const Contact = require('../../../src/persistence/entities/contact.entity')
+const ContactDetail = require('../../../src/models/contactDetail.model')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 
 let fakeApplication
-let fakeApplicationContact
+let fakeContactDetail
 let fakeAddress
-let fakeContact
 let fakeRecovery
 let getRequest
 let postRequest
 
-module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHeading, TaskModel, PostCodeCookie, applicationContactId }) => {
+module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHeading, TaskModel, PostCodeCookie, contactDetailId }) => {
   lab.beforeEach(() => {
     fakeApplication = {
       id: 'APPLICATION_ID',
       applicationNumber: 'APPLICATION_NUMBER'
     }
 
-    if (applicationContactId) {
-      fakeContact = {
-        id: 'CONTACT_ID',
+    if (contactDetailId) {
+      fakeContactDetail = {
+        id: contactDetailId,
+        applicationId: fakeApplication.id,
         firstName: 'FIRSTNAME',
         lastName: 'LASTNAME',
         email: 'EMAIL'
-      }
-
-      fakeApplicationContact = {
-        id: 'APPLICATION_CONTACT_ID',
-        applicationId: fakeApplication.id,
-        contactId: fakeContact.id
       }
     }
 
@@ -90,7 +83,7 @@ module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHead
     // Stub methods
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
-    sandbox.stub(CryptoService, 'decrypt').value(() => fakeApplicationContact.id)
+    sandbox.stub(CryptoService, 'decrypt').value(() => fakeContactDetail.id)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(Address, 'listByPostcode').value(() => [
       new Address(fakeAddress),
@@ -100,9 +93,8 @@ module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHead
     sandbox.stub(TaskModel, 'getAddress').value(() => new Address(fakeAddress))
     sandbox.stub(TaskModel, 'saveManualAddress').value(() => undefined)
 
-    if (applicationContactId) {
-      sandbox.stub(ApplicationContact, 'getById').value(() => new ApplicationContact(fakeApplicationContact))
-      sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
+    if (contactDetailId) {
+      sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
     }
   })
 
@@ -114,8 +106,8 @@ module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHead
   const checkPageElements = async (request, expectedValue) => {
     const doc = await GeneralTestHelper.getDoc(request)
     let element = doc.getElementById('page-heading').firstChild
-    if (applicationContactId) {
-      const { firstName, lastName } = fakeContact
+    if (contactDetailId) {
+      const { firstName, lastName } = fakeContactDetail
       Code.expect(element.nodeValue).to.equal(`${pageHeading} ${firstName} ${lastName}?`)
     } else {
       Code.expect(element.nodeValue).to.equal(pageHeading)

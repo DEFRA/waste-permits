@@ -260,7 +260,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(answer).to.equal('The partners will be the permit holders and each will be responsible for the operation of the permit.')
       Code.expect(answerId).to.equal(`${linePrefix}-answer-1`)
 
-      const { name, email, telephone, dob, address: { fullAddress } } = fakePartner
+      const { name, email, telephone, dob, fullAddress } = fakePartner
       const [day, month, year] = dob.split('/')
 
       answers.forEach(({ answer, answerId }, answerIndex) => {

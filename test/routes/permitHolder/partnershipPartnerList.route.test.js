@@ -11,11 +11,8 @@ const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const CryptoService = require('../../../src/services/crypto.service')
+const ContactDetail = require('../../../src/models/contactDetail.model')
 const Application = require('../../../src/persistence/entities/application.entity')
-const Contact = require('../../../src/persistence/entities/contact.entity')
-const Address = require('../../../src/persistence/entities/address.entity')
-const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
-const ApplicationContact = require('../../../src/persistence/entities/applicationContact.entity')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
@@ -28,12 +25,9 @@ const deletePartnerPath = `/permit-holder/partners/delete/${fakePartnershipId}`
 const nextRoutePath = '/permit-holder/company/declare-offences'
 
 let fakeRecovery
-let fakeAddress
-let fakeAddressDetail
 let fakeApplication
-let fakeApplicationContact
-let fakeApplicationContactList
-let fakeContact
+let fakeContactDetail
+let fakeContactDetailList
 let fakePartnerView
 
 lab.beforeEach(() => {
@@ -41,30 +35,18 @@ lab.beforeEach(() => {
     id: 'APPLICATION_ID'
   }
 
-  fakeAddressDetail = {
-    email: 'EMAIL',
-    telephone: 'PHONE_NUMBER',
-    addressId: 'ADDRESS_ID'
-  }
-
-  fakeContact = {
-    id: 'CONTACT_ID',
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME'
-  }
-
-  fakeApplicationContact = {
+  fakeContactDetail = {
     id: fakePartnershipId,
-    applicationId: fakeApplication.id,
-    contactId: fakeContact.id,
-    directorDob: '1970-10-05'
-  }
-
-  fakeApplicationContactList = () => [new ApplicationContact(fakeApplicationContact)]
-
-  fakeAddress = {
+    firstName: 'FIRSTNAME',
+    lastName: 'LASTNAME',
+    jobTitle: 'JOB_TITLE',
+    email: 'EMAIL',
+    dateOfBirth: '1999-11-23',
+    telephone: 'TELEPHONE',
     fullAddress: 'FULL_ADDRESS'
   }
+
+  fakeContactDetailList = () => [new ContactDetail(fakeContactDetail)]
 
   fakeRecovery = () => ({
     authToken: 'AUTH_TOKEN',
@@ -74,13 +56,13 @@ lab.beforeEach(() => {
 
   fakePartnerView = {
     partnerId: fakePartnershipId,
-    name: `${fakeContact.firstName} ${fakeContact.lastName}`,
-    email: fakeAddressDetail.email,
-    telephone: fakeAddressDetail.telephone,
-    dob: fakeApplicationContact.directorDob.split('-').reverse().join('/'),
+    name: `${fakeContactDetail.firstName} ${fakeContactDetail.lastName}`,
+    email: fakeContactDetail.email,
+    telephone: fakeContactDetail.telephone,
+    dob: fakeContactDetail.dateOfBirth.split('-').reverse().join('/'),
     changeLink: editPartnerPath,
     deleteLink: deletePartnerPath,
-    fullAddress: fakeAddress.fullAddress
+    fullAddress: fakeContactDetail.fullAddress
   }
 
   // Create a sinon sandbox to stub methods
@@ -89,14 +71,12 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
-  sandbox.stub(CryptoService, 'encrypt').value(() => fakeApplicationContact.id)
-  sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
-  sandbox.stub(AddressDetail, 'getPartnerDetails').value(() => new AddressDetail(fakeAddressDetail))
+  sandbox.stub(CryptoService, 'encrypt').value(() => fakeContactDetail.id)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => false)
-  sandbox.stub(ApplicationContact, 'listByApplicationId').value(() => fakeApplicationContactList())
-  sandbox.stub(ApplicationContact.prototype, 'save').value(() => false)
-  sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
+  sandbox.stub(Application.prototype, 'save').value(() => fakeApplication.id)
+  sandbox.stub(ContactDetail, 'list').value(() => fakeContactDetailList())
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => fakeContactDetail.id)
+  sandbox.stub(ContactDetail.prototype, 'delete').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -154,7 +134,7 @@ lab.experiment('Partners List page tests:', () => {
       })
 
       lab.test('Should redirect if there are no partners', async () => {
-        fakeApplicationContactList = () => []
+        fakeContactDetailList = () => []
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(editPartnerPath)
@@ -166,19 +146,19 @@ lab.experiment('Partners List page tests:', () => {
       })
 
       lab.test('returns the contact page correctly for two partners', async () => {
-        fakeApplicationContactList = () => [
-          new ApplicationContact(fakeApplicationContact),
-          new ApplicationContact(fakeApplicationContact)
+        fakeContactDetailList = () => [
+          new ContactDetail(fakeContactDetail),
+          new ContactDetail(fakeContactDetail)
         ]
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkElements(doc, [fakePartnerView, fakePartnerView])
       })
 
       lab.test('returns the contact page correctly for three partners', async () => {
-        fakeApplicationContactList = () => [
-          new ApplicationContact(fakeApplicationContact),
-          new ApplicationContact(fakeApplicationContact),
-          new ApplicationContact(fakeApplicationContact)
+        fakeContactDetailList = () => [
+          new ContactDetail(fakeContactDetail),
+          new ContactDetail(fakeContactDetail),
+          new ContactDetail(fakeContactDetail)
         ]
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkElements(doc, [fakePartnerView, fakePartnerView, fakePartnerView])
@@ -219,9 +199,9 @@ lab.experiment('Partners List page tests:', () => {
       })
 
       lab.test(`redirects to ${nextRoutePath} when currently there are two partners`, async () => {
-        fakeApplicationContactList = () => [
-          new ApplicationContact(fakeApplicationContact),
-          new ApplicationContact(fakeApplicationContact)
+        fakeContactDetailList = () => [
+          new ContactDetail(fakeContactDetail),
+          new ContactDetail(fakeContactDetail)
         ]
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)

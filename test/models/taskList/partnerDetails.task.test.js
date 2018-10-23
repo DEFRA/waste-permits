@@ -8,7 +8,7 @@ const sinon = require('sinon')
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 const CryptoService = require('../../../src/services/crypto.service')
 const Application = require('../../../src/persistence/entities/application.entity')
-const ApplicationContact = require('../../../src/persistence/entities/applicationContact.entity')
+const ContactDetail = require('../../../src/models/contactDetail.model')
 const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
 const Account = require('../../../src/persistence/entities/account.entity')
 const Contact = require('../../../src/persistence/entities/contact.entity')
@@ -21,7 +21,7 @@ let fakePartnershipId = 'PARTNERSHIP_ID'
 
 let fakeApplication
 let fakeApplicationLine
-let fakeApplicationContact
+let fakeContactDetail
 let fakeAccount
 let fakeContact
 let fakeAddressDetails
@@ -72,10 +72,10 @@ lab.beforeEach(() => {
     applicationId: fakeApplication.id
   }
 
-  fakeApplicationContact = {
-    id: 'APPLICATION_CONTACT_ID',
-    applicationId: fakeApplication.id,
-    contactId: fakeContact.id
+  fakeContactDetail = {
+    id: 'CONTACT_DETAIL_ID',
+    addressId: 'ADDRESS_ID_1',
+    applicationId: fakeApplication.id
   }
 
   fakeAddress = {
@@ -95,10 +95,11 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(DynamicsDalService.prototype, 'create').value(() => fakeAddress.id)
   sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
-  sandbox.stub(CryptoService, 'decrypt').value(() => fakeApplicationContact.id)
+  sandbox.stub(CryptoService, 'decrypt').value(() => fakeContactDetail.id)
+  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => {})
   sandbox.stub(Application, 'getById').value(() => fakeApplication)
   sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
-  sandbox.stub(ApplicationContact, 'getById').value(() => new ApplicationContact(fakeApplicationContact))
   sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
   sandbox.stub(Account.prototype, 'save').value(() => {})
   sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
@@ -124,7 +125,7 @@ lab.experiment('Model persistence methods:', () => {
     Code.expect(address.uprn).to.be.equal(fakeAddress.uprn)
   })
 
-  lab.test('saveSelectedAddress() method correctly saves an invoice address that is already in Dynamics', async () => {
+  lab.test('saveSelectedAddress() method correctly saves a partner address that is already in Dynamics', async () => {
     const addressDto = {
       uprn: fakeAddress.uprn,
       postcode: fakeAddress.postcode
@@ -134,7 +135,7 @@ lab.experiment('Model persistence methods:', () => {
     Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('saveSelectedAddress() method correctly saves an invoice address that is not already in Dynamics', async () => {
+  lab.test('saveSelectedAddress() method correctly saves a partner address that is not already in Dynamics', async () => {
     Address.getByUprn = () => undefined
     const addressDto = {
       uprn: fakeAddress.uprn,
@@ -145,23 +146,23 @@ lab.experiment('Model persistence methods:', () => {
     Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('saveManualAddress() method correctly creates an invoice address from a selected address that is already in Dynamics', async () => {
+  lab.test('saveManualAddress() method correctly creates a partner address from a selected address that is already in Dynamics', async () => {
     const addressDto = {
       uprn: fakeAddress.uprn,
       postcode: fakeAddress.postcode
     }
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     await PartnerDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
-    Code.expect(spy.callCount).to.equal(2)
+    Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('saveManualAddress() method correctly saves an invoice address that is not already in Dynamics', async () => {
+  lab.test('saveManualAddress() method correctly saves a partner address that is not already in Dynamics', async () => {
     Address.getByUprn = () => undefined
     const addressDto = {
       postcode: fakeAddress.postcode
     }
     const spy = sinon.spy(DynamicsDalService.prototype, 'create')
     await PartnerDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
-    Code.expect(spy.callCount).to.equal(2)
+    Code.expect(spy.callCount).to.equal(1)
   })
 })

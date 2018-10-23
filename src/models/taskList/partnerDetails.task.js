@@ -5,39 +5,32 @@ const Handlebars = require('handlebars')
 const BaseTask = require('./base.task')
 const LoggingService = require('../../services/logging.service')
 const CryptoService = require('../../services/crypto.service')
-const ApplicationContact = require('../../persistence/entities/applicationContact.entity')
-const Contact = require('../../persistence/entities/contact.entity')
+const ContactDetail = require('../../models/contactDetail.model')
 const Address = require('../../persistence/entities/address.entity')
 const AddressDetail = require('../../persistence/entities/addressDetail.entity')
 
 module.exports = class PartnerDetails extends BaseTask {
-  static async getApplicationContact (request) {
+  static async getContactDetail (request) {
     const context = request.app.data
     let { partnerId } = request.params
-    const applicationContactId = CryptoService.decrypt(partnerId)
-    return ApplicationContact.getById(context, applicationContactId)
+    const id = CryptoService.decrypt(partnerId)
+    return ContactDetail.get(context, { id })
   }
 
   static async getPageHeading (request, pageHeading) {
-    const context = request.app.data
-    const { contactId } = await this.getApplicationContact(request)
-    const { firstName, lastName } = await Contact.getById(context, contactId)
+    const { firstName, lastName } = await this.getContactDetail(request)
     return Handlebars.compile(pageHeading)({
       name: `${firstName} ${lastName}`
     })
   }
 
-  static async getAddress (request, applicationId) {
+  static async getAddress (request) {
     let address
     try {
       const context = request.app.data
-      const { contactId } = await this.getApplicationContact(request)
-      // Get the AddressDetail for this application
-      const addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
-
-      if (addressDetail && addressDetail.addressId !== undefined) {
-        // Get the Address for this AddressDetail
-        address = await Address.getById(context, addressDetail.addressId)
+      const { addressId } = await this.getContactDetail(request)
+      if (addressId) {
+        address = await Address.getById(context, addressId)
       }
     } catch (error) {
       LoggingService.logError(error, request)
@@ -58,7 +51,7 @@ module.exports = class PartnerDetails extends BaseTask {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    const { contactId } = await this.getApplicationContact(request)
+    const { contactId } = await this.getContactDetail(request)
 
     let addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
     if (!addressDetail.addressId) {
@@ -89,16 +82,9 @@ module.exports = class PartnerDetails extends BaseTask {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    const { contactId } = await this.getApplicationContact(request)
-
-    // Get the AddressDetail for this Application (if there is one)
-    let addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
-    if (!addressDetail.addressId) {
-      await addressDetail.save(context)
-    }
-
-    // Get the Address for this AddressDetail (if there is one)
-    let address = await Address.getById(context, addressDetail.addressId)
+    const contactDetail = await this.getContactDetail(request)
+    // Get the Address for this ContactDetail (if there is one)
+    let address = await Address.getById(context, contactDetail.addressId)
     if (!address || address.fromAddressLookup) {
       // Create a new address if changing from a selected address
       address = new Address(addressDto)
@@ -108,10 +94,7 @@ module.exports = class PartnerDetails extends BaseTask {
     address.fromAddressLookup = false
     await address.save(context)
 
-    // Save the AddressDetail to associate the Address with the Application
-    if (address && addressDetail) {
-      addressDetail.addressId = address.id
-      await addressDetail.save(context)
-    }
+    contactDetail.addressId = address.id
+    return contactDetail.save(context)
   }
 }

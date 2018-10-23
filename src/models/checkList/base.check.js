@@ -12,7 +12,7 @@ const StandardRule = require('../../persistence/entities/standardRule.entity')
 const ContactDetail = require('../contactDetail.model')
 const Utilities = require('../../utilities/utilities')
 const { COMPANY_DIRECTOR, LLP_DESIGNATED_MEMBER } = require('../../dynamics').AccountRoleCodes
-const { RESPONSIBLE_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
+const { RESPONSIBLE_CONTACT_DETAILS, PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 const { TECHNICAL_QUALIFICATION, SITE_PLAN, FIRE_PREVENTION_PLAN, WASTE_RECOVERY_PLAN } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -143,18 +143,16 @@ module.exports = class BaseCheck {
   }
 
   async getPartners () {
-    const { applicationId, partners } = this.data
+    const { partners } = this.data
     if (!partners) {
-      const list = await ApplicationContact.listByApplicationId(this.data, applicationId)
-      this.data.partners = await Promise.all(list.map(async ({ id, contactId, directorDob }) => {
-        const { firstName, lastName } = await Contact.getById(this.data, contactId)
+      const type = PARTNER_CONTACT_DETAILS.TYPE
+      const list = await ContactDetail.list(this.data, { type })
+      this.data.partners = list.map(({ id, firstName, lastName, dateOfBirth, email, telephone, fullAddress }) => {
         const name = `${firstName} ${lastName}`
-        const [year, month, day] = directorDob.split('-')
+        const [year, month, day] = dateOfBirth.split('-')
         const dob = Utilities.formatDate({ year, month, day })
-        const { email, telephone, addressId } = await AddressDetail.getPartnerDetails(this.data, applicationId, contactId)
-        const address = await Address.getById(this.data, addressId)
-        return { name, email, telephone, dob, address }
-      }))
+        return { name, email, telephone, dob, fullAddress }
+      })
     }
     return this.data.partners || {}
   }

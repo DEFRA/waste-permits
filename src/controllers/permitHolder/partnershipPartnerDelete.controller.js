@@ -3,8 +3,6 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const AddressDetail = require('../../persistence/entities/addressDetail.entity')
-const Contact = require('../../persistence/entities/contact.entity')
 const PartnerDetails = require('../../models/taskList/partnerDetails.task')
 const PermitHolderDetails = require('../../models/taskList/permitHolderDetails.task')
 
@@ -12,13 +10,9 @@ const { TECHNICAL_PROBLEM } = require('../../routes')
 
 module.exports = class PartnershipPartnerDeleteController extends BaseController {
   async doGet (request, h) {
-    const applicationContact = await PartnerDetails.getApplicationContact(request)
+    const contactDetail = await PartnerDetails.getContactDetail(request)
 
-    if (!applicationContact) {
-      return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
-    }
-
-    if (!applicationContact) {
+    if (!contactDetail) {
       return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
     }
 
@@ -30,29 +24,16 @@ module.exports = class PartnershipPartnerDeleteController extends BaseController
     return this.showView({ request, h, pageContext })
   }
 
-  async doPost (request, h, errors) {
+  async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { account: true })
-    const { applicationId, applicationLineId, account: partnership } = context
-    const applicationContact = await PartnerDetails.getApplicationContact(request)
+    const { applicationId, applicationLineId } = context
+    const contactDetail = await PartnerDetails.getContactDetail(request)
 
-    if (!applicationContact) {
+    if (!contactDetail) {
       return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
     }
 
-    const { contactId } = applicationContact
-    const addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
-    const contact = await Contact.getById(context, contactId)
-
-    // Unlink the contact with the partnership if it isn't already
-    const linkedAccounts = await contact.listLinked(context, partnership)
-    const link = linkedAccounts.find((account) => account.id === partnership.id)
-
-    if (link) {
-      await contact.unLink(context, partnership)
-    }
-
-    await addressDetail.delete(context)
-    await applicationContact.delete(context)
+    await contactDetail.delete(context)
 
     // Clear the completeness flag here to force applicant to complete permit holder task
     await PermitHolderDetails.clearCompleteness(context, applicationId, applicationLineId)

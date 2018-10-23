@@ -5,6 +5,8 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 
+const Application = require('../../src/persistence/entities/application.entity')
+const Address = require('../../src/persistence/entities/address.entity')
 const AddressDetail = require('../../src/persistence/entities/addressDetail.entity')
 const Account = require('../../src/persistence/entities/account.entity')
 const Contact = require('../../src/persistence/entities/contact.entity')
@@ -12,7 +14,9 @@ const ContactDetail = require('../../src/models/contactDetail.model')
 
 const context = { authToken: 'AUTH_TOKEN' }
 
+let fakeApplication
 let fakeAccount
+let fakeAddress
 let fakeAddressDetail
 let fakeAddressDetailId
 let fakeContact
@@ -24,8 +28,22 @@ lab.experiment('ContactDetail test:', () => {
   lab.beforeEach(() => {
     fakeAddressDetailId = 'ADDRESS_DETAIL_ID'
 
+    fakeApplication = {
+      organisationType: 'ORGANISATION_TYPE'
+    }
+
     fakeAccount = {
       id: 'ACCOUNT_ID'
+    }
+
+    fakeAddress = {
+      uprn: 'UPRN_123456',
+      fromAddressLookup: true,
+      buildingNameOrNumber: '123',
+      addressLine1: 'THE STREET',
+      addressLine2: 'THE DISTRICT',
+      townOrCity: 'TEST TOWN',
+      postcode: 'BS1 5AH'
     }
 
     fakeContact = {
@@ -59,8 +77,11 @@ lab.experiment('ContactDetail test:', () => {
     sandbox = sinon.createSandbox()
 
     // Stub methods
+    sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+    sandbox.stub(Address, 'getById').value(() => new AddressDetail(fakeAddress))
     sandbox.stub(AddressDetail, 'getById').value(() => new AddressDetail(fakeAddressDetail))
     sandbox.stub(AddressDetail, 'getBy').value(() => new AddressDetail(fakeAddressDetail))
+    sandbox.stub(AddressDetail, 'listBy').value(() => [new AddressDetail(fakeAddressDetail)])
     sandbox.stub(AddressDetail.prototype, 'save').value(() => fakeAddressDetailId)
     sandbox.stub(AddressDetail.prototype, 'delete').value(() => undefined)
     sandbox.stub(Account, 'getByApplicationId').value(() => new Account(fakeAccount))
@@ -88,12 +109,18 @@ lab.experiment('ContactDetail test:', () => {
     })
   })
 
+  lab.test('list', async () => {
+    const contactDetails = await ContactDetail.list(context, { type: fakeAddressDetail.type })
+    Code.expect(contactDetails.length).to.equal(1)
+    const contactDetail = contactDetails.pop()
+    Code.expect(contactDetail.id).to.equal(fakeAddressDetail.id)
+  })
+
   lab.experiment('save', () => {
     lab.test('via create', async () => {
-      delete fakeContactDetail.id
+      fakeContactDetail.id = undefined
       const contactDetail = new ContactDetail(fakeContactDetail)
-      const id = await contactDetail.save(context)
-      Code.expect(id).to.equal(fakeAddressDetailId)
+      await contactDetail.save(context)
       Code.expect(contactDetail).to.equal(fakeContactDetail)
     })
 

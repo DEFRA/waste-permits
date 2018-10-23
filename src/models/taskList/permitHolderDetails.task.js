@@ -1,14 +1,13 @@
 'use strict'
 
 const { PERMIT_HOLDER_DETAILS } = require('./taskList').CompletedParameters
-const { RESPONSIBLE_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
+const { RESPONSIBLE_CONTACT_DETAILS, PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 
 const BaseTask = require('./base.task')
 const LoggingService = require('../../services/logging.service')
 const ContactDetail = require('../contactDetail.model')
 const Account = require('../../persistence/entities/account.entity')
 const Application = require('../../persistence/entities/application.entity')
-const ApplicationContact = require('../../persistence/entities/applicationContact.entity')
 const Contact = require('../../persistence/entities/contact.entity')
 const Address = require('../../persistence/entities/address.entity')
 const AddressDetail = require('../../persistence/entities/addressDetail.entity')
@@ -132,18 +131,15 @@ module.exports = class PermitHolderDetails extends BaseTask {
     const account = await Account.getById(context, permitHolderOrganisationId)
 
     if (isPartnership) {
-      const list = await ApplicationContact.listByApplicationId(context, applicationId)
+      const type = PARTNER_CONTACT_DETAILS.TYPE
+      const list = await ContactDetail.list(context, { type })
       if (list.length < minPartners) {
         return false
       }
 
-      // list all contacts completeness as true or false
-      const contactsComplete = await Promise.all(list.map(async ({ contactId }) => {
-        const addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
-        return this.isContactComplete(context, contactId, addressDetail)
-      }))
-
-      return Boolean(contactsComplete.filter((complete) => !complete).length)
+      // return true if no incomplete contacts are found
+      const incompleteContact = list.find(({ firstName, lastName, dateOfBirth, telephone }) => !firstName || !lastName || !dateOfBirth || !telephone)
+      return !incompleteContact
     }
 
     // When other organisation types
