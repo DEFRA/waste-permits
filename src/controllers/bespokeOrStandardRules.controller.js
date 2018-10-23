@@ -2,9 +2,15 @@
 
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
+const featureConfig = require('../config/featureConfig')
 
 module.exports = class BespokeOrStandardRulesController extends BaseController {
   async doGet (request, h, errors) {
+    // Todo: Remove this redirect when Bespoke is live
+    if (!featureConfig.hasBespokeFeature) {
+      return this.redirect({ request, h, redirectPath: this.nextPath })
+    }
+
     const pageContext = this.createPageContext(request, errors)
 
     pageContext.formValues = request.payload || request.query

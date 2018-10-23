@@ -9,6 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/persistence/entities/application.entity')
 const CookieService = require('../../src/services/cookie.service')
+const featureConfig = require('../../src/config/featureConfig')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 let fakeApplication
@@ -65,6 +66,8 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  // Todo: Remove hasBespokeFeature syub when bespoke is live
+  sandbox.stub(featureConfig, 'hasBespokeFeature').value(() => true)
 })
 
 lab.afterEach(() => {
