@@ -9,6 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const Application = require('../../src/persistence/entities/application.entity')
 const Payment = require('../../src/persistence/entities/payment.entity')
 const Contact = require('../../src/persistence/entities/contact.entity')
+const Configuration = require('../../src/persistence/entities/configuration.entity')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -20,6 +21,7 @@ let fakeApplication
 let fakeApplicationLine
 let fakePayment
 let fakeContact
+let fakeBacsEmail
 let fakeBacs
 let fakeRecovery
 
@@ -48,6 +50,8 @@ lab.beforeEach(() => {
     email: 'CONTACT_EMAIL'
   }
 
+  fakeBacsEmail = 'BACS_EMAIL'
+
   fakeBacs = {
     paymentReference: `WP-${fakeApplication.applicationNumber}`,
     amount: '1,000.99',
@@ -56,7 +60,7 @@ lab.beforeEach(() => {
     accountName: 'EA RECEIPTS',
     ibanNumber: 'GB23NWK60708010014411',
     swiftNumber: 'NWBKGB2L',
-    paymentsEmail: 'psc-bacs@environment-agency.gov.uk',
+    paymentsEmail: fakeBacsEmail,
     description: 'THE DESCRIPTION'
   }
 
@@ -79,6 +83,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
   sandbox.stub(Payment, 'getBacsPayment').value(() => new Payment(fakePayment))
   sandbox.stub(Payment, 'getCardPayment').value(() => undefined)
+  sandbox.stub(Configuration, 'getValue').value(() => fakeBacsEmail)
 })
 
 lab.afterEach(() => {

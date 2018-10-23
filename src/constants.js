@@ -84,8 +84,7 @@ Constants.BankAccountDetails = {
   ACCOUNT_NUMBER: '1001 4411',
   ACCOUNT_NAME: 'EA RECEIPTS',
   IBAN_NUMBER: 'GB23NWK60708010014411',
-  SWIFT_NUMBER: 'NWBKGB2L',
-  PAYMENT_EMAIL: 'psc-bacs@environment-agency.gov.uk'
+  SWIFT_NUMBER: 'NWBKGB2L'
 }
 
 Constants.PermitTypes = {

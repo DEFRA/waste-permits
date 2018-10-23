@@ -47,6 +47,7 @@ const Dynamics = {
       NAME: 'Responsible contact details'
     }
   },
+  BACS_EMAIL_CONFIG: 'PSC-BACS-EMAIL',
   DIGITAL_SOURCE: 910400000,
   DrainageTypes: {
     SEWER: {
