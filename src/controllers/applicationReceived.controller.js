@@ -1,7 +1,9 @@
 'use strict'
 
 const Constants = require('../constants')
+const { BACS_EMAIL_CONFIG } = require('../dynamics')
 const BaseController = require('./base.controller')
+const Configuration = require('../persistence/entities/configuration.entity')
 const Payment = require('../persistence/entities/payment.entity')
 const RecoveryService = require('../services/recovery.service')
 const LoggingService = require('../services/logging.service')
@@ -32,7 +34,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
         accountName: Constants.BankAccountDetails.ACCOUNT_NAME,
         ibanNumber: Constants.BankAccountDetails.IBAN_NUMBER,
         swiftNumber: Constants.BankAccountDetails.SWIFT_NUMBER,
-        paymentEmail: Constants.BankAccountDetails.PAYMENT_EMAIL
+        paymentEmail: await Configuration.getValue(context, BACS_EMAIL_CONFIG)
       }
     } else if (cardPayment) {
       pageContext.pageHeading = this.route.pageHeadingAlternate
