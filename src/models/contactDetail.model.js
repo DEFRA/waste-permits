@@ -38,9 +38,7 @@ module.exports = class ContactDetail {
 
     const addressDetail = id ? await AddressDetail.getById(context, id) : await AddressDetail.getBy(context, { applicationId, type })
     if (addressDetail) {
-      const { id, customerId, jobTitle, email, telephone, type } = addressDetail
-      const { firstName, lastName } = customerId ? await Contact.getById(context, customerId) : {}
-
+      const { id, jobTitle, firstName, lastName, email, telephone, type } = addressDetail
       return new ContactDetail({ id, applicationId, firstName, lastName, jobTitle, email, telephone, type })
     }
   }
@@ -64,6 +62,8 @@ module.exports = class ContactDetail {
     if (jobTitle) addressDetail.jobTitle = jobTitle
     if (email) addressDetail.email = email
     if (telephone) addressDetail.telephone = telephone
+    if (firstName) addressDetail.firstName = firstName
+    if (lastName) addressDetail.lastName = lastName
     id = await addressDetail.save(context)
 
     // Link the contact with the account if it isn't already

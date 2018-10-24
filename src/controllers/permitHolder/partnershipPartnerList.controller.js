@@ -7,7 +7,6 @@ const Address = require('../../persistence/entities/address.entity')
 const AddressDetail = require('../../persistence/entities/addressDetail.entity')
 const ApplicationContact = require('../../persistence/entities/applicationContact.entity')
 const Contact = require('../../persistence/entities/contact.entity')
-const Account = require('../../persistence/entities/account.entity')
 const Utilities = require('../../utilities/utilities')
 
 const { PARTNERSHIP_NAME_AND_DATE_OF_BIRTH, PARTNERSHIP_PARTNER_LIST, PARTNERSHIP_DELETE_PARTNER } = require('../../routes')
@@ -28,16 +27,8 @@ module.exports = class PartnershipPartnerListController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h, { account: true })
-    let { application, account, applicationId } = context
+    let { application, applicationId } = context
     const { addAnotherPartner } = request.params
-
-    // Create an account for this partnership if it doesn't already exist
-    if (!account) {
-      account = new Account({ organisationType: application.organisationType })
-      await account.save(context)
-      application.permitHolderOrganisationId = account.id
-      await application.save(context)
-    }
 
     // Get a list of partners associated with this application
     const list = await ApplicationContact.listByApplicationId(context, applicationId)

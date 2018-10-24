@@ -11,6 +11,7 @@ const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const Application = require('../../../src/persistence/entities/application.entity')
+const Account = require('../../../src/persistence/entities/account.entity')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
@@ -21,6 +22,7 @@ const nextRoutePath = '/permit-holder/partners/list'
 
 let fakeRecovery
 let fakeApplication
+let fakeAccount
 
 lab.beforeEach(() => {
   fakeApplication = {
@@ -29,10 +31,16 @@ lab.beforeEach(() => {
     applicantType: 910400000
   }
 
+  fakeAccount = {
+    id: 'ACCOUNT_ID',
+    accountName: 'ACCOUNT_NAME'
+  }
+
   fakeRecovery = () => ({
     authToken: 'AUTH_TOKEN',
     applicationId: fakeApplication.id,
-    application: new Application(fakeApplication)
+    application: new Application(fakeApplication),
+    account: new Account(fakeAccount)
   })
 
   // Create a sinon sandbox to stub methods
@@ -42,7 +50,8 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => fakeApplication.id)
+  sandbox.stub(Account.prototype, 'save').value(() => fakeAccount.id)
 })
 
 lab.afterEach(() => {

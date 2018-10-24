@@ -43,7 +43,7 @@ const Dynamics = {
       NAME: 'Partner contact details'
     },
     RESPONSIBLE_CONTACT_DETAILS: {
-      TYPE: 910400009,
+      TYPE: 910400010,
       NAME: 'Responsible contact details'
     }
   },
