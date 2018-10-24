@@ -37,6 +37,8 @@ lab.experiment('ContactDetail test:', () => {
     fakeAddressDetail = {
       id: fakeAddressDetailId,
       customerId: fakeContact.id,
+      firstName: fakeContact.firstName,
+      lastName: fakeContact.lastName,
       type: 'ADDRESS_DETAIL_TYPE',
       email: 'EMAIL',
       telephone: 'TELEPHONE',
@@ -46,6 +48,8 @@ lab.experiment('ContactDetail test:', () => {
     fakeContactDetail = {
       id: fakeAddressDetailId,
       type: fakeAddressDetail.type,
+      firstName: fakeAddressDetail.firstName,
+      lastName: fakeAddressDetail.lastName,
       email: fakeAddressDetail.email,
       telephone: fakeAddressDetail.telephone,
       jobTitle: fakeAddressDetail.jobTitle

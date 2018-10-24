@@ -23,7 +23,9 @@ const fakeAddressDetailData = {
   email: 'EMAIL',
   telephone: 'PHONE_NUMBER',
   type: 'TYPE',
-  name: 'NAME',
+  addressName: 'ADDRESS_NAME',
+  firstName: 'FIRSTNAME',
+  lastName: 'LASTNAME',
   jobTitle: 'Inspector',
   applicationId: 'APPLICATION_ID',
   addressId: 'ADDRESS_ID'
@@ -45,8 +47,10 @@ lab.beforeEach(() => {
         defra_addresstype: fakeAddressDetailData.type,
         emailaddress: fakeAddressDetailData.email,
         defra_phone: fakeAddressDetailData.telephone,
-        defra_name: fakeAddressDetailData.name,
+        defra_name: fakeAddressDetailData.addressName,
         defra_jobtitle: fakeAddressDetailData.jobTitle,
+        defra_firstName: fakeAddressDetailData.firstName,
+        defra_lastName: fakeAddressDetailData.lastName,
         _defra_address_value: fakeAddressDetailData.addressId
       }]
     }
@@ -77,10 +81,12 @@ lab.experiment('AddressDetail Model tests:', () => {
     const emptyAddressDetail = new AddressDetail({})
     Code.expect(emptyAddressDetail.email).to.be.undefined()
 
-    const { type, email, name, telephone, jobTitle, applicationId } = fakeAddressDetailData
+    const { type, email, firstName, lastName, addressName, telephone, jobTitle, applicationId } = fakeAddressDetailData
     Code.expect(testAddressDetail.type).to.equal(type)
     Code.expect(testAddressDetail.email).to.equal(email)
-    Code.expect(testAddressDetail.name).to.equal(name)
+    Code.expect(testAddressDetail.addressName).to.equal(addressName)
+    Code.expect(testAddressDetail.firstName).to.equal(firstName)
+    Code.expect(testAddressDetail.lastName).to.equal(lastName)
     Code.expect(testAddressDetail.telephone).to.equal(telephone)
     Code.expect(testAddressDetail.jobTitle).to.equal(jobTitle)
     Code.expect(testAddressDetail.applicationId).to.equal(applicationId)

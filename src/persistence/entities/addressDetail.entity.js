@@ -16,6 +16,8 @@ class AddressDetail extends BaseModel {
       { field: 'addressName', dynamics: 'defra_name' },
       { field: 'dateOfBirth', dynamics: 'defra_dob' },
       { field: 'customerId', dynamics: '_defra_customer_value', bind: { id: 'defra_Customer_contact', relationship: 'defra_contact_defra_addressdetails', dynamicsEntity: 'contacts' } },
+      { field: 'firstName', dynamics: 'defra_firstname', encode: true, length: { max: 50 } },
+      { field: 'lastName', dynamics: 'defra_lastname', encode: true, length: { max: 50 } },
       { field: 'email', dynamics: 'emailaddress', length: { max: 100 } },
       { field: 'telephone', dynamics: 'defra_phone', length: { min: 10, max: 30, maxDigits: 17 } }, // Max digits is the maximum length when spaces have been stripped out
       { field: 'jobTitle', dynamics: 'defra_jobtitle', encode: true, length: { max: 50 } },
