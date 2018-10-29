@@ -10,6 +10,7 @@ module.exports = class ContactDetail extends BaseModel {
     return {
       id: { entity: AddressDetail },
       applicationId: { entity: AddressDetail },
+      customerId: { entity: AddressDetail },
       type: { entity: AddressDetail },
       jobTitle: { entity: AddressDetail },
       email: { entity: AddressDetail },
@@ -26,8 +27,8 @@ module.exports = class ContactDetail extends BaseModel {
   static async _extractContactDetail (context, addressDetail) {
     const { applicationId } = context
     const { organisationType } = Application.getById(context, applicationId)
-    const { id, jobTitle, firstName, lastName, email, telephone, type, dateOfBirth, addressId } = addressDetail
-    let contactDetailData = { id, applicationId, firstName, lastName, jobTitle, email, telephone, type, dateOfBirth, organisationType }
+    const { id, jobTitle, firstName, lastName, email, telephone, type, dateOfBirth, addressId, customerId } = addressDetail
+    let contactDetailData = { id, applicationId, firstName, lastName, jobTitle, email, telephone, type, dateOfBirth, organisationType, customerId }
     if (addressId) {
       const address = await Address.getById(context, addressId)
       if (address) {
