@@ -2,13 +2,13 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const selectAddressTests = require('../selectAddressTests')
 
-const applicationContactId = 'APPLICATION_CONTACT_ID'
+const contactDetailId = 'CONTACT_DETAIL_ID'
 
 selectAddressTests(lab, {
   pageHeading: 'What is the address for',
-  routePath: `/permit-holder/partners/address/select-address/${applicationContactId}`,
+  routePath: `/permit-holder/partners/address/select-address/${contactDetailId}`,
   nextRoutePath: '/permit-holder/partners/list',
-  applicationContactId,
+  contactDetailId,
   TaskModel: require('../../../../src/models/taskList/partnerDetails.task'),
   PostCodeCookie: 'PARTNER_POSTCODE'
 })

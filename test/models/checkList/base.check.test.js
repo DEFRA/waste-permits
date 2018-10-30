@@ -72,11 +72,14 @@ const fakePartnerDetails = {
   email: 'EMAIL',
   telephone: 'TELEPHONE'
 }
-const fakeContactDetails = {
+const fakeContactDetail = {
   id: 'CONTACT_DETAILS_ID',
-
+  firstName: 'FIRSTNAME',
+  lastName: 'LASTNAME',
+  dateOfBirth: `${year}-${month}-${day}`,
   email: 'EMAIL',
-  telephone: 'TELEPHONE'
+  telephone: 'TELEPHONE',
+  fullAddress: 'FULL ADDRESS'
 }
 const fakeBillingInvoicing = {
   id: 'BILLING_INVOICING_ID'
@@ -134,7 +137,8 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
   sandbox.stub(Location, 'getByApplicationId').value(() => new Location(fakeLocation))
   sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(fakeLocationDetail))
-  sandbox.stub(ContactDetail, 'get').value(() => new Contact(fakeContactDetails))
+  sandbox.stub(ContactDetail, 'get').value(() => new Contact(fakeContactDetail))
+  sandbox.stub(ContactDetail, 'list').value(() => [new ContactDetail(fakeContactDetail)])
 })
 
 lab.afterEach(() => {
@@ -227,7 +231,7 @@ lab.experiment('Base Check tests:', () => {
   lab.test('getResponsibleOfficer works correctly', async () => {
     const check = new BaseCheck(context)
     const responsibleOfficer = await check.getResponsibleOfficer()
-    Code.expect(responsibleOfficer).to.equal(fakeContactDetails)
+    Code.expect(responsibleOfficer).to.equal(fakeContactDetail)
     Code.expect(context.responsibleOfficer).to.equal(await check.getResponsibleOfficer())
   })
 
@@ -242,11 +246,11 @@ lab.experiment('Base Check tests:', () => {
     const check = new BaseCheck(context)
     const partners = await check.getPartners()
     Code.expect(partners).to.equal([{
-      name: `${fakeContact.firstName} ${fakeContact.lastName}`,
-      email: fakePartnerDetails.email,
-      telephone: fakePartnerDetails.telephone,
+      name: `${fakeContactDetail.firstName} ${fakeContactDetail.lastName}`,
+      email: fakeContactDetail.email,
+      telephone: fakeContactDetail.telephone,
       dob: '01/02/1998',
-      address: fakeAddress
+      fullAddress: fakeContactDetail.fullAddress
     }])
     Code.expect(context.partners).to.equal(await check.getPartners())
   })

@@ -1,5 +1,3 @@
-'use strict'
-
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
@@ -7,14 +5,13 @@ const sinon = require('sinon')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
-const { formatDateForPersistence } = require('../../../src/utilities/utilities')
 const CookieService = require('../../../src/services/cookie.service')
+const CryptoService = require('../../../src/services/crypto.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const Application = require('../../../src/persistence/entities/application.entity')
-const Contact = require('../../../src/persistence/entities/contact.entity')
-const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
-const ApplicationContact = require('../../../src/persistence/entities/applicationContact.entity')
+const ContactDetail = require('../../../src/models/contactDetail.model')
 const PartnerDetails = require('../../../src/models/taskList/partnerDetails.task')
+const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.task')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
@@ -24,54 +21,41 @@ const routePath = `/permit-holder/partners/name/${fakePartnershipId}`
 const errorPath = '/errors/technical-problem'
 const nextRoutePath = `/permit-holder/partners/details/${fakePartnershipId}`
 
-let postRequest
+const validPartnerDetails = {
+  firstName: 'First',
+  lastName: 'Last',
+  dobDay: '5',
+  dobMonth: '3',
+  dobYear: '1995'
+}
+
 let getRequest
-let validPartnerDetails
-let fakeContact
-let fakeRecovery
-let fakeAddressDetail
+let postRequest
 let fakeApplication
-let fakeApplicationContact
-let fakeApplicationContactList = []
-let fakeDate
+let fakeContactDetail
+let fakeContactDetailList
+let fakeRecovery
 
 lab.beforeEach(() => {
-  fakeDate = {
-    year: 1999,
-    month: 11,
-    day: 22
-  }
-
-  fakeContact = {
-    id: 'CONTACT_ID',
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME'
-  }
-
-  validPartnerDetails = {
-    'first-name': 'First',
-    'last-name': 'Last',
-    'dob-day': '5',
-    'dob-month': '3',
-    'dob-year': '1995'
-  }
-
   fakeApplication = {
     id: 'APPLICATION_ID',
     applicationNumber: 'APPLICATION_NUMBER'
   }
 
-  fakeApplicationContact = {
-    id: fakePartnershipId,
+  fakeContactDetail = {
+    id: 'CONTACT_DETAIL_ID',
     applicationId: fakeApplication.id,
-    contactId: fakeContact.id
+    firstName: validPartnerDetails.firstName,
+    lastName: validPartnerDetails.lastName,
+    dateOfBirth: `${validPartnerDetails.dobYear}-${validPartnerDetails.dobMonth}-${validPartnerDetails.dobDay}`
   }
 
-  fakeApplicationContactList = () => [new ApplicationContact(fakeApplicationContact)]
+  fakeContactDetailList = [new ContactDetail(fakeContactDetail)]
 
   fakeRecovery = () => ({
     authToken: 'AUTH_TOKEN',
     applicationId: fakeApplication.id,
+    applicationLineId: 'APPLICATION_LINE_ID',
     application: new Application(fakeApplication)
   })
 
@@ -85,7 +69,13 @@ lab.beforeEach(() => {
     method: 'POST',
     url: routePath,
     headers: {},
-    payload: validPartnerDetails
+    payload: {
+      'first-name': validPartnerDetails.firstName,
+      'last-name': validPartnerDetails.lastName,
+      'dob-day': validPartnerDetails.dobDay,
+      'dob-month': validPartnerDetails.dobMonth,
+      'dob-year': validPartnerDetails.dobYear
+    }
   }
 
   // Create a sinon sandbox to stub methods
@@ -94,17 +84,14 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(CryptoService, 'decrypt').value(() => fakeContactDetail.id)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(ApplicationContact, 'listByApplicationId').value(() => fakeApplicationContactList())
-  sandbox.stub(ApplicationContact.prototype, 'save').value(() => undefined)
-  sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
-  sandbox.stub(Contact, 'getByFirstnameLastnameEmail').value(() => fakeContact ? new Contact(fakeContact) : undefined)
-  sandbox.stub(Contact.prototype, 'save').value(() => undefined)
-  sandbox.stub(PartnerDetails, 'getApplicationContact').value(() => new ApplicationContact(fakeApplicationContact))
-  sandbox.stub(PartnerDetails, 'getPageHeading').value((request, heading) => heading.replace('{{name}}', `${fakeContact.firstName} ${fakeContact.lastName}`))
-  sandbox.stub(AddressDetail, 'getPartnerDetails').value(() => new AddressDetail(fakeAddressDetail))
-  sandbox.stub(AddressDetail.prototype, 'save').value(() => undefined)
+  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail, 'list').value(() => fakeContactDetailList)
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => fakeContactDetail.id)
+  sandbox.stub(PartnerDetails, 'getContactDetail').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(PartnerDetails, 'getPageHeading').value((request, heading) => heading.replace('{{name}}', `${fakeContactDetail.firstName} ${fakeContactDetail.lastName}`))
+  sandbox.stub(PermitHolderDetails, 'clearCompleteness').value(() => {})
 })
 
 lab.afterEach(() => {
@@ -112,29 +99,24 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-const checkPageElements = async (request, { firstName, lastName, date }, expectedHeading) => {
-  const [year, month, day] = date.split('-')
+const checkPageElements = async (request, data = {}) => {
+  const { firstName = '', lastName = '', dateOfBirth = '---', heading } = data
+  const [dobYear, dobMonth, dobDay] = dateOfBirth.split('-')
   const doc = await GeneralTestHelper.getDoc(request)
 
-  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(expectedHeading)
+  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(heading)
 
   // Test for the existence of expected static content
   GeneralTestHelper.checkElementsExist(doc, [
     'back-link',
-    'defra-csrf-token',
-    'first-name',
-    'last-name',
-    'dob-day',
-    'dob-month',
-    'dob-year'
+    'defra-csrf-token'
   ])
 
   Code.expect(doc.getElementById('first-name').getAttribute('value')).to.equal(firstName)
   Code.expect(doc.getElementById('last-name').getAttribute('value')).to.equal(lastName)
-  Code.expect(doc.getElementById('dob-day').getAttribute('value')).to.equal(day)
-  Code.expect(doc.getElementById('dob-month').getAttribute('value')).to.equal(month)
-  Code.expect(doc.getElementById('dob-year').getAttribute('value')).to.equal(year)
-  Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+  Code.expect(doc.getElementById('dob-day').getAttribute('value')).to.equal(dobDay)
+  Code.expect(doc.getElementById('dob-month').getAttribute('value')).to.equal(dobMonth)
+  Code.expect(doc.getElementById('dob-year').getAttribute('value')).to.equal(dobYear)
 }
 
 const checkValidationErrors = async (field, expectedErrors) => {
@@ -154,47 +136,46 @@ const checkValidationErrors = async (field, expectedErrors) => {
   }
 }
 
-lab.experiment('Partner Name and Date of Birth page tests:', () => {
+lab.experiment('Partner Name and Date of birth page tests:', () => {
   new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`Get ${routePath}`, () => {
     lab.experiment('Success:', () => {
-      lab.test('when returns the partner name page correctly when adding the first partner', async () => {
-        delete fakeApplicationContact.contactId
+      lab.test(`when returns the page correctly when the first partner is being added`, async () => {
+        delete fakeContactDetail.firstName
+        delete fakeContactDetail.lastName
+        delete fakeContactDetail.dateOfBirth
         const data = {
-          firstName: '',
-          lastName: '',
-          date: '--'
+          heading: 'Add the first partner'
         }
-        checkPageElements(getRequest, data, 'Add the first partner')
+        return checkPageElements(getRequest, data)
       })
 
-      lab.test('when returns the partner name page correctly when adding another partner', async () => {
-        delete fakeApplicationContact.contactId
-        fakeApplicationContactList = () => [new ApplicationContact(fakeApplicationContact), new ApplicationContact(fakeApplicationContact)]
+      lab.test(`when returns the page correctly when another partner is being added`, async () => {
+        delete fakeContactDetail.firstName
+        delete fakeContactDetail.lastName
+        delete fakeContactDetail.dateOfBirth
+        fakeContactDetailList = [new ContactDetail(fakeContactDetail), new ContactDetail(fakeContactDetail)]
         const data = {
-          firstName: '',
-          lastName: '',
-          date: '--'
+          heading: 'Add another partner'
         }
-        checkPageElements(getRequest, data, 'Add another partner')
+        return checkPageElements(getRequest, data)
       })
 
-      lab.test('when returns the partner name page correctly pre-filled when editing a partner', async () => {
-        fakeApplicationContact.directorDob = formatDateForPersistence(fakeDate)
+      lab.test(`when returns the page correctly when the partner exists with an existing email and telephone number`, async () => {
         const data = {
-          firstName: fakeContact.firstName,
-          lastName: fakeContact.lastName,
-          date: fakeApplicationContact.directorDob
+          firstName: fakeContactDetail.firstName,
+          lastName: fakeContactDetail.lastName,
+          dateOfBirth: fakeContactDetail.dateOfBirth,
+          heading: 'Edit this partner'
         }
-
-        checkPageElements(getRequest, data, 'Edit this partner')
+        return checkPageElements(getRequest, data)
       })
     })
 
     lab.experiment('Failure:', () => {
-      lab.test(`when the applicationContact does not exist`, async () => {
-        const stub = sinon.stub(PartnerDetails, 'getApplicationContact').value(() => undefined)
+      lab.test(`when the contactDetail does not exist`, async () => {
+        const stub = sinon.stub(PartnerDetails, 'getContactDetail').value(() => undefined)
         const res = await server.inject(getRequest)
         stub.restore()
         Code.expect(res.statusCode).to.equal(302)
@@ -205,51 +186,16 @@ lab.experiment('Partner Name and Date of Birth page tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     lab.experiment('Success:', () => {
-      lab.test(`when (new Partner) redirects to the next route ${nextRoutePath}`, async () => {
-        // No current partner
-        fakeApplication.individualPermitHolderId = () => {
-          return undefined
-        }
-
+      lab.test(`when the telephone and email are entered correctly`, async () => {
         const res = await server.inject(postRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-      })
-
-      lab.test(`when (existing Partner) redirects to the next route ${nextRoutePath}`, async () => {
-        // Existing partner
-        fakeApplication.individualPermitHolderId = () => {
-          return 1
-        }
-        Contact.getIndividualPermitHolderByApplicationId = () => {
-          return {
-            firstName: validPartnerDetails.firstName,
-            lastName: validPartnerDetails.lastName
-          }
-        }
-
-        const res = await server.inject(postRequest)
-
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-      })
-
-      lab.test(`when (updated Partner) redirects to the next route ${nextRoutePath}`, async () => {
-        // Existing partner
-
-        fakeContact.firstName = 'New First Name'
-        fakeContact.lastName = 'New Last Name'
-
-        const res = await server.inject(postRequest)
-
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
     })
 
     lab.experiment('Failure:', () => {
-      lab.test(`when the applicationContact does not exist`, async () => {
-        const stub = sinon.stub(PartnerDetails, 'getApplicationContact').value(() => undefined)
+      lab.test(`when the contactDetail does not exist`, async () => {
+        const stub = sinon.stub(PartnerDetails, 'getContactDetail').value(() => undefined)
         const res = await server.inject(postRequest)
         stub.restore()
         Code.expect(res.statusCode).to.equal(302)

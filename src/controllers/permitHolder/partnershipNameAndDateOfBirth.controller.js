@@ -3,11 +3,11 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const ApplicationContact = require('../../persistence/entities/applicationContact.entity')
-const Contact = require('../../persistence/entities/contact.entity')
+const ContactDetail = require('../../models/contactDetail.model')
 const PartnerDetails = require('../../models/taskList/partnerDetails.task')
 
 const Constants = require('../../constants')
+const { PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 const { TECHNICAL_PROBLEM } = require('../../routes')
 
 module.exports = class PartnershipNameAndDateOfBirthController extends BaseController {
@@ -18,30 +18,28 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
       pageContext.formValues = request.payload
     } else {
       pageContext.formValues = {}
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { applicationId } = context
+      const context = await RecoveryService.createApplicationContext(h)
 
-      const applicationContacts = await ApplicationContact.listByApplicationId(context, applicationId)
-      const applicationContact = await PartnerDetails.getApplicationContact(request)
+      const contactDetails = await ContactDetail.list(context, { type: PARTNER_CONTACT_DETAILS.TYPE })
+      const contactDetail = await PartnerDetails.getContactDetail(request)
 
-      if (!applicationContact) {
+      if (!contactDetail) {
         return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
       }
 
-      const { contactId, directorDob } = applicationContact
-      if (contactId) {
-        const { firstName, lastName } = await Contact.getById(context, contactId)
+      const { firstName, lastName, dateOfBirth } = contactDetail
+      if (firstName || lastName) {
         pageContext.formValues['first-name'] = firstName
         pageContext.formValues['last-name'] = lastName
         pageContext.pageHeading = this.route.pageHeadingEdit
         pageContext.pageTitle = Constants.buildPageTitle(this.route.pageHeadingEdit)
-      } else if (applicationContacts.length > 1) {
+      } else if (contactDetails.length > 1) {
         pageContext.pageHeading = this.route.pageHeadingAdd
         pageContext.pageTitle = Constants.buildPageTitle(this.route.pageHeadingAdd)
       }
 
-      if (directorDob) {
-        const [year, month, day] = directorDob.split('-')
+      if (dateOfBirth) {
+        const [year, month, day] = dateOfBirth.split('-')
         pageContext.formValues['dob-day'] = day
         pageContext.formValues['dob-month'] = month
         pageContext.formValues['dob-year'] = year
@@ -55,7 +53,7 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true, account: true })
+      const context = await RecoveryService.createApplicationContext(h, { application: true })
       const {
         'first-name': firstName,
         'last-name': lastName,
@@ -64,28 +62,18 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
         'dob-year': dobYear
       } = request.payload
 
-      const directorDob = [dobYear, dobMonth, dobDay].join('-')
-      const applicationContact = await PartnerDetails.getApplicationContact(request)
+      const dateOfBirth = [dobYear, dobMonth, dobDay].join('-')
+      const contactDetail = await PartnerDetails.getContactDetail(request)
 
-      if (!applicationContact) {
+      if (!contactDetail) {
         return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
       }
 
-      // Create a new contact if the name has changed
+      contactDetail.firstName = firstName
+      contactDetail.lastName = lastName
+      contactDetail.dateOfBirth = dateOfBirth
 
-      let contact = await Contact.getById(context, applicationContact.contactId)
-      if (contact && (contact.firstName !== firstName || contact.lastName !== lastName)) {
-        contact = undefined
-      }
-
-      if (!contact) {
-        contact = new Contact({ firstName, lastName })
-        await contact.save(context)
-        applicationContact.contactId = contact.id
-      }
-
-      applicationContact.directorDob = directorDob
-      await applicationContact.save(context)
+      await contactDetail.save(context)
 
       return this.redirect({ request, h, redirectPath: `${this.nextPath}/${request.params.partnerId}` })
     }

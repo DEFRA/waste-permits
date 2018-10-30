@@ -72,6 +72,10 @@ lab.beforeEach(() => {
   sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
   sandbox.stub(Payment, 'getBacsPaymentDetails').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
+
+  // Todo: Remove once contact conversion has been completed in the CRM
+  const RecoveryController = require('../../../src/controllers/saveAndReturn/recover.controller')
+  sandbox.stub(RecoveryController.prototype, 'recover').value(() => {})
 })
 
 lab.afterEach(() => {

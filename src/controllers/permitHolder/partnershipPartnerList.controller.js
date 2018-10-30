@@ -3,12 +3,10 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 const CryptoService = require('../../services/crypto.service')
-const Address = require('../../persistence/entities/address.entity')
-const AddressDetail = require('../../persistence/entities/addressDetail.entity')
-const ApplicationContact = require('../../persistence/entities/applicationContact.entity')
-const Contact = require('../../persistence/entities/contact.entity')
+const ContactDetail = require('../../models/contactDetail.model')
 const Utilities = require('../../utilities/utilities')
 
+const { PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 const { PARTNERSHIP_NAME_AND_DATE_OF_BIRTH, PARTNERSHIP_PARTNER_LIST, PARTNERSHIP_DELETE_PARTNER } = require('../../routes')
 
 const minPartners = 2
@@ -18,51 +16,45 @@ const submitButtonTitle = 'All partners added - continue'
 
 module.exports = class PartnershipPartnerListController extends BaseController {
   async createPartner (context, applicationId) {
-    // Create an empty Application Contact
-    const applicationContact = new ApplicationContact({ applicationId })
-    await applicationContact.save(context)
-    return CryptoService.encrypt(applicationContact.id)
+    // Create an empty Contact Detail
+    const contactDetail = new ContactDetail({ applicationId, type: PARTNER_CONTACT_DETAILS.TYPE })
+    const contactDetailId = await contactDetail.save(context)
+    return CryptoService.encrypt(contactDetailId)
   }
 
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h, { account: true })
-    let { application, applicationId } = context
+    let { applicationId } = context
     const { addAnotherPartner } = request.params
 
     // Get a list of partners associated with this application
-    const list = await ApplicationContact.listByApplicationId(context, applicationId)
+    const list = await ContactDetail.list(context, { type: PARTNER_CONTACT_DETAILS.TYPE })
 
-    const partners = await Promise.all(list.map(async (partner) => {
-      const { id, contactId, directorDob } = partner
-      if (contactId && directorDob) {
-        const { firstName, lastName } = await Contact.getById(context, contactId)
+    const contactDetails = await Promise.all(list.map(async (contactDetail) => {
+      const { id, dateOfBirth, firstName, lastName, email, telephone, fullAddress } = contactDetail
+      if (id && dateOfBirth) {
         const name = `${firstName} ${lastName}`
-        const [year, month, day] = directorDob.split('-')
+        const [year, month, day] = dateOfBirth.split('-')
         const partnerId = CryptoService.encrypt(id)
         const dob = Utilities.formatDate({ year, month, day })
-        const addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
-        if (addressDetail) {
-          const { email, telephone, addressId } = addressDetail
-          if (addressId) {
-            const { fullAddress } = await Address.getById(context, addressId)
-            const changeLink = `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}`
-            const deleteLink = `${PARTNERSHIP_DELETE_PARTNER.path}/${partnerId}`
-            return { partnerId, name, email, telephone, dob, changeLink, deleteLink, fullAddress }
-          }
+        if (fullAddress) {
+          const changeLink = `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}`
+          const deleteLink = `${PARTNERSHIP_DELETE_PARTNER.path}/${partnerId}`
+          return { partnerId, name, email, telephone, dob, changeLink, deleteLink, fullAddress }
         }
       }
       // Remove any incomplete partners
-      await partner.delete(context)
+      await contactDetail.delete(context)
       return false
     }))
 
     // Filter out the incomplete partners
-    pageContext.partners = partners.filter((partner) => partner)
+    pageContext.partners = contactDetails.filter((partner) => partner)
 
     // Redirect to adding a new partner if the suffix "/add" is on the url or there are no partners or there are incomplete partners for this application
     if (addAnotherPartner === addPartnerParam || !pageContext.partners.length) {
-      const partnerId = await this.createPartner(context, application.id)
+      const partnerId = await this.createPartner(context, applicationId)
 
       return this.redirect({ request, h, redirectPath: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
     }
@@ -81,7 +73,7 @@ module.exports = class PartnershipPartnerListController extends BaseController {
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
     const { applicationId } = context
-    const list = await ApplicationContact.listByApplicationId(context, applicationId)
+    const list = await ContactDetail.list(context, { type: PARTNER_CONTACT_DETAILS.TYPE })
     if (list.length < minPartners) {
       // In this case the submit button would have been labeled "Add another Partner"
       const partnerId = await this.createPartner(context, applicationId)

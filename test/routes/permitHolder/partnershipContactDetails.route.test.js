@@ -1,5 +1,3 @@
-'use strict'
-
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
@@ -8,12 +6,10 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const CookieService = require('../../../src/services/cookie.service')
+const CryptoService = require('../../../src/services/crypto.service')
 const RecoveryService = require('../../../src/services/recovery.service')
-const Account = require('../../../src/persistence/entities/account.entity')
 const Application = require('../../../src/persistence/entities/application.entity')
-const Contact = require('../../../src/persistence/entities/contact.entity')
-const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
-const ApplicationContact = require('../../../src/persistence/entities/applicationContact.entity')
+const ContactDetail = require('../../../src/models/contactDetail.model')
 const PartnerDetails = require('../../../src/models/taskList/partnerDetails.task')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
@@ -24,74 +20,53 @@ const routePath = `/permit-holder/partners/details/${fakePartnershipId}`
 const errorPath = '/errors/technical-problem'
 const nextRoutePath = `/permit-holder/partners/address/postcode/${fakePartnershipId}`
 
-const getRequest = {
-  method: 'GET',
-  url: routePath,
-  headers: {}
+const validContactDetails = {
+  email: 'test@test.com',
+  telephone: '01234567890'
 }
+
+let getRequest
 let postRequest
-let validContactDetails
-let fakeContact
-let fakePermitHolder
-let fakeRecovery
-let fakeAccount
-let fakeAddressDetail
 let fakeApplication
-let fakeApplicationContact
+let fakeContactDetail
+let fakeRecovery
 
 lab.beforeEach(() => {
-  fakeAccount = {
-    id: 'Account_ID'
-  }
-
-  fakeContact = {
-    id: 'CONTACT_ID',
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME',
-    email: 'EMAIL'
-  }
-
-  fakePermitHolder = {
-    id: 'PERMIT_HOLDER_ID',
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME',
-    email: 'PERMIT_HOLDER_EMAIL'
-  }
-
-  validContactDetails = {
-    'email': 'test@test.com',
-    'telephone': '01234567890'
-  }
-
-  fakeAddressDetail = {
-    id: 'ADDRESS_DETAIL_ID',
-    email: validContactDetails.email,
-    telephone: validContactDetails.telephone
-  }
-
   fakeApplication = {
     id: 'APPLICATION_ID',
     applicationNumber: 'APPLICATION_NUMBER'
   }
 
-  fakeApplicationContact = {
-    id: 'APPLICATION_CONTACT_ID',
+  fakeContactDetail = {
+    id: 'CONTACT_DETAIL_ID',
     applicationId: fakeApplication.id,
-    contactId: fakeContact.id
+    firstName: 'FIRSTNAME',
+    lastName: 'LASTNAME',
+    email: validContactDetails.email,
+    telephone: validContactDetails.telephone
   }
 
   fakeRecovery = () => ({
     authToken: 'AUTH_TOKEN',
     applicationId: fakeApplication.id,
-    application: new Application(fakeApplication),
-    account: new Account(fakeAccount)
+    applicationLineId: 'APPLICATION_LINE_ID',
+    application: new Application(fakeApplication)
   })
+
+  getRequest = {
+    method: 'GET',
+    url: routePath,
+    headers: {}
+  }
 
   postRequest = {
     method: 'POST',
     url: routePath,
     headers: {},
-    payload: validContactDetails
+    payload: {
+      email: validContactDetails.email,
+      telephone: validContactDetails.telephone
+    }
   }
 
   // Create a sinon sandbox to stub methods
@@ -100,18 +75,12 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(CryptoService, 'decrypt').value(() => fakeContactDetail.id)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(ApplicationContact, 'listByApplicationId').value(() => [new ApplicationContact(fakeApplicationContact)])
-  sandbox.stub(ApplicationContact.prototype, 'save').value(() => {})
-  sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
-  sandbox.stub(Contact, 'getByFirstnameLastnameEmail').value(() => fakePermitHolder ? new Contact(fakePermitHolder) : undefined)
-  sandbox.stub(Contact.prototype, 'listLinked').value(() => [new Account(fakeAccount)])
-  sandbox.stub(Contact.prototype, 'save').value(() => {})
-  sandbox.stub(PartnerDetails, 'getApplicationContact').value(() => new ApplicationContact(fakeApplicationContact))
-  sandbox.stub(PartnerDetails, 'getPageHeading').value((request, heading) => heading.replace('{{name}}', `${fakeContact.firstName} ${fakeContact.lastName}`))
-  sandbox.stub(AddressDetail, 'getPartnerDetails').value(() => new AddressDetail(fakeAddressDetail))
-  sandbox.stub(AddressDetail.prototype, 'save').value(() => undefined)
+  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => fakeContactDetail.id)
+  sandbox.stub(PartnerDetails, 'getContactDetail').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(PartnerDetails, 'getPageHeading').value((request, heading) => heading.replace('{{name}}', `${fakeContactDetail.firstName} ${fakeContactDetail.lastName}`))
 })
 
 lab.afterEach(() => {
@@ -122,25 +91,16 @@ lab.afterEach(() => {
 const checkPageElements = async (request, expectedEmail, expectedTelephone, name) => {
   const doc = await GeneralTestHelper.getDoc(request)
 
-  let element = doc.getElementById('page-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`What are the contact details for ${name}?`)
+  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`What are the contact details for ${name}?`)
 
   // Test for the existence of expected static content
   GeneralTestHelper.checkElementsExist(doc, [
     'back-link',
-    'defra-csrf-token',
-    'email',
-    'telephone'
+    'defra-csrf-token'
   ])
 
-  element = doc.getElementById('email')
-  Code.expect(element.getAttribute('value')).to.equal(expectedEmail)
-
-  element = doc.getElementById('telephone')
-  Code.expect(element.getAttribute('value')).to.equal(expectedTelephone)
-
-  element = doc.getElementById('submit-button').firstChild
-  Code.expect(element.nodeValue).to.equal('Continue')
+  Code.expect(doc.getElementById('telephone').getAttribute('value')).to.equal(expectedTelephone)
+  Code.expect(doc.getElementById('email').getAttribute('value')).to.equal(expectedEmail)
 }
 
 const checkValidationErrors = async (field, expectedErrors) => {
@@ -165,22 +125,22 @@ lab.experiment('Partner Contact Details page tests:', () => {
 
   lab.experiment(`Get ${routePath}`, () => {
     lab.experiment('Success:', () => {
-      lab.test(`when returns the partnership contact details page correctly when it is a new application`, async () => {
-        fakeAddressDetail = {}
-        const { firstName, lastName } = fakeContact
-        checkPageElements(getRequest, '', '', `${firstName} ${lastName}`)
+      lab.test(`when returns the page correctly when the partner exists with no email and telephone number`, async () => {
+        delete fakeContactDetail.email
+        delete fakeContactDetail.telephone
+        const { firstName, lastName } = fakeContactDetail
+        return checkPageElements(getRequest, '', '', `${firstName} ${lastName}`)
       })
 
-      lab.test(`when returns the partnership contact details page correctly when it is a new application where the partner exists`, async () => {
-        const { email, telephone } = fakeAddressDetail
-        const { firstName, lastName } = fakeContact
-        checkPageElements(getRequest, email, telephone, `${firstName} ${lastName}`)
+      lab.test(`when returns the page correctly when the partner exists with an existing email and telephone number`, async () => {
+        const { firstName, lastName, email, telephone } = fakeContactDetail
+        return checkPageElements(getRequest, email, telephone, `${firstName} ${lastName}`)
       })
     })
 
     lab.experiment('Failure:', () => {
-      lab.test(`when the applicationContact does not exist`, async () => {
-        const stub = sinon.stub(PartnerDetails, 'getApplicationContact').value(() => undefined)
+      lab.test(`when the contactDetail does not exist`, async () => {
+        const stub = sinon.stub(PartnerDetails, 'getContactDetail').value(() => undefined)
         const res = await server.inject(getRequest)
         stub.restore()
         Code.expect(res.statusCode).to.equal(302)
@@ -191,52 +151,16 @@ lab.experiment('Partner Contact Details page tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     lab.experiment('Success:', () => {
-      lab.experiment(`(new Partner) redirects to the next route ${nextRoutePath}`, () => {
-        let applicationContactSaveSpy
-        let addressDetailSaveSpy
-
-        lab.beforeEach(() => {
-          applicationContactSaveSpy = sinon.spy(ApplicationContact.prototype, 'save')
-          addressDetailSaveSpy = sinon.spy(AddressDetail.prototype, 'save')
-        })
-
-        lab.afterEach(() => {
-          applicationContactSaveSpy.restore()
-          addressDetailSaveSpy.restore()
-        })
-
-        lab.test(`when the partner is not the matching contact`, async () => {
-          const res = await server.inject(postRequest)
-          Code.expect(applicationContactSaveSpy.callCount).to.equal(1)
-          Code.expect(addressDetailSaveSpy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        })
-
-        lab.test(`when the partner is the matching contact`, async () => {
-          fakePermitHolder = fakeContact
-          const res = await server.inject(postRequest)
-          Code.expect(applicationContactSaveSpy.callCount).to.equal(0)
-          Code.expect(addressDetailSaveSpy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        })
-
-        lab.test(`when the matching contact doesn't exist`, async () => {
-          fakeContact = undefined
-          const res = await server.inject(postRequest)
-          Code.expect(applicationContactSaveSpy.callCount).to.equal(1)
-          Code.expect(addressDetailSaveSpy.callCount).to.equal(1)
-
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        })
+      lab.test(`when the telephone and email are entered correctly`, async () => {
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
     })
 
     lab.experiment('Failure:', () => {
-      lab.test(`when the applicationContact does not exist`, async () => {
-        const stub = sinon.stub(PartnerDetails, 'getApplicationContact').value(() => undefined)
+      lab.test(`when the contactDetail does not exist`, async () => {
+        const stub = sinon.stub(PartnerDetails, 'getContactDetail').value(() => undefined)
         const res = await server.inject(postRequest)
         stub.restore()
         Code.expect(res.statusCode).to.equal(302)

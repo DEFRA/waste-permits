@@ -1,5 +1,3 @@
-'use strict'
-
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
@@ -8,14 +6,12 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const CookieService = require('../../../src/services/cookie.service')
+const CryptoService = require('../../../src/services/crypto.service')
 const RecoveryService = require('../../../src/services/recovery.service')
-const Account = require('../../../src/persistence/entities/account.entity')
-const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
 const Application = require('../../../src/persistence/entities/application.entity')
-const ApplicationContact = require('../../../src/persistence/entities/applicationContact.entity')
-const Contact = require('../../../src/persistence/entities/contact.entity')
-const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.task')
+const ContactDetail = require('../../../src/models/contactDetail.model')
 const PartnerDetails = require('../../../src/models/taskList/partnerDetails.task')
+const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.task')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
@@ -25,46 +21,30 @@ const routePath = `/permit-holder/partners/delete/${fakePartnershipId}`
 const errorPath = '/errors/technical-problem'
 const nextRoutePath = `/permit-holder/partners/list`
 
-let postRequest
 let getRequest
-let fakeAccount
-let fakeContact
-let fakeRecovery
-let fakeAddressDetail
+let postRequest
 let fakeApplication
-let fakeApplicationContact
-let fakeApplicationContactList
+let fakeContactDetail
+let fakeRecovery
 
 lab.beforeEach(() => {
-  fakeAccount = {
-    id: 'Account_ID'
-  }
-
-  fakeContact = {
-    id: 'CONTACT_ID',
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME'
-  }
-
   fakeApplication = {
     id: 'APPLICATION_ID',
     applicationNumber: 'APPLICATION_NUMBER'
   }
 
-  fakeApplicationContact = {
-    id: fakePartnershipId,
+  fakeContactDetail = {
+    id: 'CONTACT_DETAIL_ID',
     applicationId: fakeApplication.id,
-    contactId: fakeContact.id
+    firstName: 'FIRSTNAME',
+    lastName: 'LASTNAME'
   }
-
-  fakeApplicationContactList = () => [new ApplicationContact(fakeApplicationContact)]
 
   fakeRecovery = () => ({
     authToken: 'AUTH_TOKEN',
     applicationId: fakeApplication.id,
     applicationLineId: 'APPLICATION_LINE_ID',
-    application: new Application(fakeApplication),
-    account: new Account(fakeAccount)
+    application: new Application(fakeApplication)
   })
 
   getRequest = {
@@ -86,18 +66,12 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
-  sandbox.stub(AddressDetail, 'getPartnerDetails').value(() => new AddressDetail(fakeAddressDetail))
-  sandbox.stub(AddressDetail.prototype, 'delete').value(() => undefined)
+  sandbox.stub(CryptoService, 'decrypt').value(() => fakeContactDetail.id)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(ApplicationContact, 'listByApplicationId').value(() => fakeApplicationContactList())
-  sandbox.stub(ApplicationContact.prototype, 'delete').value(() => undefined)
-  sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
-  sandbox.stub(Contact.prototype, 'unLink').value(() => undefined)
-  sandbox.stub(Contact.prototype, 'listLinked').value(() => [new Account(fakeAccount)])
-  sandbox.stub(Contact.prototype, 'save').value(() => undefined)
-  sandbox.stub(PartnerDetails, 'getApplicationContact').value(() => new ApplicationContact(fakeApplicationContact))
-  sandbox.stub(PartnerDetails, 'getPageHeading').value((request, heading) => heading.replace('{{name}}', `${fakeContact.firstName} ${fakeContact.lastName}`))
+  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail.prototype, 'delete').value(() => false)
+  sandbox.stub(PartnerDetails, 'getContactDetail').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(PartnerDetails, 'getPageHeading').value((request, heading) => heading.replace('{{name}}', `${fakeContactDetail.firstName} ${fakeContactDetail.lastName}`))
   sandbox.stub(PermitHolderDetails, 'clearCompleteness').value(() => {})
 })
 
@@ -127,16 +101,15 @@ lab.experiment('Partner Delete page tests:', () => {
 
   lab.experiment(`Get ${routePath}`, () => {
     lab.experiment('Success:', () => {
-      lab.test('when returns the page is displayed', async () => {
-        delete fakeApplicationContact.contactId
-        const { firstName, lastName } = fakeContact
-        await checkPageElements(getRequest, `${firstName} ${lastName}`)
+      lab.test('when the page is displayed', async () => {
+        const { firstName, lastName } = fakeContactDetail
+        return checkPageElements(getRequest, `${firstName} ${lastName}`)
       })
     })
 
     lab.experiment('Failure:', () => {
-      lab.test(`when the applicationContact does not exist`, async () => {
-        const stub = sinon.stub(PartnerDetails, 'getApplicationContact').value(() => undefined)
+      lab.test(`when the contactDetail does not exist`, async () => {
+        const stub = sinon.stub(PartnerDetails, 'getContactDetail').value(() => undefined)
         const res = await server.inject(getRequest)
         stub.restore()
         Code.expect(res.statusCode).to.equal(302)
@@ -155,8 +128,8 @@ lab.experiment('Partner Delete page tests:', () => {
     })
 
     lab.experiment('Failure:', () => {
-      lab.test(`when the applicationContact does not exist`, async () => {
-        const stub = sinon.stub(PartnerDetails, 'getApplicationContact').value(() => undefined)
+      lab.test(`when the contactDetail does not exist`, async () => {
+        const stub = sinon.stub(PartnerDetails, 'getContactDetail').value(() => undefined)
         const res = await server.inject(postRequest)
         stub.restore()
         Code.expect(res.statusCode).to.equal(302)

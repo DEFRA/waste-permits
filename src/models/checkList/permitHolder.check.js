@@ -222,10 +222,10 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const { path } = PARTNERSHIP_PARTNER_LIST
     const partners = await this.getPartners()
     let answers = ['The partners will be the permit holders and each will be responsible for the operation of the permit.']
-    partners.forEach(({ name, email, telephone, dob, address }) => {
+    partners.forEach(({ name, email, telephone, dob, fullAddress }) => {
       answers.push(blankLine)
       answers.push(name)
-      answers.push(address.fullAddress)
+      answers.push(fullAddress)
       answers.push(email)
       answers.push(`Telephone: ${telephone}`)
       const [day, month, year] = dob.split('/')

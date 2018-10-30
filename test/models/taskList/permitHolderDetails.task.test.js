@@ -133,7 +133,7 @@ lab.experiment('Model persistence methods:', () => {
     Code.expect(address.uprn).to.be.equal(fakeAddress1.uprn)
   })
 
-  lab.test('saveSelectedAddress() method correctly saves an invoice address that is already in Dynamics', async () => {
+  lab.test('saveSelectedAddress() method correctly saves a permit holder address that is already in Dynamics', async () => {
     const addressDto = {
       uprn: fakeAddress1.uprn,
       postcode: fakeAddress1.postcode
@@ -143,7 +143,7 @@ lab.experiment('Model persistence methods:', () => {
     Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('saveSelectedAddress() method correctly saves an invoice address that is not already in Dynamics', async () => {
+  lab.test('saveSelectedAddress() method correctly saves a permit holder address that is not already in Dynamics', async () => {
     Address.getByUprn = () => undefined
     const addressDto = {
       uprn: fakeAddress1.uprn,
@@ -154,7 +154,7 @@ lab.experiment('Model persistence methods:', () => {
     Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('saveManualAddress() method correctly creates an invoice address from a selected address that is already in Dynamics', async () => {
+  lab.test('saveManualAddress() method correctly creates a permit holder address from a selected address that is already in Dynamics', async () => {
     const addressDto = {
       uprn: fakeAddress1.uprn,
       postcode: fakeAddress1.postcode
@@ -164,7 +164,7 @@ lab.experiment('Model persistence methods:', () => {
     Code.expect(spy.callCount).to.equal(2)
   })
 
-  lab.test('saveManualAddress() method correctly saves an invoice address that is not already in Dynamics', async () => {
+  lab.test('saveManualAddress() method correctly saves a permit holder address that is not already in Dynamics', async () => {
     Address.getByUprn = () => undefined
     const addressDto = {
       postcode: fakeAddress1.postcode
