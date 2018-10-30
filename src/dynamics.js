@@ -34,7 +34,7 @@ const Dynamics = {
       TYPE: 910400007,
       NAME: 'Primary Contact Telephone Number'
     },
-    DESIGNATED_MEMBER_EMAIL: {
+    DESIGNATED_MEMBER_CONTACT_DETAILS: {
       TYPE: 910400008,
       NAME: 'Designated Member Email Address'
     },
@@ -45,6 +45,10 @@ const Dynamics = {
     RESPONSIBLE_CONTACT_DETAILS: {
       TYPE: 910400010,
       NAME: 'Responsible contact details'
+    },
+    DIRECTOR_CONTACT_DETAILS: {
+      TYPE: 910400011,
+      NAME: 'Director contact details'
     }
   },
   BACS_EMAIL_CONFIG: 'PSC-BACS-EMAIL',

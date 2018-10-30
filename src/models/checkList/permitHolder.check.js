@@ -192,9 +192,12 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const { companyNumber = '' } = await this.getCompanyAccount()
     // Only load the directors if the company has been entered
     const directors = companyNumber ? await this.getDirectors() : []
-    const answers = directors.map(({ firstName, lastName, dob }) => `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay(dob)}`)
+    const answers = directors.map(({ firstName, lastName, dateOfBirth }) => {
+      const [year, month, day] = dateOfBirth.split('-')
+      return `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay({ day, month, year })}`
+    })
     return this.buildLine({
-      heading: `Directors' dates of birth`,
+      heading: directors.length === 1 ? `Director's date of birth` : `Directors' dates of birth`,
       prefix: 'director',
       answers: answers,
       links: [{ path, type: `director's date of birth` }]
@@ -208,10 +211,13 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const members = companyNumber ? await this.getMembers() : []
     const companies = companyNumber ? await this.getCompanies() : []
     const answers = members
-      .map(({ firstName, lastName, dob }) => `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay(dob)}`)
+      .map(({ firstName, lastName, dateOfBirth }) => {
+        const [year, month, day] = dateOfBirth.split('-')
+        return `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay({ day, month, year })}`
+      })
       .concat(companies.map(({ accountName }) => accountName))
     return this.buildLine({
-      heading: `Designated members' dates of birth`,
+      heading: members.length === 1 ? `Designated member's date of birth` : `Designated members' dates of birth`,
       prefix: 'designated-member',
       answers: answers,
       links: [{ path, type: `designated member's date of birth` }]
@@ -222,13 +228,13 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const { path } = PARTNERSHIP_PARTNER_LIST
     const partners = await this.getPartners()
     let answers = ['The partners will be the permit holders and each will be responsible for the operation of the permit.']
-    partners.forEach(({ name, email, telephone, dob, fullAddress }) => {
+    partners.forEach(({ firstName, lastName, email, telephone, dateOfBirth, fullAddress }) => {
       answers.push(blankLine)
-      answers.push(name)
+      answers.push(`${firstName} ${lastName}`)
       answers.push(fullAddress)
       answers.push(email)
       answers.push(`Telephone: ${telephone}`)
-      const [day, month, year] = dob.split('/')
+      const [year, month, day] = dateOfBirth.split('-')
       answers.push(`Date of birth: ${Utilities.formatFullDateForDisplay({ day, month, year })}`)
     })
     return this.buildLine({

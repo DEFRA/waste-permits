@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseModel = require('./base.entity')
-const { COMPANY_SECRETARY_EMAIL, COMPANY_REGISTERED_ADDRESS, DESIGNATED_MEMBER_EMAIL, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER, PARTNER_CONTACT_DETAILS, PUBLIC_BODY_MAIN_ADDRESS } = require('../../dynamics').AddressTypes
+const { COMPANY_SECRETARY_EMAIL, COMPANY_REGISTERED_ADDRESS, DESIGNATED_MEMBER_CONTACT_DETAILS, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER, PARTNER_CONTACT_DETAILS, PUBLIC_BODY_MAIN_ADDRESS } = require('../../dynamics').AddressTypes
 
 class AddressDetail extends BaseModel {
   static get dynamicsEntity () {
@@ -34,7 +34,7 @@ class AddressDetail extends BaseModel {
   }
 
   static async getDesignatedMemberDetails (context, applicationId) {
-    return this.getDetails(context, applicationId, DESIGNATED_MEMBER_EMAIL)
+    return this.getDetails(context, applicationId, DESIGNATED_MEMBER_CONTACT_DETAILS)
   }
 
   static async getCompanySecretaryDetails (context, applicationId) {

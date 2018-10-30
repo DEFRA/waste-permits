@@ -1,6 +1,5 @@
 'use strict'
 
-const Merge = require('deepmerge')
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
@@ -11,7 +10,6 @@ const Address = require('../../../src/persistence/entities/address.entity')
 const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
 const Annotation = require('../../../src/persistence/entities/annotation.entity')
 const Application = require('../../../src/persistence/entities/application.entity')
-const ApplicationContact = require('../../../src/persistence/entities/applicationContact.entity')
 const Contact = require('../../../src/persistence/entities/contact.entity')
 const Location = require('../../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../../src/persistence/entities/locationDetail.entity')
@@ -36,9 +34,6 @@ const fakeApplication = {
   agentId: 'AGENT_ID',
   contactId: 'CONTACT_ID',
   declaration: true
-}
-const fakeApplicationContact = {
-  directorDob: `${year}-${month}-${day}`
 }
 const fakeContact = {
   id: 'CONTACT_ID',
@@ -129,8 +124,6 @@ lab.beforeEach(() => {
   sandbox.stub(AddressDetail, 'getPartnerDetails').value(() => new AddressDetail(fakePartnerDetails))
   sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [new Annotation(fakeAnnotation)])
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(ApplicationContact, 'get').value(() => new ApplicationContact(fakeApplicationContact))
-  sandbox.stub(ApplicationContact, 'listByApplicationId').value(() => [new ApplicationContact(fakeApplicationContact)])
   sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
   sandbox.stub(Contact, 'getIndividualPermitHolderByApplicationId').value(() => new Contact(fakeIndividualPermitHolder))
   sandbox.stub(Contact, 'list').value(() => [new Contact(fakeDirector)])
@@ -238,20 +231,14 @@ lab.experiment('Base Check tests:', () => {
   lab.test('getMembers works correctly', async () => {
     const check = new BaseCheck(context)
     const members = await check.getMembers()
-    Code.expect(members).to.equal([new ApplicationContact(Merge({ dob: { day } }, fakeDirector))])
+    Code.expect(members).to.equal([fakeContactDetail])
     Code.expect(context.members).to.equal(await check.getMembers())
   })
 
   lab.test('getPartners works correctly', async () => {
     const check = new BaseCheck(context)
     const partners = await check.getPartners()
-    Code.expect(partners).to.equal([{
-      name: `${fakeContactDetail.firstName} ${fakeContactDetail.lastName}`,
-      email: fakeContactDetail.email,
-      telephone: fakeContactDetail.telephone,
-      dob: '01/02/1998',
-      fullAddress: fakeContactDetail.fullAddress
-    }])
+    Code.expect(partners).to.equal([fakeContactDetail])
     Code.expect(context.partners).to.equal(await check.getPartners())
   })
 
@@ -294,7 +281,7 @@ lab.experiment('Base Check tests:', () => {
   lab.test('getDirectors works correctly', async () => {
     const check = new BaseCheck(context)
     const directors = await check.getDirectors()
-    Code.expect(directors).to.equal([new ApplicationContact(Merge({ dob: { day } }, fakeDirector))])
+    Code.expect(directors).to.equal([fakeContactDetail])
     Code.expect(context.directors).to.equal(await check.getDirectors())
   })
 
