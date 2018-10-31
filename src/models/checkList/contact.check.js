@@ -1,11 +1,12 @@
 const BaseCheck = require('./base.check')
 
 const { path } = require('../../routes').CONTACT_DETAILS
-const { CONTACT_DETAILS: ruleSetId } = require('../taskList/taskList').RuleSetIds
+const { CONTACT_DETAILS } = require('../taskList/taskList').RuleSetIds
+const { PRIMARY_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 
 module.exports = class ContactCheck extends BaseCheck {
   static get ruleSetId () {
-    return ruleSetId
+    return CONTACT_DETAILS
   }
 
   get prefix () {
@@ -22,7 +23,7 @@ module.exports = class ContactCheck extends BaseCheck {
   }
 
   async getContactLine () {
-    const { firstName = '', lastName = '' } = await this.getContact()
+    const { firstName = '', lastName = '' } = await this.getContactDetails(PRIMARY_CONTACT_DETAILS)
     return this.buildLine({
       heading: 'Contact for this application',
       prefix: 'name',
@@ -43,7 +44,7 @@ module.exports = class ContactCheck extends BaseCheck {
   }
 
   async getTelephoneLine () {
-    const { telephone = '' } = await this.getPrimaryContactDetails()
+    const { telephone = '' } = await this.getContactDetails(PRIMARY_CONTACT_DETAILS)
     return this.buildLine({
       heading: 'Contact telephone number',
       prefix: 'telephone',
@@ -53,7 +54,7 @@ module.exports = class ContactCheck extends BaseCheck {
   }
 
   async getEmailLine () {
-    const { email = '' } = await this.getContact()
+    const { email = '' } = await this.getContactDetails(PRIMARY_CONTACT_DETAILS)
     return this.buildLine({
       heading: 'Main contact email',
       prefix: 'email',

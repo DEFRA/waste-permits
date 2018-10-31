@@ -7,7 +7,6 @@ const LoggingService = require('../../services/logging.service')
 const CryptoService = require('../../services/crypto.service')
 const ContactDetail = require('../../models/contactDetail.model')
 const Address = require('../../persistence/entities/address.entity')
-const AddressDetail = require('../../persistence/entities/addressDetail.entity')
 
 module.exports = class PartnerDetails extends BaseTask {
   static async getContactDetail (request) {
@@ -51,12 +50,7 @@ module.exports = class PartnerDetails extends BaseTask {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    const { contactId } = await this.getContactDetail(request)
-
-    let addressDetail = await AddressDetail.getPartnerDetails(context, applicationId, contactId)
-    if (!addressDetail.addressId) {
-      await addressDetail.save(context)
-    }
+    const contactDetail = await this.getContactDetail(request)
 
     let address = await Address.getByUprn(context, addressDto.uprn)
     if (!address) {
@@ -69,10 +63,10 @@ module.exports = class PartnerDetails extends BaseTask {
       }
     }
 
-    // Save the AddressDetail to associate the Address with the Application
-    if (address && addressDetail) {
-      addressDetail.addressId = address.id
-      await addressDetail.save(context)
+    // Save the ContactDetail to associate the Address with the Application
+    if (address && contactDetail) {
+      contactDetail.addressId = address.id
+      await contactDetail.save(context)
     }
   }
 

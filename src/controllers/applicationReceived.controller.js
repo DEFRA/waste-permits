@@ -2,24 +2,28 @@
 
 const Constants = require('../constants')
 const { BACS_EMAIL_CONFIG } = require('../dynamics')
+const { PRIMARY_CONTACT_DETAILS } = require('../dynamics').AddressTypes
 const BaseController = require('./base.controller')
 const Configuration = require('../persistence/entities/configuration.entity')
 const Payment = require('../persistence/entities/payment.entity')
+const ContactDetail = require('../models/contactDetail.model')
 const RecoveryService = require('../services/recovery.service')
 const LoggingService = require('../services/logging.service')
 
 module.exports = class ApplicationReceivedController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext(request)
-    const context = await RecoveryService.createApplicationContext(h, { application: true, contact: true })
-    const { applicationId, applicationLineId, application, contact } = context
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { applicationId, applicationLineId, application } = context
 
     const bacsPayment = await Payment.getBacsPayment(context, applicationLineId)
     const cardPayment = await Payment.getCardPayment(context, applicationLineId)
 
+    const { email } = await ContactDetail.get(context, { type: PRIMARY_CONTACT_DETAILS.TYPE }) || {}
+
     pageContext.applicationNumber = application.applicationNumber
-    if (contact && contact.email) {
-      pageContext.contactEmail = contact.email
+    if (email) {
+      pageContext.contactEmail = email
     } else {
       LoggingService.logError(`Unable to get Contact email address for application ID: ${applicationId}`)
       pageContext.contactEmail = 'UNKNOWN EMAIL ADDRESS'

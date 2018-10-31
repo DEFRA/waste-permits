@@ -14,12 +14,10 @@ const AGENT_LINE = 1
 const TELEPHONE_LINE = 2
 const EMAIL_LINE = 3
 
-const fakeContact = {
+const fakeContactDetail = {
   firstName: 'CONTACT_FIRSTNAME',
   lastName: 'CONTACT_LASTNAME',
-  email: 'CONTACT_EMAIL'
-}
-const fakePrimaryContact = {
+  email: 'CONTACT_EMAIL',
   telephone: 'PRIMARY_CONTACT_TELEPHONE'
 }
 const fakeAgentAccount = {
@@ -35,9 +33,8 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
-  sandbox.stub(BaseCheck.prototype, 'getContact').value(() => Merge({}, fakeContact))
-  sandbox.stub(BaseCheck.prototype, 'getPrimaryContactDetails').value(() => Merge({}, fakePrimaryContact))
   sandbox.stub(BaseCheck.prototype, 'getAgentAccount').value(() => Merge({}, fakeAgentAccount))
+  sandbox.stub(BaseCheck.prototype, 'getContactDetails').value(() => Merge({}, fakeContactDetail))
 })
 
 lab.afterEach(() => {
@@ -66,7 +63,7 @@ lab.experiment('Contact Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { firstName, lastName } = fakeContact
+      const { firstName, lastName } = fakeContactDetail
       Code.expect(answer).to.equal(`${firstName} ${lastName}`)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
@@ -110,7 +107,7 @@ lab.experiment('Contact Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { telephone } = fakePrimaryContact
+      const { telephone } = fakeContactDetail
       Code.expect(answer).to.equal(telephone)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
@@ -127,7 +124,7 @@ lab.experiment('Contact Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { email } = fakeContact
+      const { email } = fakeContactDetail
       Code.expect(answer).to.equal(email)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 

@@ -65,6 +65,7 @@ lab.experiment('ContactDetail test:', () => {
 
     fakeContactDetail = {
       id: fakeAddressDetailId,
+      customerId: fakeContact.id,
       type: fakeAddressDetail.type,
       firstName: fakeAddressDetail.firstName,
       lastName: fakeAddressDetail.lastName,
@@ -86,6 +87,7 @@ lab.experiment('ContactDetail test:', () => {
     sandbox.stub(AddressDetail.prototype, 'delete').value(() => undefined)
     sandbox.stub(Account, 'getByApplicationId').value(() => new Account(fakeAccount))
     sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
+    sandbox.stub(Contact, 'getByFirstnameLastnameEmail').value(() => new Contact(fakeContact))
     sandbox.stub(Contact.prototype, 'save').value(() => fakeContact.id)
     sandbox.stub(Contact.prototype, 'listLinked').value(() => [new Account(fakeAccount)])
     sandbox.stub(Contact.prototype, 'link').value(() => undefined)

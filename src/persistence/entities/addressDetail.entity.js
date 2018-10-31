@@ -1,7 +1,6 @@
 'use strict'
 
 const BaseModel = require('./base.entity')
-const { COMPANY_SECRETARY_EMAIL, COMPANY_REGISTERED_ADDRESS, DESIGNATED_MEMBER_CONTACT_DETAILS, PRIMARY_CONTACT_TELEPHONE_NUMBER, BILLING_INVOICING, INDIVIDUAL_PERMIT_HOLDER, PARTNER_CONTACT_DETAILS, PUBLIC_BODY_MAIN_ADDRESS } = require('../../dynamics').AddressTypes
 
 class AddressDetail extends BaseModel {
   static get dynamicsEntity () {
@@ -23,47 +22,6 @@ class AddressDetail extends BaseModel {
       { field: 'jobTitle', dynamics: 'defra_jobtitle', encode: true, length: { max: 50 } },
       { field: 'type', dynamics: 'defra_addresstype' }
     ]
-  }
-
-  static async getByApplicationIdAndType (context, applicationId, type) {
-    return super.getBy(context, { applicationId, type })
-  }
-
-  static async getDetails (context, applicationId, type) {
-    return (await AddressDetail.getByApplicationIdAndType(context, applicationId, type.TYPE)) || new AddressDetail({ applicationId, addressName: type.NAME, type: type.TYPE })
-  }
-
-  static async getDesignatedMemberDetails (context, applicationId) {
-    return this.getDetails(context, applicationId, DESIGNATED_MEMBER_CONTACT_DETAILS)
-  }
-
-  static async getCompanySecretaryDetails (context, applicationId) {
-    return this.getDetails(context, applicationId, COMPANY_SECRETARY_EMAIL)
-  }
-
-  static async getCompanyRegisteredDetails (context, customerId) {
-    return AddressDetail.getBy(context, { customerId, type: COMPANY_REGISTERED_ADDRESS.TYPE })
-  }
-
-  static async getPrimaryContactDetails (context, applicationId) {
-    return this.getDetails(context, applicationId, PRIMARY_CONTACT_TELEPHONE_NUMBER)
-  }
-
-  static async getBillingInvoicingDetails (context, applicationId) {
-    return this.getDetails(context, applicationId, BILLING_INVOICING)
-  }
-
-  static async getIndividualPermitHolderDetails (context, applicationId) {
-    return this.getDetails(context, applicationId, INDIVIDUAL_PERMIT_HOLDER)
-  }
-
-  static async getPublicBodyDetails (context, applicationId) {
-    return this.getDetails(context, applicationId, PUBLIC_BODY_MAIN_ADDRESS)
-  }
-
-  static async getPartnerDetails (context, applicationId, customerId) {
-    const { NAME: addressName, TYPE: type } = PARTNER_CONTACT_DETAILS
-    return (await super.getBy(context, { applicationId, customerId, type })) || new AddressDetail({ applicationId, customerId, addressName, type })
   }
 }
 

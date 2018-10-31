@@ -1,11 +1,11 @@
 const BaseCheck = require('./base.check')
 
-const { FIRE_PREVENTION_PLAN: ruleSetId } = require('../taskList/taskList').RuleSetIds
-const { FIRE_PREVENTION_PLAN } = require('../../routes')
+const { FIRE_PREVENTION_PLAN } = require('../taskList/taskList').RuleSetIds
+const { FIRE_PREVENTION_PLAN: { path } } = require('../../routes')
 
 module.exports = class FirePreventionPlanCheck extends BaseCheck {
   static get ruleSetId () {
-    return ruleSetId
+    return FIRE_PREVENTION_PLAN
   }
 
   get prefix () {
@@ -22,7 +22,7 @@ module.exports = class FirePreventionPlanCheck extends BaseCheck {
       heading: 'Fire prevention plan',
       answers: evidence.map((file) => file.filename),
       links: [
-        { path: FIRE_PREVENTION_PLAN.path, type: 'fire prevention plan' }
+        { path, type: 'fire prevention plan' }
       ]
     })
   }

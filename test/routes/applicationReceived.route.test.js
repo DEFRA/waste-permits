@@ -8,7 +8,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/persistence/entities/application.entity')
 const Payment = require('../../src/persistence/entities/payment.entity')
-const Contact = require('../../src/persistence/entities/contact.entity')
+const ContactDetail = require('../../src/models/contactDetail.model')
 const Configuration = require('../../src/persistence/entities/configuration.entity')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
@@ -20,7 +20,7 @@ const fakeSlug = 'SLUG'
 let fakeApplication
 let fakeApplicationLine
 let fakePayment
-let fakeContact
+let fakeContactDetail
 let fakeBacsEmail
 let fakeBacs
 let fakeRecovery
@@ -45,7 +45,7 @@ lab.beforeEach(() => {
     description: 'THE PAYMENT DESCRIPTION'
   }
 
-  fakeContact = {
+  fakeContactDetail = {
     applicationId: fakeApplication.id,
     email: 'CONTACT_EMAIL'
   }
@@ -69,8 +69,7 @@ lab.beforeEach(() => {
     authToken: 'AUTH_TOKEN',
     applicationId: fakeApplication.id,
     applicationLineId: fakeApplicationLine.id,
-    application: new Application(fakeApplication),
-    contact: new Contact(fakeContact)
+    application: new Application(fakeApplication)
   })
 
   // Create a sinon sandbox to stub methods
@@ -81,6 +80,7 @@ lab.beforeEach(() => {
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
+  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
   sandbox.stub(Payment, 'getBacsPayment').value(() => new Payment(fakePayment))
   sandbox.stub(Payment, 'getCardPayment').value(() => undefined)
   sandbox.stub(Configuration, 'getValue').value(() => fakeBacsEmail)
@@ -127,7 +127,7 @@ lab.experiment('ApplicationReceived page tests:', () => {
 
       checkCommonElements(doc)
 
-      Code.expect(doc.getElementById('contact-email').firstChild.nodeValue).to.equal(`${fakeContact.email}.`)
+      Code.expect(doc.getElementById('contact-email').firstChild.nodeValue).to.equal(`${fakeContactDetail.email}.`)
       Code.expect(doc.getElementById('payment-reference').firstChild.nodeValue).to.equal(fakeBacs.paymentReference)
       Code.expect(doc.getElementById('amount').firstChild.nodeValue).to.equal(fakeBacs.amount)
       Code.expect(doc.getElementById('sort-code').firstChild.nodeValue).to.equal(fakeBacs.sortCode)

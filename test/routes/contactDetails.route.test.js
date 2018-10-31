@@ -10,8 +10,8 @@ const server = require('../../server')
 
 const Application = require('../../src/persistence/entities/application.entity')
 const Account = require('../../src/persistence/entities/account.entity')
-const AddressDetail = require('../../src/persistence/entities/addressDetail.entity')
-const Contact = require('../../src/persistence/entities/contact.entity')
+const ContactDetail = require('../../src/models/contactDetail.model')
+const RecoveryService = require('../../src/services/recovery.service')
 const ContactDetails = require('../../src/models/taskList/contactDetails.task')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -20,14 +20,12 @@ let sandbox
 
 let fakeApplication
 let fakeAccount
-let fakeContact
-let fakeCompanySecretaryDetails
-let fakePrimaryContactDetails
+let fakeContactDetail
+let fakeRecovery
 
 let fakeApplicationId = 'APPLICATION_ID'
 let fakeContactId = 'CONTACT_ID'
 let fakeAccountId = 'ACCOUNT_ID'
-let fakePrimaryContactDetailsId = 'PRIMARY_CONTACT_DETAILS_ID'
 
 let validPayload
 
@@ -40,26 +38,31 @@ lab.beforeEach(() => {
     contactId: fakeContactId,
     agentId: fakeAccountId
   }
+
   fakeAccount = {
     id: fakeAccountId,
     name: 'Agent'
   }
-  fakePrimaryContactDetails = {
-    id: fakePrimaryContactDetailsId,
-    telephone: '+ 12  012 3456 7890'
-  }
-  fakeContact = {
-    id: fakeContactId,
+
+  fakeContactDetail = {
     firstName: 'John',
     lastName: 'Smith',
+    telephone: '+ 12  012 3456 7890',
     email: 'john.smith@email.com'
   }
 
+  fakeRecovery = () => ({
+    authToken: 'AUTH_TOKEN',
+    applicationId: fakeApplication.id,
+    application: new Application(fakeApplication),
+    account: new Account(fakeAccount)
+  })
+
   validPayload = {
-    'first-name': fakeContact.firstName,
-    'last-name': fakeContact.lastName,
-    'telephone': fakePrimaryContactDetails.telephone,
-    'email': fakeContact.email
+    'first-name': fakeContactDetail.firstName,
+    'last-name': fakeContactDetail.lastName,
+    'telephone': fakeContactDetail.telephone,
+    'email': fakeContactDetail.email
   }
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -69,13 +72,11 @@ lab.beforeEach(() => {
   sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(AddressDetail, 'getCompanySecretaryDetails').value(() => new AddressDetail(fakeCompanySecretaryDetails))
-  sandbox.stub(AddressDetail, 'getPrimaryContactDetails').value(() => new AddressDetail(fakePrimaryContactDetails))
-  sandbox.stub(AddressDetail.prototype, 'save').value(() => {})
-  sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
-  sandbox.stub(Contact.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
+  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
   sandbox.stub(ContactDetails, 'updateCompleteness').value(() => {})
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
 })
 
 lab.afterEach(() => {

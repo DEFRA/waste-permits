@@ -1,11 +1,11 @@
 const BaseCheck = require('./base.check')
 
-const { SITE_PLAN: ruleSetId } = require('../taskList/taskList').RuleSetIds
-const { SITE_PLAN } = require('../../routes')
+const { SITE_PLAN } = require('../taskList/taskList').RuleSetIds
+const { SITE_PLAN: { path } } = require('../../routes')
 
 module.exports = class SitePlanCheck extends BaseCheck {
   static get ruleSetId () {
-    return ruleSetId
+    return SITE_PLAN
   }
 
   get prefix () {
@@ -22,7 +22,7 @@ module.exports = class SitePlanCheck extends BaseCheck {
       heading: 'Site plan',
       answers: evidence.map((file) => file.filename),
       links: [
-        { path: SITE_PLAN.path, type: 'site plan' }
+        { path, type: 'site plan' }
       ]
     })
   }

@@ -8,9 +8,9 @@ const LoggingService = require('../../services/logging.service')
 const ContactDetail = require('../contactDetail.model')
 const Account = require('../../persistence/entities/account.entity')
 const Application = require('../../persistence/entities/application.entity')
-const Contact = require('../../persistence/entities/contact.entity')
 const Address = require('../../persistence/entities/address.entity')
-const AddressDetail = require('../../persistence/entities/addressDetail.entity')
+const { INDIVIDUAL_PERMIT_HOLDER } = require('../../dynamics').AddressTypes
+const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
 
 const minPartners = 2
 
@@ -19,12 +19,12 @@ module.exports = class PermitHolderDetails extends BaseTask {
     let address
     try {
       const context = request.app.data
-      // Get the AddressDetail for this application
-      const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
+      // Get the Individual details for this application
+      const contactDetail = await ContactDetail.get(context, { type }) || new ContactDetail({ applicationId, type })
 
-      if (addressDetail && addressDetail.addressId !== undefined) {
+      if (contactDetail && contactDetail.addressId !== undefined) {
         // Get the Address for this AddressDetail
-        address = await Address.getById(context, addressDetail.addressId)
+        address = await Address.getById(context, contactDetail.addressId)
       }
     } catch (error) {
       LoggingService.logError(error, request)
@@ -45,10 +45,7 @@ module.exports = class PermitHolderDetails extends BaseTask {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    let addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
-    if (!addressDetail.addressId) {
-      await addressDetail.save(context)
-    }
+    const contactDetail = await ContactDetail.get(context, { type }) || new ContactDetail({ applicationId, type })
 
     let address = await Address.getByUprn(context, addressDto.uprn)
     if (!address) {
@@ -61,10 +58,10 @@ module.exports = class PermitHolderDetails extends BaseTask {
       }
     }
 
-    // Save the AddressDetail to associate the Address with the Application
-    if (address && addressDetail) {
-      addressDetail.addressId = address.id
-      await addressDetail.save(context)
+    // Save the Individual Contact Details to associate the Address with the Application
+    if (address && contactDetail) {
+      contactDetail.addressId = address.id
+      await contactDetail.save(context)
     }
   }
 
@@ -74,14 +71,11 @@ module.exports = class PermitHolderDetails extends BaseTask {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    // Get the AddressDetail for this Application (if there is one)
-    let addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
-    if (!addressDetail.addressId) {
-      await addressDetail.save(context)
-    }
+    // Get the Individual Details for this Application (if there is one)
+    const contactDetail = await ContactDetail.get(context, { type }) || new ContactDetail({ applicationId, type })
 
     // Get the Address for this AddressDetail (if there is one)
-    let address = await Address.getById(context, addressDetail.addressId)
+    let address = await Address.getById(context, contactDetail.addressId)
     if (!address || address.fromAddressLookup) {
       // Create a new address if changing from a selected address
       address = new Address(addressDto)
@@ -91,10 +85,10 @@ module.exports = class PermitHolderDetails extends BaseTask {
     address.fromAddressLookup = false
     await address.save(context)
 
-    // Save the AddressDetail to associate the Address with the Application
-    if (address && addressDetail) {
-      addressDetail.addressId = address.id
-      await addressDetail.save(context)
+    // Save the Individual Contact Details to associate the Address with the Application
+    if (address && contactDetail) {
+      contactDetail.addressId = address.id
+      await contactDetail.save(context)
     }
   }
 
@@ -102,23 +96,14 @@ module.exports = class PermitHolderDetails extends BaseTask {
     return PERMIT_HOLDER_DETAILS
   }
 
-  static async isContactComplete (context, contactId, addressDetail) {
-    const address = await Address.getById(context, addressDetail.addressId)
-    const contact = await Contact.getById(context, contactId)
-
-    let isContactComplete = contact && contact.firstName && contact.lastName
-    let isContactDetailComplete = addressDetail.dateOfBirth && addressDetail.telephone
-
-    return Boolean(isContactComplete && isContactDetailComplete && address)
-  }
-
   static async checkComplete (context, applicationId) {
-    const { isIndividual, isPartnership, isPublicBody, permitHolderOrganisationId, permitHolderIndividualId } = await Application.getById(context, applicationId)
+    const { isIndividual, isPartnership, isPublicBody, permitHolderOrganisationId } = await Application.getById(context, applicationId)
 
     if (isIndividual) {
       // Get the Contact for this application
-      const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
-      return this.isContactComplete(context, permitHolderIndividualId, addressDetail)
+      const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
+      const { firstName, lastName, telephone, email } = await ContactDetail.get(context, { type }) || {}
+      return Boolean(firstName && lastName && telephone && email)
     }
 
     if (isPublicBody) {

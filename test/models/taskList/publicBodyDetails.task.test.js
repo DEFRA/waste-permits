@@ -12,10 +12,9 @@ const ApplicationLine = require('../../../src/persistence/entities/applicationLi
 const Account = require('../../../src/persistence/entities/account.entity')
 const Contact = require('../../../src/persistence/entities/contact.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
-const PartnerDetails = require('../../../src/models/taskList/partnerDetails.task')
+const PublicBodyDetails = require('../../../src/models/taskList/publicBodyDetails.task')
 
 let sandbox
-let fakePartnershipId = 'PARTNERSHIP_ID'
 
 let fakeApplication
 let fakeApplicationLine
@@ -29,9 +28,6 @@ const request = {
     data: {
       authToken: 'AUTH_TOKEN'
     }
-  },
-  params: {
-    partnerId: fakePartnershipId
   }
 }
 const applicationId = 'APPLICATION_ID'
@@ -109,28 +105,28 @@ lab.afterEach(() => {
 
 lab.experiment('Model persistence methods:', () => {
   lab.test('getAddress() method correctly retrieves an Address', async () => {
-    const address = await PartnerDetails.getAddress(request, applicationId)
+    const address = await PublicBodyDetails.getAddress(request, applicationId)
     Code.expect(address.uprn).to.be.equal(fakeAddress.uprn)
   })
 
-  lab.test('saveSelectedAddress() method correctly saves a partner address', async () => {
+  lab.test('saveSelectedAddress() method correctly saves a public body address', async () => {
     const addressDto = {
       uprn: fakeAddress.uprn,
       postcode: fakeAddress.postcode
     }
     const spy = sinon.spy(ContactDetail.prototype, 'save')
-    await PartnerDetails.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
+    await PublicBodyDetails.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
     Code.expect(spy.callCount).to.equal(1)
     spy.restore()
   })
 
-  lab.test('saveManualAddress() method correctly creates a partner address from a selected address that is already in Dynamics', async () => {
+  lab.test('saveManualAddress() method correctly creates a public body address from a selected address that is already in Dynamics', async () => {
     const addressDto = {
       uprn: fakeAddress.uprn,
       postcode: fakeAddress.postcode
     }
     const spy = sinon.spy(ContactDetail.prototype, 'save')
-    await PartnerDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
+    await PublicBodyDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
     Code.expect(spy.callCount).to.equal(1)
     spy.restore()
   })

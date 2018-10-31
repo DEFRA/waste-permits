@@ -30,9 +30,9 @@ const Dynamics = {
       TYPE: 910400005,
       NAME: 'Company Registered Address'
     },
-    PRIMARY_CONTACT_TELEPHONE_NUMBER: {
+    PRIMARY_CONTACT_DETAILS: {
       TYPE: 910400007,
-      NAME: 'Primary Contact Telephone Number'
+      NAME: 'Primary Contact Details'
     },
     DESIGNATED_MEMBER_CONTACT_DETAILS: {
       TYPE: 910400008,

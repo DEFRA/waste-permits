@@ -7,10 +7,8 @@ const sinon = require('sinon')
 
 const Account = require('../../../src/persistence/entities/account.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
-const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
 const Annotation = require('../../../src/persistence/entities/annotation.entity')
 const Application = require('../../../src/persistence/entities/application.entity')
-const Contact = require('../../../src/persistence/entities/contact.entity')
 const Location = require('../../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../../src/persistence/entities/locationDetail.entity')
 const StandardRule = require('../../../src/persistence/entities/standardRule.entity')
@@ -21,89 +19,70 @@ const BaseCheck = require('../../../src/models/checkList/base.check')
 const day = 1
 const month = 2
 const year = 1998
-const fakeDirector = {
-  id: 'DIRECTOR_ID',
-  dob: { month, year }
-}
-const fakeAccount = {
-  id: 'ACCOUNT_ID',
-  companyNumber: 'COMPANY_NUMBER'
-}
-const fakeApplication = {
-  id: 'APPLICATION_ID',
-  agentId: 'AGENT_ID',
-  contactId: 'CONTACT_ID',
-  declaration: true
-}
-const fakeContact = {
-  id: 'CONTACT_ID',
-  firstName: 'FIRSTNAME',
-  lastName: 'LASTNAME'
-}
-const fakeCompanies = [new Account(fakeAccount)]
-const fakeCompanySecretary = {
-  id: 'COMPANY_SECRETARY_ID'
-}
-const fakePrimaryContact = {
-  id: 'PRIMARY_CONTACT_ID'
-}
-const fakeIndividualPermitHolder = {
-  id: 'PERMIT_HOLDER_ID'
-}
-const fakePublicBodyDetails = {
-  id: 'PUBLIC_BODY_ID'
-}
-const fakeIndividualPermitHolderDetails = {
-  id: 'PERMIT_HOLDER_DETAILS_ID'
-}
-const fakeRegisteredComapanyAddressDetails = {
-  id: 'REGISTERED_ADDRESS_ID'
-}
-const fakeDesignatedMemberDetails = {
-  id: 'DESIGNATED_MEMBER_ID'
-}
-const fakePartnerDetails = {
-  id: 'PARTNER_DETAILS_ID',
-  email: 'EMAIL',
-  telephone: 'TELEPHONE'
-}
-const fakeContactDetail = {
-  id: 'CONTACT_DETAILS_ID',
-  firstName: 'FIRSTNAME',
-  lastName: 'LASTNAME',
-  dateOfBirth: `${year}-${month}-${day}`,
-  email: 'EMAIL',
-  telephone: 'TELEPHONE',
-  fullAddress: 'FULL ADDRESS'
-}
-const fakeBillingInvoicing = {
-  id: 'BILLING_INVOICING_ID'
-}
-const fakeLocation = {
-  id: 'LOCATION_ID',
-  applicationLineId: 'APPLICATION_LINE_ID'
-}
-const fakeLocationDetail = {
-  id: 'LOCATION_DETAIL_ID'
-}
-const fakeAddress = {
-  id: 'ADDRESS_ID'
-}
-const fakePermitHolderType = {
-  id: 'PERMIT_HOLDER_TYPE'
-}
-const fakeStandardRule = {
-  id: 'STANDARD_RULE_ID',
-  code: 'CODE',
-  codeForId: 'code'
-}
-const fakeAnnotation = {
-  id: 'ANNOTATION_ID'
-}
+
+let fakeAddressType
+let fakeAccount
+let fakeApplication
+let fakeCompanies
+let fakeContactDetail
+let fakeLocation
+let fakeLocationDetail
+let fakeAddress
+let fakePermitHolderType
+let fakeStandardRule
+let fakeAnnotation
+
 let sandbox
 let context
 
 lab.beforeEach(() => {
+  fakeAddressType = {
+    TYPE: 'ADDRESS_TYPE'
+  }
+  fakeAccount = {
+    id: 'ACCOUNT_ID',
+    companyNumber: 'COMPANY_NUMBER'
+  }
+  fakeApplication = {
+    id: 'APPLICATION_ID',
+    agentId: 'AGENT_ID',
+    contactId: 'CONTACT_ID',
+    declaration: true
+  }
+  fakeCompanies = [new Account(fakeAccount)]
+  fakeAddress = {
+    id: 'ADDRESS_ID'
+  }
+  fakeContactDetail = {
+    id: 'CONTACT_DETAILS_ID',
+    firstName: 'FIRSTNAME',
+    lastName: 'LASTNAME',
+    dateOfBirth: `${year}-${month}-${day}`,
+    email: 'EMAIL',
+    telephone: 'TELEPHONE',
+    fullAddress: 'FULL ADDRESS',
+    type: fakeAddressType.TYPE,
+    addressId: fakeAddress.id
+  }
+  fakeLocation = {
+    id: 'LOCATION_ID',
+    applicationLineId: 'APPLICATION_LINE_ID'
+  }
+  fakeLocationDetail = {
+    id: 'LOCATION_DETAIL_ID'
+  }
+  fakePermitHolderType = {
+    id: 'PERMIT_HOLDER_TYPE'
+  }
+  fakeStandardRule = {
+    id: 'STANDARD_RULE_ID',
+    code: 'CODE',
+    codeForId: 'code'
+  }
+  fakeAnnotation = {
+    id: 'ANNOTATION_ID'
+  }
+
   context = {}
 
   // Create a sinon sandbox
@@ -113,24 +92,13 @@ lab.beforeEach(() => {
   sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
   sandbox.stub(Account, 'getByApplicationId').value(() => new Account(fakeAccount))
   sandbox.stub(Account.prototype, 'listLinked').value(() => [new Account(fakeAccount)])
-  sandbox.stub(AddressDetail, 'getCompanyRegisteredDetails').value(() => new AddressDetail(fakeRegisteredComapanyAddressDetails))
   sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
-  sandbox.stub(AddressDetail, 'getCompanySecretaryDetails').value(() => new AddressDetail(fakeCompanySecretary))
-  sandbox.stub(AddressDetail, 'getPrimaryContactDetails').value(() => new AddressDetail(fakePrimaryContact))
-  sandbox.stub(AddressDetail, 'getPublicBodyDetails').value(() => new AddressDetail(fakePublicBodyDetails))
-  sandbox.stub(AddressDetail, 'getBillingInvoicingDetails').value(() => new AddressDetail(fakeBillingInvoicing))
-  sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeIndividualPermitHolderDetails))
-  sandbox.stub(AddressDetail, 'getDesignatedMemberDetails').value(() => new AddressDetail(fakeDesignatedMemberDetails))
-  sandbox.stub(AddressDetail, 'getPartnerDetails').value(() => new AddressDetail(fakePartnerDetails))
   sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [new Annotation(fakeAnnotation)])
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
-  sandbox.stub(Contact, 'getIndividualPermitHolderByApplicationId').value(() => new Contact(fakeIndividualPermitHolder))
-  sandbox.stub(Contact, 'list').value(() => [new Contact(fakeDirector)])
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
   sandbox.stub(Location, 'getByApplicationId').value(() => new Location(fakeLocation))
   sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(fakeLocationDetail))
-  sandbox.stub(ContactDetail, 'get').value(() => new Contact(fakeContactDetail))
+  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
   sandbox.stub(ContactDetail, 'list').value(() => [new ContactDetail(fakeContactDetail)])
 })
 
@@ -179,24 +147,24 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(context.agentAccount).to.equal(await check.getAgentAccount())
   })
 
-  lab.test('getContact works correctly', async () => {
+  lab.test('getContactDetails works correctly', async () => {
     const check = new BaseCheck(context)
-    const contact = await check.getContact()
-    Code.expect(contact).to.equal(fakeContact)
-    Code.expect(context.contact).to.equal(await check.getContact())
+    const contactDetail = await check.getContactDetails(fakeAddressType)
+    Code.expect(contactDetail).to.equal(fakeContactDetail)
+    Code.expect(context.contactDetails[0]).to.equal(await check.getContactDetails(fakeAddressType))
   })
 
-  lab.test('getCompanySecretaryDetails works correctly', async () => {
+  lab.test('listContactDetails works correctly', async () => {
     const check = new BaseCheck(context)
-    const companySecretaryDetails = await check.getCompanySecretaryDetails()
-    Code.expect(companySecretaryDetails).to.equal(fakeCompanySecretary)
-    Code.expect(context.companySecretaryDetails).to.equal(await check.getCompanySecretaryDetails())
+    const contactDetails = await check.listContactDetails(fakeAddressType)
+    Code.expect(contactDetails).to.equal([fakeContactDetail])
+    Code.expect(context.contactDetails).to.equal(await check.listContactDetails(fakeAddressType))
   })
 
   lab.test('getCompanyRegisteredAddress works correctly', async () => {
     const check = new BaseCheck(context)
     const companyRegisteredAddress = await check.getCompanyRegisteredAddress()
-    Code.expect(companyRegisteredAddress).to.equal(fakeAddress)
+    Code.expect(companyRegisteredAddress).to.equal(fakeContactDetail)
     Code.expect(context.companyRegisteredAddress).to.equal(await check.getCompanyRegisteredAddress())
   })
 
@@ -207,41 +175,6 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(context.companies).to.equal(await check.getCompanies())
   })
 
-  lab.test('getDesignatedMemberDetails works correctly', async () => {
-    const check = new BaseCheck(context)
-    const designatedMemberDetails = await check.getDesignatedMemberDetails()
-    Code.expect(designatedMemberDetails).to.equal(fakeDesignatedMemberDetails)
-    Code.expect(context.designatedMemberDetails).to.equal(await check.getDesignatedMemberDetails())
-  })
-
-  lab.test('getIndividualPermitHolderDetails works correctly', async () => {
-    const check = new BaseCheck(context)
-    const individualPermitHolderDetails = await check.getIndividualPermitHolderDetails()
-    Code.expect(individualPermitHolderDetails).to.equal(fakeIndividualPermitHolderDetails)
-    Code.expect(context.individualPermitHolderDetails).to.equal(await check.getIndividualPermitHolderDetails())
-  })
-
-  lab.test('getResponsibleOfficer works correctly', async () => {
-    const check = new BaseCheck(context)
-    const responsibleOfficer = await check.getResponsibleOfficer()
-    Code.expect(responsibleOfficer).to.equal(fakeContactDetail)
-    Code.expect(context.responsibleOfficer).to.equal(await check.getResponsibleOfficer())
-  })
-
-  lab.test('getMembers works correctly', async () => {
-    const check = new BaseCheck(context)
-    const members = await check.getMembers()
-    Code.expect(members).to.equal([fakeContactDetail])
-    Code.expect(context.members).to.equal(await check.getMembers())
-  })
-
-  lab.test('getPartners works correctly', async () => {
-    const check = new BaseCheck(context)
-    const partners = await check.getPartners()
-    Code.expect(partners).to.equal([fakeContactDetail])
-    Code.expect(context.partners).to.equal(await check.getPartners())
-  })
-
   lab.test('getPermitHolderType works correctly', async () => {
     context.permitHolderType = fakePermitHolderType
     const check = new BaseCheck(context)
@@ -250,39 +183,13 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(context.permitHolderType).to.equal(await check.getPermitHolderType())
   })
 
-  lab.test('getPrimaryContactDetails works correctly', async () => {
-    const check = new BaseCheck(context)
-    const primaryContactDetails = await check.getPrimaryContactDetails()
-    Code.expect(primaryContactDetails).to.equal(fakePrimaryContact)
-    Code.expect(context.primaryContactDetails).to.equal(await check.getPrimaryContactDetails())
-  })
-
-  lab.test('getIndividualPermitHolder works correctly', async () => {
-    const check = new BaseCheck(context)
-    const individualPermitHolder = await check.getIndividualPermitHolder()
-    Code.expect(individualPermitHolder).to.equal(fakeIndividualPermitHolder)
-    Code.expect(context.individualPermitHolder).to.equal(await check.getIndividualPermitHolder())
-  })
-
-  lab.test('getIndividualPermitHolderAddress works correctly', async () => {
-    const check = new BaseCheck(context)
-    const individualPermitHolderAddress = await check.getIndividualPermitHolderAddress()
-    Code.expect(individualPermitHolderAddress).to.equal(fakeAddress)
-    Code.expect(context.individualPermitHolderAddress).to.equal(await check.getIndividualPermitHolderAddress())
-  })
-
   lab.test('getBillingInvoicingDetails works correctly', async () => {
+    fakeAddressType = { TYPE: 910400004 }
+    fakeContactDetail.type = fakeAddressType.TYPE
     const check = new BaseCheck(context)
     const billingInvoicingDetails = await check.getBillingInvoicingDetails()
-    Code.expect(billingInvoicingDetails).to.equal(fakeBillingInvoicing)
-    Code.expect(context.billingInvoicingDetails).to.equal(await check.getBillingInvoicingDetails())
-  })
-
-  lab.test('getDirectors works correctly', async () => {
-    const check = new BaseCheck(context)
-    const directors = await check.getDirectors()
-    Code.expect(directors).to.equal([fakeContactDetail])
-    Code.expect(context.directors).to.equal(await check.getDirectors())
+    Code.expect(billingInvoicingDetails).to.equal(fakeContactDetail)
+    Code.expect(context.contactDetails[0]).to.equal(await check.getBillingInvoicingDetails())
   })
 
   lab.test('getLocation works correctly', async () => {
@@ -300,9 +207,11 @@ lab.experiment('Base Check tests:', () => {
   })
 
   lab.test('getMainAddress works correctly', async () => {
+    fakeAddressType = { TYPE: 910400001 }
+    fakeContactDetail.type = fakeAddressType.TYPE
     const check = new BaseCheck(context)
     const mainAddress = await check.getMainAddress()
-    Code.expect(mainAddress).to.equal(fakeAddress)
+    Code.expect(mainAddress).to.equal(fakeContactDetail)
     Code.expect(context.mainAddress).to.equal(await check.getMainAddress())
   })
 
@@ -314,6 +223,8 @@ lab.experiment('Base Check tests:', () => {
   })
 
   lab.test('getInvoiceAddress works correctly', async () => {
+    fakeAddressType = { TYPE: 910400004 }
+    fakeContactDetail.type = fakeAddressType.TYPE
     const check = new BaseCheck(context)
     const invoiceAddress = await check.getInvoiceAddress()
     Code.expect(invoiceAddress).to.equal(fakeAddress)

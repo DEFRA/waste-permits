@@ -1,20 +1,23 @@
 'use strict'
 
 const BaseController = require('./base.controller')
-const AddressDetail = require('../persistence/entities/addressDetail.entity')
+const ContactDetail = require('../models/contactDetail.model')
 const RecoveryService = require('../services/recovery.service')
+const { DESIGNATED_MEMBER_CONTACT_DETAILS } = require('../dynamics').AddressTypes
 
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
-    const { applicationId } = context
+    const context = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const { email } = await AddressDetail.getDesignatedMemberDetails(context, applicationId)
-      pageContext.formValues = { email }
+      const type = DESIGNATED_MEMBER_CONTACT_DETAILS.TYPE
+      const contactDetail = await ContactDetail.get(context, { type })
+      if (contactDetail) {
+        pageContext.formValues = { email: contactDetail.email }
+      }
     }
 
     return this.showView({ request, h, pageContext })
@@ -24,11 +27,12 @@ module.exports = class ContactDetailsController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
+      const context = await RecoveryService.createApplicationContext(h)
       const { applicationId } = context
-      const designatedMemberDetails = await AddressDetail.getDesignatedMemberDetails(context, applicationId)
-      designatedMemberDetails.email = request.payload.email
-      await designatedMemberDetails.save(context)
+      const type = DESIGNATED_MEMBER_CONTACT_DETAILS.TYPE
+      const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
+      contactDetail.email = request.payload.email
+      await contactDetail.save(context)
 
       return this.redirect({ request, h, redirectPath: this.nextPath })
     }

@@ -60,9 +60,9 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
-  sandbox.stub(ContactDetail.prototype, 'save').value(() => {})
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
   sandbox.stub(PublicBodyDetails, 'updateCompleteness').value(() => {})
 })
 

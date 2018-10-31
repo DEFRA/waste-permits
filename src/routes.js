@@ -421,6 +421,7 @@ const Routes = {
     pageHeading: `What are the permit holder's contact details?`,
     controller: 'permitHolder/permitHolderContactDetails',
     validator: 'permitHolder/permitHolderContactDetails',
+    nextRoute: 'POSTCODE_PERMIT_HOLDER',
     types: 'GET, POST'
   },
   PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH:
@@ -430,6 +431,8 @@ const Routes = {
     pageHeading: 'Who will be the permit holder?',
     controller: 'permitHolder/permitHolderNameAndDateOfBirth',
     validator: 'permitHolder/permitHolderNameAndDateOfBirth',
+    nextRoute: 'PERMIT_HOLDER_CONTACT_DETAILS',
+    companyRoute: 'PERMIT_HOLDER_TRADING_NAME',
     types: 'GET, POST'
   },
   PERMIT_HOLDER_TRADING_NAME: {
@@ -476,7 +479,6 @@ const Routes = {
     pageHeading: 'What are the contact details for {{name}}?',
     controller: 'permitHolder/partnershipContactDetails',
     validator: 'permitHolder/permitHolderContactDetails',
-    nextRoute: 'PERMIT_HOLDER_CONTACT_DETAILS',
     types: 'GET, POST'
   },
   PARTNERSHIP_PARTNER_LIST: {

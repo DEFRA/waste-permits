@@ -4,20 +4,22 @@ const { INVOICING_DETAILS } = require('./taskList').CompletedParameters
 
 const BaseTask = require('./base.task')
 const Address = require('../../persistence/entities/address.entity')
-const AddressDetail = require('../../persistence/entities/addressDetail.entity')
+const ContactDetail = require('../../models/contactDetail.model')
 const LoggingService = require('../../services/logging.service')
+const { BILLING_INVOICING } = require('../../dynamics').AddressTypes
+const type = BILLING_INVOICING.TYPE
 
 module.exports = class InvoiceAddress extends BaseTask {
-  static async getAddress (request, applicationId) {
+  static async getAddress (request) {
     let address
     try {
       const context = request.app.data
-      // Get the AddressDetail for this application
-      const addressDetail = await AddressDetail.getBillingInvoicingDetails(context, applicationId)
+      // Get the Invoicing Address for this application
+      const contactDetail = await ContactDetail.get(context, { type: BILLING_INVOICING.TYPE })
 
-      if (addressDetail && addressDetail.addressId !== undefined) {
-        // Get the Address for this AddressDetail
-        address = await Address.getById(context, addressDetail.addressId)
+      if (contactDetail && contactDetail.addressId !== undefined) {
+        // Get the Address for this Contact Detail
+        address = await Address.getById(context, contactDetail.addressId)
       }
     } catch (error) {
       LoggingService.logError(error, request)
@@ -38,10 +40,8 @@ module.exports = class InvoiceAddress extends BaseTask {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    let addressDetail = await AddressDetail.getBillingInvoicingDetails(context, applicationId)
-    if (!addressDetail.addressId) {
-      await addressDetail.save(context)
-    }
+    // Get the Invoicing Address for this application
+    const contactDetail = await ContactDetail.get(context, { type }) || new ContactDetail({ applicationId, type })
 
     let address = await Address.getByUprn(context, addressDto.uprn)
     if (!address) {
@@ -54,12 +54,13 @@ module.exports = class InvoiceAddress extends BaseTask {
       }
     }
 
-    // Save the AddressDetail to associate the Address with the Application
-    if (address && addressDetail) {
-      addressDetail.addressId = address.id
-      await addressDetail.save(context)
+    // Save the ContactDetail to associate the Address with the Application
+    if (address && contactDetail) {
+      contactDetail.addressId = address.id
+      await contactDetail.save(context)
     }
 
+    // Get the Invoicing Address for this application
     await InvoiceAddress.updateCompleteness(context, applicationId, applicationLineId)
   }
 
@@ -69,14 +70,11 @@ module.exports = class InvoiceAddress extends BaseTask {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
 
-    // Get the AddressDetail for this Application (if there is one)
-    let addressDetail = await AddressDetail.getBillingInvoicingDetails(context, applicationId)
-    if (!addressDetail.addressId) {
-      await addressDetail.save(context)
-    }
+    // Get the Invoicing Address for this application if there is one
+    const contactDetail = await ContactDetail.get(context, { type }) || new ContactDetail({ applicationId, type })
 
     // Get the Address for this AddressDetail (if there is one)
-    let address = await Address.getById(context, addressDetail.addressId)
+    let address = await Address.getById(context, contactDetail.addressId)
     if (!address || address.fromAddressLookup) {
       // Create a new address if changing from a selected address
       address = new Address(addressDto)
@@ -86,10 +84,10 @@ module.exports = class InvoiceAddress extends BaseTask {
     address.fromAddressLookup = false
     await address.save(context)
 
-    // Save the AddressDetail to associate the Address with the Application
-    if (address && addressDetail) {
-      addressDetail.addressId = address.id
-      await addressDetail.save(context)
+    // Save the ContactDetail to associate the Address with the Application
+    if (address && contactDetail) {
+      contactDetail.addressId = address.id
+      await contactDetail.save(context)
     }
 
     await InvoiceAddress.updateCompleteness(context, applicationId, applicationLineId)
@@ -99,8 +97,8 @@ module.exports = class InvoiceAddress extends BaseTask {
     return INVOICING_DETAILS
   }
 
-  static async checkComplete (context, applicationId) {
-    const addressDetail = await AddressDetail.getBillingInvoicingDetails(context, applicationId)
-    return Boolean(addressDetail && addressDetail.addressId && await Address.getById(context, addressDetail.addressId))
+  static async checkComplete (context) {
+    const contactDetail = await ContactDetail.get(context, { type: BILLING_INVOICING.TYPE })
+    return Boolean(contactDetail && contactDetail.addressId && await Address.getById(context, contactDetail.addressId))
   }
 }
