@@ -4,20 +4,23 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const server = require('../../server')
-const GeneralTestHelper = require('./generalTestHelper.test')
+const server = require('../../../server')
+const GeneralTestHelper = require('../generalTestHelper.test')
 
-const Application = require('../../src/persistence/entities/application.entity')
-const CookieService = require('../../src/services/cookie.service')
-const featureConfig = require('../../src/config/featureConfig')
-const { COOKIE_RESULT } = require('../../src/constants')
+const AuthService = require('../../../src/services/activeDirectoryAuth.service')
+const DUMMY_AUTH_TOKEN = 'dummy-auth-token'
 
-let fakeApplication
+const PermitTypeList = require('../../../src/models/triage/permitTypeList.model')
+
 let sandbox
 
-const routePath = '/bespoke-or-standard-rules'
-const nextRoutePath = '/permit-holder'
+const FAKE_PERMIT_TYPE_ID = 'fake-permit-type'
+const FAKE_PERMIT_TYPE = { id: FAKE_PERMIT_TYPE_ID, canApplyOnline: false }
+
+const routePath = '/triage'
+const standardRuleRoutePath = '/permit-holder'
 const bespokeRoutePath = '/triage/bespoke'
+const offlinePath = '/bespoke-apply-offline'
 
 const permitTypeQuery = '?permit-type='
 const bespokeQuery = `${permitTypeQuery}bespoke`
@@ -27,6 +30,9 @@ const invalidParameterQuery = '?invalid-parameter=invalid-value'
 
 let getRequest
 let postRequest
+
+let fakePermitType
+let fakePermitTypeList
 
 const checkCommonElements = async (doc) => {
   Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Confirm the type of permit you want')
@@ -44,30 +50,9 @@ const checkCommonElements = async (doc) => {
 }
 
 lab.beforeEach(() => {
-  getRequest = {
-    method: 'GET',
-    url: routePath,
-    headers: {}
-  }
-  postRequest = {
-    method: 'POST',
-    url: routePath,
-    headers: {}
-  }
-
-  fakeApplication = {
-    id: 'APPLICATION_ID'
-  }
-
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
-
-  // Stub methods
-  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  // Todo: Remove hasBespokeFeature syub when bespoke is live
-  sandbox.stub(featureConfig, 'hasBespokeFeature').value(() => true)
+  sandbox.stub(AuthService.prototype, 'getToken').value(() => DUMMY_AUTH_TOKEN)
 })
 
 lab.afterEach(() => {
@@ -75,10 +60,21 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Bespoke or standard rules page tests:', () => {
-  new GeneralTestHelper({ lab, routePath }).test()
+lab.experiment('Triage permit type (bespoke or standard rules) page tests:', () => {
+  new GeneralTestHelper({ lab, routePath }).test({
+    excludeCookieGetTests: true,
+    excludeCookiePostTests: true,
+    excludeAlreadySubmittedTest: true })
 
   lab.experiment('GET:', () => {
+    lab.beforeEach(() => {
+      getRequest = {
+        method: 'GET',
+        url: routePath,
+        headers: {}
+      }
+    })
+
     lab.test('GET returns the Bespoke or Standard Rules page correctly', async () => {
       const doc = await GeneralTestHelper.getDoc(getRequest)
       await checkCommonElements(doc)
@@ -116,13 +112,21 @@ lab.experiment('Bespoke or standard rules page tests:', () => {
   })
 
   lab.experiment('POST:', () => {
+    lab.beforeEach(() => {
+      postRequest = {
+        method: 'POST',
+        url: routePath,
+        headers: {}
+      }
+    })
+
     lab.test('POST on Bespoke or Standard Rules page for a standard rule redirects to the next route', async () => {
       postRequest.payload = {
-        'permit-type': 'standard-rule'
+        'permit-type': 'standard-rules'
       }
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers['location']).to.equal(standardRuleRoutePath)
     })
 
     lab.test('POST on Bespoke or Standard Rules page for bespoke redirects to the correct route', async () => {
@@ -132,6 +136,18 @@ lab.experiment('Bespoke or standard rules page tests:', () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(bespokeRoutePath)
+    })
+
+    lab.test('POST for permit type that cannot be applied for online redirects to offline route', async () => {
+      fakePermitType = Object.assign({}, FAKE_PERMIT_TYPE)
+      fakePermitTypeList = new PermitTypeList({}, [fakePermitType])
+      sandbox.stub(PermitTypeList, 'getListOfAllPermitTypes').value(() => fakePermitTypeList)
+      postRequest.payload = {
+        'permit-type': FAKE_PERMIT_TYPE_ID
+      }
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(offlinePath)
     })
 
     lab.test('POST Bespoke or Standard Rules page shows the error message summary panel when bespoke or standard rules has not been selected', async () => {

@@ -1,0 +1,50 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>
+        Showing activities for {{triageData.selectedFacilityTypes.typeText}}.
+        <a id="change-facility" href="{{previousStepPath}}">Change facility type</a>.
+      </p>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div id="activity" class="form-group {{#getFormErrorGroupClass errors.activity}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='activity-error' message=errors.activity }}
+            {{#with triageData}}
+            {{#each availableActivities.items}}
+            <div class="multiple-choice">
+              <input id="activity-{{this.id}}-input" type="checkbox" name="activity" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
+              <label id="activity-{{this.id}}-label" for="activity-{{this.id}}-input">
+                <span id="activity-{{this.id}}-text">{{this.text}}{{#if this.activityCode}} &nbsp;<span id="activity-{{this.id}}-hint" class="hint">{{this.activityCode}}</span>{{/if}}</span>
+              </label>
+            </div>
+            {{/each}}
+            {{/with}}
+          </div>
+
+        </fieldset>
+
+        <div class="form-group">
+          <p><span id="helpline-text">Not sure? Call our helpline on</span> <a id="helpline-number" href="tel:+443708506506">03708 506 506.</a></p>
+        </div>
+
+        {{> common/submitButton }}
+
+      </form>
+    </div>
+  </div>
+</main>

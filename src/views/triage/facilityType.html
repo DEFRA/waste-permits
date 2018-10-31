@@ -1,0 +1,46 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div id="facility-type" class="form-group {{#getFormErrorGroupClass errors.facility-type}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='facility-type-error' message=errors.facility-type }}
+            {{#with triageData}}
+            {{#each availableFacilityTypes.items}}
+            <div class="multiple-choice">
+              <input id="facility-type-{{this.id}}-input" type="radio" name="facility-type" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
+              <label id="facility-type-{{this.id}}-label" class="selection-button-radio" for="facility-type-{{this.id}}-input">
+                <span id="facility-type-{{this.id}}-text">{{this.text}}</span>
+                {{#if this.description}}<span id="facility-type-{{this.id}}-hint" class="form-hint">{{this.description}}</span>{{/if}}
+              </label>
+            </div>
+            {{/each}}
+            {{/with}}
+          </div>
+
+        </fieldset>
+
+        <div class="form-group">
+          <p><span id="helpline-text">Not sure? Call our helpline on</span> <a id="helpline-number" href="tel:+443708506506">03708 506 506.</a></p>
+        </div>
+
+        {{> common/submitButton }}
+
+      </form>
+    </div>
+  </div>
+</main>
