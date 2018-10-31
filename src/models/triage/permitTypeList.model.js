@@ -44,8 +44,7 @@ class PermitTypeList {
   }
 
   static async getListOfAllPermitTypes (entityContextToUse) {
-    const permitTypes = []
-    PERMIT_TYPE_LIST.forEach((permitType) => permitTypes.push(new PermitType(permitType)))
+    const permitTypes = PERMIT_TYPE_LIST.map(item => new PermitType(item))
     return new PermitTypeList(entityContextToUse, permitTypes)
   }
 }

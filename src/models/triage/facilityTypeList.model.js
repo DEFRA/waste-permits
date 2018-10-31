@@ -48,7 +48,7 @@ const FacilityTypeList = class {
     // Only bespoke permit types have facilities
     if (permitTypesArray.find((item) => item.id === 'bespoke')) {
       // All permit holder types have the same list of facility types
-      FACILITY_TYPE_LIST.forEach((facilityType) => facilityTypes.push(new FacilityType(facilityType)))
+      facilityTypes = FACILITY_TYPE_LIST.map(item => new FacilityType(item))
     }
     return new FacilityTypeList(entityContextToUse, permitTypesArray, permitHolderTypesArray, facilityTypes)
   }
