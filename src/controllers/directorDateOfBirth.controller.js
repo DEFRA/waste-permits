@@ -7,13 +7,29 @@ const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
 const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
-const ApplicationContact = require('../persistence/entities/applicationContact.entity')
+const ContactDetail = require('../models/contactDetail.model')
 const Contact = require('../persistence/entities/contact.entity')
 
+const {
+  AddressTypes: { DESIGNATED_MEMBER_CONTACT_DETAILS, DIRECTOR_CONTACT_DETAILS },
+  PERMIT_HOLDER_TYPES: { LIMITED_COMPANY, LIMITED_LIABILITY_PARTNERSHIP }
+} = require('../dynamics')
+
 module.exports = class DirectorDateOfBirthController extends BaseController {
+  _getContactType (permitHolderType) {
+    switch (permitHolderType) {
+      case LIMITED_COMPANY:
+        return DIRECTOR_CONTACT_DETAILS.TYPE
+      case LIMITED_LIABILITY_PARTNERSHIP:
+        return DESIGNATED_MEMBER_CONTACT_DETAILS.TYPE
+      default:
+        throw new Error(`Unexpected permit holder type: ${permitHolderType.type}`)
+    }
+  }
+
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h, { account: true })
-    const { applicationId, account } = context
+    const { applicationId, account, permitHolderType } = context
 
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
@@ -24,14 +40,16 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     // Get the directors that relate to this application
     const directors = await this._getDirectors(context, applicationId, account.id)
     const companies = await account.listLinked(context)
+    const type = this._getContactType(permitHolderType)
+    const contactDetails = await ContactDetail.list(context, { type })
 
-    // Add the day of birth to each Director's date of birth from the ApplicationContact (if we have it)
-    for (let director of directors) {
-      let applicationContact = await ApplicationContact.get(context, applicationId, director.id)
-      if (applicationContact && applicationContact.directorDob) {
-        director.dob.day = Utilities.extractDayFromDate(applicationContact.directorDob)
+    // Add the day of birth to each Director's date of birth from the ContactDetail (if we have it)
+    directors.forEach((director) => {
+      const contactDetail = contactDetails.find(({ customerId }) => customerId === director.id)
+      if (contactDetail && contactDetail.dateOfBirth) {
+        director.dob.day = Utilities.extractDayFromDate(contactDetail.dateOfBirth)
       }
-    }
+    })
 
     const validator = new this.validator.constructor()
 
@@ -52,10 +70,9 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     }
 
     if (request.payload) {
-      for (let i = 0; i < directors.length; i++) {
-        let field = request.payload[`director-dob-day-${i}`]
-        pageContext.directors[i].dob.day = field || ''
-      }
+      pageContext.directors.forEach((director, index) => {
+        director.dob.day = request.payload[`director-dob-day-${index}`] || ''
+      })
     }
 
     return this.showView({ request, h, pageContext })
@@ -63,7 +80,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
   async doPost (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h, { account: true })
-    const { applicationId, account } = context
+    const { applicationId, account, permitHolderType } = context
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
       LoggingService.logError(message, request)
@@ -78,26 +95,27 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      // Save Director dates of birth in their corresponding ApplicationContact record
-      for (let i = 0; i < directors.length; i++) {
-        const director = directors[i]
-        director.dob.day = parseInt(request.payload[`director-dob-day-${i}`])
+      // Save Director dates of birth in their corresponding ContactDetail record
+      const type = this._getContactType(permitHolderType)
+      const contactDetails = await ContactDetail.list(context, { type })
 
-        // Get the ApplicationContact for this application
-        let applicationContact = await ApplicationContact.get(context, applicationId, director.id)
-        if (!applicationContact) {
-          // Create a ApplicationContact in Dynamics
-          applicationContact = new ApplicationContact({
-            directorDob: Utilities.formatDateForPersistence(director.dob),
-            applicationId: applicationId,
-            contactId: director.id
-          })
-        } else {
-          // Update existing ApplicationContact
-          applicationContact.directorDob = Utilities.formatDateForPersistence(director.dob)
-        }
-        await applicationContact.save(context)
-      }
+      // Add the day of birth to each Director's date of birth from the ContactDetail (if we have it)
+      await Promise.all(directors.map(async ({ dob, id, firstName, lastName }, index) => {
+        const contactDetail = contactDetails.find(({ customerId }) => customerId === id) || new ContactDetail({
+          applicationId,
+          customerId: id,
+          type
+        })
+
+        dob.day = request.payload[`director-dob-day-${index}`]
+        contactDetail.dateOfBirth = Utilities.formatDateForPersistence(dob)
+        contactDetail.firstName = firstName
+        contactDetail.lastName = lastName
+        contactDetail.organisationType = permitHolderType.dynamicsOrganisationTypeId
+        contactDetail.applicationId = applicationId
+
+        return contactDetail.save(context)
+      }))
 
       return this.redirect({ request, h, redirectPath: this.nextPath })
     }

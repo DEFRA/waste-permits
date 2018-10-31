@@ -63,14 +63,14 @@ module.exports = class ContactDetail extends BaseModel {
   }
 
   async save (context) {
-    const { applicationId, firstName, lastName, jobTitle, telephone, email, dateOfBirth, type, addressId } = this
+    const { applicationId, firstName, lastName, jobTitle, telephone, email, dateOfBirth, type, addressId, customerId } = this
     let { id } = this
 
     if (!id && !type) {
       throw new Error('Expected either contact details id or type to be declared')
     }
 
-    const addressDetail = id ? await AddressDetail.getById(context, id) : new AddressDetail({ applicationId, type })
+    const addressDetail = id ? await AddressDetail.getById(context, id) : new AddressDetail({ applicationId, type, customerId })
 
     if (firstName || lastName) {
       const contact = addressDetail.customerId ? await Contact.getById(context, addressDetail.customerId) : new Contact({})

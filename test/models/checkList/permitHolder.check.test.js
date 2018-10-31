@@ -73,21 +73,16 @@ lab.beforeEach(() => {
   fakeDirector = {
     firstName: 'FIRSTNAME',
     lastName: 'LASTNAME',
-    dob: {
-      day: 1,
-      month: 2,
-      year: 2003
-    }
+    dateOfBirth: '2003-2-1'
   }
 
   fakePartner = {
-    name: 'NAME',
+    firstName: 'FIRSTNAME',
+    lastName: 'LASTNAME',
     email: 'PARTNER_EMAIL',
     telephone: 'PARTNER_TELEPHONE',
-    dob: '11/02/2003',
-    address: {
-      fullAddress: 'FULL_ADDRESS'
-    }
+    dateOfBirth: '2003-2-11',
+    fullAddress: 'FULL_ADDRESS'
   }
 
   fakeIndividualPermitHolder = {
@@ -260,8 +255,8 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(answer).to.equal('The partners will be the permit holders and each will be responsible for the operation of the permit.')
       Code.expect(answerId).to.equal(`${linePrefix}-answer-1`)
 
-      const { name, email, telephone, dob, fullAddress } = fakePartner
-      const [day, month, year] = dob.split('/')
+      const { firstName, lastName, email, telephone, dateOfBirth, fullAddress } = fakePartner
+      const [year, month, day] = dateOfBirth.split('-')
 
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 2}`)
@@ -270,7 +265,7 @@ lab.experiment('PermitHolder Check tests:', () => {
             Code.expect(answer).to.equal({ blankLine: true })
             break
           case 1:
-            Code.expect(answer).to.equal(name)
+            Code.expect(answer).to.equal(`${firstName} ${lastName}`)
             break
           case 2:
             Code.expect(answer).to.equal(fullAddress)
@@ -421,7 +416,8 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { firstName, lastName, dob: { day, month, year } } = fakeDirector
+      const { firstName, lastName, dateOfBirth } = fakeDirector
+      const [year, month, day] = dateOfBirth.split('-')
       Code.expect(answer).to.equal(`${firstName} ${lastName}: ${day} ${getMonth(month)} ${year}`)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 

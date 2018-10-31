@@ -4,15 +4,12 @@ const Address = require('../../persistence/entities/address.entity')
 const AddressDetail = require('../../persistence/entities/addressDetail.entity')
 const Annotation = require('../../persistence/entities/annotation.entity')
 const Application = require('../../persistence/entities/application.entity')
-const ApplicationContact = require('../../persistence/entities/applicationContact.entity')
 const Contact = require('../../persistence/entities/contact.entity')
 const Location = require('../../persistence/entities/location.entity')
 const LocationDetail = require('../../persistence/entities/locationDetail.entity')
 const StandardRule = require('../../persistence/entities/standardRule.entity')
 const ContactDetail = require('../contactDetail.model')
-const Utilities = require('../../utilities/utilities')
-const { COMPANY_DIRECTOR, LLP_DESIGNATED_MEMBER } = require('../../dynamics').AccountRoleCodes
-const { RESPONSIBLE_CONTACT_DETAILS, PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
+const { RESPONSIBLE_CONTACT_DETAILS, PARTNER_CONTACT_DETAILS, DIRECTOR_CONTACT_DETAILS, DESIGNATED_MEMBER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 const { TECHNICAL_QUALIFICATION, SITE_PLAN, FIRE_PREVENTION_PLAN, WASTE_RECOVERY_PLAN } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -113,31 +110,21 @@ module.exports = class BaseCheck {
   }
 
   async getDirectors () {
-    const { applicationId, directors } = this.data
-    const { id } = await this.getCompanyAccount()
+    const { directors } = this.data
     if (!directors) {
-      this.data.directors = await Contact.list(this.data, id, COMPANY_DIRECTOR)
-      await Promise.all(this.data.directors.map(async (director) => {
-        let applicationContact = await ApplicationContact.get(this.data, applicationId, director.id)
-        if (applicationContact && applicationContact.directorDob) {
-          director.dob.day = Utilities.extractDayFromDate(applicationContact.directorDob)
-        }
-      }))
+      const type = DIRECTOR_CONTACT_DETAILS.TYPE
+      this.data.directors = await ContactDetail.list(this.data, { type })
     }
     return this.data.directors || []
   }
 
   async getMembers () {
-    const { applicationId, members } = this.data
-    const { id } = await this.getCompanyAccount()
+    const { members } = this.data
     if (!members) {
-      this.data.members = await Contact.list(this.data, id, LLP_DESIGNATED_MEMBER)
-      await Promise.all(this.data.members.map(async (member) => {
-        let applicationContact = await ApplicationContact.get(this.data, applicationId, member.id)
-        if (applicationContact && applicationContact.directorDob) {
-          member.dob.day = Utilities.extractDayFromDate(applicationContact.directorDob)
-        }
-      }))
+      const type = DESIGNATED_MEMBER_CONTACT_DETAILS.TYPE
+      const list = await ContactDetail.list(this.data, { type })
+      // Only return those members with a date of birth
+      this.data.members = list.filter(({ dateOfBirth }) => dateOfBirth)
     }
     return this.data.members || []
   }
@@ -146,13 +133,7 @@ module.exports = class BaseCheck {
     const { partners } = this.data
     if (!partners) {
       const type = PARTNER_CONTACT_DETAILS.TYPE
-      const list = await ContactDetail.list(this.data, { type })
-      this.data.partners = list.map(({ id, firstName, lastName, dateOfBirth, email, telephone, fullAddress }) => {
-        const name = `${firstName} ${lastName}`
-        const [year, month, day] = dateOfBirth.split('-')
-        const dob = Utilities.formatDate({ year, month, day })
-        return { name, email, telephone, dob, fullAddress }
-      })
+      this.data.partners = await ContactDetail.list(this.data, { type })
     }
     return this.data.partners || {}
   }

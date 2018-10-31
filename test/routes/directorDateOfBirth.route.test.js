@@ -11,9 +11,10 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const Account = require('../../src/persistence/entities/account.entity')
 const Application = require('../../src/persistence/entities/application.entity')
-const ApplicationContact = require('../../src/persistence/entities/applicationContact.entity')
+const ContactDetail = require('../../src/models/contactDetail.model')
 const Contact = require('../../src/persistence/entities/contact.entity')
 const { COOKIE_RESULT } = require('../../src/constants')
+const { LIMITED_LIABILITY_PARTNERSHIP, LIMITED_COMPANY } = require('../../src/dynamics').PERMIT_HOLDER_TYPES
 
 let sandbox
 
@@ -21,6 +22,7 @@ const routes = {
   'Limited Company': {
     singleDirectorPageHeading: `What is the director's date of birth?`,
     multipleDirectorPageHeading: `What are the directors' dates of birth?`,
+    permitHolderType: LIMITED_COMPANY,
     routePath: '/permit-holder/company/director-date-of-birth',
     nextPath: '/permit-holder/company/director-email',
     errorPath: '/errors/technical-problem'
@@ -28,6 +30,7 @@ const routes = {
   'Limited Liability Partnership': {
     singleDirectorPageHeading: `What is the member's date of birth?`,
     multipleDirectorPageHeading: `What are the members' dates of birth?`,
+    permitHolderType: LIMITED_LIABILITY_PARTNERSHIP,
     pageHeading: 'What is the company number for the  limited liability partnership?',
     routePath: '/permit-holder/limited-liability-partnership/member-date-of-birth',
     nextPath: '/permit-holder/limited-liability-partnership/designated-member-email',
@@ -35,7 +38,7 @@ const routes = {
   }
 }
 
-Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multipleDirectorPageHeading, routePath, nextPath }]) => {
+Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multipleDirectorPageHeading, permitHolderType, routePath, nextPath }]) => {
   lab.experiment(companyType, () => {
     let getRequest
     let postRequest
@@ -114,7 +117,8 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
         authToken: 'AUTH_TOKEN',
         applicationId: fakeApplication.id,
         application: new Application(fakeApplication),
-        account: new Account(fakeAccountData)
+        account: new Account(fakeAccountData),
+        permitHolderType
       })
 
       getRequest = {
@@ -137,8 +141,9 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
       sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
       sandbox.stub(Account.prototype, 'listLinked').value(() => fakeCompanies)
       sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-      sandbox.stub(ApplicationContact, 'get').value(() => undefined)
-      sandbox.stub(ApplicationContact.prototype, 'save').value(() => undefined)
+      sandbox.stub(ContactDetail, 'get').value(() => undefined)
+      sandbox.stub(ContactDetail, 'list').value(() => [])
+      sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
       sandbox.stub(Contact, 'list').value(() => fakeContacts)
       sandbox.stub(Contact.prototype, 'save').value(() => undefined)
       sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
