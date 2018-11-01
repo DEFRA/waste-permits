@@ -83,6 +83,7 @@ const FACILITY_TYPES = {
     key: '01',
     text: 'Installation',
     description: 'Facilities which carry out industrial processes like refineries, food and drink factories and intensive farming activities',
+    typeText: 'installations',
     canApplyOnline: false
   },
   WASTE_OPERATION: {
@@ -97,6 +98,7 @@ const FACILITY_TYPES = {
     id: 'mining',
     key: '03',
     text: 'Mining waste operation',
+    typeText: 'mining waste operations',
     canApplyOnline: false
   },
   WATER_DISCHARGE: {
@@ -104,12 +106,14 @@ const FACILITY_TYPES = {
     key: '04',
     text: 'Water discharge',
     description: 'For example, sewage, industrial or trade discharge, clearing water channels',
+    typeText: 'water discharges',
     canApplyOnline: false
   },
   GROUNDWATER: {
     id: 'groundwater',
     key: '05',
     text: 'Groundwater activity',
+    typeText: 'groundwater activities',
     canApplyOnline: false
   }
 }

@@ -17,8 +17,8 @@ const FAKE_PERMIT_HOLDER_TYPE_ID = 'fake-permit-holder-type'
 const FAKE_PERMIT_HOLDER_TYPE = { id: FAKE_PERMIT_HOLDER_TYPE_ID, canApplyOnline: true }
 
 const routePath = '/triage/bespoke'
+const badPath = `${routePath}/invalid`
 const nextRoutePath = `${routePath}/${FAKE_PERMIT_HOLDER_TYPE_ID}`
-const offlinePath = '/bespoke-apply-offline'
 
 let getRequest
 let postRequest
@@ -39,6 +39,9 @@ const checkCommonElements = async (doc) => {
 }
 
 lab.beforeEach(() => {
+  fakePermitHolderType = Object.assign({}, FAKE_PERMIT_HOLDER_TYPE)
+  fakePermitHolderTypeList = new PermitHolderTypeList({}, BESPOKE, [fakePermitHolderType])
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
   sandbox.stub(AuthService.prototype, 'getToken').value(() => DUMMY_AUTH_TOKEN)
@@ -69,6 +72,22 @@ lab.experiment('Triage permit holder type page tests:', () => {
       await checkCommonElements(doc)
     })
 
+    lab.test('GET redirects to the permit holder type page when an invalid value is requested in the path', async () => {
+      getRequest.url = badPath
+      const res = await server.inject(getRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(routePath)
+    })
+
+    lab.test('GET for permit holder types that cannot be applied for online shows apply offline page', async () => {
+      fakePermitHolderType.canApplyOnline = false
+      sandbox.stub(PermitHolderTypeList, 'createList').value(() => fakePermitHolderTypeList)
+      getRequest.url = nextRoutePath
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit')
+      Code.expect(doc.getElementById('bespoke-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/waste-environmental-permits#how-to-apply-for-a-bespoke-permit')
+    })
+
     lab.experiment('GET displays the correct permit holder types', () => {
       const expectedPermitHolderTypes = [
         { id: 'limited-company', text: 'Limited company' },
@@ -95,8 +114,6 @@ lab.experiment('Triage permit holder type page tests:', () => {
 
   lab.experiment('POST:', () => {
     lab.beforeEach(() => {
-      fakePermitHolderType = Object.assign({}, FAKE_PERMIT_HOLDER_TYPE)
-      fakePermitHolderTypeList = new PermitHolderTypeList({}, BESPOKE, [fakePermitHolderType])
       postRequest = {
         method: 'POST',
         url: routePath,
@@ -106,17 +123,10 @@ lab.experiment('Triage permit holder type page tests:', () => {
       sandbox.stub(PermitHolderTypeList, 'createList').value(() => fakePermitHolderTypeList)
     })
 
-    lab.test('POST for permit holder type that can apply online redirects to next route', async () => {
+    lab.test('POST permit holder type redirects to next route', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
-    })
-
-    lab.test('POST for permit holder type that cannot apply online redirects to offline route', async () => {
-      fakePermitHolderType.canApplyOnline = false
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(offlinePath)
     })
 
     lab.test('POST shows the error message summary panel when no permit holder type has been selected', async () => {

@@ -15,16 +15,16 @@ const entityContext = { authToken: 'AUTH_TOKEN' }
 const fakeItemDetailType = (id) => {
   return {
     id: `DUMMY-GUID-ITEM-DETAIL-TYPE-${id}`,
-    detailName: `dummy-item-detail-type-${id}`,
-    description: `Dummy item detail type ${id}`
+    detailTypeName: `Dummy item detail type ${id}`,
+    shortName: `dummy-item-detail-type-${id}`
   }
 }
 
 const fakeDynamicsRecord = (id) => {
   return {
     defra_itemdetailtypeid: `DUMMY-GUID-ITEM-DETAIL-TYPE-${id}`,
-    defra_name: `dummy-item-detail-type-${id}`,
-    defra_description: `Dummy item detail type ${id}`
+    defra_name: `Dummy item detail type ${id}`,
+    defra_shortname: `dummy-item-detail-type-${id}`
   }
 }
 
@@ -53,12 +53,12 @@ lab.experiment('ItemDetailType Entity tests:', () => {
     Code.expect(error.message).to.equal('Unable to save defra_itemdetailtypes: Read only!')
   })
 
-  lab.test('getByName() returns correct values', async () => {
+  lab.test('getByShortName() returns correct values', async () => {
     stub.callsFake(async () => {
       return { value: [fakeDynamicsRecord('00001')] }
     })
     const expectedItemDetailType = fakeItemDetailType('00001')
-    const itemDetailType = await ItemDetailType.getByName(entityContext)
+    const itemDetailType = await ItemDetailType.getByShortName(entityContext)
     Code.expect(itemDetailType).to.exist()
     Code.expect(itemDetailType).to.equal(expectedItemDetailType)
   })

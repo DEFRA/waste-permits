@@ -21,8 +21,9 @@ const FAKE_ACTIVITY = { id: FAKE_ACTIVITY_ID, text: 'Fake activity text', activi
 const FAKE_ACTIVITY2 = { id: FAKE_ACTIVITY_ID2, text: 'Fake activity 2 text', canApplyOnline: false }
 
 const routePath = '/triage/bespoke/limited-company/waste-operation'
-const nextRoutePath = `${routePath}/${FAKE_ACTIVITY_ID}/--`
-const offlinePath = '/bespoke-apply-offline'
+const badPath = `${routePath}/invalid`
+const nextRoutePath = `${routePath}/${FAKE_ACTIVITY_ID}`
+const endRoutePath = `${nextRoutePath}/--`
 
 let getRequest
 let postRequest
@@ -43,6 +44,9 @@ const checkCommonElements = async (doc) => {
 }
 
 lab.beforeEach(() => {
+  fakeActivity = Object.assign({}, FAKE_ACTIVITY)
+  fakeActivityList = new ActivityList({}, BESPOKE, LTD_CO, WASTE, [fakeActivity])
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
   sandbox.stub(AuthService.prototype, 'getToken').value(() => DUMMY_AUTH_TOKEN)
@@ -75,6 +79,31 @@ lab.experiment('Triage activity page tests:', () => {
     lab.test('GET returns the activity page correctly', async () => {
       const doc = await GeneralTestHelper.getDoc(getRequest)
       await checkCommonElements(doc)
+    })
+
+    lab.test('GET redirects to the activity page when an invalid value is requested in the path', async () => {
+      getRequest.url = badPath
+      const res = await server.inject(getRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(routePath)
+    })
+
+    lab.test('GET for activity that cannot be applied for online shows apply offline page', async () => {
+      fakeActivity.canApplyOnline = false
+      sandbox.stub(ActivityList, 'createList').value(() => fakeActivityList)
+      getRequest.url = nextRoutePath
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit')
+      Code.expect(doc.getElementById('bespoke-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/waste-environmental-permits#how-to-apply-for-a-bespoke-permit')
+    })
+
+    lab.test('GET for for multiple activities where some cannot be applied for online shows apply offline page', async () => {
+      fakeActivityList = new ActivityList({}, BESPOKE, LTD_CO, WASTE, [fakeActivity, Object.assign({}, FAKE_ACTIVITY2)])
+      sandbox.stub(ActivityList, 'createList').value(() => fakeActivityList)
+      getRequest.url = `${nextRoutePath}+${FAKE_ACTIVITY_ID2}`
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit')
+      Code.expect(doc.getElementById('bespoke-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/waste-environmental-permits#how-to-apply-for-a-bespoke-permit')
     })
 
     lab.experiment('GET displays the correct activities', () => {
@@ -114,25 +143,10 @@ lab.experiment('Triage activity page tests:', () => {
       sandbox.stub(ActivityList, 'createList').value(() => fakeActivityList)
     })
 
-    lab.test('POST for activity that can be applied for online redirects to next route', async () => {
+    lab.test('POST activity redirects to next route', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
-    })
-
-    lab.test('POST for activity that cannot be applied for online redirects to offline route', async () => {
-      fakeActivity.canApplyOnline = false
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(offlinePath)
-    })
-
-    lab.test('POST for multiple activities where some cannot be applied for online redirects to offline route', async () => {
-      fakeActivityList = new ActivityList({}, BESPOKE, LTD_CO, WASTE, [fakeActivity, Object.assign({}, FAKE_ACTIVITY2)])
-      postRequest.payload['activity'] = [FAKE_ACTIVITY_ID, FAKE_ACTIVITY_ID2].join(',')
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(offlinePath)
+      Code.expect(res.headers['location']).to.equal(endRoutePath)
     })
 
     lab.test('POST shows the error message summary panel when no activity has been selected', async () => {

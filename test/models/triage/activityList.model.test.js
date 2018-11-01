@@ -30,21 +30,31 @@ const NUMBER_OF_OPTIONAL_ASSESSMENTS = 2
 const fakeItemDetailEntities = [{ itemId: 'ID1' }, { itemId: 'ID1' }, { itemId: 'ID2' }, { itemId: 'ID2' }, { itemId: 'ID3' }, { itemId: 'ID3' }]
 const fakeItemEntities = [{
   id: 'ID1',
-  itemName: 'activity-1',
-  displayName: 'Activity 1',
+  shortName: 'activity-1',
+  itemName: 'Activity 1',
   code: '1.activity.code',
+  canApplyFor: true,
   canApplyOnline: true
 }, {
   id: 'ID2',
-  itemName: 'activity-2',
-  displayName: 'Activity 2',
+  shortName: 'activity-2',
+  itemName: 'Activity 2',
   code: '2.activity.code',
+  canApplyFor: true,
   canApplyOnline: true
 }, {
   id: 'ID3',
-  itemName: 'activity-3',
-  displayName: 'Activity 3',
+  shortName: 'activity-3',
+  itemName: 'Activity 3',
   code: '3.activity.code',
+  canApplyFor: true,
+  canApplyOnline: false
+}, {
+  id: 'ID4',
+  shortName: 'activity-4',
+  itemName: 'Activity 4',
+  code: '4.activity.code',
+  canApplyFor: true,
   canApplyOnline: false
 }]
 
@@ -66,9 +76,9 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Triage activity model tests:', () => {
-  // Need to replace this test once we are able to retrieve activities
-  lab.test('includes expected activities', async () => {
+  lab.test('includes only expected activities', async () => {
     Code.expect(activityList.ids).to.include(['activity-1', 'activity-2', 'activity-3'])
+    Code.expect(activityList.ids).to.not.include(['activity-4'])
   })
 
   lab.experiment('Select:', () => {

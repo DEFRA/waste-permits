@@ -12,10 +12,6 @@ const BESPOKE = [{
   id: 'bespoke',
   canApplyOnline: true
 }]
-// const SR = [{
-//   id: 'standard-rules',
-//   canApplyOnline: true
-// }]
 const LTD_CO = [{
   id: 'limited-company',
   canApplyOnline: true
@@ -138,21 +134,5 @@ lab.experiment('Triage facility type model tests:', () => {
       const activityList = await filteredFacilityTypeList.getActivityList()
       Code.expect(activityList.items.length).to.equal(fakeActivities.length)
     })
-    // lab.test('full list for bespoke waste operations', async () => {
-    //   const filteredFacilityTypeList = facilityTypeList.getListFilteredByIds([WASTE])
-    //   const activityList = await filteredFacilityTypeList.getActivityList()
-    //   Code.expect(activityList.items.length).to.equal(fakeActivities.length)
-    // })
-    // lab.test('none for bespoke installations', async () => {
-    //   const filteredFacilityTypeList = facilityTypeList.getListFilteredByIds([INSTALLATION])
-    //   const activityList = await filteredFacilityTypeList.getActivityList()
-    //   Code.expect(activityList.items.length).to.equal(0)
-    // })
-    // lab.test('none for waste standard rules', async () => {
-    //   const srFacilityTypeList = await FacilityTypeList.createList({}, SR, LTD_CO)
-    //   const filteredFacilityTypeList = srFacilityTypeList.getListFilteredByIds([WASTE])
-    //   const activityList = await filteredFacilityTypeList.getActivityList()
-    //   Code.expect(activityList.items.length).to.equal(0)
-    // })
   })
 })

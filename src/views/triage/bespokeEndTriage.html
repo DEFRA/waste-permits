@@ -7,11 +7,17 @@
     <div class="grid-row">
         <div class="column-two-thirds">
 
-            {{> common/pageHeading pageHeading }}
+          {{> common/pageHeading pageHeading }}
 
-            [Eventually we would like to be able to apply for this online but for now...]
+          {{#each triageData.selectedActivities.items}}
+          <p>{{this.text}}</p>
+          {{/each}}
 
-            <h2 id="how-to-apply" class="heading-medium">How to apply</h2>
+          <p>
+            You will soon be able to apply online these types of activity.
+          </p>
+
+          <h2 id="how-to-apply" class="heading-medium">How to apply offline for now</h2>
 
             <div class="form-group">
                 <p>

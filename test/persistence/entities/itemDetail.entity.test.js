@@ -15,8 +15,8 @@ const entityContext = { authToken: 'AUTH_TOKEN' }
 
 const FACILITY_TYPE = {
   id: 'DUMMY-GUID-FACILITY-TYPE-00000',
-  detailName: 'facilitytype',
-  description: 'Dummy facility type'
+  detailTypeName: 'Dummy facility type',
+  shortName: 'facilitytype'
 }
 
 const fakeItemDetail = (id) => {
@@ -42,7 +42,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(ItemDetailType, 'getByName').callsFake(async () => {
+  sandbox.stub(ItemDetailType, 'getByShortName').callsFake(async () => {
     return FACILITY_TYPE
   })
   stub = sandbox.stub(DynamicsDalService.prototype, 'search')

@@ -18,9 +18,10 @@ const FAKE_PERMIT_TYPE_ID = 'fake-permit-type'
 const FAKE_PERMIT_TYPE = { id: FAKE_PERMIT_TYPE_ID, canApplyOnline: false }
 
 const routePath = '/triage'
+const badPath = `${routePath}/invalid`
 const standardRuleRoutePath = '/permit-holder'
-const bespokeRoutePath = '/triage/bespoke'
-const offlinePath = '/bespoke-apply-offline'
+const bespokeRoutePath = `${routePath}/bespoke`
+const offlinePath = `${routePath}/${FAKE_PERMIT_TYPE_ID}`
 
 const permitTypeQuery = '?permit-type='
 const bespokeQuery = `${permitTypeQuery}bespoke`
@@ -82,6 +83,23 @@ lab.experiment('Triage permit type (bespoke or standard rules) page tests:', () 
       Code.expect(doc.getElementById('standard-rules-permit-type').getAttribute('checked')).to.be.empty()
     })
 
+    lab.test('GET redirects to the Bespoke or Standard Rules page when an invalid value is requested in the path', async () => {
+      getRequest.url = badPath
+      const res = await server.inject(getRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(routePath)
+    })
+
+    lab.test('GET for permit type that cannot be applied for online shows apply offline page', async () => {
+      fakePermitType = Object.assign({}, FAKE_PERMIT_TYPE)
+      fakePermitTypeList = new PermitTypeList({}, [fakePermitType])
+      sandbox.stub(PermitTypeList, 'getListOfAllPermitTypes').value(() => fakePermitTypeList)
+      getRequest.url = offlinePath
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit')
+      Code.expect(doc.getElementById('bespoke-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/waste-environmental-permits#how-to-apply-for-a-bespoke-permit')
+    })
+
     lab.test('GET pre-selects bespoke when parameter provided', async () => {
       getRequest.url = `${getRequest.url}${bespokeQuery}`
       const doc = await GeneralTestHelper.getDoc(getRequest)
@@ -136,18 +154,6 @@ lab.experiment('Triage permit type (bespoke or standard rules) page tests:', () 
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(bespokeRoutePath)
-    })
-
-    lab.test('POST for permit type that cannot be applied for online redirects to offline route', async () => {
-      fakePermitType = Object.assign({}, FAKE_PERMIT_TYPE)
-      fakePermitTypeList = new PermitTypeList({}, [fakePermitType])
-      sandbox.stub(PermitTypeList, 'getListOfAllPermitTypes').value(() => fakePermitTypeList)
-      postRequest.payload = {
-        'permit-type': FAKE_PERMIT_TYPE_ID
-      }
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(offlinePath)
     })
 
     lab.test('POST Bespoke or Standard Rules page shows the error message summary panel when bespoke or standard rules has not been selected', async () => {

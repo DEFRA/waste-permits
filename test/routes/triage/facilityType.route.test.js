@@ -18,8 +18,8 @@ const FAKE_FACILITY_TYPE_ID = 'fake-facility-type'
 const FAKE_FACILITY_TYPE = { id: FAKE_FACILITY_TYPE_ID, canApplyOnline: true }
 
 const routePath = '/triage/bespoke/limited-company'
+const badPath = `${routePath}/invalid`
 const nextRoutePath = `${routePath}/${FAKE_FACILITY_TYPE_ID}`
-const offlinePath = '/bespoke-apply-offline'
 
 let getRequest
 let postRequest
@@ -40,6 +40,9 @@ const checkCommonElements = async (doc) => {
 }
 
 lab.beforeEach(() => {
+  fakeFacilityType = Object.assign({}, FAKE_FACILITY_TYPE)
+  fakeFacilityTypeList = new FacilityTypeList({}, BESPOKE, LTD_CO, [fakeFacilityType])
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
   sandbox.stub(AuthService.prototype, 'getToken').value(() => DUMMY_AUTH_TOKEN)
@@ -70,6 +73,22 @@ lab.experiment('Triage facility type page tests:', () => {
       await checkCommonElements(doc)
     })
 
+    lab.test('GET redirects to the facility type page when an invalid value is requested in the path', async () => {
+      getRequest.url = badPath
+      const res = await server.inject(getRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(routePath)
+    })
+
+    lab.test('GET for facility types that cannot be applied for online shows apply offline page', async () => {
+      fakeFacilityType.canApplyOnline = false
+      sandbox.stub(FacilityTypeList, 'createList').value(() => fakeFacilityTypeList)
+      getRequest.url = nextRoutePath
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit for an installation, landfill, mine or water discharge')
+      Code.expect(doc.getElementById('bespoke-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/waste-environmental-permits#how-to-apply-for-a-bespoke-permit')
+    })
+
     lab.experiment('GET displays the correct facility types', () => {
       const expectedFacilityTypes = [
         { id: 'installation', text: 'Installation', hint: true },
@@ -96,8 +115,6 @@ lab.experiment('Triage facility type page tests:', () => {
 
   lab.experiment('POST:', () => {
     lab.beforeEach(() => {
-      fakeFacilityType = Object.assign({}, FAKE_FACILITY_TYPE)
-      fakeFacilityTypeList = new FacilityTypeList({}, BESPOKE, LTD_CO, [fakeFacilityType])
       postRequest = {
         method: 'POST',
         url: routePath,
@@ -107,17 +124,10 @@ lab.experiment('Triage facility type page tests:', () => {
       sandbox.stub(FacilityTypeList, 'createList').value(() => fakeFacilityTypeList)
     })
 
-    lab.test('POST for facility type that can be applied for online redirects to next route', async () => {
+    lab.test('POST facility type redirects to next route', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
-    })
-
-    lab.test('POST for facility type that cannot be applied for online redirects to offline route', async () => {
-      fakeFacilityType.canApplyOnline = false
-      const res = await server.inject(postRequest)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(offlinePath)
     })
 
     lab.test('POST shows the error message summary panel when no facility type has been selected', async () => {
