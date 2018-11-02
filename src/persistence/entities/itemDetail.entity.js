@@ -32,8 +32,8 @@ class ItemDetail extends BaseEntity {
     return this.listBy(context, { itemDetailTypeId, value }, 'itemId')
   }
 
-  static async listByItemDetailTypeNameAndValue (context, itemDetailTypeName, value) {
-    const idForName = await ItemDetailType.getByName(context, itemDetailTypeName)
+  static async listByItemDetailTypeShortNameAndValue (context, itemDetailTypeShortName, value) {
+    const idForName = await ItemDetailType.getByShortName(context, itemDetailTypeShortName)
     return this.listByItemDetailTypeIdAndValue(context, idForName.id, value)
   }
 
@@ -44,7 +44,7 @@ class ItemDetail extends BaseEntity {
   // }
 
   static async listActivitiesForFacilityType (context, facilityTypeName) {
-    return this.listByItemDetailTypeNameAndValue(context, 'facilitytype', facilityTypeName)
+    return this.listByItemDetailTypeShortNameAndValue(context, 'facilitytype', facilityTypeName)
   }
 
   // Will be used for assessments

@@ -14,13 +14,13 @@ class ItemDetailType extends BaseEntity {
   static get mapping () {
     return [
       { field: 'id', dynamics: 'defra_itemdetailtypeid' },
-      { field: 'detailName', dynamics: 'defra_name', encode: true },
-      { field: 'description', dynamics: 'defra_description' }
+      { field: 'detailTypeName', dynamics: 'defra_name' },
+      { field: 'shortName', dynamics: 'defra_shortname', encode: true }
     ]
   }
 
-  static async getByName (context, detailName) {
-    return super.getBy(context, { detailName })
+  static async getByShortName (context, shortName) {
+    return super.getBy(context, { shortName })
   }
 }
 

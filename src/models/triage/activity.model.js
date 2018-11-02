@@ -11,9 +11,9 @@ module.exports = class Activity {
 
   static createFromItemEntity (itemEntity) {
     return new Activity({
-      id: itemEntity.itemName,
-      key: itemEntity.itemName,
-      text: itemEntity.displayName,
+      id: itemEntity.shortName,
+      key: itemEntity.shortName,
+      text: itemEntity.itemName,
       activityCode: itemEntity.code,
       canApplyOnline: itemEntity.canApplyOnline
     })

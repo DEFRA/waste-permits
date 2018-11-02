@@ -18,7 +18,16 @@ module.exports = class TriageController extends BaseController {
 
     pageContext.triageData = await TriageController.initialiseDataFromParams(entityContext, request.params)
     const paths = TriageController.generatePathsFromData(pageContext.triageData)
+
+    if (request.path !== paths.currentStepPath) {
+      return this.redirect({ request, h, redirectPath: paths.currentStepPath })
+    }
+
     pageContext.previousStepPath = paths.previousStepPath
+
+    if (!pageContext.triageData.canApplyOnline) {
+      return this.showViewFromRoute({ viewPropertyName: 'applyOfflineView', request, h, pageContext })
+    }
 
     // Deal with the query string
     if (!pageContext.triageData.selectedPermitTypes) {
@@ -44,51 +53,58 @@ module.exports = class TriageController extends BaseController {
         if (data.selectedFacilityTypes) {
           if (data.selectedActivities) {
             // POSTing optional assessments
-            const selectedOptionalAssessments = request.payload['assessment'] ? request.payload['assessment'].split(',') : []
-            data.selectedOptionalAssessments = data.availableOptionalAssessments.getListFilteredByIds(selectedOptionalAssessments)
+            const requestedOptionalAssessments = request.payload['assessment'] ? request.payload['assessment'].split(',') : []
+            data.selectedOptionalAssessments = data.availableOptionalAssessments.getListFilteredByIds(requestedOptionalAssessments)
+            data.canApplyOnline = data.selectedOptionalAssessments.canApplyOnline
           } else {
             // POSTing activities
-            const selectedActivities = request.payload['activity'] ? request.payload['activity'].split(',') : []
-            data.selectedActivities = data.availableActivities.getListFilteredByIds(selectedActivities)
-            if (!data.selectedActivities.canApplyOnline) {
-              return this.redirect({ request, h, redirectPath: Routes.BESPOKE_APPLY_OFFLINE.path })
-            } else {
-              data.selectedOptionalAssessments = { ids: [] }
-              // Currently we're not handling assessments
-              // // Check to see if there are any optional additional assessments that we want to ask for, otherwise we skip that step
-              // const optionalAssessmentList = await data.selectedActivities.getOptionalAssessmentList()
-              // if (optionalAssessmentList.length === 0) {
-              //   data.selectedOptionalAssessments = { ids: [] }
-              // }
+            const requestedActivities = request.payload['activity'] ? request.payload['activity'].split(',') : []
+            const selectedActivities = data.availableActivities.getListFilteredByIds(requestedActivities)
+            if (selectedActivities.items.length !== 0) {
+              data.selectedActivities = selectedActivities
+              data.canApplyOnline = selectedActivities.canApplyOnline
+              if (data.canApplyOnline) {
+                data.selectedOptionalAssessments = { ids: [] }
+                // Currently we're not handling assessments
+                // // Check to see if there are any optional additional assessments that we want to ask for, otherwise we skip that step
+                // const optionalAssessmentList = await data.selectedActivities.getOptionalAssessmentList()
+                // if (optionalAssessmentList.length === 0) {
+                //   data.selectedOptionalAssessments = { ids: [] }
+                // }
+              }
             }
           }
         } else {
           // POSTing facility type(s)
-          const selectedFacilityType = request.payload['facility-type']
-          data.selectedFacilityTypes = data.availableFacilityTypes.getListFilteredByIds([selectedFacilityType])
+          const requestedFacilityType = request.payload['facility-type']
+          const selectedFacilityTypes = data.availableFacilityTypes.getListFilteredByIds([requestedFacilityType])
           // Currently only waste facilities are supported online
-          if (!data.selectedFacilityTypes.canApplyOnline) {
-            return this.redirect({ request, h, redirectPath: Routes.BESPOKE_APPLY_OFFLINE.path })
+          if (selectedFacilityTypes.items.length === 1) {
+            data.selectedFacilityTypes = selectedFacilityTypes
+            data.canApplyOnline = selectedFacilityTypes.canApplyOnline
           }
         }
       } else {
         // POSTing permit holder type(s)
-        const selectedPermitHolderType = request.payload['permit-holder-type']
-        data.selectedPermitHolderTypes = data.availablePermitHolderTypes.getListFilteredByIds([selectedPermitHolderType])
-        if (!data.selectedPermitHolderTypes.canApplyOnline) {
-          return this.redirect({ request, h, redirectPath: Routes.BESPOKE_APPLY_OFFLINE.path })
+        const requestedPermitHolderType = request.payload['permit-holder-type']
+        const selectedPermitHolderTypes = data.availablePermitHolderTypes.getListFilteredByIds([requestedPermitHolderType])
+        if (selectedPermitHolderTypes.items.length === 1) {
+          data.selectedPermitHolderTypes = selectedPermitHolderTypes
+          data.canApplyOnline = selectedPermitHolderTypes.canApplyOnline
         }
       }
     } else {
       // POSTing permit type(s)
-      const selectedPermitType = request.payload['permit-type']
-      data.selectedPermitTypes = data.availablePermitTypes.getListFilteredByIds([selectedPermitType])
+      const requestedPermitType = request.payload['permit-type']
+      const selectedPermitTypes = data.availablePermitTypes.getListFilteredByIds([requestedPermitType])
+      if (selectedPermitTypes.items.length === 1) {
+        data.selectedPermitTypes = selectedPermitTypes
+        data.canApplyOnline = selectedPermitTypes.canApplyOnline
 
-      // Currently standard rules steps out of triage - just go to the usual page
-      if (selectedPermitType === 'standard-rules') {
-        return this.redirect({ request, h, redirectPath: Routes.PERMIT_HOLDER_TYPE.path })
-      } else if (!data.selectedPermitTypes.canApplyOnline) {
-        return this.redirect({ request, h, redirectPath: Routes.BESPOKE_APPLY_OFFLINE.path })
+        // Currently standard rules steps out of triage - just go to the usual page
+        if (requestedPermitType === 'standard-rules') {
+          return this.redirect({ request, h, redirectPath: Routes.PERMIT_HOLDER_TYPE.path })
+        }
       }
     }
 
@@ -98,7 +114,7 @@ module.exports = class TriageController extends BaseController {
   }
 
   static async initialiseDataFromParams (entityContext, params) {
-    const data = {}
+    const data = { canApplyOnline: true }
     const decodeParamValue = TriageController.decodeParamValue
 
     data.availablePermitTypes = await PermitTypeList.getListOfAllPermitTypes(entityContext)
@@ -111,12 +127,15 @@ module.exports = class TriageController extends BaseController {
       // We have to have chosen a valid permit type
       if (chosenPermitTypeList.items.length === 1) {
         data.selectedPermitTypes = chosenPermitTypeList
-        data.availablePermitHolderTypes = await data.selectedPermitTypes.getPermitHolderTypeList()
+        data.canApplyOnline = chosenPermitTypeList.canApplyOnline
+        if (data.canApplyOnline) {
+          data.availablePermitHolderTypes = await data.selectedPermitTypes.getPermitHolderTypeList()
+        }
       }
     }
 
     // If we've managed to select a valid permit type then check for permit holder types
-    if (data.selectedPermitTypes) {
+    if (data.selectedPermitTypes && data.canApplyOnline) {
       const permitHolderTypeParam = decodeParamValue(params.permitHolderType)
       // We have to have chosen exactly one permit holder type
       if (permitHolderTypeParam && permitHolderTypeParam.length === 1) {
@@ -124,13 +143,16 @@ module.exports = class TriageController extends BaseController {
         // We have to have chosen a valid entry from the list of available types of permit holder
         if (chosenPermitHolderTypeList.items.length === 1) {
           data.selectedPermitHolderTypes = chosenPermitHolderTypeList
-          data.availableFacilityTypes = await data.selectedPermitHolderTypes.getFacilityTypeList()
+          data.canApplyOnline = chosenPermitHolderTypeList.canApplyOnline
+          if (data.canApplyOnline) {
+            data.availableFacilityTypes = await data.selectedPermitHolderTypes.getFacilityTypeList()
+          }
         }
       }
     }
 
     // If we've managed to select a valid permit holder type then check for facility types
-    if (data.selectedPermitHolderTypes) {
+    if (data.selectedPermitHolderTypes && data.canApplyOnline) {
       const facilityTypeParam = decodeParamValue(params.facilityType)
       // We have to have chosen exactly one facility type
       if (facilityTypeParam && facilityTypeParam.length === 1) {
@@ -138,13 +160,16 @@ module.exports = class TriageController extends BaseController {
         // We have to have chosen a valid entry from the list of available types of facility
         if (chosenFacilityTypeList.items.length === 1) {
           data.selectedFacilityTypes = chosenFacilityTypeList
-          data.availableActivities = await data.selectedFacilityTypes.getActivityList()
+          data.canApplyOnline = chosenFacilityTypeList.canApplyOnline
+          if (data.canApplyOnline) {
+            data.availableActivities = await data.selectedFacilityTypes.getActivityList()
+          }
         }
       }
     }
 
     // If we've managed to select a valid facility type then check for activities
-    if (data.selectedFacilityTypes) {
+    if (data.selectedFacilityTypes && data.canApplyOnline) {
       const activityParam = decodeParamValue(params.activity)
       // We have to have chosen at least one activity
       if (activityParam && activityParam.length !== 0) {
@@ -152,14 +177,17 @@ module.exports = class TriageController extends BaseController {
         // We have to have chosen valid entries from the list of available activities
         if (chosenActivityList.items.length === activityParam.length) {
           data.selectedActivities = chosenActivityList
-          data.includedAssessments = await data.selectedActivities.getIncludedAssessmentList()
-          data.availableOptionalAssessments = await data.selectedActivities.getOptionalAssessmentList()
+          data.canApplyOnline = chosenActivityList.canApplyOnline
+          if (data.canApplyOnline) {
+            data.includedAssessments = await data.selectedActivities.getIncludedAssessmentList()
+            data.availableOptionalAssessments = await data.selectedActivities.getOptionalAssessmentList()
+          }
         }
       }
     }
 
     // If we've managed to select valid activities then check for optional assessments
-    if (data.selectedActivities) {
+    if (data.selectedActivities && data.canApplyOnline) {
       const assessmentParam = decodeParamValue(params.assessment)
       if (assessmentParam) {
         data.selectedOptionalAssessments = { ids: [] }

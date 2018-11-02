@@ -15,13 +15,13 @@ class Item extends BaseEntity {
     return [
       { field: 'id', dynamics: 'defra_itemid' },
       { field: 'itemName', dynamics: 'defra_name' },
-      { field: 'displayName', dynamics: 'defra_displayname' },
+      { field: 'shortName', dynamics: 'defra_shortname' },
       { field: 'itemTypeId', dynamics: '_defra_itemtypeid_value', bind: { id: 'defra_itemtypeid', dynamicsEntity: 'defra_itemtypes' } },
       { field: 'code', dynamics: 'defra_code' },
       { field: 'description', dynamics: 'defra_description' },
       { field: 'description2', dynamics: 'defra_description2' },
       { field: 'suffix', dynamics: 'defra_suffix' },
-      // { field: 'canApplyFor', dynamics: 'defra_canapplyfor' },
+      { field: 'canApplyFor', dynamics: 'defra_canapplyfor' },
       { field: 'canApplyOnline', dynamics: 'defra_canapplyonline' }
     ]
   }

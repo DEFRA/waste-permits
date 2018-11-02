@@ -14,7 +14,8 @@ class ItemType extends BaseEntity {
   static get mapping () {
     return [
       { field: 'id', dynamics: 'defra_itemtypeid' },
-      { field: 'itemName', dynamics: 'defra_name' }
+      { field: 'itemTypeName', dynamics: 'defra_name' },
+      { field: 'shortName', dynamics: 'defra_shortname', encode: true }
     ]
   }
 }

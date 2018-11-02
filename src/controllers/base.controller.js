@@ -112,6 +112,13 @@ module.exports = class BaseController {
       .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
+  showViewFromRoute ({ viewPropertyName, request, h, pageContext, code = 200 }) {
+    return h
+      .view(this.route[viewPropertyName], pageContext)
+      .code(code)
+      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+  }
+
   setCustomError (type, field, options = {}) {
     return {
       details: [{

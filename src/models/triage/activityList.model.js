@@ -58,22 +58,21 @@ const ActivityList = class {
 
   static async getActivitiesForFacilityTypes (entityContext, facilityTypes) {
     // Get the list of associated activities for each required facility type
-    const activityIdLookups = facilityTypes.map(({ id }) => ItemDetailEntity.listActivitiesForFacilityType(entityContext, id))
-    const allActivityEntities = await Promise.all(activityIdLookups)
+    const allActivityDetailLookups = facilityTypes.map(({ id }) => ItemDetailEntity.listActivitiesForFacilityType(entityContext, id))
+    const allActivityDetailEntities = await Promise.all(allActivityDetailLookups)
 
     // Rationalise (merge and de-duplicate) the list of activities
-    let activityEntities = [].concat.apply([], allActivityEntities)
-    activityEntities = activityEntities.filter((entity, index, self) => self.findIndex(same => same.itemId === entity.itemId) === index)
+    let rationalisedActivityDetailEntities = [].concat.apply([], allActivityDetailEntities)
+    rationalisedActivityDetailEntities = rationalisedActivityDetailEntities.filter((entity, index, self) => self.findIndex(same => same.itemId === entity.itemId) === index)
 
     // Fetch the details of all the activities
-    const activityLookups = activityEntities.map(({ itemId }) => this.getActivity(entityContext, itemId))
-    const activitiesArray = await Promise.all(activityLookups)
-    return activitiesArray
-  }
+    const activityLookups = rationalisedActivityDetailEntities.map(({ itemId }) => ItemEntity.getById(entityContext, itemId))
+    const activityEntities = await Promise.all(activityLookups)
 
-  static async getActivity (entityContext, activityId) {
-    const itemEntity = await ItemEntity.getById(entityContext, activityId)
-    return Activity.createFromItemEntity(itemEntity)
+    // Filter out any that can no longer be applied for, i.e. they should not appear to a user
+    const filteredActivityEntities = activityEntities.filter(item => item.canApplyFor)
+
+    return filteredActivityEntities.map(item => Activity.createFromItemEntity(item))
   }
 }
 
