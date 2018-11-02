@@ -17,7 +17,7 @@ let sandbox
 const FAKE_PERMIT_TYPE_ID = 'fake-permit-type'
 const FAKE_PERMIT_TYPE = { id: FAKE_PERMIT_TYPE_ID, canApplyOnline: false }
 
-const routePath = '/triage'
+const routePath = '/select'
 const badPath = `${routePath}/invalid`
 const standardRuleRoutePath = '/permit-holder'
 const bespokeRoutePath = `${routePath}/bespoke`

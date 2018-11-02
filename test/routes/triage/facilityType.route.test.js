@@ -17,7 +17,7 @@ const LTD_CO = [{ id: 'limited-company', canApplyOnline: true }]
 const FAKE_FACILITY_TYPE_ID = 'fake-facility-type'
 const FAKE_FACILITY_TYPE = { id: FAKE_FACILITY_TYPE_ID, canApplyOnline: true }
 
-const routePath = '/triage/bespoke/limited-company'
+const routePath = '/select/bespoke/limited-company'
 const badPath = `${routePath}/invalid`
 const nextRoutePath = `${routePath}/${FAKE_FACILITY_TYPE_ID}`
 
@@ -92,7 +92,7 @@ lab.experiment('Triage facility type page tests:', () => {
     lab.experiment('GET displays the correct facility types', () => {
       const expectedFacilityTypes = [
         { id: 'installation', text: 'Installation', hint: true },
-        { id: 'waste-operation', text: 'Waste operation', hint: true },
+        { id: 'waste', text: 'Waste operation', hint: true },
         { id: 'mining', text: 'Mining waste operation', hint: false },
         { id: 'discharge', text: 'Water discharge', hint: true },
         { id: 'groundwater', text: 'Groundwater activity', hint: false }

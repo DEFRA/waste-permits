@@ -17,7 +17,7 @@ let sandbox
 
 const routePath = '/bespoke-or-standard-rules'
 const nextRoutePath = '/permit-holder'
-const bespokeRoutePath = '/triage/bespoke'
+const bespokeRoutePath = '/select/bespoke'
 
 const permitTypeQuery = '?permit-type='
 const bespokeQuery = `${permitTypeQuery}bespoke`

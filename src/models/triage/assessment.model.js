@@ -7,4 +7,13 @@ module.exports = class Assessment {
     this.text = text
     this.canApplyOnline = canApplyOnline
   }
+
+  static createFromItemEntity (itemEntity) {
+    return new Assessment({
+      id: itemEntity.shortName,
+      key: itemEntity.shortName,
+      text: itemEntity.itemName,
+      canApplyOnline: itemEntity.canApplyOnline
+    })
+  }
 }

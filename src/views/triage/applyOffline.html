@@ -7,7 +7,20 @@
   <div class="grid-row">
     <div class="column-two-thirds">
 
-      {{#if triageData.selectedActivities}}
+      {{#if triageData.selectedOptionalAssessments}}
+      <h1 id="page-heading" class="heading-large">Apply for a bespoke permit</h1>
+
+      {{#each triageData.selectedOptionalAssessments.items}}
+        {{#unless this.canApplyOnline}}
+          <p>{{this.text}}</p>
+        {{/unless}}
+      {{/each}}
+
+      <p>
+        You cannot apply online yet for permits that require these types of plan. We hope to add them soon.
+      </p>
+
+      {{else if triageData.selectedActivities}}
       <h1 id="page-heading" class="heading-large">Apply for a bespoke permit</h1>
 
       {{#each triageData.selectedActivities.items}}

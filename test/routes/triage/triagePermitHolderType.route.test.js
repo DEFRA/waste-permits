@@ -16,7 +16,7 @@ const BESPOKE = [{ id: 'bespoke', canApplyOnline: true }]
 const FAKE_PERMIT_HOLDER_TYPE_ID = 'fake-permit-holder-type'
 const FAKE_PERMIT_HOLDER_TYPE = { id: FAKE_PERMIT_HOLDER_TYPE_ID, canApplyOnline: true }
 
-const routePath = '/triage/bespoke'
+const routePath = '/select/bespoke'
 const badPath = `${routePath}/invalid`
 const nextRoutePath = `${routePath}/${FAKE_PERMIT_HOLDER_TYPE_ID}`
 

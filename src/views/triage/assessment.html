@@ -11,14 +11,18 @@
 
       {{> common/pageHeading pageHeading }}
 
+      <p>
+        Select any other assessments identified by your risk assessment or as a result of pre-application advice.
+      </p>
+
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
+        {{#with triageData}}
+        {{#if includedAssessments.items.length}}
 
         <h2 id="included-assessments" class="heading-medium">Included</h2>
 
         <div class="form-group">
-
-          {{#with triageData}}
             {{#each includedAssessments.items}}
               <p>
                 <span id="assessment-{{this.id}}-prefix">Assessment: </span>
@@ -28,9 +32,9 @@
                 </a>
               </p>
             {{/each}}
-          {{/with}}
-
         </div>
+        {{/if}}
+        {{/with}}
 
         <fieldset>
           <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>

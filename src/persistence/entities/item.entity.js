@@ -1,6 +1,9 @@
 'use strict'
 
 const BaseEntity = require('./base.entity')
+const ItemType = require('./itemType.entity')
+
+const ASSESSMENT = 'wasteassessment'
 
 class Item extends BaseEntity {
   static get dynamicsEntity () {
@@ -26,14 +29,18 @@ class Item extends BaseEntity {
     ]
   }
 
-  // May be required for reading available assessments
-  // static async getByItemTypeAndTypeCode (context, itemTypeId, typeCode) {
-  //   return super.getBy(context, { itemTypeId, typeCode })
-  // }
-  //
-  // static async listByItemTypeId (context, itemTypeId) {
-  //   return this.listBy(context, { canApplyFor: true, itemTypeId }, 'itemTypeId')
-  // }
+  static async listByItemTypeId (context, itemTypeId) {
+    return this.listBy(context, { itemTypeId }, 'itemTypeId')
+  }
+
+  static async listByItemTypeShortName (context, itemTypeShortName) {
+    const idForName = await ItemType.getByShortName(context, itemTypeShortName)
+    return this.listByItemTypeId(context, idForName.id)
+  }
+
+  static async listAssessments (context) {
+    return this.listByItemTypeShortName(context, ASSESSMENT)
+  }
 }
 
 Item.setDefinitions()

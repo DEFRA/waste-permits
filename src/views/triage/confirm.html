@@ -1,0 +1,30 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#each triageData.selectedActivities.items}}
+        <p>{{this.text}}</p>
+      {{/each}}
+
+      {{#each triageData.selectedOptionalAssessments.items}}
+        <p>{{this.text}}</p>
+      {{/each}}
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <button id="submit-button" type="submit" class="button" name="confirmed" value="confirmed">Confirm</button>
+
+      </form>
+    </div>
+  </div>
+</main>

@@ -37,7 +37,7 @@ class ItemDetail extends BaseEntity {
     return this.listByItemDetailTypeIdAndValue(context, idForName.id, value)
   }
 
-  // Will be used for assessments
+  // Will be used for required/optional assessments
   // static async listByParentIdAndItemDetailTypeName (context, parentId, itemDetailTypeName) {
   //   const idForName = await ItemDetailType.getByName(context, itemDetailTypeName)
   //   return this.listByParentIdAndItemDetailTypeId(context, parentId, idForName)

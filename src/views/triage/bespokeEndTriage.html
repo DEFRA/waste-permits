@@ -13,21 +13,13 @@
           <p>{{this.text}}</p>
           {{/each}}
 
+          {{#each triageData.selectedOptionalAssessments.items}}
+          <p>{{this.text}}</p>
+          {{/each}}
+
           <p>
-            You will soon be able to apply online these types of activity.
+            Saved!
           </p>
-
-          <h2 id="how-to-apply" class="heading-medium">How to apply offline for now</h2>
-
-            <div class="form-group">
-                <p>
-                    <span id="bespoke-prefix">Download and fill in the </span>
-                    <a id="bespoke-link"
-                       href="https://www.gov.uk/guidance/waste-environmental-permits#how-to-apply-for-a-bespoke-permit">
-                        <span id="bespoke-text">forms to apply for a bespoke environmental permit.</span>
-                    </a>
-                </p>
-            </div>
         </div>
     </div>
 </main>

@@ -13,7 +13,7 @@ const Routes = {
   // TRIAGE
   // ******
   TRIAGE_PERMIT_TYPE: {
-    path: '/triage',
+    path: '/select',
     view: 'triage/permitType',
     applyOfflineView: 'triage/applyOffline',
     pageHeading: 'Confirm the type of permit you want',
@@ -25,7 +25,7 @@ const Routes = {
     applicationRequired: false
   },
   TRIAGE_PERMIT_HOLDER_TYPE: {
-    path: '/triage',
+    path: '/select',
     params: ['permitType'],
     view: 'triage/permitHolderType',
     applyOfflineView: 'triage/applyOffline',
@@ -37,7 +37,7 @@ const Routes = {
     applicationRequired: false
   },
   TRIAGE_FACILITY_TYPE: {
-    path: '/triage',
+    path: '/select',
     params: ['permitType', 'permitHolderType'],
     view: 'triage/facilityType',
     applyOfflineView: 'triage/applyOffline',
@@ -49,7 +49,7 @@ const Routes = {
     applicationRequired: false
   },
   TRIAGE_ACTIVITY: {
-    path: '/triage',
+    path: '/select',
     params: ['permitType', 'permitHolderType', 'facilityType'],
     view: 'triage/activity',
     applyOfflineView: 'triage/applyOffline',
@@ -61,19 +61,41 @@ const Routes = {
     applicationRequired: false
   },
   TRIAGE_ASSESSMENT: {
-    path: '/triage',
+    path: '/select',
     params: ['permitType', 'permitHolderType', 'facilityType', 'activity'],
     view: 'triage/assessment',
     applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'Select the plans we need you to produce',
+    pageHeading: 'What plans do we need to assess?',
     controller: 'triage/triage',
     types: 'GET, POST',
     cookieValidationRequired: false,
     applicationRequired: false
   },
-  TRIAGE_BESPOKE_END_TRIAGE: {
-    path: '/triage',
+  TRIAGE_CONFIRM: {
+    path: '/select',
     params: ['permitType', 'permitHolderType', 'facilityType', 'activity', 'assessment'],
+    view: 'triage/confirm',
+    applyOfflineView: 'triage/applyOffline',
+    pageHeading: 'Apply for a bespoke permit',
+    controller: 'triage/triage',
+    types: 'GET',
+    cookieValidationRequired: false,
+    applicationRequired: false
+  },
+  TRIAGE_CONFIRM_SAVE: {
+    path: '/select',
+    params: ['permitType', 'permitHolderType', 'facilityType', 'activity', 'assessment'],
+    view: 'triage/confirm',
+    applyOfflineView: 'triage/applyOffline',
+    pageHeading: 'Apply for a bespoke permit',
+    controller: 'triage/triage',
+    types: 'POST',
+    cookieValidationRequired: true,
+    applicationRequired: true
+  },
+  TRIAGE_BESPOKE_END_TRIAGE: {
+    path: '/select',
+    params: ['permitType', 'permitHolderType', 'facilityType', 'activity', 'assessment', 'confirmed'],
     view: 'triage/bespokeEndTriage',
     applyOfflineView: 'triage/applyOffline',
     pageHeading: 'Apply for a bespoke permit',
