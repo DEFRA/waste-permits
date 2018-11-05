@@ -52,10 +52,16 @@ module.exports = class TriageController extends BaseController {
       if (data.selectedPermitHolderTypes) {
         if (data.selectedFacilityTypes) {
           if (data.selectedActivities) {
-            // POSTing optional assessments
-            const requestedOptionalAssessments = request.payload['assessment'] ? request.payload['assessment'].split(',') : []
-            data.selectedOptionalAssessments = data.availableOptionalAssessments.getListFilteredByIds(requestedOptionalAssessments)
-            data.canApplyOnline = data.selectedOptionalAssessments.canApplyOnline
+            if (data.selectedOptionalAssessments) {
+              // POSTing confirmation - any POST to here constitutes confirmation
+              // TODO - Save the application
+              data.confirmed = true
+            } else {
+              // POSTing optional assessments
+              const requestedOptionalAssessments = request.payload['assessment'] ? request.payload['assessment'].split(',') : []
+              data.selectedOptionalAssessments = data.availableOptionalAssessments.getListFilteredByIds(requestedOptionalAssessments)
+              data.canApplyOnline = data.selectedOptionalAssessments.canApplyOnline
+            }
           } else {
             // POSTing activities
             const requestedActivities = request.payload['activity'] ? request.payload['activity'].split(',') : []
@@ -64,13 +70,11 @@ module.exports = class TriageController extends BaseController {
               data.selectedActivities = selectedActivities
               data.canApplyOnline = selectedActivities.canApplyOnline
               if (data.canApplyOnline) {
-                data.selectedOptionalAssessments = { ids: [] }
-                // Currently we're not handling assessments
-                // // Check to see if there are any optional additional assessments that we want to ask for, otherwise we skip that step
-                // const optionalAssessmentList = await data.selectedActivities.getOptionalAssessmentList()
-                // if (optionalAssessmentList.length === 0) {
-                //   data.selectedOptionalAssessments = { ids: [] }
-                // }
+                // Check to see if there are any optional additional assessments that we want to ask for, otherwise we skip that step
+                const optionalAssessmentList = await data.selectedActivities.getOptionalAssessmentList()
+                if (optionalAssessmentList.items.length === 0) {
+                  data.selectedOptionalAssessments = { ids: [] }
+                }
               }
             }
           }
@@ -190,13 +194,20 @@ module.exports = class TriageController extends BaseController {
     if (data.selectedActivities && data.canApplyOnline) {
       const assessmentParam = decodeParamValue(params.assessment)
       if (assessmentParam) {
-        data.selectedOptionalAssessments = { ids: [] }
-        // Currently we're not handling assessments
-        // const chosenOptionalAssessmentList = data.availableOptionalAssessments.getListFilteredByIds(assessmentParam)
-        // // We have to have chosen valid entries from the list of available assessments
-        // if (chosenOptionalAssessmentList.items.length === assessmentParam.length) {
-        //   data.selectedOptionalAssessments = chosenOptionalAssessmentList
-        // }
+        const chosenOptionalAssessmentList = data.availableOptionalAssessments.getListFilteredByIds(assessmentParam)
+        // We have to have chosen valid entries from the list of available assessments
+        if (chosenOptionalAssessmentList.items.length === assessmentParam.length) {
+          data.selectedOptionalAssessments = chosenOptionalAssessmentList
+          data.canApplyOnline = chosenOptionalAssessmentList.canApplyOnline
+        }
+      }
+    }
+
+    // If we've managed to select valid optional assessments then check for confirmation
+    if (data.selectedOptionalAssessments && data.canApplyOnline) {
+      const confirmedParam = decodeParamValue(params.confirmed)
+      if (confirmedParam && confirmedParam.length === 1 && confirmedParam[0] === 'confirmed') {
+        data.confirmed = true
       }
     }
 
@@ -243,19 +254,24 @@ module.exports = class TriageController extends BaseController {
       pathItems.push(encodeParamValue(data.selectedOptionalAssessments.ids))
     }
 
+    if (data.confirmed) {
+      pathItems.push('confirmed')
+    }
+
+    const pathPrefix = Routes.TRIAGE_PERMIT_TYPE.path
     if (pathItems.length === 0) {
       return {
-        currentStepPath: '/triage'
+        currentStepPath: pathPrefix
       }
     } else if (pathItems.length === 1) {
       return {
-        currentStepPath: `/triage/${pathItems[0]}`,
-        previousStepPath: '/triage'
+        currentStepPath: `${pathPrefix}/${pathItems[0]}`,
+        previousStepPath: pathPrefix
       }
     } else {
       return {
-        currentStepPath: `/triage/${pathItems.join('/')}`,
-        previousStepPath: `/triage/${pathItems.slice(0, -1).join('/')}`
+        currentStepPath: `${pathPrefix}/${pathItems.join('/')}`,
+        previousStepPath: `${pathPrefix}/${pathItems.slice(0, -1).join('/')}`
       }
     }
   }

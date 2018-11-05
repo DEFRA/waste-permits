@@ -87,7 +87,7 @@ const FACILITY_TYPES = {
     canApplyOnline: false
   },
   WASTE_OPERATION: {
-    id: 'waste-operation',
+    id: 'waste',
     key: '02',
     text: 'Waste operation',
     description: 'For example, transfer stations, waste treatment, recycling and composting',
@@ -126,36 +126,8 @@ const FACILITY_TYPE_LIST = [
   FACILITY_TYPES.GROUNDWATER
 ]
 
-const ASSESSMENTS = {
-  ASSESSMENT1: {
-    id: 'assessment-1',
-    key: '01',
-    text: 'Assessment 1',
-    canApplyOnline: true
-  },
-  ASSESSMENT2: {
-    id: 'assessment-2',
-    key: '02',
-    text: 'Assessment 2',
-    canApplyOnline: true
-  },
-  ASSESSMENT3: {
-    id: 'assessment-3',
-    key: '03',
-    text: 'Assessment 3',
-    canApplyOnline: true
-  },
-  ASSESSMENT4: {
-    id: 'assessment-4',
-    key: '04',
-    text: 'Assessment 4',
-    canApplyOnline: false
-  }
-}
-
 module.exports = {
   PERMIT_TYPE_LIST,
   PERMIT_HOLDER_TYPE_LIST,
-  FACILITY_TYPE_LIST,
-  ASSESSMENTS
+  FACILITY_TYPE_LIST
 }

@@ -18,7 +18,7 @@ const LTD_CO = [{
 }]
 
 const INVALID_FACILITY_TYPE = 'invalid-facility-type'
-const WASTE = 'waste-operation'
+const WASTE = 'waste'
 const INSTALLATION = 'installation'
 
 const FAKE_ACTIVITIES = [{

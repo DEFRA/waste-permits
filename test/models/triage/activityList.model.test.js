@@ -8,6 +8,7 @@ const sinon = require('sinon')
 const ActivityList = require('../../../src/models/triage/activityList.model')
 const ItemEntity = require('../../../src/persistence/entities/item.entity')
 const ItemDetailEntity = require('../../../src/persistence/entities/itemDetail.entity')
+const AssessmentList = require('../../../src/models/triage/assessmentList.model')
 
 const BESPOKE = [{
   id: 'bespoke',
@@ -18,14 +19,13 @@ const LTD_CO = [{
   canApplyOnline: true
 }]
 const WASTE = [{
-  id: 'waste-operation',
+  id: 'waste',
   canApplyOnline: true
 }]
 
 const INVALID_ACTIVITY = 'invalid-activity'
 
-const NUMBER_OF_INCLUDED_ASSESSMENTS = 2
-const NUMBER_OF_OPTIONAL_ASSESSMENTS = 2
+const FAKE_ASSESSMENTS = [{ id: 'fake-assessment', text: 'Fake assessment text', canApplyOnline: true }]
 
 const fakeItemDetailEntities = [{ itemId: 'ID1' }, { itemId: 'ID1' }, { itemId: 'ID2' }, { itemId: 'ID2' }, { itemId: 'ID3' }, { itemId: 'ID3' }]
 const fakeItemEntities = [{
@@ -54,7 +54,7 @@ const fakeItemEntities = [{
   shortName: 'activity-4',
   itemName: 'Activity 4',
   code: '4.activity.code',
-  canApplyFor: true,
+  canApplyFor: false,
   canApplyOnline: false
 }]
 
@@ -117,26 +117,31 @@ lab.experiment('Triage activity model tests:', () => {
   })
 
   lab.experiment('Provide correct assessments:', () => {
+    lab.beforeEach(() => {
+      sandbox.stub(AssessmentList, 'getAllAssessments').value(async () => FAKE_ASSESSMENTS)
+    })
     lab.test('full list for all valid activities', async () => {
       const filteredActivityList = activityList.getListFilteredByIds(['activity-1', 'activity-2'])
-      const includedAssessmentList = await filteredActivityList.getIncludedAssessmentList()
+      // const includedAssessmentList = await filteredActivityList.getIncludedAssessmentList()
       const optionalAssessmentList = await filteredActivityList.getOptionalAssessmentList()
-      Code.expect(includedAssessmentList.items.length).to.equal(NUMBER_OF_INCLUDED_ASSESSMENTS)
-      Code.expect(optionalAssessmentList.items.length).to.equal(NUMBER_OF_OPTIONAL_ASSESSMENTS)
+      // Code.expect(includedAssessmentList.items.length).to.equal(FAKE_ASSESSMENTS.length)
+      Code.expect(optionalAssessmentList.items.length).to.equal(FAKE_ASSESSMENTS.length)
     })
-    lab.test('some for any valid activity', async () => {
+    lab.test('(currently full list) for any valid activity', async () => {
       const filteredActivityList = activityList.getListFilteredByIds(['activity-1'])
-      const includedAssessmentList = await filteredActivityList.getIncludedAssessmentList()
+      // const includedAssessmentList = await filteredActivityList.getIncludedAssessmentList()
       const optionalAssessmentList = await filteredActivityList.getOptionalAssessmentList()
-      Code.expect(includedAssessmentList.items.length).to.not.equal(0)
-      Code.expect(optionalAssessmentList.items.length).to.not.equal(0)
+      // Code.expect(includedAssessmentList.items.length).to.not.equal(0)
+      // Code.expect(optionalAssessmentList.items.length).to.not.equal(0)
+      Code.expect(optionalAssessmentList.items.length).to.equal(FAKE_ASSESSMENTS.length)
     })
-    lab.test('none for unavailable activities', async () => {
+    lab.test('(currently full list) for unavailable activities', async () => {
       const filteredActivityList = activityList.getListFilteredByIds(['activity-3'])
-      const includedAssessmentList = await filteredActivityList.getIncludedAssessmentList()
+      // const includedAssessmentList = await filteredActivityList.getIncludedAssessmentList()
       const optionalAssessmentList = await filteredActivityList.getOptionalAssessmentList()
-      Code.expect(includedAssessmentList.items.length).to.equal(0)
-      Code.expect(optionalAssessmentList.items.length).to.equal(0)
+      // Code.expect(includedAssessmentList.items.length).to.equal(0)
+      // Code.expect(optionalAssessmentList.items.length).to.equal(0)
+      Code.expect(optionalAssessmentList.items.length).to.equal(FAKE_ASSESSMENTS.length)
     })
   })
 })

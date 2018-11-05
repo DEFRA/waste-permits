@@ -19,12 +19,18 @@ const ACTIVITY_TYPE = {
   description: 'Dummy activity type'
 }
 
-const fakeItem = (id) => {
+const ASSESSMENT_TYPE = {
+  id: 'DUMMY-GUID-ACTIVITY-TYPE-00000',
+  detailName: 'wasteassessment',
+  description: 'Dummy assessment type'
+}
+
+const fakeItem = (id, itemTypeId) => {
   return {
     id: `DUMMY-GUID-ITEM-${id}`,
     itemName: `Dummy item name ${id}`,
     shortName: `Dummy short name ${id}`,
-    itemTypeId: ACTIVITY_TYPE.id,
+    itemTypeId: itemTypeId,
     code: `dummy-code-${id}`,
     description: `Dummy description for ${id}`,
     description2: `Dummy description 2 for ${id}`,
@@ -34,12 +40,12 @@ const fakeItem = (id) => {
   }
 }
 
-const fakeDynamicsRecord = (id) => {
+const fakeDynamicsRecord = (id, itemTypeId) => {
   return {
     defra_itemid: `DUMMY-GUID-ITEM-${id}`,
     defra_name: `Dummy item name ${id}`,
     defra_shortname: `Dummy short name ${id}`,
-    _defra_itemtypeid_value: ACTIVITY_TYPE.id,
+    _defra_itemtypeid_value: itemTypeId,
     defra_code: `dummy-code-${id}`,
     defra_description: `Dummy description for ${id}`,
     defra_description2: `Dummy description 2 for ${id}`,
@@ -66,7 +72,7 @@ lab.experiment('Item Entity tests:', () => {
   lab.test('save() method should fail as this entity is readOnly', async () => {
     let error
     try {
-      const itemDetail = new Item(fakeItem('FAKE'))
+      const itemDetail = new Item(fakeItem('FAKE', ACTIVITY_TYPE.id))
       await itemDetail.save()
     } catch (err) {
       error = err
@@ -74,13 +80,13 @@ lab.experiment('Item Entity tests:', () => {
     Code.expect(error.message).to.equal('Unable to save defra_items: Read only!')
   })
 
-  lab.test('getBy() id returns correct values', async () => {
+  lab.test('listAssessments() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001')] }
+      return { value: [fakeDynamicsRecord('00001', ASSESSMENT_TYPE.id)] }
     })
-    const expectedItem = fakeItem('00001')
-    const item = await Item.getBy(entityContext, { id: 'DUMMY' })
-    Code.expect(item).to.exist()
-    Code.expect(item).to.equal(expectedItem)
+    const expectedItems = [fakeItem('00001', ASSESSMENT_TYPE.id)]
+    const items = await Item.listAssessments(entityContext, 'DUMMY')
+    Code.expect(items).to.exist()
+    Code.expect(items).to.equal(expectedItems)
   })
 })

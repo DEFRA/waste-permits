@@ -1,7 +1,7 @@
 'use strict'
 
-const { ASSESSMENTS } = require('./triageLists')
 const Assessment = require('./assessment.model')
+const ItemEntity = require('../../persistence/entities/item.entity')
 
 const AssessmentList = class {
   constructor (entityContext, permitTypesArray, permitHolderTypesArray, facilityTypesArray, activitiesArray, assessmentsArray) {
@@ -35,7 +35,8 @@ const AssessmentList = class {
   }
 
   static async createList (entityContextToUse, permitTypesArray, permitHolderTypesArray, facilityTypesArray, activitiesArray, options) {
-    const included = options ? options.includedAssessments : true
+    // Currently all assessments are optional
+    // const included = options ? options.includedAssessments : true
     const optional = options ? options.optionalAssessments : true
 
     let assessments = []
@@ -44,58 +45,20 @@ const AssessmentList = class {
     if (permitTypesArray.find((item) => item.id === 'bespoke')) {
       // All permit holder types have the same list of assessments
       // For now, all facilities have all possible assessments
-      // TODO - Ben Sagar - Work out which assessments apply to which facilities and activities
-      // For now, hard-coding some assessment/activity combinations
-      const activity1 = activitiesArray.find((item) => item.id === 'activity-1')
-      const activity2 = activitiesArray.find((item) => item.id === 'activity-2')
-      if (activity1 && activity2) {
-        assessments = AssessmentList.createDummyAssessmentsForActivities1And2(included, optional)
-      } else if (activity1) {
-        assessments = AssessmentList.createDummyAssessmentsForActivity1(included, optional)
-      } else if (activity2) {
-        assessments = AssessmentList.createDummyAssessmentsForActivity2(included, optional)
+      // For now, all activities have all possible assessments as optional
+      if (optional) {
+        assessments = await this.getAllAssessments(entityContextToUse)
       }
     }
     return new AssessmentList(entityContextToUse, permitTypesArray, permitHolderTypesArray, facilityTypesArray, activitiesArray, assessments)
   }
 
-  static createDummyAssessmentsForActivity1 (included, optional) {
-    let assessments = []
-    if (included) {
-      assessments.push(new Assessment(ASSESSMENTS.ASSESSMENT1))
-    }
-    if (optional) {
-      assessments.push(new Assessment(ASSESSMENTS.ASSESSMENT3))
-      assessments.push(new Assessment(ASSESSMENTS.ASSESSMENT4))
-    }
+  static async getAllAssessments (entityContext) {
+    const allAssessmentEntities = await ItemEntity.listAssessments(entityContext)
+    // Filter out any that can no longer be applied for, i.e. they should not appear to a user
+    const filteredAssessmentEntities = allAssessmentEntities.filter(item => item.canApplyFor)
 
-    return assessments
-  }
-
-  static createDummyAssessmentsForActivity2 (included, optional) {
-    let assessments = []
-    if (included) {
-      assessments.push(new Assessment(ASSESSMENTS.ASSESSMENT2))
-    }
-    if (optional) {
-      assessments.push(new Assessment(ASSESSMENTS.ASSESSMENT4))
-    }
-
-    return assessments
-  }
-
-  static createDummyAssessmentsForActivities1And2 (included, optional) {
-    let assessments = []
-    if (included) {
-      assessments.push(new Assessment(ASSESSMENTS.ASSESSMENT1))
-      assessments.push(new Assessment(ASSESSMENTS.ASSESSMENT2))
-    }
-    if (optional) {
-      assessments.push(new Assessment(ASSESSMENTS.ASSESSMENT3))
-      assessments.push(new Assessment(ASSESSMENTS.ASSESSMENT4))
-    }
-
-    return assessments
+    return filteredAssessmentEntities.map(item => Assessment.createFromItemEntity(item))
   }
 }
 

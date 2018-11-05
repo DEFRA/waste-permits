@@ -3,8 +3,10 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
+const sinon = require('sinon')
 
 const AssessmentList = require('../../../src/models/triage/assessmentList.model')
+const ItemEntity = require('../../../src/persistence/entities/item.entity')
 
 const BESPOKE = [{
   id: 'bespoke',
@@ -15,7 +17,7 @@ const LTD_CO = [{
   canApplyOnline: true
 }]
 const WASTE = [{
-  id: 'waste-operation',
+  id: 'waste',
   canApplyOnline: true
 }]
 const DUMMY_ACTIVITY = [{
@@ -24,40 +26,63 @@ const DUMMY_ACTIVITY = [{
 }]
 
 const INVALID_ASSESSMENT = 'invalid-assessment'
-const DUMMY_ASSESSMENT = 'assessment-1'
-const DUMMY_ASSESSMENT_TEXT = 'Assessment 1'
-const DUMMY_ASSESSMENT2 = 'assessment-2'
 
-const DUMMY_ASSESSMENTS = [{
-  id: DUMMY_ASSESSMENT,
-  text: DUMMY_ASSESSMENT_TEXT,
+const fakeItemEntities = [{
+  id: 'ID1',
+  shortName: 'assessment-1',
+  itemName: 'Assessment 1',
+  canApplyFor: true,
   canApplyOnline: true
 }, {
-  id: DUMMY_ASSESSMENT2,
+  id: 'ID2',
+  shortName: 'assessment-2',
+  itemName: 'Assessment 2',
+  canApplyFor: true,
+  canApplyOnline: true
+}, {
+  id: 'ID3',
+  shortName: 'assessment-3',
+  itemName: 'Assessment 3',
+  canApplyFor: true,
+  canApplyOnline: false
+}, {
+  id: 'ID4',
+  shortName: 'assessment-4',
+  itemName: 'Assessment 4',
+  canApplyFor: false,
   canApplyOnline: false
 }]
 
+let sandbox
 let assessmentList
 
 lab.beforeEach(async () => {
-  assessmentList = await AssessmentList.createList({}, BESPOKE, LTD_CO, WASTE, DUMMY_ACTIVITY)
-  assessmentList.assessmentsArray = DUMMY_ASSESSMENTS
+  // Create a sinon sandbox to stub methods
+  sandbox = sinon.createSandbox()
+  sandbox.stub(ItemEntity, 'listAssessments').callsFake(async () => fakeItemEntities)
+
+  assessmentList = await AssessmentList.createList({}, BESPOKE, LTD_CO, WASTE, DUMMY_ACTIVITY, { optionalAssessments: true })
 })
 
-lab.experiment('Triage activity model tests:', () => {
-  // Need to replace this test once we are able to retrieve assessments
-  lab.test('includes expected assessments', async () => {
-    Code.expect(assessmentList.ids).to.include([DUMMY_ASSESSMENT, DUMMY_ASSESSMENT2])
+lab.afterEach(() => {
+  // Restore the sandbox to make sure the stubs are removed correctly
+  sandbox.restore()
+})
+
+lab.experiment('Triage assessment model tests:', () => {
+  lab.test('includes only expected assessments', async () => {
+    Code.expect(assessmentList.ids).to.include(['assessment-1', 'assessment-2', 'assessment-3'])
+    Code.expect(assessmentList.ids).to.not.include(['assessment-4'])
   })
 
   lab.experiment('Select:', () => {
     lab.test('can select an assessment', async () => {
-      const dummyAssessmentList = assessmentList.getListFilteredByIds([DUMMY_ASSESSMENT])
+      const dummyAssessmentList = assessmentList.getListFilteredByIds(['assessment-1'])
       Code.expect(dummyAssessmentList.items.length).to.equal(1)
-      const dummyAssessmentItem = dummyAssessmentList.entry(DUMMY_ASSESSMENT)
+      const dummyAssessmentItem = dummyAssessmentList.entry('assessment-1')
       Code.expect(dummyAssessmentItem).to.exist()
-      Code.expect(dummyAssessmentItem.id).to.equal(DUMMY_ASSESSMENT)
-      Code.expect(dummyAssessmentItem.text).to.equal(DUMMY_ASSESSMENT_TEXT)
+      Code.expect(dummyAssessmentItem.id).to.equal('assessment-1')
+      Code.expect(dummyAssessmentItem.text).to.equal('Assessment 1')
     })
     lab.test('cannot select invalid assessment', async () => {
       const invalidList = assessmentList.getListFilteredByIds([INVALID_ASSESSMENT])
@@ -72,14 +97,14 @@ lab.experiment('Triage activity model tests:', () => {
       Code.expect(assessmentList.canApplyOnline).to.be.false()
     })
     lab.test('can be applied for online if all assessments can be', async () => {
-      const wasteList = assessmentList.getListFilteredByIds([DUMMY_ASSESSMENT])
+      const wasteList = assessmentList.getListFilteredByIds(['assessment-1', 'assessment-2'])
       Code.expect(wasteList.canApplyOnline).to.be.true()
     })
-    lab.test('cannot be applied for online if not all activities can be', async () => {
-      const instList = assessmentList.getListFilteredByIds([DUMMY_ASSESSMENT2])
+    lab.test('cannot be applied for online if not all assessments can be', async () => {
+      const instList = assessmentList.getListFilteredByIds(['assessment-2', 'assessment-3'])
       Code.expect(instList.canApplyOnline).to.be.false()
     })
-    lab.test('invalid or missing activities cannot be applied for online', async () => {
+    lab.test('invalid or missing assessments cannot be applied for online', async () => {
       const invalidList = assessmentList.getListFilteredByIds([INVALID_ASSESSMENT])
       Code.expect(invalidList.canApplyOnline).to.be.false()
     })

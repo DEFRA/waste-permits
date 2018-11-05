@@ -29,7 +29,7 @@
             <div class="multiple-choice">
               <input id="activity-{{this.id}}-input" type="checkbox" name="activity" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
               <label id="activity-{{this.id}}-label" for="activity-{{this.id}}-input">
-                <span id="activity-{{this.id}}-text">{{this.text}}{{#if this.activityCode}} &nbsp;<span id="activity-{{this.id}}-hint" class="hint">{{this.activityCode}}</span>{{/if}}</span>
+                <span id="activity-{{this.id}}-text">{{this.text}}</span>
               </label>
             </div>
             {{/each}}

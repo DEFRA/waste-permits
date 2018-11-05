@@ -18,6 +18,10 @@ class ItemType extends BaseEntity {
       { field: 'shortName', dynamics: 'defra_shortname', encode: true }
     ]
   }
+
+  static async getByShortName (context, shortName) {
+    return super.getBy(context, { shortName })
+  }
 }
 
 ItemType.setDefinitions()
