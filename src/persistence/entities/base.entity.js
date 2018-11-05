@@ -293,18 +293,21 @@ module.exports = class BaseEntity {
     // And the filterData is:
     // {
     //    age: '30',
-    //    firstName: 'Fred',
+    //    firstName: ['Fred', 'Joe'],
     //    lastName: 'Blogs'
     // }
     //
     // And the orderBy is 'age, lastName'
     //
     // Then the select portion of the query that is generated within the code below will be:
-    // "$select=defra_id, defra_age, defra_firstname, defra_lastname, defra_date_day, defra_date_month, defra_date_year, _defra_primarycontactid_value&$filter=defra_age eq 30 and defra_firstname eq 'Fred' and defra_lastname eq 'Blogs'&$orderby=defra_age asc defra_lastname asc"
+    // "$select=defra_id, defra_age, defra_firstname, defra_lastname, defra_date_day, defra_date_month, defra_date_year, _defra_primarycontactid_value&$filter=defra_age eq 30 and (defra_firstname eq 'Fred' or defra_firstname eq 'Joe') and defra_lastname eq 'Blogs'&$orderby=defra_age asc defra_lastname asc"
     //
     let filter = Object.entries(Utilities.convertToDynamics(filterData))
-      .map(([field, val]) => `${this[field].dynamics} eq ${this[field].encode ? `'${encodeURIComponent(val)}'` : val}`)
-      .join(' and ')
+      .map(([field, val]) =>
+        Array.isArray(val)
+          ? '(' + val.map(orVal => this._buildQueryCriterion(this[field].dynamics, this[field].encode, orVal)).join(' or ') + ')'
+          : this._buildQueryCriterion(this[field].dynamics, this[field].encode, val)
+      ).join(' and ')
 
     let orderBy = orderByFields.split(' ')
       .filter((fieldName) => fieldName)
@@ -312,6 +315,10 @@ module.exports = class BaseEntity {
       .join(' ')
 
     return `$select=${this.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}${orderBy ? `&$orderby=${orderBy}` : ''}`
+  }
+
+  static _buildQueryCriterion (fieldName, encodeValue, queryValue) {
+    return `${fieldName} eq ${encodeValue ? `'${encodeURIComponent(queryValue)}'` : queryValue}`
   }
 
   static async getBy (context = {}, filterData = {}) {

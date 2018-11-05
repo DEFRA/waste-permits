@@ -5,7 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 
-const ItemDetailType = require('../../../src/persistence/entities/itemType.entity')
+const ItemType = require('../../../src/persistence/entities/itemType.entity')
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
@@ -16,7 +16,7 @@ const fakeItemType = (id) => {
   return {
     id: `DUMMY-GUID-ITEM-TYPE-${id}`,
     itemTypeName: `Dummy item type ${id}`,
-    shortName: `dummy-item-type-${id}`
+    shortName: id
   }
 }
 
@@ -24,7 +24,7 @@ const fakeDynamicsRecord = (id) => {
   return {
     defra_itemtypeid: `DUMMY-GUID-ITEM-TYPE-${id}`,
     defra_name: `Dummy item type ${id}`,
-    defra_shortname: `dummy-item-type-${id}`
+    defra_shortname: id
   }
 }
 
@@ -45,7 +45,7 @@ lab.experiment('ItemType Entity tests:', () => {
   lab.test('save() method should fail as this entity is readOnly', async () => {
     let error
     try {
-      const itemDetailType = new ItemDetailType(fakeItemType('FAKE'))
+      const itemDetailType = new ItemType(fakeItemType('FAKE'))
       await itemDetailType.save()
     } catch (err) {
       error = err
@@ -57,9 +57,29 @@ lab.experiment('ItemType Entity tests:', () => {
     stub.callsFake(async () => {
       return { value: [fakeDynamicsRecord('00001')] }
     })
-    const expectedItemDetailType = fakeItemType('00001')
-    const itemDetailType = await ItemDetailType.getByShortName(entityContext)
-    Code.expect(itemDetailType).to.exist()
-    Code.expect(itemDetailType).to.equal(expectedItemDetailType)
+    const expectedItemType = fakeItemType('00001')
+    const itemType = await ItemType.getByShortName(entityContext)
+    Code.expect(itemType).to.exist()
+    Code.expect(itemType).to.equal(expectedItemType)
+  })
+
+  lab.test('listByShortName() returns correct values', async () => {
+    stub.callsFake(async () => {
+      return { value: [fakeDynamicsRecord('00001'), fakeDynamicsRecord('00002')] }
+    })
+    const expectedItemTypes = [fakeItemType('00001'), fakeItemType('00002')]
+    const itemTypes = await ItemType.listByShortName(entityContext)
+    Code.expect(itemTypes.length).to.equal(expectedItemTypes.length)
+  })
+
+  lab.test('getActivityAndAssessmentItemTypes() returns correct values', async () => {
+    const fakeDynamicsRecords = { value: [fakeDynamicsRecord('wasteactivity'), fakeDynamicsRecord('wasteassessment')] }
+    stub.callsFake(async () => fakeDynamicsRecords)
+    const expectedItemTypes = {
+      activity: fakeItemType('wasteactivity'),
+      assessment: fakeItemType('wasteassessment')
+    }
+    const itemTypes = await ItemType.getActivityAndAssessmentItemTypes(entityContext)
+    Code.expect(itemTypes).to.equal(expectedItemTypes)
   })
 })

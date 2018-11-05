@@ -114,12 +114,12 @@ lab.experiment('Triage assessment page tests:', () => {
 
     lab.experiment('GET displays the correct assessments', () => {
       // Currently only testing one scenario - there might be others
-      const expectedActivities = [
+      const expectedAssessments = [
         { id: FAKE_ASSESSMENT_ID, text: FAKE_ASSESSMENT.text },
         { id: FAKE_ASSESSMENT_ID2, text: FAKE_ASSESSMENT2.text }
       ]
 
-      expectedActivities.forEach(({ id, text }) => {
+      expectedAssessments.forEach(({ id, text }) => {
         lab.test(`should include option for ${text}`, async () => {
           const doc = await GeneralTestHelper.getDoc(getRequest)
           const prefix = `assessment-${id}`

@@ -9,6 +9,7 @@ const { firstCharToLowercase } = require('../utilities/utilities')
 const StandardRule = require('../persistence/entities/standardRule.entity')
 const StandardRuleType = require('../persistence/entities/standardRuleType.entity')
 const ApplicationLine = require('../persistence/entities/applicationLine.entity')
+const { PermitTypes } = require('../dynamics')
 
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, h, errors) {
@@ -51,7 +52,8 @@ module.exports = class PermitSelectController extends BaseController {
       // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
       applicationLine = new ApplicationLine({
         applicationId: applicationId,
-        standardRuleId: standardRule.id
+        standardRuleId: standardRule.id,
+        permitType: PermitTypes.STANDARD
       })
 
       await applicationLine.save(context)
