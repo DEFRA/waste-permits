@@ -22,7 +22,7 @@
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
-        <button id="submit-button" type="submit" class="button" name="confirmed" value="confirmed">Confirm</button>
+        {{> common/submitButton text="Confirm" }}
 
       </form>
     </div>

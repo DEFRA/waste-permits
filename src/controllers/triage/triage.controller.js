@@ -53,12 +53,9 @@ module.exports = class TriageController extends BaseController {
         if (data.selectedFacilityTypes) {
           if (data.selectedActivities) {
             if (data.selectedOptionalAssessments) {
-              // POSTing confirmation
-              const requestedConfirmed = request.payload['confirmed']
-              if (requestedConfirmed === 'confirmed') {
-                // TODO - Save the application
-                data.confirmed = true
-              }
+              // POSTing confirmation - any POST to here constitutes confirmation
+              // TODO - Save the application
+              data.confirmed = true
             } else {
               // POSTing optional assessments
               const requestedOptionalAssessments = request.payload['assessment'] ? request.payload['assessment'].split(',') : []
