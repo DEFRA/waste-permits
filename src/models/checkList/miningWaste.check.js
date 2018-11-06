@@ -1,13 +1,13 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 
-const { MINING_DATA: ruleSetId } = require('../taskList/taskList').RuleSetIds
+const { MINING_DATA } = require('../taskList/taskList').RuleSetIds
 const { CONFIRM_MINING_WASTE_PLAN, MINING_WASTE_WEIGHT } = require('../../routes')
 const MiningWastePlans = Dynamics.MiningWastePlans
 
 module.exports = class MiningWasteCheck extends BaseCheck {
   static get ruleSetId () {
-    return ruleSetId
+    return MINING_DATA
   }
 
   get prefix () {

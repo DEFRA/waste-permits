@@ -3,6 +3,9 @@
 const { RECOVERY_FAILED, TASK_LIST } = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
+const ContactDetail = require('../../models/contactDetail.model')
+const ApplicationContact = require('../../persistence/entities/applicationContact.entity')
+const Contact = require('../../persistence/entities/contact.entity')
 
 module.exports = class RecoverController extends BaseController {
   async doGet (request, h) {
@@ -33,16 +36,39 @@ module.exports = class RecoverController extends BaseController {
 
   // Todo: Remove once contact conversion has been completed in the CRM
   async recover (context) {
-    const ContactDetail = require('../../models/contactDetail.model')
-    const ApplicationContact = require('../../persistence/entities/applicationContact.entity')
-    const Contact = require('../../persistence/entities/contact.entity')
     const {
-      AddressTypes: { DESIGNATED_MEMBER_CONTACT_DETAILS, DIRECTOR_CONTACT_DETAILS, PARTNER_CONTACT_DETAILS },
-      PERMIT_HOLDER_TYPES: { LIMITED_COMPANY, LIMITED_LIABILITY_PARTNERSHIP, PARTNERSHIP }
+      AddressTypes: {
+        INDIVIDUAL_PERMIT_HOLDER,
+        DESIGNATED_MEMBER_CONTACT_DETAILS,
+        DIRECTOR_CONTACT_DETAILS,
+        PARTNER_CONTACT_DETAILS,
+        PRIMARY_CONTACT_DETAILS
+      },
+      PERMIT_HOLDER_TYPES: {
+        LIMITED_COMPANY,
+        LIMITED_LIABILITY_PARTNERSHIP,
+        PARTNERSHIP
+      }
     } = require('../../dynamics')
 
-    const { applicationId, permitHolderType } = context
+    const { applicationId, application, permitHolderType } = context
+    const organisationType = permitHolderType.dynamicsOrganisationTypeId
 
+    // Update the primary contact details
+    const customerId = application.contactId
+    const contactDetail = await ContactDetail.get(context, { type: PRIMARY_CONTACT_DETAILS.TYPE })
+    const data = { contactDetail, customerId, type: PRIMARY_CONTACT_DETAILS.TYPE, organisationType, applicationId }
+    await this.updateContactDetail(context, data)
+
+    if (application.isIndividual) {
+      // Update the individual contact details
+      const customerId = application.permitHolderIndividualId
+      const contactDetail = await ContactDetail.get(context, { type: INDIVIDUAL_PERMIT_HOLDER.TYPE })
+      const data = { contactDetail, customerId, type: INDIVIDUAL_PERMIT_HOLDER.TYPE, organisationType, applicationId }
+      return this.updateContactDetail(context, data)
+    }
+
+    // Update the organisation contact details
     let type
     switch (permitHolderType) {
       case LIMITED_COMPANY:
@@ -60,19 +86,29 @@ module.exports = class RecoverController extends BaseController {
       const applicationContacts = await ApplicationContact.listByApplicationId(context, applicationId)
       const contactDetails = await ContactDetail.list(context, { type })
       return Promise.all(applicationContacts.map(async (applicationContact) => {
-        const { contactId, directorDob } = applicationContact
-        const { firstName, lastName } = await Contact.getById(context, contactId)
-        const contactDetail = contactDetails.find(({ customerId }) => customerId === contactId) || new ContactDetail({ customerId: contactId })
-        // Only update the missing data
-        contactDetail.type = type
-        if (!contactDetail.firstName) contactDetail.firstName = firstName
-        if (!contactDetail.lastName) contactDetail.lastName = lastName
-        if (!contactDetail.dateOfBirth) contactDetail.dateOfBirth = directorDob
-        if (!contactDetail.organisationType) contactDetail.organisationType = permitHolderType.dynamicsOrganisationTypeId
-        if (!contactDetail.applicationId) contactDetail.applicationId = applicationId
-        await contactDetail.save(context)
+        const { contactId, directorDob: dateOfBirth } = applicationContact
+        const contactDetail = contactDetails.find(({ customerId }) => customerId === contactId)
+        const data = { contactDetail, customerId: contactId, type, dateOfBirth, organisationType, applicationId }
+        await this.updateContactDetail(context, data)
         return applicationContact.delete(context)
       }))
     }
+  }
+
+  async updateContactDetail (context, { contactDetail, customerId, type, dateOfBirth, organisationType, applicationId }) {
+    const { firstName, lastName, email } = await Contact.getById(context, customerId)
+
+    if (!contactDetail) {
+      contactDetail = new ContactDetail({ customerId })
+    }
+    // Only update the missing data
+    contactDetail.type = type
+    if (!contactDetail.firstName && firstName) contactDetail.firstName = firstName
+    if (!contactDetail.lastName && lastName) contactDetail.lastName = lastName
+    if (!contactDetail.email && email) contactDetail.email = email
+    if (!contactDetail.dateOfBirth && dateOfBirth) contactDetail.dateOfBirth = dateOfBirth
+    if (!contactDetail.organisationType && organisationType) contactDetail.organisationType = organisationType
+    if (!contactDetail.applicationId && applicationId) contactDetail.applicationId = applicationId
+    await contactDetail.save(context)
   }
 }

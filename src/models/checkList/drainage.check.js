@@ -1,13 +1,13 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 
-const { SURFACE_DRAINAGE: ruleSetId } = require('../taskList/taskList').RuleSetIds
+const { SURFACE_DRAINAGE } = require('../taskList/taskList').RuleSetIds
 const path = require('../../routes').DRAINAGE_TYPE_DRAIN.path
 const DrainageTypes = Dynamics.DrainageTypes
 
 module.exports = class DrainageCheck extends BaseCheck {
   static get ruleSetId () {
-    return ruleSetId
+    return SURFACE_DRAINAGE
   }
 
   get prefix () {

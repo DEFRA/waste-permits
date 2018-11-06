@@ -1,8 +1,22 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
-const { PERMIT_HOLDER_DETAILS: ruleSetId } = require('../taskList/taskList').RuleSetIds
-const { LIMITED_LIABILITY_PARTNERSHIP, PARTNERSHIP, PUBLIC_BODY } = Dynamics.PERMIT_HOLDER_TYPES
+const { PERMIT_HOLDER_DETAILS } = require('../taskList/taskList').RuleSetIds
+
+const {
+  LIMITED_LIABILITY_PARTNERSHIP,
+  PARTNERSHIP,
+  PUBLIC_BODY
+} = Dynamics.PERMIT_HOLDER_TYPES
+
+const {
+  RESPONSIBLE_CONTACT_DETAILS,
+  PARTNER_CONTACT_DETAILS,
+  INDIVIDUAL_PERMIT_HOLDER,
+  DIRECTOR_CONTACT_DETAILS,
+  DESIGNATED_MEMBER_CONTACT_DETAILS,
+  COMPANY_SECRETARY_EMAIL
+} = Dynamics.AddressTypes
 
 const {
   COMPANY_DECLARE_BANKRUPTCY,
@@ -27,7 +41,7 @@ const blankLine = { blankLine: true }
 
 module.exports = class PermitHolderCheck extends BaseCheck {
   static get ruleSetId () {
-    return ruleSetId
+    return PERMIT_HOLDER_DETAILS
   }
 
   get prefix () {
@@ -115,12 +129,9 @@ module.exports = class PermitHolderCheck extends BaseCheck {
 
   async getIndividualLine () {
     const { path } = PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH
-    const { firstName = '', lastName = '', email = '' } = await this.getIndividualPermitHolder()
-    const { dateOfBirth = 'unknown', telephone = 'unknown' } = await this.getIndividualPermitHolderDetails()
-    const address = this.getAddressLine(await this.getIndividualPermitHolderAddress())
+    const { firstName = '', lastName = '', email = '', telephone = 'unknown', dateOfBirth = '---', fullAddress = '' } = await this.getContactDetails(INDIVIDUAL_PERMIT_HOLDER)
     const { tradingName = '' } = await this.getApplication()
     const [year, month, day] = dateOfBirth.split('-')
-    const dob = { day, month, year }
     let answers = []
     answers.push(`${firstName} ${lastName}`)
     if (tradingName) {
@@ -128,9 +139,9 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     }
     answers.push(email)
     answers.push(`Telephone: ${telephone}`)
-    answers.push(`Date of birth: ${Utilities.formatFullDateForDisplay(dob)}`)
+    answers.push(`Date of birth: ${Utilities.formatFullDateForDisplay({ day, month, year })}`)
     answers.push(blankLine)
-    answers = answers.concat(address)
+    answers.push(fullAddress)
     return this.buildLine({
       heading: 'Permit holder',
       prefix: 'individual',
@@ -191,8 +202,8 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const { path } = DIRECTOR_DATE_OF_BIRTH
     const { companyNumber = '' } = await this.getCompanyAccount()
     // Only load the directors if the company has been entered
-    const directors = companyNumber ? await this.getDirectors() : []
-    const answers = directors.map(({ firstName, lastName, dateOfBirth }) => {
+    const directors = companyNumber ? await this.listContactDetails(DIRECTOR_CONTACT_DETAILS) : []
+    const answers = directors.map(({ firstName = '', lastName = '', dateOfBirth = '---' }) => {
       const [year, month, day] = dateOfBirth.split('-')
       return `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay({ day, month, year })}`
     })
@@ -208,9 +219,11 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const { path } = LLP_MEMBER_DATE_OF_BIRTH
     const { companyNumber = '' } = await this.getCompanyAccount()
     // Only load the designated members (people and companies) if the company has been entered
-    const members = companyNumber ? await this.getMembers() : []
+    const members = companyNumber ? await this.listContactDetails(DESIGNATED_MEMBER_CONTACT_DETAILS) : []
     const companies = companyNumber ? await this.getCompanies() : []
     const answers = members
+    // Only return those members with a date of birth
+      .filter(({ dateOfBirth }) => dateOfBirth)
       .map(({ firstName, lastName, dateOfBirth }) => {
         const [year, month, day] = dateOfBirth.split('-')
         return `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay({ day, month, year })}`
@@ -226,9 +239,9 @@ module.exports = class PermitHolderCheck extends BaseCheck {
 
   async getPartnersLine () {
     const { path } = PARTNERSHIP_PARTNER_LIST
-    const partners = await this.getPartners()
+    const partners = await this.listContactDetails(PARTNER_CONTACT_DETAILS)
     let answers = ['The partners will be the permit holders and each will be responsible for the operation of the permit.']
-    partners.forEach(({ firstName, lastName, email, telephone, dateOfBirth, fullAddress }) => {
+    partners.forEach(({ firstName = '', lastName = '', email = '', telephone = '', dateOfBirth = '---', fullAddress = '' }) => {
       answers.push(blankLine)
       answers.push(`${firstName} ${lastName}`)
       answers.push(fullAddress)
@@ -247,7 +260,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
 
   async getResponsibleOfficerLine () {
     const { path } = PUBLIC_BODY_OFFICER
-    const { firstName, lastName, jobTitle, email } = await this.getResponsibleOfficer()
+    const { firstName, lastName, jobTitle, email } = await this.getContactDetails(RESPONSIBLE_CONTACT_DETAILS)
     const name = `${firstName} ${lastName}`
     return this.buildLine({
       heading: 'Responsible officer or executive',
@@ -259,7 +272,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
 
   async getDesignatedMemberEmailLine () {
     const { path } = LLP_COMPANY_DESIGNATED_MEMBER_EMAIL
-    const { email = '' } = await this.getDesignatedMemberDetails()
+    const { email = '' } = await this.getContactDetails(DESIGNATED_MEMBER_CONTACT_DETAILS)
     return this.buildLine({
       heading: 'Designated Member email',
       prefix: 'designated-member-email',
@@ -270,7 +283,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
 
   async getCompanySecretaryEmailLine () {
     const { path } = COMPANY_DIRECTOR_EMAIL
-    const { email = '' } = await this.getCompanySecretaryDetails()
+    const { email = '' } = await this.getContactDetails(COMPANY_SECRETARY_EMAIL)
     return this.buildLine({
       heading: 'Company Secretary or director email',
       prefix: 'company-secretary-email',

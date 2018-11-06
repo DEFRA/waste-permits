@@ -51,14 +51,9 @@ module.exports = class ContactDetail extends BaseModel {
     }
   }
 
-  static async list (context, { type }) {
-    const { applicationId } = context
-
-    if (!type) {
-      throw new Error('Expected either contact details type to be declared')
-    }
-
-    const addressDetails = await AddressDetail.listBy(context, { applicationId, type })
+  static async list (context, filter = {}) {
+    filter.applicationId = context.applicationId
+    const addressDetails = await AddressDetail.listBy(context, filter)
     return Promise.all(addressDetails.map((addressDetail) => this._extractContactDetail(context, addressDetail)))
   }
 
@@ -72,12 +67,11 @@ module.exports = class ContactDetail extends BaseModel {
 
     const addressDetail = id ? await AddressDetail.getById(context, id) : new AddressDetail({ applicationId, type, customerId })
 
+    // Todo: Updating contact entity will eventually be done within the CRM
     if (firstName || lastName) {
-      const contact = addressDetail.customerId ? await Contact.getById(context, addressDetail.customerId) : new Contact({})
+      const contact = (await Contact.getByFirstnameLastnameEmail(context, firstName, lastName, email)) || new Contact({ firstName, lastName, email })
+      if (!contact.id) await contact.save(context)
 
-      contact.firstName = firstName
-      contact.lastName = lastName
-      await contact.save(context)
       addressDetail.customerId = contact.id
 
       // Link the contact with the account if it isn't already
@@ -102,6 +96,7 @@ module.exports = class ContactDetail extends BaseModel {
     await addressDetail.save(context)
 
     this.id = addressDetail.id
+    this.customerId = addressDetail.customerId
     return this.id
   }
 

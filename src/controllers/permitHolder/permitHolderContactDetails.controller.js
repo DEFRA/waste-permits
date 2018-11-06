@@ -1,11 +1,11 @@
 'use strict'
 
-const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const Contact = require('../../persistence/entities/contact.entity')
-const AddressDetail = require('../../persistence/entities/addressDetail.entity')
+const ContactDetail = require('../../models/contactDetail.model')
+
+const { INDIVIDUAL_PERMIT_HOLDER } = require('../../dynamics').AddressTypes
 
 module.exports = class PermitHolderContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
@@ -14,14 +14,16 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const context = await RecoveryService.createApplicationContext(h, { individualPermitHolder: true, application: true })
-      const { individualPermitHolder = { email: '' }, application } = context
+      const context = await RecoveryService.createApplicationContext(h)
 
-      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(context, application.id)
+      const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
+      const contactDetail = await ContactDetail.get(context, { type })
 
-      pageContext.formValues = {
-        'email': individualPermitHolder.email,
-        'telephone': individualPermitHolderDetails.telephone
+      if (contactDetail) {
+        pageContext.formValues = {
+          'email': contactDetail.email,
+          'telephone': contactDetail.telephone
+        }
       }
     }
 
@@ -32,38 +34,25 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
-      const { application, individualPermitHolder } = context
-      const {
-        email,
-        telephone
-      } = request.payload
-      let contact
+      const context = await RecoveryService.createApplicationContext(h)
+      const { application } = context
+      const { email, telephone } = request.payload
+
+      const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
+      const contactDetail = await ContactDetail.get(context, { type })
 
       // If we don't have a permit holder at this point something has gone wrong
-      if (!individualPermitHolder) {
+      if (!contactDetail) {
         throw Error('Application does not have a permit holder')
       }
 
-      const { id: individualPermitHolderId, firstName, lastName } = individualPermitHolder
+      Object.assign(contactDetail, { email, telephone })
+      await contactDetail.save(context)
 
-      contact = await Contact.getByFirstnameLastnameEmail(context, firstName, lastName, email)
+      application.permitHolderIndividualId = contactDetail.customerId
+      await application.save(context)
 
-      if (!contact) {
-        contact = new Contact({ firstName, lastName, email })
-        await contact.save(context)
-      }
-
-      if (contact.id !== individualPermitHolderId) {
-        application.permitHolderIndividualId = contact.id
-        await application.save(context)
-      }
-
-      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(context, application.id)
-      individualPermitHolderDetails.telephone = telephone
-      await individualPermitHolderDetails.save(context)
-
-      return this.redirect({ request, h, redirectPath: Routes.POSTCODE_PERMIT_HOLDER.path })
+      return this.redirect({ request, h, redirectPath: this.nextPath })
     }
   }
 }

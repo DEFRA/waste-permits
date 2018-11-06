@@ -5,13 +5,11 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 const Application = require('../../../src/persistence/entities/application.entity')
 const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
 const Account = require('../../../src/persistence/entities/account.entity')
-const Contact = require('../../../src/persistence/entities/contact.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
-const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
+const ContactDetail = require('../../../src/models/contactDetail.model')
 const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.task')
 
 const COMPLETENESS_PARAMETER = 'defra_pholderdetailsrequired_completed'
@@ -20,11 +18,8 @@ let sandbox
 let fakeApplication
 let fakeApplicationLine
 let fakeAccount
-let fakeContact
-let fakeAddressDetails
-let fakeAddress1
-let fakeAddress2
-let fakeAddress3
+let fakeContactDetail
+let fakeAddress
 
 const request = { app: { data: { authToken: 'AUTH_TOKEN' } } }
 const applicationId = 'APPLICATION_ID'
@@ -39,19 +34,6 @@ lab.beforeEach(() => {
     isValidatedWithCompaniesHouse: false
   }
 
-  fakeContact = {
-    id: 'CONTACT_ID',
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME',
-    email: 'EMAIL'
-  }
-
-  fakeAddressDetails = {
-    addressId: 'ADDRESS-ID',
-    dateOfBirth: 'DATE-OF-BIRTH',
-    telephone: '0123456789'
-  }
-
   fakeApplication = {
     id: 'APPLICATION_ID',
     isIndividual: true
@@ -62,36 +44,24 @@ lab.beforeEach(() => {
     applicationId: fakeApplication.id
   }
 
-  fakeAddress1 = {
-    id: 'ADDRESS_ID_1',
+  fakeContactDetail = {
+    id: 'CONTACT_DETAIL_ID',
+    addressId: 'ADDRESS_ID_1',
+    applicationId: fakeApplication.id,
+    firstName: 'FIRSTNAME',
+    lastName: 'LASTNAME',
+    email: 'EMAIL',
+    telephone: 'TELEPHONE'
+  }
+
+  fakeAddress = {
+    id: 'ADDRESS_ID',
     buildingNameOrNumber: '101',
-    addressLine1: 'FIRST_ADDRESS_LINE_1',
+    addressLine1: 'FIRST_ADDRESS_LINE',
     addressLine2: undefined,
-    townOrCity: 'CITY1',
+    townOrCity: 'CITY',
     postcode: 'AB12 1AA',
-    uprn: 'UPRN1',
-    fromAddressLookup: true
-  }
-
-  fakeAddress2 = {
-    id: 'ADDRESS_ID_2',
-    buildingNameOrNumber: '102',
-    addressLine1: 'SECOND_ADDRESS_LINE_1',
-    addressLine2: undefined,
-    townOrCity: 'CITY2',
-    postcode: 'AB12 2AA',
-    uprn: 'UPRN2',
-    fromAddressLookup: true
-  }
-
-  fakeAddress3 = {
-    id: 'ADDRESS_ID_3',
-    buildingNameOrNumber: '103',
-    addressLine1: 'THIRD_ADDRESS_LINE_1',
-    addressLine2: undefined,
-    townOrCity: 'CITY3',
-    postcode: 'AB12 3AA',
-    uprn: 'UPRN3',
+    uprn: 'UPRN',
     fromAddressLookup: true
   }
 
@@ -99,22 +69,21 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => fakeAddress1.id)
-  sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => fakeAddress.id)
   sandbox.stub(Application, 'getById').value(() => fakeApplication)
   sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
   sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
-  sandbox.stub(Account.prototype, 'save').value(() => {})
-  sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
-  sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeAddressDetails))
-  sandbox.stub(AddressDetail, 'getByApplicationIdAndType').value(() => new AddressDetail({ addressId: 'ADDRESS_ID' }))
-  sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress1))
-  sandbox.stub(Address, 'getByUprn').value(() => new Address(fakeAddress1))
+  sandbox.stub(Account.prototype, 'save').value(() => undefined)
+  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
+  sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
+  sandbox.stub(Address, 'getByUprn').value(() => new Address(fakeAddress))
   sandbox.stub(Address, 'listByPostcode').value(() => [
-    new Address(fakeAddress1),
-    new Address(fakeAddress2),
-    new Address(fakeAddress3)
+    new Address(fakeAddress),
+    new Address(fakeAddress),
+    new Address(fakeAddress)
   ])
+  sandbox.stub(Address.prototype, 'save').value(() => undefined)
 })
 
 lab.afterEach(() => {
@@ -130,48 +99,29 @@ const testCompleteness = async (expectedResult) => {
 lab.experiment('Model persistence methods:', () => {
   lab.test('getAddress() method correctly retrieves an Address', async () => {
     const address = await PermitHolderDetails.getAddress(request, applicationId)
-    Code.expect(address.uprn).to.be.equal(fakeAddress1.uprn)
+    Code.expect(address.uprn).to.be.equal(fakeAddress.uprn)
   })
 
-  lab.test('saveSelectedAddress() method correctly saves a permit holder address that is already in Dynamics', async () => {
+  lab.test('saveSelectedAddress() method correctly saves a permit holder address', async () => {
     const addressDto = {
-      uprn: fakeAddress1.uprn,
-      postcode: fakeAddress1.postcode
+      uprn: fakeAddress.uprn,
+      postcode: fakeAddress.postcode
     }
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    const spy = sinon.spy(ContactDetail.prototype, 'save')
     await PermitHolderDetails.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
     Code.expect(spy.callCount).to.equal(1)
+    spy.restore()
   })
 
-  lab.test('saveSelectedAddress() method correctly saves a permit holder address that is not already in Dynamics', async () => {
-    Address.getByUprn = () => undefined
+  lab.test('saveManualAddress() method correctly creates a permit holder address from a selected address', async () => {
     const addressDto = {
-      uprn: fakeAddress1.uprn,
-      postcode: fakeAddress1.postcode
+      uprn: fakeAddress.uprn,
+      postcode: fakeAddress.postcode
     }
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await PermitHolderDetails.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
+    const spy = sinon.spy(ContactDetail.prototype, 'save')
+    await PermitHolderDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
     Code.expect(spy.callCount).to.equal(1)
-  })
-
-  lab.test('saveManualAddress() method correctly creates a permit holder address from a selected address that is already in Dynamics', async () => {
-    const addressDto = {
-      uprn: fakeAddress1.uprn,
-      postcode: fakeAddress1.postcode
-    }
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await PermitHolderDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
-    Code.expect(spy.callCount).to.equal(2)
-  })
-
-  lab.test('saveManualAddress() method correctly saves a permit holder address that is not already in Dynamics', async () => {
-    Address.getByUprn = () => undefined
-    const addressDto = {
-      postcode: fakeAddress1.postcode
-    }
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
-    await PermitHolderDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
-    Code.expect(spy.callCount).to.equal(2)
+    spy.restore()
   })
 })
 
@@ -182,27 +132,23 @@ lab.experiment('Task List: Permit Holder Details Model tests:', () => {
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete for a company', async () => {
     fakeApplication.isIndividual = false
-    fakeApplication.permitHolderOrganisationId = fakeAccount.id
     testCompleteness(true)
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete for an individual', async () => {
     fakeApplication.isIndividual = true
-    fakeApplication.permitHolderIndividualId = fakeContact.id
     testCompleteness(true)
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete for a company', async () => {
     fakeApplication.isIndividual = false
-    fakeApplication.permitHolderOrganisationId = fakeAccount.id
     fakeAccount.accountName = undefined
     testCompleteness(false)
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete for an individual', async () => {
     fakeApplication.isIndividual = true
-    fakeApplication.permitHolderIndividualId = fakeContact.id
-    fakeContact.firstName = undefined
+    fakeContactDetail.firstName = undefined
     testCompleteness(false)
   })
 })

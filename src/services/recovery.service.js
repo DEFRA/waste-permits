@@ -15,18 +15,17 @@ const { PERMIT_HOLDER_TYPES } = require('../dynamics')
 module.exports = class RecoveryService {
   static async recoverOptionalData (context, applicationId, applicationLineId, options) {
     // Query in parallel for optional entities
-    const [application, applicationLine, applicationReturn, account, contact, individualPermitHolder, cardPayment, standardRule] = await Promise.all([
+    const [application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule] = await Promise.all([
       options.application ? Application.getById(context, applicationId) : Promise.resolve(undefined),
       options.applicationLine ? ApplicationLine.getById(context, applicationLineId) : Promise.resolve(undefined),
       options.applicationReturn ? ApplicationReturn.getByApplicationId(context, applicationId) : Promise.resolve(undefined),
       options.account ? Account.getByApplicationId(context, applicationId) : Promise.resolve(undefined),
       options.contact ? Contact.getByApplicationId(context, applicationId) : Promise.resolve(undefined),
-      options.individualPermitHolder ? Contact.getIndividualPermitHolderByApplicationId(context, applicationId) : Promise.resolve(undefined),
       options.cardPayment ? Payment.getCardPaymentDetails(context, applicationLineId) : Promise.resolve(undefined),
       options.standardRule ? StandardRule.getByApplicationLineId(context, applicationLineId) : Promise.resolve(undefined)
     ])
 
-    return { application, applicationLine, applicationReturn, account, contact, individualPermitHolder, cardPayment, standardRule }
+    return { application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule }
   }
 
   static getPermitHolderType (application) {
@@ -48,9 +47,9 @@ module.exports = class RecoveryService {
     const permitHolderType = RecoveryService.getPermitHolderType(application)
 
     // Query in parallel for optional entities
-    const { applicationLine, applicationReturn, account, contact, individualPermitHolder, cardPayment, standardRule } = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
+    const { applicationLine, applicationReturn, account, contact, cardPayment, standardRule } = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
 
-    Object.assign(context, { slug, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, individualPermitHolder, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType })
+    Object.assign(context, { slug, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType })
 
     return context
   }
@@ -77,12 +76,12 @@ module.exports = class RecoveryService {
       // Always load the standard rule when restoring
       options.standardRule = true
 
-      const { account, contact, individualPermitHolder, cardPayment, standardRule } = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
+      const { account, contact, cardPayment, standardRule } = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
       const { id: standardRuleId, standardRuleTypeId } = standardRule || {}
 
       const permitHolderType = RecoveryService.getPermitHolderType(application)
 
-      Object.assign(context, { slug, cookie, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, individualPermitHolder, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType })
+      Object.assign(context, { slug, cookie, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType })
 
       // Setup all the cookies as if the user hadn't left
       cookie[AUTH_TOKEN] = context.authToken

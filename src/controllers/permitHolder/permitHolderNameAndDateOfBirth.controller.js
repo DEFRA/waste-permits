@@ -3,34 +3,31 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const Contact = require('../../persistence/entities/contact.entity')
-const AddressDetail = require('../../persistence/entities/addressDetail.entity')
+const ContactDetail = require('../../models/contactDetail.model')
 
 const { SOLE_TRADER } = require('../../dynamics').PERMIT_HOLDER_TYPES
-const { PERMIT_HOLDER_CONTACT_DETAILS, PERMIT_HOLDER_TRADING_NAME } = require('../../routes')
+const Routes = require('../../routes')
+const { INDIVIDUAL_PERMIT_HOLDER } = require('../../dynamics').AddressTypes
 
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const context = await RecoveryService.createApplicationContext(h, { application: true, individualPermitHolder: true })
-    const { application, individualPermitHolder = new Contact() } = context
+    const context = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      if (individualPermitHolder) {
+      const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
+      const contactDetail = await ContactDetail.get(context, { type })
+      if (contactDetail) {
+        const { firstName = '', lastName = '', dateOfBirth = '---' } = contactDetail
+        const [year, month, day] = dateOfBirth.split('-')
         pageContext.formValues = {
-          'first-name': individualPermitHolder.firstName,
-          'last-name': individualPermitHolder.lastName
-        }
-
-        const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(context, application.id)
-
-        if (individualPermitHolderDetails.dateOfBirth) {
-          const [year, month, day] = individualPermitHolderDetails.dateOfBirth.split('-')
-          pageContext.formValues['dob-day'] = day
-          pageContext.formValues['dob-month'] = month
-          pageContext.formValues['dob-year'] = year
+          'first-name': firstName,
+          'last-name': lastName,
+          'dob-day': day,
+          'dob-month': month,
+          'dob-year': year
         }
       }
     }
@@ -43,7 +40,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { application, permitHolderType } = context
+      const { applicationId, permitHolderType } = context
       const {
         'first-name': firstName,
         'last-name': lastName,
@@ -51,32 +48,16 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
         'dob-month': dobMonth,
         'dob-year': dobYear
       } = request.payload
-      let contact
 
-      // Get an existing contact if we have it, but use a new contact if any details have changed
-      const individualPermitHolderId = application.individualPermitHolderId()
-      if (individualPermitHolderId) {
-        contact = await Contact.getById(context, individualPermitHolderId)
-        if (contact.firstName !== firstName || contact.lastName !== lastName) {
-          contact = undefined
-        }
-      }
+      const dateOfBirth = [dobYear, dobMonth, dobDay].join('-')
 
-      if (!contact) {
-        contact = new Contact({ firstName, lastName })
-      }
+      const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
+      const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
 
-      await contact.save(context)
+      Object.assign(contactDetail, { firstName, lastName, dateOfBirth })
+      await contactDetail.save(context)
 
-      application.permitHolderIndividualId = contact.id
-
-      await application.save(context)
-
-      const individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(context, application.id)
-      individualPermitHolderDetails.dateOfBirth = `${dobYear}-${dobMonth}-${dobDay}`
-      await individualPermitHolderDetails.save(context)
-
-      const redirectPath = permitHolderType === SOLE_TRADER ? PERMIT_HOLDER_TRADING_NAME.path : PERMIT_HOLDER_CONTACT_DETAILS.path
+      const redirectPath = permitHolderType === SOLE_TRADER ? Routes[this.route.companyRoute].path : this.nextPath
 
       return this.redirect({ request, h, redirectPath })
     }

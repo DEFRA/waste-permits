@@ -4,12 +4,6 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const INDIVIDUAL_PERMIT_HOLDER_TYPE = 910400002
-const BILLING_INVOICING_ADDRESS_TYPE = 910400004
-const COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE = 910400006
-const PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE = 910400007
-const DESIGNATED_MEMBER_EMAIL_ADDRESS_TYPE = 910400008
-
 const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 
@@ -90,84 +84,6 @@ lab.experiment('AddressDetail Model tests:', () => {
     Code.expect(testAddressDetail.telephone).to.equal(telephone)
     Code.expect(testAddressDetail.jobTitle).to.equal(jobTitle)
     Code.expect(testAddressDetail.applicationId).to.equal(applicationId)
-  })
-
-  lab.test('getByApplicationIdAndType() method returns a single AddressDetail object', async () => {
-    const spy = sandbox.spy(DynamicsDalService.prototype, 'search')
-    const { applicationId, type, email } = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getByApplicationIdAndType(context, applicationId, type)
-    Code.expect(spy.callCount).to.equal(1)
-    Code.expect(addressDetail.email).to.equal(email)
-  })
-
-  lab.test(`getCompanySecretaryDetails() method calls getByApplicationIdAndType() method with type of ${COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE}`, async () => {
-    const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
-    const { applicationId } = fakeAddressDetailData
-    await AddressDetail.getCompanySecretaryDetails(context, applicationId)
-    Code.expect(spy.calledWith(context, applicationId, COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE)).to.equal(true)
-  })
-
-  lab.test(`getCompanySecretaryDetails() method creates a new AddressDetail with type of ${COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE}`, async () => {
-    sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
-    const { applicationId } = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getCompanySecretaryDetails(context, applicationId)
-    Code.expect(addressDetail.type).to.equal(COMPANY_SECRETARY_EMAIL_ADDRESS_TYPE)
-  })
-
-  lab.test(`getPrimaryContactDetails() method calls getByApplicationIdAndType() method with type of ${PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE}`, async () => {
-    const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
-    const { applicationId } = fakeAddressDetailData
-    await AddressDetail.getPrimaryContactDetails(context, applicationId)
-    Code.expect(spy.calledWith(context, applicationId, PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE)).to.equal(true)
-  })
-
-  lab.test(`getPrimaryContactDetails() method creates a new AddressDetail with type of ${PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE}`, async () => {
-    sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
-    const { applicationId } = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getPrimaryContactDetails(context, applicationId)
-    Code.expect(addressDetail.type).to.equal(PRIMARY_CONTACT_TELEPHONE_NUMBER_ADDRESS_TYPE)
-  })
-
-  lab.test(`getBillingInvoicingDetails() method calls getByApplicationIdAndType() method with type of ${BILLING_INVOICING_ADDRESS_TYPE}`, async () => {
-    const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
-    const { applicationId } = fakeAddressDetailData
-    await AddressDetail.getBillingInvoicingDetails(context, applicationId)
-    Code.expect(spy.calledWith(context, applicationId, BILLING_INVOICING_ADDRESS_TYPE)).to.equal(true)
-  })
-
-  lab.test(`getBillingInvoicingDetails() method creates a new AddressDetail with type of ${BILLING_INVOICING_ADDRESS_TYPE}`, async () => {
-    sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
-    const { applicationId } = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getBillingInvoicingDetails(context, applicationId)
-    Code.expect(addressDetail.type).to.equal(BILLING_INVOICING_ADDRESS_TYPE)
-  })
-
-  lab.test(`getDesignatedMemberDetails() method calls getByApplicationIdAndType() method with type of ${DESIGNATED_MEMBER_EMAIL_ADDRESS_TYPE}`, async () => {
-    const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
-    const { applicationId } = fakeAddressDetailData
-    await AddressDetail.getDesignatedMemberDetails(context, applicationId)
-    Code.expect(spy.calledWith(context, applicationId, DESIGNATED_MEMBER_EMAIL_ADDRESS_TYPE)).to.equal(true)
-  })
-
-  lab.test(`getDesignatedMemberDetails() method creates a new AddressDetail with type of ${DESIGNATED_MEMBER_EMAIL_ADDRESS_TYPE}`, async () => {
-    sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
-    const { applicationId } = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getDesignatedMemberDetails(context, applicationId)
-    Code.expect(addressDetail.type).to.equal(DESIGNATED_MEMBER_EMAIL_ADDRESS_TYPE)
-  })
-
-  lab.test(`getIndividualPermitHolderDetails() method calls getByApplicationIdAndType() method with type of ${INDIVIDUAL_PERMIT_HOLDER_TYPE}`, async () => {
-    const spy = sandbox.spy(AddressDetail, 'getByApplicationIdAndType')
-    const { applicationId } = fakeAddressDetailData
-    await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
-    Code.expect(spy.calledWith(context, applicationId, INDIVIDUAL_PERMIT_HOLDER_TYPE)).to.equal(true)
-  })
-
-  lab.test(`getIndividualPermitHolderDetails() method creates a new AddressDetail with type of ${INDIVIDUAL_PERMIT_HOLDER_TYPE}`, async () => {
-    sandbox.stub(AddressDetail, 'getByApplicationIdAndType').callsFake(() => {})
-    const { applicationId } = fakeAddressDetailData
-    const addressDetail = await AddressDetail.getIndividualPermitHolderDetails(context, applicationId)
-    Code.expect(addressDetail.type).to.equal(INDIVIDUAL_PERMIT_HOLDER_TYPE)
   })
 
   lab.test('save() method saves a new AddressDetail object', async () => {

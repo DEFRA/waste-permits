@@ -9,8 +9,8 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 const server = require('../../../server')
 const CookieService = require('../../../src/services/cookie.service')
 const Application = require('../../../src/persistence/entities/application.entity')
-const Contact = require('../../../src/persistence/entities/contact.entity')
-const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
+const ContactDetail = require('../../../src/models/contactDetail.model')
+const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
@@ -24,33 +24,45 @@ const getRequest = {
   headers: {}
 }
 let postRequest
-let validPermitHolderDetails
-let fakeIndividualPermitHolderDetails
-let fakeIndividualPermitHolderDetailsId = 'INDIVIDUAL_PERMIT_HOLDER_ID'
-
-const fakeApplication = {
-  id: 'APPLICATION_ID',
-  applicationNumber: 'APPLICATION_NUMBER'
-}
+let validContactDetails
+let fakeApplication
+let fakeContactDetail
+let fakeRecovery
 
 lab.beforeEach(() => {
-  validPermitHolderDetails = {
-    'first-name': 'First',
-    'last-name': 'Last',
+  fakeContactDetail = {
+    id: 'CONTACT_DETAIL_ID',
+    firstName: 'John',
+    lastName: 'Smith',
+    dateOfBirth: '1995-3-5'
+  }
+
+  fakeApplication = {
+    id: 'APPLICATION_ID',
+    applicationNumber: 'APPLICATION_NUMBER',
+    applicantType: 910400000,
+    permitHolderIndividualId: fakeContactDetail.id
+  }
+
+  fakeRecovery = () => ({
+    authToken: 'AUTH_TOKEN',
+    applicationId: fakeApplication.id,
+    application: new Application(fakeApplication)
+  })
+
+  validContactDetails = {
+    'first-name': fakeContactDetail.firstName,
+    'last-name': fakeContactDetail.lastName,
     'dob-day': '5',
     'dob-month': '3',
     'dob-year': '1995'
-  }
-
-  fakeIndividualPermitHolderDetails = {
-    id: fakeIndividualPermitHolderDetailsId
   }
 
   postRequest = {
     method: 'POST',
     url: routePath,
     headers: {},
-    payload: validPermitHolderDetails
+    payload: validContactDetails
   }
 
   // Create a sinon sandbox to stub methods
@@ -61,10 +73,9 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(Contact.prototype, 'save').value(() => undefined)
-  sandbox.stub(Contact, 'getById').value(() => new Contact())
-  sandbox.stub(AddressDetail.prototype, 'save').value(() => undefined)
-  sandbox.stub(AddressDetail, 'getIndividualPermitHolderDetails').value(() => new AddressDetail(fakeIndividualPermitHolderDetails))
+  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
 })
 
 lab.afterEach(() => {
@@ -72,7 +83,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-const checkPageElements = async (request, expectedFirstName, expectedLastName) => {
+const checkPageElements = async (request, expectedFirstName = '', expectedLastName = '', expectedDateOfBirth = '---') => {
   const doc = await GeneralTestHelper.getDoc(request)
 
   let element = doc.getElementById('page-heading').firstChild
@@ -94,6 +105,17 @@ const checkPageElements = async (request, expectedFirstName, expectedLastName) =
 
   element = doc.getElementById('last-name')
   Code.expect(element.getAttribute('value')).to.equal(expectedLastName)
+
+  const [dobYear, dobMonth, dobDay] = expectedDateOfBirth.split('-')
+
+  element = doc.getElementById('dob-day')
+  Code.expect(element.getAttribute('value')).to.equal(dobDay)
+
+  element = doc.getElementById('dob-month')
+  Code.expect(element.getAttribute('value')).to.equal(dobMonth)
+
+  element = doc.getElementById('dob-year')
+  Code.expect(element.getAttribute('value')).to.equal(dobYear)
 
   element = doc.getElementById('submit-button').firstChild
   Code.expect(element.nodeValue).to.equal('Continue')
@@ -122,24 +144,13 @@ lab.experiment('Permit Holder Name page tests:', () => {
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the permit holder name page correctly when it is a new application`, async () => {
       // No current permit holder
-      fakeApplication.individualPermitHolderId = () => {
-        return undefined
-      }
-      checkPageElements(getRequest, '', '')
+      fakeContactDetail = {}
+      checkPageElements(getRequest)
     })
 
     lab.test(`GET ${routePath} returns the permit holder name page correctly when there is an existing contact`, async () => {
-      fakeApplication.individualPermitHolderId = () => {
-        return 1
-      }
-      Contact.getIndividualPermitHolderByApplicationId = () => {
-        return {
-          firstName: 'First Name',
-          lastName: 'Last Name'
-        }
-      }
-
-      checkPageElements(getRequest, 'First Name', 'Last Name')
+      const { firstName, lastName, dateOfBirth } = fakeContactDetail
+      checkPageElements(getRequest, firstName, lastName, dateOfBirth)
     })
   })
 
@@ -161,12 +172,6 @@ lab.experiment('Permit Holder Name page tests:', () => {
         fakeApplication.individualPermitHolderId = () => {
           return 1
         }
-        Contact.getIndividualPermitHolderByApplicationId = () => {
-          return {
-            firstName: validPermitHolderDetails.firstName,
-            lastName: validPermitHolderDetails.lastName
-          }
-        }
 
         const res = await server.inject(postRequest)
 
@@ -178,12 +183,6 @@ lab.experiment('Permit Holder Name page tests:', () => {
         // Existing permit holder
         fakeApplication.individualPermitHolderId = () => {
           return 1
-        }
-        Contact.getIndividualPermitHolderByApplicationId = () => {
-          return {
-            firstName: 'New First Name',
-            lastName: 'New Last Name'
-          }
         }
 
         const res = await server.inject(postRequest)

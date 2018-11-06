@@ -1,13 +1,13 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 
-const { TECHNICAL_QUALIFICATION: ruleSetId } = require('../taskList/taskList').RuleSetIds
-const { TECHNICAL_QUALIFICATION } = require('../../routes')
+const { TECHNICAL_QUALIFICATION } = require('../taskList/taskList').RuleSetIds
+const { TECHNICAL_QUALIFICATION: { path } } = require('../../routes')
 const { WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS } = Dynamics.TechnicalQualification
 
 module.exports = class TechnicalCheck extends BaseCheck {
   static get ruleSetId () {
-    return ruleSetId
+    return TECHNICAL_QUALIFICATION
   }
 
   get prefix () {
@@ -41,7 +41,7 @@ module.exports = class TechnicalCheck extends BaseCheck {
       heading: 'Technical competence evidence',
       answers: evidence.length ? [technicalQualificationName, 'Evidence files uploaded:'].concat(evidence.map((file) => file.filename)) : [],
       links: [
-        { path: TECHNICAL_QUALIFICATION.path, type: 'technical management qualification' }
+        { path, type: 'technical management qualification' }
       ]
     })
   }

@@ -2,29 +2,29 @@
 
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
-const Contact = require('../persistence/entities/contact.entity')
-const AddressDetail = require('../persistence/entities/addressDetail.entity')
 const Account = require('../persistence/entities/account.entity')
-const ContactDetails = require('../models/taskList/contactDetails.task')
+const ContactDetailsTask = require('../models/taskList/contactDetails.task')
+const ContactDetail = require('../models/contactDetail.model')
 const RecoveryService = require('../services/recovery.service')
+const { PRIMARY_CONTACT_DETAILS } = require('../dynamics').AddressTypes
 
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h, { application: true })
-    const { applicationId, application } = context
+    const { application } = context
 
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const contact = application.contactId ? await Contact.getById(context, application.contactId) : new Contact()
-      const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(context, applicationId)
-      if (contact) {
+      const type = PRIMARY_CONTACT_DETAILS.TYPE
+      const contactDetail = await ContactDetail.get(context, { type })
+      if (contactDetail) {
         pageContext.formValues = {
-          'first-name': contact.firstName,
-          'last-name': contact.lastName,
-          'telephone': primaryContactDetails.telephone,
-          'email': contact.email
+          'first-name': contactDetail.firstName,
+          'last-name': contactDetail.lastName,
+          'telephone': contactDetail.telephone,
+          'email': contactDetail.email
         }
         if (application.agentId) {
           const account = await Account.getById(context, application.agentId)
@@ -51,24 +51,12 @@ module.exports = class ContactDetailsController extends BaseController {
         telephone,
         email
       } = request.payload
-      let contact
 
-      if (application.contactId) {
-        contact = await Contact.getById(context, application.contactId)
-        if (contact.firstName !== firstName || contact.lastName !== lastName || contact.email !== email) {
-          application.contactId = undefined
-        }
-      }
+      const type = PRIMARY_CONTACT_DETAILS.TYPE
+      const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
 
-      if (!application.contactId) {
-        contact = await Contact.getByFirstnameLastnameEmail(context, firstName, lastName, email)
-      }
-
-      if (!contact) {
-        contact = new Contact({ firstName, lastName, email })
-      }
-
-      await contact.save(context)
+      Object.assign(contactDetail, { firstName, lastName, telephone, email })
+      await contactDetail.save(context)
 
       // The agent company or trading name is only set if the corresponding checkbox is ticked
       if (isAgent) {
@@ -80,14 +68,10 @@ module.exports = class ContactDetailsController extends BaseController {
         application.agentId = undefined
       }
 
-      application.contactId = contact.id
+      application.contactId = contactDetail.customerId
       await application.save(context)
 
-      const primaryContactDetails = await AddressDetail.getPrimaryContactDetails(context, applicationId)
-      primaryContactDetails.telephone = telephone
-      await primaryContactDetails.save(context)
-
-      await ContactDetails.updateCompleteness(context, applicationId, applicationLineId)
+      await ContactDetailsTask.updateCompleteness(context, applicationId, applicationLineId)
 
       return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
     }

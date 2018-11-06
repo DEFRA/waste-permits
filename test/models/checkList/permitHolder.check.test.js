@@ -38,16 +38,10 @@ const getMonth = (month) => [
 
 let fakeApplication
 let fakeCompanyAccount
-let fakeDirector
-let fakePartner
-let fakeIndividualPermitHolder
-let fakeIndividualPermitHolderDetails
-let fakeIndividualPermitHolderAddress
+let fakeContactDetail
 let fakeCompanyRegisteredAddress
 let fakePermitHolderType
-let fakeCompanySecretary
 let fakeMainAddress
-let fakeResponsibleOfficer
 
 let sandbox
 
@@ -61,54 +55,19 @@ lab.beforeEach(() => {
     bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS'
   }
 
-  fakeCompanyAccount = {
-    accountName: 'COMPANY_NAME',
-    companyNumber: 'COMPANY_NUMBER'
-  }
-
-  fakeCompanySecretary = {
-    email: 'COMPANY_SECRETARY_EMAIL'
-  }
-
-  fakeDirector = {
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME',
-    dateOfBirth: '2003-2-1'
-  }
-
-  fakePartner = {
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME',
-    email: 'PARTNER_EMAIL',
-    telephone: 'PARTNER_TELEPHONE',
-    dateOfBirth: '2003-2-11',
+  fakeContactDetail = {
+    firstName: 'CONTACT_FIRSTNAME',
+    lastName: 'CONTACT_LASTNAME',
+    email: 'CONTACT_EMAIL',
+    telephone: 'PRIMARY_CONTACT_TELEPHONE',
+    dateOfBirth: '2018-2-4',
+    jobTitle: 'JOB_TITLE',
     fullAddress: 'FULL_ADDRESS'
   }
 
-  fakeIndividualPermitHolder = {
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME',
-    email: 'EMAIL'
-  }
-
-  fakeResponsibleOfficer = {
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME',
-    jobTitle: 'JOB_TITLE',
-    email: 'EMAIL'
-  }
-
-  fakeIndividualPermitHolderDetails = {
-    dateOfBirth: '1999-11-23',
-    telephone: 'TELEPHONE'
-  }
-
-  fakeIndividualPermitHolderAddress = {
-    buildingNameOrNumber: '5',
-    addressLine1: 'A ROAD',
-    addressLine2: 'AN AREA',
-    townOrCity: 'A TOWN',
-    postcode: 'BS1 6AD'
+  fakeCompanyAccount = {
+    accountName: 'COMPANY_NAME',
+    companyNumber: 'COMPANY_NUMBER'
   }
 
   fakeCompanyRegisteredAddress = {
@@ -138,15 +97,9 @@ lab.beforeEach(() => {
   sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => Merge({}, fakeApplication))
   sandbox.stub(BaseCheck.prototype, 'getPermitHolderType').value(() => Merge({}, fakePermitHolderType))
   sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(() => Merge({}, fakeCompanyAccount))
-  sandbox.stub(BaseCheck.prototype, 'getCompanySecretaryDetails').value(() => Merge({}, fakeCompanySecretary))
   sandbox.stub(BaseCheck.prototype, 'getCompanyRegisteredAddress').value(() => Merge({}, fakeCompanyRegisteredAddress))
-  sandbox.stub(BaseCheck.prototype, 'getDirectors').value(() => [Merge({}, fakeDirector)])
-  sandbox.stub(BaseCheck.prototype, 'getPartners').value(() => [Merge({}, fakePartner)])
-  sandbox.stub(BaseCheck.prototype, 'getResponsibleOfficer').value(() => Merge({}, fakeResponsibleOfficer))
   sandbox.stub(BaseCheck.prototype, 'getMainAddress').value(() => Merge({}, fakeMainAddress))
-  sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolder').value(() => Merge({}, fakeIndividualPermitHolder))
-  sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderAddress').value(() => Merge({}, fakeIndividualPermitHolderAddress))
-  sandbox.stub(BaseCheck.prototype, 'getIndividualPermitHolderDetails').value(() => Merge({}, fakeIndividualPermitHolderDetails))
+  sandbox.stub(BaseCheck.prototype, 'listContactDetails').value(() => [Merge({}, fakeContactDetail)])
 })
 
 lab.afterEach(() => {
@@ -255,7 +208,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(answer).to.equal('The partners will be the permit holders and each will be responsible for the operation of the permit.')
       Code.expect(answerId).to.equal(`${linePrefix}-answer-1`)
 
-      const { firstName, lastName, email, telephone, dateOfBirth, fullAddress } = fakePartner
+      const { firstName = '', lastName = '', email = '', telephone = '', dateOfBirth = '---', fullAddress = '' } = fakeContactDetail
       const [year, month, day] = dateOfBirth.split('-')
 
       answers.forEach(({ answer, answerId }, answerIndex) => {
@@ -296,10 +249,8 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = fakeIndividualPermitHolderAddress
       const { tradingName } = fakeApplication
-      const { firstName, lastName, email } = fakeIndividualPermitHolder
-      const { telephone, dateOfBirth } = fakeIndividualPermitHolderDetails
+      const { firstName = '', lastName = '', email = '', telephone = '', dateOfBirth = '---', fullAddress = '' } = fakeContactDetail
       const [year, month, day] = dateOfBirth.split('-')
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
@@ -323,16 +274,7 @@ lab.experiment('PermitHolder Check tests:', () => {
             Code.expect(answer).to.equal({ blankLine: true })
             break
           case 6:
-            Code.expect(answer).to.equal(`${buildingNameOrNumber}, ${addressLine1}`)
-            break
-          case 7:
-            Code.expect(answer).to.equal(addressLine2)
-            break
-          case 8:
-            Code.expect(answer).to.equal(townOrCity)
-            break
-          case 9:
-            Code.expect(answer).to.equal(postcode)
+            Code.expect(answer).to.equal(`${fullAddress}`)
             break
         }
       })
@@ -350,7 +292,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { firstName, lastName, jobTitle } = fakeResponsibleOfficer
+      const { firstName = '', lastName = '', jobTitle = '' } = fakeContactDetail
 
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
@@ -416,7 +358,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { firstName, lastName, dateOfBirth } = fakeDirector
+      const { firstName = '', lastName = '', dateOfBirth = '---' } = fakeContactDetail
       const [year, month, day] = dateOfBirth.split('-')
       Code.expect(answer).to.equal(`${firstName} ${lastName}: ${day} ${getMonth(month)} ${year}`)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
@@ -435,7 +377,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { email } = fakeCompanySecretary
+      const { email } = fakeContactDetail
       Code.expect(answer).to.equal(email)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 

@@ -1,16 +1,27 @@
 const Constants = require('../../constants')
 const Account = require('../../persistence/entities/account.entity')
 const Address = require('../../persistence/entities/address.entity')
-const AddressDetail = require('../../persistence/entities/addressDetail.entity')
 const Annotation = require('../../persistence/entities/annotation.entity')
 const Application = require('../../persistence/entities/application.entity')
-const Contact = require('../../persistence/entities/contact.entity')
 const Location = require('../../persistence/entities/location.entity')
 const LocationDetail = require('../../persistence/entities/locationDetail.entity')
 const StandardRule = require('../../persistence/entities/standardRule.entity')
 const ContactDetail = require('../contactDetail.model')
-const { RESPONSIBLE_CONTACT_DETAILS, PARTNER_CONTACT_DETAILS, DIRECTOR_CONTACT_DETAILS, DESIGNATED_MEMBER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
-const { TECHNICAL_QUALIFICATION, SITE_PLAN, FIRE_PREVENTION_PLAN, WASTE_RECOVERY_PLAN } = Constants.UploadSubject
+
+const {
+  PRIMARY_CONTACT_DETAILS,
+  DESIGNATED_MEMBER_CONTACT_DETAILS,
+  BILLING_INVOICING,
+  PUBLIC_BODY_MAIN_ADDRESS,
+  COMPANY_REGISTERED_ADDRESS
+} = require('../../dynamics').AddressTypes
+
+const {
+  TECHNICAL_QUALIFICATION,
+  SITE_PLAN,
+  FIRE_PREVENTION_PLAN,
+  WASTE_RECOVERY_PLAN
+} = Constants.UploadSubject
 
 module.exports = class BaseCheck {
   constructor (data) {
@@ -39,15 +50,6 @@ module.exports = class BaseCheck {
     return this.data.application || {}
   }
 
-  async getContact () {
-    const { contact } = this.data
-    const { contactId } = await this.getApplication()
-    if (!contact) {
-      this.data.contact = contactId ? await Contact.getById(this.data, contactId) : new Contact()
-    }
-    return this.data.contact || {}
-  }
-
   async getAgentAccount () {
     const { agentAccount } = this.data
     const { agentId } = await this.getApplication()
@@ -65,36 +67,24 @@ module.exports = class BaseCheck {
     return this.data.companyAccount || {}
   }
 
-  async getCompanySecretaryDetails () {
-    const { applicationId, companySecretaryDetails } = this.data
-    if (!companySecretaryDetails) {
-      this.data.companySecretaryDetails = await AddressDetail.getCompanySecretaryDetails(this.data, applicationId)
-    }
-    return this.data.companySecretaryDetails || {}
-  }
-
   async getCompanyRegisteredAddress () {
-    const { companyRegisteredAddress } = this.data
-    if (!companyRegisteredAddress) {
-      const { id } = await this.getCompanyAccount()
-      const addressDetail = await AddressDetail.getCompanyRegisteredDetails(this.data, id)
-      this.data.companyRegisteredAddress = addressDetail ? await Address.getById(this.data, addressDetail.addressId) : undefined
+    if (!this.data.companyRegisteredAddress) {
+      const type = COMPANY_REGISTERED_ADDRESS.TYPE
+      this.data.companyRegisteredAddress = await ContactDetail.get(this.data, { type })
     }
     return this.data.companyRegisteredAddress || {}
   }
 
   async getMainAddress () {
-    const { applicationId, mainAddress } = this.data
-    if (!mainAddress) {
-      const addressDetail = await AddressDetail.getPublicBodyDetails(this.data, applicationId)
-      this.data.mainAddress = addressDetail ? await Address.getById(this.data, addressDetail.addressId) : undefined
+    if (!this.data.mainAddress) {
+      const type = PUBLIC_BODY_MAIN_ADDRESS.TYPE
+      this.data.mainAddress = await ContactDetail.get(this.data, { type })
     }
     return this.data.mainAddress || {}
   }
 
   async getCompanies () {
-    const { companies } = this.data
-    if (!companies) {
+    if (!this.data.companies) {
       const company = await this.getCompanyAccount()
       this.data.companies = await company.listLinked(this.data)
     }
@@ -102,95 +92,36 @@ module.exports = class BaseCheck {
   }
 
   async getDesignatedMemberDetails () {
-    const { applicationId, designatedMemberDetails } = this.data
-    if (!designatedMemberDetails) {
-      this.data.designatedMemberDetails = await AddressDetail.getDesignatedMemberDetails(this.data, applicationId)
+    if (!this.data.designatedMemberDetails) {
+      const type = DESIGNATED_MEMBER_CONTACT_DETAILS.TYPE
+      this.data.designatedMemberDetails = await ContactDetail.list(this.data, { type })
     }
     return this.data.designatedMemberDetails || {}
   }
 
-  async getDirectors () {
-    const { directors } = this.data
-    if (!directors) {
-      const type = DIRECTOR_CONTACT_DETAILS.TYPE
-      this.data.directors = await ContactDetail.list(this.data, { type })
+  async listContactDetails ({ TYPE: type }) {
+    if (!this.data.contactDetails) {
+      this.data.contactDetails = await ContactDetail.list(this.data) || []
     }
-    return this.data.directors || []
+    return this.data.contactDetails.filter((contactDetail) => contactDetail.type === type)
   }
 
-  async getMembers () {
-    const { members } = this.data
-    if (!members) {
-      const type = DESIGNATED_MEMBER_CONTACT_DETAILS.TYPE
-      const list = await ContactDetail.list(this.data, { type })
-      // Only return those members with a date of birth
-      this.data.members = list.filter(({ dateOfBirth }) => dateOfBirth)
-    }
-    return this.data.members || []
-  }
-
-  async getPartners () {
-    const { partners } = this.data
-    if (!partners) {
-      const type = PARTNER_CONTACT_DETAILS.TYPE
-      this.data.partners = await ContactDetail.list(this.data, { type })
-    }
-    return this.data.partners || {}
-  }
-
-  async getResponsibleOfficer () {
-    const { responsibleOfficer } = this.data
-    if (!responsibleOfficer) {
-      const type = RESPONSIBLE_CONTACT_DETAILS.TYPE
-      this.data.responsibleOfficer = await ContactDetail.get(this.data, { type })
-    }
-    return this.data.responsibleOfficer || {}
+  async getContactDetails (addressType) {
+    const list = await this.listContactDetails(addressType)
+    // return the first found
+    return list.pop()
   }
 
   async getPrimaryContactDetails () {
-    const { applicationId, primaryContactDetails } = this.data
-    if (!primaryContactDetails) {
-      this.data.primaryContactDetails = await AddressDetail.getPrimaryContactDetails(this.data, applicationId)
-    }
-    return this.data.primaryContactDetails || {}
+    return this.getContactDetails(PRIMARY_CONTACT_DETAILS)
   }
 
   async getPermitHolderType () {
-    const { permitHolderType } = this.data
-    return permitHolderType || {}
-  }
-
-  async getIndividualPermitHolder () {
-    const { applicationId, individualPermitHolder } = this.data
-    if (!individualPermitHolder) {
-      this.data.individualPermitHolder = await Contact.getIndividualPermitHolderByApplicationId(this.data, applicationId)
-    }
-    return this.data.individualPermitHolder || {}
-  }
-
-  async getIndividualPermitHolderDetails () {
-    const { applicationId, individualPermitHolderDetails } = this.data
-    if (!individualPermitHolderDetails) {
-      this.data.individualPermitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(this.data, applicationId)
-    }
-    return this.data.individualPermitHolderDetails || {}
-  }
-
-  async getIndividualPermitHolderAddress () {
-    const { applicationId, individualPermitHolderAddress } = this.data
-    if (!individualPermitHolderAddress) {
-      const permitHolderDetails = await AddressDetail.getIndividualPermitHolderDetails(this.data, applicationId)
-      this.data.individualPermitHolderAddress = await Address.getById(this.data, permitHolderDetails.addressId)
-    }
-    return this.data.individualPermitHolderAddress || {}
+    return this.data.permitHolderType || {}
   }
 
   async getBillingInvoicingDetails () {
-    const { applicationId } = this.data
-    if (!this.data.billingInvoicingDetails) {
-      this.data.billingInvoicingDetails = await AddressDetail.getBillingInvoicingDetails(this.data, applicationId)
-    }
-    return this.data.billingInvoicingDetails || {}
+    return this.getContactDetails(BILLING_INVOICING)
   }
 
   async getStandardRule () {

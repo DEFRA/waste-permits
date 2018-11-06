@@ -23,7 +23,6 @@ const fakeApplicationLine = { id: 'FAKE_AOPPLICATION_LINE_ID' }
 const fakeApplicationReturn = {}
 const fakeCardPayment = {}
 const fakeContact = {}
-const fakeIndividualPermitHolder = {}
 const fakeStandardRule = { id: 'FAKE_STANDARD_RULE_ID', type: 'FAKE_STANDARD_RULE_TYPE_ID' }
 const fakeSlug = {}
 const fakeRequest = { app: { data: {} } }
@@ -59,7 +58,6 @@ lab.experiment('RecoveryService tests:', () => {
         applicationReturn: fakeApplicationReturn,
         account: fakeAccount,
         contact: fakeContact,
-        individualPermitHolder: fakeIndividualPermitHolder,
         cardPayment: fakeCardPayment,
         standardRule: fakeStandardRule
       }
@@ -75,7 +73,6 @@ lab.experiment('RecoveryService tests:', () => {
     Code.expect(recovery.applicationReturn).to.equal(fakeApplicationReturn)
     Code.expect(recovery.account).to.equal(fakeAccount)
     Code.expect(recovery.contact).to.equal(fakeContact)
-    Code.expect(recovery.individualPermitHolder).to.equal(fakeIndividualPermitHolder)
     Code.expect(recovery.cardPayment).to.equal(fakeCardPayment)
     Code.expect(recovery.standardRule).to.equal(fakeStandardRule)
     Code.expect(recovery.standardRuleTypeId).to.equal(fakeStandardRule.type)
