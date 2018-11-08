@@ -1,25 +1,24 @@
 'use strict'
 
-const Merge = require('deepmerge')
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const DrainageCheck = require('../../../src/models/checkList/drainage.check')
 
-const fakeApplication = {
-  drainageType: 910400000
-}
-
 const prefix = 'section-drainage'
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
   // Create a sinon sandbox to prevent the "spy already wrapped errors" when a "spy.calledWith" fails
   sandbox = sinon.createSandbox()
-  sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => Merge({}, fakeApplication))
+  sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => mocks.application)
 })
 
 lab.afterEach(() => {

@@ -1,10 +1,10 @@
 'use strict'
 
-const Merge = require('deepmerge')
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const ContactCheck = require('../../../src/models/checkList/contact.check')
@@ -14,27 +14,19 @@ const AGENT_LINE = 1
 const TELEPHONE_LINE = 2
 const EMAIL_LINE = 3
 
-const fakeContactDetail = {
-  firstName: 'CONTACT_FIRSTNAME',
-  lastName: 'CONTACT_LASTNAME',
-  email: 'CONTACT_EMAIL',
-  telephone: 'PRIMARY_CONTACT_TELEPHONE'
-}
-const fakeAgentAccount = {
-  description: 'This person is an agent or consultant',
-  accountName: 'AGENT_ACCOUNT_NAME'
-}
-
 const prefix = 'section-contact'
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
-  sandbox.stub(BaseCheck.prototype, 'getAgentAccount').value(() => Merge({}, fakeAgentAccount))
-  sandbox.stub(BaseCheck.prototype, 'getContactDetails').value(() => Merge({}, fakeContactDetail))
+  sandbox.stub(BaseCheck.prototype, 'getAgentAccount').value(() => mocks.account)
+  sandbox.stub(BaseCheck.prototype, 'getContactDetails').value(() => mocks.contactDetail)
 })
 
 lab.afterEach(() => {
@@ -63,7 +55,7 @@ lab.experiment('Contact Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { firstName, lastName } = fakeContactDetail
+      const { firstName, lastName } = mocks.contactDetail
       Code.expect(answer).to.equal(`${firstName} ${lastName}`)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
@@ -79,12 +71,12 @@ lab.experiment('Contact Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { description, accountName } = fakeAgentAccount
+      const { accountName } = mocks.account
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
           case 0: {
-            Code.expect(answer).to.equal(description)
+            Code.expect(answer).to.equal('This person is an agent or consultant')
             break
           }
           case 1: {
@@ -107,7 +99,7 @@ lab.experiment('Contact Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { telephone } = fakeContactDetail
+      const { telephone } = mocks.contactDetail
       Code.expect(answer).to.equal(telephone)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
@@ -124,7 +116,7 @@ lab.experiment('Contact Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { email } = fakeContactDetail
+      const { email } = mocks.contactDetail
       Code.expect(answer).to.equal(email)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 

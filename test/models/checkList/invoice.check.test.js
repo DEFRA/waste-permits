@@ -1,40 +1,30 @@
 'use strict'
 
-const Merge = require('deepmerge')
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const InvoiceCheck = require('../../../src/models/checkList/invoice.check')
 
 const INVOICE_ADDRESS_LINE = 0
 
-const fakeInvoiceAddress = {
-  fromAddressLookup: true,
-  buildingNameOrNumber: 'BUILDING_NAME_OR_NUMBER',
-  addressLine1: 'ADDRESS_LINE_1',
-  addressLine2: 'ADDRESS_LINE_2',
-  townOrCity: 'TOWN_OR_CITY',
-  postcode: 'POSTCODE'
-}
-
-const fakeBillingInvoicingDetail = {
-  id: 'BILLING_INVOICING_DETAIL_ID'
-}
-
 const prefix = 'section-invoice'
 
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
-  sandbox.stub(BaseCheck.prototype, 'getBillingInvoicingDetails').value(() => Merge({}, fakeBillingInvoicingDetail))
-  sandbox.stub(BaseCheck.prototype, 'getInvoiceAddress').value(() => Merge({}, fakeInvoiceAddress))
+  sandbox.stub(BaseCheck.prototype, 'getBillingInvoicingDetails').value(() => mocks.contactDetails)
+  sandbox.stub(BaseCheck.prototype, 'getInvoiceAddress').value(() => mocks.address)
 })
 
 lab.afterEach(() => {
@@ -62,7 +52,7 @@ lab.experiment('Invoice Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = fakeInvoiceAddress
+      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = mocks.address
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {

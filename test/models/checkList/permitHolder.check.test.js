@@ -1,10 +1,10 @@
 'use strict'
 
-const Merge = require('deepmerge')
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const PermitHolderCheck = require('../../../src/models/checkList/permitHolder.check')
@@ -36,70 +36,22 @@ const getMonth = (month) => [
   'December'
 ][month - 1]
 
-let fakeApplication
-let fakeCompanyAccount
-let fakeContactDetail
-let fakeCompanyRegisteredAddress
-let fakePermitHolderType
-let fakeMainAddress
-
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    tradingName: 'TRADING_NAME',
-    useTradingName: true,
-    relevantOffences: true,
-    relevantOffencesDetails: 'CONVICTION DETAILS 1\nCONVICTION DETAILS 2',
-    bankruptcy: true,
-    bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS'
-  }
-
-  fakeContactDetail = {
-    firstName: 'CONTACT_FIRSTNAME',
-    lastName: 'CONTACT_LASTNAME',
-    email: 'CONTACT_EMAIL',
-    telephone: 'PRIMARY_CONTACT_TELEPHONE',
-    dateOfBirth: '2018-2-4',
-    jobTitle: 'JOB_TITLE',
-    fullAddress: 'FULL_ADDRESS'
-  }
-
-  fakeCompanyAccount = {
-    accountName: 'COMPANY_NAME',
-    companyNumber: 'COMPANY_NUMBER'
-  }
-
-  fakeCompanyRegisteredAddress = {
-    buildingNameOrNumber: '10',
-    addressLine1: 'A STREET',
-    addressLine2: 'A SUBURB',
-    townOrCity: 'A CITY',
-    postcode: 'SB14 6QG'
-  }
-
-  fakeMainAddress = {
-    buildingNameOrNumber: '25',
-    addressLine1: 'A CLOSE',
-    addressLine2: 'A SUBURB',
-    townOrCity: 'A MAIN CITY',
-    postcode: 'SB16 7GB'
-  }
-
-  fakePermitHolderType = {
-    type: 'Limited company'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
-  sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => Merge({}, fakeApplication))
-  sandbox.stub(BaseCheck.prototype, 'getPermitHolderType').value(() => Merge({}, fakePermitHolderType))
-  sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(() => Merge({}, fakeCompanyAccount))
-  sandbox.stub(BaseCheck.prototype, 'getCompanyRegisteredAddress').value(() => Merge({}, fakeCompanyRegisteredAddress))
-  sandbox.stub(BaseCheck.prototype, 'getMainAddress').value(() => Merge({}, fakeMainAddress))
-  sandbox.stub(BaseCheck.prototype, 'listContactDetails').value(() => [Merge({}, fakeContactDetail)])
+  sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => mocks.application)
+  sandbox.stub(BaseCheck.prototype, 'getPermitHolderType').value(() => mocks.permitHolderType)
+  sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(() => mocks.account)
+  sandbox.stub(BaseCheck.prototype, 'getCompanyRegisteredAddress').value(() => mocks.address)
+  sandbox.stub(BaseCheck.prototype, 'getMainAddress').value(() => mocks.address)
+  sandbox.stub(BaseCheck.prototype, 'listContactDetails').value(() => [mocks.contactDetail])
 })
 
 lab.afterEach(() => {
@@ -142,9 +94,9 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = fakeCompanyRegisteredAddress
-      const { tradingName } = fakeApplication
-      const { accountName, companyNumber } = fakeCompanyAccount
+      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = mocks.address
+      const { tradingName } = mocks.application
+      const { accountName, companyNumber } = mocks.account
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
@@ -178,7 +130,7 @@ lab.experiment('PermitHolder Check tests:', () => {
     })
 
     lab.test('(partnership name line) works correctly', async () => {
-      fakePermitHolderType.type = 'Partnership'
+      mocks.permitHolderType.type = 'Partnership'
       const lines = await buildLines()
       const { heading, headingId, answers, links } = lines[PARTNERSHIP_NAME_LINE]
       const linePrefix = `${prefix}-partnership-name`
@@ -186,7 +138,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { tradingName } = fakeApplication
+      const { tradingName } = mocks.application
       Code.expect(answer).to.equal(tradingName)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
@@ -197,7 +149,7 @@ lab.experiment('PermitHolder Check tests:', () => {
     })
 
     lab.test('(partners line) works correctly', async () => {
-      fakePermitHolderType.type = 'Partnership'
+      mocks.permitHolderType.type = 'Partnership'
       const lines = await buildLines()
       const { heading, headingId, answers, links } = lines[PARTNERSHIP_PERMIT_HOLDER_LINE]
       const linePrefix = `${prefix}-partner`
@@ -208,7 +160,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(answer).to.equal('The partners will be the permit holders and each will be responsible for the operation of the permit.')
       Code.expect(answerId).to.equal(`${linePrefix}-answer-1`)
 
-      const { firstName = '', lastName = '', email = '', telephone = '', dateOfBirth = '---', fullAddress = '' } = fakeContactDetail
+      const { firstName = '', lastName = '', email = '', telephone = '', dateOfBirth = '---', fullAddress = '' } = mocks.contactDetail
       const [year, month, day] = dateOfBirth.split('-')
 
       answers.forEach(({ answer, answerId }, answerIndex) => {
@@ -242,15 +194,15 @@ lab.experiment('PermitHolder Check tests:', () => {
     })
 
     lab.test('(individual line) works correctly', async () => {
-      fakeApplication.isIndividual = true
+      mocks.application.applicantType = 910400000
       const lines = await buildLines()
       const { heading, headingId, answers, links } = lines[PERMIT_HOLDER_LINE]
       const linePrefix = `${prefix}-individual`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { tradingName } = fakeApplication
-      const { firstName = '', lastName = '', email = '', telephone = '', dateOfBirth = '---', fullAddress = '' } = fakeContactDetail
+      const { tradingName } = mocks.application
+      const { firstName = '', lastName = '', email = '', telephone = '', dateOfBirth = '---', fullAddress = '' } = mocks.contactDetail
       const [year, month, day] = dateOfBirth.split('-')
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
@@ -285,14 +237,14 @@ lab.experiment('PermitHolder Check tests:', () => {
     })
 
     lab.test('(responsible officer line) works correctly', async () => {
-      fakePermitHolderType.type = 'Local authority or public body'
+      mocks.permitHolderType.type = 'Local authority or public body'
       const lines = await buildLines()
       const { heading, headingId, answers, links } = lines[RESPONSIBLE_OFFICER_LINE]
       const linePrefix = `${prefix}-responsible-officer`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { firstName = '', lastName = '', jobTitle = '' } = fakeContactDetail
+      const { firstName = '', lastName = '', jobTitle = '' } = mocks.contactDetail
 
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
@@ -313,15 +265,15 @@ lab.experiment('PermitHolder Check tests:', () => {
     })
 
     lab.test('(public body line) works correctly', async () => {
-      fakePermitHolderType.type = 'Local authority or public body'
+      mocks.permitHolderType.type = 'Local authority or public body'
       const lines = await buildLines()
       const { heading, headingId, answers, links } = lines[PERMIT_HOLDER_LINE]
       const linePrefix = `${prefix}-permit-holder`
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { tradingName } = fakeApplication
-      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = fakeMainAddress
+      const { tradingName } = mocks.application
+      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = mocks.address
 
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
@@ -358,7 +310,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { firstName = '', lastName = '', dateOfBirth = '---' } = fakeContactDetail
+      const { firstName = '', lastName = '', dateOfBirth = '---' } = mocks.contactDetail
       const [year, month, day] = dateOfBirth.split('-')
       Code.expect(answer).to.equal(`${firstName} ${lastName}: ${day} ${getMonth(month)} ${year}`)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
@@ -377,7 +329,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { email } = fakeContactDetail
+      const { email } = mocks.contactDetail
       Code.expect(answer).to.equal(email)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
@@ -394,7 +346,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { relevantOffencesDetails } = fakeApplication
+      const { relevantOffencesDetails } = mocks.application
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
@@ -422,7 +374,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { bankruptcyDetails } = fakeApplication
+      const { bankruptcyDetails } = mocks.application
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {

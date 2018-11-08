@@ -1,26 +1,24 @@
 'use strict'
 
-const Merge = require('deepmerge')
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const PermitCheck = require('../../../src/models/checkList/permit.check')
 
-const fakeStandardRule = {
-  code: 'STANDARD_RULE_CODE',
-  permitName: 'STANDARD_RULE_NAME'
-}
-
 const prefix = 'section-permit'
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
   // Create a sinon sandbox to prevent the "spy already wrapped errors" when a "spy.calledWith" fails
   sandbox = sinon.createSandbox()
-  sandbox.stub(BaseCheck.prototype, 'getStandardRule').value(() => Merge({}, fakeStandardRule))
+  sandbox.stub(BaseCheck.prototype, 'getStandardRule').value(() => mocks.standardRule)
 })
 
 lab.afterEach(() => {
@@ -38,7 +36,7 @@ lab.experiment('Permit Check tests:', () => {
     Code.expect(headingId).to.equal(`${prefix}-heading`)
 
     const { answer, answerId } = answers.pop()
-    const { code, permitName } = fakeStandardRule
+    const { code, permitName } = mocks.standardRule
     Code.expect(answer).to.equal(`${permitName} ${code}`)
     Code.expect(answerId).to.equal(`${prefix}-answer`)
 

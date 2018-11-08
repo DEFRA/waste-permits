@@ -1,26 +1,24 @@
 'use strict'
 
-const Merge = require('deepmerge')
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const ConfidentialityCheck = require('../../../src/models/checkList/confidentiality.check')
 
-const fakeApplication = {
-  confidentiality: true,
-  confidentialityDetails: 'CONFIDENTIALITY DETAILS 1\nCONFIDENTIALITY DETAILS 2'
-}
-
 const prefix = 'section-confidentiality'
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
   // Create a sinon sandbox to prevent the "spy already wrapped errors" when a "spy.calledWith" fails
   sandbox = sinon.createSandbox()
-  sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => Merge({}, fakeApplication))
+  sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => mocks.application)
 })
 
 lab.afterEach(() => {
@@ -37,7 +35,7 @@ lab.experiment('Confidentiality Check tests:', () => {
     Code.expect(heading).to.equal(heading)
     Code.expect(headingId).to.equal(`${prefix}-heading`)
 
-    const { confidentialityDetails } = fakeApplication
+    const { confidentialityDetails } = mocks.application
     answers.forEach(({ answer, answerId }, answerIndex) => {
       Code.expect(answerId).to.equal(`${prefix}-answer-${answerIndex + 1}`)
       switch (answerIndex) {
