@@ -25,7 +25,7 @@ class Entity extends BaseEntity {
       { field: 'dob.year', dynamics: 'dynamicsDobYear' },
       { field: 'ref', dynamics: 'dynamicsRef', readOnly: true },
       { field: 'secret', dynamics: 'dynamicsSecret', writeOnly: true },
-      { field: 'regime', dynamics: 'dynamicsRegime', constant: 'REGIME' },
+      { field: 'regime', dynamics: 'dynamicsRegime', default: 'REGIME' },
       { field: 'optionalData', dynamics: 'dynamicsOptionalData' }
     ]
   }
@@ -147,7 +147,7 @@ lab.experiment('Base Entity tests:', () => {
     Code.expect(Entity.dynamicsToEntity(dynamicsReplyData)).to.equal(testEntity)
   })
 
-  lab.test('getById() method returns a entity without constant or writeonly fields', async () => {
+  lab.test('getById() method returns a entity without writeonly fields', async () => {
     const testEntity = new Entity(entityData)
     testEntity.secret = undefined
     Code.expect(await Entity.getById(context, entityData.id)).to.equal(testEntity)

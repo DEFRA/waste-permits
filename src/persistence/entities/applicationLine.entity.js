@@ -16,7 +16,7 @@ class ApplicationLine extends BaseEntity {
       { field: 'itemId', dynamics: '_defra_itemid_value', bind: { id: 'defra_itemid', dynamicsEntity: 'defra_items' } },
       { field: 'parametersId', dynamics: '_defra_parametersid_value', readOnly: true },
       { field: 'value', dynamics: 'defra_value', readOnly: true },
-      { field: 'permitType', dynamics: 'defra_permittype', constant: PermitTypes.STANDARD }
+      { field: 'permitType', dynamics: 'defra_permittype', default: PermitTypes.STANDARD }
     ]
   }
 

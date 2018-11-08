@@ -27,9 +27,9 @@ module.exports = class BaseEntity {
     //    {field: 'name', dynamics: 'defra_name', readOnly: true},
     // ]
     //
-    // The following example is a constant and so will not be retrieved from dynamics, but will be included when saving a new instance on dynamics:
+    // The following example is a default and will default to that value (if not set) when saving a new instance on dynamics:
     // [
-    //    {field: 'name', dynamics: 'defra_name', constant: 'Constant Value'},
+    //    {field: 'name', dynamics: 'defra_name', default: 'Default Value'},
     // ]
     //
     // The following example maps the model field: 'locationId' to a dynamics field: '_defra_locationid_value' which is bound to a dynamics dynamicsEntity 'defra_locations' where the id is 'defra_locationId':
@@ -67,23 +67,22 @@ module.exports = class BaseEntity {
     //    {field: 'id', dynamics: 'defra_id'},
     //    {field: 'age', dynamics: 'defra_age'},
     //    {field: 'name', dynamics: 'defra_name'},
-    //    {field: 'type', dynamics: 'defra_type', constant: 'TYPE'}
+    //    {field: 'type', dynamics: 'defra_type', default: 'TYPE'}
     // ]
     //
     // And selectedDynamicsFields is executed as follows:
     // Account.selectedDynamicsFields((field) => field !== 'id')
     //
     // Then the result would be:
-    // ['defra_age', 'defra_name']
+    // ['defra_age', 'defra_type', 'defra_name']
     //
     // Note the following:
     // - The defra_id field is missing as the custom filter has omitted it.
-    // - The defra_type field is missing as it is a constant as specified in the mapping.
     //
     return this.mapping
       .filter(customFilter)
-      // ignore constant and writeonly values as they will not be retrieved from dynamics
-      .filter(({ constant, writeOnly }) => !constant && !writeOnly)
+      // ignore writeonly values as they will not be retrieved from dynamics
+      .filter(({ writeOnly }) => !writeOnly)
       .map(({ dynamics }) => dynamics)
   }
 
@@ -99,7 +98,7 @@ module.exports = class BaseEntity {
     //    {field: 'date.day', dynamics: 'defra_date_day', readOnly: true},
     //    {field: 'date.month', dynamics: 'defra_date_month', readOnly: true},
     //    {field: 'date.year', dynamics: 'defra_date_year', readOnly: true},
-    //    {field: 'type', dynamics: 'defra_type', constant: 'TYPE'}
+    //    {field: 'type', dynamics: 'defra_type', default: 'TYPE'}
     // ]
     //
     // And the dynamics data is:
@@ -135,14 +134,18 @@ module.exports = class BaseEntity {
     this.mapping
     // See the explanation of a custom filter in the method selectedDynamicsFields above.
       .filter(customFilter)
-      .forEach(({ field, dynamics, constant, isDate }) => {
+      .forEach(({ field, dynamics, default: _default, isDate }) => {
         // set values in javascript objects by specifying a path eg 'dob.month'.
         // if the path doesn't exist yet, it will be created.
         let val = dynamicsData[dynamics]
+        // Set to default value if set in mapping
+        if (_default !== undefined && val === undefined) {
+          val = _default
+        }
         if (isDate && val) {
           val = new Date(val)
         }
-        ObjectPath.set(modelData, field, constant || val)
+        ObjectPath.set(modelData, field, val)
       })
     return new this(modelData)
   }
@@ -159,7 +162,7 @@ module.exports = class BaseEntity {
     //    {field: 'date.day', dynamics: 'defra_date_day', readOnly: true},
     //    {field: 'date.month', dynamics: 'defra_date_month', readOnly: true},
     //    {field: 'date.year', dynamics: 'defra_date_year', readOnly: true},
-    //    {field: 'type', dynamics: 'defra_type', constant: 'TYPE'}
+    //    {field: 'type', dynamics: 'defra_type', default: 'TYPE'}
     //    {field: 'contactId', dynamics: '_defra_primarycontactid_value', bind: {id: 'defra_primarycontactid', dynamicsEntity: 'contacts'}}
     // ]
     //
@@ -199,7 +202,7 @@ module.exports = class BaseEntity {
       .filter(customFilter)
       // ignore readonly values as they will only be set when reading from dynamics
       .filter(({ readOnly }) => !readOnly)
-      .forEach(({ field, dynamics, constant, bind, isDate, length }) => {
+      .forEach(({ field, dynamics, default: _default, bind, isDate, length }) => {
         const value = this[field]
         // check the value in the field meets the length constraints if applicable
         if (length && typeof value === 'string') {
@@ -219,8 +222,8 @@ module.exports = class BaseEntity {
             dynamicsData[`${bind.id}@odata.bind`] = `${bind.dynamicsEntity}(${value})`
           }
         } else {
-          if (value === undefined && constant !== undefined) {
-            dynamicsData[dynamics] = constant
+          if (value === undefined && _default !== undefined) {
+            dynamicsData[dynamics] = _default
           } else {
             if (value !== undefined || field !== 'id') {
               const val = ObjectPath.get(this, field)
@@ -285,7 +288,7 @@ module.exports = class BaseEntity {
     //    {field: 'date.day', dynamics: 'defra_date_day', readOnly: true},
     //    {field: 'date.month', dynamics: 'defra_date_month', readOnly: true},
     //    {field: 'date.year', dynamics: 'defra_date_year', readOnly: true},
-    //    {field: 'type', dynamics: 'defra_type', constant: 'TYPE'}
+    //    {field: 'type', dynamics: 'defra_type', default: 'TYPE'}
     //    {field: 'secret', dynamics: 'defra_secret', writeOnly: true}
     //    {field: 'contactId', dynamics: '_defra_primarycontactid_value', bind: {id: 'defra_primarycontactid', dynamicsEntity: 'contacts'}}
     // ]
