@@ -5,6 +5,7 @@ const sinon = require('sinon')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const fs = require('fs')
+const config = require('../../../src/config/config')
 const Annotation = require('../../../src/persistence/entities/annotation.entity')
 const Application = require('../../../src/persistence/entities/application.entity')
 const CookieService = require('../../../src/services/cookie.service')
@@ -60,6 +61,7 @@ module.exports = class UploadTestHelper {
   }
 
   setStubs (sandbox) {
+    sandbox.stub(config, 'bypassVirusScan').value(false)
     sandbox.stub(fs, 'mkdirSync').value(() => {})
     sandbox.stub(fs, 'existsSync').value(() => false)
     sandbox.stub(fs, 'createWriteStream').value(() => mockStream())
@@ -204,10 +206,25 @@ module.exports = class UploadTestHelper {
     const { lab, routePath } = this
     lab.experiment('success', () => {
       lab.test('when annotation is saved', async () => {
+        const spy = sinon.spy(ClamWrapper, 'isInfected')
         const req = this._uploadRequest({ contentType })
         const res = await server.inject(req)
+        Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(routePath)
+        spy.restore()
+      })
+
+      lab.test('when annotation is saved and virus scan is bypassed', async () => {
+        const spy = sinon.spy(ClamWrapper, 'isInfected')
+        const stub = sinon.stub(config, 'bypassVirusScan').value(true)
+        const req = this._uploadRequest({ contentType })
+        const res = await server.inject(req)
+        Code.expect(spy.callCount).to.equal(0)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(routePath)
+        spy.restore()
+        stub.restore()
       })
 
       lab.experiment('when building an upload dir name', () => {
