@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const CryptoService = require('../../../src/services/crypto.service')
 const Application = require('../../../src/persistence/entities/application.entity')
@@ -15,91 +16,39 @@ const Address = require('../../../src/persistence/entities/address.entity')
 const PartnerDetails = require('../../../src/models/taskList/partnerDetails.task')
 
 let sandbox
-let fakePartnershipId = 'PARTNERSHIP_ID'
-
-let fakeApplication
-let fakeApplicationLine
-let fakeContactDetail
-let fakeAccount
-let fakeContact
-let fakeAddress
-
-const request = {
-  app: {
-    data: {
-      authToken: 'AUTH_TOKEN'
-    }
-  },
-  params: {
-    partnerId: fakePartnershipId
-  }
-}
-const applicationId = 'APPLICATION_ID'
-const applicationLineId = 'APPLICATION_LINE_ID'
+let request
+let mocks
 
 lab.beforeEach(() => {
-  fakeAccount = {
-    id: 'ACCOUNT_ID',
-    companyNumber: '01234567',
-    accountName: 'THE COMPANY NAME',
-    isDraft: true,
-    isValidatedWithCompaniesHouse: false
-  }
+  mocks = new Mocks()
 
-  fakeContact = {
-    id: 'CONTACT_ID',
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME',
-    email: 'EMAIL'
-  }
-
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    isIndividual: true
-  }
-
-  fakeApplicationLine = {
-    id: 'APPLICATION_LINE_ID',
-    applicationId: fakeApplication.id
-  }
-
-  fakeContactDetail = {
-    id: 'CONTACT_DETAIL_ID',
-    addressId: 'ADDRESS_ID_1',
-    applicationId: fakeApplication.id
-  }
-
-  fakeAddress = {
-    id: 'ADDRESS_ID_1',
-    buildingNameOrNumber: '101',
-    addressLine1: 'FIRST_ADDRESS_LINE_1',
-    addressLine2: undefined,
-    townOrCity: 'CITY1',
-    postcode: 'AB12 1AA',
-    uprn: 'UPRN1',
-    fromAddressLookup: true
+  request = {
+    app: {
+      data: {
+        authToken: 'AUTH_TOKEN'
+      }
+    },
+    params: {
+      partnerId: mocks.addressDetail.id
+    }
   }
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(CryptoService, 'decrypt').value(() => fakeContactDetail.id)
-  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(CryptoService, 'decrypt').value(() => mocks.contactDetail.id)
+  sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
   sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
-  sandbox.stub(Application, 'getById').value(() => fakeApplication)
-  sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
-  sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
+  sandbox.stub(ApplicationLine, 'getById').value(() => mocks.applicationLine)
+  sandbox.stub(Account, 'getById').value(() => mocks.account)
   sandbox.stub(Account.prototype, 'save').value(() => undefined)
-  sandbox.stub(Contact, 'getById').value(() => new Contact(fakeContact))
+  sandbox.stub(Contact, 'getById').value(() => mocks.contact)
   sandbox.stub(Address.prototype, 'save').value(() => undefined)
-  sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
-  sandbox.stub(Address, 'getByUprn').value(() => new Address(fakeAddress))
-  sandbox.stub(Address, 'listByPostcode').value(() => [
-    new Address(fakeAddress),
-    new Address(fakeAddress),
-    new Address(fakeAddress)
-  ])
+  sandbox.stub(Address, 'getById').value(() => mocks.address)
+  sandbox.stub(Address, 'getByUprn').value(() => mocks.address)
+  sandbox.stub(Address, 'listByPostcode').value(() => [mocks.address, mocks.address, mocks.address])
 })
 
 lab.afterEach(() => {
@@ -109,28 +58,24 @@ lab.afterEach(() => {
 
 lab.experiment('Model persistence methods:', () => {
   lab.test('getAddress() method correctly retrieves an Address', async () => {
-    const address = await PartnerDetails.getAddress(request, applicationId)
-    Code.expect(address.uprn).to.be.equal(fakeAddress.uprn)
+    const address = await PartnerDetails.getAddress(request, mocks.application.id)
+    Code.expect(address.uprn).to.be.equal(mocks.address.uprn)
   })
 
   lab.test('saveSelectedAddress() method correctly saves a partner address', async () => {
-    const addressDto = {
-      uprn: fakeAddress.uprn,
-      postcode: fakeAddress.postcode
-    }
+    const { uprn, postcode } = mocks.address
+    const addressDto = { uprn, postcode }
     const spy = sinon.spy(ContactDetail.prototype, 'save')
-    await PartnerDetails.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
+    await PartnerDetails.saveSelectedAddress(request, mocks.application.id, mocks.applicationLine.id, addressDto)
     Code.expect(spy.callCount).to.equal(1)
     spy.restore()
   })
 
   lab.test('saveManualAddress() method correctly creates a partner address from a selected address that is already in Dynamics', async () => {
-    const addressDto = {
-      uprn: fakeAddress.uprn,
-      postcode: fakeAddress.postcode
-    }
+    const { uprn, postcode } = mocks.address
+    const addressDto = { uprn, postcode }
     const spy = sinon.spy(ContactDetail.prototype, 'save')
-    await PartnerDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
+    await PartnerDetails.saveManualAddress(request, mocks.application.id, mocks.applicationLine.id, addressDto)
     Code.expect(spy.callCount).to.equal(1)
     spy.restore()
   })

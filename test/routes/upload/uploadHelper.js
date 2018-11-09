@@ -2,6 +2,7 @@
 
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const fs = require('fs')
@@ -41,14 +42,8 @@ const mockStream = () => ({
   }
 })
 
-let fakeAnnotation
 let getRequest
-let fakeAnnotationId = 'ANNOTATION_ID'
-
-const fakeApplication = {
-  id: 'APPLICATION/ID', // Include a slash to prove creation and deletion of directories will work ok
-  applicationNumber: 'APPLICATION_NUMBER'
-}
+let mocks
 
 module.exports = class UploadTestHelper {
   constructor (lab, { routePath, uploadPath, removePath, nextRoutePath }) {
@@ -61,19 +56,21 @@ module.exports = class UploadTestHelper {
   }
 
   setStubs (sandbox) {
+    mocks = new Mocks()
+
     sandbox.stub(config, 'bypassVirusScan').value(false)
     sandbox.stub(fs, 'mkdirSync').value(() => {})
     sandbox.stub(fs, 'existsSync').value(() => false)
     sandbox.stub(fs, 'createWriteStream').value(() => mockStream())
     sandbox.stub(fs, 'createReadStream').value(() => mockStream())
-    sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => Promise.resolve([]))
-    sandbox.stub(Annotation, 'getById').value(() => Promise.resolve(new Annotation(fakeAnnotation)))
-    sandbox.stub(Annotation, 'getByApplicationIdSubjectAndFilename').value(() => Promise.resolve(new Annotation(fakeAnnotation)))
-    sandbox.stub(Annotation.prototype, 'delete').value(() => Promise.resolve({}))
-    sandbox.stub(Annotation.prototype, 'save').value(() => Promise.resolve({}))
-    sandbox.stub(Application, 'getById').value(() => Promise.resolve({ applicationNumber: 'APPLICATION_REFERENCE' }))
+    sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [mocks.annotation])
+    sandbox.stub(Annotation, 'getById').value(() => mocks.annotation)
+    sandbox.stub(Annotation, 'getByApplicationIdSubjectAndFilename').value(() => mocks.annotation)
+    sandbox.stub(Annotation.prototype, 'delete').value(() => undefined)
+    sandbox.stub(Annotation.prototype, 'save').value(() => undefined)
+    sandbox.stub(Application, 'getById').value(() => mocks.application)
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-    sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+    sandbox.stub(Application, 'getById').value(() => mocks.application)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(ClamWrapper, 'isInfected').value(() => Promise.resolve({ isInfected: false }))
     sandbox.stub(LoggingService, 'logError').value(() => {})
@@ -85,11 +82,6 @@ module.exports = class UploadTestHelper {
     const lastFileType = options.fileTypes.pop()
     lab.experiment('success', () => {
       lab.beforeEach(() => {
-        fakeAnnotation = {
-          id: fakeAnnotationId,
-          subject: 'ANNOTATION_NAME',
-          filename: 'ANNOTATION_FILENAME'
-        }
         getRequest = {
           method: 'GET',
           url: routePath,
@@ -104,6 +96,7 @@ module.exports = class UploadTestHelper {
       })
 
       lab.test('when there are no annotations', async () => {
+        Annotation.listByApplicationIdAndSubject = () => []
         const doc = await getDoc(options)
         Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal(`${options.fileTypes.join(', ')} or ${lastFileType}`)
         Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
@@ -115,7 +108,6 @@ module.exports = class UploadTestHelper {
       })
 
       lab.test('when there are annotations', async () => {
-        Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const doc = await getDoc(options)
         Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal(`${options.fileTypes.join(', ')} or ${lastFileType}`)
         Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
@@ -128,6 +120,7 @@ module.exports = class UploadTestHelper {
         if (stubs) {
           stubs()
         }
+        Annotation.listByApplicationIdAndSubject = () => []
         const doc = await getDoc(options)
         test(doc)
       }))
@@ -139,7 +132,9 @@ module.exports = class UploadTestHelper {
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the annotation ID', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Annotation.listByApplicationIdAndSubject = () => Promise.reject(new Error('read failed'))
+        Annotation.listByApplicationIdAndSubject = () => {
+          throw new Error('read failed')
+        }
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
@@ -253,14 +248,12 @@ module.exports = class UploadTestHelper {
       })
 
       lab.test('when duplicate file', async () => {
-        Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
-        const req = this._uploadRequest({ filename: fakeAnnotation.filename, contentType })
+        const req = this._uploadRequest({ filename: mocks.annotation.filename, contentType })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, 'That file has the same name as one you have already uploaded. Choose another file or rename the file before uploading it again.')
       })
 
       lab.test('when the filename is too long', async () => {
-        Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const req = this._uploadRequest({ filename: `${'a'.repeat(252)}.jpg`, contentType })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
@@ -280,7 +273,9 @@ module.exports = class UploadTestHelper {
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sinon.spy(LoggingService, 'logError')
-        Annotation.prototype.save = () => Promise.reject(new Error('save failed'))
+        Annotation.prototype.save = () => {
+          throw new Error('save failed')
+        }
         const req = this._uploadRequest({ contentType })
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(1)
@@ -320,7 +315,6 @@ module.exports = class UploadTestHelper {
     const { lab, nextRoutePath } = this
     lab.experiment('success', () => {
       lab.test(`when continue button pressed and there are files uploaded`, async () => {
-        Annotation.listByApplicationIdAndSubject = () => Promise.resolve([new Annotation(fakeAnnotation)])
         const req = this._postRequest(options)
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(302)

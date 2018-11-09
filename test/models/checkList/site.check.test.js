@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const SiteCheck = require('../../../src/models/checkList/site.check')
@@ -12,32 +13,20 @@ const SITE_NAME_LINE = 0
 const GRID_REFERENCE_LINE = 1
 const SITE_ADDRESS_LINE = 2
 
-const fakeLocation = {
-  siteName: 'SITE_NAME'
-}
-const fakeLocationDetail = {
-  gridReference: 'GRID_REFERENCE'
-}
-const fakeLocationAddress = {
-  fromAddressLookup: true,
-  buildingNameOrNumber: 'BUILDING_NAME_OR_NUMBER',
-  addressLine1: 'ADDRESS_LINE_1',
-  addressLine2: 'ADDRESS_LINE_2',
-  townOrCity: 'TOWN_OR_CITY',
-  postcode: 'POSTCODE'
-}
-
 const prefix = 'section-site'
 
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
-  sandbox.stub(BaseCheck.prototype, 'getLocation').value(() => Object.assign({}, fakeLocation))
-  sandbox.stub(BaseCheck.prototype, 'getLocationDetail').value(() => Object.assign({}, fakeLocationDetail))
+  sandbox.stub(BaseCheck.prototype, 'getLocation').value(() => mocks.location)
+  sandbox.stub(BaseCheck.prototype, 'getLocationDetail').value(() => mocks.locationDetail)
 })
 
 lab.afterEach(() => {
@@ -55,7 +44,7 @@ lab.experiment('Site Check tests:', () => {
     let lines
 
     lab.beforeEach(async () => {
-      sandbox.stub(BaseCheck.prototype, 'getLocationAddress').value(() => Object.assign({}, fakeLocationAddress))
+      sandbox.stub(BaseCheck.prototype, 'getLocationAddress').value(() => mocks.address)
       check = new SiteCheck()
       lines = await check.buildLines()
     })
@@ -67,7 +56,7 @@ lab.experiment('Site Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { siteName } = fakeLocation
+      const { siteName } = mocks.location
       Code.expect(answer).to.equal(siteName)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
@@ -84,7 +73,7 @@ lab.experiment('Site Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { answer, answerId } = answers.pop()
-      const { gridReference } = fakeLocationDetail
+      const { gridReference } = mocks.locationDetail
       Code.expect(answer).to.equal(gridReference)
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
@@ -100,7 +89,7 @@ lab.experiment('Site Check tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
-      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = fakeLocationAddress
+      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = mocks.address
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
@@ -131,7 +120,7 @@ lab.experiment('Site Check tests:', () => {
   })
 
   lab.test('site address line has correct link for manually entered address', async () => {
-    sandbox.stub(BaseCheck.prototype, 'getLocationAddress').value(() => Object.assign({}, fakeLocationAddress, { fromAddressLookup: false }))
+    sandbox.stub(BaseCheck.prototype, 'getLocationAddress').value(() => Object.assign({}, mocks.address, { fromAddressLookup: false }))
     const check = new SiteCheck()
     const lines = await check.buildLines()
     const { links } = lines[SITE_ADDRESS_LINE]
