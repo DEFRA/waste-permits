@@ -14,6 +14,9 @@ const StandardRule = require('../../src/persistence/entities/standardRule.entity
 const ContactDetail = require('../../src/models/contactDetail.model')
 const DataStore = require('../../src/models/dataStore.model')
 
+const ApplicationCostModel = require('../../src/models/triage/applicationCost.model')
+const ApplicationCostItemModel = require('../../src/models/triage/applicationCostItem.model')
+
 const account = {
   id: 'ACCOUNT_ID',
   companyNumber: '01234567',
@@ -134,6 +137,15 @@ const standardRule = {
   permitName: 'STANDARD_RULE_NAME'
 }
 
+const applicationCostItemModel = {
+  description: 'APPLICATION_COST_ITEM_DESCRIPTION',
+  cost: 1234.56
+}
+const totalCostItemModel = {
+  description: 'TOTAL_COST_ITEM_DESCRIPTION',
+  cost: 1234.56
+}
+
 module.exports = class Mocks {
   get account () {
     return this._account || (this._account = new Account(account))
@@ -205,5 +217,13 @@ module.exports = class Mocks {
       this._permitHolderType = Object.assign({}, permitHolderType)
     }
     return this._permitHolderType
+  }
+
+  get applicationCostModel () {
+    return this._applicationCostModel || (this._applicationCostModel =
+      new ApplicationCostModel({
+        applicationCostItems: [new ApplicationCostItemModel(applicationCostItemModel)],
+        totalCostItem: new ApplicationCostItemModel(totalCostItemModel)
+      }))
   }
 }

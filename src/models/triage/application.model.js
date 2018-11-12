@@ -16,7 +16,6 @@ const Assessment = require('./assessment.model')
 const ApplicationEntity = require('../../persistence/entities/application.entity')
 const ApplicationLineEntity = require('../../persistence/entities/applicationLine.entity')
 const ItemEntity = require('../../persistence/entities/item.entity')
-const ItemTypeEntity = require('../../persistence/entities/itemType.entity')
 
 const setApplicationValues = async (entityContext, applicationId, values) => {
   const applicationEntity = await ApplicationEntity.getById(entityContext, applicationId)
@@ -149,27 +148,11 @@ module.exports = class Application {
 
   static async getApplicationForId (entityContextToUse, id) {
     // Determine the permit holder type
-    let permitHolderType
-    const { applicantType, organisationType } = await ApplicationEntity.getById(entityContextToUse, id)
-    const dynamicsPermitHolderType = Object.values(DYNAMICS_PERMIT_HOLDER_TYPES).find(({ dynamicsApplicantTypeId, dynamicsOrganisationTypeId }) => {
-      return ((applicantType == null && dynamicsApplicantTypeId == null) || applicantType === dynamicsApplicantTypeId) &&
-        ((organisationType == null && dynamicsOrganisationTypeId == null) || organisationType === dynamicsOrganisationTypeId)
-    })
-    if (dynamicsPermitHolderType) {
-      const matchingPermitHolderType = PERMIT_HOLDER_TYPE_LIST.find((item) => item.id === dynamicsPermitHolderType.id)
-      if (matchingPermitHolderType) {
-        permitHolderType = new PermitHolderType(matchingPermitHolderType)
-      }
-    }
+    const permitHolderType = await this.getPermitHolderTypeForApplicationId(entityContextToUse, id)
 
-    // Determine the values of all the relevant application lines
-    const itemTypeEntities = await ItemTypeEntity.getActivityAndAssessmentItemTypes(entityContextToUse)
-    const activityItemTypeId = itemTypeEntities.activity.id
-    const assessmentItemTypeId = itemTypeEntities.assessment.id
-
-    const itemEntities = await ItemEntity.listActivitiesAndAssessments(entityContextToUse)
-    const activityItemEntities = itemEntities.filter(({ itemTypeId }) => itemTypeId === activityItemTypeId)
-    const assessmentItemEntities = itemEntities.filter(({ itemTypeId }) => itemTypeId === assessmentItemTypeId)
+    const itemEntities = await ItemEntity.getAllActivitiesAndAssessments(entityContextToUse)
+    const activityItemEntities = itemEntities.activities
+    const assessmentItemEntities = itemEntities.assessments
 
     const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId: id })
 
@@ -180,5 +163,25 @@ module.exports = class Application {
     const assessments = assessmentLineEntities.map((line) => ({ id: line.id, assessment: Assessment.createFromItemEntity(assessmentItemEntities.find(({ id }) => id === line.itemId)) }))
 
     return new Application({ id, permitHolderType, activities, assessments })
+  }
+
+  static async getPermitHolderTypeForApplicationId (entityContextToUse, applicationId) {
+    let permitHolderType
+
+    const { applicantType, organisationType } = await ApplicationEntity.getById(entityContextToUse, applicationId)
+
+    const dynamicsPermitHolderType = Object.values(DYNAMICS_PERMIT_HOLDER_TYPES).find(({ dynamicsApplicantTypeId, dynamicsOrganisationTypeId }) => {
+      return ((applicantType == null && dynamicsApplicantTypeId == null) || applicantType === dynamicsApplicantTypeId) &&
+        ((organisationType == null && dynamicsOrganisationTypeId == null) || organisationType === dynamicsOrganisationTypeId)
+    })
+
+    if (dynamicsPermitHolderType) {
+      const matchingPermitHolderType = PERMIT_HOLDER_TYPE_LIST.find((item) => item.id === dynamicsPermitHolderType.id)
+      if (matchingPermitHolderType) {
+        permitHolderType = new PermitHolderType(matchingPermitHolderType)
+      }
+    }
+
+    return permitHolderType
   }
 }

@@ -2,6 +2,8 @@
 
 const BaseEntity = require('./base.entity')
 const ItemType = require('./itemType.entity')
+const DynamicsDalService = require('../../services/dynamicsDal.service')
+const LoggingService = require('../../services/logging.service')
 
 const ACTIVITY = 'wasteactivity'
 const ASSESSMENT = 'wasteassessment'
@@ -35,13 +37,6 @@ class Item extends BaseEntity {
     return this.listBy(context, { itemTypeId: idForAssessmentName.id }, 'itemTypeId')
   }
 
-  static async listActivitiesAndAssessments (context) {
-    const itemTypes = await ItemType.listByShortName(context, [ACTIVITY, ASSESSMENT])
-    const itemTypeId = itemTypes.map((item) => item.id)
-    const items = await this.listBy(context, { itemTypeId }, 'itemTypeId')
-    return items
-  }
-
   static async getActivity (context, activity) {
     const idForActivityName = await ItemType.getByShortName(context, ACTIVITY)
     const activityEntity = await this.getBy(context, { itemTypeId: idForActivityName.id, shortName: activity })
@@ -52,6 +47,37 @@ class Item extends BaseEntity {
     const idForAssessmentName = await ItemType.getByShortName(context, ASSESSMENT)
     const assessmentEntity = await this.getBy(context, { itemTypeId: idForAssessmentName.id, shortName: assessment })
     return assessmentEntity
+  }
+
+  static async getAllActivitiesAndAssessments (context) {
+    const typeEntityName = ItemType.dynamicsEntity
+    const typeIdFieldName = ItemType.id.dynamics
+    const typeShortNameFieldName = ItemType.shortName.dynamics
+    const itemFieldNames = this.mapping.map(({ dynamics }) => dynamics).join(',')
+
+    const filterCriteria = `${typeShortNameFieldName} eq '${ACTIVITY}' or ${typeShortNameFieldName} eq '${ASSESSMENT}'`
+
+    const typeRelationshipFieldName = 'defra_itemtype_defra_item_itemtypeid'
+
+    const query = `${typeEntityName}?$select=${typeIdFieldName},${typeShortNameFieldName}&$filter=${filterCriteria}&$expand=${typeRelationshipFieldName}($select=${itemFieldNames})`
+
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+    try {
+      const response = await dynamicsDal.search(query)
+      return response.value.reduce((acc, type) => {
+        const items = type[typeRelationshipFieldName].map((relatedItem) => this.dynamicsToEntity(relatedItem))
+        const typeShortName = type[typeShortNameFieldName]
+        if (typeShortName === ACTIVITY) {
+          acc.activities = items
+        } else if (typeShortName === ASSESSMENT) {
+          acc.assessments = items
+        }
+        return acc
+      }, {})
+    } catch (error) {
+      LoggingService.logError(`Unable to list ${this.name} for all activities and assessments: ${error}`)
+      throw error
+    }
   }
 }
 

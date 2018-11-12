@@ -50,7 +50,8 @@ const fakeApplicationData = {
   saveAndReturnEmail: 'fake@email.com',
   useTradingName: 'USE_TRADING_NAME',
   miningWastePlan: 'MINING_WASTE_PLAN',
-  miningWasteWeight: 'MINING_WASTE_WEIGHT'
+  miningWasteWeight: 'MINING_WASTE_WEIGHT',
+  lineItemsTotalAmount: 1234.56
 }
 const fakeApplicationReturnData = {
   applicationId: testApplicationId,
@@ -86,7 +87,8 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
     defra_saveandreturnemail: application.saveAndReturnEmail,
     defra_tradingnameused: application.useTradingName,
     defra_miningwasteweight: application.miningWasteWeight,
-    defra_miningwasteplan: application.miningWastePlan
+    defra_miningwasteplan: application.miningWastePlan,
+    defra_lineitemstotalamount: application.lineItemsTotalAmount
   }
 }
 

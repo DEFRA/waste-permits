@@ -98,12 +98,23 @@ lab.experiment('Item Entity tests:', () => {
     Code.expect(items).to.equal(expectedItems)
   })
 
-  lab.test('listActivitiesAndAssessments() returns correct values', async () => {
+  lab.test('getAllActivitiesAndAssessments() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001', ACTIVITY_TYPE.id), fakeDynamicsRecord('00002', ASSESSMENT_TYPE.id)] }
+      return {
+        value: [
+          {
+            defra_shortname: ACTIVITY_TYPE.shortName,
+            defra_itemtype_defra_item_itemtypeid: [fakeDynamicsRecord('00001', ACTIVITY_TYPE.id)]
+          },
+          {
+            defra_shortname: ASSESSMENT_TYPE.shortName,
+            defra_itemtype_defra_item_itemtypeid: [fakeDynamicsRecord('00002', ASSESSMENT_TYPE.id)]
+          }
+        ]
+      }
     })
-    const expectedItems = [fakeItem('00001', ACTIVITY_TYPE.id), fakeItem('00002', ASSESSMENT_TYPE.id)]
-    const items = await Item.listActivitiesAndAssessments(entityContext)
+    const expectedItems = { activities: [fakeItem('00001', ACTIVITY_TYPE.id)], assessments: [fakeItem('00002', ASSESSMENT_TYPE.id)] }
+    const items = await Item.getAllActivitiesAndAssessments(entityContext)
     Code.expect(items).to.exist()
     Code.expect(items).to.equal(expectedItems)
   })
