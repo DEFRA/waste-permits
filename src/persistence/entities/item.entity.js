@@ -37,7 +37,7 @@ class Item extends BaseEntity {
 
   static async listActivitiesAndAssessments (context) {
     const itemTypes = await ItemType.listByShortName(context, [ACTIVITY, ASSESSMENT])
-    const itemTypeId = itemTypes.map(item => item.id)
+    const itemTypeId = itemTypes.map((item) => item.id)
     const items = await this.listBy(context, { itemTypeId }, 'itemTypeId')
     return items
   }

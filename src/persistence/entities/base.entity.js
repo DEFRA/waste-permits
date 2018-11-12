@@ -305,7 +305,7 @@ module.exports = class BaseEntity {
     let filter = Object.entries(Utilities.convertToDynamics(filterData))
       .map(([field, val]) =>
         Array.isArray(val)
-          ? '(' + val.map(orVal => this._buildQueryCriterion(this[field].dynamics, this[field].encode, orVal)).join(' or ') + ')'
+          ? '(' + val.map((orVal) => this._buildQueryCriterion(this[field].dynamics, this[field].encode, orVal)).join(' or ') + ')'
           : this._buildQueryCriterion(this[field].dynamics, this[field].encode, val)
       ).join(' and ')
 

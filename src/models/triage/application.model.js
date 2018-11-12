@@ -62,10 +62,10 @@ module.exports = class Application {
   }
 
   setActivities (activitiesToSet) {
-    this.activities = this.activities || []
+    let activityLines = this.activities || []
 
     // Set the deletion status on any existing items
-    this.activities.forEach((existing) => {
+    activityLines.forEach((existing) => {
       if (activitiesToSet.find((item) => item.id === existing.activity.id)) {
         if (existing.toBeDeleted) {
           delete existing.toBeDeleted
@@ -76,19 +76,21 @@ module.exports = class Application {
     })
 
     // Remove any items that are flagged to be both added and deleted
-    this.activities = this.activities.filter((item) => !(item.toBeAdded && item.toBeDeleted))
+    activityLines = activityLines.filter((item) => !(item.toBeAdded && item.toBeDeleted))
 
     // Any activities not already in the list should be added as new items
-    const newActivities = activitiesToSet.filter((item) => !this.activities.find((existing) => existing.activity.id === item.id))
+    const newActivities = activitiesToSet.filter((item) => !activityLines.find((existing) => existing.activity.id === item.id))
     const activitiesToBeAdded = newActivities.map((item) => ({ activity: item, toBeAdded: true }))
-    this.activities = this.activities.concat(activitiesToBeAdded)
+    activityLines = activityLines.concat(activitiesToBeAdded)
+
+    this.activities = activityLines
   }
 
   setAssessments (assessmentsToSet) {
-    this.assessments = this.assessments || []
+    let assessmentLines = this.assessments || []
 
     // Set the deletion status on any existing items
-    this.assessments.forEach((existing) => {
+    assessmentLines.forEach((existing) => {
       if (assessmentsToSet.find((item) => item.id === existing.assessment.id)) {
         if (existing.toBeDeleted) {
           delete existing.toBeDeleted
@@ -99,39 +101,43 @@ module.exports = class Application {
     })
 
     // Remove any items that are flagged to be both added and deleted
-    this.assessments = this.assessments.filter((item) => !(item.toBeAdded && item.toBeDeleted))
+    assessmentLines = assessmentLines.filter((item) => !(item.toBeAdded && item.toBeDeleted))
 
     // Any assessments not already in the list should be added as new items
-    const newAssessments = assessmentsToSet.filter((item) => !this.assessments.find((existing) => existing.assessment.id === item.id))
+    const newAssessments = assessmentsToSet.filter((item) => !assessmentLines.find((existing) => existing.assessment.id === item.id))
     const assessmentsToBeAdded = newAssessments.map((item) => ({ assessment: item, toBeAdded: true }))
-    this.assessments = this.assessments.concat(assessmentsToBeAdded)
+    assessmentLines = assessmentLines.concat(assessmentsToBeAdded)
+
+    this.assessments = assessmentLines
   }
 
   async save (entityContextToUse) {
-    this.activities = this.activities || []
-    this.assessments = this.assessments || []
+    const id = this.id
+    const permitHolderType = this.permitHolderType
+    const activities = this.activities || []
+    const assessments = this.assessments || []
 
     const applicationValues = {}
-    if (this.permitHolderType) {
-      const dynamicsPermitHolderType = KEYED_DYNAMICS_PERMIT_HOLDER_TYPES[this.permitHolderType.id]
+    if (permitHolderType) {
+      const dynamicsPermitHolderType = KEYED_DYNAMICS_PERMIT_HOLDER_TYPES[permitHolderType.id]
       applicationValues.applicantType = dynamicsPermitHolderType.dynamicsApplicantTypeId
       applicationValues.organisationType = dynamicsPermitHolderType.dynamicsOrganisationTypeId ? dynamicsPermitHolderType.dynamicsOrganisationTypeId : undefined
     }
-    const permitHolderTypeActions = [setApplicationValues(entityContextToUse, this.id, applicationValues)]
+    const permitHolderTypeActions = [setApplicationValues(entityContextToUse, id, applicationValues)]
 
-    const activityActions = this.activities.map((item) => {
+    const activityActions = activities.map((item) => {
       if (item.toBeDeleted) {
         return deleteLine(entityContextToUse, item.id)
       } else if (item.toBeAdded) {
-        return createActivityLine(entityContextToUse, this.id, item.activity.id)
+        return createActivityLine(entityContextToUse, id, item.activity.id)
       }
     }).filter((item) => item)
 
-    const assessmentActions = this.assessments.map((item) => {
+    const assessmentActions = assessments.map((item) => {
       if (item.toBeDeleted) {
         return deleteLine(entityContextToUse, item.id)
       } else if (item.toBeAdded) {
-        return createAssessmentLine(entityContextToUse, this.id, item.assessment.id)
+        return createAssessmentLine(entityContextToUse, id, item.assessment.id)
       }
     }).filter((item) => item)
 

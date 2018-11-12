@@ -25,7 +25,7 @@ const FacilityTypeList = class {
   }
 
   get typeText () {
-    const list = this.facilityTypesArray.map(item => item.typeText)
+    const list = this.facilityTypesArray.map((item) => item.typeText)
     const retval = list.slice(0, -2).join(', ') + (list.slice(0, -2).length ? ', ' : '') + list.slice(-2).join(' and ')
     return retval
   }
@@ -48,7 +48,7 @@ const FacilityTypeList = class {
     // Only bespoke permit types have facilities
     if (permitTypesArray.find((item) => item.id === 'bespoke')) {
       // All permit holder types have the same list of facility types
-      facilityTypes = FACILITY_TYPE_LIST.map(item => new FacilityType(item))
+      facilityTypes = FACILITY_TYPE_LIST.map((item) => new FacilityType(item))
     }
     return new FacilityTypeList(entityContextToUse, permitTypesArray, permitHolderTypesArray, facilityTypes)
   }

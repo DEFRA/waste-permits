@@ -56,9 +56,9 @@ const AssessmentList = class {
   static async getAllAssessments (entityContext) {
     const allAssessmentEntities = await ItemEntity.listAssessments(entityContext)
     // Filter out any that can no longer be applied for, i.e. they should not appear to a user
-    const filteredAssessmentEntities = allAssessmentEntities.filter(item => item.canApplyFor)
+    const filteredAssessmentEntities = allAssessmentEntities.filter((item) => item.canApplyFor)
 
-    return filteredAssessmentEntities.map(item => Assessment.createFromItemEntity(item))
+    return filteredAssessmentEntities.map((item) => Assessment.createFromItemEntity(item))
   }
 }
 
