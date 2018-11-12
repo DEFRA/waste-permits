@@ -5,9 +5,12 @@ const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 
 const PermitTypeList = require('../../models/triage/permitTypeList.model')
+const Application = require('../../models/triage/application.model')
 
 const ActiveDirectoryAuthService = require('../../services/activeDirectoryAuth.service')
 const authService = new ActiveDirectoryAuthService()
+
+const { DEFRA_COOKIE_KEY, COOKIE_KEY: { APPLICATION_ID } } = require('../../constants')
 
 module.exports = class TriageController extends BaseController {
   async doGet (request, h, errors) {
@@ -54,7 +57,13 @@ module.exports = class TriageController extends BaseController {
           if (data.selectedActivities) {
             if (data.selectedOptionalAssessments) {
               // POSTing confirmation - any POST to here constitutes confirmation
-              // TODO - Save the application
+              // Save the application
+              const applicationId = request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
+              const application = await Application.getApplicationForId(entityContext, applicationId)
+              application.setPermitHolderType(data.selectedPermitHolderTypes.items[0])
+              application.setActivities(data.selectedActivities.items)
+              application.setAssessments(data.selectedOptionalAssessments.items)
+              await application.save(entityContext)
               data.confirmed = true
             } else {
               // POSTing optional assessments

@@ -6,7 +6,7 @@ const Code = require('code')
 const sinon = require('sinon')
 
 const Item = require('../../../src/persistence/entities/item.entity')
-// const ItemType = require('../../../src/persistence/entities/itemType.entity')
+const ItemType = require('../../../src/persistence/entities/itemType.entity')
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
@@ -15,21 +15,21 @@ const entityContext = { authToken: 'AUTH_TOKEN' }
 
 const ACTIVITY_TYPE = {
   id: 'DUMMY-GUID-ACTIVITY-TYPE-00000',
-  detailName: 'wasteactivity',
-  description: 'Dummy activity type'
+  itemTypeName: 'Waste activity',
+  shortName: 'wasteactivity'
 }
 
 const ASSESSMENT_TYPE = {
-  id: 'DUMMY-GUID-ACTIVITY-TYPE-00000',
-  detailName: 'wasteassessment',
-  description: 'Dummy assessment type'
+  id: 'DUMMY-GUID-ASSESSMENT-TYPE-00000',
+  itemTypeName: 'Waste assessment',
+  shortName: 'wasteassessment'
 }
 
 const fakeItem = (id, itemTypeId) => {
   return {
     id: `DUMMY-GUID-ITEM-${id}`,
     itemName: `Dummy item name ${id}`,
-    shortName: `Dummy short name ${id}`,
+    shortName: `dummy-short-name-${id}`,
     itemTypeId: itemTypeId,
     code: `dummy-code-${id}`,
     description: `Dummy description for ${id}`,
@@ -44,7 +44,7 @@ const fakeDynamicsRecord = (id, itemTypeId) => {
   return {
     defra_itemid: `DUMMY-GUID-ITEM-${id}`,
     defra_name: `Dummy item name ${id}`,
-    defra_shortname: `Dummy short name ${id}`,
+    defra_shortname: `dummy-short-name-${id}`,
     _defra_itemtypeid_value: itemTypeId,
     defra_code: `dummy-code-${id}`,
     defra_description: `Dummy description for ${id}`,
@@ -60,6 +60,14 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
+  sandbox.stub(ItemType, 'getByShortName').callsFake(async (context, shortName) => {
+    if (shortName === 'wasteactivity') {
+      return ACTIVITY_TYPE
+    } else if (shortName === 'wasteassessment') {
+      return ASSESSMENT_TYPE
+    }
+  })
+  sandbox.stub(ItemType, 'listByShortName').callsFake(async () => [ACTIVITY_TYPE, ASSESSMENT_TYPE])
   stub = sandbox.stub(DynamicsDalService.prototype, 'search')
 })
 
@@ -85,8 +93,38 @@ lab.experiment('Item Entity tests:', () => {
       return { value: [fakeDynamicsRecord('00001', ASSESSMENT_TYPE.id)] }
     })
     const expectedItems = [fakeItem('00001', ASSESSMENT_TYPE.id)]
-    const items = await Item.listAssessments(entityContext, 'DUMMY')
+    const items = await Item.listAssessments(entityContext)
     Code.expect(items).to.exist()
     Code.expect(items).to.equal(expectedItems)
+  })
+
+  lab.test('listActivitiesAndAssessments() returns correct values', async () => {
+    stub.callsFake(async () => {
+      return { value: [fakeDynamicsRecord('00001', ACTIVITY_TYPE.id), fakeDynamicsRecord('00002', ASSESSMENT_TYPE.id)] }
+    })
+    const expectedItems = [fakeItem('00001', ACTIVITY_TYPE.id), fakeItem('00002', ASSESSMENT_TYPE.id)]
+    const items = await Item.listActivitiesAndAssessments(entityContext)
+    Code.expect(items).to.exist()
+    Code.expect(items).to.equal(expectedItems)
+  })
+
+  lab.test('getActivity() returns correct values', async () => {
+    stub.callsFake(async () => {
+      return { value: [fakeDynamicsRecord('00001', ACTIVITY_TYPE.id)] }
+    })
+    const expectedItem = fakeItem('00001', ACTIVITY_TYPE.id)
+    const item = await Item.getActivity(entityContext, expectedItem.shortName)
+    Code.expect(item).to.exist()
+    Code.expect(item).to.equal(expectedItem)
+  })
+
+  lab.test('getAssessment() returns correct values', async () => {
+    stub.callsFake(async () => {
+      return { value: [fakeDynamicsRecord('00001', ASSESSMENT_TYPE.id)] }
+    })
+    const expectedItem = fakeItem('00001', ASSESSMENT_TYPE.id)
+    const item = await Item.getAssessment(entityContext, expectedItem.shortName)
+    Code.expect(item).to.exist()
+    Code.expect(item).to.equal(expectedItem)
   })
 })

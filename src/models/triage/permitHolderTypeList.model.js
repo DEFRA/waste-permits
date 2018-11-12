@@ -38,7 +38,7 @@ const PermitHolderTypeList = class {
 
   static async createList (entityContextToUse, permitTypesArray) {
     // All permit types have the same, full list of permit holder types
-    const permitHolderTypesArray = PERMIT_HOLDER_TYPE_LIST.map(item => new PermitHolderType(item))
+    const permitHolderTypesArray = PERMIT_HOLDER_TYPE_LIST.map((item) => new PermitHolderType(item))
     return new PermitHolderTypeList(entityContextToUse, permitTypesArray, permitHolderTypesArray)
   }
 }

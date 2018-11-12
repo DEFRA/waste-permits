@@ -63,16 +63,16 @@ const ActivityList = class {
 
     // Rationalise (merge and de-duplicate) the list of activities
     let rationalisedActivityDetailEntities = [].concat.apply([], allActivityDetailEntities)
-    rationalisedActivityDetailEntities = rationalisedActivityDetailEntities.filter((entity, index, self) => self.findIndex(same => same.itemId === entity.itemId) === index)
+    rationalisedActivityDetailEntities = rationalisedActivityDetailEntities.filter((entity, index, self) => self.findIndex((same) => same.itemId === entity.itemId) === index)
 
     // Fetch the details of all the activities
     const activityLookups = rationalisedActivityDetailEntities.map(({ itemId }) => ItemEntity.getById(entityContext, itemId))
     const activityEntities = await Promise.all(activityLookups)
 
     // Filter out any that can no longer be applied for, i.e. they should not appear to a user
-    const filteredActivityEntities = activityEntities.filter(item => item.canApplyFor)
+    const filteredActivityEntities = activityEntities.filter((item) => item.canApplyFor)
 
-    return filteredActivityEntities.map(item => Activity.createFromItemEntity(item))
+    return filteredActivityEntities.map((item) => Activity.createFromItemEntity(item))
   }
 }
 

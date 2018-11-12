@@ -2,6 +2,9 @@
 
 const BaseEntity = require('./base.entity')
 
+const ACTIVITY = 'wasteactivity'
+const ASSESSMENT = 'wasteassessment'
+
 class ItemType extends BaseEntity {
   static get dynamicsEntity () {
     return 'defra_itemtypes'
@@ -21,6 +24,23 @@ class ItemType extends BaseEntity {
 
   static async getByShortName (context, shortName) {
     return super.getBy(context, { shortName })
+  }
+
+  static async listByShortName (context, shortName) {
+    return super.listBy(context, { shortName })
+  }
+
+  static async getActivityAndAssessmentItemTypes (context) {
+    const itemTypes = await this.listByShortName(context, [ACTIVITY, ASSESSMENT])
+    const types = {}
+    itemTypes.forEach((item) => {
+      if (item.shortName === ACTIVITY) {
+        types.activity = item
+      } else if (item.shortName === ASSESSMENT) {
+        types.assessment = item
+      }
+    })
+    return types
   }
 }
 
