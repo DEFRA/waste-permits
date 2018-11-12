@@ -2,7 +2,6 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const MiningWasteDetails = require('../models/taskList/miningWasteDetails.task')
 
 module.exports = class MiningWasteWeightController extends BaseController {
   async doGet (request, h, errors) {
@@ -25,12 +24,10 @@ module.exports = class MiningWasteWeightController extends BaseController {
       return this.doGet(request, h, errors)
     }
     const context = await RecoveryService.createApplicationContext(h)
-    const { application, applicationId, applicationLineId } = context
+    const { application } = context
 
     application.miningWasteWeight = request.payload['mining-waste-weight']
     await application.save(context, ['miningWasteWeight'])
-
-    await MiningWasteDetails.updateCompleteness(context, applicationId, applicationLineId)
 
     return this.redirect({ request, h, redirectPath: this.nextPath })
   }

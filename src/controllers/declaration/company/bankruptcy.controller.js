@@ -1,7 +1,6 @@
 'use strict'
 
 const DeclarationsController = require('../base/declarations.controller')
-const PermitHolderDetails = require('../../../models/taskList/permitHolderDetails.task')
 
 module.exports = class BankruptcyController extends DeclarationsController {
   getFormData (data) {
@@ -21,9 +20,5 @@ module.exports = class BankruptcyController extends DeclarationsController {
       declarationDetailsHint: 'Include the dates for the proceedings',
       declarationNotice: 'We may contact a credit reference agency for a report about your business’s finances.'
     }
-  }
-
-  async updateCompleteness (...args) {
-    await PermitHolderDetails.updateCompleteness(...args)
   }
 }

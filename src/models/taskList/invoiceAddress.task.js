@@ -1,7 +1,5 @@
 'use strict'
 
-const { INVOICING_DETAILS } = require('./taskList').CompletedParameters
-
 const BaseTask = require('./base.task')
 const Address = require('../../persistence/entities/address.entity')
 const ContactDetail = require('../../models/contactDetail.model')
@@ -59,9 +57,6 @@ module.exports = class InvoiceAddress extends BaseTask {
       contactDetail.addressId = address.id
       await contactDetail.save(context)
     }
-
-    // Get the Invoicing Address for this application
-    await InvoiceAddress.updateCompleteness(context, applicationId, applicationLineId)
   }
 
   static async saveManualAddress (request, applicationId, applicationLineId, addressDto) {
@@ -89,12 +84,6 @@ module.exports = class InvoiceAddress extends BaseTask {
       contactDetail.addressId = address.id
       await contactDetail.save(context)
     }
-
-    await InvoiceAddress.updateCompleteness(context, applicationId, applicationLineId)
-  }
-
-  static get completenessParameter () {
-    return INVOICING_DETAILS
   }
 
   static async checkComplete (context) {

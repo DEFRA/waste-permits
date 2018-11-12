@@ -6,9 +6,8 @@ const Code = require('code')
 const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const DataStore = require('../../../src/models/dataStore.model')
 const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
-const TaskList = require('../../../src/models/taskList/taskList')
 const BaseTask = require('../../../src/models/taskList/base.task')
 
 const context = { authToken: 'AUTH_TOKEN' }
@@ -19,13 +18,15 @@ let mocks
 lab.beforeEach(() => {
   mocks = new Mocks()
 
+  BaseTask.completenessParameter = 'completedFlag'
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
+  sandbox.stub(DataStore, 'get').value(() => mocks.dataStore)
+  sandbox.stub(DataStore.prototype, 'save').value(() => mocks.dataStore.id)
   sandbox.stub(ApplicationLine, 'getById').value(() => mocks.applicationLine)
-  sandbox.stub(TaskList, 'getCompleted').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -34,20 +35,14 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: Completeness Model tests:', () => {
-  lab.test('updateCompleteness() method updates the task list item completeness', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+  lab.test('updateCompleteness() method saves the task list item completeness', async () => {
+    const spy = sinon.spy(DataStore.prototype, 'save')
     await BaseTask.updateCompleteness(context)
     Code.expect(spy.callCount).to.equal(1)
   })
 
-  lab.test('isComplete() method correctly returns FALSE when the task list item is not complete', async () => {
+  lab.test('isComplete() default method correctly returns FALSE', async () => {
     const result = await BaseTask.isComplete()
     Code.expect(result).to.equal(false)
-  })
-
-  lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
-    TaskList.getCompleted = () => true
-    const result = await BaseTask.isComplete()
-    Code.expect(result).to.equal(true)
   })
 })

@@ -114,9 +114,7 @@ lab.experiment('How much extractive waste will you produce? page tests:', () => 
 
     lab.experiment('success', async () => {
       lab.test('when weight entered is valid', async () => {
-        const spy = sinon.spy(MiningWasteDetails, 'updateCompleteness')
         const res = await server.inject(postRequest)
-        Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
@@ -143,9 +141,9 @@ lab.experiment('How much extractive waste will you produce? page tests:', () => 
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        MiningWasteDetails.updateCompleteness = () => {
+        sinon.stub(Application.prototype, 'save').value(() => {
           throw new Error('update failed')
-        }
+        })
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)

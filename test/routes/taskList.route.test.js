@@ -52,7 +52,6 @@ const fakeTaskList = {
           href: '/cost-time',
           completedLabelId: 'cost-and-time-completed',
           ruleSetId: 'defra_showcostandtime',
-          completedId: 'defra_showcostandtime',
           complete: false
         },
         {
@@ -61,7 +60,6 @@ const fakeTaskList = {
           href: '/confirm-rules',
           completedLabelId: 'operation-rules-completed',
           ruleSetId: 'defra_confirmreadrules',
-          completedId: 'defra_confirmreadrules_completed',
           complete: false
         },
         {
@@ -70,7 +68,6 @@ const fakeTaskList = {
           href: '/waste-recovery-plan',
           completedLabelId: 'waste-recovery-plan-completed',
           ruleSetId: 'defra_wasterecoveryplanreq',
-          completedId: 'defra_wasterecoveryplanreq_completed',
           complete: false
         },
         {
@@ -79,7 +76,6 @@ const fakeTaskList = {
           href: '/pre-application',
           completedLabelId: 'preapp-completed',
           ruleSetId: 'defra_preapprequired',
-          completedId: 'defra_preapprequired_completed',
           complete: false
         },
         {
@@ -88,7 +84,6 @@ const fakeTaskList = {
           href: '/contact-details',
           completedLabelId: 'contact-details-completed',
           ruleSetId: 'defra_contactdetailsrequired',
-          completedId: 'defra_contactdetailsrequired_completed',
           complete: false
         },
         {
@@ -97,7 +92,6 @@ const fakeTaskList = {
           href: '/permit-holder/company/number',
           completedLabelId: 'site-operator-completed',
           ruleSetId: 'defra_pholderdetailsrequired',
-          completedId: 'defra_pholderdetailsrequired_completed',
           complete: false
         },
         {
@@ -106,7 +100,6 @@ const fakeTaskList = {
           href: '/site/site-name',
           completedLabelId: 'site-name-completed',
           ruleSetId: 'defra_locationrequired',
-          completedId: 'defra_locationrequired_completed',
           complete: true
         },
         {
@@ -115,7 +108,6 @@ const fakeTaskList = {
           href: '/site-plan',
           completedLabelId: 'site-plan-completed',
           ruleSetId: 'defra_siteplanrequired',
-          completedId: 'defra_siteplanrequired_completed',
           complete: false
         },
         {
@@ -124,7 +116,6 @@ const fakeTaskList = {
           href: '/technical-competence',
           completedLabelId: 'technical-qualification-completed',
           ruleSetId: 'defra_techcompetenceevreq',
-          completedId: 'defra_techcompetenceevreq_completed',
           complete: false
         },
         {
@@ -133,7 +124,6 @@ const fakeTaskList = {
           href: '/management-system',
           completedLabelId: 'management-system-completed',
           ruleSetId: 'defra_mansystemrequired',
-          completedId: 'defra_mansystemrequired_completed',
           complete: false
         },
         {
@@ -142,7 +132,6 @@ const fakeTaskList = {
           href: '/fire-prevention-plan',
           completedLabelId: 'firepp-completed',
           ruleSetId: 'defra_fireplanrequired',
-          completedId: 'defra_fireplanrequired_completed',
           complete: false
         },
         {
@@ -151,7 +140,6 @@ const fakeTaskList = {
           href: '/drainage-type/drain',
           completedLabelId: 'confirm-drainage-completed',
           ruleSetId: 'defra_surfacedrainagereq',
-          completedId: 'defra_surfacedrainagereq_completed',
           complete: false
         },
         {
@@ -160,7 +148,6 @@ const fakeTaskList = {
           href: '/confidentiality',
           completedLabelId: 'confidentiality-completed',
           ruleSetId: 'defra_cnfconfidentialityreq',
-          completedId: 'defra_cnfconfidentialityreq_completed',
           complete: false
         },
         {
@@ -169,7 +156,6 @@ const fakeTaskList = {
           href: '/billing/invoice-postcode',
           completedLabelId: 'invoicing-details-completed',
           ruleSetId: 'defra_invoicingdetailsrequired',
-          completedId: 'defra_invoicingdetails_completed',
           complete: false
         }
       ]

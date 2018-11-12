@@ -1,12 +1,12 @@
 const BaseCheck = require('./base.check')
 
-const { WASTE_RECOVERY_PLAN } = require('../taskList/taskList').RuleSetIds
+const { WASTE_RECOVERY_PLAN } = require('../../tasks').tasks
 const { WASTE_RECOVERY_PLAN_APPROVAL } = require('../../routes')
 const { RecoveryPlanAssessmentStatus } = require('../../dynamics')
 
 module.exports = class WasteRecoveryPlanCheck extends BaseCheck {
   static get ruleSetId () {
-    return WASTE_RECOVERY_PLAN
+    return WASTE_RECOVERY_PLAN.ruleSetId
   }
 
   get prefix () {

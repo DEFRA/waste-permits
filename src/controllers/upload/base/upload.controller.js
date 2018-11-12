@@ -39,14 +39,11 @@ module.exports = class UploadController extends BaseController {
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h)
-      const { applicationId, applicationLineId } = context
+      const { applicationId } = context
 
       const list = await Annotation.listByApplicationIdAndSubject(context, applicationId, this.subject)
       if (!list.length) {
         return this.handler(request, h, undefined, this.setCustomError('noFilesUploaded', 'file'))
-      }
-      if (this.updateCompleteness) {
-        await this.updateCompleteness(context, applicationId, applicationLineId)
       }
       return this.redirect({ request, h, redirectPath: this.nextPath })
     }

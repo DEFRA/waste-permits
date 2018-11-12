@@ -1,6 +1,5 @@
 'use strict'
 
-const { PERMIT_HOLDER_DETAILS } = require('./taskList').CompletedParameters
 const { RESPONSIBLE_CONTACT_DETAILS, PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 
 const BaseTask = require('./base.task')
@@ -90,10 +89,6 @@ module.exports = class PermitHolderDetails extends BaseTask {
       contactDetail.addressId = address.id
       await contactDetail.save(context)
     }
-  }
-
-  static get completenessParameter () {
-    return PERMIT_HOLDER_DETAILS
   }
 
   static async checkComplete (context, applicationId) {

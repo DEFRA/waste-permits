@@ -4,27 +4,22 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const Application = require('../../../src/persistence/entities/application.entity')
 const Confidentiality = require('../../../src/models/taskList/confidentiality.task')
 
-const COMPLETENESS_PARAMETER = 'defra_cnfconfidentialityreq_completed'
-
-let fakeApplication
-
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    confidentiality: false
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(Application, 'getById').value(() => fakeApplication)
+  sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
 })
 
 lab.afterEach(() => {
@@ -33,12 +28,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: Confidentiality Model tests:', () => {
-  lab.test(`completenessParameter is ${COMPLETENESS_PARAMETER}`, async () => {
-    Code.expect(Confidentiality.completenessParameter).to.equal(COMPLETENESS_PARAMETER)
-  })
-
   lab.test('checkComplete() method correctly returns FALSE when confidentiality is not set', async () => {
-    delete fakeApplication.confidentiality
+    delete mocks.application.confidentiality
     const result = await Confidentiality.checkComplete()
     Code.expect(result).to.equal(false)
   })

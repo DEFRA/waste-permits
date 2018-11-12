@@ -5,6 +5,7 @@ const Application = require('../../src/persistence/entities/application.entity')
 const Annotation = require('../../src/persistence/entities/annotation.entity')
 const ApplicationData = require('../../src/persistence/entities/applicationData.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
+const ApplicationReturn = require('../../src/persistence/entities/applicationReturn.entity')
 const Contact = require('../../src/persistence/entities/contact.entity')
 const Location = require('../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../src/persistence/entities/locationDetail.entity')
@@ -52,7 +53,8 @@ const application = {
   relevantOffences: true,
   relevantOffencesDetails: 'CONVICTION DETAILS 1\nCONVICTION DETAILS 2',
   bankruptcy: true,
-  bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS'
+  bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS',
+  saveAndReturnEmail: 'SAVE@RETURN.EMAIL'
 }
 
 const applicationLine = {
@@ -68,6 +70,12 @@ const applicationData = {
   id: 'APPLICATION_DATA_ID',
   applicationId: application.id,
   data: JSON.stringify(data)
+}
+
+const applicationReturn = {
+  id: 'APPLICATION_RETURN_ID',
+  applicationId: application.id,
+  slug: 'SLUG'
 }
 
 const contact = {
@@ -107,10 +115,13 @@ const dataStore = {
 }
 
 const location = {
+  id: 'LOCATION_ID',
   siteName: 'SITE_NAME'
 }
 
 const locationDetail = {
+  id: 'LOCATION_DETAIL_ID',
+  addressId: address.id,
   gridReference: 'GRID_REFERENCE'
 }
 
@@ -150,6 +161,10 @@ module.exports = class Mocks {
 
   get applicationData () {
     return this._applicationData || (this._applicationData = new ApplicationData(applicationData))
+  }
+
+  get applicationReturn () {
+    return this._applicationReturn || (this._applicationReturn = new ApplicationReturn(applicationReturn))
   }
 
   get contact () {

@@ -1,11 +1,11 @@
 const BaseCheck = require('./base.check')
 
-const { INVOICING_DETAILS } = require('../taskList/taskList').RuleSetIds
+const { INVOICING_DETAILS } = require('../../tasks').tasks
 const { POSTCODE_INVOICE, MANUAL_INVOICE } = require('../../routes')
 
 module.exports = class InvoiceCheck extends BaseCheck {
   static get ruleSetId () {
-    return INVOICING_DETAILS
+    return INVOICING_DETAILS.ruleSetId
   }
 
   get prefix () {

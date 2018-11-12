@@ -3,8 +3,7 @@ const Routes = require('./routes')
 const tasks = {
   BASELINE_REPORT: {
     id: 'baseline-report',
-    ruleSetId: 'defra_baselinereportreq',
-    completedId: 'defra_baselinereportreq_completed'
+    ruleSetId: 'defra_baselinereportreq'
   },
   CONFIRM_CONFIDENTIALLY: {
     id: 'confirm-confidentiality-needs',
@@ -12,7 +11,6 @@ const tasks = {
     route: Routes.CONFIDENTIALITY,
     completedLabelId: 'confidentiality-completed',
     ruleSetId: 'defra_cnfconfidentialityreq',
-    completedId: 'defra_cnfconfidentialityreq_completed',
     taskListModel: 'confidentiality'
   },
   CONFIRM_RULES: {
@@ -21,7 +19,6 @@ const tasks = {
     route: Routes.CONFIRM_RULES,
     completedLabelId: 'operation-rules-completed',
     ruleSetId: 'defra_confirmreadrules',
-    completedId: 'defra_confirmreadrules_completed',
     taskListModel: 'confirmRules'
   },
   CONTACT_DETAILS: {
@@ -30,7 +27,6 @@ const tasks = {
     route: Routes.CONTACT_DETAILS,
     completedLabelId: 'contact-details-completed',
     ruleSetId: 'defra_contactdetailsrequired',
-    completedId: 'defra_contactdetailsrequired_completed',
     taskListModel: 'contactDetails'
   },
   FIRE_PREVENTION_PLAN: {
@@ -39,7 +35,6 @@ const tasks = {
     route: Routes.FIRE_PREVENTION_PLAN,
     completedLabelId: 'firepp-completed',
     ruleSetId: 'defra_fireplanrequired',
-    completedId: 'defra_fireplanrequired_completed',
     taskListModel: 'firePreventionPlan'
   },
   INVOICING_DETAILS: {
@@ -48,7 +43,6 @@ const tasks = {
     route: Routes.POSTCODE_INVOICE,
     completedLabelId: 'invoicing-details-completed',
     ruleSetId: 'defra_invoicingdetailsrequired',
-    completedId: 'defra_invoicingdetails_completed',
     taskListModel: 'invoiceAddress'
   },
   MINING_DATA: {
@@ -57,7 +51,6 @@ const tasks = {
     route: Routes.CONFIRM_MINING_WASTE_PLAN,
     completedLabelId: 'mining-data-completed',
     ruleSetId: 'defra_miningdatarequired',
-    completedId: 'defra_miningdatarequired_completed',
     taskListModel: 'miningWasteDetails'
   },
   MANAGEMENT_SYSTEM: {
@@ -65,18 +58,15 @@ const tasks = {
     label: 'Tell us which management system you use',
     route: Routes.MANAGEMENT_SYSTEM,
     completedLabelId: 'management-system-completed',
-    ruleSetId: 'defra_mansystemrequired',
-    completedId: 'defra_mansystemrequired_completed'
+    ruleSetId: 'defra_mansystemrequired'
   },
   MINING_WASTE_MANAGEMENT_PLAN: {
     id: 'mining-waste-management-plan',
-    ruleSetId: 'defra_miningwastemanplanreq',
-    completedId: 'defra_miningwastemanplanreq_completed'
+    ruleSetId: 'defra_miningwastemanplanreq'
   },
   NHS_SCREENING: {
     id: 'nhs-screening',
-    ruleSetId: 'defra_nhscreeningrequired',
-    completedId: 'defra_nhscreeningrequired_completed'
+    ruleSetId: 'defra_nhscreeningrequired'
   },
   PERMIT_HOLDER_DETAILS: {
     id: 'give-permit-holder-details',
@@ -84,7 +74,6 @@ const tasks = {
     route: Routes.PERMIT_HOLDER_DETAILS,
     completedLabelId: 'site-operator-completed',
     ruleSetId: 'defra_pholderdetailsrequired',
-    completedId: 'defra_pholderdetailsrequired_completed',
     taskListModel: 'permitHolderDetails'
   },
   PRE_APPLICATION: {
@@ -92,8 +81,7 @@ const tasks = {
     label: 'Tell us if you have discussed this application with us',
     route: Routes.PRE_APPLICATION,
     completedLabelId: 'preapp-completed',
-    ruleSetId: 'defra_preapprequired',
-    completedId: 'defra_preapprequired_completed'
+    ruleSetId: 'defra_preapprequired'
   },
   SAVE_AND_RETURN_EMAIL: {
     id: 'set-up-save-and-return',
@@ -101,7 +89,6 @@ const tasks = {
     route: Routes.SAVE_AND_RETURN_EMAIL,
     completedLabelId: 'set-up-save-and-return-completed',
     ruleSetId: 'defra_setupsaveandreturnrequired',
-    completedId: 'defra_setupsaveandreturn_completed',
     taskListModel: 'saveAndReturn'
   },
   SHOW_COST_AND_TIME: {
@@ -110,7 +97,6 @@ const tasks = {
     route: Routes.COST_TIME,
     completedLabelId: 'cost-and-time-completed',
     ruleSetId: 'defra_showcostandtime',
-    completedId: 'defra_showcostandtime_completed',
     taskListModel: 'costTime'
   },
   SITE_NAME_LOCATION: {
@@ -119,7 +105,6 @@ const tasks = {
     route: Routes.SITE_NAME,
     completedLabelId: 'site-name-completed',
     ruleSetId: 'defra_locationrequired',
-    completedId: 'defra_locationrequired_completed',
     taskListModel: 'siteNameAndLocation'
   },
   SITE_PLAN: {
@@ -128,13 +113,11 @@ const tasks = {
     route: Routes.SITE_PLAN,
     completedLabelId: 'site-plan-completed',
     ruleSetId: 'defra_siteplanrequired',
-    completedId: 'defra_siteplanrequired_completed',
     taskListModel: 'sitePlan'
   },
   STACK_HEIGHT: {
     id: 'stack-height',
-    ruleSetId: 'defra_stackheightreq',
-    completedId: 'defra_stackheightreq_completed'
+    ruleSetId: 'defra_stackheightreq'
   },
   SUBMIT_PAY: {
     id: 'submit-pay',
@@ -149,7 +132,6 @@ const tasks = {
     route: Routes.DRAINAGE_TYPE_DRAIN,
     completedLabelId: 'confirm-drainage-completed',
     ruleSetId: 'defra_surfacedrainagereq',
-    completedId: 'defra_surfacedrainagereq_completed',
     taskListModel: 'drainageTypeDrain'
   },
   TECHNICAL_QUALIFICATION: {
@@ -158,7 +140,6 @@ const tasks = {
     route: Routes.TECHNICAL_QUALIFICATION,
     completedLabelId: 'upload-completed',
     ruleSetId: 'defra_techcompetenceevreq',
-    completedId: 'defra_techcompetenceevreq_completed',
     taskListModel: 'technicalQualification'
   },
   WASTE_RECOVERY_PLAN: {
@@ -167,13 +148,11 @@ const tasks = {
     route: Routes.WASTE_RECOVERY_PLAN_APPROVAL,
     completedLabelId: 'waste-recovery-plan-completed',
     ruleSetId: 'defra_wasterecoveryplanreq',
-    completedId: 'defra_wasterecoveryplanreq_completed',
     taskListModel: 'wasteRecoveryPlan'
   },
   WASTE_WEIGHT: {
     id: 'waste-weight',
-    ruleSetId: 'defra_extwasteweightreq',
-    completedId: 'defra_extwasteweightreq_completed'
+    ruleSetId: 'defra_extwasteweightreq'
   }
 }
 

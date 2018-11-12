@@ -4,29 +4,22 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const ContactDetail = require('../../../src/models/contactDetail.model')
 const ContactDetails = require('../../../src/models/taskList/contactDetails.task')
 
-const COMPLETENESS_PARAMETER = 'defra_contactdetailsrequired_completed'
-
-let fakeContactDetail
-
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeContactDetail = {
-    firstName: 'FIRST_NAME',
-    lastName: 'LAST_NAME',
-    telephone: 'TELEPHONE',
-    email: 'EMAIL'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(ContactDetail, 'get').value(() => fakeContactDetail)
+  sandbox.stub(ContactDetail, 'get').callsFake(() => mocks.contactDetail)
 })
 
 lab.afterEach(() => {
@@ -35,12 +28,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: ContactDetails Model tests:', () => {
-  lab.test(`completenessParameter is ${COMPLETENESS_PARAMETER}`, async () => {
-    Code.expect(ContactDetails.completenessParameter).to.equal(COMPLETENESS_PARAMETER)
-  })
-
   lab.test('checkComplete() method correctly returns FALSE when the contact details are not set', async () => {
-    delete fakeContactDetail.firstName
+    delete mocks.contactDetail.firstName
     const result = await ContactDetails.checkComplete()
     Code.expect(result).to.equal(false)
   })

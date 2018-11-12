@@ -50,7 +50,7 @@ module.exports = class EmailSentController extends BaseController {
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { applicationId, applicationLineId, application } = context
+      const { application } = context
 
       if (request.payload['got-email']) {
         if (request.payload['got-email'] !== 'true') {
@@ -63,8 +63,6 @@ module.exports = class EmailSentController extends BaseController {
             return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
           }
           return this.redirect({ request, h, redirectPath: SAVE_AND_RETURN_SENT_RESENT.path })
-        } else {
-          await SaveAndReturn.updateCompleteness(context, applicationId, applicationLineId)
         }
       }
 

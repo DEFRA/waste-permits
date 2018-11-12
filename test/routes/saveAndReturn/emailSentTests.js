@@ -225,18 +225,6 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(errorPath)
         })
-
-        lab.test('redirects to error screen when updateCompletenesss fails', async () => {
-          const spy = sandbox.spy(LoggingService, 'logError')
-          SaveAndReturn.updateCompleteness = () => {
-            throw new Error('update failed')
-          }
-
-          const res = await server.inject(postRequest)
-          Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
-        })
       })
     })
   })

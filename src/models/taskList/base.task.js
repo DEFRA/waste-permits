@@ -1,19 +1,19 @@
 'use strict'
 
-const DynamicsDalService = require('../../services/dynamicsDal.service')
+const dateformat = require('dateformat')
 const LoggingService = require('../../services/logging.service')
-const ApplicationLine = require('../../persistence/entities/applicationLine.entity')
-const TaskList = require('./taskList')
+const DataStore = require('../dataStore.model')
 
 module.exports = class BaseTask {
   static async _updateCompleteness (context = {}, applicationId, applicationLineId, value) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-
     try {
-      const applicationLine = await ApplicationLine.getById(context, applicationLineId)
-
-      const query = `defra_wasteparamses(${applicationLine.parametersId})`
-      await dynamicsDal.update(query, { [this.completenessParameter]: value && await this.checkComplete(context, applicationId, applicationLineId) })
+      const dataStore = await DataStore.get(context)
+      const { data } = dataStore
+      if (!data.completeness) {
+        data.completeness = {}
+      }
+      data.completeness[this.name] = value
+      await dataStore.save(context)
     } catch (error) {
       LoggingService.logError(`Unable set ${this.name} completeness to ${value}: ${error}`)
       throw error
@@ -21,29 +21,21 @@ module.exports = class BaseTask {
   }
 
   static async updateCompleteness (...args) {
-    await this._updateCompleteness(...args, true)
+    await this._updateCompleteness(...args, dateformat(Date.now(), 'yyyy-mm-dd'))
   }
 
   static async clearCompleteness (...args) {
-    await this._updateCompleteness(...args, false)
+    await this._updateCompleteness(...args, undefined)
   }
 
   // Override this inorder to provide a unique check of completeness for each task
-  static async checkComplete () {
-    return true
+
+  static async checkComplete (context) {
+    const { data } = await DataStore.get(context)
+    return Boolean(data.completeness && data.completeness[this.name])
   }
 
   static async isComplete (context, applicationId, applicationLineId) {
-    let isComplete = false
-    try {
-      // Get the completed flag
-      const completed = await TaskList.getCompleted(context, applicationLineId, this.completenessParameter)
-
-      isComplete = Boolean(completed && await this.checkComplete(context, applicationId, applicationLineId))
-    } catch (error) {
-      LoggingService.logError(`Unable to retrieve ${this.name} completeness: ${error.message}`)
-      throw error
-    }
-    return isComplete
+    return Boolean(this.checkComplete && await this.checkComplete(context, applicationId, applicationLineId))
   }
 }

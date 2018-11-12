@@ -4,51 +4,41 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
-const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
+const Application = require('../../../src/persistence/entities/application.entity')
+const DataStore = require('../../../src/models/dataStore.model')
+const RuleSet = require('../../../src/models/ruleSet.model')
+const BaseTask = require('../../../src/models/taskList/base.task')
 const TaskList = require('../../../src/models/taskList/taskList')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 
-let fakeApplicationLine
-let fakeCompletedId
-let fakeRulesId
-let fakeParametersId
+let validRuleSetIds
+let context
+let applicationLineId
 let sandbox
-
-const context = { authToken: 'AUTH_TOKEN' }
-const applicationLineId = 'APPLICATION_LINE_ID'
+let mocks
 
 lab.beforeEach(() => {
-  fakeRulesId = 'defra_confirmreadrules'
-  fakeCompletedId = 'defra_confirmreadrules_completed'
-  fakeParametersId = {
-    [fakeRulesId]: true,
-    [fakeCompletedId]: true,
-    defra_cnfconfidentialityreq: true,
-    defra_cnfconfidentialityreq_completed: true,
-    defra_contactdetailsrequired: true,
-    defra_contactdetailsrequired_completed: true,
-    defra_showcostandtime: true,
-    defra_showcostandtime_completed: true
-  }
-  fakeApplicationLine = new ApplicationLine({
-    applicationId: 'APPLICATION_ID',
-    standardRuleId: 'STANDARD_RULE_ID',
-    parametersId: fakeParametersId
-  })
+  mocks = new Mocks()
 
-  const searchResult = {
-    _defra_standardruleid_value: fakeApplicationLine.standardRuleId,
-    defra_parametersId: fakeApplicationLine.parametersId,
-    _defra_applicationid_value: fakeApplicationLine.applicationId
-  }
+  context = { authToken: 'AUTH_TOKEN' }
+  applicationLineId = 'APPLICATION_LINE_ID'
+
+  validRuleSetIds = [
+    'defra_cnfconfidentialityreq',
+    'defra_confirmreadrules',
+    'defra_contactdetailsrequired',
+    'defra_showcostandtime'
+  ]
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => applicationLineId)
-  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => searchResult)
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
+  sandbox.stub(DataStore, 'get').value(() => mocks.dataStore)
+  sandbox.stub(RuleSet, 'getValidRuleSetIds').value(() => validRuleSetIds)
+  sandbox.stub(BaseTask, 'isComplete').value(() => false)
 })
 
 lab.afterEach(() => {
@@ -74,10 +64,8 @@ lab.experiment('Task List Model tests:', () => {
   }
 
   lab.test('getByApplicationLineId() method returns a TaskList object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const taskList = await TaskList.getByApplicationLineId(context)
     Code.expect(taskList).to.not.be.null()
-    Code.expect(spy.callCount).to.equal(1)
   })
 
   lab.test('Task List returned by getByApplicationLineId() method has the correct number of sections', async () => {
@@ -107,31 +95,14 @@ lab.experiment('Task List Model tests:', () => {
     })
   })
 
-  lab.test('getCompleted() method correctly retrieves the completed flag from the ApplicationLine object for the specified parameter', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const completed = await TaskList.getCompleted(context, applicationLineId, fakeCompletedId)
-    Code.expect(spy.callCount).to.equal(1)
-    Code.expect(completed).to.equal(true)
-  })
-
-  lab.test('getValidRuleSetIds() method correctly retrieves the completed flag from the ApplicationLine object for the specified parameter', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const ruleSetIds = await TaskList.getValidRuleSetIds(context, applicationLineId)
-    Code.expect(spy.callCount).to.equal(1)
-    Code.expect(ruleSetIds).to.include(Object.keys(fakeParametersId))
-    Code.expect(ruleSetIds.length).to.equal(Object.keys(fakeParametersId).length)
-  })
-
-  lab.test('getTaskListModels() method correctly retrieves the list of models that are required', async () => {
-    const requiredModels = ['saveAndReturn', 'costTime']
-    const availableTaskListModels = await TaskList.getTaskListModels(requiredModels)
-    Code.expect(availableTaskListModels.length).to.equal(requiredModels.length)
-  })
-
-  lab.test('isComplete() method correctly checks for completed tasks', async () => {
-    const stub = sinon.stub(TaskList, 'getTaskListModels').value(() => [])
+  lab.test('isComplete() method correctly checks for incomplete tasks', async () => {
     const complete = await TaskList.isComplete(context, applicationLineId, applicationLineId)
-    stub.restore()
+    Code.expect(complete).to.be.false()
+  })
+
+  lab.test('isComplete() method correctly checks for complete tasks', async () => {
+    sinon.stub(BaseTask, 'isComplete').value(() => true)
+    const complete = await TaskList.isComplete(context, applicationLineId, applicationLineId)
     Code.expect(complete).to.be.true()
   })
 })

@@ -1,13 +1,13 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 
-const { TECHNICAL_QUALIFICATION } = require('../taskList/taskList').RuleSetIds
+const { TECHNICAL_QUALIFICATION } = require('../../tasks').tasks
 const { TECHNICAL_QUALIFICATION: { path } } = require('../../routes')
 const { WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS } = Dynamics.TechnicalQualification
 
 module.exports = class TechnicalCheck extends BaseCheck {
   static get ruleSetId () {
-    return TECHNICAL_QUALIFICATION
+    return TECHNICAL_QUALIFICATION.ruleSetId
   }
 
   get prefix () {
