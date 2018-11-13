@@ -1,8 +1,8 @@
 'use strict'
 
-const BaseModel = require('./base.entity')
+const BaseEntity = require('./base.entity')
 
-class Annotation extends BaseModel {
+class Annotation extends BaseEntity {
   static get dynamicsEntity () {
     return 'annotations'
   }

@@ -1,14 +1,14 @@
 'use strict'
 
 const DynamicsDalService = require('../../services/dynamicsDal.service')
-const BaseModel = require('./base.entity')
+const BaseEntity = require('./base.entity')
 const ApplicationReturn = require('./applicationReturn.entity')
 const LoggingService = require('../../services/logging.service')
 
 const { SAVE_AND_RETURN_RECOVER } = require('../../routes')
 const { DIGITAL_SOURCE, PERMIT_HOLDER_TYPES, StatusCode, WASTE_REGIME } = require('../../dynamics')
 
-class Application extends BaseModel {
+class Application extends BaseEntity {
   static get dynamicsEntity () {
     return 'defra_applications'
   }

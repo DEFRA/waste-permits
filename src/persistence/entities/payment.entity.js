@@ -4,11 +4,11 @@ const { PAYMENT_CONFIGURATION_PREFIX } = require('../../constants')
 const { PaymentTypes } = require('../../dynamics')
 const Utilities = require('../../utilities/utilities')
 const DynamicsDalService = require('../../services/dynamicsDal.service')
-const BaseModel = require('./base.entity')
+const BaseEntity = require('./base.entity')
 const LoggingService = require('../../services/logging.service')
 const { BACS_PAYMENT, CARD_PAYMENT } = PaymentTypes
 
-class Payment extends BaseModel {
+class Payment extends BaseEntity {
   static get dynamicsEntity () {
     return 'defra_payments'
   }

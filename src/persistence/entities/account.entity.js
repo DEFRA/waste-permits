@@ -1,12 +1,12 @@
 'use strict'
 
 const DynamicsDalService = require('../../services/dynamicsDal.service')
-const BaseModel = require('./base.entity')
+const BaseEntity = require('./base.entity')
 const Application = require('./application.entity')
 const LoggingService = require('../../services/logging.service')
 const Utilities = require('../../utilities/utilities')
 
-class Account extends BaseModel {
+class Account extends BaseEntity {
   static get dynamicsEntity () {
     return 'accounts'
   }
