@@ -1,8 +1,8 @@
 'use strict'
 
-const BaseModel = require('./base.entity')
+const BaseEntity = require('./base.entity')
 
-class ApplicationContact extends BaseModel {
+class ApplicationContact extends BaseEntity {
   static get dynamicsEntity () {
     return 'defra_applicationcontacts'
   }

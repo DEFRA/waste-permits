@@ -1,9 +1,9 @@
 'use strict'
 
-const BaseModel = require('./base.entity')
+const BaseEntity = require('./base.entity')
 const ApplicationLine = require('./applicationLine.entity')
 
-class StandardRule extends BaseModel {
+class StandardRule extends BaseEntity {
   static get dynamicsEntity () {
     return 'defra_standardrules'
   }

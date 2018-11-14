@@ -3,6 +3,7 @@ const Address = require('../../src/persistence/entities/address.entity')
 const AddressDetail = require('../../src/persistence/entities/addressDetail.entity')
 const Application = require('../../src/persistence/entities/application.entity')
 const Annotation = require('../../src/persistence/entities/annotation.entity')
+const ApplicationData = require('../../src/persistence/entities/applicationData.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
 const Contact = require('../../src/persistence/entities/contact.entity')
 const Location = require('../../src/persistence/entities/location.entity')
@@ -10,6 +11,7 @@ const LocationDetail = require('../../src/persistence/entities/locationDetail.en
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 
 const ContactDetail = require('../../src/models/contactDetail.model')
+const DataStore = require('../../src/models/dataStore.model')
 
 const account = {
   id: 'ACCOUNT_ID',
@@ -58,6 +60,16 @@ const applicationLine = {
   applicationId: application.id
 }
 
+const data = {
+  foo: 'bar'
+}
+
+const applicationData = {
+  id: 'APPLICATION_DATA_ID',
+  applicationId: application.id,
+  data: JSON.stringify(data)
+}
+
 const contact = {
   id: 'CONTACT_ID',
   firstName: 'FIRSTNAME',
@@ -86,6 +98,12 @@ const contactDetail = {
   telephone: addressDetail.telephone,
   jobTitle: addressDetail.jobTitle,
   dateOfBirth: '2018-2-4'
+}
+
+const dataStore = {
+  id: applicationData.id,
+  applicationId: applicationData.applicationId,
+  data
 }
 
 const location = {
@@ -130,12 +148,20 @@ module.exports = class Mocks {
     return this._applicationLine || (this._applicationLine = new ApplicationLine(applicationLine))
   }
 
+  get applicationData () {
+    return this._applicationData || (this._applicationData = new ApplicationData(applicationData))
+  }
+
   get contact () {
     return this._contact || (this._contact = new Contact(contact))
   }
 
   get contactDetail () {
     return this._contactDetail || (this._contactDetail = new ContactDetail(contactDetail))
+  }
+
+  get dataStore () {
+    return this._dataStore || (this._dataStore = new DataStore(dataStore))
   }
 
   get location () {

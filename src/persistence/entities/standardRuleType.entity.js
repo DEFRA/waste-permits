@@ -1,9 +1,9 @@
 'use strict'
 
 const { OFFLINE_CATEGORIES } = require('../../constants')
-const BaseModel = require('./base.entity')
+const BaseEntity = require('./base.entity')
 
-class StandardRuleType extends BaseModel {
+class StandardRuleType extends BaseEntity {
   static get dynamicsEntity () {
     return 'defra_standardruletypes'
   }
