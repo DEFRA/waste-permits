@@ -3,7 +3,6 @@
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const Account = require('../persistence/entities/account.entity')
-const ContactDetailsTask = require('../models/taskList/contactDetails.task')
 const ContactDetail = require('../models/contactDetail.model')
 const RecoveryService = require('../services/recovery.service')
 const { PRIMARY_CONTACT_DETAILS } = require('../dynamics').AddressTypes
@@ -42,7 +41,7 @@ module.exports = class ContactDetailsController extends BaseController {
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { applicationId, applicationLineId, application } = context
+      const { applicationId, application } = context
       const {
         'first-name': firstName,
         'last-name': lastName,
@@ -70,8 +69,6 @@ module.exports = class ContactDetailsController extends BaseController {
 
       application.contactId = contactDetail.customerId
       await application.save(context)
-
-      await ContactDetailsTask.updateCompleteness(context, applicationId, applicationLineId)
 
       return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
     }

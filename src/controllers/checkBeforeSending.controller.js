@@ -14,7 +14,7 @@ const PermitHolderCheck = require('../models/checkList/permitHolder.check')
 const ConfidentialityCheck = require('../models/checkList/confidentiality.check')
 const InvoiceCheck = require('../models/checkList/invoice.check')
 const MiningWasteCheck = require('../models/checkList/miningWaste.check')
-const TaskList = require('../models/taskList/taskList')
+const RuleSet = require('../models/ruleSet.model')
 
 module.exports = class CheckBeforeSendingController extends BaseController {
   constructor (...args) {
@@ -43,7 +43,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
   async _buildSections (context) {
     const { applicationLineId } = context
-    const applicableRuleSetIds = await TaskList.getValidRuleSetIds(context, applicationLineId)
+    const applicableRuleSetIds = await RuleSet.getValidRuleSetIds(context, applicationLineId)
     const sections = await Promise.all(
       this.Checks
         // Only include those checks that are valid for this application line

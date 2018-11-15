@@ -48,13 +48,10 @@ module.exports = class DeclarationsController extends BaseController {
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { applicationId, applicationLineId, application } = context
+      const { application } = context
 
       Object.assign(application, this.getRequestData(request))
       await application.save(context)
-      if (this.updateCompleteness) {
-        await this.updateCompleteness(context, applicationId, applicationLineId)
-      }
 
       return this.redirect({ request, h, redirectPath: this.nextPath })
     }

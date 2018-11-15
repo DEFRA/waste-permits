@@ -4,20 +4,22 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const Annotation = require('../../../src/persistence/entities/annotation.entity')
 const FirePreventionPlan = require('../../../src/models/taskList/firePreventionPlan.task')
 
-const COMPLETENESS_PARAMETER = 'defra_fireplanrequired_completed'
-
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [{}])
+  sandbox.stub(Annotation, 'listByApplicationIdAndSubject').callsFake(() => [mocks.annotation])
 })
 
 lab.afterEach(() => {
@@ -26,10 +28,6 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: FirePreventionPlan Model tests:', () => {
-  lab.test(`completenessParameter is ${COMPLETENESS_PARAMETER}`, async () => {
-    Code.expect(FirePreventionPlan.completenessParameter).to.equal(COMPLETENESS_PARAMETER)
-  })
-
   lab.test(`checkComplete() method correctly returns FALSE when annotations don't exist`, async () => {
     Annotation.listByApplicationIdAndSubject = () => []
     const result = await FirePreventionPlan.checkComplete()

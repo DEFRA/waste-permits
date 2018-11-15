@@ -1,7 +1,7 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 const Utilities = require('../../utilities/utilities')
-const { PERMIT_HOLDER_DETAILS } = require('../taskList/taskList').RuleSetIds
+const { PERMIT_HOLDER_DETAILS } = require('../../tasks').tasks
 
 const {
   LIMITED_LIABILITY_PARTNERSHIP,
@@ -41,7 +41,7 @@ const blankLine = { blankLine: true }
 
 module.exports = class PermitHolderCheck extends BaseCheck {
   static get ruleSetId () {
-    return PERMIT_HOLDER_DETAILS
+    return PERMIT_HOLDER_DETAILS.ruleSetId
   }
 
   get prefix () {

@@ -8,8 +8,6 @@ const sinon = require('sinon')
 const Annotation = require('../../../src/persistence/entities/annotation.entity')
 const TechnicalQualification = require('../../../src/models/taskList/technicalQualification.task')
 
-const COMPLETENESS_PARAMETER = 'defra_techcompetenceevreq_completed'
-
 let sandbox
 
 lab.beforeEach(() => {
@@ -26,10 +24,6 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: TechnicalQualification Model tests:', () => {
-  lab.test(`completenessParameter is ${COMPLETENESS_PARAMETER}`, async () => {
-    Code.expect(TechnicalQualification.completenessParameter).to.equal(COMPLETENESS_PARAMETER)
-  })
-
   lab.test(`checkComplete() method correctly returns FALSE when annotations don't exist`, async () => {
     Annotation.listByApplicationIdAndSubject = () => []
     const result = await TechnicalQualification.checkComplete()

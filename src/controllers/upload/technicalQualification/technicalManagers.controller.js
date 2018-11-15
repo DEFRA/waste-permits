@@ -1,7 +1,6 @@
 'use strict'
 
 const UploadController = require('../base/upload.controller')
-const TechnicalQualification = require('../../../models/taskList/technicalQualification.task')
 const Constants = require('../../../constants')
 const { TECHNICAL_MANAGERS } = Constants.UploadSubject
 
@@ -14,9 +13,5 @@ module.exports = class TechnicalManagersController extends UploadController {
     return {
       fileTypesHidden: !pageContext.annotations.length
     }
-  }
-
-  async updateCompleteness (...args) {
-    await TechnicalQualification.updateCompleteness(...args)
   }
 }

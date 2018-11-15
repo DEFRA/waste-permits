@@ -1,12 +1,12 @@
 const BaseCheck = require('./base.check')
 
 const { path } = require('../../routes').CONTACT_DETAILS
-const { CONTACT_DETAILS } = require('../taskList/taskList').RuleSetIds
+const { CONTACT_DETAILS } = require('../../tasks').tasks
 const { PRIMARY_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 
 module.exports = class ContactCheck extends BaseCheck {
   static get ruleSetId () {
-    return CONTACT_DETAILS
+    return CONTACT_DETAILS.ruleSetId
   }
 
   get prefix () {

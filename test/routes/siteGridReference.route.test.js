@@ -202,20 +202,5 @@ lab.experiment('Site Grid Reference page tests:', () => {
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
     })
-
-    lab.experiment('Completeness:', () => {
-      lab.test('The completeness is recalculated when the grid reference is updated', async () => {
-        postRequest.payload['site-grid-reference'] = fakeLocationDetail.gridReference
-
-        // Empty location details response
-        LocationDetail.getByLocationId = () => {
-          return undefined
-        }
-
-        const spy = sinon.spy(SiteNameAndLocation, 'updateCompleteness')
-        await server.inject(postRequest)
-        Code.expect(spy.callCount).to.equal(1)
-      })
-    })
   })
 })

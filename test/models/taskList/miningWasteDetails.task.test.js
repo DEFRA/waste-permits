@@ -4,27 +4,22 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const Application = require('../../../src/persistence/entities/application.entity')
 const MiningWasteDetails = require('../../../src/models/taskList/miningWasteDetails.task')
 
-const COMPLETENESS_PARAMETER = 'defra_miningdatarequired_completed'
-
-let fakeApplication
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    miningWastePlan: 910400000,
-    miningWasteWeight: 'one,hundred-thousand'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(Application, 'getById').value(() => fakeApplication)
+  sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
 })
 
 lab.afterEach(() => {
@@ -33,18 +28,14 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: MiningWasteDetails Model tests:', () => {
-  lab.test(`completenessParameter is ${COMPLETENESS_PARAMETER}`, async () => {
-    Code.expect(MiningWasteDetails.completenessParameter).to.equal(COMPLETENESS_PARAMETER)
-  })
-
   lab.test('checkComplete() method correctly returns FALSE when mining waste plan is not set', async () => {
-    delete fakeApplication.miningWastePlan
+    delete mocks.application.miningWastePlan
     const result = await MiningWasteDetails.checkComplete()
     Code.expect(result).to.equal(false)
   })
 
   lab.test('checkComplete() method correctly returns FALSE when mining waste weight is not set', async () => {
-    delete fakeApplication.miningWasteWeight
+    delete mocks.application.miningWasteWeight
     const result = await MiningWasteDetails.checkComplete()
     Code.expect(result).to.equal(false)
   })

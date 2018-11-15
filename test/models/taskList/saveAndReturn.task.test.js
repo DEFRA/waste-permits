@@ -4,27 +4,24 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const Application = require('../../../src/persistence/entities/application.entity')
+const ApplicationReturn = require('../../../src/persistence/entities/applicationReturn.entity')
 const SaveAndReturn = require('../../../src/models/taskList/saveAndReturn.task')
 
-const COMPLETENESS_PARAMETER = 'defra_setupsaveandreturn_completed'
-
-let fakeApplication
-
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    saveAndReturnEmail: 'SAVE_AND_RETURN_EMAIL'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(Application, 'getById').value(() => fakeApplication)
+  sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
+  sandbox.stub(ApplicationReturn, 'getByApplicationId').callsFake(() => mocks.applicationReturn)
 })
 
 lab.afterEach(() => {
@@ -33,12 +30,8 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: SaveAndReturn Model tests:', () => {
-  lab.test(`completenessParameter is ${COMPLETENESS_PARAMETER}`, async () => {
-    Code.expect(SaveAndReturn.completenessParameter).to.equal(COMPLETENESS_PARAMETER)
-  })
-
   lab.test('checkComplete() method correctly returns FALSE when saveAndReturn is not set', async () => {
-    fakeApplication.saveAndReturnEmail = ''
+    delete mocks.applicationReturn.slug
     const result = await SaveAndReturn.checkComplete()
     Code.expect(result).to.equal(false)
   })

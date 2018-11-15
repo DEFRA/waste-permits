@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
@@ -11,51 +12,34 @@ const Address = require('../../../src/persistence/entities/address.entity')
 const ContactDetail = require('../../../src/models/contactDetail.model')
 const InvoiceAddress = require('../../../src/models/taskList/invoiceAddress.task')
 
-const COMPLETENESS_PARAMETER = 'defra_invoicingdetails_completed'
-
+let request
+let applicationId
+let applicationLineId
 let sandbox
-
-const request = { app: { data: { authToken: 'AUTH_TOKEN' } } }
-const applicationId = 'APPLICATION_ID'
-const applicationLineId = 'APPLICATION_LINE_ID'
-let fakeAddress
-let fakeContactDetail
+let mocks
 
 lab.beforeEach(() => {
-  fakeAddress = {
-    id: 'ADDRESS_ID',
-    buildingNameOrNumber: '101',
-    addressLine1: 'FIRST_ADDRESS_LINE',
-    addressLine2: undefined,
-    townOrCity: 'CITY',
-    postcode: 'AB12 1AA',
-    uprn: 'UPRN',
-    fromAddressLookup: true
-  }
+  mocks = new Mocks()
 
-  fakeContactDetail = {
-    id: 'CONTACT_DETAIL_ID',
-    addressId: 'ADDRESS_ID'
-  }
+  applicationId = mocks.application.id
+  applicationLineId = mocks.applicationLine.id
+
+  request = { app: { data: { authToken: 'AUTH_TOKEN' } } }
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(ContactDetail.prototype, 'save').value(() => fakeAddress.id)
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => fakeAddress.id)
-  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => fakeAddress.id)
-  sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine({ id: applicationLineId }))
-  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => mocks.address.id)
+  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => mocks.address.id)
+  sandbox.stub(ApplicationLine, 'getById').value(() => mocks.applicationLine)
+  sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
   sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
   sandbox.stub(Address.prototype, 'save').value(() => undefined)
-  sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
-  sandbox.stub(Address, 'getByUprn').value(() => new Address(fakeAddress))
-  sandbox.stub(Address, 'listByPostcode').value(() => [
-    new Address(fakeAddress),
-    new Address(fakeAddress),
-    new Address(fakeAddress)
-  ])
+  sandbox.stub(Address, 'getById').value(() => mocks.address)
+  sandbox.stub(Address, 'getByUprn').value(() => mocks.address)
+  sandbox.stub(Address, 'listByPostcode').value(() => [mocks.address, mocks.address, mocks.address])
 })
 
 lab.afterEach(() => {
@@ -67,13 +51,13 @@ lab.experiment('Task List: Invoice Address Model tests:', () => {
   lab.experiment('Model persistence methods:', () => {
     lab.test('getAddress() method correctly retrieves an Address', async () => {
       const address = await InvoiceAddress.getAddress(request, applicationId)
-      Code.expect(address.uprn).to.be.equal(fakeAddress.uprn)
+      Code.expect(address.uprn).to.be.equal(mocks.address.uprn)
     })
 
     lab.test('saveSelectedAddress() method correctly saves an invoice address', async () => {
       const addressDto = {
-        uprn: fakeAddress.uprn,
-        postcode: fakeAddress.postcode
+        uprn: mocks.address.uprn,
+        postcode: mocks.address.postcode
       }
       const spy = sinon.spy(ContactDetail.prototype, 'save')
       await InvoiceAddress.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
@@ -84,7 +68,7 @@ lab.experiment('Task List: Invoice Address Model tests:', () => {
     lab.test('saveManualAddress() method correctly saves an invoice address', async () => {
       Address.getByUprn = () => undefined
       const addressDto = {
-        postcode: fakeAddress.postcode
+        postcode: mocks.address.postcode
       }
       const spy = sinon.spy(ContactDetail.prototype, 'save')
       await InvoiceAddress.saveManualAddress(request, applicationId, applicationLineId, addressDto)
@@ -94,12 +78,8 @@ lab.experiment('Task List: Invoice Address Model tests:', () => {
   })
 
   lab.experiment('Completeness:', () => {
-    lab.test(`completenessParameter is ${COMPLETENESS_PARAMETER}`, async () => {
-      Code.expect(InvoiceAddress.completenessParameter).to.equal(COMPLETENESS_PARAMETER)
-    })
-
     lab.test('checkComplete() method correctly returns FALSE when the address details are not set', async () => {
-      fakeContactDetail = {}
+      delete mocks.contactDetail.addressId
       const result = await InvoiceAddress.checkComplete()
       Code.expect(result).to.equal(false)
     })

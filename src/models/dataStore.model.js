@@ -14,11 +14,13 @@ module.exports = class DataStore extends BaseModel {
     const { applicationId } = context
     const applicationData = id ? await ApplicationData.getById(context, id) : await ApplicationData.getBy(context, { applicationId })
     const data = applicationData && applicationData.data ? JSON.parse(applicationData.data) : {}
-    return new DataStore({
-      id: applicationData.id,
+    id = applicationData ? applicationData.id : id
+    const dataStore = new DataStore({
+      id,
       applicationId,
       data
     })
+    return dataStore
   }
 
   async save (context) {

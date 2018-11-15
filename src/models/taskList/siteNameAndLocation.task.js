@@ -1,7 +1,5 @@
 'use strict'
 
-const { SITE_NAME_LOCATION } = require('./taskList').CompletedParameters
-
 const BaseTask = require('./base.task')
 const Location = require('../../persistence/entities/location.entity')
 const LocationDetail = require('../../persistence/entities/locationDetail.entity')
@@ -43,7 +41,6 @@ module.exports = class SiteNameAndLocation extends BaseTask {
         location.siteName = siteName
       }
       await location.save(context)
-      await SiteNameAndLocation.updateCompleteness(context, applicationId, applicationLineId)
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
@@ -103,7 +100,6 @@ module.exports = class SiteNameAndLocation extends BaseTask {
       }
 
       await locationDetail.save(context)
-      await SiteNameAndLocation.updateCompleteness(context, applicationId, applicationLineId)
     } catch (error) {
       LoggingService.logError(error, request)
       throw error
@@ -185,8 +181,6 @@ module.exports = class SiteNameAndLocation extends BaseTask {
       locationDetail.addressId = address.id
       await locationDetail.save(context)
     }
-
-    await SiteNameAndLocation.updateCompleteness(context, applicationId, applicationLineId)
   }
 
   static async saveManualAddress (request, applicationId, applicationLineId, addressDto) {
@@ -235,12 +229,6 @@ module.exports = class SiteNameAndLocation extends BaseTask {
       locationDetail.addressId = address.id
       await locationDetail.save(context)
     }
-
-    await SiteNameAndLocation.updateCompleteness(context, applicationId, applicationLineId)
-  }
-
-  static get completenessParameter () {
-    return SITE_NAME_LOCATION
   }
 
   static async checkComplete (context, applicationId, applicationLineId) {
