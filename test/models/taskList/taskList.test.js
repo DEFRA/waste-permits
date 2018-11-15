@@ -6,6 +6,7 @@ const Code = require('code')
 const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
+const config = require('../../../src/config/config')
 const Application = require('../../../src/persistence/entities/application.entity')
 const DataStore = require('../../../src/models/dataStore.model')
 const RuleSet = require('../../../src/models/ruleSet.model')
@@ -35,6 +36,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
+  sandbox.stub(config, 'bypassCompletenessCheck').value(false)
   sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(DataStore, 'get').value(() => mocks.dataStore)
   sandbox.stub(RuleSet, 'getValidRuleSetIds').value(() => validRuleSetIds)
@@ -96,6 +98,7 @@ lab.experiment('Task List Model tests:', () => {
   })
 
   lab.test('isComplete() method correctly checks for incomplete tasks', async () => {
+    sinon.stub(BaseTask, 'isComplete').value(() => false)
     const complete = await TaskList.isComplete(context, applicationLineId, applicationLineId)
     Code.expect(complete).to.be.false()
   })
