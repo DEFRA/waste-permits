@@ -5,9 +5,10 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const GeneralTestHelper = require('./generalTestHelper.test')
-
+const AuthService = require('../../src/services/activeDirectoryAuth.service')
 const DynamicsSolution = require('../../src/persistence/entities/dynamicsSolution.entity')
-const RecoveryService = require('../../src/services/recovery.service')
+
+const DUMMY_AUTH_TOKEN = 'dummy-auth-token'
 
 let sandbox
 
@@ -36,8 +37,8 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
+  sandbox.stub(AuthService.prototype, 'getToken').value(() => DUMMY_AUTH_TOKEN)
   sandbox.stub(DynamicsSolution, 'get').value(() => dynamicsVersionInfo)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => {})
 })
 
 lab.afterEach(() => {
