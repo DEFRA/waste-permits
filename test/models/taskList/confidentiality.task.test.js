@@ -19,7 +19,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
+  sandbox.stub(Application, 'getById').callsFake(async () => mocks.application)
 })
 
 lab.afterEach(() => {
@@ -28,14 +28,14 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: Confidentiality Model tests:', () => {
-  lab.test('checkComplete() method correctly returns FALSE when confidentiality is not set', async () => {
+  lab.test('isComplete() method correctly returns FALSE when confidentiality is not set', async () => {
     delete mocks.application.confidentiality
-    const result = await Confidentiality.checkComplete()
+    const result = await Confidentiality.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
   })
 
-  lab.test('checkComplete() method correctly returns TRUE when confidentiality is set', async () => {
-    const result = await Confidentiality.checkComplete()
+  lab.test('isComplete() method correctly returns TRUE when confidentiality is set', async () => {
+    const result = await Confidentiality.isComplete(mocks.context)
     Code.expect(result).to.equal(true)
   })
 })

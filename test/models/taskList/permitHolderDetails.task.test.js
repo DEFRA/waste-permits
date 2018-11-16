@@ -6,8 +6,6 @@ const Code = require('code')
 const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
-const Application = require('../../../src/persistence/entities/application.entity')
-const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
 const Account = require('../../../src/persistence/entities/account.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
 const ContactDetail = require('../../../src/models/contactDetail.model')
@@ -16,35 +14,27 @@ const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDe
 const INDIVIDUAL = 910400000
 
 let request
-let applicationId
-let applicationLineId
-
 let sandbox
 let mocks
 
 lab.beforeEach(() => {
   mocks = new Mocks()
 
-  applicationId = 'APPLICATION_ID'
-  applicationLineId = 'APPLICATION_LINE_ID'
-
-  request = { app: { data: { authToken: 'AUTH_TOKEN' } } }
+  request = mocks.request
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(ContactDetail.prototype, 'save').value(() => mocks.address.id)
-  sandbox.stub(Application, 'getById').value(() => mocks.application)
-  sandbox.stub(ApplicationLine, 'getById').value(() => mocks.applicationLine)
-  sandbox.stub(Account, 'getById').value(() => mocks.account)
-  sandbox.stub(Account.prototype, 'save').value(() => undefined)
-  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(mocks.contactDetail))
-  sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
-  sandbox.stub(Address, 'getById').value(() => mocks.address)
-  sandbox.stub(Address, 'getByUprn').value(() => mocks.address)
+  sandbox.stub(ContactDetail.prototype, 'save').value(async () => mocks.address.id)
+  sandbox.stub(Account, 'getById').value(async () => mocks.account)
+  sandbox.stub(Account.prototype, 'save').value(async () => undefined)
+  sandbox.stub(ContactDetail, 'get').value(async () => mocks.contactDetail)
+  sandbox.stub(ContactDetail.prototype, 'save').value(async () => undefined)
+  sandbox.stub(Address, 'getById').value(async () => mocks.address)
+  sandbox.stub(Address, 'getByUprn').value(async () => mocks.address)
   sandbox.stub(Address, 'listByPostcode').value(() => [mocks.address, mocks.address, mocks.address])
-  sandbox.stub(Address.prototype, 'save').value(() => undefined)
+  sandbox.stub(Address.prototype, 'save').value(async () => undefined)
 })
 
 lab.afterEach(() => {
@@ -53,13 +43,13 @@ lab.afterEach(() => {
 })
 
 const testCompleteness = async (expectedResult) => {
-  const result = await PermitHolderDetails.checkComplete()
+  const result = await PermitHolderDetails.isComplete(mocks.context)
   Code.expect(result).to.equal(expectedResult)
 }
 
 lab.experiment('Model persistence methods:', () => {
   lab.test('getAddress() method correctly retrieves an Address', async () => {
-    const address = await PermitHolderDetails.getAddress(request, applicationId)
+    const address = await PermitHolderDetails.getAddress(request)
     Code.expect(address.uprn).to.be.equal(mocks.address.uprn)
   })
 
@@ -69,7 +59,7 @@ lab.experiment('Model persistence methods:', () => {
       postcode: mocks.address.postcode
     }
     const spy = sinon.spy(ContactDetail.prototype, 'save')
-    await PermitHolderDetails.saveSelectedAddress(request, applicationId, applicationLineId, addressDto)
+    await PermitHolderDetails.saveSelectedAddress(request, addressDto)
     Code.expect(spy.callCount).to.equal(1)
     spy.restore()
   })
@@ -80,7 +70,7 @@ lab.experiment('Model persistence methods:', () => {
       postcode: mocks.address.postcode
     }
     const spy = sinon.spy(ContactDetail.prototype, 'save')
-    await PermitHolderDetails.saveManualAddress(request, applicationId, applicationLineId, addressDto)
+    await PermitHolderDetails.saveManualAddress(request, addressDto)
     Code.expect(spy.callCount).to.equal(1)
     spy.restore()
   })

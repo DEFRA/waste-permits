@@ -1,4 +1,5 @@
 const BaseModel = require('./base.model')
+const Merge = require('deepmerge')
 const ApplicationData = require('../persistence/entities/applicationData.entity')
 
 module.exports = class DataStore extends BaseModel {
@@ -21,6 +22,13 @@ module.exports = class DataStore extends BaseModel {
       data
     })
     return dataStore
+  }
+
+  static async save (context, data) {
+    // Save the permit type in the Data store
+    const dataStore = await DataStore.get(context)
+    dataStore.data = Merge(dataStore.data, data)
+    return dataStore.save(context)
   }
 
   async save (context) {

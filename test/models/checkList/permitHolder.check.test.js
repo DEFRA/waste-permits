@@ -46,12 +46,12 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
-  sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => mocks.application)
-  sandbox.stub(BaseCheck.prototype, 'getPermitHolderType').value(() => mocks.permitHolderType)
-  sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(() => mocks.account)
-  sandbox.stub(BaseCheck.prototype, 'getCompanyRegisteredAddress').value(() => mocks.address)
-  sandbox.stub(BaseCheck.prototype, 'getMainAddress').value(() => mocks.address)
-  sandbox.stub(BaseCheck.prototype, 'listContactDetails').value(() => [mocks.contactDetail])
+  sandbox.stub(BaseCheck.prototype, 'getApplication').value(async () => mocks.application)
+  sandbox.stub(BaseCheck.prototype, 'getPermitHolderType').value(async () => mocks.permitHolderType)
+  sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(async () => mocks.account)
+  sandbox.stub(BaseCheck.prototype, 'getCompanyRegisteredAddress').value(async () => mocks.address)
+  sandbox.stub(BaseCheck.prototype, 'getMainAddress').value(async () => mocks.address)
+  sandbox.stub(BaseCheck.prototype, 'listContactDetails').value(async () => [mocks.contactDetail])
 })
 
 lab.afterEach(() => {

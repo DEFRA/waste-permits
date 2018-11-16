@@ -9,9 +9,9 @@ module.exports = class EnterEmailController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h, { application: true })
-    const { applicationId, applicationLineId, application } = context
+    const { application } = context
 
-    const isComplete = await SaveAndReturn.isComplete(context, applicationId, applicationLineId)
+    const isComplete = await SaveAndReturn.isComplete(context)
     if (isComplete) {
       return this.redirect({ request, h, redirectPath: Routes.SAVE_AND_RETURN_COMPLETE.path })
     }

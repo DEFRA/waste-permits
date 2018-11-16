@@ -24,9 +24,9 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(DataStore, 'get').value(() => mocks.dataStore)
-  sandbox.stub(DataStore.prototype, 'save').value(() => mocks.dataStore.id)
-  sandbox.stub(ApplicationLine, 'getById').value(() => mocks.applicationLine)
+  sandbox.stub(DataStore, 'get').value(async () => mocks.dataStore)
+  sandbox.stub(DataStore.prototype, 'save').value(async () => mocks.dataStore.id)
+  sandbox.stub(ApplicationLine, 'getById').value(async () => mocks.applicationLine)
 })
 
 lab.afterEach(() => {
@@ -42,7 +42,7 @@ lab.experiment('Task List: Completeness Model tests:', () => {
   })
 
   lab.test('isComplete() default method correctly returns FALSE', async () => {
-    const result = await BaseTask.isComplete()
+    const result = await BaseTask.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
   })
 })

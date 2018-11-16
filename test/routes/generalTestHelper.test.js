@@ -5,7 +5,7 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 
 const Application = require('../../src/persistence/entities/application.entity')
-const TaskList = require('../../src/models/taskList/taskList')
+const TaskList = require('../../src/models/taskList/base.taskList')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
@@ -150,6 +150,9 @@ module.exports = class GeneralTestHelper {
 
       if (!options.excludeHtmlTests) {
         lab.test(`GET ${routePath} page should have the beta banner`, async () => {
+          if (routePath === '/permit-holder/company/check-name') {
+            console.log('x')
+          }
           const res = await server.inject(getRequest)
 
           const parser = new DOMParser()

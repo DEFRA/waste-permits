@@ -5,6 +5,18 @@ const tasks = {
     id: 'baseline-report',
     ruleSetId: 'defra_baselinereportreq'
   },
+  BASIC_OPERATION_DETAILS: {
+    id: 'basic-operation-details',
+    label: 'Give basic details about the operation'
+  },
+  BATTERY_PROCESSING: {
+    id: 'battery-processing',
+    label: 'Battery processing'
+  },
+  CLINICAL_WASTE_TEMPLATE: {
+    id: 'clinical-waste-template',
+    label: 'Complete and upload the clinical waste template and supporting documents'
+  },
   CONFIRM_CONFIDENTIALLY: {
     id: 'confirm-confidentiality-needs',
     label: 'Confirm confidentiality needs',
@@ -29,6 +41,18 @@ const tasks = {
     ruleSetId: 'defra_contactdetailsrequired',
     taskListModel: 'contactDetails'
   },
+  EMISSIONS_AND_MONITORING: {
+    id: 'emissions-and-monitoring',
+    label: 'Tell us about emissions and monitoring'
+  },
+  EMISSIONS_MANAGEMENT_PLAN: {
+    id: 'emissions-management-plan',
+    label: 'Upload the emissions management plan'
+  },
+  ENVIRONMENTAL_RISK_ASSESSMENT: {
+    id: 'environmental-risk-assessment',
+    label: 'Upload the environmental risk assessment'
+  },
   FIRE_PREVENTION_PLAN: {
     id: 'upload-the-fire-prevention-plan',
     label: 'Upload the fire prevention plan',
@@ -36,6 +60,14 @@ const tasks = {
     completedLabelId: 'firepp-completed',
     ruleSetId: 'defra_fireplanrequired',
     taskListModel: 'firePreventionPlan'
+  },
+  HABITATS_ASSESSMENT: {
+    id: 'habitats-assessment',
+    label: 'Habitats assessment'
+  },
+  HAZARDOUS_WASTE_TEMPLATE: {
+    id: 'hazardous-waste-template',
+    label: 'Complete and upload the hazardous waste template and supporting documents'
   },
   INVOICING_DETAILS: {
     id: 'invoicing-details',
@@ -60,13 +92,33 @@ const tasks = {
     completedLabelId: 'management-system-completed',
     ruleSetId: 'defra_mansystemrequired'
   },
+  MANAGEMENT_SYSTEM_SUMMARY: {
+    id: 'management-system-summary',
+    label: 'Provide a management system summary'
+  },
   MINING_WASTE_MANAGEMENT_PLAN: {
     id: 'mining-waste-management-plan',
     ruleSetId: 'defra_miningwastemanplanreq'
   },
+  NEED_TO_CONSULT: {
+    id: 'need-to-consult',
+    label: 'Tell us who we need to consult'
+  },
   NHS_SCREENING: {
     id: 'nhs-screening',
     ruleSetId: 'defra_nhscreeningrequired'
+  },
+  NOISE_MANAGEMENT_PLAN: {
+    id: 'noise-management-plan',
+    label: 'Upload the noise and vibration management plan'
+  },
+  NON_TECHNICAL_SUMMARY: {
+    id: 'non-technical-summary',
+    label: 'Upload a non-technical summary'
+  },
+  ODOUR_MANAGEMENT_PLAN: {
+    id: 'odour-management-plan',
+    label: 'Upload the odour management plan'
   },
   PERMIT_HOLDER_DETAILS: {
     id: 'give-permit-holder-details',
@@ -83,6 +135,10 @@ const tasks = {
     completedLabelId: 'preapp-completed',
     ruleSetId: 'defra_preapprequired'
   },
+  RECOVERY_AND_DISPOSAL_CODES: {
+    id: 'recovery-and-disposal-codes',
+    label: 'List the recovery and disposal codes for your activities'
+  },
   SAVE_AND_RETURN_EMAIL: {
     id: 'set-up-save-and-return',
     label: 'Save your application',
@@ -91,6 +147,10 @@ const tasks = {
     ruleSetId: 'defra_setupsaveandreturnrequired',
     taskListModel: 'saveAndReturn'
   },
+  SHIP_BREAKING: {
+    id: 'ship-breaking',
+    label: 'Ship breaking'
+  },
   SHOW_COST_AND_TIME: {
     id: 'check-permit-cost-and-time',
     label: 'Check costs and processing time',
@@ -98,6 +158,10 @@ const tasks = {
     completedLabelId: 'cost-and-time-completed',
     ruleSetId: 'defra_showcostandtime',
     taskListModel: 'costTime'
+  },
+  SITE_CONDITION_REPORT: {
+    id: 'site-condition-report',
+    label: 'Upload the site condition report'
   },
   SITE_NAME_LOCATION: {
     id: 'give-site-name-and-location',
@@ -142,6 +206,10 @@ const tasks = {
     ruleSetId: 'defra_techcompetenceevreq',
     taskListModel: 'technicalQualification'
   },
+  TECHNICAL_STANDARDS: {
+    id: 'technical-standards',
+    label: 'List the technical standards you use'
+  },
   WASTE_RECOVERY_PLAN: {
     id: 'waste-recovery-plan',
     label: 'Upload the waste recovery plan',
@@ -165,7 +233,7 @@ const tasks = {
   }
 }
 
-const sections = [
+const standardRules = [
   {
     id: 'before-you-apply-section',
     label: 'Before you apply',
@@ -191,9 +259,75 @@ const sections = [
       tasks.MANAGEMENT_SYSTEM,
       tasks.FIRE_PREVENTION_PLAN,
       tasks.CONFIRM_CONFIDENTIALLY,
+      tasks.INVOICING_DETAILS
+    ]
+  },
+  {
+    id: 'send-and-pay-section',
+    label: 'Apply',
+    tasks: [
+      tasks.SUBMIT_PAY
+    ]
+  }
+]
+
+const bespoke = [
+  {
+    id: 'get-a-save-link-section',
+    label: 'Get a save link',
+    tasks: [
+      tasks.SAVE_AND_RETURN_EMAIL
+    ]
+  },
+  {
+    id: 'about-the-application-section',
+    label: 'About the application',
+    tasks: [
+      tasks.PRE_APPLICATION,
+      tasks.PERMIT_HOLDER_DETAILS,
+      tasks.CONFIRM_CONFIDENTIALLY,
       tasks.INVOICING_DETAILS,
-      // TODO: EWC: Remove once this is in bespoke
+      tasks.NEED_TO_CONSULT
+    ]
+  },
+  {
+    id: 'operations-section',
+    label: 'Operations',
+    tasks: [
+      tasks.BASIC_OPERATION_DETAILS,
+      tasks.NON_TECHNICAL_SUMMARY,
+      tasks.SITE_NAME_LOCATION,
+      tasks.SITE_CONDITION_REPORT,
+      tasks.SITE_PLAN
+    ]
+  },
+  {
+    id: 'activities-section',
+    label: 'Activities',
+    tasks: [
+      tasks.RECOVERY_AND_DISPOSAL_CODES,
       tasks.WASTE_TYPES_LIST
+    ]
+  },
+  {
+    id: 'evidence-section',
+    label: 'Evidence',
+    tasks: [
+      tasks.TECHNICAL_QUALIFICATION,
+      tasks.FIRE_PREVENTION_PLAN,
+      tasks.WASTE_RECOVERY_PLAN,
+      tasks.ENVIRONMENTAL_RISK_ASSESSMENT,
+      tasks.EMISSIONS_AND_MONITORING,
+      tasks.MANAGEMENT_SYSTEM_SUMMARY,
+      tasks.TECHNICAL_STANDARDS,
+      tasks.CLINICAL_WASTE_TEMPLATE,
+      tasks.HAZARDOUS_WASTE_TEMPLATE,
+      tasks.EMISSIONS_MANAGEMENT_PLAN,
+      tasks.NOISE_MANAGEMENT_PLAN,
+      tasks.ODOUR_MANAGEMENT_PLAN,
+      tasks.HABITATS_ASSESSMENT,
+      tasks.BATTERY_PROCESSING,
+      tasks.SHIP_BREAKING
     ]
   },
   {
@@ -210,7 +344,11 @@ module.exports = class Tasks {
     return tasks
   }
 
-  static get sections () {
-    return sections
+  static get standardRules () {
+    return standardRules
+  }
+
+  static get bespoke () {
+    return bespoke
   }
 }

@@ -1,3 +1,5 @@
+const Constants = require('../../src/constants')
+
 const Account = require('../../src/persistence/entities/account.entity')
 const Address = require('../../src/persistence/entities/address.entity')
 const AddressDetail = require('../../src/persistence/entities/addressDetail.entity')
@@ -66,7 +68,7 @@ const applicationLine = {
 }
 
 const data = {
-  foo: 'bar'
+  permitType: Constants.PermitTypes.STANDARD_RULES.id
 }
 
 const applicationData = {
@@ -147,6 +149,26 @@ const totalCostItemModel = {
 }
 
 module.exports = class Mocks {
+  get context () {
+    const application = this.application
+    const applicationLine = this.applicationLine
+    return {
+      authToken: 'AUTH_TOKEN',
+      applicationId: application.id,
+      applicationLineId: applicationLine.id,
+      application,
+      applicationLine
+    }
+  }
+
+  get request () {
+    return {
+      app: {
+        data: this.context
+      }
+    }
+  }
+
   get account () {
     return this._account || (this._account = new Account(account))
   }

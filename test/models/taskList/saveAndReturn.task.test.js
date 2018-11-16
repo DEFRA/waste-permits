@@ -20,8 +20,8 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
-  sandbox.stub(ApplicationReturn, 'getByApplicationId').callsFake(() => mocks.applicationReturn)
+  sandbox.stub(Application, 'getById').callsFake(async () => mocks.application)
+  sandbox.stub(ApplicationReturn, 'getByApplicationId').callsFake(async () => mocks.applicationReturn)
 })
 
 lab.afterEach(() => {
@@ -30,14 +30,14 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: SaveAndReturn Model tests:', () => {
-  lab.test('checkComplete() method correctly returns FALSE when saveAndReturn is not set', async () => {
+  lab.test('isComplete() method correctly returns FALSE when saveAndReturn is not set', async () => {
     delete mocks.applicationReturn.slug
-    const result = await SaveAndReturn.checkComplete()
+    const result = await SaveAndReturn.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
   })
 
-  lab.test('checkComplete() method correctly returns TRUE when saveAndReturn is set', async () => {
-    const result = await SaveAndReturn.checkComplete()
+  lab.test('isComplete() method correctly returns TRUE when saveAndReturn is set', async () => {
+    const result = await SaveAndReturn.isComplete(mocks.context)
     Code.expect(result).to.equal(true)
   })
 })

@@ -22,7 +22,7 @@ lab.beforeEach(() => {
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
-  sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => mocks.application)
+  sandbox.stub(BaseCheck.prototype, 'getApplication').value(async () => mocks.application)
 })
 
 lab.afterEach(() => {

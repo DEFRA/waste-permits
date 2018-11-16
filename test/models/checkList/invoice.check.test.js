@@ -23,8 +23,8 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
-  sandbox.stub(BaseCheck.prototype, 'getBillingInvoicingDetails').value(() => mocks.contactDetails)
-  sandbox.stub(BaseCheck.prototype, 'getInvoiceAddress').value(() => mocks.address)
+  sandbox.stub(BaseCheck.prototype, 'getBillingInvoicingDetails').value(async () => mocks.contactDetails)
+  sandbox.stub(BaseCheck.prototype, 'getInvoiceAddress').value(async () => mocks.address)
 })
 
 lab.afterEach(() => {

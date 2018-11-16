@@ -7,7 +7,6 @@ const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
-const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
 const Location = require('../../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../../src/persistence/entities/locationDetail.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
@@ -15,31 +14,25 @@ const SiteNameAndLocation = require('../../../src/models/taskList/siteNameAndLoc
 
 let sandbox
 let request
-let applicationId
-let applicationLineId
 let mocks
 
 lab.beforeEach(() => {
   mocks = new Mocks()
 
-  applicationId = 'APPLICATION_ID'
-  applicationLineId = 'APPLICATION_LINE_ID'
-
-  request = { app: { data: { authToken: 'AUTH_TOKEN' } } }
+  request = mocks.request
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => mocks.address.id)
+  sandbox.stub(DynamicsDalService.prototype, 'create').value(async () => mocks.address.id)
   sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
-  sandbox.stub(ApplicationLine, 'getById').value(() => mocks.applicationLine)
-  sandbox.stub(Location, 'getByApplicationId').value(() => mocks.location)
-  sandbox.stub(Location.prototype, 'save').value(() => undefined)
-  sandbox.stub(LocationDetail, 'getByLocationId').value(() => mocks.locationDetail)
-  sandbox.stub(LocationDetail.prototype, 'save').value(() => undefined)
-  sandbox.stub(Address, 'getById').value(() => mocks.address)
-  sandbox.stub(Address, 'getByUprn').value(() => mocks.address)
+  sandbox.stub(Location, 'getByApplicationId').value(async () => mocks.location)
+  sandbox.stub(Location.prototype, 'save').value(async () => undefined)
+  sandbox.stub(LocationDetail, 'getByLocationId').value(async () => mocks.locationDetail)
+  sandbox.stub(LocationDetail.prototype, 'save').value(async () => undefined)
+  sandbox.stub(Address, 'getById').value(async () => mocks.address)
+  sandbox.stub(Address, 'getByUprn').value(async () => mocks.address)
 })
 
 lab.afterEach(() => {
@@ -51,7 +44,7 @@ const testCompleteness = async (obj, expectedResult) => {
   mocks.location.siteName = obj.siteName
   mocks.locationDetail.gridReference = obj.gridReference
   mocks.address.postcode = obj.postcode
-  const result = await SiteNameAndLocation.checkComplete()
+  const result = await SiteNameAndLocation.isComplete(mocks.context)
   Code.expect(result).to.equal(expectedResult)
 }
 
@@ -61,12 +54,12 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
       return undefined
     }
 
-    const result = await SiteNameAndLocation.getSiteName(request, applicationId, applicationLineId)
+    const result = await SiteNameAndLocation.getSiteName(request)
     Code.expect(result).to.be.equal(undefined)
   })
 
   lab.test('getSiteName() method correctly retrieves a site name when there is a saved Location', async () => {
-    const result = await SiteNameAndLocation.getSiteName(request, applicationId, applicationLineId)
+    const result = await SiteNameAndLocation.getSiteName(request)
     Code.expect(result).to.be.equal(mocks.location.siteName)
   })
 
@@ -97,12 +90,12 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
 
   lab.test('saveGridReference() method correctly saves a grid reference', async () => {
     const spy = sinon.spy(LocationDetail.prototype, 'save')
-    await SiteNameAndLocation.saveGridReference(request, mocks.locationDetail.gridReference, applicationId, applicationLineId)
+    await SiteNameAndLocation.saveGridReference(request, mocks.locationDetail.gridReference)
     Code.expect(spy.callCount).to.equal(1)
   })
   lab.experiment('Model persistence methods:', () => {
     lab.test('getAddress() method correctly retrieves an Address', async () => {
-      const address = await SiteNameAndLocation.getAddress(request, applicationId)
+      const address = await SiteNameAndLocation.getAddress(request)
       Code.expect(address.uprn).to.be.equal(mocks.address.uprn)
     })
 
@@ -112,7 +105,7 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
         postcode: mocks.address.postcode
       }
       const spy = sinon.spy(LocationDetail.prototype, 'save')
-      await SiteNameAndLocation.saveManualAddress(request, applicationId, applicationLineId, addressDto)
+      await SiteNameAndLocation.saveManualAddress(request, addressDto)
       Code.expect(spy.callCount).to.equal(1)
     })
 
@@ -122,13 +115,13 @@ lab.experiment('Task List: Site Name and Location Model tests:', () => {
         postcode: mocks.address.postcode
       }
       const spy = sinon.spy(LocationDetail.prototype, 'save')
-      await SiteNameAndLocation.saveManualAddress(request, applicationId, applicationLineId, addressDto)
+      await SiteNameAndLocation.saveManualAddress(request, addressDto)
       Code.expect(spy.callCount).to.equal(1)
     })
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete', async () => {
-    const result = await SiteNameAndLocation.checkComplete(request.data, applicationId, applicationLineId)
+    const result = await SiteNameAndLocation.isComplete(mocks.context)
     Code.expect(result).to.be.true()
   })
 

@@ -8,10 +8,11 @@ const LoggingService = require('../../services/logging.service')
 const Utilities = require('../../utilities/utilities')
 
 module.exports = class SiteNameAndLocation extends BaseTask {
-  static async getSiteName (request, applicationId, applicationLineId) {
+  static async getSiteName (request) {
     let siteName
     try {
       const context = request.app.data
+      const { applicationId, applicationLineId } = context
       // Get the Location for this application (if we have one)
       const location = await Location.getByApplicationId(context, applicationId, applicationLineId)
       if (location) {
@@ -24,9 +25,11 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     return siteName
   }
 
-  static async saveSiteName (request, siteName, applicationId, applicationLineId) {
+  static async saveSiteName (request, siteName) {
     try {
       const context = request.app.data
+      const { applicationId, applicationLineId } = context
+
       // Get the Location for this application
       let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
       if (!location) {
@@ -47,10 +50,12 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     }
   }
 
-  static async getGridReference (request, applicationId, applicationLineId) {
+  static async getGridReference (request) {
     let gridReference
     try {
       const context = request.app.data
+      const { applicationId, applicationLineId } = context
+
       // Get the Location for this application
       let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
 
@@ -68,11 +73,13 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     return gridReference
   }
 
-  static async saveGridReference (request, gridReference, applicationId, applicationLineId) {
+  static async saveGridReference (request, gridReference) {
     // Strip out whitespace from the grid reference, convert to upper case and save it
     gridReference = Utilities.stripWhitespace(gridReference).toUpperCase()
     try {
       const context = request.app.data
+      const { applicationId, applicationLineId } = context
+
       // Get the Location for this application
       let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
       if (!location) {
@@ -106,10 +113,11 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     }
   }
 
-  static async getAddress (request, applicationId, applicationLineId) {
+  static async getAddress (request) {
     let address
     try {
       const context = request.app.data
+      const { applicationId, applicationLineId } = context
       // Get the Location for this application
       let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
 
@@ -129,8 +137,10 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     return address
   }
 
-  static async saveSelectedAddress (request, applicationId, applicationLineId, addressDto) {
+  static async saveSelectedAddress (request, addressDto) {
     const context = request.app.data
+    const { applicationId, applicationLineId } = context
+
     if (!addressDto.uprn) {
       const errorMessage = `Unable to save site address as it does not have a UPRN`
       LoggingService.logError(errorMessage, request)
@@ -183,8 +193,10 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     }
   }
 
-  static async saveManualAddress (request, applicationId, applicationLineId, addressDto) {
+  static async saveManualAddress (request, addressDto) {
     const context = request.app.data
+    const { applicationId, applicationLineId } = context
+
     if (addressDto.postcode) {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
@@ -231,9 +243,9 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     }
   }
 
-  static async checkComplete (context, applicationId, applicationLineId) {
+  static async checkComplete (context) {
     // Get the Location for this application
-    const location = await Location.getByApplicationId(context, applicationId, applicationLineId)
+    const location = await Location.getByApplicationId(context)
 
     // Get the LocationDetail
     let locationDetail

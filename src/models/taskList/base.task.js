@@ -28,14 +28,14 @@ module.exports = class BaseTask {
     await this._updateCompleteness(...args, undefined)
   }
 
-  // Override this inorder to provide a unique check of completeness for each task
+  // Override this in sub classes to provide a unique check of completeness for each task
 
   static async checkComplete (context) {
     const { data } = await DataStore.get(context)
     return Boolean(data.completeness && data.completeness[this.name])
   }
 
-  static async isComplete (context, applicationId, applicationLineId) {
-    return Boolean(this.checkComplete && await this.checkComplete(context, applicationId, applicationLineId))
+  static async isComplete (context) {
+    return this.checkComplete(context)
   }
 }

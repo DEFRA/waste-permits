@@ -11,7 +11,7 @@ module.exports = class EmailSentController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h, { application: true, applicationReturn: true })
-    const { applicationId, applicationLineId, application, applicationReturn } = context
+    const { application, applicationReturn } = context
 
     if (request.payload) {
       // If we have Save and Return email in the payload then display them in the form
@@ -21,7 +21,7 @@ module.exports = class EmailSentController extends BaseController {
         'save-and-return-email': application.saveAndReturnEmail
       }
     }
-    pageContext.isComplete = await SaveAndReturn.isComplete(context, applicationId, applicationLineId)
+    pageContext.isComplete = await SaveAndReturn.isComplete(context)
     if (pageContext.isComplete) {
       pageContext.gotEmail = true
     }

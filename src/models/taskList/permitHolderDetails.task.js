@@ -6,7 +6,6 @@ const BaseTask = require('./base.task')
 const LoggingService = require('../../services/logging.service')
 const ContactDetail = require('../contactDetail.model')
 const Account = require('../../persistence/entities/account.entity')
-const Application = require('../../persistence/entities/application.entity')
 const Address = require('../../persistence/entities/address.entity')
 const { INDIVIDUAL_PERMIT_HOLDER } = require('../../dynamics').AddressTypes
 const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
@@ -32,8 +31,10 @@ module.exports = class PermitHolderDetails extends BaseTask {
     return address
   }
 
-  static async saveSelectedAddress (request, applicationId, applicationLineId, addressDto) {
+  static async saveSelectedAddress (request, addressDto) {
     const context = request.app.data
+    const { applicationId } = context
+
     if (!addressDto.uprn) {
       const errorMessage = `Unable to save individual permit holder address as it does not have a UPRN`
       LoggingService.logError(errorMessage, request)
@@ -64,8 +65,10 @@ module.exports = class PermitHolderDetails extends BaseTask {
     }
   }
 
-  static async saveManualAddress (request, applicationId, applicationLineId, addressDto) {
+  static async saveManualAddress (request, addressDto) {
     const context = request.app.data
+    const { applicationId } = context
+
     if (addressDto.postcode) {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }
@@ -91,8 +94,9 @@ module.exports = class PermitHolderDetails extends BaseTask {
     }
   }
 
-  static async checkComplete (context, applicationId) {
-    const { isIndividual, isPartnership, isPublicBody, permitHolderOrganisationId } = await Application.getById(context, applicationId)
+  static async checkComplete (context) {
+    const { application } = context
+    const { isIndividual, isPartnership, isPublicBody, permitHolderOrganisationId } = application
 
     if (isIndividual) {
       // Get the Contact for this application
