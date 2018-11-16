@@ -4,16 +4,17 @@ const moment = require('moment')
 const config = require('../config/config')
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
-const RecoveryService = require('../services/recovery.service')
+const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
+const authService = new ActiveDirectoryAuthService()
 
 const DynamicsSolution = require('../persistence/entities/dynamicsSolution.entity')
 
 module.exports = class VersionController extends BaseController {
   async doGet (request, h) {
-    const recoveredApplication = await RecoveryService.createApplicationContext(h, { application: true, applicationReturn: true })
+    const entityContext = { authToken: await authService.getToken() }
     const pageContext = this.createPageContext(request)
 
-    pageContext.dynamicsSolution = await DynamicsSolution.get(recoveredApplication)
+    pageContext.dynamicsSolution = await DynamicsSolution.get(entityContext)
 
     pageContext.applicationVersion = Constants.getVersion()
     pageContext.githubRef = config.gitSha
