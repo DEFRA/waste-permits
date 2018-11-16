@@ -16,10 +16,9 @@ module.exports = class TriageController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
 
-    const entityContext = {}
-    entityContext.authToken = await authService.getToken()
+    const entityContext = { authToken: await authService.getToken() }
 
-    pageContext.triageData = await TriageController.initialiseDataFromParams(entityContext, request.params)
+    const triageData = pageContext.triageData = await TriageController.initialiseDataFromParams(entityContext, request.params)
     const paths = TriageController.generatePathsFromData(pageContext.triageData)
 
     if (request.path !== paths.currentStepPath) {
@@ -27,15 +26,16 @@ module.exports = class TriageController extends BaseController {
     }
 
     pageContext.previousStepPath = paths.previousStepPath
+    pageContext.previousPreviousStepPath = paths.previousPreviousStepPath
 
-    if (!pageContext.triageData.canApplyOnline) {
+    if (!triageData.canApplyOnline) {
       return this.showViewFromRoute({ viewPropertyName: 'applyOfflineView', request, h, pageContext })
     }
 
     // Deal with the query string
-    if (!pageContext.triageData.selectedPermitTypes) {
+    if (!triageData.selectedPermitTypes) {
       if (request.query && request.query['permit-type']) {
-        pageContext.triageData.availablePermitTypes.setSelectedByIds([request.query['permit-type']])
+        triageData.availablePermitTypes.setSelectedByIds([request.query['permit-type']])
       }
     }
 
@@ -57,19 +57,18 @@ module.exports = class TriageController extends BaseController {
           if (data.selectedActivities) {
             if (data.selectedOptionalAssessments) {
               // POSTing confirmation - any POST to here constitutes confirmation
-              // Save the application
-              const applicationId = request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
-              const application = await Application.getApplicationForId(entityContext, applicationId)
-              application.setPermitHolderType(data.selectedPermitHolderTypes.items[0])
-              application.setActivities(data.selectedActivities.items)
-              application.setAssessments(data.selectedOptionalAssessments.items)
-              await application.save(entityContext)
-              data.confirmed = true
+              await TriageController.saveApplication(request, entityContext, data)
+              return this.redirect({ request, h, redirectPath: Routes.CONFIRM_COST.path })
             } else {
               // POSTing optional assessments
               const requestedOptionalAssessments = request.payload['assessment'] ? request.payload['assessment'].split(',') : []
               data.selectedOptionalAssessments = data.availableOptionalAssessments.getListFilteredByIds(requestedOptionalAssessments)
-              data.canApplyOnline = data.selectedOptionalAssessments.canApplyOnline
+              data.canApplyOnline = requestedOptionalAssessments.length === 0 || data.selectedOptionalAssessments.canApplyOnline
+              if (data.canApplyOnline) {
+                // SAVE and DONE
+                await TriageController.saveApplication(request, entityContext, data)
+                return this.redirect({ request, h, redirectPath: Routes.CONFIRM_COST.path })
+              }
             }
           } else {
             // POSTing activities
@@ -82,7 +81,10 @@ module.exports = class TriageController extends BaseController {
                 // Check to see if there are any optional additional assessments that we want to ask for, otherwise we skip that step
                 const optionalAssessmentList = await data.selectedActivities.getOptionalAssessmentList()
                 if (optionalAssessmentList.items.length === 0) {
-                  data.selectedOptionalAssessments = { ids: [] }
+                  data.selectedOptionalAssessments = optionalAssessmentList
+                  // SAVE and DONE
+                  await TriageController.saveApplication(request, entityContext, data)
+                  return this.redirect({ request, h, redirectPath: Routes.CONFIRM_COST.path })
                 }
               }
             }
@@ -124,6 +126,15 @@ module.exports = class TriageController extends BaseController {
     const paths = TriageController.generatePathsFromData(data)
 
     return this.redirect({ request, h, redirectPath: paths.currentStepPath })
+  }
+
+  static async saveApplication (request, entityContext, triageData) {
+    const applicationId = request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
+    const application = await Application.getApplicationForId(entityContext, applicationId)
+    application.setPermitHolderType(triageData.selectedPermitHolderTypes.items[0])
+    application.setActivities(triageData.selectedActivities.items)
+    application.setAssessments(triageData.selectedOptionalAssessments.items)
+    await application.save(entityContext)
   }
 
   static async initialiseDataFromParams (entityContext, params) {
@@ -207,16 +218,8 @@ module.exports = class TriageController extends BaseController {
         // We have to have chosen valid entries from the list of available assessments
         if (chosenOptionalAssessmentList.items.length === assessmentParam.length) {
           data.selectedOptionalAssessments = chosenOptionalAssessmentList
-          data.canApplyOnline = chosenOptionalAssessmentList.canApplyOnline
+          data.canApplyOnline = chosenOptionalAssessmentList.items.length === 0 || chosenOptionalAssessmentList.canApplyOnline
         }
-      }
-    }
-
-    // If we've managed to select valid optional assessments then check for confirmation
-    if (data.selectedOptionalAssessments && data.canApplyOnline) {
-      const confirmedParam = decodeParamValue(params.confirmed)
-      if (confirmedParam && confirmedParam.length === 1 && confirmedParam[0] === 'confirmed') {
-        data.confirmed = true
       }
     }
 
@@ -263,25 +266,15 @@ module.exports = class TriageController extends BaseController {
       pathItems.push(encodeParamValue(data.selectedOptionalAssessments.ids))
     }
 
-    if (data.confirmed) {
-      pathItems.push('confirmed')
-    }
-
     const pathPrefix = Routes.TRIAGE_PERMIT_TYPE.path
-    if (pathItems.length === 0) {
-      return {
-        currentStepPath: pathPrefix
-      }
-    } else if (pathItems.length === 1) {
-      return {
-        currentStepPath: `${pathPrefix}/${pathItems[0]}`,
-        previousStepPath: pathPrefix
-      }
-    } else {
-      return {
-        currentStepPath: `${pathPrefix}/${pathItems.join('/')}`,
-        previousStepPath: `${pathPrefix}/${pathItems.slice(0, -1).join('/')}`
-      }
+    const currentStepPath = pathItems.join('/')
+    const paths = pathItems.map((item, index, array) => array.slice(0, index).join('/'))
+    paths.push(currentStepPath)
+    const fullPaths = paths.map((item) => item === '' ? pathPrefix : `${pathPrefix}/${item}`).reverse()
+    return {
+      currentStepPath: fullPaths[0],
+      previousStepPath: fullPaths[1],
+      previousPreviousStepPath: fullPaths[2]
     }
   }
 }

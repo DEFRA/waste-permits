@@ -17,9 +17,12 @@
           <p>{{this.text}}</p>
           {{/each}}
 
-          <p>
-            Saved!
-          </p>
+          <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+            {{> common/csrfToken token=DefraCsrfToken}}
+
+            {{> common/submitButton text="Confirm" }}
+          </form>
+
         </div>
     </div>
 </main>

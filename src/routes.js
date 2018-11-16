@@ -57,7 +57,7 @@ const Routes = {
     controller: 'triage/triage',
     validator: 'triage/activity',
     types: 'GET, POST',
-    cookieValidationRequired: false,
+    cookieValidationRequired: true,
     applicationRequired: false
   },
   TRIAGE_ASSESSMENT: {
@@ -65,43 +65,32 @@ const Routes = {
     params: ['permitType', 'permitHolderType', 'facilityType', 'activity'],
     view: 'triage/assessment',
     applyOfflineView: 'triage/applyOffline',
+    triageCompleteView: 'triage/complete',
     pageHeading: 'What plans do we need to assess?',
     controller: 'triage/triage',
     types: 'GET, POST',
-    cookieValidationRequired: false,
-    applicationRequired: false
-  },
-  TRIAGE_CONFIRM: {
-    path: '/select',
-    params: ['permitType', 'permitHolderType', 'facilityType', 'activity', 'assessment'],
-    view: 'triage/confirm',
-    applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'Apply for a bespoke permit',
-    controller: 'triage/triage',
-    types: 'GET',
-    cookieValidationRequired: false,
-    applicationRequired: false
-  },
-  TRIAGE_CONFIRM_SAVE: {
-    path: '/select',
-    params: ['permitType', 'permitHolderType', 'facilityType', 'activity', 'assessment'],
-    view: 'triage/confirm',
-    applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'Apply for a bespoke permit',
-    controller: 'triage/triage',
-    types: 'POST',
     cookieValidationRequired: true,
-    applicationRequired: true
+    applicationRequired: false
   },
-  TRIAGE_BESPOKE_END_TRIAGE: {
+  TRIAGE_COMPLETE: {
     path: '/select',
-    params: ['permitType', 'permitHolderType', 'facilityType', 'activity', 'assessment', 'confirmed'],
-    view: 'triage/bespokeEndTriage',
+    params: ['permitType', 'permitHolderType', 'facilityType', 'activity', 'assessment'],
+    view: 'triage/complete',
     applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'Apply for a bespoke permit',
+    pageHeading: 'Confirm activities and assessments',
     controller: 'triage/triage',
-    types: 'GET',
-    cookieValidationRequired: false,
+    types: 'GET,POST',
+    cookieValidationRequired: true,
+    applicationRequired: false
+  },
+  CONFIRM_COST: {
+    path: '/selected/confirm',
+    view: 'triage/confirmCost',
+    pageHeading: 'Confirm activities and assessments',
+    controller: 'triage/confirmCost',
+    nextRoute: 'BESPOKE_APPLY_OFFLINE', // TODO: Change to task list when the task list can handle bespoke, i.e. nextRoute: 'TASK_LIST'
+    types: 'GET,POST',
+    cookieValidationRequired: true,
     applicationRequired: false
   },
 

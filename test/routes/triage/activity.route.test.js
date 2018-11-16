@@ -9,13 +9,17 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const AuthService = require('../../../src/services/activeDirectoryAuth.service')
 const DUMMY_AUTH_TOKEN = 'dummy-auth-token'
+const CookieService = require('../../../src/services/cookie.service')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 const ActivityList = require('../../../src/models/triage/activityList.model')
 const AssessmentList = require('../../../src/models/triage/assessmentList.model')
+const Application = require('../../../src/models/triage/application.model')
 
 const BESPOKE = [{ id: 'bespoke', canApplyOnline: true }]
 const LTD_CO = [{ id: 'limited-company', canApplyOnline: true }]
 const WASTE = [{ id: 'waste', canApplyOnline: true }]
+
 const FAKE_ACTIVITY_ID = 'fake-activity'
 const FAKE_ACTIVITY_ID2 = `${FAKE_ACTIVITY_ID}-2`
 const FAKE_ACTIVITY = { id: FAKE_ACTIVITY_ID, text: 'Fake activity text', activityCode: '1.fake.code', canApplyOnline: true }
@@ -24,7 +28,7 @@ const FAKE_ACTIVITY2 = { id: FAKE_ACTIVITY_ID2, text: 'Fake activity 2 text', ca
 const routePath = '/select/bespoke/limited-company/waste'
 const badPath = `${routePath}/invalid`
 const nextRoutePath = `${routePath}/${FAKE_ACTIVITY_ID}`
-const endRoutePath = `${nextRoutePath}/--`
+const endRoutePath = `/selected/confirm`
 
 let getRequest
 let postRequest
@@ -51,6 +55,7 @@ lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
   sandbox.stub(AuthService.prototype, 'getToken').value(() => DUMMY_AUTH_TOKEN)
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
 
 lab.afterEach(() => {
@@ -98,7 +103,7 @@ lab.experiment('Triage activity page tests:', () => {
       Code.expect(doc.getElementById('bespoke-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/waste-environmental-permits#how-to-apply-for-a-bespoke-permit')
     })
 
-    lab.test('GET for for multiple activities where some cannot be applied for online shows apply offline page', async () => {
+    lab.test('GET for multiple activities where some cannot be applied for online shows apply offline page', async () => {
       fakeActivityList = new ActivityList({}, BESPOKE, LTD_CO, WASTE, [fakeActivity, Object.assign({}, FAKE_ACTIVITY2)])
       sandbox.stub(ActivityList, 'createList').value(() => fakeActivityList)
       getRequest.url = `${nextRoutePath}+${FAKE_ACTIVITY_ID2}`
@@ -129,6 +134,9 @@ lab.experiment('Triage activity page tests:', () => {
   })
 
   lab.experiment('POST:', () => {
+    let applicationGetStub
+    let applicationSaveStub
+
     lab.beforeEach(() => {
       fakeActivity = Object.assign({}, FAKE_ACTIVITY)
       fakeActivityList = new ActivityList({}, BESPOKE, LTD_CO, WASTE, [fakeActivity])
@@ -140,6 +148,10 @@ lab.experiment('Triage activity page tests:', () => {
       }
       sandbox.stub(ActivityList, 'createList').value(() => fakeActivityList)
       sandbox.stub(AssessmentList, 'createList').value(() => new AssessmentList({}, BESPOKE, LTD_CO, WASTE, [fakeActivity], []))
+      applicationGetStub = sandbox.stub(Application, 'getApplicationForId')
+      applicationGetStub.callsFake(async () => new Application({}))
+      applicationSaveStub = sandbox.stub(Application.prototype, 'save')
+      applicationSaveStub.callsFake(async () => null)
     })
 
     lab.test('POST activity redirects to next route', async () => {
@@ -153,6 +165,12 @@ lab.experiment('Triage activity page tests:', () => {
       const doc = await GeneralTestHelper.getDoc(postRequest)
       await checkCommonElements(doc)
       await GeneralTestHelper.checkValidationMessage(doc, 'activity', 'Select the activities you want')
+    })
+
+    lab.test('POST activity with no optional assessments saves the application', async () => {
+      await server.inject(postRequest)
+      Code.expect(applicationGetStub.calledOnce).to.be.true()
+      Code.expect(applicationSaveStub.calledOnce).to.be.true()
     })
   })
 })

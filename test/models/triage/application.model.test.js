@@ -8,7 +8,6 @@ const sinon = require('sinon')
 const ApplicationModel = require('../../../src/models/triage/application.model')
 const Activity = require('../../../src/models/triage/activity.model')
 const Assessment = require('../../../src/models/triage/assessment.model')
-const ItemTypeEntity = require('../../../src/persistence/entities/itemType.entity')
 const ItemEntity = require('../../../src/persistence/entities/item.entity')
 const ApplicationEntity = require('../../../src/persistence/entities/application.entity')
 const ApplicationLineEntity = require('../../../src/persistence/entities/applicationLine.entity')
@@ -16,46 +15,41 @@ const ApplicationLineEntity = require('../../../src/persistence/entities/applica
 const context = { authToken: 'AUTH_TOKEN' }
 const ACTIVITY_ITEM_TYPE_ID = 'ACTIVITY_ITEM_TYPE_ID'
 const ASSESSMENT_ITEM_TYPE_ID = 'ASSESSMENT_ITEM_TYPE_ID'
-const ITEM_TYPES = {
-  activity: {
-    id: ACTIVITY_ITEM_TYPE_ID
-  },
-  assessment: {
-    id: ASSESSMENT_ITEM_TYPE_ID
-  }
-}
 
-const ITEMS = [{
-  id: 'ACTIVITY_ITEM_ID_1',
-  shortName: 'activity-1',
-  canApplyOnline: true,
-  itemTypeId: ACTIVITY_ITEM_TYPE_ID
-}, {
-  id: 'ACTIVITY_ITEM_ID_2',
-  shortName: 'activity-2',
-  canApplyOnline: true,
-  itemTypeId: ACTIVITY_ITEM_TYPE_ID
-}, {
-  id: 'ACTIVITY_ITEM_ID_3',
-  shortName: 'activity-3',
-  canApplyOnline: true,
-  itemTypeId: ACTIVITY_ITEM_TYPE_ID
-}, {
-  id: 'ASSESSMENT_ITEM_ID_1',
-  shortName: 'assessment-1',
-  canApplyOnline: true,
-  itemTypeId: ASSESSMENT_ITEM_TYPE_ID
-}, {
-  id: 'ASSESSMENT_ITEM_ID_2',
-  shortName: 'assessment-2',
-  canApplyOnline: true,
-  itemTypeId: ASSESSMENT_ITEM_TYPE_ID
-}, {
-  id: 'ASSESSMENT_ITEM_ID_3',
-  shortName: 'assessment-3',
-  canApplyOnline: true,
-  itemTypeId: ASSESSMENT_ITEM_TYPE_ID
-}]
+const ITEMS = {
+  activities: [{
+    id: 'ACTIVITY_ITEM_ID_1',
+    shortName: 'activity-1',
+    canApplyOnline: true,
+    itemTypeId: ACTIVITY_ITEM_TYPE_ID
+  }, {
+    id: 'ACTIVITY_ITEM_ID_2',
+    shortName: 'activity-2',
+    canApplyOnline: true,
+    itemTypeId: ACTIVITY_ITEM_TYPE_ID
+  }, {
+    id: 'ACTIVITY_ITEM_ID_3',
+    shortName: 'activity-3',
+    canApplyOnline: true,
+    itemTypeId: ACTIVITY_ITEM_TYPE_ID
+  }],
+  assessments: [{
+    id: 'ASSESSMENT_ITEM_ID_1',
+    shortName: 'assessment-1',
+    canApplyOnline: true,
+    itemTypeId: ASSESSMENT_ITEM_TYPE_ID
+  }, {
+    id: 'ASSESSMENT_ITEM_ID_2',
+    shortName: 'assessment-2',
+    canApplyOnline: true,
+    itemTypeId: ASSESSMENT_ITEM_TYPE_ID
+  }, {
+    id: 'ASSESSMENT_ITEM_ID_3',
+    shortName: 'assessment-3',
+    canApplyOnline: true,
+    itemTypeId: ASSESSMENT_ITEM_TYPE_ID
+  }]
+}
 
 const FAKE_APPLICATION_ID = 'FAKE_APPLICATION_ID'
 
@@ -92,16 +86,8 @@ lab.experiment('Application Model test:', () => {
   let sandbox
 
   lab.beforeEach(() => {
-    fakeActivities = [
-      Activity.createFromItemEntity(ITEMS[0]),
-      Activity.createFromItemEntity(ITEMS[1]),
-      Activity.createFromItemEntity(ITEMS[2])
-    ]
-    fakeAssessments = [
-      Assessment.createFromItemEntity(ITEMS[3]),
-      Assessment.createFromItemEntity(ITEMS[4]),
-      Assessment.createFromItemEntity(ITEMS[5])
-    ]
+    fakeActivities = ITEMS.activities.map((item) => Activity.createFromItemEntity(item))
+    fakeAssessments = ITEMS.assessments.map((item) => Assessment.createFromItemEntity(item))
     fakeApplicationEntity = new ApplicationEntity({
       id: FAKE_APPLICATION_ID,
       applicantType: DYNAMICS_PERMIT_HOLDER_TYPES.PARTNERSHIP.dynamicsApplicantTypeId,
@@ -113,10 +99,9 @@ lab.experiment('Application Model test:', () => {
     sandbox = sinon.createSandbox()
 
     // Stub methods
-    sandbox.stub(ItemTypeEntity, 'getActivityAndAssessmentItemTypes').callsFake(async () => ITEM_TYPES)
-    sandbox.stub(ItemEntity, 'listActivitiesAndAssessments').callsFake(async () => ITEMS)
-    sandbox.stub(ItemEntity, 'getActivity').callsFake(async (entityContext, activityId) => ITEMS.find(item => item.shortName === activityId))
-    sandbox.stub(ItemEntity, 'getAssessment').callsFake(async (entityContext, activityId) => ITEMS.find(item => item.shortName === activityId))
+    sandbox.stub(ItemEntity, 'getAllActivitiesAndAssessments').callsFake(async () => ITEMS)
+    sandbox.stub(ItemEntity, 'getActivity').callsFake(async (entityContext, activityId) => ITEMS.activities.find(item => item.shortName === activityId))
+    sandbox.stub(ItemEntity, 'getAssessment').callsFake(async (entityContext, activityId) => ITEMS.assessments.find(item => item.shortName === activityId))
     sandbox.stub(ApplicationEntity, 'getById').callsFake(async () => fakeApplicationEntity)
     sandbox.stub(ApplicationLineEntity, 'listBy').callsFake(async () => fakeApplicationLineEntities)
     sandbox.stub(ApplicationLineEntity, 'getById').callsFake(async () => fakeApplicationLineEntities[0])

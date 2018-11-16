@@ -1,0 +1,55 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <dl class="govuk-check-your-answers cya-questions-short">
+
+        {{#each calculatedCosts.items}}
+          <div>
+            <dt id="cost-item-{{@index}}-desc" class="cya-answer">
+              {{this.description}}
+            </dt>
+            <dd id="cost-item-{{@index}}-cost" class="cya-change">
+              {{this.costText}}
+            </dd>
+          </div>
+        {{/each}}
+
+        <div>
+          <dt id="total-desc" class="cya-answer total">
+            {{calculatedCosts.total.description}}
+          </dt>
+          <dt id="total-cost" class="cya-change total">
+            {{calculatedCosts.total.costText}}
+          </dt>
+        </div>
+
+      </dl>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        {{> common/submitButton text="Start application" }}
+      </form>
+
+      <p>
+        You must pay these charges before we will start assessing your application.
+        You do not pay VAT on these costs.
+      </p>
+
+      <p>
+        <a id="change-activities" href="{{activitiesLink}}">Change activities or assessments</a>.
+      </p>
+
+    </div>
+  </div>
+</main>
