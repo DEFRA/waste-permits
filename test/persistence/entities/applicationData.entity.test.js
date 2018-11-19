@@ -31,7 +31,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(DynamicsDalService.prototype, 'create').value(() => applicationDataId)
   sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {
-    // Dynamics ApplicationContact objects
+    // Dynamics ApplicationData objects
     return {
       defra_webdataid: fakeApplicationData.id,
       _defra_applicationid_value: fakeApplicationData.applicationId,
