@@ -150,6 +150,15 @@ const tasks = {
     ruleSetId: 'defra_wasterecoveryplanreq',
     taskListModel: 'wasteRecoveryPlan'
   },
+  WASTE_TYPES_LIST: {
+    id: 'upload-waste-types-list',
+    label: 'List the types of waste you want to accept',
+    route: Routes.WASTE_TYPES_LIST,
+    completedLabelId: 'waste-types-list-completed',
+    // TODO: EWC: Set an appropriate value for this once the task list supports bespoke
+    ruleSetId: 'defra_wastetypeslistrequired',
+    taskListModel: 'wasteTypesList'
+  },
   WASTE_WEIGHT: {
     id: 'waste-weight',
     ruleSetId: 'defra_extwasteweightreq'
@@ -182,7 +191,9 @@ const sections = [
       tasks.MANAGEMENT_SYSTEM,
       tasks.FIRE_PREVENTION_PLAN,
       tasks.CONFIRM_CONFIDENTIALLY,
-      tasks.INVOICING_DETAILS
+      tasks.INVOICING_DETAILS,
+      // TODO: EWC: Remove once this is in bespoke
+      tasks.WASTE_TYPES_LIST
     ]
   },
   {
