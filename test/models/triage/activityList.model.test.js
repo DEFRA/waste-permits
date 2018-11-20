@@ -7,7 +7,6 @@ const sinon = require('sinon')
 
 const ActivityList = require('../../../src/models/triage/activityList.model')
 const ItemEntity = require('../../../src/persistence/entities/item.entity')
-const ItemDetailEntity = require('../../../src/persistence/entities/itemDetail.entity')
 const AssessmentList = require('../../../src/models/triage/assessmentList.model')
 
 const BESPOKE = [{
@@ -27,7 +26,6 @@ const INVALID_ACTIVITY = 'invalid-activity'
 
 const FAKE_ASSESSMENTS = [{ id: 'fake-assessment', text: 'Fake assessment text', canApplyOnline: true }]
 
-const fakeItemDetailEntities = [{ itemId: 'ID1' }, { itemId: 'ID1' }, { itemId: 'ID2' }, { itemId: 'ID2' }, { itemId: 'ID3' }, { itemId: 'ID3' }]
 const fakeItemEntities = [{
   id: 'ID1',
   shortName: 'activity-1',
@@ -64,7 +62,7 @@ let activityList
 lab.beforeEach(async () => {
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
-  sandbox.stub(ItemDetailEntity, 'listActivitiesForFacilityType').callsFake(async () => fakeItemDetailEntities)
+  sandbox.stub(ItemEntity, 'listActivitiesForFacilityTypes').callsFake(async () => fakeItemEntities)
   sandbox.stub(ItemEntity, 'getById').callsFake(async (entityContext, entityId) => fakeItemEntities.find(({ id }) => id === entityId))
 
   activityList = await ActivityList.createList({}, BESPOKE, LTD_CO, WASTE)
