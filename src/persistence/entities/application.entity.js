@@ -43,7 +43,7 @@ class Application extends BaseEntity {
       { field: 'saveAndReturnEmail', dynamics: 'defra_saveandreturnemail', length: { max: 100 }, encode: true },
       { field: 'miningWasteWeight', dynamics: 'defra_miningwasteweight', length: { max: 20 } },
       { field: 'miningWastePlan', dynamics: 'defra_miningwasteplan' },
-      { field: 'lineItemsTotalAmount', dynamics: 'defra_lineitemstotalamount', readOnly: true }
+      { field: 'lineItemsTotalAmount', dynamics: 'defra_balance_line_items', readOnly: true }
     ]
   }
 

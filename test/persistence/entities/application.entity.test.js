@@ -88,7 +88,7 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
     defra_tradingnameused: application.useTradingName,
     defra_miningwasteweight: application.miningWasteWeight,
     defra_miningwasteplan: application.miningWastePlan,
-    defra_lineitemstotalamount: application.lineItemsTotalAmount
+    defra_balance_line_items: application.lineItemsTotalAmount
   }
 }
 
