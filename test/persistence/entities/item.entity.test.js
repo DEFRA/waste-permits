@@ -6,7 +6,6 @@ const Code = require('code')
 const sinon = require('sinon')
 
 const Item = require('../../../src/persistence/entities/item.entity')
-const ItemType = require('../../../src/persistence/entities/itemType.entity')
 const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
@@ -19,37 +18,23 @@ const ACTIVITY_TYPE = {
   shortName: 'wasteactivity'
 }
 
-const ASSESSMENT_TYPE = {
-  id: 'DUMMY-GUID-ASSESSMENT-TYPE-00000',
-  itemTypeName: 'Waste assessment',
-  shortName: 'wasteassessment'
-}
-
-const fakeItem = (id, itemTypeId) => {
+const fakeItem = (id) => {
   return {
     id: `DUMMY-GUID-ITEM-${id}`,
     itemName: `Dummy item name ${id}`,
     shortName: `dummy-short-name-${id}`,
-    itemTypeId: itemTypeId,
     code: `dummy-code-${id}`,
-    description: `Dummy description for ${id}`,
-    description2: `Dummy description 2 for ${id}`,
-    suffix: `1.1.${id}`,
     canApplyFor: true,
     canApplyOnline: true
   }
 }
 
-const fakeDynamicsRecord = (id, itemTypeId) => {
+const fakeDynamicsRecord = (id) => {
   return {
     defra_itemid: `DUMMY-GUID-ITEM-${id}`,
     defra_name: `Dummy item name ${id}`,
     defra_shortname: `dummy-short-name-${id}`,
-    _defra_itemtypeid_value: itemTypeId,
     defra_code: `dummy-code-${id}`,
-    defra_description: `Dummy description for ${id}`,
-    defra_description2: `Dummy description 2 for ${id}`,
-    defra_suffix: `1.1.${id}`,
     defra_canapplyfor: true,
     defra_canapplyonline: true
   }
@@ -60,14 +45,6 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(ItemType, 'getByShortName').callsFake(async (context, shortName) => {
-    if (shortName === 'wasteactivity') {
-      return ACTIVITY_TYPE
-    } else if (shortName === 'wasteassessment') {
-      return ASSESSMENT_TYPE
-    }
-  })
-  sandbox.stub(ItemType, 'listByShortName').callsFake(async () => [ACTIVITY_TYPE, ASSESSMENT_TYPE])
   stub = sandbox.stub(DynamicsDalService.prototype, 'search')
 })
 
@@ -80,8 +57,8 @@ lab.experiment('Item Entity tests:', () => {
   lab.test('save() method should fail as this entity is readOnly', async () => {
     let error
     try {
-      const itemDetail = new Item(fakeItem('FAKE', ACTIVITY_TYPE.id))
-      await itemDetail.save()
+      const item = new Item(fakeItem('FAKE', ACTIVITY_TYPE.id))
+      await item.save()
     } catch (err) {
       error = err
     }
@@ -90,30 +67,18 @@ lab.experiment('Item Entity tests:', () => {
 
   lab.test('listAssessments() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001', ASSESSMENT_TYPE.id)] }
+      return { value: [fakeDynamicsRecord('00001')] }
     })
-    const expectedItems = [fakeItem('00001', ASSESSMENT_TYPE.id)]
+    const expectedItems = [fakeItem('00001')]
     const items = await Item.listAssessments(entityContext)
     Code.expect(items).to.exist()
     Code.expect(items).to.equal(expectedItems)
   })
 
   lab.test('getAllActivitiesAndAssessments() returns correct values', async () => {
-    stub.callsFake(async () => {
-      return {
-        value: [
-          {
-            defra_shortname: ACTIVITY_TYPE.shortName,
-            defra_itemtype_defra_item_itemtypeid: [fakeDynamicsRecord('00001', ACTIVITY_TYPE.id)]
-          },
-          {
-            defra_shortname: ASSESSMENT_TYPE.shortName,
-            defra_itemtype_defra_item_itemtypeid: [fakeDynamicsRecord('00002', ASSESSMENT_TYPE.id)]
-          }
-        ]
-      }
-    })
-    const expectedItems = { activities: [fakeItem('00001', ACTIVITY_TYPE.id)], assessments: [fakeItem('00002', ASSESSMENT_TYPE.id)] }
+    stub.onFirstCall().resolves({ value: [fakeDynamicsRecord('00001')] })
+    stub.onSecondCall().resolves({ value: [fakeDynamicsRecord('00002')] })
+    const expectedItems = { activities: [fakeItem('00001')], assessments: [fakeItem('00002')] }
     const items = await Item.getAllActivitiesAndAssessments(entityContext)
     Code.expect(items).to.exist()
     Code.expect(items).to.equal(expectedItems)
@@ -121,9 +86,9 @@ lab.experiment('Item Entity tests:', () => {
 
   lab.test('getActivity() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001', ACTIVITY_TYPE.id)] }
+      return { value: [fakeDynamicsRecord('00001')] }
     })
-    const expectedItem = fakeItem('00001', ACTIVITY_TYPE.id)
+    const expectedItem = fakeItem('00001')
     const item = await Item.getActivity(entityContext, expectedItem.shortName)
     Code.expect(item).to.exist()
     Code.expect(item).to.equal(expectedItem)
@@ -131,11 +96,20 @@ lab.experiment('Item Entity tests:', () => {
 
   lab.test('getAssessment() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001', ASSESSMENT_TYPE.id)] }
+      return { value: [fakeDynamicsRecord('00001')] }
     })
-    const expectedItem = fakeItem('00001', ASSESSMENT_TYPE.id)
+    const expectedItem = fakeItem('00001')
     const item = await Item.getAssessment(entityContext, expectedItem.shortName)
     Code.expect(item).to.exist()
     Code.expect(item).to.equal(expectedItem)
+  })
+
+  lab.test('listActivitiesForFacilityTypes() returns correct values', async () => {
+    stub.callsFake(async () => {
+      return { value: [fakeDynamicsRecord('00001')] }
+    })
+    const expectedItems = [fakeItem('00001')]
+    const items = await Item.listActivitiesForFacilityTypes(entityContext, ['DUMMY'])
+    Code.expect(items).to.equal(expectedItems)
   })
 })

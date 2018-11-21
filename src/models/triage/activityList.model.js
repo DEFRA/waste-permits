@@ -3,7 +3,6 @@
 const Activity = require('./activity.model')
 const AssessmentList = require('./assessmentList.model')
 const ItemEntity = require('../../persistence/entities/item.entity')
-const ItemDetailEntity = require('../../persistence/entities/itemDetail.entity')
 
 const ActivityList = class {
   constructor (entityContext, permitTypesArray, permitHolderTypesArray, facilityTypesArray, activitiesArray) {
@@ -57,17 +56,8 @@ const ActivityList = class {
   }
 
   static async getActivitiesForFacilityTypes (entityContext, facilityTypes) {
-    // Get the list of associated activities for each required facility type
-    const allActivityDetailLookups = facilityTypes.map(({ id }) => ItemDetailEntity.listActivitiesForFacilityType(entityContext, id))
-    const allActivityDetailEntities = await Promise.all(allActivityDetailLookups)
-
-    // Rationalise (merge and de-duplicate) the list of activities
-    let rationalisedActivityDetailEntities = [].concat.apply([], allActivityDetailEntities)
-    rationalisedActivityDetailEntities = rationalisedActivityDetailEntities.filter((entity, index, self) => self.findIndex((same) => same.itemId === entity.itemId) === index)
-
-    // Fetch the details of all the activities
-    const activityLookups = rationalisedActivityDetailEntities.map(({ itemId }) => ItemEntity.getById(entityContext, itemId))
-    const activityEntities = await Promise.all(activityLookups)
+    const facilityIds = facilityTypes.map(({ id }) => id)
+    const activityEntities = await ItemEntity.listActivitiesForFacilityTypes(entityContext, facilityIds)
 
     // Filter out any that can no longer be applied for, i.e. they should not appear to a user
     const filteredActivityEntities = activityEntities.filter((item) => item.canApplyFor)
