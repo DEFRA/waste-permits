@@ -21,7 +21,8 @@ const {
   SITE_PLAN,
   FIRE_PREVENTION_PLAN,
   WASTE_RECOVERY_PLAN,
-  WASTE_TYPES_LIST
+  WASTE_TYPES_LIST,
+  ENVIRONMENTAL_RISK_ASSESSMENT
 } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -206,5 +207,13 @@ module.exports = class BaseCheck {
       this.data.wasteTypesList = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, WASTE_TYPES_LIST)
     }
     return this.data.wasteTypesList || {}
+  }
+
+  async getEnvironmentalRiskAssessment () {
+    const { applicationId, environmentalRiskAssessment } = this.data
+    if (!environmentalRiskAssessment) {
+      this.data.environmentalRiskAssessment = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, ENVIRONMENTAL_RISK_ASSESSMENT)
+    }
+    return this.data.environmentalRiskAssessment || {}
   }
 }

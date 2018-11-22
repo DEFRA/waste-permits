@@ -1,0 +1,53 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+        <div id="has-no-annotations" class="form-group">
+          <div id="environmental-risk-assessment-description">
+            <p>
+              Read the
+              <a href="https://www.gov.uk/government/collections/technical-guidance-for-regulated-industry-sectors-environmental-permitting"
+                 target="_blank" rel="noopener noreferrer">technical guidance (opens new tab)</a>
+              for each activity you are applying for.
+              Once you have worked through the relevant technical guidance,
+              you will have developed a full set of proposals for your intended operations,
+              including the nature, quantities and sources of your foreseeable emissions to air, water and land.
+            </p>
+            <p>
+              You should now describe the environmental risk posed by your proposals.
+              This must take the form of an environmental risk assessment which should follow the methodology
+              set out in
+              <a href="https://www.gov.uk/guidance/risk-assessments-for-your-environmental-permit"
+                 target="_blank" rel="noopener noreferrer">risk assessments for your environmental permit (opens in new tab)</a>.
+            </p>
+            <p>
+              Where you wish to use a different methodology, that methodology must address the same issues to an
+              equivalent level of detail.
+              The purpose of the environmental risk assessment is to demonstrate that the impacts of your proposals
+              will be acceptable.
+            </p>
+          </div>
+        </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

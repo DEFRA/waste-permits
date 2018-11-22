@@ -265,4 +265,18 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(wasteRecoveryPlan).to.equal([fakeAnnotation])
     Code.expect(context.wasteRecoveryPlan).to.equal(await check.getWasteRecoveryPlan())
   })
+
+  lab.test('getWasteTypesList works correctly', async () => {
+    const check = new BaseCheck(context)
+    const wasteTypesList = await check.getWasteTypesList()
+    Code.expect(wasteTypesList).to.equal([fakeAnnotation])
+    Code.expect(context.wasteTypesList).to.equal(await check.getWasteTypesList())
+  })
+
+  lab.test('getEnvironmentalRiskAssessment works correctly', async () => {
+    const check = new BaseCheck(context)
+    const environmentalRiskAssessment = await check.getEnvironmentalRiskAssessment()
+    Code.expect(environmentalRiskAssessment).to.equal([fakeAnnotation])
+    Code.expect(context.environmentalRiskAssessment).to.equal(await check.getEnvironmentalRiskAssessment())
+  })
 })

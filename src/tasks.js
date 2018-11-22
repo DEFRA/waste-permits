@@ -51,7 +51,10 @@ const tasks = {
   },
   ENVIRONMENTAL_RISK_ASSESSMENT: {
     id: 'environmental-risk-assessment',
-    label: 'Upload the environmental risk assessment'
+    label: 'Upload the environmental risk assessment',
+    route: Routes.ENVIRONMENTAL_RISK_ASSESSMENT,
+    completedLabelId: 'environmental-risk-assessment-completed',
+    taskListModel: 'environmentalRiskAssessment'
   },
   FIRE_PREVENTION_PLAN: {
     id: 'upload-the-fire-prevention-plan',
