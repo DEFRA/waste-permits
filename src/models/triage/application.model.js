@@ -111,6 +111,10 @@ module.exports = class Application {
   }
 
   async save (entityContextToUse) {
+    // This method previously performed all of its operations in parallel but this caused the total cost
+    // to be calculated incorrectly due to a race condition.
+    // So now each operation is individually awaited.
+
     const id = this.id
     const permitHolderType = this.permitHolderType
     const activities = this.activities || []
@@ -122,26 +126,23 @@ module.exports = class Application {
       applicationValues.applicantType = dynamicsPermitHolderType.dynamicsApplicantTypeId
       applicationValues.organisationType = dynamicsPermitHolderType.dynamicsOrganisationTypeId ? dynamicsPermitHolderType.dynamicsOrganisationTypeId : undefined
     }
-    const permitHolderTypeActions = [setApplicationValues(entityContextToUse, id, applicationValues)]
+    await setApplicationValues(entityContextToUse, id, applicationValues)
 
-    const activityActions = activities.map((item) => {
+    for (const item of activities) {
       if (item.toBeDeleted) {
-        return deleteLine(entityContextToUse, item.id)
+        await deleteLine(entityContextToUse, item.id)
       } else if (item.toBeAdded) {
-        return createActivityLine(entityContextToUse, id, item.activity.id)
+        await createActivityLine(entityContextToUse, id, item.activity.id)
       }
-    }).filter((item) => item)
+    }
 
-    const assessmentActions = assessments.map((item) => {
+    for (const item of assessments) {
       if (item.toBeDeleted) {
-        return deleteLine(entityContextToUse, item.id)
+        await deleteLine(entityContextToUse, item.id)
       } else if (item.toBeAdded) {
-        return createAssessmentLine(entityContextToUse, id, item.assessment.id)
+        await createAssessmentLine(entityContextToUse, id, item.assessment.id)
       }
-    }).filter((item) => item)
-
-    const allActions = permitHolderTypeActions.concat(activityActions, assessmentActions)
-    await Promise.all(allActions)
+    }
 
     return null
   }
