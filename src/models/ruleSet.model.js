@@ -13,7 +13,10 @@ module.exports = class RuleSet {
     Object.entries(tasks)
       .forEach(([prop, { ruleSetId }]) => {
         if (ruleSetId) {
-          ruleSetIds.push(ruleSetId)
+          // TODO: EWC: Remove this check when bespoke tasks are implemented
+          if (ruleSetId !== 'defra_wastetypeslistrequired') {
+            ruleSetIds.push(ruleSetId)
+          }
         }
       })
     const query = encodeURI(`defra_applicationlines(${applicationLineId})?$expand=defra_parametersId($select=${ruleSetIds.join()})`)
@@ -27,6 +30,10 @@ module.exports = class RuleSet {
     } catch (error) {
       LoggingService.logError(`Unable to get RuleSetId list by applicationLineId: ${error}`)
       throw error
+    }
+    // TODO: EWC: Remove this when bespoke tasks are implemented
+    if (require('../config/featureConfig').hasBespokeFeature) {
+      validRuleIds.push('defra_wastetypeslistrequired')
     }
     return validRuleIds
   }

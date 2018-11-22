@@ -6,6 +6,7 @@ const Code = require('code')
 const sinon = require('sinon')
 const Mocks = require('../helpers/mocks')
 
+const featureConfig = require('../../src/config/featureConfig')
 const Application = require('../../src/persistence/entities/application.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
 const DataStore = require('../../src/models/dataStore.model')
@@ -48,6 +49,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
+  sandbox.stub(featureConfig, 'hasBespokeFeature').value(true)
   sandbox.stub(DynamicsDalService.prototype, 'search').value(() => searchResult)
   sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
   sandbox.stub(DataStore, 'get').callsFake(() => mocks.dataStore)
@@ -64,6 +66,8 @@ lab.experiment('RuleSet Model tests:', () => {
     const ruleSetIds = await RuleSet.getValidRuleSetIds(context, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(ruleSetIds).to.include(Object.keys(fakeParametersId))
-    Code.expect(ruleSetIds.length).to.equal(Object.keys(fakeParametersId).length)
+    // TODO: EWC: Correct this check once bespoke items are removed
+    // Code.expect(ruleSetIds.length).to.equal(Object.keys(fakeParametersId).length)
+    Code.expect(ruleSetIds.length).to.equal(Object.keys(fakeParametersId).length + 1)
   })
 })

@@ -26,7 +26,9 @@ class TaskList {
       const complete = taskListModel ? await taskListModel.isComplete(context, context.applicationId, applicationLineId) : false
       const task = {
         href: item.route.path,
-        available: item.required || ruleSetIds.includes(item.ruleSetId),
+        available: item.required || ruleSetIds.includes(item.ruleSetId) ||
+          // TODO: EWC: Remove the check for the waste code list when the task list supports bespoke
+          (require('../../config/featureConfig').hasBespokeFeature && item.ruleSetId === 'upload-waste-types-list'),
         complete
       }
       return Object.assign({}, item, task)
@@ -56,8 +58,20 @@ class TaskList {
         .reduce((last, next) => last.sectionItems ? last.sectionItems.concat(next.sectionItems) : last.concat(next.sectionItems))
         // Extract the model names
         .filter(({ complete, taskListModel }) => taskListModel && !complete)
+
+      // TODO: EWC: Remove this check for the waste code list when the task list supports bespoke
+      let wasteCodeListIncomplete = false
+      const wasteCodeListTaskItemSection = taskList.sections.find(({ id }) => id === 'prepare-application-section')
+      if (wasteCodeListTaskItemSection) {
+        const wasteCodeListTaskItem = wasteCodeListTaskItemSection.sectionItems.find(({ id }) => id === 'upload-waste-types-list')
+        if (wasteCodeListTaskItem) {
+          wasteCodeListIncomplete = !wasteCodeListTaskItem.complete
+        }
+      }
+
       // False if there are any incomplete tasks
-      return incompleteList.length === 0
+      // TODO: EWC: Remove the check for the waste code list when the task list supports bespoke
+      return incompleteList.length === 0 || (incompleteList.length === 1 && wasteCodeListIncomplete)
     } catch (err) {
       console.error('Error calculating completeness:', err.message)
       throw err
