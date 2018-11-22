@@ -14,6 +14,7 @@ const PermitHolderCheck = require('../models/checkList/permitHolder.check')
 const ConfidentialityCheck = require('../models/checkList/confidentiality.check')
 const InvoiceCheck = require('../models/checkList/invoice.check')
 const MiningWasteCheck = require('../models/checkList/miningWaste.check')
+const WasteTypesListCheck = require('../models/checkList/wasteTypesList.check')
 const RuleSet = require('../models/ruleSet.model')
 
 module.exports = class CheckBeforeSendingController extends BaseController {
@@ -35,6 +36,11 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       ConfidentialityCheck,
       InvoiceCheck
     ]
+
+    // TODO: EWC: Remove this when the bespoke task list is implemented
+    if (require('../config/featureConfig').hasBespokeFeature) {
+      this._checks.push(WasteTypesListCheck)
+    }
   }
 
   get Checks () {
@@ -48,8 +54,10 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       this.Checks
         // Only include those checks that are valid for this application line
         .filter((Check) => {
+          // TODO: EWC: Always display the list of waste codes until the bespoke task list is implemented
+          return Check.name === 'PermitCheck' || Check.name === 'WasteTypesListCheck' || applicableRuleSetIds.includes(Check.ruleSetId)
           // Always display the permit check
-          return Check.name === 'PermitCheck' || applicableRuleSetIds.includes(Check.ruleSetId)
+          // return Check.name === 'PermitCheck' || applicableRuleSetIds.includes(Check.ruleSetId)
         })
         .map((Check) => {
           const check = new Check(context)

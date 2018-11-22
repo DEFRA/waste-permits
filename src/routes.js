@@ -1006,6 +1006,27 @@ const Routes = {
         { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
       ]
     }
+  },
+  WASTE_TYPES_LIST: {
+    path: '/waste-codes',
+    view: 'upload/wasteTypesList/wasteTypesList',
+    pageHeading: 'Upload a document that lists the types of waste you want to accept',
+    controller: 'upload/wasteTypesList/wasteTypesList',
+    validator: 'upload/upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    validatorOptions: {
+      fileTypes: [
+        { type: 'PDF', mimeType: 'application/pdf' },
+        { type: 'DOC', mimeType: 'application/msword' },
+        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+        { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
+        { type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' },
+        { type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet' }
+      ]
+    }
   }
 }
 

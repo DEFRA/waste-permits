@@ -7,6 +7,7 @@ const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
 const config = require('../../../src/config/config')
+const featureConfig = require('../../../src/config/featureConfig')
 const Application = require('../../../src/persistence/entities/application.entity')
 const DataStore = require('../../../src/models/dataStore.model')
 const RuleSet = require('../../../src/models/ruleSet.model')
@@ -29,7 +30,9 @@ lab.beforeEach(() => {
     'defra_cnfconfidentialityreq',
     'defra_confirmreadrules',
     'defra_contactdetailsrequired',
-    'defra_showcostandtime'
+    'defra_showcostandtime',
+    // TODO: EWC: Remove this item once it is moved to the bespoke task list
+    'defra_wastetypeslistrequired'
   ]
 
   // Create a sinon sandbox to stub methods
@@ -37,6 +40,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(config, 'bypassCompletenessCheck').value(false)
+  sandbox.stub(featureConfig, 'hasBespokeFeature').value(true)
   sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(DataStore, 'get').value(() => mocks.dataStore)
   sandbox.stub(RuleSet, 'getValidRuleSetIds').value(() => validRuleSetIds)
@@ -57,7 +61,9 @@ lab.experiment('Task List Model tests:', () => {
 
     'prepare-application-section': [
       'give-contact-details',
-      'confirm-confidentiality-needs'
+      'confirm-confidentiality-needs',
+      // TODO: EWC: Remove this item once it is moved to the bespoke task list
+      'upload-waste-types-list'
     ],
 
     'send-and-pay-section': [

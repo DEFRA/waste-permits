@@ -1,0 +1,56 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+        <div id="has-no-annotations" class="form-group">
+          <div id="waste-types-list-description">
+            <p>
+            Create a table in a document or a spreadsheet. In it, list the waste code and description for each type of waste you want to accept.
+            Use the codes and descriptions from the List of Waste or European Waste Catalogue (EWC).
+            You can find these in the
+            <a href="https://www.gov.uk/government/publications/waste-classification-technical-guidance"
+               target="_blank" rel="noopener noreferrer">waste classification technical guidance (opens new tab)</a>.
+            If the waste code ends in 99, you must give a full description of the waste.
+            To restrict the type of waste you accept, for example for safety or legal reasons, add text after the description and mark or highlight this.
+            </p>
+
+            <details class="form-hint-details">
+              <summary><span class="summary">Examples of restrictions</span></summary>
+              <div class="panel panel-border-narrow">
+                <p>Add text after the description to restrict:</p>
+                <ul class="list list-bullet">
+                  <li>the quantity of the waste, for example 16 06 01* lead batteries - no more than 500 tonnes</li>
+                  <li>the description of a particular waste within a code, for example 16 01 03 - bicycle tyres only</li>
+                  <li>hazardous property, for example, no corrosive waste</li>
+                  <li>physical form, for example 06 03 11* solid salts and solutions containing cyanides - no liquids</li>
+                  <li>the nature or attribute of the waste, for example no odorous wastes</li>
+                  <li>specific substances or specific concentrations, for example no chromium (VII) substances (greater than 1000 ppm)</li>
+                  <li>container type or size, for example no Intermediate Bulk Containers (IBCs)</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+        </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>
