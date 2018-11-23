@@ -223,8 +223,6 @@ const tasks = {
     label: 'List the types of waste you want to accept',
     route: Routes.WASTE_TYPES_LIST,
     completedLabelId: 'waste-types-list-completed',
-    // TODO: EWC: Set an appropriate value for this once the task list supports bespoke
-    ruleSetId: 'defra_wastetypeslistrequired',
     taskListModel: 'wasteTypesList'
   },
   WASTE_WEIGHT: {

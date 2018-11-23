@@ -32,11 +32,6 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Waste Types List Check tests:', () => {
-  lab.test('ruleSetId works correctly', async () => {
-    // TODO: EWC: Amend this test when we have the actual identifier for this check
-    Code.expect(WasteTypesListCheck.ruleSetId).to.equal('defra_wastetypeslistrequired')
-  })
-
   lab.experiment('buildlines', () => {
     let check
     let lines

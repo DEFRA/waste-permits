@@ -20,7 +20,6 @@ module.exports = class GeneralTestHelper {
   constructor ({ lab, routePath, routeParams = [] }) {
     this.lab = lab
     this.routePath = routePath
-    this.routeParams = routeParams
   }
 
   static checkElementsExist (doc, elementIds) {
@@ -150,9 +149,6 @@ module.exports = class GeneralTestHelper {
 
       if (!options.excludeHtmlTests) {
         lab.test(`GET ${routePath} page should have the beta banner`, async () => {
-          if (routePath === '/permit-holder/company/check-name') {
-            console.log('x')
-          }
           const res = await server.inject(getRequest)
 
           const parser = new DOMParser()

@@ -25,9 +25,7 @@ class BaseTaskList {
       const TaskModel = task.taskListModel && await this.getTaskModel(task.taskListModel)
       return Object.assign({}, task, {
         href: task.route && task.route.path,
-        available: await this.isAvailable(task) ||
-          // TODO: EWC: Remove the check for the waste code list when the task list supports bespoke
-          (require('../../config/featureConfig').hasBespokeFeature && task.ruleSetId === 'upload-waste-types-list'),
+        available: await this.isAvailable(task),
         complete: TaskModel && await TaskModel.isComplete(this.context)
       })
     }))

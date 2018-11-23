@@ -5,11 +5,9 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const server = require('../../server')
-const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/persistence/entities/application.entity')
-const DataStore = require('../../src/models/dataStore.model')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
@@ -33,11 +31,7 @@ const fakeCookie = {
   authToken: 'my_auth_token'
 }
 
-let mocks
-
 lab.beforeEach(() => {
-  mocks = new Mocks()
-
   getRequest = {
     method: 'GET',
     url: routePath,
@@ -55,7 +49,6 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'generateCookie').value(() => fakeCookie)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(DataStore, 'save').value(async () => mocks.dataStore.id)
   sandbox.stub(Application.prototype, 'save').value(async () => undefined)
 })
 

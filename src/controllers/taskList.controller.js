@@ -7,13 +7,14 @@ const StandardRulesTaskList = require('../models/taskList/standardRules.taskList
 const StandardRule = require('../persistence/entities/standardRule.entity')
 const RecoveryService = require('../services/recovery.service')
 const DataStore = require('../models/dataStore.model')
-const { STANDARD_RULES: { id: STANDARD_RULES } } = require('../constants').PermitTypes
+const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = require('../constants').PermitTypes
 
 module.exports = class TaskListController extends BaseController {
   async getTaskList (context) {
     switch (context.permitType) {
       case STANDARD_RULES: return StandardRulesTaskList.buildTaskList(context)
-      default: return BespokeTaskList.buildTaskList(context)
+      case BESPOKE: return BespokeTaskList.buildTaskList(context)
+      default: throw new Error(`Unexpected permitType: ${context.permitType}`)
     }
   }
 
