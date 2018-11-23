@@ -9,11 +9,11 @@ module.exports = class ConfirmRulesController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h, { application: true, standardRule: true })
-    const { applicationLineId, application, standardRule } = context
+    const { standardRule } = context
 
     pageContext.guidanceUrl = standardRule.guidanceUrl
     pageContext.code = standardRule.code
-    pageContext.isComplete = await ConfirmRules.isComplete(context, application.id, applicationLineId)
+    pageContext.isComplete = await ConfirmRules.isComplete(context)
 
     return this.showView({ request, h, pageContext })
   }

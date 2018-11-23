@@ -88,7 +88,7 @@ const Routes = {
     view: 'triage/confirmCost',
     pageHeading: 'Confirm activities and assessments',
     controller: 'triage/confirmCost',
-    nextRoute: 'BESPOKE_APPLY_OFFLINE', // TODO: Change to task list when the task list can handle bespoke, i.e. nextRoute: 'TASK_LIST'
+    nextRoute: 'TASK_LIST',
     types: 'GET,POST',
     cookieValidationRequired: true,
     applicationRequired: false

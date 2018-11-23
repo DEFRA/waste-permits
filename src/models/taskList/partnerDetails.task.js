@@ -38,7 +38,7 @@ module.exports = class PartnerDetails extends BaseTask {
     return address
   }
 
-  static async saveSelectedAddress (request, applicationId, applicationLineId, addressDto) {
+  static async saveSelectedAddress (request, addressDto) {
     const context = request.app.data
     if (!addressDto.uprn) {
       const errorMessage = `Unable to save individual permit holder address as it does not have a UPRN`
@@ -70,7 +70,7 @@ module.exports = class PartnerDetails extends BaseTask {
     }
   }
 
-  static async saveManualAddress (request, applicationId, applicationLineId, addressDto) {
+  static async saveManualAddress (request, addressDto) {
     const context = request.app.data
     if (addressDto.postcode) {
       addressDto.postcode = addressDto.postcode.toUpperCase()

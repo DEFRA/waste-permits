@@ -28,14 +28,14 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: FirePreventionPlan Model tests:', () => {
-  lab.test(`checkComplete() method correctly returns FALSE when annotations don't exist`, async () => {
+  lab.test(`isComplete() method correctly returns FALSE when annotations don't exist`, async () => {
     Annotation.listByApplicationIdAndSubject = () => []
-    const result = await FirePreventionPlan.checkComplete()
+    const result = await FirePreventionPlan.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
   })
 
-  lab.test('checkComplete() method correctly returns TRUE when annotations exist', async () => {
-    const result = await FirePreventionPlan.checkComplete()
+  lab.test('isComplete() method correctly returns TRUE when annotations exist', async () => {
+    const result = await FirePreventionPlan.isComplete(mocks.context)
     Code.expect(result).to.equal(true)
   })
 })

@@ -89,6 +89,7 @@ Constants.BankAccountDetails = {
 
 Constants.PermitTypes = {
   STANDARD_RULES: {
+    id: 'standard-rules',
     cost: {
       lower: 720,
       upper: 1690
@@ -96,6 +97,9 @@ Constants.PermitTypes = {
     VEHICLE_DISMANTLING_LESS_THAN_75000_TONS: 'SR2015 No 13',
     WASTE_IN_DEPOSIT_FOR_RECOVERY: 'SR2015 No 39',
     CONFIRM_MINING_WASTE_MANAGEMENT_PLAN: 'SR2014 No 2'
+  },
+  BESPOKE: {
+    id: 'bespoke'
   }
 }
 

@@ -49,7 +49,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'generateCookie').value(() => fakeCookie)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(async () => undefined)
 })
 
 lab.afterEach(() => {

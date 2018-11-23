@@ -5,7 +5,7 @@ const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 
 const Application = require('../../src/persistence/entities/application.entity')
-const TaskList = require('../../src/models/taskList/taskList')
+const TaskList = require('../../src/models/taskList/base.taskList')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
@@ -20,7 +20,6 @@ module.exports = class GeneralTestHelper {
   constructor ({ lab, routePath, routeParams = [] }) {
     this.lab = lab
     this.routePath = routePath
-    this.routeParams = routeParams
   }
 
   static checkElementsExist (doc, elementIds) {

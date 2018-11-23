@@ -25,8 +25,8 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
-  sandbox.stub(BaseCheck.prototype, 'getLocation').value(() => mocks.location)
-  sandbox.stub(BaseCheck.prototype, 'getLocationDetail').value(() => mocks.locationDetail)
+  sandbox.stub(BaseCheck.prototype, 'getLocation').value(async () => mocks.location)
+  sandbox.stub(BaseCheck.prototype, 'getLocationDetail').value(async () => mocks.locationDetail)
 })
 
 lab.afterEach(() => {
@@ -44,7 +44,7 @@ lab.experiment('Site Check tests:', () => {
     let lines
 
     lab.beforeEach(async () => {
-      sandbox.stub(BaseCheck.prototype, 'getLocationAddress').value(() => mocks.address)
+      sandbox.stub(BaseCheck.prototype, 'getLocationAddress').value(async () => mocks.address)
       check = new SiteCheck()
       lines = await check.buildLines()
     })

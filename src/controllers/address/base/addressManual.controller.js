@@ -50,7 +50,7 @@ module.exports = class AddressManualController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const { applicationId, applicationLineId } = await RecoveryService.createApplicationContext(h)
+      await RecoveryService.createApplicationContext(h)
 
       const addressDto = {
         buildingNameOrNumber: request.payload['building-name-or-number'],
@@ -60,7 +60,7 @@ module.exports = class AddressManualController extends BaseController {
         postcode: request.payload['postcode']
       }
 
-      await this.getModel().saveManualAddress(request, applicationId, applicationLineId, addressDto)
+      await this.getModel().saveManualAddress(request, addressDto)
 
       return this.redirect({ request, h, redirectPath: this.nextPath })
     }

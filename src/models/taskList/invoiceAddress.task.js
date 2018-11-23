@@ -26,8 +26,10 @@ module.exports = class InvoiceAddress extends BaseTask {
     return address
   }
 
-  static async saveSelectedAddress (request, applicationId, applicationLineId, addressDto) {
+  static async saveSelectedAddress (request, addressDto) {
     const context = request.app.data
+    const { applicationId } = context
+
     if (!addressDto.uprn) {
       const errorMessage = `Unable to save invoice address as it does not have a UPRN`
       LoggingService.logError(errorMessage, request)
@@ -59,8 +61,10 @@ module.exports = class InvoiceAddress extends BaseTask {
     }
   }
 
-  static async saveManualAddress (request, applicationId, applicationLineId, addressDto) {
+  static async saveManualAddress (request, addressDto) {
     const context = request.app.data
+    const { applicationId } = context
+
     if (addressDto.postcode) {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }

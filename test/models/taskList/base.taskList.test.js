@@ -9,30 +9,82 @@ const Mocks = require('../../helpers/mocks')
 const config = require('../../../src/config/config')
 const featureConfig = require('../../../src/config/featureConfig')
 const Application = require('../../../src/persistence/entities/application.entity')
+const ApplicationReturn = require('../../../src/persistence/entities/applicationReturn.entity')
 const DataStore = require('../../../src/models/dataStore.model')
 const RuleSet = require('../../../src/models/ruleSet.model')
 const BaseTask = require('../../../src/models/taskList/base.task')
-const TaskList = require('../../../src/models/taskList/taskList')
+const TaskList = require('../../../src/models/taskList/base.taskList')
+
+class TestTaskList extends TaskList {
+  isAvailable () {
+    return true
+  }
+
+  get taskListTemplate () {
+    return [
+      {
+        id: 'before-you-apply-section',
+        label: 'Before you apply',
+        tasks: [{
+          id: 'check-permit-cost-and-time',
+          label: 'Check costs and processing time',
+          completedLabelId: 'cost-and-time-completed',
+          ruleSetId: 'defra_showcostandtime',
+          taskListModel: 'costTime'
+        }, {
+          id: 'confirm-that-your-operation-meets-the-rules',
+          label: 'Confirm you can meet the rules',
+          completedLabelId: 'operation-rules-completed',
+          ruleSetId: 'defra_confirmreadrules',
+          taskListModel: 'confirmRules'
+        }]
+      },
+      {
+        id: 'prepare-application-section',
+        label: 'Prepare application',
+        tasks: [{
+          id: 'give-contact-details',
+          label: 'Give contact details',
+          completedLabelId: 'contact-details-completed',
+          ruleSetId: 'defra_contactdetailsrequired',
+          taskListModel: 'contactDetails'
+        }, {
+          id: 'confirm-confidentiality-needs',
+          label: 'Confirm confidentiality needs',
+          completedLabelId: 'confidentiality-completed',
+          ruleSetId: 'defra_cnfconfidentialityreq',
+          taskListModel: 'confidentiality'
+        }]
+      },
+      {
+        id: 'send-and-pay-section',
+        label: 'Apply',
+        tasks: [{
+          id: 'submit-pay',
+          label: 'Send application and pay',
+          completedLabelId: 'submit-and-pay',
+          required: true
+        }]
+      }
+    ]
+  }
+}
 
 let validRuleSetIds
 let context
-let applicationLineId
 let sandbox
 let mocks
 
 lab.beforeEach(() => {
   mocks = new Mocks()
 
-  context = { authToken: 'AUTH_TOKEN' }
-  applicationLineId = 'APPLICATION_LINE_ID'
+  context = mocks.context
 
   validRuleSetIds = [
     'defra_cnfconfidentialityreq',
     'defra_confirmreadrules',
     'defra_contactdetailsrequired',
-    'defra_showcostandtime',
-    // TODO: EWC: Remove this item once it is moved to the bespoke task list
-    'defra_wastetypeslistrequired'
+    'defra_showcostandtime'
   ]
 
   // Create a sinon sandbox to stub methods
@@ -41,10 +93,11 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(config, 'bypassCompletenessCheck').value(false)
   sandbox.stub(featureConfig, 'hasBespokeFeature').value(true)
-  sandbox.stub(Application, 'getById').value(() => mocks.application)
-  sandbox.stub(DataStore, 'get').value(() => mocks.dataStore)
+  sandbox.stub(Application, 'getById').value(async () => mocks.application)
+  sandbox.stub(ApplicationReturn, 'getByApplicationId').value(async () => mocks.applicationReturn)
+  sandbox.stub(DataStore, 'get').value(async () => mocks.dataStore)
   sandbox.stub(RuleSet, 'getValidRuleSetIds').value(() => validRuleSetIds)
-  sandbox.stub(BaseTask, 'isComplete').value(() => false)
+  sandbox.stub(BaseTask, 'isComplete').value(async () => false)
 })
 
 lab.afterEach(() => {
@@ -61,9 +114,7 @@ lab.experiment('Task List Model tests:', () => {
 
     'prepare-application-section': [
       'give-contact-details',
-      'confirm-confidentiality-needs',
-      // TODO: EWC: Remove this item once it is moved to the bespoke task list
-      'upload-waste-types-list'
+      'confirm-confidentiality-needs'
     ],
 
     'send-and-pay-section': [
@@ -71,14 +122,14 @@ lab.experiment('Task List Model tests:', () => {
     ]
   }
 
-  lab.test('getByApplicationLineId() method returns a TaskList object', async () => {
-    const taskList = await TaskList.getByApplicationLineId(context)
+  lab.test('buildTaskList() method returns a TaskList object', async () => {
+    const taskList = await TestTaskList.buildTaskList(context)
     Code.expect(taskList).to.not.be.null()
   })
 
-  lab.test('Task List returned by getByApplicationLineId() method has the correct number of sections', async () => {
+  lab.test('Task List returned by buildTaskList() method has the correct number of sections', async () => {
     // Get the Task List
-    const taskList = await TaskList.getByApplicationLineId(context)
+    const taskList = await TestTaskList.buildTaskList(context)
 
     // Check we have the correct sections
     Code.expect(Array.isArray(taskList.sections)).to.be.true()
@@ -87,10 +138,10 @@ lab.experiment('Task List Model tests:', () => {
   })
 
   Object.keys(expectedSections).forEach((sectionId, index) => {
-    lab.test(`Task List returned by getByApplicationLineId() contains the ${sectionId} section`, async () => {
+    lab.test(`Task List returned by buildTaskList() contains the ${sectionId} section`, async () => {
       const expectedSectionItemIds = expectedSections[sectionId]
       // Get the Task List
-      const taskList = await TaskList.getByApplicationLineId(context)
+      const taskList = await TestTaskList.buildTaskList(context)
       const section = taskList.sections[index]
 
       // Check we have the correct section IDs in the section
@@ -104,14 +155,14 @@ lab.experiment('Task List Model tests:', () => {
   })
 
   lab.test('isComplete() method correctly checks for incomplete tasks', async () => {
-    sinon.stub(BaseTask, 'isComplete').value(() => false)
-    const complete = await TaskList.isComplete(context, applicationLineId, applicationLineId)
+    sinon.stub(BaseTask, 'isComplete').value(async () => false)
+    const complete = await TestTaskList.isComplete(context)
     Code.expect(complete).to.be.false()
   })
 
   lab.test('isComplete() method correctly checks for complete tasks', async () => {
-    sinon.stub(BaseTask, 'isComplete').value(() => true)
-    const complete = await TaskList.isComplete(context, applicationLineId, applicationLineId)
+    sinon.stub(BaseTask, 'isComplete').value(async () => true)
+    const complete = await TestTaskList.isComplete(context)
     Code.expect(complete).to.be.true()
   })
 })

@@ -6,6 +6,7 @@ const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const Application = require('../persistence/entities/application.entity')
+const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = Constants.PermitTypes
 
 module.exports = class StartOrOpenSavedController extends BaseController {
   async doGet (request, h, errors) {
@@ -21,7 +22,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
     // If there is a permit type parameter indicating bespoke or standard rules then pass it through
     const permitType = request.query['permit-type']
     pageContext.formActionQueryString = ''
-    if (permitType && (permitType === 'bespoke' || permitType === 'standard-rules')) {
+    if (permitType && (permitType === BESPOKE || permitType === STANDARD_RULES)) {
       pageContext.formActionQueryString = `?permit-type=${permitType}`
     }
 
@@ -50,7 +51,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
       // If there is a permit type parameter indicating bespoke or standard rules then pass it through
       const permitType = request.query['permit-type']
-      if (permitType && (permitType === 'bespoke' || permitType === 'standard-rules')) {
+      if (permitType && (permitType === BESPOKE || permitType === STANDARD_RULES)) {
         redirectPath = `${redirectPath}?permit-type=${permitType}`
       }
     } else {

@@ -23,7 +23,8 @@ class Location extends BaseEntity {
     }
   }
 
-  static async getByApplicationId (context, applicationId, applicationLineId) {
+  static async getByApplicationId (context) {
+    const { applicationId, applicationLineId } = context
     const location = await super.getBy(context, { applicationId })
     if (location) {
       location.applicationLineId = applicationLineId

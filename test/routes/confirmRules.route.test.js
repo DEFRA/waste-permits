@@ -41,7 +41,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(ConfirmRules, 'isComplete').value(() => false)
   sandbox.stub(ConfirmRules, 'updateCompleteness').value(() => {})
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
 })
 
 lab.afterEach(() => {

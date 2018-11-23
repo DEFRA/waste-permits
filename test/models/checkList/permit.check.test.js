@@ -18,7 +18,7 @@ lab.beforeEach(() => {
 
   // Create a sinon sandbox to prevent the "spy already wrapped errors" when a "spy.calledWith" fails
   sandbox = sinon.createSandbox()
-  sandbox.stub(BaseCheck.prototype, 'getStandardRule').value(() => mocks.standardRule)
+  sandbox.stub(BaseCheck.prototype, 'getStandardRule').value(async () => mocks.standardRule)
 })
 
 lab.afterEach(() => {

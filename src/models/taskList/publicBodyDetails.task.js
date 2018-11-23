@@ -8,7 +8,7 @@ const { PUBLIC_BODY_MAIN_ADDRESS } = require('../../dynamics').AddressTypes
 const type = PUBLIC_BODY_MAIN_ADDRESS.TYPE
 
 module.exports = class PublicBodyDetails extends BaseTask {
-  static async getAddress (request, applicationId) {
+  static async getAddress (request) {
     let address
     try {
       const context = request.app.data
@@ -26,8 +26,10 @@ module.exports = class PublicBodyDetails extends BaseTask {
     return address
   }
 
-  static async saveSelectedAddress (request, applicationId, applicationLineId, addressDto) {
+  static async saveSelectedAddress (request, addressDto) {
     const context = request.app.data
+    const { applicationId } = context
+
     if (!addressDto.uprn) {
       const errorMessage = `Unable to save public body address as it does not have a UPRN`
       LoggingService.logError(errorMessage, request)
@@ -58,8 +60,10 @@ module.exports = class PublicBodyDetails extends BaseTask {
     }
   }
 
-  static async saveManualAddress (request, applicationId, applicationLineId, addressDto) {
+  static async saveManualAddress (request, addressDto) {
     const context = request.app.data
+    const { applicationId } = context
+
     if (addressDto.postcode) {
       addressDto.postcode = addressDto.postcode.toUpperCase()
     }

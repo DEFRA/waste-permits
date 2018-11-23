@@ -9,7 +9,9 @@ const { firstCharToLowercase } = require('../utilities/utilities')
 const StandardRule = require('../persistence/entities/standardRule.entity')
 const StandardRuleType = require('../persistence/entities/standardRuleType.entity')
 const ApplicationLine = require('../persistence/entities/applicationLine.entity')
+const DataStore = require('../models/dataStore.model')
 const { PermitTypes } = require('../dynamics')
+const { STANDARD_RULES: { id: STANDARD_RULES } } = Constants.PermitTypes
 
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, h, errors) {
@@ -32,8 +34,8 @@ module.exports = class PermitSelectController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      const context = await RecoveryService.createApplicationContext(h, { applicationLine: true })
-      let { applicationId, applicationLine } = context
+      const context = await RecoveryService.createApplicationContext(h, { application: true, applicationLine: true })
+      let { application, applicationLine } = context
 
       // Look up the Standard Rule based on the chosen permit type
       const standardRule = await StandardRule.getByCode(context, request.payload['chosen-permit'])
@@ -51,7 +53,7 @@ module.exports = class PermitSelectController extends BaseController {
 
       // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
       applicationLine = new ApplicationLine({
-        applicationId: applicationId,
+        applicationId: application.id,
         standardRuleId: standardRule.id,
         permitType: PermitTypes.STANDARD
       })
@@ -60,6 +62,9 @@ module.exports = class PermitSelectController extends BaseController {
 
       // Set the application ID in the cookie
       CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)
+
+      // Save the permit type in the Data store
+      await DataStore.save(context, { permitType: STANDARD_RULES })
 
       return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
     }

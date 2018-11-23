@@ -19,7 +19,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
+  sandbox.stub(Application, 'getById').callsFake(async () => mocks.application)
 })
 
 lab.afterEach(() => {
@@ -28,20 +28,20 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: MiningWasteDetails Model tests:', () => {
-  lab.test('checkComplete() method correctly returns FALSE when mining waste plan is not set', async () => {
+  lab.test('isComplete() method correctly returns FALSE when mining waste plan is not set', async () => {
     delete mocks.application.miningWastePlan
-    const result = await MiningWasteDetails.checkComplete()
+    const result = await MiningWasteDetails.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
   })
 
-  lab.test('checkComplete() method correctly returns FALSE when mining waste weight is not set', async () => {
+  lab.test('isComplete() method correctly returns FALSE when mining waste weight is not set', async () => {
     delete mocks.application.miningWasteWeight
-    const result = await MiningWasteDetails.checkComplete()
+    const result = await MiningWasteDetails.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
   })
 
-  lab.test('checkComplete() method correctly returns TRUE when mining waste plan and weight are both set', async () => {
-    const result = await MiningWasteDetails.checkComplete()
+  lab.test('isComplete() method correctly returns TRUE when mining waste plan and weight are both set', async () => {
+    const result = await MiningWasteDetails.isComplete(mocks.context)
     Code.expect(result).to.equal(true)
   })
 })

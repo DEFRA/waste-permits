@@ -2,7 +2,7 @@
 const Config = require('../config/config')
 const Constants = require('../constants')
 const Routes = require('../routes')
-const TaskList = require('../models/taskList/taskList')
+const TaskList = require('../models/taskList/base.taskList')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
@@ -68,7 +68,7 @@ module.exports = class BaseController {
 
   async checkRouteAccess (context) {
     const { ALREADY_SUBMITTED, NOT_SUBMITTED, RECOVERY_FAILED, TASK_LIST } = Routes
-    const { slug, application, applicationId, applicationLineId } = context
+    const { slug, application } = context
     if (!application) {
       return RECOVERY_FAILED.path
     }
@@ -84,7 +84,7 @@ module.exports = class BaseController {
     }
 
     if (this.tasksCompleteRequired) {
-      const isComplete = await TaskList.isComplete(context, applicationId, applicationLineId)
+      const isComplete = await TaskList.isComplete(context)
 
       // If the task list is not complete then redirect back to it and show a validation error
       if (!isComplete) {

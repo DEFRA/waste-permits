@@ -9,7 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 
 const Application = require('../../src/persistence/entities/application.entity')
-const TaskList = require('../../src/models/taskList/taskList')
+const TaskList = require('../../src/models/taskList/base.taskList')
 const RuleSet = require('../../src/models/ruleSet.model')
 const BaseCheck = require('../../src/models/checkList/base.check')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
@@ -75,7 +75,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
   sandbox.stub(RuleSet, 'getValidRuleSetIds').value(() => [fakeValidRuleSetId])
-  sandbox.stub(TaskList, 'getByApplicationLineId').value(() => new TaskList())
+  sandbox.stub(TaskList, 'buildTaskList').value(() => new TaskList())
   sandbox.stub(TaskList, 'isComplete').value(() => true)
 })
 

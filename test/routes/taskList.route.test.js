@@ -4,13 +4,15 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/persistence/entities/application.entity')
+const DataStore = require('../../src/models/dataStore.model')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
-const TaskList = require('../../src/models/taskList/taskList')
+const StandardRulesTaskList = require('../../src/models/taskList/standardRules.taskList')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
@@ -186,8 +188,14 @@ const checkElement = (element, text, href) => {
     Code.expect(element.getAttribute('href')).to.equal(href)
   }
 }
+let dataStore
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
+  dataStore = mocks.dataStore
+
   getRequest = {
     method: 'GET',
     url: routePath,
@@ -198,14 +206,20 @@ lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
+  // Stub cookies
+  GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
+    applicationId: () => fakeApplication.id
+  })
+
   // Stub methods
   sandbox.stub(CookieService, 'generateCookie').value(() => fakeCookie)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(DataStore, 'get').value(async () => dataStore)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => fakeStandardRule)
   sandbox.stub(StandardRule, 'getByCode').value(() => fakeStandardRule)
-  sandbox.stub(TaskList, 'getByApplicationLineId').value(() => fakeTaskList)
+  sandbox.stub(StandardRulesTaskList, 'buildTaskList').value(() => fakeTaskList)
 })
 
 lab.afterEach(() => {

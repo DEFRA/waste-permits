@@ -66,8 +66,6 @@ lab.experiment('RuleSet Model tests:', () => {
     const ruleSetIds = await RuleSet.getValidRuleSetIds(context, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(ruleSetIds).to.include(Object.keys(fakeParametersId))
-    // TODO: EWC: Correct this check once bespoke items are removed
-    // Code.expect(ruleSetIds.length).to.equal(Object.keys(fakeParametersId).length)
-    Code.expect(ruleSetIds.length).to.equal(Object.keys(fakeParametersId).length + 1)
+    Code.expect(ruleSetIds.length).to.equal(Object.keys(fakeParametersId).length)
   })
 })

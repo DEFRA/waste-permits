@@ -19,7 +19,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(ContactDetail, 'get').callsFake(() => mocks.contactDetail)
+  sandbox.stub(ContactDetail, 'get').callsFake(async () => mocks.contactDetail)
 })
 
 lab.afterEach(() => {
@@ -28,14 +28,14 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: ContactDetails Model tests:', () => {
-  lab.test('checkComplete() method correctly returns FALSE when the contact details are not set', async () => {
+  lab.test('isComplete() method correctly returns FALSE when the contact details are not set', async () => {
     delete mocks.contactDetail.firstName
-    const result = await ContactDetails.checkComplete()
+    const result = await ContactDetails.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
   })
 
-  lab.test('checkComplete() method correctly returns TRUE when contact details are set', async () => {
-    const result = await ContactDetails.checkComplete()
+  lab.test('isComplete() method correctly returns TRUE when contact details are set', async () => {
+    const result = await ContactDetails.isComplete(mocks.context)
     Code.expect(result).to.equal(true)
   })
 })

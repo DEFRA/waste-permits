@@ -4,13 +4,17 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const Annotation = require('../../../src/persistence/entities/annotation.entity')
 const TechnicalQualification = require('../../../src/models/taskList/technicalQualification.task')
 
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
@@ -24,14 +28,14 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: TechnicalQualification Model tests:', () => {
-  lab.test(`checkComplete() method correctly returns FALSE when annotations don't exist`, async () => {
+  lab.test(`isComplete() method correctly returns FALSE when annotations don't exist`, async () => {
     Annotation.listByApplicationIdAndSubject = () => []
-    const result = await TechnicalQualification.checkComplete()
+    const result = await TechnicalQualification.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
   })
 
-  lab.test('checkComplete() method correctly returns TRUE when annotations exist', async () => {
-    const result = await TechnicalQualification.checkComplete()
+  lab.test('isComplete() method correctly returns TRUE when annotations exist', async () => {
+    const result = await TechnicalQualification.isComplete(mocks.context)
     Code.expect(result).to.equal(true)
   })
 })
