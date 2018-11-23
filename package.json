@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "browser-sync": "^2.26.3",
-    "code": "^5.2.0",
+    "code": "^5.2.4",
     "good": "^8.1.1",
     "good-console": "^7.1.0",
     "good-file": "^6.0.1",
@@ -64,7 +64,7 @@
     "govuk_frontend_toolkit": "^8.1.0",
     "govuk_template_mustache": "^0.24.1",
     "handlebars": "^4.0.12",
-    "hapi": "^17.7.0",
+    "hapi": "^17.8.1",
     "hapi-alive": "^2.0.0",
     "hapi-dev-errors": "^3.2.0",
     "hapi-robots": "^3.1.3",
