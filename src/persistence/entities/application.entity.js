@@ -6,7 +6,7 @@ const ApplicationReturn = require('./applicationReturn.entity')
 const LoggingService = require('../../services/logging.service')
 
 const { SAVE_AND_RETURN_RECOVER } = require('../../routes')
-const { DIGITAL_SOURCE, PERMIT_HOLDER_TYPES, StatusCode, WASTE_REGIME } = require('../../dynamics')
+const { DIGITAL_SOURCE, PERMIT_HOLDER_TYPES, WASTE_REGIME } = require('../../dynamics')
 
 class Application extends BaseEntity {
   static get dynamicsEntity () {
@@ -54,7 +54,7 @@ class Application extends BaseEntity {
   }
 
   isSubmitted () {
-    return this.statusCode && (this.statusCode === StatusCode.APPLICATION_RECEIVED)
+    return Boolean(this.submittedOn)
   }
 
   get isIndividual () {
