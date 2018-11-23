@@ -737,6 +737,24 @@ const Routes = {
     validator: 'drainageTypeDrain',
     types: 'GET, POST'
   },
+  ENVIRONMENTAL_RISK_ASSESSMENT: {
+    path: '/environmental-risk-assessment',
+    view: 'upload/environmentalRiskAssessment/environmentalRiskAssessment',
+    pageHeading: 'Upload the environmental risk assessment',
+    controller: 'upload/environmentalRiskAssessment/environmentalRiskAssessment',
+    validator: 'upload/upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    validatorOptions: {
+      fileTypes: [
+        { type: 'PDF', mimeType: 'application/pdf' },
+        { type: 'DOC', mimeType: 'application/msword' },
+        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
+      ]
+    }
+  },
   FIRE_PREVENTION_PLAN: {
     path: '/fire-prevention-plan',
     view: 'upload/firePreventionPlan/firePreventionPlan',

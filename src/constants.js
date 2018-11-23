@@ -137,7 +137,8 @@ Constants.UploadSubject = {
   FIRE_PREVENTION_PLAN: 'fire prevention plan',
   WASTE_RECOVERY_PLAN: 'waste recovery plan',
   TECHNICAL_MANAGERS: 'technical managers',
-  WASTE_TYPES_LIST: 'list of waste types'
+  WASTE_TYPES_LIST: 'list of waste types',
+  ENVIRONMENTAL_RISK_ASSESSMENT: 'environmental risk assessment'
 }
 
 Constants.CookieValue = {
