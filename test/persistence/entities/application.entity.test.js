@@ -244,4 +244,13 @@ lab.experiment('Application Model tests:', () => {
     }
     Code.expect(error.message).to.equal('Application cannot have a permitHolderOrganisationId when the permit holder is an individual')
   })
+
+  lab.test('isSubmitted() true if submittedOn is set', async () => {
+    Code.expect(testApplication.isSubmitted()).to.equal(true)
+  })
+
+  lab.test('isSubmitted() false if submittedOn is not set', async () => {
+    delete testApplication.submittedOn
+    Code.expect(testApplication.isSubmitted()).to.equal(false)
+  })
 })
