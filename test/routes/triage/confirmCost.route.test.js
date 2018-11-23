@@ -19,7 +19,7 @@ const LTD_CO = { id: 'limited-company', canApplyOnline: true }
 
 const routePath = '/selected/confirm'
 const expectedActivitiesPath = '/select/bespoke/limited-company/waste'
-const nextRoutePath = `/bespoke-apply-offline` // TODO: Change to task list when that has been implemented for bespoke
+const nextRoutePath = '/task-list'
 
 let getRequest
 let postRequest

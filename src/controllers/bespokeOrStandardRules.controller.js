@@ -34,13 +34,18 @@ module.exports = class BespokeOrStandardRulesController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
     // Save the permit type in the Data store
     const permitType = request.payload['permit-type']
-    await DataStore.save(context, { permitType })
 
-    if (permitType === BESPOKE) {
-      // Enter the triage steps for bespoke
-      return this.redirect({ request, h, redirectPath: `${TRIAGE_PERMIT_TYPE.path}/bespoke` })
+    if (![BESPOKE, STANDARD_RULES].includes(permitType)) {
+      throw new Error(`Unexpected permitType: ${permitType}`)
     } else {
-      return this.redirect({ request, h, redirectPath: this.nextPath })
+      await DataStore.save(context, { permitType })
+
+      if (permitType === BESPOKE) {
+        // Enter the triage steps for bespoke
+        return this.redirect({ request, h, redirectPath: `${TRIAGE_PERMIT_TYPE.path}/bespoke` })
+      } else {
+        return this.redirect({ request, h, redirectPath: this.nextPath })
+      }
     }
   }
 }

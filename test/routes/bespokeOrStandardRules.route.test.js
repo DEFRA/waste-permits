@@ -125,7 +125,7 @@ lab.experiment('Bespoke or standard rules page tests:', () => {
   lab.experiment('POST:', () => {
     lab.test('POST on Bespoke or Standard Rules page for a standard rule redirects to the next route', async () => {
       postRequest.payload = {
-        'permit-type': 'standard-rule'
+        'permit-type': 'standard-rules'
       }
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
