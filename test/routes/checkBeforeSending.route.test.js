@@ -9,8 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 
 const Application = require('../../src/persistence/entities/application.entity')
-const TaskList = require('../../src/models/taskList/base.taskList')
-const RuleSet = require('../../src/models/ruleSet.model')
+const BaseTaskList = require('../../src/models/taskList/base.taskList')
 const BaseCheck = require('../../src/models/checkList/base.check')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
 const CookieService = require('../../src/services/cookie.service')
@@ -43,10 +42,16 @@ lab.beforeEach(() => {
     ]
   }
 
+  class TaskList extends BaseTaskList {
+    async isAvailable (task = {}) {
+      return task.ruleSetId === fakeValidRuleSetId
+    }
+  }
+
   // Should be included in page
   class ValidCheck extends BaseCheck {
-    static get ruleSetId () {
-      return fakeValidRuleSetId
+    static get task () {
+      return { ruleSetId: fakeValidRuleSetId }
     }
 
     get prefix () {
@@ -60,8 +65,8 @@ lab.beforeEach(() => {
 
   // Should not be included in page
   class InvalidCheck extends BaseCheck {
-    static get ruleSetId () {
-      return fakeInvalidRuleSetId
+    static get task () {
+      return { ruleSetId: fakeInvalidRuleSetId }
     }
   }
 
@@ -74,9 +79,9 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
-  sandbox.stub(RuleSet, 'getValidRuleSetIds').value(() => [fakeValidRuleSetId])
-  sandbox.stub(TaskList, 'buildTaskList').value(() => new TaskList())
-  sandbox.stub(TaskList, 'isComplete').value(() => true)
+  sandbox.stub(BaseTaskList, 'getTaskListClass').value(() => TaskList)
+  sandbox.stub(BaseTaskList, 'buildTaskList').value(() => new TaskList())
+  sandbox.stub(BaseTaskList, 'isComplete').value(() => true)
 })
 
 lab.afterEach(() => {

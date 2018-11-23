@@ -4,8 +4,8 @@ const { path } = require('../../routes').CONFIDENTIALITY
 const { CONFIRM_CONFIDENTIALLY } = require('../../tasks').tasks
 
 module.exports = class ConfidentialityCheck extends BaseCheck {
-  static get ruleSetId () {
-    return CONFIRM_CONFIDENTIALLY.ruleSetId
+  static get task () {
+    return CONFIRM_CONFIDENTIALLY
   }
 
   get prefix () {

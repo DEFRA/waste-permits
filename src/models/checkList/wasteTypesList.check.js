@@ -4,8 +4,8 @@ const { WASTE_TYPES_LIST } = require('../../tasks').tasks
 const { WASTE_TYPES_LIST: { path } } = require('../../routes')
 
 module.exports = class WasteTypesListCheck extends BaseCheck {
-  static get ruleSetId () {
-    return WASTE_TYPES_LIST.ruleSetId
+  static get task () {
+    return WASTE_TYPES_LIST
   }
 
   get prefix () {

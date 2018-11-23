@@ -9,7 +9,6 @@ const StandardRule = require('../../persistence/entities/standardRule.entity')
 const ContactDetail = require('../contactDetail.model')
 
 const {
-  PRIMARY_CONTACT_DETAILS,
   DESIGNATED_MEMBER_CONTACT_DETAILS,
   BILLING_INVOICING,
   PUBLIC_BODY_MAIN_ADDRESS,
@@ -112,11 +111,7 @@ module.exports = class BaseCheck {
   async getContactDetails (addressType) {
     const list = await this.listContactDetails(addressType)
     // return the first found
-    return list.pop()
-  }
-
-  async getPrimaryContactDetails () {
-    return this.getContactDetails(PRIMARY_CONTACT_DETAILS)
+    return list.pop() || {}
   }
 
   async getPermitHolderType () {

@@ -4,8 +4,8 @@ const { SITE_NAME_LOCATION } = require('../../tasks').tasks
 const { SITE_NAME, SITE_GRID_REFERENCE, POSTCODE_SITE, MANUAL_SITE } = require('../../routes')
 
 module.exports = class SiteCheck extends BaseCheck {
-  static get ruleSetId () {
-    return SITE_NAME_LOCATION.ruleSetId
+  static get task () {
+    return SITE_NAME_LOCATION
   }
 
   get prefix () {

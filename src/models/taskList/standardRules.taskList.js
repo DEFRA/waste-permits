@@ -8,8 +8,12 @@ module.exports = class StandardRulesTaskList extends BaseTaskList {
     return standardRules
   }
 
-  async isAvailable (task) {
+  async isAvailable (task = {}) {
     const ruleSetIds = await RuleSet.getValidRuleSetIds(this.context)
     return task.required || ruleSetIds.includes(task.ruleSetId)
+  }
+
+  static get isStandardRules () {
+    return true
   }
 }

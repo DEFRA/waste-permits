@@ -36,7 +36,7 @@ lab.afterEach(() => {
 
 lab.experiment('Contact Check tests:', () => {
   lab.test('ruleSetId works correctly', async () => {
-    Code.expect(ContactCheck.ruleSetId).to.equal('defra_contactdetailsrequired')
+    Code.expect(ContactCheck.task.ruleSetId).to.equal('defra_contactdetailsrequired')
   })
 
   lab.experiment('buildlines', () => {

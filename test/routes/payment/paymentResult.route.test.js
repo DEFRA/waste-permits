@@ -67,13 +67,14 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => fakeApplication.submitted)
-  sandbox.stub(Application.prototype, 'save').value(() => fakeApplication.id)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
-  sandbox.stub(Payment.prototype, 'getCardPaymentResult').value(() => fakePayment.status)
+  sandbox.stub(Application.prototype, 'save').value(async () => undefined)
+  sandbox.stub(Application, 'getById').value(async () => new Application(fakeApplication))
+  sandbox.stub(ApplicationLine, 'getById').value(async () => new ApplicationLine(fakeApplicationLine))
+  sandbox.stub(Payment.prototype, 'getCardPaymentResult').value(async () => fakePayment.status)
+  sandbox.stub(TaskList, 'getTaskListClass').value(async () => TaskList)
+  sandbox.stub(TaskList, 'isComplete').value(async () => true)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
-  sandbox.stub(TaskList, 'isComplete').value(() => true)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => fakeRecovery())
 })
 
 lab.afterEach(() => {
@@ -81,7 +82,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment(`How do you want to pay?:`, () => {
+lab.experiment(`Payment result:`, () => {
   new GeneralTestHelper({ lab, routePath }).test({
     excludeHtmlTests: true,
     excludeCookieGetTests: true,

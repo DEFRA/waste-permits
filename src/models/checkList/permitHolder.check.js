@@ -40,8 +40,8 @@ const {
 const blankLine = { blankLine: true }
 
 module.exports = class PermitHolderCheck extends BaseCheck {
-  static get ruleSetId () {
-    return PERMIT_HOLDER_DETAILS.ruleSetId
+  static get task () {
+    return PERMIT_HOLDER_DETAILS
   }
 
   get prefix () {

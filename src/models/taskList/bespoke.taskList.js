@@ -7,8 +7,8 @@ module.exports = class BespokeTaskList extends BaseTaskList {
     return bespoke
   }
 
-  async isAvailable (task) {
+  async isAvailable (task = {}) {
     // ToDo: Filter tasks correctly for bespoke
-    return true
+    return Boolean(task.shortName)
   }
 }

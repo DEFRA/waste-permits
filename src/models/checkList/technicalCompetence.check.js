@@ -6,8 +6,8 @@ const { TECHNICAL_QUALIFICATION: { path } } = require('../../routes')
 const { WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS } = Dynamics.TechnicalQualification
 
 module.exports = class TechnicalCheck extends BaseCheck {
-  static get ruleSetId () {
-    return TECHNICAL_QUALIFICATION.ruleSetId
+  static get task () {
+    return TECHNICAL_QUALIFICATION
   }
 
   get prefix () {

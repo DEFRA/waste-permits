@@ -4,8 +4,8 @@ const { INVOICING_DETAILS } = require('../../tasks').tasks
 const { POSTCODE_INVOICE, MANUAL_INVOICE } = require('../../routes')
 
 module.exports = class InvoiceCheck extends BaseCheck {
-  static get ruleSetId () {
-    return INVOICING_DETAILS.ruleSetId
+  static get task () {
+    return INVOICING_DETAILS
   }
 
   get prefix () {

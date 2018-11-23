@@ -7,15 +7,18 @@ const tasks = {
   },
   BASIC_OPERATION_DETAILS: {
     id: 'basic-operation-details',
-    label: 'Give basic details about the operation'
+    label: 'Give basic details about the operation',
+    shortName: 'basicdetails'
   },
   BATTERY_PROCESSING: {
     id: 'battery-processing',
-    label: 'Battery processing'
+    label: 'Battery processing',
+    shortName: 'battery'
   },
   CLINICAL_WASTE_TEMPLATE: {
     id: 'clinical-waste-template',
-    label: 'Complete and upload the clinical waste template and supporting documents'
+    label: 'Complete and upload the clinical waste template and supporting documents',
+    shortName: 'clinical'
   },
   CONFIRM_CONFIDENTIALLY: {
     id: 'confirm-confidentiality-needs',
@@ -23,6 +26,7 @@ const tasks = {
     route: Routes.CONFIDENTIALITY,
     completedLabelId: 'confidentiality-completed',
     ruleSetId: 'defra_cnfconfidentialityreq',
+    shortName: 'confidentiality',
     taskListModel: 'confidentiality'
   },
   CONFIRM_RULES: {
@@ -39,21 +43,25 @@ const tasks = {
     route: Routes.CONTACT_DETAILS,
     completedLabelId: 'contact-details-completed',
     ruleSetId: 'defra_contactdetailsrequired',
+    shortName: 'contact',
     taskListModel: 'contactDetails'
   },
   EMISSIONS_AND_MONITORING: {
     id: 'emissions-and-monitoring',
-    label: 'Tell us about emissions and monitoring'
+    label: 'Tell us about emissions and monitoring',
+    shortName: 'emissionsmonitoring'
   },
   EMISSIONS_MANAGEMENT_PLAN: {
     id: 'emissions-management-plan',
-    label: 'Upload the emissions management plan'
+    label: 'Upload the emissions management plan',
+    shortName: 'emissionsplan'
   },
   ENVIRONMENTAL_RISK_ASSESSMENT: {
     id: 'environmental-risk-assessment',
     label: 'Upload the environmental risk assessment',
     route: Routes.ENVIRONMENTAL_RISK_ASSESSMENT,
     completedLabelId: 'environmental-risk-assessment-completed',
+    shortName: 'envrisk',
     taskListModel: 'environmentalRiskAssessment'
   },
   FIRE_PREVENTION_PLAN: {
@@ -62,15 +70,18 @@ const tasks = {
     route: Routes.FIRE_PREVENTION_PLAN,
     completedLabelId: 'firepp-completed',
     ruleSetId: 'defra_fireplanrequired',
+    shortName: 'fireplan',
     taskListModel: 'firePreventionPlan'
   },
   HABITATS_ASSESSMENT: {
     id: 'habitats-assessment',
-    label: 'Habitats assessment'
+    label: 'Habitats assessment',
+    shortName: 'habitats'
   },
   HAZARDOUS_WASTE_TEMPLATE: {
     id: 'hazardous-waste-template',
-    label: 'Complete and upload the hazardous waste template and supporting documents'
+    label: 'Complete and upload the hazardous waste template and supporting documents',
+    shortName: 'hazwaste'
   },
   INVOICING_DETAILS: {
     id: 'invoicing-details',
@@ -78,6 +89,7 @@ const tasks = {
     route: Routes.POSTCODE_INVOICE,
     completedLabelId: 'invoicing-details-completed',
     ruleSetId: 'defra_invoicingdetailsrequired',
+    shortName: 'invoicing',
     taskListModel: 'invoiceAddress'
   },
   MINING_DATA: {
@@ -97,7 +109,8 @@ const tasks = {
   },
   MANAGEMENT_SYSTEM_SUMMARY: {
     id: 'management-system-summary',
-    label: 'Provide a management system summary'
+    label: 'Provide a management system summary',
+    shortName: 'mansys'
   },
   MINING_WASTE_MANAGEMENT_PLAN: {
     id: 'mining-waste-management-plan',
@@ -105,7 +118,8 @@ const tasks = {
   },
   NEED_TO_CONSULT: {
     id: 'need-to-consult',
-    label: 'Tell us who we need to consult'
+    label: 'Tell us who we need to consult',
+    shortName: 'consult'
   },
   NHS_SCREENING: {
     id: 'nhs-screening',
@@ -113,18 +127,21 @@ const tasks = {
   },
   NOISE_MANAGEMENT_PLAN: {
     id: 'noise-management-plan',
-    label: 'Upload the noise and vibration management plan'
+    label: 'Upload the noise and vibration management plan',
+    shortName: 'noiseplan'
   },
   NON_TECHNICAL_SUMMARY: {
     id: 'non-technical-summary',
     label: 'Upload a non-technical summary',
     route: Routes.NON_TECHNICAL_SUMMARY,
     completedLabelId: 'non-technical-summary-completed',
+    shortName: 'nontechnical',
     taskListModel: 'nonTechnicalSummary'
   },
   ODOUR_MANAGEMENT_PLAN: {
     id: 'odour-management-plan',
-    label: 'Upload the odour management plan'
+    label: 'Upload the odour management plan',
+    shortName: 'odourplan'
   },
   PERMIT_HOLDER_DETAILS: {
     id: 'give-permit-holder-details',
@@ -132,6 +149,7 @@ const tasks = {
     route: Routes.PERMIT_HOLDER_DETAILS,
     completedLabelId: 'site-operator-completed',
     ruleSetId: 'defra_pholderdetailsrequired',
+    shortName: 'permitholder',
     taskListModel: 'permitHolderDetails'
   },
   PRE_APPLICATION: {
@@ -139,11 +157,13 @@ const tasks = {
     label: 'Tell us if you have discussed this application with us',
     route: Routes.PRE_APPLICATION,
     completedLabelId: 'preapp-completed',
-    ruleSetId: 'defra_preapprequired'
+    ruleSetId: 'defra_preapprequired',
+    shortName: 'preapp'
   },
   RECOVERY_AND_DISPOSAL_CODES: {
     id: 'recovery-and-disposal-codes',
-    label: 'List the recovery and disposal codes for your activities'
+    label: 'List the recovery and disposal codes for your activities',
+    shortName: 'rdcode'
   },
   SAVE_AND_RETURN_EMAIL: {
     id: 'set-up-save-and-return',
@@ -151,11 +171,13 @@ const tasks = {
     route: Routes.SAVE_AND_RETURN_EMAIL,
     completedLabelId: 'set-up-save-and-return-completed',
     ruleSetId: 'defra_setupsaveandreturnrequired',
+    shortName: 'save',
     taskListModel: 'saveAndReturn'
   },
   SHIP_BREAKING: {
     id: 'ship-breaking',
-    label: 'Ship breaking'
+    label: 'Ship breaking',
+    shortName: 'ships'
   },
   SHOW_COST_AND_TIME: {
     id: 'check-permit-cost-and-time',
@@ -167,7 +189,8 @@ const tasks = {
   },
   SITE_CONDITION_REPORT: {
     id: 'site-condition-report',
-    label: 'Upload the site condition report'
+    label: 'Upload the site condition report',
+    shortName: 'sitecondition'
   },
   SITE_NAME_LOCATION: {
     id: 'give-site-name-and-location',
@@ -175,6 +198,7 @@ const tasks = {
     route: Routes.SITE_NAME,
     completedLabelId: 'site-name-completed',
     ruleSetId: 'defra_locationrequired',
+    shortName: 'sitename',
     taskListModel: 'siteNameAndLocation'
   },
   SITE_PLAN: {
@@ -183,6 +207,7 @@ const tasks = {
     route: Routes.SITE_PLAN,
     completedLabelId: 'site-plan-completed',
     ruleSetId: 'defra_siteplanrequired',
+    shortName: 'siteplan',
     taskListModel: 'sitePlan'
   },
   STACK_HEIGHT: {
@@ -194,6 +219,7 @@ const tasks = {
     label: 'Send application and pay',
     route: Routes.CHECK_BEFORE_SENDING,
     completedLabelId: 'submit-and-pay',
+    shortName: 'sendpay',
     required: true
   },
   SURFACE_DRAINAGE: {
@@ -210,11 +236,13 @@ const tasks = {
     route: Routes.TECHNICAL_QUALIFICATION,
     completedLabelId: 'upload-completed',
     ruleSetId: 'defra_techcompetenceevreq',
+    shortName: 'techcomp',
     taskListModel: 'technicalQualification'
   },
   TECHNICAL_STANDARDS: {
     id: 'technical-standards',
-    label: 'List the technical standards you use'
+    label: 'List the technical standards you use',
+    shortName: 'techstandards'
   },
   WASTE_RECOVERY_PLAN: {
     id: 'waste-recovery-plan',
@@ -222,6 +250,7 @@ const tasks = {
     route: Routes.WASTE_RECOVERY_PLAN_APPROVAL,
     completedLabelId: 'waste-recovery-plan-completed',
     ruleSetId: 'defra_wasterecoveryplanreq',
+    shortName: 'wrp',
     taskListModel: 'wasteRecoveryPlan'
   },
   WASTE_TYPES_LIST: {
@@ -229,6 +258,7 @@ const tasks = {
     label: 'List the types of waste you want to accept',
     route: Routes.WASTE_TYPES_LIST,
     completedLabelId: 'waste-types-list-completed',
+    shortName: 'ewc',
     taskListModel: 'wasteTypesList'
   },
   WASTE_WEIGHT: {
