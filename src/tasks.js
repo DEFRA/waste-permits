@@ -117,7 +117,10 @@ const tasks = {
   },
   NON_TECHNICAL_SUMMARY: {
     id: 'non-technical-summary',
-    label: 'Upload a non-technical summary'
+    label: 'Upload a non-technical summary',
+    route: Routes.NON_TECHNICAL_SUMMARY,
+    completedLabelId: 'non-technical-summary-completed',
+    taskListModel: 'nonTechnicalSummary'
   },
   ODOUR_MANAGEMENT_PLAN: {
     id: 'odour-management-plan',

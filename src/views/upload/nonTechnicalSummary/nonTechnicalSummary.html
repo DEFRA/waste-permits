@@ -1,0 +1,48 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+        <div id="has-no-annotations" class="form-group">
+          <div id="non-technical-summary-description">
+            <p>
+              Write a summary that explains your application in non technical language.
+              Avoid using technical terms, detailed data and scientific discussion in this summary.
+              You should give more detailed information in the risk assessment and technical standards documents
+              which you will upload separately.
+            </p>
+            <p>It should include:</p>
+            <ul class="list list-bullet">
+              <li>a summary of the regulated facility</li>
+              <li>a summary of the key technical standards and control measures arising from your risk assessment</li>
+            </ul>
+            <p>If your application is for mobile plant, you must:</p>
+            <ul class="list list-bullet">
+              <li>explain how you intend to operate</li>
+              <li>describe the mobility of your plant</li>
+              <li>tell us how the activities you want to carry out could impact land quality</li>
+            </ul>
+          </div>
+        </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

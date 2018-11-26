@@ -16,6 +16,7 @@ const InvoiceCheck = require('../models/checkList/invoice.check')
 const MiningWasteCheck = require('../models/checkList/miningWaste.check')
 const WasteTypesListCheck = require('../models/checkList/wasteTypesList.check')
 const EnvironmentalRiskAssessmentCheck = require('../models/checkList/environmentalRiskAssessment.check')
+const NonTechnicalSummaryCheck = require('../models/checkList/nonTechnicalSummary.check')
 const RuleSet = require('../models/ruleSet.model')
 
 module.exports = class CheckBeforeSendingController extends BaseController {
@@ -37,7 +38,8 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       ConfidentialityCheck,
       InvoiceCheck,
       WasteTypesListCheck,
-      EnvironmentalRiskAssessmentCheck
+      EnvironmentalRiskAssessmentCheck,
+      NonTechnicalSummaryCheck
     ]
   }
 

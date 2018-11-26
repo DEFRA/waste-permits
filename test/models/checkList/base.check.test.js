@@ -279,4 +279,11 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(environmentalRiskAssessment).to.equal([fakeAnnotation])
     Code.expect(context.environmentalRiskAssessment).to.equal(await check.getEnvironmentalRiskAssessment())
   })
+
+  lab.test('getNonTechnicalSummary works correctly', async () => {
+    const check = new BaseCheck(context)
+    const nonTechnicalSummary = await check.getNonTechnicalSummary()
+    Code.expect(nonTechnicalSummary).to.equal([fakeAnnotation])
+    Code.expect(context.nonTechnicalSummary).to.equal(await check.getNonTechnicalSummary())
+  })
 })
