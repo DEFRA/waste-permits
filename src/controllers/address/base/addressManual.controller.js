@@ -12,13 +12,13 @@ module.exports = class AddressManualController extends BaseController {
     }
     const pageContext = this.createPageContext(request, errors)
     pageContext.errorSummaryTitle = addressLookupFailed ? 'Our address finder is not working' : ''
-    const { applicationId, applicationLineId } = await RecoveryService.createApplicationContext(h)
+    await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
       pageContext.formValues = request.payload
     } else {
-      const address = await this.getModel().getAddress(request, applicationId, applicationLineId)
+      const address = await this.getModel().getAddress(request)
       if (address) {
         pageContext.formValues = {
           'building-name-or-number': address.buildingNameOrNumber,

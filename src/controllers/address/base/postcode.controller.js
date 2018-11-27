@@ -8,14 +8,14 @@ const Address = require('../../../persistence/entities/address.entity')
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
-    const { applicationId, applicationLineId } = await RecoveryService.createApplicationContext(h)
+    await RecoveryService.createApplicationContext(h)
     const model = await this.getModel()
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
       pageContext.formValues = request.payload
     } else {
-      const address = await model.getAddress(request, applicationId, applicationLineId)
+      const address = await model.getAddress(request)
       if (address) {
         // If the manual entry flag is set then redirect off to the mamual address entry page instead
         if (!address.fromAddressLookup) {
