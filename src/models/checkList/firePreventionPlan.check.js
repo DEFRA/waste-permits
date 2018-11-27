@@ -4,8 +4,8 @@ const { FIRE_PREVENTION_PLAN } = require('../../tasks').tasks
 const { FIRE_PREVENTION_PLAN: { path } } = require('../../routes')
 
 module.exports = class FirePreventionPlanCheck extends BaseCheck {
-  static get ruleSetId () {
-    return FIRE_PREVENTION_PLAN.ruleSetId
+  static get task () {
+    return FIRE_PREVENTION_PLAN
   }
 
   get prefix () {

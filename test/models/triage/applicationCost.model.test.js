@@ -6,8 +6,6 @@ const Code = require('code')
 const sinon = require('sinon')
 
 const ApplicationCostModel = require('../../../src/models/triage/applicationCost.model')
-const Activity = require('../../../src/models/triage/activity.model')
-const Assessment = require('../../../src/models/triage/assessment.model')
 const ItemEntity = require('../../../src/persistence/entities/item.entity')
 const ApplicationEntity = require('../../../src/persistence/entities/application.entity')
 const ApplicationLineEntity = require('../../../src/persistence/entities/applicationLine.entity')
@@ -90,15 +88,11 @@ const COST_TEXT = ['£1,000.01', '£2,000.01', undefined, '£100.01', '£200.01'
 
 let fakeApplicationEntity
 let fakeApplicationLineEntities
-let fakeActivities
-let fakeAssessments
 
 lab.experiment('Application Cost Model test:', () => {
   let sandbox
 
   lab.beforeEach(() => {
-    fakeActivities = ITEMS.activities.map((item) => Activity.createFromItemEntity(item))
-    fakeAssessments = ITEMS.assessments.map((item) => Assessment.createFromItemEntity(item))
     fakeApplicationEntity = new ApplicationEntity({
       id: FAKE_APPLICATION_ID,
       applicantType: DYNAMICS_PERMIT_HOLDER_TYPES.PARTNERSHIP.dynamicsApplicantTypeId,

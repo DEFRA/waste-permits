@@ -71,11 +71,12 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(Payment, 'getBacsPaymentDetails').value(() => new Payment(fakePayment))
-  sandbox.stub(Payment.prototype, 'save').value(() => {})
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
-  sandbox.stub(TaskList, 'isComplete').value(() => true)
+  sandbox.stub(Application.prototype, 'save').value(async () => undefined)
+  sandbox.stub(Payment, 'getBacsPaymentDetails').value(async () => new Payment(fakePayment))
+  sandbox.stub(Payment.prototype, 'save').value(async () => undefined)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => fakeRecovery())
+  sandbox.stub(TaskList, 'getTaskListClass').value(async () => TaskList)
+  sandbox.stub(TaskList, 'isComplete').value(async () => true)
 })
 
 lab.afterEach(() => {

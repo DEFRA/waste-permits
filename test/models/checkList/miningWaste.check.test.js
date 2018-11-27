@@ -32,7 +32,7 @@ lab.afterEach(() => {
 
 lab.experiment('Mining Waste Check tests:', () => {
   lab.test('ruleSetId works correctly', async () => {
-    Code.expect(MiningWasteCheck.ruleSetId).to.equal('defra_miningdatarequired')
+    Code.expect(MiningWasteCheck.task.ruleSetId).to.equal('defra_miningdatarequired')
   })
 
   lab.experiment('buildlines', () => {

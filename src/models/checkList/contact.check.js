@@ -5,8 +5,8 @@ const { CONTACT_DETAILS } = require('../../tasks').tasks
 const { PRIMARY_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 
 module.exports = class ContactCheck extends BaseCheck {
-  static get ruleSetId () {
-    return CONTACT_DETAILS.ruleSetId
+  static get task () {
+    return CONTACT_DETAILS
   }
 
   get prefix () {

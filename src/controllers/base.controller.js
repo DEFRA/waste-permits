@@ -2,7 +2,7 @@
 const Config = require('../config/config')
 const Constants = require('../constants')
 const Routes = require('../routes')
-const TaskList = require('../models/taskList/base.taskList')
+const BaseTaskList = require('../models/taskList/base.taskList')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
@@ -84,6 +84,7 @@ module.exports = class BaseController {
     }
 
     if (this.tasksCompleteRequired) {
+      const TaskList = await BaseTaskList.getTaskListClass(context)
       const isComplete = await TaskList.isComplete(context)
 
       // If the task list is not complete then redirect back to it and show a validation error

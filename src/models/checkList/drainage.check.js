@@ -6,8 +6,8 @@ const path = require('../../routes').DRAINAGE_TYPE_DRAIN.path
 const DrainageTypes = Dynamics.DrainageTypes
 
 module.exports = class DrainageCheck extends BaseCheck {
-  static get ruleSetId () {
-    return SURFACE_DRAINAGE.ruleSetId
+  static get task () {
+    return SURFACE_DRAINAGE
   }
 
   get prefix () {

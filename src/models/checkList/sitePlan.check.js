@@ -4,8 +4,8 @@ const { SITE_PLAN } = require('../../tasks').tasks
 const { SITE_PLAN: { path } } = require('../../routes')
 
 module.exports = class SitePlanCheck extends BaseCheck {
-  static get ruleSetId () {
-    return SITE_PLAN.ruleSetId
+  static get task () {
+    return SITE_PLAN
   }
 
   get prefix () {

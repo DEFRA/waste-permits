@@ -6,8 +6,8 @@ const { CONFIRM_MINING_WASTE_PLAN, MINING_WASTE_WEIGHT } = require('../../routes
 const MiningWastePlans = Dynamics.MiningWastePlans
 
 module.exports = class MiningWasteCheck extends BaseCheck {
-  static get ruleSetId () {
-    return MINING_DATA.ruleSetId
+  static get task () {
+    return MINING_DATA
   }
 
   get prefix () {

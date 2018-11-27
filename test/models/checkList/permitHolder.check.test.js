@@ -61,7 +61,7 @@ lab.afterEach(() => {
 
 lab.experiment('PermitHolder Check tests:', () => {
   lab.test('ruleSetId works correctly', async () => {
-    Code.expect(PermitHolderCheck.ruleSetId).to.equal('defra_pholderdetailsrequired')
+    Code.expect(PermitHolderCheck.task.ruleSetId).to.equal('defra_pholderdetailsrequired')
   })
 
   lab.experiment('buildlines', () => {

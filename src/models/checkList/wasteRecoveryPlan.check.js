@@ -5,8 +5,8 @@ const { WASTE_RECOVERY_PLAN_APPROVAL } = require('../../routes')
 const { RecoveryPlanAssessmentStatus } = require('../../dynamics')
 
 module.exports = class WasteRecoveryPlanCheck extends BaseCheck {
-  static get ruleSetId () {
-    return WASTE_RECOVERY_PLAN.ruleSetId
+  static get task () {
+    return WASTE_RECOVERY_PLAN
   }
 
   get prefix () {

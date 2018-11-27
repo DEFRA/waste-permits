@@ -34,7 +34,7 @@ lab.afterEach(() => {
 
 lab.experiment('Invoice Check tests:', () => {
   lab.test('ruleSetId works correctly', async () => {
-    Code.expect(InvoiceCheck.ruleSetId).to.equal('defra_invoicingdetailsrequired')
+    Code.expect(InvoiceCheck.task.ruleSetId).to.equal('defra_invoicingdetailsrequired')
   })
 
   lab.experiment('buildlines', () => {

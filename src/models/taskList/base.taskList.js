@@ -1,6 +1,8 @@
 'use strict'
 
 const config = require('../../config/config')
+const DataStore = require('../../models/dataStore.model')
+const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = require('../../constants').PermitTypes
 
 class BaseTaskList {
   constructor (context) {
@@ -14,6 +16,16 @@ class BaseTaskList {
 
   async isAvailable () {
     throw new Error('isAvailable function must be defined in sub class')
+  }
+
+  static async getTaskListClass (context) {
+    const dataStore = await DataStore.get(context)
+    context.permitType = dataStore.data.permitType
+    switch (context.permitType) {
+      case STANDARD_RULES: return require('./standardRules.taskList')
+      case BESPOKE: return require('./bespoke.taskList')
+      default: throw new Error(`Unexpected permitType: ${context.permitType}`)
+    }
   }
 
   async getTaskModel (taskListModelId) {
