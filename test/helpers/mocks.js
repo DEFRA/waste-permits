@@ -5,6 +5,7 @@ const Address = require('../../src/persistence/entities/address.entity')
 const AddressDetail = require('../../src/persistence/entities/addressDetail.entity')
 const Application = require('../../src/persistence/entities/application.entity')
 const Annotation = require('../../src/persistence/entities/annotation.entity')
+const ApplicationAnswer = require('../../src/persistence/entities/applicationAnswer.entity')
 const ApplicationData = require('../../src/persistence/entities/applicationData.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
 const ApplicationReturn = require('../../src/persistence/entities/applicationReturn.entity')
@@ -18,6 +19,8 @@ const DataStore = require('../../src/models/dataStore.model')
 
 const ApplicationCostModel = require('../../src/models/triage/applicationCost.model')
 const ApplicationCostItemModel = require('../../src/models/triage/applicationCostItem.model')
+
+const NeedToConsult = require('../../src/models/needToConsult.model')
 
 // ************* Data used by exported mocks ************* //
 class MockData {
@@ -83,6 +86,14 @@ class MockData {
       bankruptcy: true,
       bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS',
       saveAndReturnEmail: 'SAVE@RETURN.EMAIL'
+    }
+  }
+
+  get applicationAnswer () {
+    return {
+      questionCode: 'QUESTION_CODE',
+      answerCode: 'ANSWER_CODE',
+      answerText: 'ANSWER_TEXT'
     }
   }
 
@@ -227,6 +238,11 @@ class Mocks {
     return this._application || (this._application = new Application(application))
   }
 
+  get application () {
+    const { application } = this.mockData
+    return this._application || (this._application = new Application(application))
+  }
+
   get applicationCostModel () {
     const { applicationCostItemModel, totalCostItemModel } = this.mockData
     return this._applicationCostModel || (this._applicationCostModel =
@@ -234,6 +250,17 @@ class Mocks {
         applicationCostItems: [new ApplicationCostItemModel(applicationCostItemModel)],
         totalCostItem: new ApplicationCostItemModel(totalCostItemModel)
       }))
+  }
+
+  get applicationAnswers () {
+    const { applicationAnswer } = this.mockData
+    return this._applicationAnswers || (this._applicationAnswers = [
+      new ApplicationAnswer(applicationAnswer),
+      new ApplicationAnswer(applicationAnswer),
+      new ApplicationAnswer(applicationAnswer),
+      new ApplicationAnswer(applicationAnswer),
+      new ApplicationAnswer(applicationAnswer)
+    ])
   }
 
   get applicationData () {
@@ -286,6 +313,10 @@ class Mocks {
   get locationDetail () {
     const { locationDetail } = this.mockData
     return this._locationDetail || (this._locationDetail = new LocationDetail(locationDetail))
+  }
+
+  get needToConsult () {
+    return this._needToConsult || (this._needToConsult = new NeedToConsult())
   }
 
   get permitHolderType () {

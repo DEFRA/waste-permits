@@ -67,9 +67,16 @@ module.exports = class BaseValidator {
       // The error path leads from the field to the descendant property of that field that has the error.
       // Usually there is only one item in the path as field values are not typically objects however in the case of an input of type file
       // the value is an object so content-type for example is a descendant property of that object and the error will be found in the path to content-type.
+      let fieldName
+      let propertyWithError
       if (error.path.length) {
-        const fieldName = error.path[0] // field that the error is to be associated with.
-        const propertyWithError = error.path.pop() // the descendant in the path where the error can be found.
+        fieldName = error.path[0] // field that the error is to be associated with.
+        propertyWithError = error.path.pop() // the descendant in the path where the error can be found.
+      } else {
+        // Validation errors on the root of the request payload need to be labelled with the name of the field that the error should be attached to.
+        fieldName = propertyWithError = error.context.label
+      }
+      if (fieldName) {
         const { supressField = false } = error.options || {}
         if (!supressField && !pageContext.errors[fieldName]) {
           // Create an array to hold all the errors that will refer to this fieldName

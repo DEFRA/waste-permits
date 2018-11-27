@@ -805,6 +805,15 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
+  NEED_TO_CONSULT: {
+    path: '/consultation/names',
+    view: 'needToConsult',
+    pageHeading: 'Will the operation release any substance into a sewer, harbour or coastal or territorial waters?',
+    controller: 'needToConsult',
+    validator: 'needToConsult',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   NON_TECHNICAL_SUMMARY: {
     path: '/non-technical-summary',
     view: 'upload/nonTechnicalSummary/nonTechnicalSummary',

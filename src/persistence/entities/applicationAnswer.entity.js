@@ -11,9 +11,9 @@ class ApplicationAnswer extends BaseEntity {
 
   static get mapping () {
     return [
-      { field: 'questionCode', dynamics: '', actionField: 'QuestionCode' },
+      { field: 'questionCode', dynamics: 'question.defra_shortname', actionField: 'QuestionCode' },
       { field: 'answerCode', dynamics: 'answeroption.defra_shortname', actionField: 'AnswerCode' },
-      { field: 'answerText', dynamics: 'answeroption.defra_option', actionField: 'AnswerText' }
+      { field: 'answerText', dynamics: 'defra_answertext', actionField: 'AnswerText' }
     ]
   }
 
@@ -44,9 +44,10 @@ class ApplicationAnswer extends BaseEntity {
     return this.save(context)
   }
 
-  static buildQuery (context, questionCode) {
+  static buildQuery (context, questionCodes) {
     const { applicationId } = context
-    return `
+
+    const firstPart = `
           <fetch top="1000" no-lock="true">
             <entity name="defra_applicationanswer">
               <attribute name="defra_answer_option" />
@@ -59,9 +60,16 @@ class ApplicationAnswer extends BaseEntity {
                 <condition attribute="statecode" operator="eq" value="0" />
               </filter>
               <link-entity name="defra_applicationquestion" from="defra_applicationquestionid" to="defra_question" link-type="inner" alias="question">
+                <attribute name="defra_shortname" />
                 <filter type="and">
                   <condition attribute="statecode" operator="eq" value="0" />
-                  <condition attribute="defra_shortname" operator="eq" value="${questionCode}" />
+                  <condition attribute="defra_shortname" operator="in">
+      `.replace(/\n\s+/g, '')
+
+    const values = questionCodes.map((questionCode) => `<value>${questionCode}</value>`).join('')
+
+    const lastPart = `
+                  </condition>
                 </filter>
               </link-entity>
               <link-entity name="defra_applicationquestionoption" from="defra_applicationquestionoptionid" to="defra_answer_option" link-type="outer" alias="answeroption">
@@ -74,15 +82,17 @@ class ApplicationAnswer extends BaseEntity {
             </entity>
           </fetch>
           `.replace(/\n\s+/g, '')
+
+    return firstPart + values + lastPart
   }
 
   static async getByQuestionCode (context, questionCode) {
-    const answers = await this.listUsingFetchXml(context, this.buildQuery(context, questionCode))
-    const answer = answers.pop()
-    if (answer) {
-      answer.questionCode = questionCode
-    }
-    return answer
+    const answers = await this.listUsingFetchXml(context, this.buildQuery(context, [questionCode]))
+    return answers.pop()
+  }
+
+  static async listByMultipleQuestionCodes (context, questionCodes) {
+    return this.listUsingFetchXml(context, this.buildQuery(context, questionCodes))
   }
 }
 

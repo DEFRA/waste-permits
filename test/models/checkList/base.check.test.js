@@ -15,6 +15,7 @@ const LocationDetail = require('../../../src/persistence/entities/locationDetail
 const StandardRule = require('../../../src/persistence/entities/standardRule.entity')
 
 const ContactDetail = require('../../../src/models/contactDetail.model')
+const NeedToConsult = require('../../../src/models/needToConsult.model')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const day = 1
@@ -33,6 +34,7 @@ let fakeAddress
 let fakePermitHolderType
 let fakeStandardRule
 let fakeAnnotation
+let fakeNeedToConsult
 
 let sandbox
 let context
@@ -87,6 +89,9 @@ lab.beforeEach(() => {
   fakeAnnotation = {
     id: 'ANNOTATION_ID'
   }
+  fakeNeedToConsult = {
+    none: true
+  }
 
   context = {}
 
@@ -106,6 +111,7 @@ lab.beforeEach(() => {
   sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(fakeLocationDetail))
   sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
   sandbox.stub(ContactDetail, 'list').value(() => [new ContactDetail(fakeContactDetail)])
+  sandbox.stub(NeedToConsult, 'get').value(() => new NeedToConsult(fakeNeedToConsult))
 })
 
 lab.afterEach(() => {
@@ -305,5 +311,12 @@ lab.experiment('Base Check tests:', () => {
     const managementSystemSummary = await check.getManagementSystemSummary()
     Code.expect(managementSystemSummary).to.equal([fakeAnnotation])
     Code.expect(context.managementSystemSummary).to.equal(await check.getManagementSystemSummary())
+  })
+
+  lab.test('getNeedToConsult works correctly', async () => {
+    const check = new BaseCheck(context)
+    const needToConsult = await check.getNeedToConsult()
+    Code.expect(needToConsult).to.equal(fakeNeedToConsult)
+    Code.expect(context.needToConsult).to.equal(await check.getNeedToConsult())
   })
 })

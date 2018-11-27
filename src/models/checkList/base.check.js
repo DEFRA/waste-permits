@@ -8,6 +8,7 @@ const Location = require('../../persistence/entities/location.entity')
 const LocationDetail = require('../../persistence/entities/locationDetail.entity')
 const StandardRule = require('../../persistence/entities/standardRule.entity')
 const ContactDetail = require('../contactDetail.model')
+const NeedToConsult = require('../needToConsult.model')
 
 const {
   DESIGNATED_MEMBER_CONTACT_DETAILS,
@@ -241,5 +242,13 @@ module.exports = class BaseCheck {
       this.data.managementSystemSummary = await Annotation.listByApplicationIdAndSubject(this.data, MANAGEMENT_SYSTEM_SUMMARY)
     }
     return this.data.managementSystemSummary || []
+  }
+
+  async getNeedToConsult () {
+    const { needToConsult } = this.data
+    if (!needToConsult) {
+      this.data.needToConsult = await NeedToConsult.get(this.data)
+    }
+    return this.data.needToConsult || {}
   }
 }
