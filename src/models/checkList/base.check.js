@@ -22,7 +22,8 @@ const {
   FIRE_PREVENTION_PLAN,
   WASTE_RECOVERY_PLAN,
   WASTE_TYPES_LIST,
-  ENVIRONMENTAL_RISK_ASSESSMENT
+  ENVIRONMENTAL_RISK_ASSESSMENT,
+  NON_TECHNICAL_SUMMARY
 } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -215,5 +216,13 @@ module.exports = class BaseCheck {
       this.data.environmentalRiskAssessment = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, ENVIRONMENTAL_RISK_ASSESSMENT)
     }
     return this.data.environmentalRiskAssessment || {}
+  }
+
+  async getNonTechnicalSummary () {
+    const { applicationId, nonTechnicalSummary } = this.data
+    if (!nonTechnicalSummary) {
+      this.data.nonTechnicalSummary = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, NON_TECHNICAL_SUMMARY)
+    }
+    return this.data.nonTechnicalSummary || {}
   }
 }

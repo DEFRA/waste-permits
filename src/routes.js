@@ -786,6 +786,24 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
+  NON_TECHNICAL_SUMMARY: {
+    path: '/non-technical-summary',
+    view: 'upload/nonTechnicalSummary/nonTechnicalSummary',
+    pageHeading: 'Provide a non-technical summary',
+    controller: 'upload/nonTechnicalSummary/nonTechnicalSummary',
+    validator: 'upload/upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    validatorOptions: {
+      fileTypes: [
+        { type: 'PDF', mimeType: 'application/pdf' },
+        { type: 'DOC', mimeType: 'application/msword' },
+        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
+      ]
+    }
+  },
   PERMIT_CATEGORY: {
     path: '/permit/category',
     view: 'permitCategory',
