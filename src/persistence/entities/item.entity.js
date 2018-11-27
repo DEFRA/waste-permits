@@ -1,8 +1,6 @@
 'use strict'
 
 const BaseEntity = require('./base.entity')
-const DynamicsDalService = require('../../services/dynamicsDal.service')
-const LoggingService = require('../../services/logging.service')
 
 const ACTIVITY = 'wasteactivity'
 const ASSESSMENT = 'wasteassessment'
@@ -63,17 +61,6 @@ class Item extends BaseEntity {
 
   static get mapping () {
     return mapping
-  }
-
-  static async listUsingFetchXml (context, query) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-    try {
-      const response = await dynamicsDal.search(`${this.dynamicsEntity}?fetchXml=${encodeURIComponent(query)}`)
-      return response.value.map((item) => this.dynamicsToEntity(item))
-    } catch (error) {
-      LoggingService.logError(`Unable to retrieve ${this.name} using FetchXml: ${error}`)
-      throw error
-    }
   }
 
   static async listAssessments (context) {

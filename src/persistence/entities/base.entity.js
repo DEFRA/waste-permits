@@ -351,6 +351,18 @@ module.exports = class BaseEntity {
     }
   }
 
+  static async listUsingFetchXml (context, query) {
+    const dynamicsDal = new DynamicsDalService(context.authToken)
+    try {
+      const response = await dynamicsDal.search(`${this.dynamicsEntity}?fetchXml=${encodeURIComponent(query)}`)
+      console.log(response)
+      return response.value.map((item) => this.dynamicsToEntity(item))
+    } catch (error) {
+      LoggingService.logError(`Unable to retrieve ${this.name} using FetchXml: ${error}`)
+      throw error
+    }
+  }
+
   async _deleteBoundReferences (dynamicsDal, fields) {
     // This method deletes any bound references as specified in the mapping method if the new value of any key is undefined.
     //

@@ -936,7 +936,7 @@ const Routes = {
   TASK_LIST: {
     path: '/task-list',
     view: 'taskList',
-    pageHeading: 'Apply for a standard rules environmental permit',
+    pageHeading: 'Apply for a {{permitType}} environmental permit',
     controller: 'taskList',
     validator: 'taskList',
     types: 'GET, POST'

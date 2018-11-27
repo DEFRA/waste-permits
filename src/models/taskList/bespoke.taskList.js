@@ -1,6 +1,7 @@
 
 const { bespoke } = require('../../tasks')
 const BaseTaskList = require('./base.taskList')
+const Task = require('../../persistence/entities/task.entity')
 
 module.exports = class BespokeTaskList extends BaseTaskList {
   get taskListTemplate () {
@@ -8,7 +9,10 @@ module.exports = class BespokeTaskList extends BaseTaskList {
   }
 
   async isAvailable (task = {}) {
-    // ToDo: Filter tasks correctly for bespoke
-    return Boolean(task.shortName)
+    const { context } = this
+    if (!context.availableTasks) {
+      context.availableTasks = (await Task.getAvailableTasks(context)).map(({ shortName }) => shortName)
+    }
+    return task.required || context.availableTasks.includes(task.shortName)
   }
 }
