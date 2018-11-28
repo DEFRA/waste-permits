@@ -15,9 +15,9 @@ class Task extends BaseEntity {
     return [{ field: 'shortName', dynamics: 'defra_shortname' }]
   }
 
-  static async getAvailableTasks (context) {
+  static buildQuery (context) {
     const { applicationId } = context
-    const query = `
+    return `
           <fetch distinct="true">
               <entity name="defra_applicationtaskdefinition">
                   <attribute name="defra_shortname"/>
@@ -42,8 +42,11 @@ class Task extends BaseEntity {
                   </link-entity>
               </entity>
           </fetch>
-          `
-    return this.listUsingFetchXml(context, query)
+          `.replace(/\n\s+/g, '')
+  }
+
+  static async getAvailableTasks (context) {
+    return this.listUsingFetchXml(context, this.buildQuery(context))
   }
 }
 

@@ -355,7 +355,6 @@ module.exports = class BaseEntity {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     try {
       const response = await dynamicsDal.search(`${this.dynamicsEntity}?fetchXml=${encodeURIComponent(query)}`)
-      console.log(response)
       return response.value.map((item) => this.dynamicsToEntity(item))
     } catch (error) {
       LoggingService.logError(`Unable to retrieve ${this.name} using FetchXml: ${error}`)
