@@ -26,7 +26,6 @@ module.exports = class PartnershipPartnerDeleteController extends BaseController
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { account: true })
-    const { applicationId, applicationLineId } = context
     const contactDetail = await PartnerDetails.getContactDetail(request)
 
     if (!contactDetail) {
@@ -36,7 +35,7 @@ module.exports = class PartnershipPartnerDeleteController extends BaseController
     await contactDetail.delete(context)
 
     // Clear the completeness flag here to force applicant to complete permit holder task
-    await PermitHolderDetails.clearCompleteness(context, applicationId, applicationLineId)
+    await PermitHolderDetails.clearCompleteness(context)
     return this.redirect({ request, h, redirectPath: this.nextPath })
   }
 }

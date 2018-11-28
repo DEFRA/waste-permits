@@ -6,8 +6,7 @@ const Annotation = require('../../persistence/entities/annotation.entity')
 
 module.exports = class TechnicalQualification extends BaseTask {
   static async checkComplete (context) {
-    const { applicationId } = context
-    const evidence = await Annotation.listByApplicationIdAndSubject(context, applicationId, Constants.UploadSubject.TECHNICAL_QUALIFICATION)
+    const evidence = await Annotation.listByApplicationIdAndSubject(context, Constants.UploadSubject.TECHNICAL_QUALIFICATION)
     return Boolean(evidence.length)
   }
 }

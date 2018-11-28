@@ -17,12 +17,18 @@ const fakeLocationData = {
 }
 const testLocationId = 'LOCATION_ID'
 
-const context = { authToken: 'AUTH_TOKEN' }
+let context
 const applicationId = fakeLocationData.applicationId
 const applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {
   testLocation = new Location(fakeLocationData)
+
+  context = {
+    authToken: 'AUTH_TOKEN',
+    applicationId,
+    applicationLineId
+  }
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -59,7 +65,7 @@ lab.experiment('Location Model tests:', () => {
 
   lab.test('getByApplicationId() method returns a single Location object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const site = await Location.getByApplicationId(context, applicationId, applicationLineId)
+    const site = await Location.getByApplicationId(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(site.siteName).to.equal(fakeLocationData.siteName)
   })

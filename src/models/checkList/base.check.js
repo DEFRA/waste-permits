@@ -62,9 +62,9 @@ module.exports = class BaseCheck {
   }
 
   async getCompanyAccount () {
-    const { applicationId, companyAccount } = this.data
+    const { companyAccount } = this.data
     if (!companyAccount) {
-      this.data.companyAccount = await Account.getByApplicationId(this.data, applicationId)
+      this.data.companyAccount = await Account.getByApplicationId(this.data)
     }
     return this.data.companyAccount || {}
   }
@@ -123,17 +123,17 @@ module.exports = class BaseCheck {
   }
 
   async getStandardRule () {
-    const { applicationLineId, standardRule } = this.data
+    const { standardRule } = this.data
     if (!standardRule) {
-      this.data.standardRule = await StandardRule.getByApplicationLineId(this.data, applicationLineId)
+      this.data.standardRule = await StandardRule.getByApplicationLineId(this.data)
     }
     return this.data.standardRule || {}
   }
 
   async getLocation () {
-    const { applicationId, applicationLineId, location } = this.data
+    const { location } = this.data
     if (!location) {
-      this.data.location = await Location.getByApplicationId(this.data, applicationId, applicationLineId)
+      this.data.location = await Location.getByApplicationId(this.data)
     }
     return this.data.location || {}
   }
@@ -166,57 +166,57 @@ module.exports = class BaseCheck {
   }
 
   async getTechnicalCompetenceEvidence () {
-    const { applicationId, technicalCompetenceEvidence } = this.data
+    const { technicalCompetenceEvidence } = this.data
     if (!technicalCompetenceEvidence) {
-      this.data.technicalCompetenceEvidence = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, TECHNICAL_QUALIFICATION)
+      this.data.technicalCompetenceEvidence = await Annotation.listByApplicationIdAndSubject(this.data, TECHNICAL_QUALIFICATION)
     }
     return this.data.technicalCompetenceEvidence || {}
   }
 
   async getSitePlan () {
-    const { applicationId, sitePlan } = this.data
+    const { sitePlan } = this.data
     if (!sitePlan) {
-      this.data.sitePlan = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, SITE_PLAN)
+      this.data.sitePlan = await Annotation.listByApplicationIdAndSubject(this.data, SITE_PLAN)
     }
     return this.data.sitePlan || {}
   }
 
   async getWasteRecoveryPlan () {
-    const { applicationId, wasteRecoveryPlan } = this.data
+    const { wasteRecoveryPlan } = this.data
     if (!wasteRecoveryPlan) {
-      this.data.wasteRecoveryPlan = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, WASTE_RECOVERY_PLAN)
+      this.data.wasteRecoveryPlan = await Annotation.listByApplicationIdAndSubject(this.data, WASTE_RECOVERY_PLAN)
     }
     return this.data.wasteRecoveryPlan || {}
   }
 
   async getFirePreventionPlan () {
-    const { applicationId, firePreventionPlan } = this.data
+    const { firePreventionPlan } = this.data
     if (!firePreventionPlan) {
-      this.data.firePreventionPlan = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, FIRE_PREVENTION_PLAN)
+      this.data.firePreventionPlan = await Annotation.listByApplicationIdAndSubject(this.data, FIRE_PREVENTION_PLAN)
     }
     return this.data.firePreventionPlan || {}
   }
 
   async getWasteTypesList () {
-    const { applicationId, wasteTypesList } = this.data
+    const { wasteTypesList } = this.data
     if (!wasteTypesList) {
-      this.data.wasteTypesList = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, WASTE_TYPES_LIST)
+      this.data.wasteTypesList = await Annotation.listByApplicationIdAndSubject(this.data, WASTE_TYPES_LIST)
     }
     return this.data.wasteTypesList || {}
   }
 
   async getEnvironmentalRiskAssessment () {
-    const { applicationId, environmentalRiskAssessment } = this.data
+    const { environmentalRiskAssessment } = this.data
     if (!environmentalRiskAssessment) {
-      this.data.environmentalRiskAssessment = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, ENVIRONMENTAL_RISK_ASSESSMENT)
+      this.data.environmentalRiskAssessment = await Annotation.listByApplicationIdAndSubject(this.data, ENVIRONMENTAL_RISK_ASSESSMENT)
     }
     return this.data.environmentalRiskAssessment || {}
   }
 
   async getNonTechnicalSummary () {
-    const { applicationId, nonTechnicalSummary } = this.data
+    const { nonTechnicalSummary } = this.data
     if (!nonTechnicalSummary) {
-      this.data.nonTechnicalSummary = await Annotation.listByApplicationIdAndSubject(this.data, applicationId, NON_TECHNICAL_SUMMARY)
+      this.data.nonTechnicalSummary = await Annotation.listByApplicationIdAndSubject(this.data, NON_TECHNICAL_SUMMARY)
     }
     return this.data.nonTechnicalSummary || {}
   }

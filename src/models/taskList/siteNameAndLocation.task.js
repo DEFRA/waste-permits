@@ -12,9 +12,8 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     let siteName
     try {
       const context = request.app.data
-      const { applicationId, applicationLineId } = context
       // Get the Location for this application (if we have one)
-      const location = await Location.getByApplicationId(context, applicationId, applicationLineId)
+      const location = await Location.getByApplicationId(context)
       if (location) {
         siteName = location.siteName
       }
@@ -31,13 +30,13 @@ module.exports = class SiteNameAndLocation extends BaseTask {
       const { applicationId, applicationLineId } = context
 
       // Get the Location for this application
-      let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
+      let location = await Location.getByApplicationId(context)
       if (!location) {
         // Create a Location in Dynamics
         location = new Location({
           siteName: siteName,
-          applicationId: applicationId,
-          applicationLineId: applicationLineId
+          applicationId,
+          applicationLineId
         })
       } else {
         // Update existing Site
@@ -54,10 +53,9 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     let gridReference
     try {
       const context = request.app.data
-      const { applicationId, applicationLineId } = context
 
       // Get the Location for this application
-      let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
+      let location = await Location.getByApplicationId(context)
 
       if (location) {
         // Get the LocationDetail for this application (if there is one)
@@ -78,16 +76,16 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     gridReference = Utilities.stripWhitespace(gridReference).toUpperCase()
     try {
       const context = request.app.data
-      const { applicationId, applicationLineId } = context
 
       // Get the Location for this application
-      let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
+      let location = await Location.getByApplicationId(context)
       if (!location) {
         // Create a Location in Dynamics
+        const { applicationId, applicationLineId } = context
         location = new Location({
           siteName: 'Unknown site name',
-          applicationId: applicationId,
-          applicationLineId: applicationLineId
+          applicationId,
+          applicationLineId
         })
         await location.save(context)
       }
@@ -117,9 +115,8 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     let address
     try {
       const context = request.app.data
-      const { applicationId, applicationLineId } = context
       // Get the Location for this application
-      let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
+      let location = await Location.getByApplicationId(context)
 
       if (location) {
         // Get the LocationDetail for this application
@@ -152,13 +149,13 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     }
 
     // Get the Location for this application
-    let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
+    let location = await Location.getByApplicationId(context)
     if (!location) {
       // Create a Location in Dynamics
       location = new Location({
         siteName: 'Unknown site name',
-        applicationId: applicationId,
-        applicationLineId: applicationLineId
+        applicationId,
+        applicationLineId
       })
       await location.save(context)
     }
@@ -202,13 +199,13 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     }
 
     // Get the Location for this application
-    let location = await Location.getByApplicationId(context, applicationId, applicationLineId)
+    let location = await Location.getByApplicationId(context)
     if (!location) {
       // Create a Location in Dynamics
       location = new Location({
         siteName: 'Unknown site name',
-        applicationId: applicationId,
-        applicationLineId: applicationLineId
+        applicationId,
+        applicationLineId
       })
       await location.save(context)
     }

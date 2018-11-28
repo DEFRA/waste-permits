@@ -23,12 +23,13 @@ module.exports = class ApplicationCost {
     return this.totalCostItem
   }
 
-  static async getApplicationCostForApplicationId (entityContextToUse, id) {
+  static async getApplicationCostForApplicationId (entityContextToUse) {
+    const { applicationId } = entityContextToUse
     const itemEntities = await ItemEntity.getAllActivitiesAndAssessments(entityContextToUse)
     const activityItemEntities = itemEntities.activities
     const assessmentItemEntities = itemEntities.assessments
 
-    const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId: id })
+    const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId: applicationId })
     const activityLineEntities = applicationLineEntities.filter(({ itemId }) => activityItemEntities.find(({ id }) => id === itemId))
     const assessmentLineEntities = applicationLineEntities.filter(({ itemId }) => assessmentItemEntities.find(({ id }) => id === itemId))
 
@@ -46,7 +47,7 @@ module.exports = class ApplicationCost {
     })
     const applicationCostItems = activityApplicationCostItems.concat(assessmentApplicationCostItems)
 
-    const applicationEntity = await ApplicationEntity.getById(entityContextToUse, id)
+    const applicationEntity = await ApplicationEntity.getById(entityContextToUse, applicationId)
     const totalCost = applicationEntity.lineItemsTotalAmount
     const totalCostItem = new ApplicationCostItem({ description: 'Total', cost: totalCost })
 

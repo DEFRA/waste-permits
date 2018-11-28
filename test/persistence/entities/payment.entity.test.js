@@ -21,7 +21,7 @@ let fakePaymentData
 const testPaymentId = 'PAYMENT_ID'
 const CONFIGURATION_PREFIX = 'WastePermits.ECOM.'
 
-const context = { authToken: 'AUTH_TOKEN' }
+let context
 
 lab.beforeEach(() => {
   fakePaymentData = {
@@ -47,6 +47,12 @@ lab.beforeEach(() => {
       defra_title: testPayment.title,
       defra_paymentvalue: testPayment.value
     }]
+  }
+
+  context = {
+    authToken: 'AUTH_TOKEN',
+    applicationId: fakePaymentData.applicationId,
+    applicationLineId: fakePaymentData.applicationLineId
   }
 
   dynamicsSearchStub = DynamicsDalService.prototype.search
@@ -85,7 +91,7 @@ lab.experiment('Payment Model tests:', () => {
   lab.test('getByApplicationLineIdAndType() method returns a single Payment object', async () => {
     const spy = sandbox.spy(DynamicsDalService.prototype, 'search')
     const { applicationLineId, type } = fakePaymentData
-    const payment = await Payment.getByApplicationLineIdAndType(context, applicationLineId, type)
+    const payment = await Payment.getByApplicationLineIdAndType(context, type)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(payment.applicationLineId).to.equal(applicationLineId)
   })
@@ -93,8 +99,8 @@ lab.experiment('Payment Model tests:', () => {
   lab.test(`getCardPaymentDetails() method calls getByApplicationLineIdAndType() method with type of ${CARD_PAYMENT}`, async () => {
     const spy = sandbox.spy(Payment, 'getByApplicationLineIdAndType')
     const { applicationId, applicationLineId, category, statusCode, type, title, value } = fakePaymentData
-    const payment = await Payment.getCardPaymentDetails(context, applicationLineId)
-    Code.expect(spy.calledWith(context, applicationLineId, CARD_PAYMENT)).to.equal(true)
+    const payment = await Payment.getCardPaymentDetails(context)
+    Code.expect(spy.calledWith(context, CARD_PAYMENT)).to.equal(true)
     Code.expect(payment.applicationId).to.equal(applicationId)
     Code.expect(payment.applicationLineId).to.equal(applicationLineId)
     Code.expect(payment.category).to.equal(category)
@@ -107,7 +113,7 @@ lab.experiment('Payment Model tests:', () => {
   lab.test(`getCardPaymentDetails() method creates a new Payment with type of ${CARD_PAYMENT}`, async () => {
     sandbox.stub(Payment, 'getByApplicationLineIdAndType').callsFake(() => {})
     const { applicationLineId } = fakePaymentData
-    const payment = await Payment.getCardPaymentDetails(context, applicationLineId)
+    const payment = await Payment.getCardPaymentDetails(context)
     Code.expect(payment.applicationLineId).to.equal(applicationLineId)
     Code.expect(payment.type).to.equal(CARD_PAYMENT)
   })
@@ -115,8 +121,8 @@ lab.experiment('Payment Model tests:', () => {
   lab.test(`getBacsPaymentDetails() method calls getByApplicationLineIdAndType() method with type of ${BACS_PAYMENT}`, async () => {
     const spy = sandbox.spy(Payment, 'getByApplicationLineIdAndType')
     const { applicationId, applicationLineId, category, statusCode, type, title, value } = fakePaymentData
-    const payment = await Payment.getBacsPaymentDetails(context, applicationLineId)
-    Code.expect(spy.calledWith(context, applicationLineId, BACS_PAYMENT)).to.equal(true)
+    const payment = await Payment.getBacsPaymentDetails(context)
+    Code.expect(spy.calledWith(context, BACS_PAYMENT)).to.equal(true)
     Code.expect(payment.applicationId).to.equal(applicationId)
     Code.expect(payment.applicationLineId).to.equal(applicationLineId)
     Code.expect(payment.category).to.equal(category)
@@ -128,9 +134,9 @@ lab.experiment('Payment Model tests:', () => {
 
   lab.test(`getBacsPaymentDetails() method creates a new Payment with type of ${BACS_PAYMENT}`, async () => {
     sandbox.stub(Payment, 'getByApplicationLineIdAndType').callsFake(() => {})
-    const { applicationLineId } = fakePaymentData
-    const payment = await Payment.getBacsPaymentDetails(context, applicationLineId)
-    Code.expect(payment.applicationLineId).to.equal(applicationLineId)
+    context.applicationLineId = fakePaymentData.applicationLineId
+    const payment = await Payment.getBacsPaymentDetails(context)
+    Code.expect(payment.applicationLineId).to.equal(context.applicationLineId)
     Code.expect(payment.type).to.equal(BACS_PAYMENT)
   })
 

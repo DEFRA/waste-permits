@@ -13,9 +13,8 @@ module.exports = class UploadController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h)
-    const { applicationId } = context
 
-    const list = await Annotation.listByApplicationIdAndSubject(context, applicationId, this.subject)
+    const list = await Annotation.listByApplicationIdAndSubject(context, this.subject)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -39,9 +38,8 @@ module.exports = class UploadController extends BaseController {
       return this.doGet(request, h, errors)
     } else {
       const context = await RecoveryService.createApplicationContext(h)
-      const { applicationId } = context
 
-      const list = await Annotation.listByApplicationIdAndSubject(context, applicationId, this.subject)
+      const list = await Annotation.listByApplicationIdAndSubject(context, this.subject)
       if (!list.length) {
         return this.handler(request, h, undefined, this.setCustomError('noFilesUploaded', 'file'))
       }

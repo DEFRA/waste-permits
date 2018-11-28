@@ -20,9 +20,8 @@ module.exports = class ConfirmRulesController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const { applicationId, applicationLineId } = context
 
-    await ConfirmRules.updateCompleteness(context, applicationId, applicationLineId)
+    await ConfirmRules.updateCompleteness(context)
 
     return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
   }

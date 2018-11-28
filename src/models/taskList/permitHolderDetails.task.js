@@ -13,10 +13,11 @@ const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
 const minPartners = 2
 
 module.exports = class PermitHolderDetails extends BaseTask {
-  static async getAddress (request, applicationId) {
+  static async getAddress (request) {
     let address
     try {
       const context = request.app.data
+      const { applicationId } = context
       // Get the Individual details for this application
       const contactDetail = await ContactDetail.get(context, { type }) || new ContactDetail({ applicationId, type })
 

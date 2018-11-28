@@ -27,7 +27,8 @@ class Account extends BaseEntity {
     }
   }
 
-  static async getByApplicationId (context, applicationId) {
+  static async getByApplicationId (context) {
+    const { applicationId } = context
     const application = await Application.getById(context, applicationId)
     if (application && application.permitHolderOrganisationId) {
       return Account.getById(context, application.permitHolderOrganisationId)

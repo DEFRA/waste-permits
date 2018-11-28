@@ -16,15 +16,13 @@ const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 let fakeApplicationLine
 let fakeParametersId
 let context
-let applicationLineId
 let sandbox
 let mocks
 
 lab.beforeEach(() => {
   mocks = new Mocks()
 
-  context = { authToken: 'AUTH_TOKEN' }
-  applicationLineId = 'APPLICATION_LINE_ID'
+  context = mocks.context
 
   fakeParametersId = {
     defra_confirmreadrules: true,
@@ -63,7 +61,7 @@ lab.afterEach(() => {
 lab.experiment('RuleSet Model tests:', () => {
   lab.test('getValidRuleSetIds() method correctly retrieves the completed flag from the ApplicationLine object for the specified parameter', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const ruleSetIds = await RuleSet.getValidRuleSetIds(context, applicationLineId)
+    const ruleSetIds = await RuleSet.getValidRuleSetIds(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(ruleSetIds).to.include(Object.keys(fakeParametersId))
     Code.expect(ruleSetIds.length).to.equal(Object.keys(fakeParametersId).length)

@@ -6,8 +6,6 @@ const Code = require('code')
 const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
-const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
 const ContactDetail = require('../../../src/models/contactDetail.model')
 const InvoiceAddress = require('../../../src/models/taskList/invoiceAddress.task')
@@ -27,16 +25,12 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(ContactDetail.prototype, 'save').value(async () => undefined)
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(async () => mocks.address.id)
-  sandbox.stub(DynamicsDalService.prototype, 'update').value(async () => mocks.address.id)
-  sandbox.stub(ApplicationLine, 'getById').value(async () => mocks.applicationLine)
-  sandbox.stub(ContactDetail, 'get').value(async () => mocks.contactDetail)
-  sandbox.stub(ContactDetail.prototype, 'save').value(async () => undefined)
-  sandbox.stub(Address.prototype, 'save').value(async () => undefined)
   sandbox.stub(Address, 'getById').value(async () => mocks.address)
   sandbox.stub(Address, 'getByUprn').value(async () => mocks.address)
-  sandbox.stub(Address, 'listByPostcode').value(() => [mocks.address, mocks.address, mocks.address])
+  sandbox.stub(Address, 'listByPostcode').value(async () => [mocks.address, mocks.address, mocks.address])
+  sandbox.stub(Address.prototype, 'save').value(async () => undefined)
+  sandbox.stub(ContactDetail, 'get').value(async () => mocks.contactDetail)
+  sandbox.stub(ContactDetail.prototype, 'save').value(async () => undefined)
 })
 
 lab.afterEach(() => {

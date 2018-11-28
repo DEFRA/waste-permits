@@ -26,8 +26,10 @@ const fakeApplicationData = {
   tradingName: null
 }
 
-const context = { authToken: 'AUTH_TOKEN' }
-const applicationId = fakeApplicationData.id
+const context = {
+  authToken: 'AUTH_TOKEN',
+  applicationId: fakeApplicationData.id
+}
 
 lab.beforeEach(() => {
   testAccount = new Account(fakeAccountData)
@@ -87,7 +89,7 @@ lab.experiment('Account Model tests:', () => {
     }
 
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const account = await Account.getByApplicationId(context, applicationId)
+    const account = await Account.getByApplicationId(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
     Code.expect(account.organisationType).to.equal(fakeAccountData.organisationType)

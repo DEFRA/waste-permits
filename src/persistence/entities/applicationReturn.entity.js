@@ -18,7 +18,8 @@ class ApplicationReturn extends BaseEntity {
     ]
   }
 
-  static async getByApplicationId (context, applicationId) {
+  static async getByApplicationId (context) {
+    const { applicationId } = context
     return super.getBy(context, { applicationId })
   }
 
