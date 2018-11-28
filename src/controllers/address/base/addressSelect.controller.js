@@ -54,6 +54,7 @@ module.exports = class AddressSelectController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
+      // Load entity context within the request object
       await RecoveryService.createApplicationContext(h)
 
       const addressDto = {

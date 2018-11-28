@@ -12,6 +12,7 @@ module.exports = class AddressManualController extends BaseController {
     }
     const pageContext = this.createPageContext(request, errors)
     pageContext.errorSummaryTitle = addressLookupFailed ? 'Our address finder is not working' : ''
+    // Load entity context within the request object
     await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
@@ -50,6 +51,7 @@ module.exports = class AddressManualController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
+      // Load entity context within the request object
       await RecoveryService.createApplicationContext(h)
 
       const addressDto = {

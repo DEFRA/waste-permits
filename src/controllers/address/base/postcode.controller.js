@@ -8,6 +8,7 @@ const Address = require('../../../persistence/entities/address.entity')
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
+    // Load entity context within the request object
     await RecoveryService.createApplicationContext(h)
     const model = await this.getModel()
 
