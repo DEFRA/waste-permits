@@ -147,6 +147,15 @@ lab.experiment('Base Entity tests:', () => {
     Code.expect(Entity.dynamicsToEntity(dynamicsReplyData)).to.equal(testEntity)
   })
 
+  lab.test('listUsingFetchXml() method retrieves a list of entities from the result of the fetchXml query', async () => {
+    entityData.secret = undefined
+    const dynamicsData = { value: [dynamicsReplyData, dynamicsReplyData] }
+    sinon.stub(DynamicsDalService.prototype, 'search').value(() => dynamicsData)
+    let list = await Entity.listUsingFetchXml(context)
+    Code.expect(list.length).to.equal(dynamicsData.value.length)
+    Code.expect(list[0]).to.equal(entityData)
+  })
+
   lab.test('getById() method returns a entity without constant or writeonly fields', async () => {
     const testEntity = new Entity(entityData)
     testEntity.secret = undefined
