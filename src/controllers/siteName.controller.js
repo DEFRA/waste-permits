@@ -8,6 +8,7 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class SiteNameController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
+    // Load entity context within the request object
     await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
@@ -26,6 +27,7 @@ module.exports = class SiteNameController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
+      // Load entity context within the request object
       await RecoveryService.createApplicationContext(h)
 
       await SiteNameAndLocation.saveSiteName(request, request.payload['site-name'])
