@@ -31,14 +31,14 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: Completeness Model tests:', () => {
-  lab.test('isComplete() default method correctly returns FALSE', async () => {
-    const result = await BaseTask.isComplete(mocks.context)
-    Code.expect(result).to.equal(false)
-  })
-
   lab.test('updateCompleteness() method saves the task list item completeness', async () => {
     const spy = sinon.spy(DataStore.prototype, 'save')
     await BaseTask.updateCompleteness(mocks.context)
     Code.expect(spy.callCount).to.equal(1)
+  })
+
+  lab.test('isComplete() default method correctly returns FALSE', async () => {
+    const result = await BaseTask.isComplete(mocks.context)
+    Code.expect(result).to.equal(false)
   })
 })
