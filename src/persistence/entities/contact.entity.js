@@ -48,15 +48,8 @@ class Contact extends BaseEntity {
     }
   }
 
-  static async getIndividualPermitHolderByApplicationId (context, applicationId) {
-    const application = await Application.getById(context, applicationId)
-    const individualPermitHolderId = application.individualPermitHolderId()
-    if (individualPermitHolderId) {
-      return Contact.getById(context, individualPermitHolderId)
-    }
-  }
-
-  static async getByApplicationId (context, applicationId) {
+  static async getByApplicationId (context) {
+    const { applicationId } = context
     const application = await Application.getById(context, applicationId)
     if (application.contactId) {
       return Contact.getById(context, application.contactId)

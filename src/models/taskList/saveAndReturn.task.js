@@ -5,8 +5,7 @@ const ApplicationReturn = require('../../persistence/entities/applicationReturn.
 
 module.exports = class SaveAndReturn extends BaseTask {
   static async checkComplete (context) {
-    const { applicationId } = context
-    const applicationReturn = await ApplicationReturn.getByApplicationId(context, applicationId)
+    const applicationReturn = await ApplicationReturn.getByApplicationId(context)
     return Boolean(applicationReturn && applicationReturn.slug)
   }
 }

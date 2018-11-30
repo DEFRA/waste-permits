@@ -75,7 +75,7 @@ module.exports = class ContactDetail extends BaseModel {
       addressDetail.customerId = contact.id
 
       // Link the contact with the account if it isn't already
-      const account = await Account.getByApplicationId(context, applicationId)
+      const account = await Account.getByApplicationId(context)
       if (account) {
         const linkedAccounts = await contact.listLinked(context, account)
         const link = linkedAccounts.find((linkedAccount) => linkedAccount.id === account.id)
@@ -101,9 +101,7 @@ module.exports = class ContactDetail extends BaseModel {
   }
 
   async delete (context) {
-    const { id, applicationId } = this
-
-    const addressDetail = await AddressDetail.getById(context, id)
+    const addressDetail = await AddressDetail.getById(context, this.id)
     if (!addressDetail) {
       return
     }
@@ -113,7 +111,7 @@ module.exports = class ContactDetail extends BaseModel {
 
     // If there is a contact, unlink the contact with the account if it is linked
     if (contact) {
-      const account = await Account.getByApplicationId(context, applicationId)
+      const account = await Account.getByApplicationId(context)
       if (account) {
         const linkedAccounts = await contact.listLinked(context, account)
         const link = linkedAccounts.find((linkedAccount) => linkedAccount.id === account.id)

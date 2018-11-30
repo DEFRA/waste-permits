@@ -28,26 +28,29 @@ class Payment extends BaseEntity {
     ]
   }
 
-  static async getBacsPayment (context, applicationLineId) {
-    return this.getByApplicationLineIdAndType(context, applicationLineId, BACS_PAYMENT)
+  static async getBacsPayment (context) {
+    return this.getByApplicationLineIdAndType(context, BACS_PAYMENT)
   }
 
-  static async getCardPayment (context, applicationLineId) {
-    return this.getByApplicationLineIdAndType(context, applicationLineId, CARD_PAYMENT)
+  static async getCardPayment (context) {
+    return this.getByApplicationLineIdAndType(context, CARD_PAYMENT)
   }
 
-  static async getByApplicationLineIdAndType (context, applicationLineId, type) {
+  static async getByApplicationLineIdAndType (context, type) {
+    const { applicationLineId } = context
     if (applicationLineId) {
       return this.getBy(context, { applicationLineId, type })
     }
   }
 
-  static async getBacsPaymentDetails (context, applicationLineId) {
-    return (await Payment.getByApplicationLineIdAndType(context, applicationLineId, BACS_PAYMENT)) || new Payment({ applicationLineId, type: BACS_PAYMENT })
+  static async getBacsPaymentDetails (context) {
+    const { applicationLineId } = context
+    return (await Payment.getByApplicationLineIdAndType(context, BACS_PAYMENT)) || new Payment({ applicationLineId, type: BACS_PAYMENT })
   }
 
-  static async getCardPaymentDetails (context, applicationLineId) {
-    return (await Payment.getByApplicationLineIdAndType(context, applicationLineId, CARD_PAYMENT)) || new Payment({ applicationLineId, type: CARD_PAYMENT })
+  static async getCardPaymentDetails (context) {
+    const { applicationLineId } = context
+    return (await Payment.getByApplicationLineIdAndType(context, CARD_PAYMENT)) || new Payment({ applicationLineId, type: CARD_PAYMENT })
   }
 
   async makeCardPayment (context, description, returnUrl) {

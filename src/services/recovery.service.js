@@ -14,6 +14,8 @@ const { PERMIT_HOLDER_TYPES } = require('../dynamics')
 
 module.exports = class RecoveryService {
   static async recoverOptionalData (context, applicationId, applicationLineId, options) {
+    context.applicationId = applicationId
+    context.applicationLineId = applicationLineId
     // Query in parallel for optional entities
     const [application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule] = await Promise.all([
       options.application ? Application.getById(context, applicationId) : Promise.resolve(undefined),

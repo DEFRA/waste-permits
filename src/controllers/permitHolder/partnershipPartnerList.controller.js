@@ -15,7 +15,8 @@ const addButtonTitle = 'Add another partner'
 const submitButtonTitle = 'All partners added - continue'
 
 module.exports = class PartnershipPartnerListController extends BaseController {
-  async createPartner (context, applicationId) {
+  async createPartner (context) {
+    const { applicationId } = context
     // Create an empty Contact Detail
     const contactDetail = new ContactDetail({ applicationId, type: PARTNER_CONTACT_DETAILS.TYPE })
     const contactDetailId = await contactDetail.save(context)
@@ -25,7 +26,6 @@ module.exports = class PartnershipPartnerListController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const context = await RecoveryService.createApplicationContext(h, { account: true })
-    let { applicationId } = context
     const { addAnotherPartner } = request.params
 
     // Get a list of partners associated with this application
@@ -54,7 +54,7 @@ module.exports = class PartnershipPartnerListController extends BaseController {
 
     // Redirect to adding a new partner if the suffix "/add" is on the url or there are no partners or there are incomplete partners for this application
     if (addAnotherPartner === addPartnerParam || !pageContext.partners.length) {
-      const partnerId = await this.createPartner(context, applicationId)
+      const partnerId = await this.createPartner(context)
 
       return this.redirect({ request, h, redirectPath: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
     }
@@ -72,11 +72,10 @@ module.exports = class PartnershipPartnerListController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const { applicationId } = context
     const list = await ContactDetail.list(context, { type: PARTNER_CONTACT_DETAILS.TYPE })
     if (list.length < minPartners) {
       // In this case the submit button would have been labeled "Add another Partner"
-      const partnerId = await this.createPartner(context, applicationId)
+      const partnerId = await this.createPartner(context)
       return this.redirect({ request, h, redirectPath: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
     }
 

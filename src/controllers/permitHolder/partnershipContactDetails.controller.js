@@ -9,6 +9,7 @@ const { TECHNICAL_PROBLEM, POSTCODE_PARTNER } = require('../../routes')
 
 module.exports = class PartnershipContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
+    // Load entity context within the request object
     await RecoveryService.createApplicationContext(h)
     const contactDetail = await PartnerDetails.getContactDetail(request)
 

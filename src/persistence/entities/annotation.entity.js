@@ -17,11 +17,13 @@ class Annotation extends BaseEntity {
     ]
   }
 
-  static async getByApplicationIdSubjectAndFilename (context, applicationId, subject, filename) {
+  static async getByApplicationIdSubjectAndFilename (context, subject, filename) {
+    const { applicationId } = context
     return super.getBy(context, { applicationId, subject, filename })
   }
 
-  static async listByApplicationIdAndSubject (context, applicationId, subject) {
+  static async listByApplicationIdAndSubject (context, subject) {
+    const { applicationId } = context
     return super.listBy(context, { applicationId, subject })
   }
 }

@@ -17,7 +17,8 @@ const ApplicationEntity = require('../../persistence/entities/application.entity
 const ApplicationLineEntity = require('../../persistence/entities/applicationLine.entity')
 const ItemEntity = require('../../persistence/entities/item.entity')
 
-const setApplicationValues = async (entityContext, applicationId, values) => {
+const setApplicationValues = async (entityContext, values) => {
+  const { applicationId } = entityContext
   const applicationEntity = await ApplicationEntity.getById(entityContext, applicationId)
   Object.assign(applicationEntity, values)
   return applicationEntity.save(entityContext, Object.keys(values))
@@ -28,7 +29,8 @@ const deleteLine = async (entityContext, lineId) => {
   return line.delete(entityContext)
 }
 
-const createLine = async (entityContext, applicationId, itemId) => {
+const createLine = async (entityContext, itemId) => {
+  const { applicationId } = entityContext
   const applicationLineEntity = new ApplicationLineEntity({
     applicationId,
     itemId,
@@ -37,14 +39,14 @@ const createLine = async (entityContext, applicationId, itemId) => {
   return applicationLineEntity.save(entityContext, ['applicationId', 'itemId', 'permitType'])
 }
 
-const createActivityLine = async (entityContext, applicationId, activityId) => {
+const createActivityLine = async (entityContext, activityId) => {
   const activityEntity = await ItemEntity.getActivity(entityContext, activityId)
-  return createLine(entityContext, applicationId, activityEntity.id)
+  return createLine(entityContext, activityEntity.id)
 }
 
-const createAssessmentLine = async (entityContext, applicationId, assessmentId) => {
+const createAssessmentLine = async (entityContext, assessmentId) => {
   const assessmentEntity = await ItemEntity.getAssessment(entityContext, assessmentId)
-  return createLine(entityContext, applicationId, assessmentEntity.id)
+  return createLine(entityContext, assessmentEntity.id)
 }
 
 module.exports = class Application {
@@ -115,7 +117,6 @@ module.exports = class Application {
     // to be calculated incorrectly due to a race condition.
     // So now each operation is individually awaited.
 
-    const id = this.id
     const permitHolderType = this.permitHolderType
     const activities = this.activities || []
     const assessments = this.assessments || []
@@ -126,13 +127,13 @@ module.exports = class Application {
       applicationValues.applicantType = dynamicsPermitHolderType.dynamicsApplicantTypeId
       applicationValues.organisationType = dynamicsPermitHolderType.dynamicsOrganisationTypeId ? dynamicsPermitHolderType.dynamicsOrganisationTypeId : undefined
     }
-    await setApplicationValues(entityContextToUse, id, applicationValues)
+    await setApplicationValues(entityContextToUse, applicationValues)
 
     for (const item of activities) {
       if (item.toBeDeleted) {
         await deleteLine(entityContextToUse, item.id)
       } else if (item.toBeAdded) {
-        await createActivityLine(entityContextToUse, id, item.activity.id)
+        await createActivityLine(entityContextToUse, item.activity.id)
       }
     }
 
@@ -140,7 +141,7 @@ module.exports = class Application {
       if (item.toBeDeleted) {
         await deleteLine(entityContextToUse, item.id)
       } else if (item.toBeAdded) {
-        await createAssessmentLine(entityContextToUse, id, item.assessment.id)
+        await createAssessmentLine(entityContextToUse, item.assessment.id)
       }
     }
 
@@ -166,9 +167,10 @@ module.exports = class Application {
     return new Application({ id, permitHolderType, activities, assessments })
   }
 
-  static async getPermitHolderTypeForApplicationId (entityContextToUse, applicationId) {
+  static async getPermitHolderTypeForApplicationId (entityContextToUse) {
     let permitHolderType
 
+    const { applicationId } = entityContextToUse
     const { applicantType, organisationType } = await ApplicationEntity.getById(entityContextToUse, applicationId)
 
     const dynamicsPermitHolderType = Object.values(DYNAMICS_PERMIT_HOLDER_TYPES).find(({ dynamicsApplicantTypeId, dynamicsOrganisationTypeId }) => {

@@ -15,12 +15,12 @@ module.exports = class ConfirmCostController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(request, errors)
     const entityContext = { authToken: await authService.getToken() }
-    const applicationId = request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
+    entityContext.applicationId = request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
 
-    pageContext.calculatedCosts = await ApplicationCost.getApplicationCostForApplicationId(entityContext, applicationId)
+    pageContext.calculatedCosts = await ApplicationCost.getApplicationCostForApplicationId(entityContext)
 
     // Determine triage path for page
-    const permitHolderType = await Application.getPermitHolderTypeForApplicationId(entityContext, applicationId)
+    const permitHolderType = await Application.getPermitHolderTypeForApplicationId(entityContext)
     pageContext.activitiesLink = `${TRIAGE_ACTIVITY.path}/bespoke/${permitHolderType.id}/waste`
 
     return this.showView({ request, h, pageContext })

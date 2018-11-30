@@ -14,10 +14,10 @@ module.exports = class ApplicationReceivedController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext(request)
     const context = await RecoveryService.createApplicationContext(h, { application: true })
-    const { applicationId, applicationLineId, application } = context
+    const { applicationId, application } = context
 
-    const bacsPayment = await Payment.getBacsPayment(context, applicationLineId)
-    const cardPayment = await Payment.getCardPayment(context, applicationLineId)
+    const bacsPayment = await Payment.getBacsPayment(context)
+    const cardPayment = await Payment.getCardPayment(context)
 
     const { email } = await ContactDetail.get(context, { type: PRIMARY_CONTACT_DETAILS.TYPE }) || {}
 

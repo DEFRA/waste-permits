@@ -5,7 +5,7 @@ const LoggingService = require('../../services/logging.service')
 const DataStore = require('../dataStore.model')
 
 module.exports = class BaseTask {
-  static async _updateCompleteness (context = {}, applicationId, applicationLineId, value) {
+  static async _updateCompleteness (context = {}, value) {
     try {
       const dataStore = await DataStore.get(context)
       const { data } = dataStore

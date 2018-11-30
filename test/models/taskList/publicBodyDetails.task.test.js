@@ -6,11 +6,10 @@ const Code = require('code')
 const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
-const CryptoService = require('../../../src/services/crypto.service')
-const ContactDetail = require('../../../src/models/contactDetail.model')
 const Account = require('../../../src/persistence/entities/account.entity')
-const Contact = require('../../../src/persistence/entities/contact.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
+const Contact = require('../../../src/persistence/entities/contact.entity')
+const ContactDetail = require('../../../src/models/contactDetail.model')
 const PublicBodyDetails = require('../../../src/models/taskList/publicBodyDetails.task')
 
 let request
@@ -26,16 +25,15 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(CryptoService, 'decrypt').value(async () => mocks.contactDetail.id)
-  sandbox.stub(ContactDetail, 'get').value(async () => mocks.contactDetail)
-  sandbox.stub(ContactDetail.prototype, 'save').value(async () => undefined)
   sandbox.stub(Account, 'getById').value(async () => mocks.account)
   sandbox.stub(Account.prototype, 'save').value(async () => undefined)
-  sandbox.stub(Contact, 'getById').value(async () => mocks.contact)
-  sandbox.stub(Address.prototype, 'save').value(async () => undefined)
   sandbox.stub(Address, 'getById').value(async () => mocks.address)
   sandbox.stub(Address, 'getByUprn').value(async () => mocks.address)
   sandbox.stub(Address, 'listByPostcode').value(async () => [mocks.address, mocks.address, mocks.address])
+  sandbox.stub(Address.prototype, 'save').value(async () => undefined)
+  sandbox.stub(Contact, 'getById').value(async () => mocks.contact)
+  sandbox.stub(ContactDetail, 'get').value(async () => mocks.contactDetail)
+  sandbox.stub(ContactDetail.prototype, 'save').value(async () => undefined)
 })
 
 lab.afterEach(() => {

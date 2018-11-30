@@ -93,6 +93,19 @@ class Application extends BaseEntity {
     return model
   }
 
+  static async getById (...args) {
+    const application = await super.getById(...args)
+
+    // Make sure application and applicationId are added to the entity context
+    if (application) {
+      const [ context ] = args
+      context.application = application
+      context.applicationId = application.id
+    }
+
+    return application
+  }
+
   static async listBySaveAndReturnEmail (context, saveAndReturnEmail) {
     return super.listBy(context, { saveAndReturnEmail })
   }

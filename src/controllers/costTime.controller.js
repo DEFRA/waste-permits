@@ -23,9 +23,8 @@ module.exports = class CostTimeController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const { applicationId, applicationLineId } = context
 
-    await CostTime.updateCompleteness(context, applicationId, applicationLineId)
+    await CostTime.updateCompleteness(context)
 
     return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
   }

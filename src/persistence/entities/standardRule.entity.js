@@ -36,7 +36,8 @@ class StandardRule extends BaseEntity {
     return super.getBy(context, { code })
   }
 
-  static async getByApplicationLineId (context, applicationLineId) {
+  static async getByApplicationLineId (context) {
+    const { applicationLineId } = context
     const { standardRuleId } = await ApplicationLine.getById(context, applicationLineId)
     if (standardRuleId) {
       return StandardRule.getById(context, standardRuleId)

@@ -19,136 +19,248 @@ const DataStore = require('../../src/models/dataStore.model')
 const ApplicationCostModel = require('../../src/models/triage/applicationCost.model')
 const ApplicationCostItemModel = require('../../src/models/triage/applicationCostItem.model')
 
-const account = {
-  id: 'ACCOUNT_ID',
-  companyNumber: '01234567',
-  accountName: 'THE COMPANY NAME',
-  isDraft: true,
-  isValidatedWithCompaniesHouse: false
+// ************* Data used by exported mocks ************* //
+class MockData {
+  get account () {
+    return {
+      id: 'ACCOUNT_ID',
+      companyNumber: '01234567',
+      accountName: 'THE COMPANY NAME',
+      isDraft: true,
+      isValidatedWithCompaniesHouse: false
+    }
+  }
+
+  get address () {
+    return {
+      id: 'ADDRESS_ID',
+      uprn: 'UPRN_123456',
+      fromAddressLookup: true,
+      buildingNameOrNumber: '123',
+      addressLine1: 'THE STREET',
+      addressLine2: 'THE DISTRICT',
+      townOrCity: 'TEST TOWN',
+      postcode: 'BS1 5AH'
+    }
+  }
+
+  get addressDetail () {
+    const { contact } = this
+    return {
+      id: 'ADDRESS_DETAIL_ID',
+      customerId: contact.id,
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      type: 'ADDRESS_DETAIL_TYPE',
+      email: 'EMAIL',
+      telephone: 'TELEPHONE',
+      jobTitle: 'JOB_TITLE'
+    }
+  }
+
+  get annotation () {
+    return {
+      id: 'ANNOTATION_ID',
+      subject: 'ANNOTATION_NAME',
+      filename: 'ANNOTATION_FILENAME'
+    }
+  }
+
+  get application () {
+    return {
+      id: 'APPLICATION_ID',
+      applicationNumber: 'APPLICATION_NUMBER',
+      organisationType: 'ORGANISATION_TYPE',
+      confidentiality: true,
+      confidentialityDetails: 'CONFIDENTIALITY DETAILS 1\nCONFIDENTIALITY DETAILS 2',
+      drainageType: 910400000,
+      miningWastePlan: 910400000,
+      miningWasteWeight: 'one,hundred-thousand',
+      tradingName: 'TRADING_NAME',
+      useTradingName: true,
+      relevantOffences: true,
+      relevantOffencesDetails: 'CONVICTION DETAILS 1\nCONVICTION DETAILS 2',
+      bankruptcy: true,
+      bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS',
+      saveAndReturnEmail: 'SAVE@RETURN.EMAIL'
+    }
+  }
+
+  get applicationCostItemModel () {
+    return {
+      description: 'APPLICATION_COST_ITEM_DESCRIPTION',
+      cost: 1234.56
+    }
+  }
+
+  get applicationData () {
+    const { application, data } = this
+    return {
+      id: 'APPLICATION_DATA_ID',
+      applicationId: application.id,
+      data: JSON.stringify(data)
+    }
+  }
+
+  get applicationLine () {
+    const { application } = this
+    return {
+      id: 'APPLICATION_LINE_ID',
+      applicationId: application.id
+    }
+  }
+
+  get applicationReturn () {
+    const { application } = this
+    return {
+      id: 'APPLICATION_RETURN_ID',
+      applicationId: application.id,
+      slug: 'SLUG'
+    }
+  }
+
+  get contact () {
+    return {
+      id: 'CONTACT_ID',
+      firstName: 'FIRSTNAME',
+      lastName: 'LASTNAME'
+    }
+  }
+
+  get contactDetail () {
+    const { address, addressDetail, contact } = this
+    return {
+      id: addressDetail.id,
+      customerId: contact.id,
+      addressId: address.id,
+      type: addressDetail.type,
+      firstName: addressDetail.firstName,
+      lastName: addressDetail.lastName,
+      email: addressDetail.email,
+      telephone: addressDetail.telephone,
+      jobTitle: addressDetail.jobTitle,
+      dateOfBirth: '2018-2-4'
+    }
+  }
+
+  get data () {
+    return {
+      permitType: Constants.PermitTypes.STANDARD_RULES.id
+    }
+  }
+
+  get dataStore () {
+    const { applicationData, data } = this
+    return {
+      id: applicationData.id,
+      applicationId: applicationData.applicationId,
+      data
+    }
+  }
+
+  get location () {
+    return {
+      id: 'LOCATION_ID',
+      siteName: 'SITE_NAME'
+    }
+  }
+
+  get locationDetail () {
+    const { address } = this
+    return {
+      id: 'LOCATION_DETAIL_ID',
+      addressId: address.id,
+      gridReference: 'GRID_REFERENCE'
+    }
+  }
+
+  get permitHolderType () {
+    return {
+      type: 'Limited company'
+    }
+  }
+
+  get standardRule () {
+    return {
+      code: 'STANDARD_RULE_CODE',
+      permitName: 'STANDARD_RULE_NAME'
+    }
+  }
+
+  get totalCostItemModel () {
+    return {
+      description: 'TOTAL_COST_ITEM_DESCRIPTION',
+      cost: 1234.56
+    }
+  }
 }
 
-const address = {
-  id: 'ADDRESS_ID',
-  uprn: 'UPRN_123456',
-  fromAddressLookup: true,
-  buildingNameOrNumber: '123',
-  addressLine1: 'THE STREET',
-  addressLine2: 'THE DISTRICT',
-  townOrCity: 'TEST TOWN',
-  postcode: 'BS1 5AH'
-}
+// *************** Actual mocks exported ***************** //
 
-const annotation = {
-  id: 'ANNOTATION_ID',
-  subject: 'ANNOTATION_NAME',
-  filename: 'ANNOTATION_FILENAME'
-}
+class Mocks {
+  constructor () {
+    this.mockData = new MockData()
+  }
 
-const application = {
-  id: 'APPLICATION_ID',
-  applicationNumber: 'APPLICATION_NUMBER',
-  organisationType: 'ORGANISATION_TYPE',
-  confidentiality: true,
-  confidentialityDetails: 'CONFIDENTIALITY DETAILS 1\nCONFIDENTIALITY DETAILS 2',
-  drainageType: 910400000,
-  miningWastePlan: 910400000,
-  miningWasteWeight: 'one,hundred-thousand',
-  tradingName: 'TRADING_NAME',
-  useTradingName: true,
-  relevantOffences: true,
-  relevantOffencesDetails: 'CONVICTION DETAILS 1\nCONVICTION DETAILS 2',
-  bankruptcy: true,
-  bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS',
-  saveAndReturnEmail: 'SAVE@RETURN.EMAIL'
-}
+  get account () {
+    const { account } = this.mockData
+    return this._account || (this._account = new Account(account))
+  }
 
-const applicationLine = {
-  id: 'APPLICATION_LINE_ID',
-  applicationId: application.id
-}
+  get address () {
+    const { address } = this.mockData
+    return this._address || (this._address = new Address(address))
+  }
 
-const data = {
-  permitType: Constants.PermitTypes.STANDARD_RULES.id
-}
+  get addressDetail () {
+    const { addressDetail } = this.mockData
+    return this._addressDetail || (this._addressDetail = new AddressDetail(addressDetail))
+  }
 
-const applicationData = {
-  id: 'APPLICATION_DATA_ID',
-  applicationId: application.id,
-  data: JSON.stringify(data)
-}
+  get annotation () {
+    const { annotation } = this.mockData
+    return this._annotation || (this._annotation = new Annotation(annotation))
+  }
 
-const applicationReturn = {
-  id: 'APPLICATION_RETURN_ID',
-  applicationId: application.id,
-  slug: 'SLUG'
-}
+  get application () {
+    const { application } = this.mockData
+    return this._application || (this._application = new Application(application))
+  }
 
-const contact = {
-  id: 'CONTACT_ID',
-  firstName: 'FIRSTNAME',
-  lastName: 'LASTNAME'
-}
+  get applicationCostModel () {
+    const { applicationCostItemModel, totalCostItemModel } = this.mockData
+    return this._applicationCostModel || (this._applicationCostModel =
+      new ApplicationCostModel({
+        applicationCostItems: [new ApplicationCostItemModel(applicationCostItemModel)],
+        totalCostItem: new ApplicationCostItemModel(totalCostItemModel)
+      }))
+  }
 
-const addressDetail = {
-  id: 'ADDRESS_DETAIL_ID',
-  customerId: contact.id,
-  firstName: contact.firstName,
-  lastName: contact.lastName,
-  type: 'ADDRESS_DETAIL_TYPE',
-  email: 'EMAIL',
-  telephone: 'TELEPHONE',
-  jobTitle: 'JOB_TITLE'
-}
+  get applicationData () {
+    const { applicationData } = this.mockData
+    return this._applicationData || (this._applicationData = new ApplicationData(applicationData))
+  }
 
-const contactDetail = {
-  id: addressDetail.id,
-  customerId: contact.id,
-  addressId: address.id,
-  type: addressDetail.type,
-  firstName: addressDetail.firstName,
-  lastName: addressDetail.lastName,
-  email: addressDetail.email,
-  telephone: addressDetail.telephone,
-  jobTitle: addressDetail.jobTitle,
-  dateOfBirth: '2018-2-4'
-}
+  get applicationLine () {
+    const { applicationLine } = this.mockData
+    return this._applicationLine || (this._applicationLine = new ApplicationLine(applicationLine))
+  }
 
-const dataStore = {
-  id: applicationData.id,
-  applicationId: applicationData.applicationId,
-  data
-}
+  get applicationReturn () {
+    const { applicationReturn } = this.mockData
+    return this._applicationReturn || (this._applicationReturn = new ApplicationReturn(applicationReturn))
+  }
 
-const location = {
-  id: 'LOCATION_ID',
-  siteName: 'SITE_NAME'
-}
+  get contact () {
+    const { contact } = this.mockData
+    return this._contact || (this._contact = new Contact(contact))
+  }
 
-const locationDetail = {
-  id: 'LOCATION_DETAIL_ID',
-  addressId: address.id,
-  gridReference: 'GRID_REFERENCE'
-}
+  get contactDetail () {
+    const { contactDetail } = this.mockData
+    return this._contactDetail || (this._contactDetail = new ContactDetail(contactDetail))
+  }
 
-const permitHolderType = {
-  type: 'Limited company'
-}
-
-const standardRule = {
-  code: 'STANDARD_RULE_CODE',
-  permitName: 'STANDARD_RULE_NAME'
-}
-
-const applicationCostItemModel = {
-  description: 'APPLICATION_COST_ITEM_DESCRIPTION',
-  cost: 1234.56
-}
-const totalCostItemModel = {
-  description: 'TOTAL_COST_ITEM_DESCRIPTION',
-  cost: 1234.56
-}
-
-module.exports = class Mocks {
   get context () {
     const application = this.application
     const applicationLine = this.applicationLine
@@ -161,64 +273,27 @@ module.exports = class Mocks {
     }
   }
 
-  get request () {
-    return {
-      app: {
-        data: this.context
-      }
-    }
-  }
-
-  get account () {
-    return this._account || (this._account = new Account(account))
-  }
-
-  get address () {
-    return this._address || (this._address = new Address(address))
-  }
-
-  get addressDetail () {
-    return this._addressDetail || (this._addressDetail = new AddressDetail(addressDetail))
-  }
-
-  get application () {
-    return this._application || (this._application = new Application(application))
-  }
-
-  get annotation () {
-    return this._annotation || (this._annotation = new Annotation(annotation))
-  }
-
-  get applicationLine () {
-    return this._applicationLine || (this._applicationLine = new ApplicationLine(applicationLine))
-  }
-
-  get applicationData () {
-    return this._applicationData || (this._applicationData = new ApplicationData(applicationData))
-  }
-
-  get applicationReturn () {
-    return this._applicationReturn || (this._applicationReturn = new ApplicationReturn(applicationReturn))
-  }
-
-  get contact () {
-    return this._contact || (this._contact = new Contact(contact))
-  }
-
-  get contactDetail () {
-    return this._contactDetail || (this._contactDetail = new ContactDetail(contactDetail))
-  }
-
   get dataStore () {
+    const { dataStore } = this.mockData
     return this._dataStore || (this._dataStore = new DataStore(dataStore))
   }
 
   get location () {
+    const { location } = this.mockData
     return this._location || (this._location = new Location(location))
   }
 
   get locationDetail () {
+    const { locationDetail } = this.mockData
     return this._locationDetail || (this._locationDetail = new LocationDetail(locationDetail))
+  }
+
+  get permitHolderType () {
+    const { permitHolderType } = this.mockData
+    if (!this._permitHolderType) {
+      this._permitHolderType = Object.assign({}, permitHolderType)
+    }
+    return this._permitHolderType
   }
 
   get recovery () {
@@ -230,22 +305,20 @@ module.exports = class Mocks {
     }
   }
 
+  get request () {
+    return {
+      app: {
+        data: this.context
+      }
+    }
+  }
+
   get standardRule () {
+    const { standardRule } = this.mockData
     return this._standardRule || (this._standardRule = new StandardRule(standardRule))
   }
-
-  get permitHolderType () {
-    if (!this._permitHolderType) {
-      this._permitHolderType = Object.assign({}, permitHolderType)
-    }
-    return this._permitHolderType
-  }
-
-  get applicationCostModel () {
-    return this._applicationCostModel || (this._applicationCostModel =
-      new ApplicationCostModel({
-        applicationCostItems: [new ApplicationCostItemModel(applicationCostItemModel)],
-        totalCostItem: new ApplicationCostItemModel(totalCostItemModel)
-      }))
-  }
 }
+
+// Export the mocks
+
+module.exports = Mocks

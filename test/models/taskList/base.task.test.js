@@ -10,15 +10,11 @@ const DataStore = require('../../../src/models/dataStore.model')
 const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
 const BaseTask = require('../../../src/models/taskList/base.task')
 
-const context = { authToken: 'AUTH_TOKEN' }
-
 let sandbox
 let mocks
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-
-  BaseTask.completenessParameter = 'completedFlag'
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
@@ -37,7 +33,7 @@ lab.afterEach(() => {
 lab.experiment('Task List: Completeness Model tests:', () => {
   lab.test('updateCompleteness() method saves the task list item completeness', async () => {
     const spy = sinon.spy(DataStore.prototype, 'save')
-    await BaseTask.updateCompleteness(context)
+    await BaseTask.updateCompleteness(mocks.context)
     Code.expect(spy.callCount).to.equal(1)
   })
 

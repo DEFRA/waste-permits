@@ -83,6 +83,7 @@ let fakeActivities
 let fakeAssessments
 
 lab.experiment('Application Model test:', () => {
+  context.applicationId = FAKE_APPLICATION_ID
   let sandbox
 
   lab.beforeEach(() => {
@@ -224,7 +225,7 @@ lab.experiment('Application Model test:', () => {
 
     lab.test('save a completely blank new application', async () => {
       const application = new ApplicationModel({})
-      await application.save()
+      await application.save(context)
       Code.expect(applicationEntitySaveStub.calledOnce).to.be.true()
       Code.expect(applicationLineEntitySaveStub.notCalled).to.be.true()
     })
@@ -234,7 +235,7 @@ lab.experiment('Application Model test:', () => {
       application.setPermitHolderType(PERMIT_HOLDER_TYPES.INDIVIDUAL)
       application.setActivities([fakeActivities[0], fakeActivities[2]])
       application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
-      await application.save()
+      await application.save(context)
       Code.expect(applicationEntitySaveStub.calledOnce).to.be.true()
       Code.expect(applicationLineEntitySaveStub.callCount).to.equal(4)
     })
@@ -246,7 +247,7 @@ lab.experiment('Application Model test:', () => {
       application.setPermitHolderType(PERMIT_HOLDER_TYPES.INDIVIDUAL)
       application.setActivities([fakeActivities[0], fakeActivities[2]])
       application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
-      await application.save()
+      await application.save(context)
       Code.expect(applicationEntitySaveStub.calledOnce).to.be.true()
       Code.expect(applicationLineEntitySaveStub.callCount).to.equal(4)
     })
@@ -255,7 +256,7 @@ lab.experiment('Application Model test:', () => {
       fakeApplicationEntity = new ApplicationEntity({ id: FAKE_APPLICATION_ID })
       fakeApplicationLineEntities = []
       const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
-      await application.save()
+      await application.save(context)
       Code.expect(applicationEntitySaveStub.calledOnce).to.be.true()
       Code.expect(applicationLineEntitySaveStub.notCalled).to.be.true()
     })
@@ -265,7 +266,7 @@ lab.experiment('Application Model test:', () => {
       application.setPermitHolderType(PERMIT_HOLDER_TYPES.PUBLIC_BODY)
       application.setActivities([fakeActivities[0], fakeActivities[2]])
       application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
-      await application.save()
+      await application.save(context)
       Code.expect(applicationEntitySaveStub.calledOnce).to.be.true()
       Code.expect(applicationLineEntitySaveStub.callCount).to.equal(2)
       Code.expect(applicationLineEntityDeleteStub.callCount).to.equal(2)

@@ -38,7 +38,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     }
 
     // Get the directors that relate to this application
-    const directors = await this._getDirectors(context, applicationId, account.id)
+    const directors = await this._getDirectors(context, account.id)
     const companies = await account.listLinked(context)
     const type = this._getContactType(permitHolderType)
     const contactDetails = await ContactDetail.list(context, { type })
@@ -87,7 +87,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
     }
 
-    const directors = await this._getDirectors(context, applicationId, account.id)
+    const directors = await this._getDirectors(context, account.id)
 
     // Perform manual (non-Joi) validation of dynamic form content
     errors = await this._validateDynamicFormContent(request, directors)
@@ -122,7 +122,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   }
 
   // Obtains the Directors that relate to an application
-  async _getDirectors (context, applicationId, permitHolderOrganisationId) {
+  async _getDirectors (context, permitHolderOrganisationId) {
     const directors = await Contact.list(context, permitHolderOrganisationId, this.route.officerRole)
     for (let director of directors) {
       director.dateOfBirthFormatted = Utilities.formatDateForDisplay(director.dob)
