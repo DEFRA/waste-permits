@@ -9,6 +9,7 @@ const Account = require('../../../src/persistence/entities/account.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
 const Annotation = require('../../../src/persistence/entities/annotation.entity')
 const Application = require('../../../src/persistence/entities/application.entity')
+const ApplicationAnswer = require('../../../src/persistence/entities/applicationAnswer.entity')
 const Location = require('../../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../../src/persistence/entities/locationDetail.entity')
 const StandardRule = require('../../../src/persistence/entities/standardRule.entity')
@@ -23,6 +24,7 @@ const year = 1998
 let fakeAddressType
 let fakeAccount
 let fakeApplication
+let fakeApplicationAnswer
 let fakeCompanies
 let fakeContactDetail
 let fakeLocation
@@ -48,6 +50,9 @@ lab.beforeEach(() => {
     agentId: 'AGENT_ID',
     contactId: 'CONTACT_ID',
     declaration: true
+  }
+  fakeApplicationAnswer = {
+    questionCode: 'QUESTION_CODE'
   }
   fakeCompanies = [new Account(fakeAccount)]
   fakeAddress = {
@@ -95,6 +100,7 @@ lab.beforeEach(() => {
   sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
   sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [new Annotation(fakeAnnotation)])
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(ApplicationAnswer, 'getByQuestionCode').value(() => new ApplicationAnswer(fakeApplicationAnswer))
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
   sandbox.stub(Location, 'getByApplicationId').value(() => new Location(fakeLocation))
   sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(fakeLocationDetail))
@@ -285,5 +291,19 @@ lab.experiment('Base Check tests:', () => {
     const nonTechnicalSummary = await check.getNonTechnicalSummary()
     Code.expect(nonTechnicalSummary).to.equal([fakeAnnotation])
     Code.expect(context.nonTechnicalSummary).to.equal(await check.getNonTechnicalSummary())
+  })
+
+  lab.test('getManagementSystem works correctly', async () => {
+    const check = new BaseCheck(context)
+    const managementSystem = await check.getManagementSystem()
+    Code.expect(managementSystem).to.equal(fakeApplicationAnswer)
+    Code.expect(context.managementSystem).to.equal(await check.getManagementSystem())
+  })
+
+  lab.test('getManagementSystemSummary works correctly', async () => {
+    const check = new BaseCheck(context)
+    const managementSystemSummary = await check.getManagementSystemSummary()
+    Code.expect(managementSystemSummary).to.equal([fakeAnnotation])
+    Code.expect(context.managementSystemSummary).to.equal(await check.getManagementSystemSummary())
   })
 })

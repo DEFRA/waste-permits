@@ -769,13 +769,32 @@ const Routes = {
     path: '/health',
     pageHeading: 'Health'
   },
-  MANAGEMENT_SYSTEM: {
-    path: '/management-system',
-    view: 'managementSystem',
+  MANAGEMENT_SYSTEM_SELECT: {
+    path: '/management-system/select',
+    view: 'managementSystemSelect',
     pageHeading: 'Which management system will you use?',
-    controller: 'managementSystem',
-    nextRoute: 'TASK_LIST',
+    controller: 'managementSystemSelect',
+    validator: 'managementSystemSelect',
+    nextRoute: 'MANAGEMENT_SYSTEM_UPLOAD',
     types: 'GET, POST'
+  },
+  MANAGEMENT_SYSTEM_UPLOAD: {
+    path: '/management-system/upload',
+    view: 'upload/managementSystem/managementSystemSummary',
+    pageHeading: 'Which management system will you use?',
+    controller: 'upload/managementSystem/managementSystemSummary',
+    validator: 'upload/upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    validatorOptions: {
+      fileTypes: [
+        { type: 'PDF', mimeType: 'application/pdf' },
+        { type: 'DOC', mimeType: 'application/msword' },
+        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
+      ]
+    }
   },
   MINING_WASTE_WEIGHT: {
     path: '/mining-waste/weight',
