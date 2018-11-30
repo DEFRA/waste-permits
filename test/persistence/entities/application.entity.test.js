@@ -14,9 +14,9 @@ const fakeOrigin = 'http://test.app.com'
 const fakeSlug = 'SLUG'
 let testApplication
 let sandbox
+let context
 
 const testApplicationId = 'APPLICATION_ID'
-const context = { authToken: 'AUTH_TOKEN' }
 const submittedOn = '05/01/2018 04:00:00'
 
 const ORGANISATION = 910400001
@@ -115,6 +115,7 @@ const dynamicsApplicationList = [
   fakeApplicationDynamicsRecord(listData[2])]
 
 lab.beforeEach(() => {
+  context = { authToken: 'AUTH_TOKEN' }
   testApplication = new Application(fakeApplicationData)
   testApplication.delay = 0
 
@@ -252,5 +253,11 @@ lab.experiment('Application Model tests:', () => {
   lab.test('isSubmitted() false if submittedOn is not set', async () => {
     delete testApplication.submittedOn
     Code.expect(testApplication.isSubmitted()).to.equal(false)
+  })
+
+  lab.test('getById() will update the context with the application', async () => {
+    const application = await Application.getById(context, testApplicationId)
+    Code.expect(context.applicationId).to.equal(testApplicationId)
+    Code.expect(context.application).to.equal(application)
   })
 })

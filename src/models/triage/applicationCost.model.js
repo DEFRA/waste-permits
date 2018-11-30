@@ -29,7 +29,7 @@ module.exports = class ApplicationCost {
     const activityItemEntities = itemEntities.activities
     const assessmentItemEntities = itemEntities.assessments
 
-    const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId: applicationId })
+    const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId })
     const activityLineEntities = applicationLineEntities.filter(({ itemId }) => activityItemEntities.find(({ id }) => id === itemId))
     const assessmentLineEntities = applicationLineEntities.filter(({ itemId }) => assessmentItemEntities.find(({ id }) => id === itemId))
 
