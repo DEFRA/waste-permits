@@ -148,15 +148,17 @@ module.exports = class Application {
     return null
   }
 
-  static async getApplicationForId (entityContextToUse, id) {
+  static async getApplicationForId (entityContextToUse) {
+    const { applicationId } = entityContextToUse
+
     // Determine the permit holder type
-    const permitHolderType = await this.getPermitHolderTypeForApplicationId(entityContextToUse, id)
+    const permitHolderType = await this.getPermitHolderTypeForApplicationId(entityContextToUse, applicationId)
 
     const itemEntities = await ItemEntity.getAllActivitiesAndAssessments(entityContextToUse)
     const activityItemEntities = itemEntities.activities
     const assessmentItemEntities = itemEntities.assessments
 
-    const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId: id })
+    const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId })
 
     const activityLineEntities = applicationLineEntities.filter(({ itemId }) => activityItemEntities.find(({ id }) => id === itemId))
     const assessmentLineEntities = applicationLineEntities.filter(({ itemId }) => assessmentItemEntities.find(({ id }) => id === itemId))
@@ -164,7 +166,7 @@ module.exports = class Application {
     const activities = activityLineEntities.map((line) => ({ id: line.id, activity: Activity.createFromItemEntity(activityItemEntities.find(({ id }) => id === line.itemId)) }))
     const assessments = assessmentLineEntities.map((line) => ({ id: line.id, assessment: Assessment.createFromItemEntity(assessmentItemEntities.find(({ id }) => id === line.itemId)) }))
 
-    return new Application({ id, permitHolderType, activities, assessments })
+    return new Application({ id: applicationId, permitHolderType, activities, assessments })
   }
 
   static async getPermitHolderTypeForApplicationId (entityContextToUse) {

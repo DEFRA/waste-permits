@@ -49,6 +49,7 @@ module.exports = class TriageController extends BaseController {
 
     const entityContext = {}
     entityContext.authToken = await authService.getToken()
+    entityContext.applicationId = request.state && request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
     const data = await TriageController.initialiseDataFromParams(entityContext, request.params)
 
     if (data.selectedPermitTypes) {
@@ -129,7 +130,6 @@ module.exports = class TriageController extends BaseController {
   }
 
   static async saveApplication (request, entityContext, triageData) {
-    entityContext.applicationId = request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
     const application = await Application.getApplicationForId(entityContext)
     application.setPermitHolderType(triageData.selectedPermitHolderTypes.items[0])
     application.setActivities(triageData.selectedActivities.items)
