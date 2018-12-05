@@ -12,7 +12,8 @@ const ItemEntity = require('../../../src/persistence/entities/item.entity')
 const ApplicationEntity = require('../../../src/persistence/entities/application.entity')
 const ApplicationLineEntity = require('../../../src/persistence/entities/applicationLine.entity')
 
-const context = { authToken: 'AUTH_TOKEN' }
+const FAKE_APPLICATION_ID = 'FAKE_APPLICATION_ID'
+const context = { authToken: 'AUTH_TOKEN', applicationId: FAKE_APPLICATION_ID }
 const ACTIVITY_ITEM_TYPE_ID = 'ACTIVITY_ITEM_TYPE_ID'
 const ASSESSMENT_ITEM_TYPE_ID = 'ASSESSMENT_ITEM_TYPE_ID'
 
@@ -51,8 +52,6 @@ const ITEMS = {
   }]
 }
 
-const FAKE_APPLICATION_ID = 'FAKE_APPLICATION_ID'
-
 const { PERMIT_HOLDER_TYPES: DYNAMICS_PERMIT_HOLDER_TYPES } = require('../../../src/dynamics')
 const { PERMIT_HOLDER_TYPES } = require('../../../src/models/triage/triageLists')
 
@@ -83,7 +82,6 @@ let fakeActivities
 let fakeAssessments
 
 lab.experiment('Application Model test:', () => {
-  context.applicationId = FAKE_APPLICATION_ID
   let sandbox
 
   lab.beforeEach(() => {
@@ -115,7 +113,7 @@ lab.experiment('Application Model test:', () => {
 
   lab.experiment('Get values:', () => {
     lab.test('getApplicationForId', async () => {
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       Code.expect(application.id).to.equal(fakeApplicationEntity.id)
       Code.expect(application.permitHolderType.id).to.equal(PERMIT_HOLDER_TYPES.PARTNERSHIP.id)
       Code.expect(application.activities.length).to.equal(2)
@@ -128,7 +126,7 @@ lab.experiment('Application Model test:', () => {
         applicantType: undefined,
         organisationType: 999999
       })
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       Code.expect(application.id).to.equal(fakeApplicationEntity.id)
       Code.expect(application.permitHolderType).to.not.exist()
     })
@@ -136,14 +134,14 @@ lab.experiment('Application Model test:', () => {
 
   lab.experiment('Set values:', () => {
     lab.test('setPermitHolderType', async () => {
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       Code.expect(application.permitHolderType.id).to.equal(PERMIT_HOLDER_TYPES.PARTNERSHIP.id)
       application.setPermitHolderType(PERMIT_HOLDER_TYPES.INDIVIDUAL)
       Code.expect(application.permitHolderType.id).to.equal(PERMIT_HOLDER_TYPES.INDIVIDUAL.id)
     })
 
     lab.test('setActivities - add new and remove existing', async () => {
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       application.setActivities([fakeActivities[0], fakeActivities[2]])
       const activities = application.activities
       Code.expect(activities.length).to.equal(3)
@@ -154,7 +152,7 @@ lab.experiment('Application Model test:', () => {
     })
 
     lab.test('setActivities - remove new', async () => {
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       application.setActivities([fakeActivities[0], fakeActivities[2]])
       application.setActivities([fakeActivities[0]])
       const activities = application.activities
@@ -166,7 +164,7 @@ lab.experiment('Application Model test:', () => {
     })
 
     lab.test('setActivities - re-add existing', async () => {
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       application.setActivities([fakeActivities[0], fakeActivities[2]])
       application.setActivities([fakeActivities[0], fakeActivities[1]])
       const activities = application.activities
@@ -178,7 +176,7 @@ lab.experiment('Application Model test:', () => {
     })
 
     lab.test('setAssessments - add new and remove existing', async () => {
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
       const assessments = application.assessments
       Code.expect(assessments.length).to.equal(3)
@@ -189,7 +187,7 @@ lab.experiment('Application Model test:', () => {
     })
 
     lab.test('re setAssessments - remove new', async () => {
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
       application.setAssessments([fakeAssessments[0]])
       const assessments = application.assessments
@@ -201,7 +199,7 @@ lab.experiment('Application Model test:', () => {
     })
 
     lab.test('re setAssessments - re-add existing', async () => {
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
       application.setAssessments([fakeAssessments[0], fakeAssessments[1]])
       const assessments = application.assessments
@@ -243,7 +241,7 @@ lab.experiment('Application Model test:', () => {
     lab.test('save on an empty application', async () => {
       fakeApplicationEntity = new ApplicationEntity({ id: FAKE_APPLICATION_ID })
       fakeApplicationLineEntities = []
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       application.setPermitHolderType(PERMIT_HOLDER_TYPES.INDIVIDUAL)
       application.setActivities([fakeActivities[0], fakeActivities[2]])
       application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
@@ -255,14 +253,14 @@ lab.experiment('Application Model test:', () => {
     lab.test('save on an empty application with no values set', async () => {
       fakeApplicationEntity = new ApplicationEntity({ id: FAKE_APPLICATION_ID })
       fakeApplicationLineEntities = []
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       await application.save(context)
       Code.expect(applicationEntitySaveStub.calledOnce).to.be.true()
       Code.expect(applicationLineEntitySaveStub.notCalled).to.be.true()
     })
 
     lab.test('save on an already populated application', async () => {
-      const application = await ApplicationModel.getApplicationForId(context, fakeApplicationEntity.id)
+      const application = await ApplicationModel.getApplicationForId(context)
       application.setPermitHolderType(PERMIT_HOLDER_TYPES.PUBLIC_BODY)
       application.setActivities([fakeActivities[0], fakeActivities[2]])
       application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
