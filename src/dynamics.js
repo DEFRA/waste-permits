@@ -51,6 +51,33 @@ const Dynamics = {
       NAME: 'Director contact details'
     }
   },
+  ApplicationQuestions: {
+    MANAGEMENT_SYSTEM: {
+      questionCode: 'environmental-management-system',
+      answers: [
+        {
+          id: 'eco-management',
+          description: 'Eco-Management and Audit Scheme ({{{EMAS}}})'
+        }, {
+          id: 'ems-easy',
+          description: '{{{EMAS}}} Easy'
+        }, {
+          id: 'iso-14001-2015',
+          description: '{{{ISO}}} 14001:2015 environmental management system standard'
+        }, {
+          id: 'bs-8555',
+          description: 'British Standard BS 8555 phases 1 to 5'
+        }, {
+          id: 'green-dragon',
+          description: 'Green Dragon'
+        }, {
+          id: 'own-management-system',
+          description: 'Your own management system',
+          hint: 'If you use your own system, it must meet the standards in our guidance'
+        }
+      ]
+    }
+  },
   BACS_EMAIL_CONFIG: 'PSC-BACS-EMAIL',
   DIGITAL_SOURCE: 910400000,
   DrainageTypes: {

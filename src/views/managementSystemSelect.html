@@ -1,0 +1,57 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <div class="body-text">
+        <p id="environmental-management-system-message">You must have a written management system before you start operating. We will check it when we first inspect your site.</p>
+
+        <a id="environmental-management-system-guidance-link"
+           href="https://www.gov.uk/guidance/develop-a-management-system-environmental-permits"
+           target="_blank"
+           rel="noopener noreferrer">
+          <span>Guidance about management systems on GOV.UK (opens new tab)</span>
+        </a>
+      </div>
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.environmental-management-system}}{{/getFormErrorGroupClass}}">
+          <fieldset>
+
+            <legend id="environmental-management-system-legend" class="visuallyhidden">{{pageHeading}}</legend>
+
+            {{> common/fieldError fieldId='environmental-management-system-error' message=errors.environmental-management-system }}
+
+            {{#each managementSystems}}
+            <div class="multiple-choice">
+              <input id="{{id}}" type="radio" name="environmental-management-system" value="{{id}}" {{#if selected}}checked="checked"{{/if}}>
+              <label for="{{id}}">
+                <span id="{{id}}-label">{{{description}}}</span>
+                {{#if hint}}
+                <span id="{{id}}-label-hint" class="form-hint">{{hint}}</span>
+                {{/if}}
+              </label>
+            </div>
+            {{/each}}
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+
+      </form>
+
+    </div>
+  </div>
+
+</main>

@@ -3,6 +3,7 @@ const Account = require('../../persistence/entities/account.entity')
 const Address = require('../../persistence/entities/address.entity')
 const Annotation = require('../../persistence/entities/annotation.entity')
 const Application = require('../../persistence/entities/application.entity')
+const ApplicationAnswer = require('../../persistence/entities/applicationAnswer.entity')
 const Location = require('../../persistence/entities/location.entity')
 const LocationDetail = require('../../persistence/entities/locationDetail.entity')
 const StandardRule = require('../../persistence/entities/standardRule.entity')
@@ -16,13 +17,18 @@ const {
 } = require('../../dynamics').AddressTypes
 
 const {
+  MANAGEMENT_SYSTEM
+} = require('../../dynamics').ApplicationQuestions
+
+const {
   TECHNICAL_QUALIFICATION,
   SITE_PLAN,
   FIRE_PREVENTION_PLAN,
   WASTE_RECOVERY_PLAN,
   WASTE_TYPES_LIST,
   ENVIRONMENTAL_RISK_ASSESSMENT,
-  NON_TECHNICAL_SUMMARY
+  NON_TECHNICAL_SUMMARY,
+  MANAGEMENT_SYSTEM_SUMMARY
 } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -219,5 +225,21 @@ module.exports = class BaseCheck {
       this.data.nonTechnicalSummary = await Annotation.listByApplicationIdAndSubject(this.data, NON_TECHNICAL_SUMMARY)
     }
     return this.data.nonTechnicalSummary || {}
+  }
+
+  async getManagementSystem () {
+    const { managementSystem } = this.data
+    if (!managementSystem) {
+      this.data.managementSystem = await ApplicationAnswer.getByQuestionCode(this.data, MANAGEMENT_SYSTEM.questionCode)
+    }
+    return this.data.managementSystem || {}
+  }
+
+  async getManagementSystemSummary () {
+    const { managementSystemSummary } = this.data
+    if (!managementSystemSummary) {
+      this.data.managementSystemSummary = await Annotation.listByApplicationIdAndSubject(this.data, MANAGEMENT_SYSTEM_SUMMARY)
+    }
+    return this.data.managementSystemSummary || []
   }
 }

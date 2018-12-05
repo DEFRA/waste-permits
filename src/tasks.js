@@ -101,16 +101,13 @@ const tasks = {
     taskListModel: 'miningWasteDetails'
   },
   MANAGEMENT_SYSTEM: {
-    id: 'tell-us-which-management-system-you-use',
-    label: 'Tell us which management system you use',
-    route: Routes.MANAGEMENT_SYSTEM,
-    completedLabelId: 'management-system-completed',
-    ruleSetId: 'defra_mansystemrequired'
-  },
-  MANAGEMENT_SYSTEM_SUMMARY: {
-    id: 'management-system-summary',
+    id: 'management-system',
     label: 'Provide a management system summary',
-    shortName: 'mansys'
+    route: Routes.MANAGEMENT_SYSTEM_SELECT,
+    completedLabelId: 'management-system-completed',
+    ruleSetId: 'defra_mansystemrequired',
+    shortName: 'mansys',
+    taskListModel: 'managementSystem'
   },
   MINING_WASTE_MANAGEMENT_PLAN: {
     id: 'mining-waste-management-plan',
@@ -352,7 +349,7 @@ const bespoke = [
       tasks.WASTE_RECOVERY_PLAN,
       tasks.ENVIRONMENTAL_RISK_ASSESSMENT,
       tasks.EMISSIONS_AND_MONITORING,
-      tasks.MANAGEMENT_SYSTEM_SUMMARY,
+      tasks.MANAGEMENT_SYSTEM,
       tasks.TECHNICAL_STANDARDS,
       tasks.CLINICAL_WASTE_TEMPLATE,
       tasks.HAZARDOUS_WASTE_TEMPLATE,

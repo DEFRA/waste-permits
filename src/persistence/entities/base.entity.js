@@ -481,4 +481,14 @@ module.exports = class BaseEntity {
     const query = `${dynamicsEntity}(${this.id})/${relationships[linkedModel]}(${linked.id})/$ref`
     return dynamicsDal.delete(query)
   }
+
+  get actionData () {
+    const data = {}
+    this.constructor.mapping
+      .filter(({ actionField }) => actionField)
+      .forEach(({ field, actionField }) => {
+        data[actionField] = this[field] || null
+      })
+    return data
+  }
 }
