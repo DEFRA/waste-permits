@@ -20,9 +20,9 @@ module.exports = class RecoveryService {
     const [application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule] = await Promise.all([
       options.application ? Application.getById(context, applicationId) : Promise.resolve(undefined),
       options.applicationLine ? ApplicationLine.getById(context, applicationLineId) : Promise.resolve(undefined),
-      options.applicationReturn ? ApplicationReturn.getByApplicationId(context, applicationId) : Promise.resolve(undefined),
-      options.account ? Account.getByApplicationId(context, applicationId) : Promise.resolve(undefined),
-      options.contact ? Contact.getByApplicationId(context, applicationId) : Promise.resolve(undefined),
+      options.applicationReturn ? ApplicationReturn.getByApplicationId(context) : Promise.resolve(undefined),
+      options.account ? Account.getByApplicationId(context) : Promise.resolve(undefined),
+      options.contact ? Contact.getByApplicationId(context) : Promise.resolve(undefined),
       options.cardPayment ? Payment.getCardPaymentDetails(context, applicationLineId) : Promise.resolve(undefined),
       options.standardRule ? StandardRule.getByApplicationLineId(context, applicationLineId) : Promise.resolve(undefined)
     ])
@@ -67,7 +67,9 @@ module.exports = class RecoveryService {
 
       const application = await Application.getById(context, applicationId)
 
-      const applicationLine = await ApplicationLine.getByApplicationId(context, applicationId)
+      context.applicationId = applicationId
+
+      const applicationLine = await ApplicationLine.getByApplicationId(context)
       const applicationLineId = applicationLine.id
 
       // Don't attempt to get the application, applicationLine and applicationReturn again
@@ -83,7 +85,7 @@ module.exports = class RecoveryService {
 
       const permitHolderType = RecoveryService.getPermitHolderType(application)
 
-      Object.assign(context, { slug, cookie, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType })
+      Object.assign(context, { slug, cookie, applicationLineId, application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType })
 
       // Setup all the cookies as if the user hadn't left
       cookie[AUTH_TOKEN] = context.authToken

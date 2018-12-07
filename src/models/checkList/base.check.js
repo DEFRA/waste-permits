@@ -10,7 +10,6 @@ const StandardRule = require('../../persistence/entities/standardRule.entity')
 const ContactDetail = require('../contactDetail.model')
 
 const {
-  DESIGNATED_MEMBER_CONTACT_DETAILS,
   BILLING_INVOICING,
   PUBLIC_BODY_MAIN_ADDRESS,
   COMPANY_REGISTERED_ADDRESS
@@ -97,14 +96,6 @@ module.exports = class BaseCheck {
       this.data.companies = await company.listLinked(this.data)
     }
     return this.data.companies || []
-  }
-
-  async getDesignatedMemberDetails () {
-    if (!this.data.designatedMemberDetails) {
-      const type = DESIGNATED_MEMBER_CONTACT_DETAILS.TYPE
-      this.data.designatedMemberDetails = await ContactDetail.list(this.data, { type })
-    }
-    return this.data.designatedMemberDetails || {}
   }
 
   async listContactDetails ({ TYPE: type }) {
