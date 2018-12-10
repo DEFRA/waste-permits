@@ -57,13 +57,16 @@ const Dynamics = {
       answers: [
         {
           id: 'eco-management',
-          description: 'Eco-Management and Audit Scheme ({{{EMAS}}})'
+          description: 'Eco-Management and Audit Scheme ({{{EMAS}}})',
+          plainText: 'Eco-Management and Audit Scheme (EMAS)'
         }, {
           id: 'ems-easy',
-          description: '{{{EMAS}}} Easy'
+          description: '{{{EMAS}}} Easy',
+          plainText: 'EMAS Easy'
         }, {
           id: 'iso-14001-2015',
-          description: '{{{ISO}}} 14001:2015 environmental management system standard'
+          description: '{{{ISO}}} 14001:2015 environmental management system standard',
+          plainText: 'ISO 14001:2015 environmental management system standard'
         }, {
           id: 'bs-8555',
           description: 'British Standard BS 8555 phases 1 to 5'

@@ -9,7 +9,8 @@ const BaseCheck = require('../../../src/models/checkList/base.check')
 const ManagementSystemCheck = require('../../../src/models/checkList/managementSystem.check')
 
 const fakeManagementSystem = {
-  answerText: 'ANSWER_TEXT'
+  answerCode: 'eco-management',
+  answerText: 'Eco-Management and Audit Scheme (EMAS)'
 }
 
 const fakeManagementSystemSummaries = [

@@ -1,4 +1,5 @@
 const BaseCheck = require('./base.check')
+const { ApplicationQuestions: { MANAGEMENT_SYSTEM: { answers: possibleAnswers } } } = require('../../dynamics')
 
 const { MANAGEMENT_SYSTEM } = require('../../tasks').tasks
 const { route: { path } } = MANAGEMENT_SYSTEM
@@ -17,7 +18,10 @@ module.exports = class ManagementSystemCheck extends BaseCheck {
   }
 
   async getManagementSystemLine () {
-    const { answerText } = await this.getManagementSystem()
+    const { answerCode } = await this.getManagementSystem()
+    const foundAnswer = possibleAnswers.find(({ id }) => id === answerCode)
+    const answerText = foundAnswer && (foundAnswer.plainText || foundAnswer.description)
+
     const evidence = await this.getManagementSystemSummary()
     const files = evidence.map(({ filename }) => filename)
     let answers = [answerText, 'Summary:', ...files]

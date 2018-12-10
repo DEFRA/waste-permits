@@ -19,6 +19,7 @@ const WasteTypesListCheck = require('../models/checkList/wasteTypesList.check')
 const EnvironmentalRiskAssessmentCheck = require('../models/checkList/environmentalRiskAssessment.check')
 const NonTechnicalSummaryCheck = require('../models/checkList/nonTechnicalSummary.check')
 const ManagementSystemCheck = require('../models/checkList/managementSystem.check')
+const NeedToConsult = require('../models/checkList/needToConsult.check')
 
 module.exports = class CheckBeforeSendingController extends BaseController {
   constructor (...args) {
@@ -30,18 +31,19 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       DrainageCheck,
       ContactCheck,
       PermitHolderCheck,
+      NeedToConsult,
+      NonTechnicalSummaryCheck,
       SiteCheck,
       SitePlanCheck,
-      WasteRecoveryPlanCheck,
-      MiningWasteCheck,
+      WasteTypesListCheck,
       TechnicalCompetenceCheck,
       FirePreventionPlanCheck,
-      ConfidentialityCheck,
-      InvoiceCheck,
-      WasteTypesListCheck,
+      WasteRecoveryPlanCheck,
       EnvironmentalRiskAssessmentCheck,
-      NonTechnicalSummaryCheck,
-      ManagementSystemCheck
+      ManagementSystemCheck,
+      MiningWasteCheck,
+      ConfidentialityCheck,
+      InvoiceCheck
     ]
   }
 

@@ -116,7 +116,10 @@ const tasks = {
   NEED_TO_CONSULT: {
     id: 'need-to-consult',
     label: 'Tell us who we need to consult',
-    shortName: 'consult'
+    route: Routes.NEED_TO_CONSULT,
+    completedLabelId: 'consult-completed',
+    shortName: 'consult',
+    taskListModel: 'needToConsult'
   },
   NHS_SCREENING: {
     id: 'nhs-screening',

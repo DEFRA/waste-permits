@@ -20,7 +20,7 @@ lab.beforeEach(() => {
   applicationId = 'APPLICATION_ID'
   questionCode = 'QUESTION_CODE'
   context = { authToken: 'AUTH_TOKEN', applicationId }
-  expectedXml = `<fetch top="1000" no-lock="true"><entity name="defra_applicationanswer"><attribute name="defra_answer_option" /><attribute name="defra_applicationlineid" /><attribute name="defra_application" /><attribute name="defra_answertext" /><attribute name="defra_applicationanswerid" /><filter type="and"><condition attribute="defra_application" operator="eq" value="${applicationId}" /><condition attribute="statecode" operator="eq" value="0" /></filter><link-entity name="defra_applicationquestion" from="defra_applicationquestionid" to="defra_question" link-type="inner" alias="question"><filter type="and"><condition attribute="statecode" operator="eq" value="0" /><condition attribute="defra_shortname" operator="eq" value="${questionCode}" /></filter></link-entity><link-entity name="defra_applicationquestionoption" from="defra_applicationquestionoptionid" to="defra_answer_option" link-type="outer" alias="answeroption"><attribute name="defra_option" /><attribute name="defra_shortname" /><filter><condition attribute="statecode" operator="eq" value="0" /></filter></link-entity></entity></fetch>`
+  expectedXml = `<fetch top="1000" no-lock="true"><entity name="defra_applicationanswer"><attribute name="defra_answer_option" /><attribute name="defra_applicationlineid" /><attribute name="defra_application" /><attribute name="defra_answertext" /><attribute name="defra_applicationanswerid" /><filter type="and"><condition attribute="defra_application" operator="eq" value="${applicationId}" /><condition attribute="statecode" operator="eq" value="0" /></filter><link-entity name="defra_applicationquestion" from="defra_applicationquestionid" to="defra_question" link-type="inner" alias="question"><attribute name="defra_shortname" /><filter type="and"><condition attribute="statecode" operator="eq" value="0" /><condition attribute="defra_shortname" operator="in"><value>${questionCode}</value></condition></filter></link-entity><link-entity name="defra_applicationquestionoption" from="defra_applicationquestionoptionid" to="defra_answer_option" link-type="outer" alias="answeroption"><attribute name="defra_option" /><attribute name="defra_shortname" /><filter><condition attribute="statecode" operator="eq" value="0" /></filter></link-entity></entity></fetch>`
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -35,14 +35,24 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Item Entity tests:', () => {
+lab.experiment('Application Answer Entity tests:', () => {
   lab.test('buildQuery() method should return correct xml query', async () => {
-    Code.expect(ApplicationAnswer.buildQuery(context, questionCode)).to.equal(expectedXml)
+    const queryText = ApplicationAnswer.buildQuery(context, [questionCode])
+    Code.expect(queryText).to.equal(expectedXml)
   })
 
   lab.test('getByQuestionCode() method should return the applicationAnswer correctly', async () => {
     fakeApplicationAnswer = { questionCode, answerCode: 'ANSWER_CODE', answerText: 'ANSWER_TEXT' }
     let applicationAnswer = await ApplicationAnswer.getByQuestionCode(context, questionCode)
+    Code.expect(applicationAnswer.answerCode).to.equal(fakeApplicationAnswer.answerCode)
+    Code.expect(applicationAnswer.answerText).to.equal(fakeApplicationAnswer.answerText)
+    Code.expect(applicationAnswer.questionCode).to.equal(fakeApplicationAnswer.questionCode)
+  })
+
+  lab.test('listByMultipleQuestionCodes() method should return the applicationAnswer correctly', async () => {
+    fakeApplicationAnswer = { questionCode, answerCode: 'ANSWER_CODE', answerText: 'ANSWER_TEXT' }
+    const applicationAnswers = await ApplicationAnswer.listByMultipleQuestionCodes(context, [questionCode])
+    let applicationAnswer = applicationAnswers.pop()
     Code.expect(applicationAnswer.answerCode).to.equal(fakeApplicationAnswer.answerCode)
     Code.expect(applicationAnswer.answerText).to.equal(fakeApplicationAnswer.answerText)
     Code.expect(applicationAnswer.questionCode).to.equal(fakeApplicationAnswer.questionCode)
