@@ -47,43 +47,37 @@ class ApplicationAnswer extends BaseEntity {
   static buildQuery (context, questionCodes) {
     const { applicationId } = context
 
-    const firstPart = `
-          <fetch top="1000" no-lock="true">
-            <entity name="defra_applicationanswer">
-              <attribute name="defra_answer_option" />
-              <attribute name="defra_applicationlineid" />
-              <attribute name="defra_application" />
-              <attribute name="defra_answertext" />
-              <attribute name="defra_applicationanswerid" />
-              <filter type="and">
-                <condition attribute="defra_application" operator="eq" value="${applicationId}" />
-                <condition attribute="statecode" operator="eq" value="0" />
-              </filter>
-              <link-entity name="defra_applicationquestion" from="defra_applicationquestionid" to="defra_question" link-type="inner" alias="question">
-                <attribute name="defra_shortname" />
-                <filter type="and">
-                  <condition attribute="statecode" operator="eq" value="0" />
-                  <condition attribute="defra_shortname" operator="in">
+    return `
+      <fetch top="1000" no-lock="true">
+        <entity name="defra_applicationanswer">
+          <attribute name="defra_answer_option" />
+          <attribute name="defra_applicationlineid" />
+          <attribute name="defra_application" />
+          <attribute name="defra_answertext" />
+          <attribute name="defra_applicationanswerid" />
+          <filter type="and">
+            <condition attribute="defra_application" operator="eq" value="${applicationId}" />
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <link-entity name="defra_applicationquestion" from="defra_applicationquestionid" to="defra_question" link-type="inner" alias="question">
+            <attribute name="defra_shortname" />
+            <filter type="and">
+              <condition attribute="statecode" operator="eq" value="0" />
+              <condition attribute="defra_shortname" operator="in">
+                ${questionCodes.map((questionCode) => `<value>${questionCode}</value>`).join('')}
+              </condition>
+            </filter>
+          </link-entity>
+          <link-entity name="defra_applicationquestionoption" from="defra_applicationquestionoptionid" to="defra_answer_option" link-type="outer" alias="answeroption">
+            <attribute name="defra_option" />
+            <attribute name="defra_shortname" />
+            <filter>
+              <condition attribute="statecode" operator="eq" value="0" />
+            </filter>
+          </link-entity>
+        </entity>
+      </fetch>
       `.replace(/\n\s+/g, '')
-
-    const values = questionCodes.map((questionCode) => `<value>${questionCode}</value>`).join('')
-
-    const lastPart = `
-                  </condition>
-                </filter>
-              </link-entity>
-              <link-entity name="defra_applicationquestionoption" from="defra_applicationquestionoptionid" to="defra_answer_option" link-type="outer" alias="answeroption">
-                <attribute name="defra_option" />
-                <attribute name="defra_shortname" />
-                <filter>
-                  <condition attribute="statecode" operator="eq" value="0" />
-                </filter>
-              </link-entity>
-            </entity>
-          </fetch>
-          `.replace(/\n\s+/g, '')
-
-    return firstPart + values + lastPart
   }
 
   static async getByQuestionCode (context, questionCode) {
