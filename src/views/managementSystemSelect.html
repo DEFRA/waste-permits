@@ -25,7 +25,7 @@
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
-        <div class="form-group {{#getFormErrorGroupClass errors.environmental-management-system}}{{/getFormErrorGroupClass}}">
+        <div id="environmental-management-system" class="form-group {{#getFormErrorGroupClass errors.environmental-management-system}}{{/getFormErrorGroupClass}}">
           <fieldset>
 
             <legend id="environmental-management-system-legend" class="visuallyhidden">{{pageHeading}}</legend>
