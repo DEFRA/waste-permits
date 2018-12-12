@@ -29,7 +29,7 @@ module.exports = class ManagementSystemCheck extends BaseCheck {
       heading: 'Management system',
       answers,
       links: [
-        { path, type: 'management system' }
+        { path, type: 'management system summary' }
       ]
     })
   }

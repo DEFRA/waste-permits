@@ -781,7 +781,7 @@ const Routes = {
   MANAGEMENT_SYSTEM_UPLOAD: {
     path: '/management-system/upload',
     view: 'upload/managementSystem/managementSystemSummary',
-    pageHeading: 'Which management system will you use?',
+    pageHeading: 'Upload a summary of your management system',
     controller: 'upload/managementSystem/managementSystemSummary',
     validator: 'upload/upload',
     nextRoute: 'TASK_LIST',
@@ -817,7 +817,7 @@ const Routes = {
   NON_TECHNICAL_SUMMARY: {
     path: '/non-technical-summary',
     view: 'upload/nonTechnicalSummary/nonTechnicalSummary',
-    pageHeading: 'Provide a non-technical summary',
+    pageHeading: 'Upload a non-technical summary',
     controller: 'upload/nonTechnicalSummary/nonTechnicalSummary',
     validator: 'upload/upload',
     nextRoute: 'TASK_LIST',

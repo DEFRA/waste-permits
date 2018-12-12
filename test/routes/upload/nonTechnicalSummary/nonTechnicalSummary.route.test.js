@@ -48,7 +48,7 @@ lab.experiment('Upload Non-technical Summary tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'non-technical-summary-description',
-      pageHeading: 'Provide a non-technical summary',
+      pageHeading: 'Upload a non-technical summary',
       submitButton: 'Continue',
       fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
     }
