@@ -47,7 +47,7 @@ lab.experiment('Management system summary upload tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      pageHeading: 'Which management system will you use?',
+      pageHeading: 'Upload a summary of your management system',
       submitButton: 'Continue',
       fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
     }

@@ -70,7 +70,7 @@ lab.experiment('Management system Check tests:', () => {
 
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/management-system/select')
-      Code.expect(linkType).to.equal('management system')
+      Code.expect(linkType).to.equal('management system summary')
       Code.expect(linkId).to.equal(`${prefix}-link`)
     })
 
