@@ -13,6 +13,6 @@ module.exports = class BespokeTaskList extends BaseTaskList {
     if (!context.availableTasks) {
       context.availableTasks = (await Task.getAvailableTasks(context)).map(({ shortName }) => shortName)
     }
-    return task.required || context.availableTasks.includes(task.shortName)
+    return task.required || (task.route && context.availableTasks.includes(task.shortName))
   }
 }

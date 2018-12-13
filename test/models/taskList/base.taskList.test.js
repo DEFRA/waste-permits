@@ -30,12 +30,14 @@ class TestTaskList extends TaskList {
           label: 'Check costs and processing time',
           completedLabelId: 'cost-and-time-completed',
           ruleSetId: 'defra_showcostandtime',
+          route: '/route',
           taskListModel: 'costTime'
         }, {
           id: 'confirm-that-your-operation-meets-the-rules',
           label: 'Confirm you can meet the rules',
           completedLabelId: 'operation-rules-completed',
           ruleSetId: 'defra_confirmreadrules',
+          route: '/route',
           taskListModel: 'confirmRules'
         }]
       },
@@ -47,12 +49,14 @@ class TestTaskList extends TaskList {
           label: 'Give contact details',
           completedLabelId: 'contact-details-completed',
           ruleSetId: 'defra_contactdetailsrequired',
+          route: '/route',
           taskListModel: 'contactDetails'
         }, {
           id: 'confirm-confidentiality-needs',
           label: 'Confirm confidentiality needs',
           completedLabelId: 'confidentiality-completed',
           ruleSetId: 'defra_cnfconfidentialityreq',
+          route: '/route',
           taskListModel: 'confidentiality'
         }]
       },
