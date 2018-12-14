@@ -70,8 +70,13 @@ module.exports = class BaseValidator {
       let fieldName
       let propertyWithError
       if (error.path.length) {
-        fieldName = error.path[0] // field that the error is to be associated with.
-        propertyWithError = error.path.pop() // the descendant in the path where the error can be found.
+        if (error.context && (error.context.key !== error.context.label)) {
+          // If a label has been explicitly set on the error then use that
+          fieldName = propertyWithError = error.context.label
+        } else {
+          fieldName = error.path[0] // field that the error is to be associated with.
+          propertyWithError = error.path.pop() // the descendant in the path where the error can be found.
+        }
       } else {
         // Validation errors on the root of the request payload need to be labelled with the name of the field that the error should be attached to.
         fieldName = propertyWithError = error.context.label

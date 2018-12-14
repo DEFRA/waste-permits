@@ -11,75 +11,67 @@
 
       {{> common/pageHeading pageHeading }}
 
+      <p>If it does, we will ask the organisation involved for their views on your permit application.</p>
+
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
-        <div class="form-group {{#getFormErrorGroupClass errors.consult-none-required}}{{/getFormErrorGroupClass}}">
+        <div class="form-group {{#getFormErrorGroupClass errors.consult-select}}{{/getFormErrorGroupClass}}">
         <fieldset>
           <legend id="legend" class="visuallyhidden">{{pageHeading}}</legend>
 
-          <p>If it does, we will ask the relevant organisation for their views on your permit application.</p>
+          <h2 id="consult-select" class="heading-small">Select all that you will release into</h2>
+          {{> common/fieldError fieldId='consult-select-error' message=errors.consult-select }}
 
-          <h2 class="heading-small">Select all that you will release into</h2>
-
-          <div class="form-group">
-            <div class="multiple-choice" data-target="consult-sewer-yes">
-              <input id="consult-sewer-required" name="consult-sewer-required" type="checkbox" value="yes" {{#if formValues.consult-sewer-required}}checked{{/if}}>
-              <label id="consult-sewer-required-label" for="consult-sewer-required">
-                A sewer managed by a water or sewerage company
-                <span class="form-hint">This does not apply if the only release is sewage or foul water from staff facilities</span>
-              </label>
-            </div>
-            <div id="consult-sewer-yes" class="panel panel-border-narrow js-hidden {{#getFormErrorGroupClass errors.consult-sewerage-undertaker}}{{/getFormErrorGroupClass}}">
-              <label id="consult-sewerage-undertaker-label" class="form-label" for="consult-sewerage-undertaker">
-                Water or sewerage company name
-              </label>
-              {{> common/fieldError fieldId='consult-sewerage-undertaker-error' message=errors.consult-sewerage-undertaker }}
-              <input class="form-control form-control-char-60 {{#if errors.consult-sewerage-undertaker}}form-control-error{{/if}}" id="consult-sewerage-undertaker" name="consult-sewerage-undertaker" type="text" value="{{formValues.consult-sewerage-undertaker}}">
-            </div>
+          <div class="multiple-choice" data-target="consult-sewer-yes">
+            <input id="consult-sewer-required" name="consult-sewer-required" type="checkbox" value="yes" {{#if formValues.consult-sewer-required}}checked{{/if}}>
+            <label id="consult-sewer-required-label" for="consult-sewer-required">
+              A sewer managed by a water or sewerage company
+              <span class="form-hint">This does not apply if the only release is sewage or foul water from staff facilities</span>
+            </label>
+          </div>
+          <div id="consult-sewer-yes" class="panel panel-border-narrow js-hidden {{#getFormErrorGroupClass errors.consult-sewerage-undertaker}}{{/getFormErrorGroupClass}}">
+            <label id="consult-sewerage-undertaker-label" class="form-label" for="consult-sewerage-undertaker">
+              Water or sewerage company name
+            </label>
+            {{> common/fieldError fieldId='consult-sewerage-undertaker-error' message=errors.consult-sewerage-undertaker }}
+            <input class="form-control form-control-char-60 {{#if errors.consult-sewerage-undertaker}}form-control-error{{/if}}" id="consult-sewerage-undertaker" name="consult-sewerage-undertaker" type="text" value="{{formValues.consult-sewerage-undertaker}}">
           </div>
 
-          <div class="form-group">
-            <div class="multiple-choice" data-target="consult-harbour-yes">
-              <input id="consult-harbour-required" name="consult-harbour-required" type="checkbox" value="yes" {{#if formValues.consult-harbour-required}}checked{{/if}}>
-              <label id="consult-harbour-required-label" for="consult-harbour-required">
-                A harbour managed by a harbour authority
-              </label>
-            </div>
-            <div id="consult-harbour-yes" class="panel panel-border-narrow js-hidden {{#getFormErrorGroupClass errors.consult-harbour-authority}}{{/getFormErrorGroupClass}}">
-              <label id="consult-harbour-authority-label" class="form-label" for="consult-harbour-authority">
-                Harbour authority name
-              </label>
-              {{> common/fieldError fieldId='consult-harbour-authority-error' message=errors.consult-harbour-authority }}
-              <input class="form-control form-control-char-60 {{#if errors.consult-harbour-authority}}form-control-error{{/if}}" id="consult-harbour-authority" name="consult-harbour-authority" type="text" value="{{formValues.consult-harbour-authority}}">
-            </div>
+          <div class="multiple-choice" data-target="consult-harbour-yes">
+            <input id="consult-harbour-required" name="consult-harbour-required" type="checkbox" value="yes" {{#if formValues.consult-harbour-required}}checked{{/if}}>
+            <label id="consult-harbour-required-label" for="consult-harbour-required">
+              A harbour managed by a harbour authority
+            </label>
+          </div>
+          <div id="consult-harbour-yes" class="panel panel-border-narrow js-hidden {{#getFormErrorGroupClass errors.consult-harbour-authority}}{{/getFormErrorGroupClass}}">
+            <label id="consult-harbour-authority-label" class="form-label" for="consult-harbour-authority">
+              Harbour authority name
+            </label>
+            {{> common/fieldError fieldId='consult-harbour-authority-error' message=errors.consult-harbour-authority }}
+            <input class="form-control form-control-char-60 {{#if errors.consult-harbour-authority}}form-control-error{{/if}}" id="consult-harbour-authority" name="consult-harbour-authority" type="text" value="{{formValues.consult-harbour-authority}}">
           </div>
 
 
-          <div class="form-group">
-            <div class="multiple-choice" data-target="consult-fisheries-yes">
-              <input id="consult-fisheries-required" name="consult-fisheries-required" type="checkbox" value="yes" {{#if formValues.consult-fisheries-required}}checked{{/if}}>
-              <label id="consult-fisheries-required-label" for="consult-fisheries-required">
-                Directly into relevant territorial waters or coastal waters within the sea fisheries district of a local fisheries committee
-              </label>
-            </div>
-            <div id="consult-fisheries-yes" class="panel panel-border-narrow js-hidden {{#getFormErrorGroupClass errors.consult-fisheries-committee}}{{/getFormErrorGroupClass}}">
-              <label id="consult-fisheries-committee-label" class="form-label" for="consult-fisheries-committee">
-                Fisheries committee name
-              </label>
-              {{> common/fieldError fieldId='consult-fisheries-committee-error' message=errors.consult-fisheries-committee }}
-              <input class="form-control form-control-char-60 {{#if errors.consult-fisheries-committee}}form-control-error{{/if}}" id="consult-fisheries-committee" name="consult-fisheries-committee" type="text" value="{{formValues.consult-fisheries-committee}}">
-            </div>
+          <div class="multiple-choice" data-target="consult-fisheries-yes">
+            <input id="consult-fisheries-required" name="consult-fisheries-required" type="checkbox" value="yes" {{#if formValues.consult-fisheries-required}}checked{{/if}}>
+            <label id="consult-fisheries-required-label" for="consult-fisheries-required">
+              Directly into relevant territorial waters or coastal waters within the sea fisheries district of a local fisheries committee
+            </label>
+          </div>
+          <div id="consult-fisheries-yes" class="panel panel-border-narrow js-hidden {{#getFormErrorGroupClass errors.consult-fisheries-committee}}{{/getFormErrorGroupClass}}">
+            <label id="consult-fisheries-committee-label" class="form-label" for="consult-fisheries-committee">
+              Fisheries committee name
+            </label>
+            {{> common/fieldError fieldId='consult-fisheries-committee-error' message=errors.consult-fisheries-committee }}
+            <input class="form-control form-control-char-60 {{#if errors.consult-fisheries-committee}}form-control-error{{/if}}" id="consult-fisheries-committee" name="consult-fisheries-committee" type="text" value="{{formValues.consult-fisheries-committee}}">
           </div>
 
-          <div class="form-group">
-            <div class="multiple-choice">
-              <input id="consult-none-required" name="consult-none-required" type="checkbox" value="yes" {{#if formValues.consult-none-required}}checked{{/if}}>
-              <label id="consult-none-required-label" for="consult-none-required">
-                None of these
-                {{> common/fieldError fieldId='consult-none-required-error' message=errors.consult-none-required }}
-              </label>
-            </div>
+          <div class="multiple-choice">
+            <input id="consult-none-required" name="consult-none-required" type="checkbox" value="yes" {{#if formValues.consult-none-required}}checked{{/if}}>
+            <label id="consult-none-required-label" for="consult-none-required">
+              None of these
+            </label>
           </div>
 
         </fieldset>

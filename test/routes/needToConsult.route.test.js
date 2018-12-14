@@ -173,13 +173,13 @@ lab.experiment('Consultees page tests:', () => {
         postRequest.payload = {}
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'consult-none-required', `Select at least one option. If there are no releases select 'None of these'.`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'consult-select', `Select at least one option. If there are no releases select 'None of these'.`)
       })
       lab.test(`when both releases and 'None' are selected`, async () => {
         postRequest.payload['consult-none-required'] = 'yes'
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'consult-none-required', `You cannot select a release and 'None of these'. Please deselect one of them.`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'consult-select', `You cannot select a release and 'None of these'. Please deselect one of them.`)
       })
       lab.test('when sewer is selected but no undertaker name is provided', async () => {
         delete postRequest.payload['consult-sewerage-undertaker']
