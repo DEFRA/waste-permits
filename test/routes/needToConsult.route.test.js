@@ -181,6 +181,15 @@ lab.experiment('Consultees page tests:', () => {
         await checkCommonElements(doc)
         await GeneralTestHelper.checkValidationMessage(doc, 'consult-select', `You cannot select a release and 'None of these'. Please deselect one of them.`)
       })
+      lab.test(`when both releases and 'None' are selected, only shows single error message`, async () => {
+        postRequest.payload['consult-none-required'] = 'yes'
+        delete postRequest.payload['consult-sewerage-undertaker']
+        const doc = await GeneralTestHelper.getDoc(postRequest)
+        await checkCommonElements(doc)
+        await GeneralTestHelper.checkValidationMessage(doc, 'consult-select', `You cannot select a release and 'None of these'. Please deselect one of them.`)
+        await GeneralTestHelper.checkValidationMessageCount(doc, 1)
+        await GeneralTestHelper.checkNoValidationMessage(doc, 'consult-sewerage-undertaker')
+      })
       lab.test('when sewer is selected but no undertaker name is provided', async () => {
         delete postRequest.payload['consult-sewerage-undertaker']
         const doc = await GeneralTestHelper.getDoc(postRequest)
