@@ -41,6 +41,14 @@ module.exports = class GeneralTestHelper {
     Code.expect(doc.getElementById(`${fieldId}-error`).firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
   }
 
+  static checkNoValidationMessage (doc, fieldId) {
+    Code.expect(doc.getElementById(`${fieldId}-error`)).to.not.exist()
+  }
+
+  static checkValidationMessageCount (doc, expectedCount) {
+    Code.expect(doc.getElementById('error-summary-list').getElementsByTagName('li').length).to.equal(expectedCount)
+  }
+
   static async getDoc (request, status = 200) {
     // TODO Possibly call this executeRequest
     // This executes a request and then returns the document view
