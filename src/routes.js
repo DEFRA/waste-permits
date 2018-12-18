@@ -827,6 +827,32 @@ const Routes = {
       ]
     }
   },
+  MCP_DETAILS: {
+    path: '/mcp/template/upload',
+    view: 'upload/mcpDetails/mcpDetails',
+    pageHeading: 'Upload the spreadsheet that lists your medium combustion plant',
+    controller: 'upload/mcpDetails/mcpDetails',
+    validator: 'upload/upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    validatorOptions: {
+      fileTypes: [
+        { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
+        { type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+        { type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet' },
+        { type: 'CSV', mimeType: 'text/csv' }
+      ]
+    }
+  },
+  MCP_TEMPLATE: {
+    path: '/mcp/template/download',
+    view: 'mcpTemplate',
+    pageHeading: 'Download and complete the MCP template',
+    controller: 'mcpTemplate',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   MINING_WASTE_WEIGHT: {
     path: '/mining-waste/weight',
     view: 'miningWasteWeight',
