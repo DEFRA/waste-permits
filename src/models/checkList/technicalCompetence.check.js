@@ -2,7 +2,8 @@ const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
 
 const { TECHNICAL_QUALIFICATION } = require('../../tasks').tasks
-const { TECHNICAL_QUALIFICATION: { path } } = require('../../routes')
+const { TECHNICAL_QUALIFICATION: { path: qualificationPath } } = require('../../routes')
+const { TECHNICAL_MANAGERS: { path: managersPath } } = require('../../routes')
 const { WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU_SKILLS } = Dynamics.TechnicalQualification
 
 module.exports = class TechnicalCheck extends BaseCheck {
@@ -16,7 +17,8 @@ module.exports = class TechnicalCheck extends BaseCheck {
 
   async buildLines () {
     return Promise.all([
-      this.getQualificationLine()
+      this.getQualificationLine(),
+      this.getTechnicalManagersLine()
     ])
   }
 
@@ -39,9 +41,22 @@ module.exports = class TechnicalCheck extends BaseCheck {
     const evidence = await this.getTechnicalCompetenceEvidence()
     return this.buildLine({
       heading: 'Technical competence evidence',
+      prefix: 'evidence',
       answers: evidence.length ? [technicalQualificationName, 'Evidence files uploaded:'].concat(evidence.map((file) => file.filename)) : [],
       links: [
-        { path, type: 'technical management qualification' }
+        { path: qualificationPath, type: 'technical management qualification' }
+      ]
+    })
+  }
+
+  async getTechnicalManagersLine () {
+    const evidence = await this.getTechnicalManagers()
+    return this.buildLine({
+      heading: 'Technically competent manager',
+      prefix: 'managers',
+      answers: evidence.map((file) => file.filename),
+      links: [
+        { path: managersPath, type: 'technical manager details' }
       ]
     })
   }

@@ -33,7 +33,14 @@ const fakeTechnicalCompetenceEvidence = [
   { filename: 'EVIDENCE_FILENAME_3' }
 ]
 
-const prefix = 'section-technical-competence'
+const fakeTechnicalManagersEvidence = [
+  { filename: 'EVIDENCE_FILENAME_1' },
+  { filename: 'EVIDENCE_FILENAME_2' },
+  { filename: 'EVIDENCE_FILENAME_3' }
+]
+
+const evidencePrefix = 'section-technical-competence-evidence'
+const managersPrefix = 'section-technical-competence-managers'
 
 let sandbox
 
@@ -43,6 +50,7 @@ lab.beforeEach(() => {
 
   // Stub the asynchronous base methods
   sandbox.stub(BaseCheck.prototype, 'getTechnicalCompetenceEvidence').value(() => fakeTechnicalCompetenceEvidence)
+  sandbox.stub(BaseCheck.prototype, 'getTechnicalManagers').value(() => fakeTechnicalManagersEvidence)
 })
 
 lab.afterEach(() => {
@@ -68,12 +76,12 @@ lab.experiment('TechnicalCompetence Check tests:', () => {
       })
 
       lab.test(`(${description} line) works correctly`, async () => {
-        const { heading, headingId, answers, links } = lines.pop()
-        Code.expect(heading).to.equal(heading)
-        Code.expect(headingId).to.equal(`${prefix}-heading`)
+        const { heading, headingId, answers, links } = lines.shift()
+        Code.expect(heading).to.equal('Technical competence evidence')
+        Code.expect(headingId).to.equal(`${evidencePrefix}-heading`)
 
         answers.forEach(({ answer, answerId }, answerIndex) => {
-          Code.expect(answerId).to.equal(`${prefix}-answer-${answerIndex + 1}`)
+          Code.expect(answerId).to.equal(`${evidencePrefix}-answer-${answerIndex + 1}`)
           switch (answerIndex) {
             case 0: {
               Code.expect(answer).to.equal(description)
@@ -94,8 +102,36 @@ lab.experiment('TechnicalCompetence Check tests:', () => {
         const { link, linkId, linkType } = links.pop()
         Code.expect(link).to.equal('/technical-competence')
         Code.expect(linkType).to.equal('technical management qualification')
-        Code.expect(linkId).to.equal(`${prefix}-link`)
+        Code.expect(linkId).to.equal(`${evidencePrefix}-link`)
       })
     })
   }
+
+  lab.experiment('buildlines', () => {
+    let check
+    let lines
+
+    lab.beforeEach(async () => {
+      sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => ({}))
+      check = new TechnicalCompetenceCheck()
+      lines = await check.buildLines()
+    })
+
+    lab.test(`(technical managers evidence line) works correctly`, async () => {
+      const { heading, headingId, answers, links } = lines.pop()
+      Code.expect(heading).to.equal('Technically competent manager')
+      Code.expect(headingId).to.equal(`${managersPrefix}-heading`)
+
+      answers.forEach(({ answer, answerId }, answerIndex) => {
+        Code.expect(answerId).to.equal(`${managersPrefix}-answer-${answerIndex + 1}`)
+        const { filename } = fakeTechnicalManagersEvidence[answerIndex]
+        Code.expect(answer).to.equal(filename)
+      })
+
+      const { link, linkId, linkType } = links.pop()
+      Code.expect(link).to.equal('/technical-competence/technical-managers')
+      Code.expect(linkType).to.equal('technical manager details')
+      Code.expect(linkId).to.equal(`${managersPrefix}-link`)
+    })
+  })
 })

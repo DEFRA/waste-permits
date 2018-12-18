@@ -28,7 +28,8 @@ const {
   WASTE_TYPES_LIST,
   ENVIRONMENTAL_RISK_ASSESSMENT,
   NON_TECHNICAL_SUMMARY,
-  MANAGEMENT_SYSTEM_SUMMARY
+  MANAGEMENT_SYSTEM_SUMMARY,
+  TECHNICAL_MANAGERS
 } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -241,5 +242,13 @@ module.exports = class BaseCheck {
       this.data.needToConsult = await NeedToConsult.get(this.data)
     }
     return this.data.needToConsult || {}
+  }
+
+  async getTechnicalManagers () {
+    const { technicalManagers } = this.data
+    if (!technicalManagers) {
+      this.data.technicalManagers = await Annotation.listByApplicationIdAndSubject(this.data, TECHNICAL_MANAGERS)
+    }
+    return this.data.technicalManagers || {}
   }
 }
