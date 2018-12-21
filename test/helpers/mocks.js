@@ -48,7 +48,7 @@ class MockData {
   }
 
   get addressDetail () {
-    const { contact } = this
+    const { address: { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode }, contact } = this
     return {
       id: 'ADDRESS_DETAIL_ID',
       customerId: contact.id,
@@ -57,7 +57,8 @@ class MockData {
       type: 'ADDRESS_DETAIL_TYPE',
       email: 'EMAIL',
       telephone: 'TELEPHONE',
-      jobTitle: 'JOB_TITLE'
+      jobTitle: 'JOB_TITLE',
+      fullAddress: [buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode].join(', ')
     }
   }
 
@@ -150,6 +151,7 @@ class MockData {
       email: addressDetail.email,
       telephone: addressDetail.telephone,
       jobTitle: addressDetail.jobTitle,
+      fullAddress: addressDetail.fullAddress,
       dateOfBirth: '2018-2-4'
     }
   }
