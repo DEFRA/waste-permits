@@ -102,7 +102,7 @@ const Routes = {
     pageHeading: 'Where should we send invoices for the annual costs after the permit has been issued?',
     controller: 'address/invoice/addressManualInvoice',
     validator: 'address/addressManual',
-    nextRoute: 'TASK_LIST',
+    nextRoute: 'INVOICE_CONTACT',
     types: 'GET, POST'
   },
   MANUAL_PARTNER: {
@@ -148,7 +148,7 @@ const Routes = {
     pageHeading: 'Where should we send invoices for the annual costs after the permit has been issued?',
     controller: 'address/invoice/postcodeInvoice',
     validator: 'address/postcode',
-    nextRoute: 'TASK_LIST',
+    nextRoute: 'INVOICE_CONTACT',
     types: 'GET, POST'
   },
   POSTCODE_PARTNER: {
@@ -194,7 +194,7 @@ const Routes = {
     pageHeading: 'Where should we send invoices for the annual costs after the permit has been issued?',
     controller: 'address/invoice/selectInvoice',
     validator: 'address/addressSelect',
-    nextRoute: 'TASK_LIST',
+    nextRoute: 'INVOICE_CONTACT',
     types: 'GET, POST'
   },
   SELECT_PARTNER: {
@@ -361,6 +361,15 @@ const Routes = {
     controller: 'directorDateOfBirth',
     validator: 'directorDateOfBirth',
     nextRoute: 'LLP_COMPANY_DESIGNATED_MEMBER_EMAIL',
+    types: 'GET, POST'
+  },
+  INVOICE_CONTACT: {
+    path: '/invoice/contact',
+    view: 'invoiceContact',
+    pageHeading: 'Who should we contact about invoicing or payments?',
+    controller: 'invoiceContact',
+    validator: 'invoiceContact',
+    nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
   PUBLIC_BODY_NAME: {

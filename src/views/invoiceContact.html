@@ -1,0 +1,53 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      {{> common/errorSummary }}
+      {{> common/pageHeading pageHeading }}
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.first-name}}{{/getFormErrorGroupClass}}">
+          <label id="first-name-label" class="form-label" for="first-name">
+            First name
+          </label>
+          {{> common/fieldError fieldId='first-name-error' message=errors.first-name }}
+          <input class="form-control form-control-char-15 {{#if errors.first-name}}form-control-error{{/if}}" id="first-name" name="first-name" type="text" value="{{formValues.first-name}}">
+        </div>
+
+        <div class="form-group {{#getFormErrorGroupClass errors.last-name}}{{/getFormErrorGroupClass}}">
+          <label id="last-name-label" class="form-label" for="last-name">
+            Last name
+          </label>
+          {{> common/fieldError fieldId='last-name-error' message=errors.last-name }}
+          <input class="form-control form-control-char-15 {{#if errors.last-name}}form-control-error{{/if}}" id="last-name" name="last-name" type="text" value="{{formValues.last-name}}">
+        </div>
+
+        <div class="form-group {{#getFormErrorGroupClass errors.email}}{{/getFormErrorGroupClass}}">
+          <label id="email-label" class="form-label" for="email">
+            Email address for main contact
+            <span id="email-hint" class="form-hint">We will use this to send invoices and enquiries</span>
+          </label>
+          {{> common/fieldError fieldId='email-error' message=errors.email }}
+          <input class="form-control form-control-char-35 {{#if errors.email}}form-control-error{{/if}}" id="email" name="email" type="email" value="{{formValues.email}}">
+        </div>
+
+        <div class="form-group {{#getFormErrorGroupClass errors.telephone}}{{/getFormErrorGroupClass}}">
+          <label id="telephone-label" class="form-label" for="telephone">
+            Telephone number
+            <span id="telephone-hint" class="form-hint">This can be landline or mobile</span>
+          </label>
+          {{> common/fieldError fieldId='telephone-error' message=errors.telephone }}
+          <input class="form-control form-control-char-15 {{#if errors.telephone}}form-control-error{{/if}}" id="telephone" name="telephone" type="tel" value="{{formValues.telephone}}">
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+    </div>
+  </div>
+
+</main>

@@ -92,6 +92,10 @@ module.exports = class InvoiceAddress extends BaseTask {
 
   static async checkComplete (context) {
     const contactDetail = await ContactDetail.get(context, { type: BILLING_INVOICING.TYPE })
-    return Boolean(contactDetail && contactDetail.addressId && await Address.getById(context, contactDetail.addressId))
+    if (contactDetail) {
+      const { firstName, lastName, email, telephone, fullAddress } = contactDetail
+      return Boolean(firstName && lastName && email && telephone && fullAddress)
+    }
+    return false
   }
 }

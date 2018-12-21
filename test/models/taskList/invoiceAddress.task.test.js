@@ -70,7 +70,7 @@ lab.experiment('Task List: Invoice Address Model tests:', () => {
 
   lab.experiment('Completeness:', () => {
     lab.test('isComplete() method correctly returns FALSE when the address details are not set', async () => {
-      delete mocks.contactDetail.addressId
+      delete mocks.contactDetail.fullAddress
       const result = await InvoiceAddress.isComplete(context)
       Code.expect(result).to.equal(false)
     })
