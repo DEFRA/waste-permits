@@ -19,7 +19,7 @@ module.exports = class AddressManualController extends BaseController {
       // If we have Address details in the payload then display them in the form
       pageContext.formValues = request.payload
     } else {
-      const address = await this.getModel().getAddress(request)
+      const address = await this.task.getAddress(request)
       if (address) {
         pageContext.formValues = {
           'building-name-or-number': address.buildingNameOrNumber,
@@ -59,7 +59,7 @@ module.exports = class AddressManualController extends BaseController {
       postcode: request.payload['postcode']
     }
 
-    await this.getModel().saveManualAddress(request, addressDto)
+    await this.task.saveManualAddress(request, addressDto)
 
     return this.redirect({ h })
   }

@@ -9,7 +9,7 @@ module.exports = class AddressManualSiteController extends AddressManualControll
     return Constants.CookieValue.SITE_POSTCODE
   }
 
-  getModel () {
+  get task () {
     return SiteNameAndLocation
   }
 }

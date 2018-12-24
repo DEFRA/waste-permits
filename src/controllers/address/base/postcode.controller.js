@@ -10,7 +10,7 @@ module.exports = class PostcodeController extends BaseController {
     const pageContext = this.createPageContext(h, errors)
     // Load entity context within the request object
     await RecoveryService.createApplicationContext(h)
-    const model = await this.getModel()
+    const model = await this.task
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form

@@ -105,7 +105,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Address Model tests:', () => {
+lab.experiment('Address Entity tests:', () => {
   lab.test('Constructor creates a Address object correctly', () => {
     const emptyAddress = new Address({})
     Code.expect(emptyAddress.postcode).to.be.undefined()

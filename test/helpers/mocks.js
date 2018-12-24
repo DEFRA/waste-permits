@@ -15,6 +15,7 @@ const LocationDetail = require('../../src/persistence/entities/locationDetail.en
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 
 const ContactDetail = require('../../src/models/contactDetail.model')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const DataStore = require('../../src/models/dataStore.model')
 
 const ApplicationCostModel = require('../../src/models/triage/applicationCost.model')
@@ -128,6 +129,14 @@ class MockData {
       id: 'APPLICATION_RETURN_ID',
       applicationId: application.id,
       slug: 'SLUG'
+    }
+  }
+
+  get charityDetail () {
+    return {
+      charityPermitHolder: 'individual',
+      charityName: 'CHARITY_NAME',
+      charityNumber: 'CHARITY_NO'
     }
   }
 
@@ -275,6 +284,11 @@ class Mocks {
     return this._applicationReturn || (this._applicationReturn = new ApplicationReturn(applicationReturn))
   }
 
+  get charityDetail () {
+    const { charityDetail } = this.mockData
+    return this._charityDetail || (this._charityDetail = new CharityDetail(charityDetail))
+  }
+
   get contact () {
     const { contact } = this.mockData
     return this._contact || (this._contact = new Contact(contact))
@@ -286,15 +300,18 @@ class Mocks {
   }
 
   get context () {
-    const application = this.application
-    const applicationLine = this.applicationLine
-    return {
-      authToken: 'AUTH_TOKEN',
-      applicationId: application.id,
-      applicationLineId: applicationLine.id,
-      application,
-      applicationLine
+    if (!this._context) {
+      const application = this.application
+      const applicationLine = this.applicationLine
+      this._context = Object.assign({}, {
+        authToken: 'AUTH_TOKEN',
+        applicationId: application.id,
+        applicationLineId: applicationLine.id,
+        application,
+        applicationLine
+      })
     }
+    return this._context
   }
 
   get dataStore () {
@@ -325,12 +342,15 @@ class Mocks {
   }
 
   get recovery () {
-    return {
-      authToken: 'AUTH_TOKEN',
-      applicationId: this.application.id,
-      applicationLineId: this.applicationLine.id,
-      application: this.application
+    if (!this._recovery) {
+      this._recovery = Object.assign({}, {
+        authToken: 'AUTH_TOKEN',
+        applicationId: this.application.id,
+        applicationLineId: this.applicationLine.id,
+        application: this.application
+      })
     }
+    return this._recovery
   }
 
   get request () {

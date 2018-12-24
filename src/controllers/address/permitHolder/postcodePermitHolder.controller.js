@@ -18,11 +18,11 @@ module.exports = class PostcodePermitHolderController extends PostcodeController
     return Routes.SELECT_PERMIT_HOLDER.path
   }
 
-  getModel () {
+  get task () {
     return PermitHolderDetails
   }
 
-  customisePageContext (pageContext) {
-    // Not required for this address type
+  async customisePageContext (pageContext, request) {
+    pageContext.showCharitySubheading = this.task.isCharity(request)
   }
 }

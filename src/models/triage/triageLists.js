@@ -46,8 +46,8 @@ const PERMIT_HOLDER_TYPES = {
     text: 'Partnership',
     canApplyOnline: true
   },
-  REGISTERED_CHARITY: {
-    id: 'registered-charity',
+  CHARITY_OR_TRUST: {
+    id: 'charity-or-trust',
     key: '06',
     text: 'Registered charity',
     canApplyOnline: false
@@ -72,7 +72,7 @@ const PERMIT_HOLDER_TYPE_LIST = [
   PERMIT_HOLDER_TYPES.INDIVIDUAL,
   PERMIT_HOLDER_TYPES.PUBLIC_BODY,
   PERMIT_HOLDER_TYPES.PARTNERSHIP,
-  PERMIT_HOLDER_TYPES.REGISTERED_CHARITY,
+  PERMIT_HOLDER_TYPES.CHARITY_OR_TRUST,
   PERMIT_HOLDER_TYPES.LIMITED_LIABILITY_PARTNERSHIP,
   PERMIT_HOLDER_TYPES.OTHER_ORGANISATION
 ]

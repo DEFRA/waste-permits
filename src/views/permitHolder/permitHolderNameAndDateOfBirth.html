@@ -5,6 +5,18 @@
   <div class="grid-row">
     <div class="column-two-thirds">
       {{> common/errorSummary }} {{> common/pageHeading pageHeading }}
+
+      {{#if isCharity}}
+      <p class="notice">
+        <i class="icon icon-important">
+          <span class="visually-hidden">Warning</span>
+        </i>
+        <strong class="bold-small">
+          This person will be the legal permit holder.
+        </strong>
+      </p>
+      {{/if}}
+
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 

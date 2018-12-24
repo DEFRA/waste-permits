@@ -37,8 +37,8 @@ class ApplicationAnswer extends BaseEntity {
     }
   }
 
-  async delete (context) {
-    // Delete by clearing values
+  async clear (context) {
+    // Clear values
     delete this.answerCode
     delete this.answerText
     return this.save(context)

@@ -237,6 +237,26 @@ const Routes = {
 
   // PERMIT HOLDER
   // *************
+  CHARITY_PERMIT_HOLDER: {
+    path: '/permit-holder/charity-permit-holder',
+    view: 'charityPermitHolder',
+    pageHeading: 'Choose the permit holder for the charity or trust',
+    controller: 'charityPermitHolder',
+    validator: 'charityPermitHolder',
+    nextRoute: 'CHARITY_DETAILS',
+    types: 'GET, POST'
+  },
+  CHARITY_DETAILS: {
+    path: '/permit-holder/charity-details',
+    view: 'charityDetails',
+    pageHeading: 'What is the charity’s name and number?',
+    controller: 'charityDetails',
+    validator: 'charityDetails',
+    nextRoute: 'POSTCODE_PUBLIC_BODY',
+    companyRoute: 'COMPANY_NUMBER',
+    individualRoute: 'PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH',
+    types: 'GET, POST'
+  },
   COMPANY_CHECK_NAME: {
     path: '/permit-holder/company/check-name',
     view: 'companyCheckName',
@@ -298,6 +318,7 @@ const Routes = {
     path: '/permit-holder/company/number',
     view: 'companyNumber',
     pageHeading: 'What is the UK company registration number?',
+    pageHeadingAlternate: 'What is the company or Charitable Incorporated Organisation registration number?',
     controller: 'companyNumber',
     validator: 'companyNumber',
     nextRoute: 'COMPANY_CHECK_TYPE',
@@ -427,6 +448,7 @@ const Routes = {
     path: '/permit-holder/name',
     view: 'permitHolder/permitHolderNameAndDateOfBirth',
     pageHeading: 'Who will be the permit holder?',
+    pageHeadingAlternate: 'Who will hold the permit for the charity or trust?',
     controller: 'permitHolder/permitHolderNameAndDateOfBirth',
     validator: 'permitHolder/permitHolderNameAndDateOfBirth',
     nextRoute: 'PERMIT_HOLDER_CONTACT_DETAILS',

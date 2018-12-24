@@ -61,37 +61,22 @@ class Application extends BaseEntity {
     return this.applicantType === PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId || this.organisationType === PERMIT_HOLDER_TYPES.SOLE_TRADER.dynamicsOrganisationTypeId
   }
 
-  get isPartnership () {
-    return this.organisationType === PERMIT_HOLDER_TYPES.PARTNERSHIP.dynamicsOrganisationTypeId
-  }
+  // entityToDynamics (...args) {
+  //   if (this.isIndividual && this.permitHolderOrganisationId) {
+  //     throw new Error('Application cannot have a permitHolderOrganisationId when the permit holder is an individual')
+  //   }
+  //   return super.entityToDynamics(...args)
+  // }
 
-  get isPublicBody () {
-    return this.organisationType === PERMIT_HOLDER_TYPES.PUBLIC_BODY.dynamicsOrganisationTypeId
-  }
-
-  individualPermitHolderId () {
-    return this.isIndividual ? this.permitHolderIndividualId : undefined
-  }
-
-  entityToDynamics (...args) {
-    if (this.isIndividual && this.permitHolderOrganisationId) {
-      throw new Error('Application cannot have a permitHolderOrganisationId when the permit holder is an individual')
-    }
-    if (!this.isIndividual && this.permitHolderIndividualId) {
-      throw new Error('Application cannot have a permitHolderIndividualId when the permit holder is a company')
-    }
-    return super.entityToDynamics(...args)
-  }
-
-  static dynamicsToEntity (...args) {
-    const model = super.dynamicsToEntity(...args)
-    if (model.isIndividual) {
-      model.permitHolderOrganisationId = undefined
-    } else {
-      model.permitHolderIndividualId = undefined
-    }
-    return model
-  }
+  // static dynamicsToEntity (...args) {
+  //   const model = super.dynamicsToEntity(...args)
+  //   if (model.isIndividual) {
+  //     model.permitHolderOrganisationId = undefined
+  //   } else {
+  //     model.permitHolderIndividualId = undefined
+  //   }
+  //   return model
+  // }
 
   static async getById (...args) {
     const application = await super.getById(...args)
@@ -104,6 +89,20 @@ class Application extends BaseEntity {
     }
 
     return application
+  }
+
+  async save (...args) {
+    const [ context = {} ] = args
+    const { charityDetail = {} } = context
+    if (this.isIndividual || charityDetail.isIndividual) {
+      this.permitHolderOrganisationId = undefined
+      if (charityDetail.isIndividual) {
+        this.applicantType = PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId
+      }
+    } else {
+      this.permitHolderIndividualId = undefined
+    }
+    return super.save(...args)
   }
 
   static async listBySaveAndReturnEmail (context, saveAndReturnEmail) {

@@ -10,6 +10,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/persistence/entities/application.entity')
 const DataStore = require('../../src/models/dataStore.model')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const CookieService = require('../../src/services/cookie.service')
 const featureConfig = require('../../src/config/featureConfig')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -73,6 +74,7 @@ lab.beforeEach(() => {
   sandbox.stub(DataStore, 'save').value(async () => mocks.dataStore.id)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
   // Todo: Remove hasBespokeFeature syub when bespoke is live
   sandbox.stub(featureConfig, 'hasBespokeFeature').value(() => true)
 })

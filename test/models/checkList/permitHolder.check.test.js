@@ -10,6 +10,7 @@ const BaseCheck = require('../../../src/models/checkList/base.check')
 const PermitHolderCheck = require('../../../src/models/checkList/permitHolder.check')
 
 const PERMIT_HOLDER_TYPE_LINE = 0
+const CHARITY_DETAILS_LINE = 1
 const PERMIT_HOLDER_LINE = 1
 const PARTNERSHIP_NAME_LINE = 1
 const PARTNERSHIP_PERMIT_HOLDER_LINE = 2
@@ -41,6 +42,7 @@ let mocks
 
 lab.beforeEach(() => {
   mocks = new Mocks()
+  delete mocks.charityDetail.charityPermitHolder
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
@@ -50,7 +52,8 @@ lab.beforeEach(() => {
   sandbox.stub(BaseCheck.prototype, 'getPermitHolderType').value(async () => mocks.permitHolderType)
   sandbox.stub(BaseCheck.prototype, 'getCompanyAccount').value(async () => mocks.account)
   sandbox.stub(BaseCheck.prototype, 'getCompanyRegisteredAddress').value(async () => mocks.address)
-  sandbox.stub(BaseCheck.prototype, 'getMainAddress').value(async () => mocks.address)
+  sandbox.stub(BaseCheck.prototype, 'getMainAddress').value(async () => mocks.contactDetail)
+  sandbox.stub(BaseCheck.prototype, 'getCharityDetails').value(async () => mocks.charityDetail)
   sandbox.stub(BaseCheck.prototype, 'listContactDetails').value(async () => [mocks.contactDetail])
 })
 
@@ -87,7 +90,35 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
+    lab.test('(charity details line) works correctly', async () => {
+      mocks.charityDetail.charityPermitHolder = 'Limited company'
+      const { charityName, charityNumber } = mocks.charityDetail
+      mocks.permitHolderType.type = 'Charity or trust'
+      const lines = await buildLines()
+      const { heading, headingId, answers, links } = lines[CHARITY_DETAILS_LINE]
+      const linePrefix = `${prefix}-charity`
+      Code.expect(heading).to.equal(heading)
+      Code.expect(headingId).to.equal(`${linePrefix}-heading`)
+
+      answers.forEach(({ answer, answerId }, answerIndex) => {
+        Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
+        switch (answerIndex) {
+          case 0:
+            Code.expect(answer).to.equal(charityName)
+            break
+          case 1:
+            Code.expect(answer).to.equal(`Charity Number: ${charityNumber}`)
+            break
+        }
+      })
+      const { link, linkId, linkType } = links.pop()
+      Code.expect(link).to.equal('/permit-holder/charity-details')
+      Code.expect(linkType).to.equal(`charity details`)
+      Code.expect(linkId).to.equal(`${linePrefix}-link`)
+    })
+
     lab.test('(company line) works correctly', async () => {
+      mocks.permitHolderType.type = 'Limited company'
       const lines = await buildLines()
       const { heading, headingId, answers, links } = lines[PERMIT_HOLDER_LINE]
       const linePrefix = `${prefix}-company`
@@ -194,7 +225,7 @@ lab.experiment('PermitHolder Check tests:', () => {
     })
 
     lab.test('(individual line) works correctly', async () => {
-      mocks.application.applicantType = 910400000
+      mocks.permitHolderType.type = 'Individual'
       const lines = await buildLines()
       const { heading, headingId, answers, links } = lines[PERMIT_HOLDER_LINE]
       const linePrefix = `${prefix}-individual`
@@ -273,7 +304,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(headingId).to.equal(`${linePrefix}-heading`)
 
       const { tradingName } = mocks.application
-      const { buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode } = mocks.address
+      const { fullAddress } = mocks.contactDetail
 
       answers.forEach(({ answer, answerId }, answerIndex) => {
         Code.expect(answerId).to.equal(`${linePrefix}-answer-${answerIndex + 1}`)
@@ -282,16 +313,7 @@ lab.experiment('PermitHolder Check tests:', () => {
             Code.expect(answer).to.equal(tradingName)
             break
           case 1:
-            Code.expect(answer).to.equal(`${buildingNameOrNumber}, ${addressLine1}`)
-            break
-          case 2:
-            Code.expect(answer).to.equal(addressLine2)
-            break
-          case 3:
-            Code.expect(answer).to.equal(townOrCity)
-            break
-          case 4:
-            Code.expect(answer).to.equal(postcode)
+            Code.expect(answer).to.equal(`${fullAddress}`)
             break
         }
       })

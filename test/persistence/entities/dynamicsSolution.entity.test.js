@@ -46,7 +46,7 @@ lab.afterEach(() => {
   DynamicsDalService.prototype.search = dynamicsSearchStub
 })
 
-lab.experiment('DynamicsSolution Model tests:', () => {
+lab.experiment('DynamicsSolution Entity tests:', () => {
   lab.test('get() method returns the correct DynamicsSolution objects', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const dynamicsVersionInfo = await DynamicsSolution.get(context)

@@ -50,7 +50,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Account Model tests:', () => {
+lab.experiment('Account Entity tests:', () => {
   lab.test('Constructor creates a Account object correctly', () => {
     DynamicsDalService.prototype.search = () => {
       // Dynamics Account object

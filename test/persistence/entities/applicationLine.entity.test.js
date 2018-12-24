@@ -49,7 +49,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('ApplicationLine Model tests:', () => {
+lab.experiment('ApplicationLine Entity tests:', () => {
   lab.test('getById() method correctly retrieves an ApplicationLine object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const applicationLine = await ApplicationLine.getById(context, applicationLineId)

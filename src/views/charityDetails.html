@@ -1,0 +1,28 @@
+<main id="content" tabindex="-1" role="main">
+
+    {{> common/betaBanner }} {{> common/backLink }}
+  
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {{> common/errorSummary }} {{> common/pageHeading pageHeading }}
+        <form method="POST" action="{{formAction}}" novalidate="novalidate">
+          {{> common/csrfToken token=DefraCsrfToken}}
+  
+          <div class="form-group {{#getFormErrorGroupClass errors.charity-name}}{{/getFormErrorGroupClass}}">
+            <label id="charity-name-label" class="form-label" for="charity-name">Charity name</label>
+            {{> common/fieldError fieldId='charity-name-error' message=errors.charity-name }}
+            <input class="form-control form-control-char-35 {{#if errors.charity-name}}form-control-error{{/if}}" id="charity-name" name="charity-name" type="charity-name" value="{{formValues.charity-name}}">
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.charity-number}}{{/getFormErrorGroupClass}}">
+            <label id="charity-number-label" class="form-label" for="charity-number">Charity number</label>
+            {{> common/fieldError fieldId='charity-number-error' message=errors.charity-number }}
+            <input class="form-control form-control-char-15 {{#if errors.charity-number}}form-control-error{{/if}}" id="charity-number" name="charity-number" type="tel" value="{{formValues.charity-number}}">
+          </div>
+  
+          {{> common/submitButton }}
+        </form>
+      </div>
+    </div>
+  
+  </main>

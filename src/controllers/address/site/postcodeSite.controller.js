@@ -18,11 +18,7 @@ module.exports = class PostcodeInvoiceController extends PostcodeController {
     return Routes.SELECT_SITE.path
   }
 
-  getModel () {
+  get task () {
     return SiteNameAndLocation
-  }
-
-  customisePageContext (pageContext) {
-    // Not required for this address type
   }
 }

@@ -263,7 +263,7 @@ module.exports = class BaseEntity {
       const query = `${this.dynamicsEntity}(${id})`
       try {
         const result = await dynamicsDal.search(query)
-        model = this.dynamicsToEntity(result, customFilter)
+        model = this.dynamicsToEntity(result, customFilter, context)
         model.id = id
       } catch (error) {
         LoggingService.logError(`Unable to get ${this.name} ID: ${error}`)

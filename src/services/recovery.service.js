@@ -8,6 +8,7 @@ const ApplicationReturn = require('../persistence/entities/applicationReturn.ent
 const Contact = require('../persistence/entities/contact.entity')
 const Payment = require('../persistence/entities/payment.entity')
 const StandardRule = require('../persistence/entities/standardRule.entity')
+const CharityDetail = require('../models/charityDetail.model')
 
 const { COOKIE_KEY: { AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID } } = require('../constants')
 const { PERMIT_HOLDER_TYPES } = require('../dynamics')
@@ -26,6 +27,9 @@ module.exports = class RecoveryService {
       options.cardPayment ? Payment.getCardPaymentDetails(context, applicationLineId) : Promise.resolve(undefined),
       options.standardRule ? StandardRule.getByApplicationLineId(context, applicationLineId) : Promise.resolve(undefined)
     ])
+
+    // Add the charity details to the context
+    context.charityDetail = await CharityDetail.get(context)
 
     return { application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule }
   }

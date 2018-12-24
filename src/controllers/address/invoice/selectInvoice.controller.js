@@ -18,7 +18,7 @@ module.exports = class AddressSelectInvoiceController extends AddressSelectContr
     return Routes.POSTCODE_INVOICE.path
   }
 
-  getModel () {
+  get task () {
     return InvoiceAddress
   }
 }

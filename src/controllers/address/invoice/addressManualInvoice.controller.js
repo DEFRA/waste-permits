@@ -9,7 +9,7 @@ module.exports = class AddressManualInvoiceController extends AddressManualContr
     return Constants.CookieValue.INVOICE_POSTCODE
   }
 
-  getModel () {
+  get task () {
     return InvoiceAddress
   }
 }

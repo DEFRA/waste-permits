@@ -9,12 +9,12 @@ module.exports = class AddressManualPartnerController extends AddressManualContr
     return Constants.CookieValue.PARTNER_POSTCODE
   }
 
-  getModel () {
+  get task () {
     return PartnerDetails
   }
 
-  async customisePageContext (pageContext, context) {
-    const pageHeading = await this.getModel().getPageHeading(context, pageContext.pageHeading)
+  async customisePageContext (pageContext, request) {
+    const pageHeading = await this.task.getPageHeading(request, pageContext.pageHeading)
     pageContext.pageHeading = pageHeading
     pageContext.pageTitle = Constants.buildPageTitle(pageHeading)
   }

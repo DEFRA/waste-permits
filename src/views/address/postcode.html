@@ -15,6 +15,10 @@
       </div>
       {{/if}}
 
+      {{#if showCharitySubheading}}
+        {{> charityAddressSubHeading }}
+      {{/if}}
+
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 

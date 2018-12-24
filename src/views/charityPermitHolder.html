@@ -1,0 +1,53 @@
+<main id="content" tabindex="-1" role="main">
+
+    {{> common/betaBanner }}
+
+    {{> common/backLink }}
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+
+            {{> common/errorSummary }}
+
+            {{> common/pageHeading pageHeading }}
+
+            <div class="panel panel-border-wide">
+                <p id="legal-message">Being a registered charity or a trust does not give the legal status needed to apply for and hold a permit.</p>
+            </div>
+
+            <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+                {{> common/csrfToken token=DefraCsrfToken}}
+
+                <fieldset>
+                    <legend id="legend">Who will be the permit holder on behalf of the charity or trust?</legend><br>
+
+                    <div id="charity-permit-holder-type" class="form-group {{#getFormErrorGroupClass errors.charity-permit-holder-type}}{{/getFormErrorGroupClass}}">
+                        {{> common/fieldError fieldId='charity-permit-holder-type-error' message=errors.charity-permit-holder-type }}
+
+                        <div class="multiple-choice">
+                            <input id="registered-company-type" type="radio" name="charity-permit-holder-type" value="limited-company"{{#if selectedRegisteredCompanyType}} checked="checked"{{/if}}>
+                            <label id="registered-company-type-label" for="registered-company-type">A registered company run by the charity or a Charitable Incorporated Organisation (CIO)</label>
+                        </div>
+
+                        <div class="multiple-choice">
+                            <input id="individual-type" type="radio" name="charity-permit-holder-type" value="individual"{{#if selectedIndividualType}} checked="checked"{{/if}}>
+                            <label id="individual-type-label" for="individual-type">An individual who is the representative for the charity or trust
+                                <span id="individual-type-hint" class="form-hint">This person will be the legal permit holder</span>
+                            </label>
+                        </div>
+
+                        <div class="multiple-choice">
+                            <input id="legal-body-type" type="radio" name="charity-permit-holder-type" value="public-body"{{#if selectedLegalBodyType}} checked="checked"{{/if}}>
+                            <label id="legal-body-type-label" for="legal-body-type">Another legal body responsible for the charity or trust
+                                <span id="legal-body-type-hint" class="form-hint">For example, if the charity or trust was created by Act of Parliament or Royal Charter</span>
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                {{> common/submitButton }}
+            </form>
+
+        </div>
+    </div>
+</main>

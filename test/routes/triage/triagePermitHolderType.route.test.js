@@ -95,7 +95,7 @@ lab.experiment('Triage permit holder type page tests:', () => {
         { id: 'sole-trader', text: 'Sole trader' },
         { id: 'public-body', text: 'Local authority or public body' },
         { id: 'partnership', text: 'Partnership' },
-        { id: 'registered-charity', text: 'Registered charity' },
+        { id: 'charity-or-trust', text: 'Registered charity' },
         { id: 'limited-liability-partnership', text: 'Limited liability partnership' },
         { id: 'other-organisation', text: 'Other organisation, for example a club or association' }
       ]

@@ -26,7 +26,7 @@ module.exports = class ContactDetail extends BaseModel {
 
   static async _extractContactDetail (context, addressDetail) {
     const { applicationId } = context
-    const { organisationType } = Application.getById(context, applicationId)
+    const { organisationType } = await Application.getById(context, applicationId)
     const { id, jobTitle, firstName, lastName, email, telephone, type, dateOfBirth, addressId, customerId } = addressDetail
     let contactDetailData = { id, applicationId, firstName, lastName, jobTitle, email, telephone, type, dateOfBirth, organisationType, customerId }
     if (addressId) {
@@ -57,6 +57,14 @@ module.exports = class ContactDetail extends BaseModel {
     return Promise.all(addressDetails.map((addressDetail) => this._extractContactDetail(context, addressDetail)))
   }
 
+  async _getAccount (context) {
+    const { application = {}, charityDetail = {} } = context
+    if (application.isIndividual || charityDetail.isIndividual) {
+      return
+    }
+    return Account.getByApplicationId(context)
+  }
+
   async save (context) {
     const { applicationId, firstName, lastName, jobTitle, telephone, email, dateOfBirth, type, addressId, customerId } = this
     let { id } = this
@@ -75,7 +83,7 @@ module.exports = class ContactDetail extends BaseModel {
       addressDetail.customerId = contact.id
 
       // Link the contact with the account if it isn't already
-      const account = await Account.getByApplicationId(context)
+      const account = await this._getAccount(context)
       if (account) {
         const linkedAccounts = await contact.listLinked(context, account)
         const link = linkedAccounts.find((linkedAccount) => linkedAccount.id === account.id)
@@ -111,7 +119,7 @@ module.exports = class ContactDetail extends BaseModel {
 
     // If there is a contact, unlink the contact with the account if it is linked
     if (contact) {
-      const account = await Account.getByApplicationId(context)
+      const account = await this._getAccount(context)
       if (account) {
         const linkedAccounts = await contact.listLinked(context, account)
         const link = linkedAccounts.find((linkedAccount) => linkedAccount.id === account.id)

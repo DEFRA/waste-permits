@@ -23,7 +23,7 @@ const ORGANISATION = 910400001
 const INDIVIDUAL = 910400000
 
 const fakeApplicationData = {
-  permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
+  permitHolderOrganisationId: 'PERMIT_HOLDER_ID',
   agentId: 'AGENT_ID',
   applicantType: 'APPLICANT_TYPE',
   applicationNumber: 'APPLICATION_NUMBER',
@@ -37,7 +37,7 @@ const fakeApplicationData = {
   id: testApplicationId,
   organisationType: 'ORGANISATION_TYPE',
   paymentReceived: 'PAYMENT_RECEIVED',
-  permitHolderIndividualId: 'PERMIT_HOLDER_INDIVIDUAL_ID',
+  permitHolderIndividualId: 'PERMIT_HOLDER_ID',
   regime: 910400000,
   relevantOffences: 'RELEVANT_OFFENCES',
   relevantOffencesDetails: 'RELEVANT_OFFENCES_DETAILS',
@@ -94,17 +94,14 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
 
 const listData = [
   {
-    permitHolderIndividualId: undefined,
     applicationNumber: 'APPLICATION_NUMBER_1',
     applicantType: ORGANISATION
   },
   {
-    permitHolderOrganisationId: undefined,
     applicationNumber: 'APPLICATION_NUMBER_2',
     applicantType: INDIVIDUAL
   },
   {
-    permitHolderIndividualId: undefined,
     applicationNumber: 'APPLICATION_NUMBER_3',
     applicantType: ORGANISATION
   }
@@ -142,7 +139,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Application Model tests:', () => {
+lab.experiment('Application Entity tests:', () => {
   lab.test('getById() method correctly retrieves an Application object', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const application = await Application.getById(context, testApplicationId)
@@ -222,28 +219,6 @@ lab.experiment('Application Model tests:', () => {
     await testApplication.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testApplication.id).to.equal(testApplicationId)
-  })
-
-  lab.test('save() method fails for a company', async () => {
-    let error
-    try {
-      testApplication.applicantType = ORGANISATION
-      await testApplication.save(context)
-    } catch (err) {
-      error = err
-    }
-    Code.expect(error.message).to.equal('Application cannot have a permitHolderIndividualId when the permit holder is a company')
-  })
-
-  lab.test('save() method fails for an individual', async () => {
-    let error
-    try {
-      testApplication.applicantType = INDIVIDUAL
-      await testApplication.save(context)
-    } catch (err) {
-      error = err
-    }
-    Code.expect(error.message).to.equal('Application cannot have a permitHolderOrganisationId when the permit holder is an individual')
   })
 
   lab.test('isSubmitted() true if submittedOn is set', async () => {

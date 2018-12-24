@@ -8,6 +8,7 @@ const Location = require('../../persistence/entities/location.entity')
 const LocationDetail = require('../../persistence/entities/locationDetail.entity')
 const StandardRule = require('../../persistence/entities/standardRule.entity')
 const ContactDetail = require('../contactDetail.model')
+const CharityDetail = require('../charityDetail.model')
 const NeedToConsult = require('../needToConsult.model')
 
 const {
@@ -82,6 +83,14 @@ module.exports = class BaseCheck {
       this.data.companyRegisteredAddress = await ContactDetail.get(this.data, { type })
     }
     return this.data.companyRegisteredAddress || {}
+  }
+
+  async getCharityDetails () {
+    if (!this.data.charityDetails) {
+      const { charityName, charityNumber, charityPermitHolder } = await CharityDetail.get(this.data)
+      this.data.charityDetails = { charityName, charityNumber, charityPermitHolder }
+    }
+    return this.data.charityDetails || {}
   }
 
   async getMainAddress () {

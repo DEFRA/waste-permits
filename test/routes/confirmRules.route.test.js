@@ -9,6 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const ConfirmRules = require('../../src/models/taskList/confirmRules.task')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
@@ -42,6 +43,7 @@ lab.beforeEach(() => {
   sandbox.stub(ConfirmRules, 'isComplete').value(() => false)
   sandbox.stub(ConfirmRules, 'updateCompleteness').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
 })
 
 lab.afterEach(() => {

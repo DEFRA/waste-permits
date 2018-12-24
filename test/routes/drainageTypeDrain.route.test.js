@@ -10,6 +10,7 @@ const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const DrainageTypeDrain = require('../../src/models/taskList/drainageTypeDrain.task')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -82,6 +83,7 @@ lab.beforeEach(() => {
   sandbox.stub(DrainageTypeDrain, 'updateCompleteness').value(() => {})
   sandbox.stub(DrainageTypeDrain, 'clearCompleteness').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
 })
 
 lab.afterEach(() => {

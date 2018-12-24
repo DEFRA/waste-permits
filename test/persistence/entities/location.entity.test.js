@@ -54,7 +54,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Location Model tests:', () => {
+lab.experiment('Location Entity tests:', () => {
   lab.test('Constructor creates a Location object correctly', () => {
     const emptyLocation = new Location({})
     Code.expect(emptyLocation.siteName).to.be.undefined()

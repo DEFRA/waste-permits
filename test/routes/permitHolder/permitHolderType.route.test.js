@@ -8,6 +8,7 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const Application = require('../../../src/persistence/entities/application.entity')
+const CharityDetail = require('../../../src/models/charityDetail.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const PermitHolderTypeController = require('../../../src/controllers/permitHolder/permitHolderType.controller')
@@ -42,6 +43,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
 
@@ -82,7 +84,7 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
         { id: 'sole-trader', type: 'Sole trader', canApplyOnline: false },
         { id: 'public-body', type: 'Local authority or public body', canApplyOnline: false },
         { id: 'partnership', type: 'Partnership', canApplyOnline: false },
-        { id: 'registered-charity', type: 'Registered charity', canApplyOnline: false },
+        { id: 'charity-or-trust', type: 'Charity or trust', canApplyOnline: false },
         { id: 'limited-liability-partnership', type: 'Limited liability partnership', canApplyOnline: false },
         { id: 'other-organisation', type: 'Other organisation, for example a club or association', canApplyOnline: false }
       ]

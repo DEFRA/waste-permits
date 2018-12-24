@@ -11,12 +11,12 @@ const CryptoService = require('../../../src/services/crypto.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const Address = require('../../../src/persistence/entities/address.entity')
 const Application = require('../../../src/persistence/entities/application.entity')
+const Location = require('../../../src/persistence/entities/location.entity')
+const LocationDetail = require('../../../src/persistence/entities/locationDetail.entity')
 const ContactDetail = require('../../../src/models/contactDetail.model')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-const postcode = 'BS1 4AH'
-
-module.exports = (lab, { routePath, nextRoutePath, pageHeading, TaskModel, PostCodeCookie, contactDetailId }) => {
+module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading, TaskModel, PostCodeCookie, contactDetailId }) => {
   let sandbox
   let getRequest
   let postRequest
@@ -25,18 +25,24 @@ module.exports = (lab, { routePath, nextRoutePath, pageHeading, TaskModel, PostC
   lab.beforeEach(() => {
     mocks = new Mocks()
 
+    if (permitHolderType) {
+      mocks.recovery.charityDetail = mocks.charityDetail
+    }
+
     getRequest = {
       method: 'GET',
       url: routePath,
       headers: {},
-      payload: {}
+      payload: {},
+      app: { data: mocks.recovery }
     }
 
     postRequest = {
       method: 'POST',
       url: routePath,
       headers: {},
-      payload: {}
+      payload: {},
+      app: { data: mocks.recovery }
     }
 
     // Create a sinon sandbox to stub methods
@@ -44,21 +50,25 @@ module.exports = (lab, { routePath, nextRoutePath, pageHeading, TaskModel, PostC
 
     // Stub cookies
     GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
-      [PostCodeCookie]: () => postcode
+      [PostCodeCookie]: () => mocks.address.postcode
     })
 
     // Stub methods
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-    sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
+    sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => mocks.recovery)
     sandbox.stub(CryptoService, 'decrypt').value(() => mocks.contactDetail.id)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(Address, 'listByPostcode').value(() => [mocks.address, mocks.address, mocks.address])
-    sandbox.stub(TaskModel, 'getAddress').value(() => mocks.address)
-    sandbox.stub(TaskModel, 'saveSelectedAddress').value(() => undefined)
-
-    if (contactDetailId) {
-      sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
-    }
+    sandbox.stub(Address, 'listByPostcode').value(async () => [mocks.address, mocks.address, mocks.address])
+    sandbox.stub(Address, 'getByUprn').value(async () => undefined)
+    sandbox.stub(Address.prototype, 'save').value(async () => undefined)
+    sandbox.stub(Location, 'getByApplicationId').value(async () => undefined)
+    sandbox.stub(Location.prototype, 'save').value(async () => undefined)
+    sandbox.stub(LocationDetail, 'getByLocationId').value(async () => undefined)
+    sandbox.stub(LocationDetail.prototype, 'save').value(async () => undefined)
+    sandbox.stub(TaskModel, 'getAddress').value(async () => mocks.address)
+    sandbox.stub(TaskModel, 'saveManualAddress').value(async () => undefined)
+    sandbox.stub(ContactDetail, 'get').value(async () => mocks.contactDetail)
+    sandbox.stub(ContactDetail.prototype, 'save').value(async () => undefined)
   })
 
   lab.afterEach(() => {
@@ -68,12 +78,18 @@ module.exports = (lab, { routePath, nextRoutePath, pageHeading, TaskModel, PostC
 
   const checkPageElements = async (request) => {
     const doc = await GeneralTestHelper.getDoc(request)
-    let element = doc.getElementById('page-heading').firstChild
+    let heading = GeneralTestHelper.getText(doc.getElementById('page-heading'))
     if (contactDetailId) {
       const { firstName, lastName } = mocks.contactDetail
-      Code.expect(element.nodeValue).to.equal(`${pageHeading} ${firstName} ${lastName}?`)
+      Code.expect(heading).to.equal(`${pageHeading} ${firstName} ${lastName}?`)
     } else {
-      Code.expect(element.nodeValue).to.equal(pageHeading)
+      Code.expect(heading).to.equal(pageHeading)
+    }
+
+    if (permitHolderType) {
+      Code.expect(doc.getElementById('charity-address-subheading')).to.exist()
+    } else {
+      Code.expect(doc.getElementById('charity-address-subheading')).to.not.exist()
     }
 
     // Test for the existence of expected static content
@@ -87,11 +103,8 @@ module.exports = (lab, { routePath, nextRoutePath, pageHeading, TaskModel, PostC
       'manual-address-link'
     ])
 
-    element = doc.getElementById('postcode-value').firstChild
-    Code.expect(element.nodeValue).to.equal(postcode)
-
-    element = doc.getElementById('submit-button').firstChild
-    Code.expect(element.nodeValue).to.equal('Continue')
+    Code.expect(GeneralTestHelper.getText(doc.getElementById('postcode-value'))).to.equal(mocks.address.postcode)
+    Code.expect(GeneralTestHelper.getText(doc.getElementById('submit-button'))).to.equal('Continue')
   }
 
   lab.experiment('Address select page tests:', () => {

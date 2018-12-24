@@ -8,7 +8,11 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class CompanyNumberController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const { account } = await RecoveryService.createApplicationContext(h, { account: true })
+    const { account, charityDetail } = await RecoveryService.createApplicationContext(h, { account: true })
+
+    if (charityDetail && charityDetail.charityPermitHolder) {
+      pageContext.pageHeading = this.route.pageHeadingAlternate
+    }
 
     if (request.payload) {
       pageContext.formValues = request.payload

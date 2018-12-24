@@ -78,7 +78,7 @@ lab.afterEach(() => {
   DynamicsDalService.prototype.update = dynamicsUpdateStub
 })
 
-lab.experiment('Payment Model tests:', () => {
+lab.experiment('Payment Entity tests:', () => {
   lab.test('Constructor creates a Payment object correctly', () => {
     const emptyPayment = new Payment({})
     Code.expect(emptyPayment.applicationId).to.be.undefined()

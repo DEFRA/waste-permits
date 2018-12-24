@@ -15,6 +15,7 @@ const LocationDetail = require('../../../src/persistence/entities/locationDetail
 const StandardRule = require('../../../src/persistence/entities/standardRule.entity')
 
 const ContactDetail = require('../../../src/models/contactDetail.model')
+const CharityDetail = require('../../../src/models/charityDetail.model')
 const NeedToConsult = require('../../../src/models/needToConsult.model')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
@@ -26,6 +27,7 @@ let fakeAddressType
 let fakeAccount
 let fakeApplication
 let fakeApplicationAnswer
+let fakeCharityDetail
 let fakeCompanies
 let fakeContactDetail
 let fakeLocation
@@ -71,6 +73,11 @@ lab.beforeEach(() => {
     type: fakeAddressType.TYPE,
     addressId: fakeAddress.id
   }
+  fakeCharityDetail = {
+    charityPermitHolder: 'individual',
+    charityName: 'CHARITY_NAME',
+    charityNumber: 'CHARITY_NUMBER'
+  }
   fakeLocation = {
     id: 'LOCATION_ID',
     applicationLineId: 'APPLICATION_LINE_ID'
@@ -111,6 +118,7 @@ lab.beforeEach(() => {
   sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(fakeLocationDetail))
   sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
   sandbox.stub(ContactDetail, 'list').value(() => [new ContactDetail(fakeContactDetail)])
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail(fakeCharityDetail))
   sandbox.stub(NeedToConsult, 'get').value(() => new NeedToConsult(fakeNeedToConsult))
 })
 
@@ -318,5 +326,12 @@ lab.experiment('Base Check tests:', () => {
     const needToConsult = await check.getNeedToConsult()
     Code.expect(needToConsult).to.equal(fakeNeedToConsult)
     Code.expect(context.needToConsult).to.equal(await check.getNeedToConsult())
+  })
+
+  lab.test('getCharityDetails works correctly', async () => {
+    const check = new BaseCheck(context)
+    const charityDetail = await check.getCharityDetails()
+    Code.expect(charityDetail).to.equal(fakeCharityDetail)
+    Code.expect(context.charityDetails).to.equal(await check.getCharityDetails())
   })
 })

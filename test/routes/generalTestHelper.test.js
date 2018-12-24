@@ -59,6 +59,15 @@ module.exports = class GeneralTestHelper {
     return parser.parseFromString(res.payload, 'text/html')
   }
 
+  static getText (element) {
+    let text = ''
+    for (let index = 0; index < element.childNodes.length; index++) {
+      const node = element.childNodes[index]
+      text += node.nodeValue ? node.nodeValue : this.getText(node)
+    }
+    return text
+  }
+
   static stubGetCookies (sandbox, CookieService, cookies) {
     // Save for use in stub
     const cookieGet = CookieService.get
