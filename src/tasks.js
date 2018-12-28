@@ -317,6 +317,7 @@ const bespoke = [
     id: 'about-the-application-section',
     label: 'About the application',
     tasks: [
+      tasks.CONTACT_DETAILS,
       tasks.PRE_APPLICATION,
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.CONFIRM_CONFIDENTIALLY,
