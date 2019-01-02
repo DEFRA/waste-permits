@@ -10,7 +10,7 @@ module.exports = class PostcodeInvoiceController extends PostcodeController {
     return Constants.CookieValue.SITE_POSTCODE
   }
 
-  getManualEntryRoute () {
+  getManualEntryPath () {
     return Routes.MANUAL_SITE.path
   }
 

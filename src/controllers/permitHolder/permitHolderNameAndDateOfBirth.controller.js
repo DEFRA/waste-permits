@@ -6,12 +6,11 @@ const RecoveryService = require('../../services/recovery.service')
 const ContactDetail = require('../../models/contactDetail.model')
 
 const { SOLE_TRADER } = require('../../dynamics').PERMIT_HOLDER_TYPES
-const Routes = require('../../routes')
 const { INDIVIDUAL_PERMIT_HOLDER } = require('../../dynamics').AddressTypes
 
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
@@ -32,34 +31,30 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { applicationId, permitHolderType } = context
-      const {
-        'first-name': firstName,
-        'last-name': lastName,
-        'dob-day': dobDay,
-        'dob-month': dobMonth,
-        'dob-year': dobYear
-      } = request.payload
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { applicationId, permitHolderType } = context
+    const {
+      'first-name': firstName,
+      'last-name': lastName,
+      'dob-day': dobDay,
+      'dob-month': dobMonth,
+      'dob-year': dobYear
+    } = request.payload
 
-      const dateOfBirth = [dobYear, dobMonth, dobDay].join('-')
+    const dateOfBirth = [dobYear, dobMonth, dobDay].join('-')
 
-      const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
-      const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
+    const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
+    const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
 
-      Object.assign(contactDetail, { firstName, lastName, dateOfBirth })
-      await contactDetail.save(context)
+    Object.assign(contactDetail, { firstName, lastName, dateOfBirth })
+    await contactDetail.save(context)
 
-      const redirectPath = permitHolderType === SOLE_TRADER ? Routes[this.route.companyRoute].path : this.nextPath
+    const route = permitHolderType === SOLE_TRADER ? this.route.companyRoute : this.route.nextRoute
 
-      return this.redirect({ request, h, redirectPath })
-    }
+    return this.redirect({ h, route })
   }
 }

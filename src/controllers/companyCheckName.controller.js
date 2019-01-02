@@ -9,11 +9,11 @@ const { TRADING_NAME_USAGE } = require('../dynamics')
 
 module.exports = class CompanyCheckNameController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const { application, account } = await RecoveryService.createApplicationContext(h, { application: true, account: true })
 
     if (!application || !account) {
-      return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
+      return this.redirect({ h, route: Routes.TASK_LIST })
     }
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
@@ -37,43 +37,39 @@ module.exports = class CompanyCheckNameController extends BaseController {
 
     pageContext.enterCompanyNumberRoute = Routes[this.route.companyRoute].path
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true, account: true })
-      const { application, account } = context
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true, account: true })
+    const { application, account } = context
 
-      if (application && account) {
-        const alreadyConfirmed = account.isValidatedWithCompaniesHouse
+    if (application && account) {
+      const alreadyConfirmed = account.isValidatedWithCompaniesHouse
 
-        const company = await CompanyLookupService.getCompany(account.companyNumber)
+      const company = await CompanyLookupService.getCompany(account.companyNumber)
 
-        account.accountName = company.name
-        account.isValidatedWithCompaniesHouse = true
-        account.isDraft = false
+      account.accountName = company.name
+      account.isValidatedWithCompaniesHouse = true
+      account.isDraft = false
 
-        await account.save(context)
+      await account.save(context)
 
-        if (!alreadyConfirmed) {
-          await account.confirm(context)
-        }
-
-        // The company trading name is only set if the corresponding checkbox is ticked
-        if (request.payload['use-business-trading-name'] === 'on') {
-          application.tradingName = request.payload['business-trading-name']
-          application.useTradingName = TRADING_NAME_USAGE.YES
-        } else {
-          application.tradingName = undefined
-          application.useTradingName = TRADING_NAME_USAGE.NO
-        }
-
-        await application.save(context)
+      if (!alreadyConfirmed) {
+        await account.confirm(context)
       }
-      return this.redirect({ request, h, redirectPath: this.nextPath })
+
+      // The company trading name is only set if the corresponding checkbox is ticked
+      if (request.payload['use-business-trading-name'] === 'on') {
+        application.tradingName = request.payload['business-trading-name']
+        application.useTradingName = TRADING_NAME_USAGE.YES
+      } else {
+        application.tradingName = undefined
+        application.useTradingName = TRADING_NAME_USAGE.NO
+      }
+
+      await application.save(context)
     }
+    return this.redirect({ h })
   }
 }

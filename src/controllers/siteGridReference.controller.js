@@ -7,7 +7,7 @@ const RecoveryService = require('../services/recovery.service')
 
 module.exports = class SiteGridReferenceController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     // Load entity context within the request object
     await RecoveryService.createApplicationContext(h)
 
@@ -19,19 +19,15 @@ module.exports = class SiteGridReferenceController extends BaseController {
         'site-grid-reference': await SiteNameAndLocation.getGridReference(request)
       }
     }
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      // Load entity context within the request object
-      await RecoveryService.createApplicationContext(h)
+  async doPost (request, h) {
+    // Load entity context within the request object
+    await RecoveryService.createApplicationContext(h)
 
-      await SiteNameAndLocation.saveGridReference(request, request.payload['site-grid-reference'])
+    await SiteNameAndLocation.saveGridReference(request, request.payload['site-grid-reference'])
 
-      return this.redirect({ request, h, redirectPath: Routes.POSTCODE_SITE.path })
-    }
+    return this.redirect({ h, route: Routes.POSTCODE_SITE })
   }
 }

@@ -11,7 +11,7 @@ const Annotation = require('../../../persistence/entities/annotation.entity')
 
 module.exports = class UploadController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
 
     const list = await Annotation.listByApplicationIdAndSubject(context, this.subject)
@@ -30,21 +30,17 @@ module.exports = class UploadController extends BaseController {
       Object.assign(pageContext, await this.getSpecificPageContext(h, pageContext))
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h)
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h)
 
-      const list = await Annotation.listByApplicationIdAndSubject(context, this.subject)
-      if (!list.length) {
-        return this.handler(request, h, undefined, this.setCustomError('noFilesUploaded', 'file'))
-      }
-      return this.redirect({ request, h, redirectPath: this.nextPath })
+    const list = await Annotation.listByApplicationIdAndSubject(context, this.subject)
+    if (!list.length) {
+      return this.handler(request, h, undefined, this.setCustomError('noFilesUploaded', 'file'))
     }
+    return this.redirect({ h })
   }
 
   async upload (request, h, errors) {
@@ -53,12 +49,16 @@ module.exports = class UploadController extends BaseController {
       if (!CookieService.validateCookie(request)) {
         const message = 'Upload failed validating cookie'
         LoggingService.logError(message, request)
-        return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
+        return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
       }
 
       // Post if it's not an attempt to upload a file
       if (!request.payload['is-upload-file']) {
-        return this.doPost(request, h, errors)
+        if (errors && errors.details) {
+          return this.doGet(request, h, errors)
+        } else {
+          return this.doPost(request, h, errors)
+        }
       }
 
       // Apply custom validation if required
@@ -85,10 +85,10 @@ module.exports = class UploadController extends BaseController {
         }
       }
 
-      return this.redirect({ request, h, redirectPath: this.path })
+      return this.redirect({ h, path: this.path })
     } catch (error) {
       LoggingService.logError(error, request)
-      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error })
+      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error })
     }
   }
 
@@ -97,7 +97,7 @@ module.exports = class UploadController extends BaseController {
     if (!CookieService.validateCookie(request)) {
       const message = 'Remove failed validating cookie'
       LoggingService.logError(message, request)
-      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
+      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
     }
 
     const context = await RecoveryService.createApplicationContext(h)
@@ -109,10 +109,10 @@ module.exports = class UploadController extends BaseController {
     if (annotation.applicationId !== applicationId) {
       const message = 'Annotation and application mismatch'
       LoggingService.logError(message, request)
-      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
+      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
     }
     await annotation.delete(context, annotationId)
-    return this.redirect({ request, h, redirectPath: this.path })
+    return this.redirect({ h, path: this.path })
   }
 
   async uploadFailAction (request, h, errors) {

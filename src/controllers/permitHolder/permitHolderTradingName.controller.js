@@ -8,7 +8,7 @@ const { PERMIT_HOLDER_CONTACT_DETAILS } = require('../../routes')
 
 module.exports = class PermitHolderContactTradingNameController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const { application } = await RecoveryService.createApplicationContext(h, { application: true })
 
     if (request.payload) {
@@ -27,26 +27,22 @@ module.exports = class PermitHolderContactTradingNameController extends BaseCont
     pageContext.useTradingNameOn = parseInt(pageContext.formValues['use-trading-name']) === TRADING_NAME_USAGE.YES
     pageContext.useTradingNameOff = parseInt(pageContext.formValues['use-trading-name']) === TRADING_NAME_USAGE.NO
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { application } = context
+
+    // The trading name is only set if the corresponding checkbox is ticked
+    application.useTradingName = parseInt(request.payload['use-trading-name'])
+    if (application.useTradingName === TRADING_NAME_USAGE.YES) {
+      application.tradingName = request.payload['trading-name']
     } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { application } = context
-
-      // The trading name is only set if the corresponding checkbox is ticked
-      application.useTradingName = parseInt(request.payload['use-trading-name'])
-      if (application.useTradingName === TRADING_NAME_USAGE.YES) {
-        application.tradingName = request.payload['trading-name']
-      } else {
-        application.tradingName = ''
-      }
-
-      await application.save(context)
-      return this.redirect({ request, h, redirectPath: PERMIT_HOLDER_CONTACT_DETAILS.path })
+      application.tradingName = ''
     }
+
+    await application.save(context)
+    return this.redirect({ h, route: PERMIT_HOLDER_CONTACT_DETAILS })
   }
 }

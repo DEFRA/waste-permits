@@ -8,7 +8,7 @@ const RecoveryService = require('../services/recovery.service')
 
 module.exports = class CostTimeController extends BaseController {
   async doGet (request, h) {
-    const pageContext = this.createPageContext(request)
+    const pageContext = this.createPageContext(h)
     const context = await RecoveryService.createApplicationContext(h, { applicationLine: true, standardRule: true })
     const { applicationLine = {}, standardRule = {} } = context
 
@@ -18,7 +18,7 @@ module.exports = class CostTimeController extends BaseController {
     pageContext.cost = value.toLocaleString()
     pageContext.includesWasteRecoveryPlan = standardRule.code === WASTE_IN_DEPOSIT_FOR_RECOVERY
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
@@ -26,6 +26,6 @@ module.exports = class CostTimeController extends BaseController {
 
     await CostTime.updateCompleteness(context)
 
-    return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
+    return this.redirect({ h, route: Routes.TASK_LIST })
   }
 }

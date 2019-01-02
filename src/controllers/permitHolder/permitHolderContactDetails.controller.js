@@ -9,7 +9,7 @@ const { INDIVIDUAL_PERMIT_HOLDER } = require('../../dynamics').AddressTypes
 
 module.exports = class PermitHolderContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -27,32 +27,28 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h)
-      const { application } = context
-      const { email, telephone } = request.payload
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h)
+    const { application } = context
+    const { email, telephone } = request.payload
 
-      const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
-      const contactDetail = await ContactDetail.get(context, { type })
+    const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
+    const contactDetail = await ContactDetail.get(context, { type })
 
-      // If we don't have a permit holder at this point something has gone wrong
-      if (!contactDetail) {
-        throw Error('Application does not have a permit holder')
-      }
-
-      Object.assign(contactDetail, { email, telephone })
-      await contactDetail.save(context)
-
-      application.permitHolderIndividualId = contactDetail.customerId
-      await application.save(context)
-
-      return this.redirect({ request, h, redirectPath: this.nextPath })
+    // If we don't have a permit holder at this point something has gone wrong
+    if (!contactDetail) {
+      throw Error('Application does not have a permit holder')
     }
+
+    Object.assign(contactDetail, { email, telephone })
+    await contactDetail.save(context)
+
+    application.permitHolderIndividualId = contactDetail.customerId
+    await application.save(context)
+
+    return this.redirect({ h })
   }
 }

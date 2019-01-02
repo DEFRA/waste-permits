@@ -46,7 +46,6 @@ const checkCommonElements = async (doc) => {
 }
 
 lab.beforeEach(() => {
-
   mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods

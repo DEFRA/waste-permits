@@ -7,7 +7,7 @@ const { COMPANY_SECRETARY_EMAIL } = require('../dynamics').AddressTypes
 
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
@@ -20,21 +20,17 @@ module.exports = class ContactDetailsController extends BaseController {
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h)
-      const { applicationId } = context
-      const type = COMPANY_SECRETARY_EMAIL.TYPE
-      const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
-      contactDetail.email = request.payload.email
-      await contactDetail.save(context)
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h)
+    const { applicationId } = context
+    const type = COMPANY_SECRETARY_EMAIL.TYPE
+    const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
+    contactDetail.email = request.payload.email
+    await contactDetail.save(context)
 
-      return this.redirect({ request, h, redirectPath: this.nextPath })
-    }
+    return this.redirect({ h })
   }
 }

@@ -9,7 +9,7 @@ const { PRIMARY_CONTACT_DETAILS } = require('../dynamics').AddressTypes
 
 module.exports = class ContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h, { application: true })
     const { application } = context
 
@@ -33,44 +33,40 @@ module.exports = class ContactDetailsController extends BaseController {
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { applicationId, application } = context
+    const {
+      'first-name': firstName,
+      'last-name': lastName,
+      'is-contact-an-agent': isAgent,
+      'agent-company': agentCompany,
+      telephone,
+      email
+    } = request.payload
+
+    const type = PRIMARY_CONTACT_DETAILS.TYPE
+    const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
+
+    Object.assign(contactDetail, { firstName, lastName, telephone, email })
+    await contactDetail.save(context)
+
+    // The agent company or trading name is only set if the corresponding checkbox is ticked
+    if (isAgent) {
+      const account = application.agentId ? await Account.getById(context, application.agentId) : new Account()
+      account.accountName = agentCompany
+      await account.save(context)
+      application.agentId = account.id
     } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { applicationId, application } = context
-      const {
-        'first-name': firstName,
-        'last-name': lastName,
-        'is-contact-an-agent': isAgent,
-        'agent-company': agentCompany,
-        telephone,
-        email
-      } = request.payload
-
-      const type = PRIMARY_CONTACT_DETAILS.TYPE
-      const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
-
-      Object.assign(contactDetail, { firstName, lastName, telephone, email })
-      await contactDetail.save(context)
-
-      // The agent company or trading name is only set if the corresponding checkbox is ticked
-      if (isAgent) {
-        const account = application.agentId ? await Account.getById(context, application.agentId) : new Account()
-        account.accountName = agentCompany
-        await account.save(context)
-        application.agentId = account.id
-      } else {
-        application.agentId = undefined
-      }
-
-      application.contactId = contactDetail.customerId
-      await application.save(context)
-
-      return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
+      application.agentId = undefined
     }
+
+    application.contactId = contactDetail.customerId
+    await application.save(context)
+
+    return this.redirect({ h, route: Routes.TASK_LIST })
   }
 }

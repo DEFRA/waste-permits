@@ -12,7 +12,7 @@ const { TECHNICAL_PROBLEM } = require('../../routes')
 
 module.exports = class PartnershipNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -24,7 +24,7 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
       const contactDetail = await PartnerDetails.getContactDetail(request)
 
       if (!contactDetail) {
-        return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
+        return this.redirect({ h, route: TECHNICAL_PROBLEM })
       }
 
       const { firstName, lastName, dateOfBirth } = contactDetail
@@ -46,36 +46,32 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const {
-        'first-name': firstName,
-        'last-name': lastName,
-        'dob-day': dobDay,
-        'dob-month': dobMonth,
-        'dob-year': dobYear
-      } = request.payload
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const {
+      'first-name': firstName,
+      'last-name': lastName,
+      'dob-day': dobDay,
+      'dob-month': dobMonth,
+      'dob-year': dobYear
+    } = request.payload
 
-      const dateOfBirth = [dobYear, dobMonth, dobDay].join('-')
-      const contactDetail = await PartnerDetails.getContactDetail(request)
+    const dateOfBirth = [dobYear, dobMonth, dobDay].join('-')
+    const contactDetail = await PartnerDetails.getContactDetail(request)
 
-      if (!contactDetail) {
-        return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
-      }
-
-      contactDetail.firstName = firstName
-      contactDetail.lastName = lastName
-      contactDetail.dateOfBirth = dateOfBirth
-
-      await contactDetail.save(context)
-
-      return this.redirect({ request, h, redirectPath: `${this.nextPath}/${request.params.partnerId}` })
+    if (!contactDetail) {
+      return this.redirect({ h, route: TECHNICAL_PROBLEM })
     }
+
+    contactDetail.firstName = firstName
+    contactDetail.lastName = lastName
+    contactDetail.dateOfBirth = dateOfBirth
+
+    await contactDetail.save(context)
+
+    return this.redirect({ h, path: `${this.nextPath}/${request.params.partnerId}` })
   }
 }

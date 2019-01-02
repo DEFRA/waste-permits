@@ -34,7 +34,6 @@ lab.afterEach(() => {
 
 lab.experiment('Consultee tests:', () => {
   lab.experiment('buildlines', () => {
-
     lab.test('(consultee line) works correctly for None', async () => {
       mocks.needToConsult.none = true
 

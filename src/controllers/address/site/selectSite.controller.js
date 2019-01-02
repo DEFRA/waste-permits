@@ -10,11 +10,11 @@ module.exports = class AddressSelectSiteController extends AddressSelectControll
     return Constants.CookieValue.SITE_POSTCODE
   }
 
-  getManualEntryRoute () {
+  getManualEntryPath () {
     return Routes.MANUAL_SITE.path
   }
 
-  getPostcodeRoute () {
+  getPostcodePath () {
     return Routes.POSTCODE_SITE.path
   }
 

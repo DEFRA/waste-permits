@@ -11,10 +11,10 @@ module.exports = class BespokeOrStandardRulesController extends BaseController {
   async doGet (request, h, errors) {
     // Todo: Remove this redirect when Bespoke is live
     if (!featureConfig.hasBespokeFeature) {
-      return this.redirect({ request, h, redirectPath: this.nextPath })
+      return this.redirect({ h })
     }
 
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     pageContext.formValues = request.payload || request.query
 
@@ -23,14 +23,10 @@ module.exports = class BespokeOrStandardRulesController extends BaseController {
       pageContext.selectedStandardRulesPermitType = pageContext.formValues['permit-type'] === STANDARD_RULES
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    }
-
+  async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
     // Save the permit type in the Data store
     const permitType = request.payload['permit-type']
@@ -42,9 +38,9 @@ module.exports = class BespokeOrStandardRulesController extends BaseController {
 
       if (permitType === BESPOKE) {
         // Enter the triage steps for bespoke
-        return this.redirect({ request, h, redirectPath: `${TRIAGE_PERMIT_TYPE.path}/bespoke` })
+        return this.redirect({ h, path: `${TRIAGE_PERMIT_TYPE.path}/bespoke` })
       } else {
-        return this.redirect({ request, h, redirectPath: this.nextPath })
+        return this.redirect({ h })
       }
     }
   }

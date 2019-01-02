@@ -10,11 +10,11 @@ module.exports = class AddressSelectPublicBodyController extends AddressSelectCo
     return Constants.CookieValue.PUBLIC_BODY_POSTCODE
   }
 
-  getManualEntryRoute () {
+  getManualEntryPath () {
     return Routes.MANUAL_PUBLIC_BODY.path
   }
 
-  getPostcodeRoute () {
+  getPostcodePath () {
     return Routes.POSTCODE_PUBLIC_BODY.path
   }
 

@@ -34,7 +34,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
       LoggingService.logError(message, request)
-      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
+      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
     }
 
     // Get the directors that relate to this application
@@ -55,7 +55,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     validator.setErrorMessages(directors)
 
-    const pageContext = this.createPageContext(request, errors, validator)
+    const pageContext = this.createPageContext(h, errors, validator)
     pageContext.directors = directors
     pageContext.companies = companies
 
@@ -75,7 +75,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       })
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h, errors) {
@@ -84,7 +84,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
       LoggingService.logError(message, request)
-      return this.redirect({ request, h, redirectPath: Routes.TECHNICAL_PROBLEM.path, error: { message } })
+      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
     }
 
     const directors = await this._getDirectors(context, account.id)
@@ -117,7 +117,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
         return contactDetail.save(context)
       }))
 
-      return this.redirect({ request, h, redirectPath: this.nextPath })
+      return this.redirect({ h })
     }
   }
 

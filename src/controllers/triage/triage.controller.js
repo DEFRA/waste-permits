@@ -14,7 +14,7 @@ const { DEFRA_COOKIE_KEY, COOKIE_KEY: { APPLICATION_ID } } = require('../../cons
 
 module.exports = class TriageController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     const entityContext = { authToken: await authService.getToken() }
 
@@ -22,7 +22,7 @@ module.exports = class TriageController extends BaseController {
     const paths = TriageController.generatePathsFromData(pageContext.triageData)
 
     if (request.path !== paths.currentStepPath) {
-      return this.redirect({ request, h, redirectPath: paths.currentStepPath })
+      return this.redirect({ h, path: paths.currentStepPath })
     }
 
     pageContext.previousStepPath = paths.previousStepPath
@@ -39,14 +39,10 @@ module.exports = class TriageController extends BaseController {
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    }
-
+  async doPost (request, h) {
     const entityContext = {}
     entityContext.authToken = await authService.getToken()
     entityContext.applicationId = request.state && request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
@@ -59,7 +55,7 @@ module.exports = class TriageController extends BaseController {
             if (data.selectedOptionalAssessments) {
               // POSTing confirmation - any POST to here constitutes confirmation
               await TriageController.saveApplication(request, entityContext, data)
-              return this.redirect({ request, h, redirectPath: Routes.CONFIRM_COST.path })
+              return this.redirect({ h, route: Routes.CONFIRM_COST })
             } else {
               // POSTing optional assessments
               const requestedOptionalAssessments = request.payload['assessment'] ? request.payload['assessment'].split(',') : []
@@ -68,7 +64,7 @@ module.exports = class TriageController extends BaseController {
               if (data.canApplyOnline) {
                 // SAVE and DONE
                 await TriageController.saveApplication(request, entityContext, data)
-                return this.redirect({ request, h, redirectPath: Routes.CONFIRM_COST.path })
+                return this.redirect({ h, route: Routes.CONFIRM_COST })
               }
             }
           } else {
@@ -85,7 +81,7 @@ module.exports = class TriageController extends BaseController {
                   data.selectedOptionalAssessments = optionalAssessmentList
                   // SAVE and DONE
                   await TriageController.saveApplication(request, entityContext, data)
-                  return this.redirect({ request, h, redirectPath: Routes.CONFIRM_COST.path })
+                  return this.redirect({ h, route: Routes.CONFIRM_COST })
                 }
               }
             }
@@ -119,14 +115,14 @@ module.exports = class TriageController extends BaseController {
 
         // Currently standard rules steps out of triage - just go to the usual page
         if (requestedPermitType === 'standard-rules') {
-          return this.redirect({ request, h, redirectPath: Routes.PERMIT_HOLDER_TYPE.path })
+          return this.redirect({ h, route: Routes.PERMIT_HOLDER_TYPE })
         }
       }
     }
 
     const paths = TriageController.generatePathsFromData(data)
 
-    return this.redirect({ request, h, redirectPath: paths.currentStepPath })
+    return this.redirect({ h, path: paths.currentStepPath })
   }
 
   static async saveApplication (request, entityContext, triageData) {

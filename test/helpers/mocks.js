@@ -240,11 +240,6 @@ class Mocks {
     return this._application || (this._application = new Application(application))
   }
 
-  get application () {
-    const { application } = this.mockData
-    return this._application || (this._application = new Application(application))
-  }
-
   get applicationCostModel () {
     const { applicationCostItemModel, totalCostItemModel } = this.mockData
     return this._applicationCostModel || (this._applicationCostModel =

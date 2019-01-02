@@ -9,7 +9,7 @@ const { SAVE_AND_RETURN_RECOVER, SAVE_AND_RETURN_SENT_CHECK, SAVE_AND_RETURN_SEN
 
 module.exports = class EmailSentController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h, { application: true, applicationReturn: true })
     const { application, applicationReturn } = context
 
@@ -42,31 +42,27 @@ module.exports = class EmailSentController extends BaseController {
       pageContext.recoveryLink = `${origin}${SAVE_AND_RETURN_RECOVER.path}/${applicationReturn.slug}`
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { application } = context
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { application } = context
 
-      if (request.payload['got-email']) {
-        if (request.payload['got-email'] !== 'true') {
-          application.saveAndReturnEmail = request.payload['save-and-return-email']
-          await application.save(context)
-          try {
-            const origin = config.wastePermitsAppUrl || request.headers.origin
-            await application.sendSaveAndReturnEmail(context, origin)
-          } catch (err) {
-            return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
-          }
-          return this.redirect({ request, h, redirectPath: SAVE_AND_RETURN_SENT_RESENT.path })
+    if (request.payload['got-email']) {
+      if (request.payload['got-email'] !== 'true') {
+        application.saveAndReturnEmail = request.payload['save-and-return-email']
+        await application.save(context)
+        try {
+          const origin = config.wastePermitsAppUrl || request.headers.origin
+          await application.sendSaveAndReturnEmail(context, origin)
+        } catch (err) {
+          return this.doGet(request, h, this.setCustomError('custom.failed', 'save-and-return-email'))
         }
+        return this.redirect({ h, route: SAVE_AND_RETURN_SENT_RESENT })
       }
-
-      return this.redirect({ request, h, redirectPath: TASK_LIST.path })
     }
+
+    return this.redirect({ h, route: TASK_LIST })
   }
 }

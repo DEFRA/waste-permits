@@ -15,7 +15,7 @@ const { STANDARD_RULES: { id: STANDARD_RULES } } = Constants.PermitTypes
 
 module.exports = class PermitSelectController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
 
     pageContext.formValues = request.payload
@@ -27,46 +27,42 @@ module.exports = class PermitSelectController extends BaseController {
     pageContext.standardRules = await StandardRule.list(context, standardRuleTypeId)
     pageContext.permitCategoryRoute = Routes.PERMIT_CATEGORY.path
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true, applicationLine: true })
-      let { application, applicationLine } = context
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true, applicationLine: true })
+    let { application, applicationLine } = context
 
-      // Look up the Standard Rule based on the chosen permit type
-      const standardRule = await StandardRule.getByCode(context, request.payload['chosen-permit'])
+    // Look up the Standard Rule based on the chosen permit type
+    const standardRule = await StandardRule.getByCode(context, request.payload['chosen-permit'])
 
-      CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_ID, standardRule.id)
+    CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_ID, standardRule.id)
 
-      if (!standardRule.canApplyOnline) {
-        return this.redirect({ request, h, redirectPath: Routes.APPLY_OFFLINE.path })
-      }
-
-      // Delete if it already exists
-      if (applicationLine) {
-        await applicationLine.delete(context, applicationLine.id)
-      }
-
-      // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
-      applicationLine = new ApplicationLine({
-        applicationId: application.id,
-        standardRuleId: standardRule.id,
-        permitType: PermitTypes.STANDARD
-      })
-
-      await applicationLine.save(context)
-
-      // Set the application ID in the cookie
-      CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)
-
-      // Save the permit type in the Data store
-      await DataStore.save(context, { permitType: STANDARD_RULES })
-
-      return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
+    if (!standardRule.canApplyOnline) {
+      return this.redirect({ h, route: Routes.APPLY_OFFLINE })
     }
+
+    // Delete if it already exists
+    if (applicationLine) {
+      await applicationLine.delete(context, applicationLine.id)
+    }
+
+    // Create a new Application Line in Dynamics and set the applicationLineId in the cookie
+    applicationLine = new ApplicationLine({
+      applicationId: application.id,
+      standardRuleId: standardRule.id,
+      permitType: PermitTypes.STANDARD
+    })
+
+    await applicationLine.save(context)
+
+    // Set the application ID in the cookie
+    CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)
+
+    // Save the permit type in the Data store
+    await DataStore.save(context, { permitType: STANDARD_RULES })
+
+    return this.redirect({ h, route: Routes.TASK_LIST })
   }
 }

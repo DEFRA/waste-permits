@@ -8,7 +8,7 @@ const { WAMITAB_QUALIFICATION, REGISTERED_ON_A_COURSE, DEEMED_COMPETENCE, ESA_EU
 
 module.exports = class TechnicalQualificationController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const { application } = await RecoveryService.createApplicationContext(h, { application: true })
 
     if (request.payload) {
@@ -41,33 +41,29 @@ module.exports = class TechnicalQualificationController extends BaseController {
         break
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { application } = context
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { application } = context
 
-      application.technicalQualification = request.payload['technical-qualification']
-      await application.save(context)
+    application.technicalQualification = request.payload['technical-qualification']
+    await application.save(context)
 
-      return this.redirect({ request, h, redirectPath: await TechnicalQualificationController._getPath(application.technicalQualification) })
-    }
+    return this.redirect({ h, route: await TechnicalQualificationController._getRoute(application.technicalQualification) })
   }
 
-  static async _getPath (technicalQualification) {
+  static async _getRoute (technicalQualification) {
     switch (parseInt(technicalQualification)) {
       case WAMITAB_QUALIFICATION.TYPE:
-        return Routes.UPLOAD_WAMITAB_QUALIFICATION.path
+        return Routes.UPLOAD_WAMITAB_QUALIFICATION
       case REGISTERED_ON_A_COURSE.TYPE:
-        return Routes.UPLOAD_COURSE_REGISTRATION.path
+        return Routes.UPLOAD_COURSE_REGISTRATION
       case DEEMED_COMPETENCE.TYPE:
-        return Routes.UPLOAD_DEEMED_EVIDENCE.path
+        return Routes.UPLOAD_DEEMED_EVIDENCE
       case ESA_EU_SKILLS.TYPE:
-        return Routes.UPLOAD_ESA_EU_SKILLS.path
+        return Routes.UPLOAD_ESA_EU_SKILLS
       default:
         throw new Error(`Unexpected technical qualification (${technicalQualification})`)
     }

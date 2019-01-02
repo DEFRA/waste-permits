@@ -10,7 +10,7 @@ module.exports = class PaymentResultController extends BaseController {
     const { application, cardPayment, applicationReturn: { slug } } = context
 
     const paymentStatus = await cardPayment.getCardPaymentResult(context)
-    let redirectPath = `${APPLICATION_RECEIVED.path}/${slug}`
+    let path = `${APPLICATION_RECEIVED.path}/${slug}`
 
     // Look at the result of the payment and redirect off to the appropriate result screen
     if (paymentStatus === 'success') {
@@ -18,9 +18,9 @@ module.exports = class PaymentResultController extends BaseController {
       application.submittedOn = Date.now()
       await application.save(context)
     } else {
-      redirectPath = `${CARD_PROBLEM.path}/${slug}?status=${encodeURIComponent(paymentStatus)}`
+      path = `${CARD_PROBLEM.path}/${slug}?status=${encodeURIComponent(paymentStatus)}`
     }
 
-    return this.redirect({ request, h, redirectPath })
+    return this.redirect({ h, path })
   }
 }

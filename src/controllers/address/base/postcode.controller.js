@@ -7,7 +7,7 @@ const Address = require('../../../persistence/entities/address.entity')
 
 module.exports = class PostcodeController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     // Load entity context within the request object
     await RecoveryService.createApplicationContext(h)
     const model = await this.getModel()
@@ -20,7 +20,7 @@ module.exports = class PostcodeController extends BaseController {
       if (address) {
         // If the manual entry flag is set then redirect off to the mamual address entry page instead
         if (!address.fromAddressLookup) {
-          return this.redirect({ request, h, redirectPath: this.getManualEntryRoute(request.params) })
+          return this.redirect({ h, path: this.getManualEntryPath(request.params) })
         }
         pageContext.formValues = {
           postcode: address.postcode
@@ -41,16 +41,12 @@ module.exports = class PostcodeController extends BaseController {
       await this.customisePageContext(pageContext, request)
     }
 
-    pageContext.manualAddressLink = this.getManualEntryRoute(request.params)
+    pageContext.manualAddressLink = this.getManualEntryPath(request.params)
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    }
-
     const context = await RecoveryService.createApplicationContext(h)
     const postcode = request.payload['postcode']
     const errorPath = 'postcode'
@@ -62,7 +58,7 @@ module.exports = class PostcodeController extends BaseController {
     try {
       addresses = await Address.listByPostcode(context, postcode)
     } catch (error) {
-      return this.redirect({ request, h, redirectPath: `${this.getManualEntryRoute(request.params)}?addressLookupFailed=true` })
+      return this.redirect({ h, path: `${this.getManualEntryPath(request.params)}?addressLookupFailed=true` })
     }
 
     if (!errors && addresses && addresses.length === 0) {
@@ -73,7 +69,7 @@ module.exports = class PostcodeController extends BaseController {
     if (errors && errors.details) {
       return this.doGet(request, h, errors)
     } else {
-      return this.redirect({ request, h, redirectPath: this.getAddressSelectionPath(request.params) })
+      return this.redirect({ h, path: this.getAddressSelectionPath(request.params) })
     }
   }
 

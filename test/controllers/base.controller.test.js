@@ -22,7 +22,7 @@ lab.experiment('Base Controller tests:', () => {
 
     const controller = new BaseController({ route })
 
-    const pageContext = controller.createPageContext({ path: route.path, plugins })
+    const pageContext = controller.createPageContext({ request: { path: route.path, plugins } })
 
     Code.expect(pageContext.pageHeading).to.equal(route.pageHeading)
     Code.expect(pageContext.pageTitle).to.equal(route.pageTitle)
