@@ -8,7 +8,7 @@ const { MiningWastePlans } = require('../dynamics')
 module.exports = class ConfirmMiningWastePlanController extends BaseController {
   async doGet (request, h, errors) {
     const { application } = await RecoveryService.createApplicationContext(h, { application: true })
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -29,31 +29,27 @@ module.exports = class ConfirmMiningWastePlanController extends BaseController {
 
     pageContext.miningWastePlans = miningWastePlans
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { application } = context
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { application } = context
 
-      const plan = parseInt(request.payload['mining-waste-plan'])
+    const plan = parseInt(request.payload['mining-waste-plan'])
 
-      const miningWastePlan = Object.entries(Merge({}, MiningWastePlans))
-        .map(([plan, miningWastePlan]) => miningWastePlan)
-        .filter((miningWastePlan) => miningWastePlan.type === plan)
-        .pop()
+    const miningWastePlan = Object.entries(Merge({}, MiningWastePlans))
+      .map(([plan, miningWastePlan]) => miningWastePlan)
+      .filter((miningWastePlan) => miningWastePlan.type === plan)
+      .pop()
 
-      if (!miningWastePlan) {
-        throw new Error(`Unexpected mining waste plan (${plan})`)
-      }
-
-      application.miningWastePlan = miningWastePlan.type
-      await application.save(context, ['miningWastePlan'])
-
-      return this.redirect({ request, h, redirectPath: this.nextPath })
+    if (!miningWastePlan) {
+      throw new Error(`Unexpected mining waste plan (${plan})`)
     }
+
+    application.miningWastePlan = miningWastePlan.type
+    await application.save(context, ['miningWastePlan'])
+
+    return this.redirect({ h })
   }
 }

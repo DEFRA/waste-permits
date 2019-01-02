@@ -10,7 +10,7 @@ const DrainageTypes = Merge({}, Dynamics.DrainageTypes)
 module.exports = class DrainageTypeFailController extends BaseController {
   async doGet (request, h) {
     const { application, standardRule } = await RecoveryService.createApplicationContext(h, { application: true, standardRule: true })
-    const pageContext = this.createPageContext(request)
+    const pageContext = this.createPageContext(h)
 
     const drainageType = Object.keys(DrainageTypes)
       .filter((key) => DrainageTypes[key].type === application.drainageType)
@@ -26,7 +26,7 @@ module.exports = class DrainageTypeFailController extends BaseController {
     }
 
     if (drainageType.allowed) {
-      return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
+      return this.redirect({ h, route: Routes.TASK_LIST })
     }
 
     drainageType.description = drainageType.description.toLowerCase()
@@ -34,6 +34,6 @@ module.exports = class DrainageTypeFailController extends BaseController {
 
     pageContext.drainageType = drainageType
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 }

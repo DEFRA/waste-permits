@@ -7,7 +7,7 @@ const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class PageNotFoundController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     const { application, applicationLine } = await RecoveryService.createApplicationContext(h, { application: true, applicationLine: true })
 
@@ -15,7 +15,7 @@ module.exports = class PageNotFoundController extends BaseController {
     pageContext.taskListRoute = Routes.TASK_LIST.path
     pageContext.startOpenOrSavedRoute = Routes.START_OR_OPEN_SAVED.path
 
-    return this.showView({ request, h, pageContext, code: 404 })
+    return this.showView({ h, pageContext, code: 404 })
   }
 
   static hasApplication (application, applicationLine) {
@@ -26,7 +26,7 @@ module.exports = class PageNotFoundController extends BaseController {
   handler (request, h, errors) {
     if (!CookieService.validateCookie(request)) {
       // Re-direct to the start page if they don't have a valid cookie
-      return this.redirect({ request, h, redirectPath: Routes.START_OR_OPEN_SAVED.path })
+      return this.redirect({ h, route: Routes.START_OR_OPEN_SAVED })
     } else {
       return super.handler(request, h, errors)
     }

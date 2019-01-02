@@ -32,13 +32,13 @@ module.exports = class CardPaymentController extends BaseController {
     const paymentStatus = result ? result.PaymentStatus : 'error'
 
     if (paymentStatus === 'error') {
-      const redirectPath = `${CARD_PROBLEM.path}/${slug}?status=${encodeURIComponent(paymentStatus)}`
-      return this.redirect({ request, h, redirectPath })
+      const path = `${CARD_PROBLEM.path}/${slug}?status=${encodeURIComponent(paymentStatus)}`
+      return this.redirect({ h, path })
     }
 
     LoggingService.logDebug(`Gov.UK Pay card payment URL: ${result.PaymentNextUrlHref}`)
 
     // Re-direct off to Gov.UK Pay to take the payment
-    return this.redirect({ request, h, redirectPath: result.PaymentNextUrlHref })
+    return this.redirect({ h, path: result.PaymentNextUrlHref })
   }
 }

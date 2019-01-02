@@ -7,7 +7,7 @@ const Address = require('../../../persistence/entities/address.entity')
 
 module.exports = class AddressSelectController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
     let addresses, address
     let postcode = CookieService.get(request, this.getPostcodeCookieKey())
@@ -44,26 +44,22 @@ module.exports = class AddressSelectController extends BaseController {
       await this.customisePageContext(pageContext, request)
     }
 
-    pageContext.changePostcodeLink = this.getPostcodeRoute(request.params)
-    pageContext.manualAddressLink = this.getManualEntryRoute(request.params)
+    pageContext.changePostcodeLink = this.getPostcodePath(request.params)
+    pageContext.manualAddressLink = this.getManualEntryPath(request.params)
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      // Load entity context within the request object
-      await RecoveryService.createApplicationContext(h)
+  async doPost (request, h) {
+    // Load entity context within the request object
+    await RecoveryService.createApplicationContext(h)
 
-      const addressDto = {
-        uprn: request.payload['select-address'],
-        postcode: CookieService.get(request, this.getPostcodeCookieKey())
-      }
-      await this.getModel().saveSelectedAddress(request, addressDto)
-
-      return this.redirect({ request, h, redirectPath: this.nextPath })
+    const addressDto = {
+      uprn: request.payload['select-address'],
+      postcode: CookieService.get(request, this.getPostcodeCookieKey())
     }
+    await this.getModel().saveSelectedAddress(request, addressDto)
+
+    return this.redirect({ h })
   }
 }

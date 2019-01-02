@@ -7,7 +7,7 @@ const NeedToConsultModel = require('../models/needToConsult.model')
 
 module.exports = class NeedToConsultController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -25,13 +25,10 @@ module.exports = class NeedToConsultController extends BaseController {
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    }
+  async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
 
     const {
@@ -74,6 +71,6 @@ module.exports = class NeedToConsultController extends BaseController {
     const consultModel = new NeedToConsultModel(consult)
     await consultModel.save(context)
 
-    return this.redirect({ request, h, redirectPath: this.nextPath })
+    return this.redirect({ h })
   }
 }

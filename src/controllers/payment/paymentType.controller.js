@@ -13,7 +13,7 @@ module.exports = class PaymentTypeController extends BaseController {
     const { applicationLine, applicationReturn } = context
 
     this.path = this.path.replace('{slug?}', applicationReturn ? applicationReturn.slug : '')
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     const { status } = request.query || {}
     if (status === 'error') {
@@ -36,29 +36,25 @@ module.exports = class PaymentTypeController extends BaseController {
 
     pageContext.cost = value.toLocaleString()
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    let nextPath
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const { cookie, applicationReturn } = await RecoveryService.createApplicationContext(h, { applicationReturn: true })
-      const paymentType = parseInt(request.payload['payment-type'])
-      switch (paymentType) {
-        case CARD_PAYMENT:
-          let origin = config.wastePermitsAppUrl || request.headers.origin
-          let returnUrl = `${origin}${Routes.PAYMENT_RESULT.path}/${applicationReturn.slug}`
-          nextPath = `${Routes.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
-          break
-        case BACS_PAYMENT:
-          nextPath = Routes.BACS_PAYMENT.path
-          break
-        default:
-          throw new Error(`Unexpected payment type (${paymentType})`)
-      }
-      return this.redirect({ request, h, redirectPath: nextPath, cookie })
+  async doPost (request, h) {
+    let path
+    const { cookie, applicationReturn } = await RecoveryService.createApplicationContext(h, { applicationReturn: true })
+    const paymentType = parseInt(request.payload['payment-type'])
+    switch (paymentType) {
+      case CARD_PAYMENT:
+        let origin = config.wastePermitsAppUrl || request.headers.origin
+        let returnUrl = `${origin}${Routes.PAYMENT_RESULT.path}/${applicationReturn.slug}`
+        path = `${Routes.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
+        break
+      case BACS_PAYMENT:
+        path = Routes.BACS_PAYMENT.path
+        break
+      default:
+        throw new Error(`Unexpected payment type (${paymentType})`)
     }
+    return this.redirect({ h, path, cookie })
   }
 }

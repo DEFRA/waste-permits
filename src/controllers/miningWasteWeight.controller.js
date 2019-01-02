@@ -6,7 +6,7 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class MiningWasteWeightController extends BaseController {
   async doGet (request, h, errors) {
     const { application } = await RecoveryService.createApplicationContext(h, { application: true })
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -16,19 +16,16 @@ module.exports = class MiningWasteWeightController extends BaseController {
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    }
+  async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
     application.miningWasteWeight = request.payload['mining-waste-weight']
     await application.save(context, ['miningWasteWeight'])
 
-    return this.redirect({ request, h, redirectPath: this.nextPath })
+    return this.redirect({ h })
   }
 }

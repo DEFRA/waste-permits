@@ -18,40 +18,36 @@ module.exports = class PermitHolderTypeController extends BaseController {
   }
 
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const { application } = await RecoveryService.createApplicationContext(h, { application: true })
     pageContext.holderTypes = PermitHolderTypeController.getHolderTypes(application)
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { application } = context
+
+    const permitHolder = PermitHolderTypeController.getHolderTypes()
+      .filter(({ id }) => request.payload['chosen-holder-type'] === id)
+      .pop()
+
+    CookieService.remove(request, STANDARD_RULE_ID)
+    CookieService.remove(request, STANDARD_RULE_TYPE_ID)
+
+    application.applicantType = permitHolder.dynamicsApplicantTypeId
+    application.organisationType = permitHolder.dynamicsOrganisationTypeId
+    if (application.isIndividual) {
+      application.permitHolderOrganisationId = undefined
     } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { application } = context
-
-      const permitHolder = PermitHolderTypeController.getHolderTypes()
-        .filter(({ id }) => request.payload['chosen-holder-type'] === id)
-        .pop()
-
-      CookieService.remove(request, STANDARD_RULE_ID)
-      CookieService.remove(request, STANDARD_RULE_TYPE_ID)
-
-      application.applicantType = permitHolder.dynamicsApplicantTypeId
-      application.organisationType = permitHolder.dynamicsOrganisationTypeId
-      if (application.isIndividual) {
-        application.permitHolderOrganisationId = undefined
-      } else {
-        application.permitHolderIndividualId = undefined
-      }
-      await application.save(context)
-
-      if (permitHolder.canApplyOnline) {
-        return this.redirect({ request, h, redirectPath: PERMIT_CATEGORY.path })
-      }
-
-      return this.redirect({ request, h, redirectPath: APPLY_OFFLINE.path })
+      application.permitHolderIndividualId = undefined
     }
+    await application.save(context)
+
+    if (permitHolder.canApplyOnline) {
+      return this.redirect({ h, route: PERMIT_CATEGORY })
+    }
+
+    return this.redirect({ h, route: APPLY_OFFLINE })
   }
 }

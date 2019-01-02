@@ -10,7 +10,7 @@ module.exports = class AddressManualController extends BaseController {
     if (addressLookupFailed) {
       errors = this.setCustomError('custom.address.lookup.failed', 'building-name-or-number', { supressField: true })
     }
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     pageContext.errorSummaryTitle = addressLookupFailed ? 'Our address finder is not working' : ''
     // Load entity context within the request object
     await RecoveryService.createApplicationContext(h)
@@ -44,27 +44,23 @@ module.exports = class AddressManualController extends BaseController {
       await this.customisePageContext(pageContext, request)
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      // Load entity context within the request object
-      await RecoveryService.createApplicationContext(h)
+  async doPost (request, h) {
+    // Load entity context within the request object
+    await RecoveryService.createApplicationContext(h)
 
-      const addressDto = {
-        buildingNameOrNumber: request.payload['building-name-or-number'],
-        addressLine1: request.payload['address-line-1'],
-        addressLine2: request.payload['address-line-2'],
-        townOrCity: request.payload['town-or-city'],
-        postcode: request.payload['postcode']
-      }
-
-      await this.getModel().saveManualAddress(request, addressDto)
-
-      return this.redirect({ request, h, redirectPath: this.nextPath })
+    const addressDto = {
+      buildingNameOrNumber: request.payload['building-name-or-number'],
+      addressLine1: request.payload['address-line-1'],
+      addressLine2: request.payload['address-line-2'],
+      townOrCity: request.payload['town-or-city'],
+      postcode: request.payload['postcode']
     }
+
+    await this.getModel().saveManualAddress(request, addressDto)
+
+    return this.redirect({ h })
   }
 }

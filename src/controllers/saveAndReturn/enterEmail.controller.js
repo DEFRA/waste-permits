@@ -7,13 +7,13 @@ const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class EnterEmailController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h, { application: true })
     const { application } = context
 
     const isComplete = await SaveAndReturn.isComplete(context)
     if (isComplete) {
-      return this.redirect({ request, h, redirectPath: Routes.SAVE_AND_RETURN_COMPLETE.path })
+      return this.redirect({ h, route: Routes.SAVE_AND_RETURN_COMPLETE })
     }
 
     if (request.payload) {
@@ -24,20 +24,16 @@ module.exports = class EnterEmailController extends BaseController {
         'save-and-return-email': application.saveAndReturnEmail
       }
     }
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { application } = context
-      application.saveAndReturnEmail = request.payload['save-and-return-email']
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { application } = context
+    application.saveAndReturnEmail = request.payload['save-and-return-email']
 
-      await application.save(context)
+    await application.save(context)
 
-      return this.redirect({ request, h, redirectPath: Routes.SAVE_AND_RETURN_CONFIRM.path })
-    }
+    return this.redirect({ h, route: Routes.SAVE_AND_RETURN_CONFIRM })
   }
 }

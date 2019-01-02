@@ -45,7 +45,8 @@ module.exports = class BaseController {
     this.tasksCompleteRequired = tasksCompleteRequired
   }
 
-  createPageContext (request, errors, validator) {
+  createPageContext (h, errors, validator) {
+    const { request } = h
     validator = validator || this.validator
     const pageContext = {
       skipLinkMessage: Constants.SKIP_LINK_MESSAGE,
@@ -94,19 +95,19 @@ module.exports = class BaseController {
     }
   }
 
-  redirect ({ request, h, redirectPath, cookie, error }) {
+  redirect ({ h, request = h.request, route = this.route.nextRoute, path = (typeof route === 'string' ? Routes[route].path : route.path), cookie, error }) {
     if (!cookie) {
       cookie = request.state[Constants.DEFRA_COOKIE_KEY]
     }
     if (Config.isDevelopment && error) {
-      redirectPath = redirectPath.includes('?') ? `${redirectPath}&error=${JSON.stringify(error)}` : `${redirectPath}?error=${JSON.stringify(error)}`
+      path = path.includes('?') ? `${path}&error=${JSON.stringify(error)}` : `${path}?error=${JSON.stringify(error)}`
     }
     return h
-      .redirect(redirectPath)
+      .redirect(path)
       .state(Constants.DEFRA_COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 
-  showView ({ request, h, pageContext, code = 200 }) {
+  showView ({ h, request = h.request, pageContext, code = 200 }) {
     return h
       .view(this.route.view, pageContext)
       .code(code)
@@ -139,7 +140,11 @@ module.exports = class BaseController {
           // Apply custom validation if required
           errors = await this.validator.customValidate(request.payload, errors)
         }
-        return this.doPost(request, h, errors)
+        if (errors && errors.details) {
+          return this.doGet(request, h, errors)
+        } else {
+          return this.doPost(request, h, errors)
+        }
     }
   }
 
@@ -148,35 +153,35 @@ module.exports = class BaseController {
     if (this.cookieValidationRequired) {
       // Validate the cookie
       const cookieValidationResult = await CookieService.validateCookie(request)
-      let redirectPath
+      let path
 
       switch (cookieValidationResult) {
         case COOKIE_RESULT.COOKIE_NOT_FOUND:
-          redirectPath = START_AT_BEGINNING.path
+          path = START_AT_BEGINNING.path
           break
         case COOKIE_RESULT.COOKIE_EXPIRED:
-          redirectPath = TIMEOUT.path
+          path = TIMEOUT.path
           break
         case COOKIE_RESULT.APPLICATION_NOT_FOUND:
-          redirectPath = TECHNICAL_PROBLEM.path
+          path = TECHNICAL_PROBLEM.path
           break
       }
 
-      if (redirectPath) {
-        return this.redirect({ request, h, redirectPath, error: { message: cookieValidationResult } })
+      if (path) {
+        return this.redirect({ h, path, error: { message: cookieValidationResult } })
       }
     }
 
     if (this.applicationRequired) {
       try {
         const context = await RecoveryService.createApplicationContext(h, { application: true }) || {}
-        const redirectPath = await this.checkRouteAccess(context)
-        if (redirectPath) {
-          return this.redirect({ request, h, redirectPath })
+        const path = await this.checkRouteAccess(context)
+        if (path) {
+          return this.redirect({ h, path })
         }
       } catch (error) {
         LoggingService.logError(error, request)
-        return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path, error })
+        return this.redirect({ h, route: TECHNICAL_PROBLEM, error })
       }
     }
 
@@ -190,7 +195,7 @@ module.exports = class BaseController {
           return response
         } catch (error) {
           LoggingService.logError(error, request)
-          return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path, error })
+          return this.redirect({ h, route: TECHNICAL_PROBLEM, error })
         }
     }
   }

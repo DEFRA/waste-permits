@@ -7,7 +7,7 @@ const { PERMIT_HOLDER_TYPES } = require('../../../dynamics')
 
 module.exports = class DeclarationsController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const { application, permitHolderType } = await RecoveryService.createApplicationContext(h, { application: true })
 
     switch (permitHolderType) {
@@ -40,21 +40,17 @@ module.exports = class DeclarationsController extends BaseController {
 
     Object.assign(pageContext, this.getSpecificPageContext())
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { application } = context
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { application } = context
 
-      Object.assign(application, this.getRequestData(request))
-      await application.save(context)
+    Object.assign(application, this.getRequestData(request))
+    await application.save(context)
 
-      return this.redirect({ request, h, redirectPath: this.nextPath })
-    }
+    return this.redirect({ h })
   }
 
   getFormData (data, declared, declarationDetails) {

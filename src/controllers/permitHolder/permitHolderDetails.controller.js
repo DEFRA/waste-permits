@@ -16,19 +16,19 @@ module.exports = class PermitHolderDetailsController extends BaseController {
       case INDIVIDUAL:
       case SOLE_TRADER:
         // Re-direct to individual details flow
-        return this.redirect({ request, h, redirectPath: PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH.path })
+        return this.redirect({ h, route: PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH })
       case LIMITED_LIABILITY_PARTNERSHIP:
         // Re-direct to limited liability partnership details flow
-        return this.redirect({ request, h, redirectPath: LLP_COMPANY_NUMBER.path })
+        return this.redirect({ h, route: LLP_COMPANY_NUMBER })
       case PUBLIC_BODY:
         // Re-direct to partnership details flow
-        return this.redirect({ request, h, redirectPath: PUBLIC_BODY_NAME.path })
+        return this.redirect({ h, route: PUBLIC_BODY_NAME })
       case PARTNERSHIP:
         // Re-direct to partnership details flow
-        return this.redirect({ request, h, redirectPath: PARTNERSHIP_TRADING_NAME.path })
+        return this.redirect({ h, route: PARTNERSHIP_TRADING_NAME })
       default:
         // Re-direct to company details flow
-        return this.redirect({ request, h, redirectPath: COMPANY_NUMBER.path })
+        return this.redirect({ h, route: COMPANY_NUMBER })
     }
   }
 }

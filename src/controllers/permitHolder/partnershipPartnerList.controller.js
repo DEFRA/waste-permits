@@ -24,7 +24,7 @@ module.exports = class PartnershipPartnerListController extends BaseController {
   }
 
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h, { account: true })
     const { addAnotherPartner } = request.params
 
@@ -56,7 +56,7 @@ module.exports = class PartnershipPartnerListController extends BaseController {
     if (addAnotherPartner === addPartnerParam || !pageContext.partners.length) {
       const partnerId = await this.createPartner(context)
 
-      return this.redirect({ request, h, redirectPath: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
+      return this.redirect({ h, path: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
     }
 
     if (pageContext.partners.length < minPartners) {
@@ -67,7 +67,7 @@ module.exports = class PartnershipPartnerListController extends BaseController {
       pageContext.submitButtonTitle = submitButtonTitle
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
@@ -76,11 +76,11 @@ module.exports = class PartnershipPartnerListController extends BaseController {
     if (list.length < minPartners) {
       // In this case the submit button would have been labeled "Add another Partner"
       const partnerId = await this.createPartner(context)
-      return this.redirect({ request, h, redirectPath: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
+      return this.redirect({ h, path: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
     }
 
     // In this case the submit button would have been labeled "All Partners added - continue"
     // Adding another partner is still possible by clicking the "Add another Partner" link in the page
-    return this.redirect({ request, h, redirectPath: this.nextPath })
+    return this.redirect({ h })
   }
 }

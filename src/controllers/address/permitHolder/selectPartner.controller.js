@@ -10,11 +10,11 @@ module.exports = class AddressSelectPartnerController extends AddressSelectContr
     return Constants.CookieValue.PARTNER_POSTCODE
   }
 
-  getManualEntryRoute (params) {
+  getManualEntryPath (params) {
     return `${Routes.MANUAL_PARTNER.path}/${params.partnerId}`
   }
 
-  getPostcodeRoute (params) {
+  getPostcodePath (params) {
     return `${Routes.POSTCODE_PARTNER.path}/${params.partnerId}`
   }
 

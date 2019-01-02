@@ -59,14 +59,14 @@ module.exports = class ApplyOfflineController extends BaseController {
       }
       if ((!standardRule && !offlineCategory) || (standardRule && standardRule.canApplyOnline)) {
         LoggingService.logError(`Unable to get offline category for : ${standardRuleTypeId}`)
-        return this.redirect({ request, h, redirectPath: Routes.START_AT_BEGINNING.path })
+        return this.redirect({ h, route: Routes.START_AT_BEGINNING })
       }
     }
 
     const chosenOption = ApplyOfflineController.getChosenOption(offlineCategory, standardRule, permitHolderType)
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({ chosenOption })
 
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     pageContext.changeSelectionLink = ApplyOfflineController.getChangeSelectionRoute(offlineCategory, standardRule).path
 
@@ -88,6 +88,6 @@ module.exports = class ApplyOfflineController extends BaseController {
       pageContext.offlineCategoryOther = true
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 }

@@ -5,12 +5,13 @@ const Dynamics = require('../dynamics')
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
+const LoggingService = require('../services/logging.service')
 const Application = require('../persistence/entities/application.entity')
 const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = Constants.PermitTypes
 
 module.exports = class StartOrOpenSavedController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     pageContext.cost = {
       lower: (Constants.PermitTypes.STANDARD_RULES.cost.lower).toLocaleString(),
@@ -26,18 +27,21 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       pageContext.formActionQueryString = `?permit-type=${permitType}`
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
+  async doPost (request, h) {
+    let cookie
+    try {
+      cookie = await CookieService.generateCookie(h)
+    } catch (error) {
+      LoggingService.logError(error)
+      return this.redirect({ h, route: Routes.SAVE_AND_RETURN_COMPLETE, error })
     }
 
-    const cookie = await CookieService.generateCookie(h)
     const { authToken } = cookie
 
-    let redirectPath
+    let path
     if (request.payload['started-application'] === 'new') {
       // Create new application in Dynamics and set the applicationId in the cookie
       const application = new Application()
@@ -47,17 +51,17 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       // Set the application ID in the cookie
       cookie.applicationId = application.id
 
-      redirectPath = Routes.BESPOKE_OR_STANDARD_RULES.path
+      path = Routes.BESPOKE_OR_STANDARD_RULES.path
 
       // If there is a permit type parameter indicating bespoke or standard rules then pass it through
       const permitType = request.query['permit-type']
       if (permitType && (permitType === BESPOKE || permitType === STANDARD_RULES)) {
-        redirectPath = `${redirectPath}?permit-type=${permitType}`
+        path = `${path}?permit-type=${permitType}`
       }
     } else {
-      redirectPath = Routes.SEARCH_YOUR_EMAIL.path
+      path = Routes.SEARCH_YOUR_EMAIL.path
     }
 
-    return this.redirect({ request, h, redirectPath, cookie })
+    return this.redirect({ h, path, cookie })
   }
 }

@@ -14,11 +14,11 @@ module.exports = class PartnershipContactDetailsController extends BaseControlle
     const contactDetail = await PartnerDetails.getContactDetail(request)
 
     if (!contactDetail) {
-      return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
+      return this.redirect({ h, route: TECHNICAL_PROBLEM })
     }
 
     this.route.pageHeading = await PartnerDetails.getPageHeading(request, this.orginalPageHeading)
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -27,31 +27,27 @@ module.exports = class PartnershipContactDetailsController extends BaseControlle
       pageContext.formValues = { email, telephone }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h)
-      const contactDetail = await PartnerDetails.getContactDetail(request)
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h)
+    const contactDetail = await PartnerDetails.getContactDetail(request)
 
-      if (!contactDetail) {
-        return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
-      }
-
-      const {
-        email,
-        telephone
-      } = request.payload
-
-      contactDetail.email = email
-      contactDetail.telephone = telephone
-
-      await contactDetail.save(context)
-
-      return this.redirect({ request, h, redirectPath: `${POSTCODE_PARTNER.path}/${request.params.partnerId}` })
+    if (!contactDetail) {
+      return this.redirect({ h, route: TECHNICAL_PROBLEM })
     }
+
+    const {
+      email,
+      telephone
+    } = request.payload
+
+    contactDetail.email = email
+    contactDetail.telephone = telephone
+
+    await contactDetail.save(context)
+
+    return this.redirect({ h, path: `${POSTCODE_PARTNER.path}/${request.params.partnerId}` })
   }
 }

@@ -4,9 +4,9 @@ const BaseController = require('./base.controller')
 
 module.exports = class PreApplicationController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h, errors) {

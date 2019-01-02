@@ -15,7 +15,7 @@ module.exports = class PermitCategoryController extends BaseController {
   }
 
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
 
     const categories = await StandardRuleType.getCategories(context)
@@ -27,23 +27,19 @@ module.exports = class PermitCategoryController extends BaseController {
 
     pageContext.formValues = request.payload
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      CookieService.remove(request, Constants.COOKIE_KEY.STANDARD_RULE_ID)
-      // Set the standard rule type ID in the cookie
-      const standardRuleTypeId = request.payload['chosen-category']
-      CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID, standardRuleTypeId)
+  async doPost (request, h) {
+    CookieService.remove(request, Constants.COOKIE_KEY.STANDARD_RULE_ID)
+    // Set the standard rule type ID in the cookie
+    const standardRuleTypeId = request.payload['chosen-category']
+    CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID, standardRuleTypeId)
 
-      if (PermitCategoryController.isOfflineCategory(standardRuleTypeId)) {
-        return this.redirect({ request, h, redirectPath: Routes.APPLY_OFFLINE.path })
-      } else {
-        return this.redirect({ request, h, redirectPath: Routes.PERMIT_SELECT.path })
-      }
+    if (PermitCategoryController.isOfflineCategory(standardRuleTypeId)) {
+      return this.redirect({ h, route: Routes.APPLY_OFFLINE })
+    } else {
+      return this.redirect({ h, route: Routes.PERMIT_SELECT })
     }
   }
 }

@@ -10,11 +10,11 @@ module.exports = class AddressSelectPermitHolderController extends AddressSelect
     return Constants.CookieValue.PERMIT_HOLDER_POSTCODE
   }
 
-  getManualEntryRoute () {
+  getManualEntryPath () {
     return Routes.MANUAL_PERMIT_HOLDER.path
   }
 
-  getPostcodeRoute () {
+  getPostcodePath () {
     return Routes.POSTCODE_PERMIT_HOLDER.path
   }
 

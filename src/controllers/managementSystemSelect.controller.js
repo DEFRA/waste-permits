@@ -22,7 +22,7 @@ module.exports = class ManagementSystemSelectController extends BaseController {
 
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h, { application: true })
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const { answerCode } = await ApplicationAnswer.getByQuestionCode(context, questionCode) || {}
 
     if (request.payload) {
@@ -42,31 +42,27 @@ module.exports = class ManagementSystemSelectController extends BaseController {
         return answer
       }))
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
 
-      const applicationAnswer = new ApplicationAnswer({ questionCode })
+    const applicationAnswer = new ApplicationAnswer({ questionCode })
 
-      const answerCode = request.payload[questionCode]
+    const answerCode = request.payload[questionCode]
 
-      const managementSystem = MANAGEMENT_SYSTEM.answers
-        .find((answer) => answer.id === answerCode)
+    const managementSystem = MANAGEMENT_SYSTEM.answers
+      .find((answer) => answer.id === answerCode)
 
-      if (!managementSystem) {
-        throw new Error(`Unexpected management system (${answerCode})`)
-      }
-
-      applicationAnswer.answerCode = answerCode
-
-      await applicationAnswer.save(context)
-
-      return this.redirect({ request, h, redirectPath: this.nextPath })
+    if (!managementSystem) {
+      throw new Error(`Unexpected management system (${answerCode})`)
     }
+
+    applicationAnswer.answerCode = answerCode
+
+    await applicationAnswer.save(context)
+
+    return this.redirect({ h })
   }
 }

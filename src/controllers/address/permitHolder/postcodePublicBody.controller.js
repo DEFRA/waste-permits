@@ -10,7 +10,7 @@ module.exports = class PostcodePublicBodyController extends PostcodeController {
     return Constants.CookieValue.PUBLIC_BODY_POSTCODE
   }
 
-  getManualEntryRoute () {
+  getManualEntryPath () {
     return Routes.MANUAL_PUBLIC_BODY.path
   }
 

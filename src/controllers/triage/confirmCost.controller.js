@@ -13,7 +13,7 @@ const authService = new ActiveDirectoryAuthService()
 
 module.exports = class ConfirmCostController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const entityContext = { authToken: await authService.getToken() }
     entityContext.applicationId = request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
 
@@ -23,10 +23,10 @@ module.exports = class ConfirmCostController extends BaseController {
     const permitHolderType = await Application.getPermitHolderTypeForApplicationId(entityContext)
     pageContext.activitiesLink = `${TRIAGE_ACTIVITY.path}/bespoke/${permitHolderType.id}/waste`
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
-    return this.redirect({ request, h, redirectPath: this.nextPath })
+    return this.redirect({ h })
   }
 }

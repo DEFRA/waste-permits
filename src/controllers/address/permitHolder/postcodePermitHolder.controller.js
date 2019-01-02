@@ -10,7 +10,7 @@ module.exports = class PostcodePermitHolderController extends PostcodeController
     return Constants.CookieValue.PERMIT_HOLDER_POSTCODE
   }
 
-  getManualEntryRoute () {
+  getManualEntryPath () {
     return Routes.MANUAL_PERMIT_HOLDER.path
   }
 

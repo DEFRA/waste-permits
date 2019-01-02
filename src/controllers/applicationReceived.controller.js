@@ -12,7 +12,7 @@ const LoggingService = require('../services/logging.service')
 
 module.exports = class ApplicationReceivedController extends BaseController {
   async doGet (request, h) {
-    const pageContext = this.createPageContext(request)
+    const pageContext = this.createPageContext(h)
     const context = await RecoveryService.createApplicationContext(h, { application: true })
     const { applicationId, application } = context
 
@@ -48,6 +48,6 @@ module.exports = class ApplicationReceivedController extends BaseController {
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 }

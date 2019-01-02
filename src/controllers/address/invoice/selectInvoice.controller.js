@@ -10,11 +10,11 @@ module.exports = class AddressSelectInvoiceController extends AddressSelectContr
     return Constants.CookieValue.INVOICE_POSTCODE
   }
 
-  getManualEntryRoute () {
+  getManualEntryPath () {
     return Routes.MANUAL_INVOICE.path
   }
 
-  getPostcodeRoute () {
+  getPostcodePath () {
     return Routes.POSTCODE_INVOICE.path
   }
 

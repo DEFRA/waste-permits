@@ -7,7 +7,7 @@ const RecoveryService = require('../services/recovery.service')
 
 module.exports = class ConfirmRulesController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h, { application: true, standardRule: true })
     const { standardRule } = context
 
@@ -15,7 +15,7 @@ module.exports = class ConfirmRulesController extends BaseController {
     pageContext.code = standardRule.code
     pageContext.isComplete = await ConfirmRules.isComplete(context)
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
@@ -23,6 +23,6 @@ module.exports = class ConfirmRulesController extends BaseController {
 
     await ConfirmRules.updateCompleteness(context)
 
-    return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
+    return this.redirect({ h, route: Routes.TASK_LIST })
   }
 }

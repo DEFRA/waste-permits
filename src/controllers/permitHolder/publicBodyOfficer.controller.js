@@ -6,7 +6,7 @@ const ContactDetail = require('../../models/contactDetail.model')
 
 module.exports = class PublicBodyOfficerController extends BaseController {
   async doGet (request, h, errors) {
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -25,33 +25,29 @@ module.exports = class PublicBodyOfficerController extends BaseController {
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
-  async doPost (request, h, errors) {
-    if (errors && errors.details) {
-      return this.doGet(request, h, errors)
-    } else {
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
-      const { applicationId } = context
-      const type = RESPONSIBLE_CONTACT_DETAILS.TYPE
-      const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
+  async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { applicationId } = context
+    const type = RESPONSIBLE_CONTACT_DETAILS.TYPE
+    const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })
 
-      const {
-        'first-name': firstName,
-        'last-name': lastName,
-        'job-title': jobTitle,
-        email
-      } = request.payload
+    const {
+      'first-name': firstName,
+      'last-name': lastName,
+      'job-title': jobTitle,
+      email
+    } = request.payload
 
-      contactDetail.firstName = firstName
-      contactDetail.lastName = lastName
-      contactDetail.jobTitle = jobTitle
-      contactDetail.email = email
+    contactDetail.firstName = firstName
+    contactDetail.lastName = lastName
+    contactDetail.jobTitle = jobTitle
+    contactDetail.email = email
 
-      await contactDetail.save(context)
+    await contactDetail.save(context)
 
-      return this.redirect({ request, h, redirectPath: this.nextPath })
-    }
+    return this.redirect({ h })
   }
 }

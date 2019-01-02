@@ -14,10 +14,8 @@ module.exports = class CompanyStatusController extends BaseController {
 
     const company = await CompanyLookupService.getCompany(account.companyNumber)
 
-    const companyPath = Routes[this.route.companyRoute].path
-
     if (!company) {
-      return this.redirect({ request, h, redirectPath: companyPath })
+      return this.redirect({ h, route: this.route.companyRoute })
     }
 
     let companyStatus
@@ -36,7 +34,7 @@ module.exports = class CompanyStatusController extends BaseController {
       }
 
       if (active.length) {
-        return this.redirect({ request, h, redirectPath: this.nextPath })
+        return this.redirect({ h })
       } else {
         switch (this.route.path) {
           case COMPANY_CHECK_STATUS.path:
@@ -52,13 +50,13 @@ module.exports = class CompanyStatusController extends BaseController {
     this.route.pageHeading = Handlebars.compile(this.orginalPageHeading)({
       companyStatus: companyStatus
     })
-    const pageContext = this.createPageContext(request, errors)
+    const pageContext = this.createPageContext(h, errors)
 
     pageContext.companyNumber = account.companyNumber
     pageContext.companyName = company.name
     pageContext.companyStatus = companyStatus
-    pageContext.enterCompanyNumberRoute = companyPath
+    pageContext.enterCompanyNumberRoute = Routes[this.route.companyRoute].path
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 }

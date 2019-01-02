@@ -13,15 +13,15 @@ module.exports = class PartnershipPartnerDeleteController extends BaseController
     const contactDetail = await PartnerDetails.getContactDetail(request)
 
     if (!contactDetail) {
-      return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
+      return this.redirect({ h, route: TECHNICAL_PROBLEM })
     }
 
     this.route.pageHeading = await PartnerDetails.getPageHeading(request, this.orginalPageHeading)
 
-    const pageContext = this.createPageContext(request)
+    const pageContext = this.createPageContext(h)
     pageContext.skipDeletePartnerLink = this.nextPath
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
@@ -29,13 +29,13 @@ module.exports = class PartnershipPartnerDeleteController extends BaseController
     const contactDetail = await PartnerDetails.getContactDetail(request)
 
     if (!contactDetail) {
-      return this.redirect({ request, h, redirectPath: TECHNICAL_PROBLEM.path })
+      return this.redirect({ h, route: TECHNICAL_PROBLEM })
     }
 
     await contactDetail.delete(context)
 
     // Clear the completeness flag here to force applicant to complete permit holder task
     await PermitHolderDetails.clearCompleteness(context)
-    return this.redirect({ request, h, redirectPath: this.nextPath })
+    return this.redirect({ h })
   }
 }

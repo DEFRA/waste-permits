@@ -10,7 +10,7 @@ module.exports = class PostcodePartnerController extends PostcodeController {
     return Constants.CookieValue.PARTNER_POSTCODE
   }
 
-  getManualEntryRoute (params) {
+  getManualEntryPath (params) {
     return `${Routes.MANUAL_PARTNER.path}/${params.partnerId}`
   }
 

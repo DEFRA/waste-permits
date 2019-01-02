@@ -7,8 +7,8 @@ const RecoveryService = require('../../services/recovery.service')
 
 module.exports = class PaymentBacsController extends BaseController {
   async doGet (request, h) {
-    const pageContext = this.createPageContext(request)
-    return this.showView({ request, h, pageContext })
+    const pageContext = this.createPageContext(h)
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
@@ -28,6 +28,6 @@ module.exports = class PaymentBacsController extends BaseController {
     application.submittedOn = Date.now()
     await application.save(context)
 
-    return this.redirect({ request, h, redirectPath: `${this.nextPath}/${slug}` })
+    return this.redirect({ h, path: `${this.nextPath}/${slug}` })
   }
 }

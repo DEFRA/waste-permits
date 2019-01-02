@@ -73,10 +73,10 @@ module.exports = class CheckBeforeSendingController extends BaseController {
   }
 
   async doGet (request, h) {
-    const pageContext = this.createPageContext(request)
+    const pageContext = this.createPageContext(h)
     pageContext.sections = await this._buildSections(request.app.data)
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
@@ -86,6 +86,6 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
     await application.save(request.app.data)
 
-    return this.redirect({ request, h, redirectPath: this.nextPath })
+    return this.redirect({ h })
   }
 }
