@@ -25,9 +25,6 @@ module.exports = class PaymentBacsController extends BaseController {
     payment.title = `${Dynamics.PaymentTitle.BACS_PAYMENT} ${application.applicationNumber}`
     await payment.save(context)
 
-    application.submittedOn = Date.now()
-    await application.save(context)
-
     return this.redirect({ h, path: `${this.nextPath}/${slug}` })
   }
 }
