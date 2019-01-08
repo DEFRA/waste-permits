@@ -18,7 +18,11 @@ module.exports = class AddressSelectPermitHolderController extends AddressSelect
     return Routes.POSTCODE_PERMIT_HOLDER.path
   }
 
-  getModel () {
+  get task () {
     return PermitHolderDetails
+  }
+
+  async customisePageContext (pageContext, request) {
+    pageContext.showCharitySubheading = this.task.isCharity(request)
   }
 }

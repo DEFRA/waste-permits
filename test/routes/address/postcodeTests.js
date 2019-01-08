@@ -2,6 +2,7 @@
 
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../../routes/generalTestHelper.test')
 
 const server = require('../../../server')
@@ -15,54 +16,24 @@ const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 
-let fakeApplication
-let fakeContactDetail
-let fakeAddress
-let fakeRecovery
 let getRequest
 let postRequest
+let mocks
 
-module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHeading, TaskModel, PostCodeCookie, contactDetailId }) => {
+module.exports = (lab, { permitHolderType, routePath, nextRoutePath, nextRoutePathManual, pageHeading, TaskModel, PostCodeCookie, contactDetailId }) => {
   lab.beforeEach(() => {
-    fakeApplication = {
-      id: 'APPLICATION_ID',
-      applicationNumber: 'APPLICATION_NUMBER'
-    }
+    mocks = new Mocks()
 
-    if (contactDetailId) {
-      fakeContactDetail = {
-        id: contactDetailId,
-        applicationId: fakeApplication.id,
-        firstName: 'FIRSTNAME',
-        lastName: 'LASTNAME',
-        email: 'EMAIL'
-      }
+    if (permitHolderType) {
+      mocks.recovery.charityDetail = mocks.charityDetail
     }
-
-    fakeAddress = {
-      id: 'ADDRESS_ID',
-      buildingNameOrNumber: '101',
-      addressLine1: 'ADDRESS_LINE_1',
-      addressLine2: 'ADDRESS_LINE_2',
-      townOrCity: 'THE TOWN',
-      postcode: 'AB12 1AA',
-      uprn: 'UPRN1',
-      fromAddressLookup: true,
-      fullAddress: 'FULL_ADDRESS'
-    }
-
-    fakeRecovery = () => ({
-      authToken: 'AUTH_TOKEN',
-      applicationId: fakeApplication.id,
-      applicationLineId: 'APPLICATION_LINE_ID',
-      application: new Application(fakeApplication)
-    })
 
     getRequest = {
       method: 'GET',
       url: routePath,
       headers: {},
-      payload: {}
+      payload: {},
+      app: { data: mocks.recovery }
     }
 
     postRequest = {
@@ -82,19 +53,15 @@ module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHead
 
     // Stub methods
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-    sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
-    sandbox.stub(CryptoService, 'decrypt').value(() => fakeContactDetail.id)
+    sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
+    sandbox.stub(CryptoService, 'decrypt').value(() => mocks.contactDetail.id)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(Address, 'listByPostcode').value(() => [
-      new Address(fakeAddress),
-      new Address(fakeAddress),
-      new Address(fakeAddress)
-    ])
-    sandbox.stub(TaskModel, 'getAddress').value(() => new Address(fakeAddress))
-    sandbox.stub(TaskModel, 'saveManualAddress').value(() => undefined)
+    sandbox.stub(Address, 'listByPostcode').value(() => [mocks.address, mocks.address, mocks.address])
+    sandbox.stub(TaskModel, 'getAddress').value(() => mocks.address)
+    sandbox.stub(TaskModel, 'saveSelectedAddress').value(() => undefined)
 
     if (contactDetailId) {
-      sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+      sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
     }
   })
 
@@ -105,12 +72,18 @@ module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHead
 
   const checkPageElements = async (request, expectedValue) => {
     const doc = await GeneralTestHelper.getDoc(request)
-    let element = doc.getElementById('page-heading').firstChild
+    let heading = GeneralTestHelper.getText(doc.getElementById('page-heading'))
     if (contactDetailId) {
-      const { firstName, lastName } = fakeContactDetail
-      Code.expect(element.nodeValue).to.equal(`${pageHeading} ${firstName} ${lastName}?`)
+      const { firstName, lastName } = mocks.contactDetail
+      Code.expect(heading).to.equal(`${pageHeading} ${firstName} ${lastName}?`)
     } else {
-      Code.expect(element.nodeValue).to.equal(pageHeading)
+      Code.expect(heading).to.equal(pageHeading)
+    }
+
+    if (permitHolderType) {
+      Code.expect(doc.getElementById('charity-address-subheading')).to.exist()
+    } else {
+      Code.expect(doc.getElementById('charity-address-subheading')).to.not.exist()
     }
 
     // Test for the existence of expected static content
@@ -124,7 +97,7 @@ module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHead
       'no-postcode-link-text'
     ])
 
-    element = doc.getElementById('invoice-subheading')
+    let element = doc.getElementById('invoice-subheading')
     if (PostCodeCookie === 'INVOICE_POSTCODE') {
       Code.expect(element).to.exist()
     } else {
@@ -164,13 +137,12 @@ module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHead
       })
 
       lab.test('when returns the Postcode page correctly when there is an existing postcode', async () => {
-        await checkPageElements(getRequest, fakeAddress.postcode)
+        await checkPageElements(getRequest, mocks.address.postcode)
       })
 
       lab.test(`when redirects to the Manual Address Entry route when the fromAddressLookup is not set: ${nextRoutePath}`, async () => {
-        const fakeAddressManual = Object.assign({}, fakeAddress)
-        fakeAddressManual.fromAddressLookup = false
-        TaskModel.getAddress = () => new Address(fakeAddressManual)
+        mocks.address.fromAddressLookup = false
+        TaskModel.getAddress = () => mocks.address
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePathManual)
@@ -181,7 +153,7 @@ module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHead
       lab.experiment('Success:', () => {
         lab.test(`when redirects to the Address Select route: ${nextRoutePath}`, async () => {
           postRequest.payload = {
-            postcode: fakeAddress.postcode
+            postcode: mocks.address.postcode
           }
 
           const res = await server.inject(postRequest)
@@ -202,7 +174,7 @@ module.exports = (lab, { routePath, nextRoutePath, nextRoutePathManual, pageHead
         })
 
         lab.test(`when an error message when no addresses are found`, async () => {
-          postRequest.payload.postcode = fakeAddress.postcode
+          postRequest.payload.postcode = mocks.address.postcode
           Address.listByPostcode = () => []
           await checkValidationError(`We cannot find any addresses for that postcode - check it is correct or enter address manually`)
         })

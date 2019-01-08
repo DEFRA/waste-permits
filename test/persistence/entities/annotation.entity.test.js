@@ -54,7 +54,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Annotation Model tests:', () => {
+lab.experiment('Annotation Entity tests:', () => {
   lab.test('getById() method correctly retrieves an Annotation object', async () => {
     DynamicsDalService.prototype.search = () => fakeDynamicsRecord()
     const spy = sinon.spy(DynamicsDalService.prototype, 'search')

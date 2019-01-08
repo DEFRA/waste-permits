@@ -9,7 +9,7 @@ module.exports = class AddressManualPublicBodyController extends AddressManualCo
     return Constants.CookieValue.PUBLIC_BODY_POSTCODE
   }
 
-  getModel () {
+  get task () {
     return PublicBodyDetails
   }
 }

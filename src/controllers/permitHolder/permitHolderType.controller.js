@@ -29,19 +29,16 @@ module.exports = class PermitHolderTypeController extends BaseController {
     const { application } = context
 
     const permitHolder = PermitHolderTypeController.getHolderTypes()
-      .filter(({ id }) => request.payload['chosen-holder-type'] === id)
-      .pop()
+      .find(({ id }) => request.payload['chosen-holder-type'] === id)
 
     CookieService.remove(request, STANDARD_RULE_ID)
     CookieService.remove(request, STANDARD_RULE_TYPE_ID)
 
     application.applicantType = permitHolder.dynamicsApplicantTypeId
     application.organisationType = permitHolder.dynamicsOrganisationTypeId
-    if (application.isIndividual) {
-      application.permitHolderOrganisationId = undefined
-    } else {
-      application.permitHolderIndividualId = undefined
-    }
+    application.permitHolderOrganisationId = undefined
+    application.permitHolderIndividualId = undefined
+
     await application.save(context)
 
     if (permitHolder.canApplyOnline) {

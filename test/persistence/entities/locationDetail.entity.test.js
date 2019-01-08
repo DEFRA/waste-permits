@@ -48,7 +48,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('LocationDetail Model tests:', () => {
+lab.experiment('LocationDetail Entity tests:', () => {
   lab.test('Constructor creates a LocationDetail object correctly', () => {
     const emptyLocationDetail = new LocationDetail({})
     Code.expect(emptyLocationDetail.gridReference).to.be.undefined()

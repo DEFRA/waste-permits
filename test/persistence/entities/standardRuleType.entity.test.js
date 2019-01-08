@@ -41,7 +41,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('StandardRuleType Model tests:', () => {
+lab.experiment('StandardRuleType Entity tests:', () => {
   lab.test('list() method returns a list of StandardRuleType objects', async () => {
     const categories = ['Electrical', 'Metal', 'Plastic']
     DynamicsDalService.prototype.search = () => {

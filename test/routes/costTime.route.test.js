@@ -11,6 +11,7 @@ const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const CostTime = require('../../src/models/taskList/costTime.task')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -43,6 +44,7 @@ lab.beforeEach(() => {
   sandbox.stub(CostTime, 'isComplete').value(() => false)
   sandbox.stub(CostTime, 'updateCompleteness').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
 })
 
 lab.afterEach(() => {

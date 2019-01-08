@@ -78,7 +78,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Contact Model tests:', () => {
+lab.experiment('Contact Entity tests:', () => {
   lab.test('getById() method returns a single Contact object', async () => {
     const dynamicsData = {
       '@odata.etag': 'W/"1155486"',

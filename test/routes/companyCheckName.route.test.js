@@ -13,6 +13,7 @@ const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Application = require('../../src/persistence/entities/application.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
 const Account = require('../../src/persistence/entities/account.entity')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
@@ -83,6 +84,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
       sandbox.stub(Account.prototype, 'save').value(() => {})
       sandbox.stub(Application.prototype, 'save').value(() => {})
       sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+      sandbox.stub(CharityDetail, 'get').value(() => undefined)
     })
 
     lab.afterEach(() => {

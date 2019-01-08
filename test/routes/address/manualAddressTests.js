@@ -25,7 +25,7 @@ const FORM_FIELD_ID = {
   postcode: 'postcode'
 }
 
-module.exports = (lab, { routePath, nextRoutePath, pageHeading, TaskModel, PostCodeCookie, contactDetailId }) => {
+module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading, TaskModel, PostCodeCookie, contactDetailId }) => {
   let sandbox
   let getRequest
   let postRequest
@@ -34,11 +34,16 @@ module.exports = (lab, { routePath, nextRoutePath, pageHeading, TaskModel, PostC
   lab.beforeEach(() => {
     mocks = new Mocks()
 
+    if (permitHolderType) {
+      mocks.recovery.charityDetail = mocks.charityDetail
+    }
+
     getRequest = {
       method: 'GET',
       url: routePath,
       headers: {},
-      payload: {}
+      payload: {},
+      app: { data: mocks.recovery }
     }
 
     postRequest = {
@@ -83,16 +88,22 @@ module.exports = (lab, { routePath, nextRoutePath, pageHeading, TaskModel, PostC
 
   const checkPageElements = async (request, expectedValue) => {
     const doc = await GeneralTestHelper.getDoc(request)
-    let element = doc.getElementById('page-heading').firstChild
+    let heading = GeneralTestHelper.getText(doc.getElementById('page-heading'))
     if (contactDetailId) {
       const { firstName, lastName } = mocks.contactDetail
-      Code.expect(element.nodeValue).to.equal(`${pageHeading} ${firstName} ${lastName}?`)
+      Code.expect(heading).to.equal(`${pageHeading} ${firstName} ${lastName}?`)
     } else {
-      Code.expect(element.nodeValue).to.equal(pageHeading)
+      Code.expect(heading).to.equal(pageHeading)
+    }
+
+    if (permitHolderType) {
+      Code.expect(doc.getElementById('charity-address-subheading')).to.exist()
+    } else {
+      Code.expect(doc.getElementById('charity-address-subheading')).to.not.exist()
     }
 
     for (let id of Object.values(FORM_FIELD_ID)) {
-      element = doc.getElementById(id)
+      const element = doc.getElementById(id)
       Code.expect(doc.getElementById(id)).to.exist()
       const value = element.getAttribute('value')
       if (expectedValue) {
@@ -104,8 +115,7 @@ module.exports = (lab, { routePath, nextRoutePath, pageHeading, TaskModel, PostC
       }
     }
 
-    element = doc.getElementById('submit-button').firstChild
-    Code.expect(element.nodeValue).to.equal('Continue')
+    Code.expect(GeneralTestHelper.getText(doc.getElementById('submit-button'))).to.equal('Continue')
   }
 
   const checkValidationError = async (fieldId, expectedErrorMessage, fieldIndex = 0) => {

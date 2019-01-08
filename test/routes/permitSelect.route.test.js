@@ -12,6 +12,7 @@ const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
 
 const DataStore = require('../../src/models/dataStore.model')
+const CharityDetail = require('../../src/models/charityDetail.model')
 
 const Application = require('../../src/persistence/entities/application.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
@@ -59,6 +60,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
   sandbox.stub(DataStore, 'save').value(async () => mocks.dataStore.id)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)

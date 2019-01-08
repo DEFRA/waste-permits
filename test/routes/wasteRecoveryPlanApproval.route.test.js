@@ -8,6 +8,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
 const RecoveryService = require('../../src/services/recovery.service')
@@ -52,6 +53,7 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => false)
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
 })
 

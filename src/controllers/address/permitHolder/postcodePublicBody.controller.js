@@ -18,11 +18,7 @@ module.exports = class PostcodePublicBodyController extends PostcodeController {
     return Routes.SELECT_PUBLIC_BODY.path
   }
 
-  getModel () {
+  get task () {
     return PublicBodyDetails
-  }
-
-  customisePageContext (pageContext) {
-    // Not required for this address type
   }
 }

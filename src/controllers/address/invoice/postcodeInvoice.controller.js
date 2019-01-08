@@ -18,11 +18,11 @@ module.exports = class PostcodeInvoiceController extends PostcodeController {
     return Routes.SELECT_INVOICE.path
   }
 
-  getModel () {
+  get task () {
     return InvoiceAddress
   }
 
-  customisePageContext (pageContext) {
+  async customisePageContext (pageContext) {
     pageContext.showInvoiceSubheading = true
   }
 }

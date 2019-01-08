@@ -45,7 +45,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('ApplicationReturn Model tests:', () => {
+lab.experiment('ApplicationReturn Entity tests:', () => {
   lab.test('getBySlug() method returns an ApplicationReturn object', async () => {
     DynamicsDalService.prototype.search = () => {
       return {

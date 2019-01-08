@@ -18,7 +18,7 @@ module.exports = class AddressSelectSiteController extends AddressSelectControll
     return Routes.POSTCODE_SITE.path
   }
 
-  getModel () {
+  get task () {
     return SiteNameAndLocation
   }
 }

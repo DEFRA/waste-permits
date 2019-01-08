@@ -52,6 +52,14 @@ const Dynamics = {
     }
   },
   ApplicationQuestions: {
+    CHARITY_DETAILS: {
+      NAME: {
+        questionCode: 'general-charity-name'
+      },
+      NUMBER: {
+        questionCode: 'general-charity-number'
+      }
+    },
     MANAGEMENT_SYSTEM: {
       questionCode: 'environmental-management-system',
       answers: [
@@ -174,10 +182,10 @@ const Dynamics = {
       dynamicsApplicantTypeId: 910400001,
       dynamicsOrganisationTypeId: 910400003
     },
-    REGISTERED_CHARITY: {
-      id: 'registered-charity',
-      type: 'Registered charity',
-      canApplyOnline: false,
+    CHARITY_OR_TRUST: {
+      id: 'charity-or-trust',
+      type: 'Charity or trust',
+      canApplyOnline: true,
       dynamicsApplicantTypeId: 910400001,
       dynamicsOrganisationTypeId: 910400004
     },

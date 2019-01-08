@@ -12,6 +12,7 @@ const Application = require('../../src/persistence/entities/application.entity')
 const Location = require('../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../src/persistence/entities/locationDetail.entity')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.task')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
@@ -66,6 +67,7 @@ lab.beforeEach(() => {
   sandbox.stub(Location, 'getByApplicationId').value(() => fakeLocation)
   sandbox.stub(LocationDetail, 'getByLocationId').value(() => fakeLocationDetail)
   sandbox.stub(SiteNameAndLocation, 'updateCompleteness').value(() => {})
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
 })
 
 lab.afterEach(() => {

@@ -11,6 +11,7 @@ const CookieService = require('../../src/services/cookie.service')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Application = require('../../src/persistence/entities/application.entity')
 const Account = require('../../src/persistence/entities/account.entity')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const LoggingService = require('../../src/services/logging.service')
 
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -57,6 +58,7 @@ lab.beforeEach(() => {
   sandbox.stub(Account, 'getByApplicationId').value(() => fakeAccount)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
 })
 
 lab.afterEach(() => {

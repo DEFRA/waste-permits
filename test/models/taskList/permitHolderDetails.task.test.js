@@ -8,10 +8,14 @@ const Mocks = require('../../helpers/mocks')
 
 const Account = require('../../../src/persistence/entities/account.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
+const CharityDetail = require('../../../src/models/charityDetail.model')
 const ContactDetail = require('../../../src/models/contactDetail.model')
 const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.task')
 
-const INDIVIDUAL = 910400000
+const {
+  INDIVIDUAL,
+  LIMITED_COMPANY
+} = require('../../../src/dynamics').PERMIT_HOLDER_TYPES
 
 let request
 let sandbox
@@ -35,6 +39,7 @@ lab.beforeEach(() => {
   sandbox.stub(Address, 'getByUprn').value(async () => mocks.address)
   sandbox.stub(Address, 'listByPostcode').value(() => [mocks.address, mocks.address, mocks.address])
   sandbox.stub(Address.prototype, 'save').value(async () => undefined)
+  sandbox.stub(CharityDetail, 'get').value(async () => undefined)
 })
 
 lab.afterEach(() => {
@@ -78,22 +83,23 @@ lab.experiment('Model persistence methods:', () => {
 
 lab.experiment('Task List: Permit Holder Details Model tests:', () => {
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete for a company', async () => {
-    delete mocks.application.applicantType
+    mocks.context.permitHolderType = LIMITED_COMPANY
     testCompleteness(true)
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete for an individual', async () => {
+    mocks.context.permitHolderType = INDIVIDUAL
     testCompleteness(true)
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete for a company', async () => {
-    delete mocks.application.applicantType
+    mocks.context.permitHolderType = LIMITED_COMPANY
     delete mocks.account.accountName
     testCompleteness(false)
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete for an individual', async () => {
-    mocks.application.applicantType = INDIVIDUAL
+    mocks.context.permitHolderType = INDIVIDUAL
     delete mocks.contactDetail.firstName
     testCompleteness(false)
   })

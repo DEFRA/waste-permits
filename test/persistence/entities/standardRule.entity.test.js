@@ -60,7 +60,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('StandardRule Model tests:', () => {
+lab.experiment('StandardRule Entity tests:', () => {
   lab.test('list() method returns a list of StandardRule objects', async () => {
     const codes = ['SR2015 No 18', 'SR2015 No 10', 'SR2015 No 4']
     DynamicsDalService.prototype.search = () => {

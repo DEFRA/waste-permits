@@ -15,7 +15,7 @@ module.exports = class AddressSelectController extends BaseController {
       postcode = postcode.toUpperCase()
 
       addresses = await Address.listByPostcode(context, postcode)
-      address = await this.getModel().getAddress(request)
+      address = await this.task.getAddress(request)
 
       if (!errors && address && addresses) {
         // Set a flag on the selected address
@@ -58,7 +58,7 @@ module.exports = class AddressSelectController extends BaseController {
       uprn: request.payload['select-address'],
       postcode: CookieService.get(request, this.getPostcodeCookieKey())
     }
-    await this.getModel().saveSelectedAddress(request, addressDto)
+    await this.task.saveSelectedAddress(request, addressDto)
 
     return this.redirect({ h })
   }

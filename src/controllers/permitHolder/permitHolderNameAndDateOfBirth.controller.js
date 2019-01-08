@@ -5,13 +5,16 @@ const RecoveryService = require('../../services/recovery.service')
 
 const ContactDetail = require('../../models/contactDetail.model')
 
-const { SOLE_TRADER } = require('../../dynamics').PERMIT_HOLDER_TYPES
-const { INDIVIDUAL_PERMIT_HOLDER } = require('../../dynamics').AddressTypes
+const Constants = require('../../constants')
+const { AddressTypes, PERMIT_HOLDER_TYPES } = require('../../dynamics')
+const { INDIVIDUAL_PERMIT_HOLDER } = AddressTypes
+const { SOLE_TRADER } = PERMIT_HOLDER_TYPES
 
 module.exports = class PermitHolderNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
+    const { charityDetail } = context
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -29,6 +32,12 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
           'dob-year': year
         }
       }
+    }
+
+    if (charityDetail && charityDetail.charityPermitHolder) {
+      pageContext.pageHeading = this.route.pageHeadingAlternate
+      pageContext.pageTitle = Constants.buildPageTitle(this.route.pageHeadingAlternate)
+      pageContext.isCharity = true
     }
 
     return this.showView({ h, pageContext })

@@ -70,7 +70,7 @@ lab.afterEach(() => {
   DynamicsDalService.prototype.update = dynamicsUpdateStub
 })
 
-lab.experiment('AddressDetail Model tests:', () => {
+lab.experiment('AddressDetail Entity tests:', () => {
   lab.test('Constructor creates a AddressDetail object correctly', () => {
     const emptyAddressDetail = new AddressDetail({})
     Code.expect(emptyAddressDetail.email).to.be.undefined()

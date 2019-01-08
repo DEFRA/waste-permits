@@ -8,6 +8,7 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const Application = require('../../../src/persistence/entities/application.entity')
+const CharityDetail = require('../../../src/models/charityDetail.model')
 const CookieService = require('../../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
@@ -30,6 +31,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
 

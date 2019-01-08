@@ -11,6 +11,7 @@ const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const BaseTaskList = require('../../src/models/taskList/base.taskList')
 const BaseCheck = require('../../src/models/checkList/base.check')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
 const CookieService = require('../../src/services/cookie.service')
 
@@ -82,6 +83,7 @@ lab.beforeEach(() => {
   sandbox.stub(BaseTaskList, 'getTaskListClass').value(() => TaskList)
   sandbox.stub(BaseTaskList, 'buildTaskList').value(() => new TaskList())
   sandbox.stub(BaseTaskList, 'isComplete').value(() => true)
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
 })
 
 lab.afterEach(() => {

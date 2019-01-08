@@ -9,7 +9,11 @@ module.exports = class AddressManualPermitHolderController extends AddressManual
     return Constants.CookieValue.PERMIT_HOLDER_POSTCODE
   }
 
-  getModel () {
+  get task () {
     return PermitHolderDetails
+  }
+
+  async customisePageContext (pageContext, request) {
+    pageContext.showCharitySubheading = this.task.isCharity(request)
   }
 }

@@ -18,7 +18,7 @@ module.exports = class AddressSelectPublicBodyController extends AddressSelectCo
     return Routes.POSTCODE_PUBLIC_BODY.path
   }
 
-  getModel () {
+  get task () {
     return PublicBodyDetails
   }
 }

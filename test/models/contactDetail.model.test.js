@@ -12,16 +12,17 @@ const AddressDetail = require('../../src/persistence/entities/addressDetail.enti
 const Account = require('../../src/persistence/entities/account.entity')
 const Contact = require('../../src/persistence/entities/contact.entity')
 const ContactDetail = require('../../src/models/contactDetail.model')
-
-const context = { authToken: 'AUTH_TOKEN' }
+const CharityDetail = require('../../src/models/charityDetail.model')
 
 let mocks
+let context
 
 lab.experiment('ContactDetail test:', () => {
   let sandbox
 
   lab.beforeEach(() => {
     mocks = new Mocks()
+    context = mocks.context
 
     // Create a sinon sandbox to stub methods
     sandbox = sinon.createSandbox()
@@ -41,6 +42,7 @@ lab.experiment('ContactDetail test:', () => {
     sandbox.stub(Contact.prototype, 'listLinked').value(() => [mocks.account])
     sandbox.stub(Contact.prototype, 'link').value(() => undefined)
     sandbox.stub(Contact.prototype, 'unLink').value(() => undefined)
+    sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
   })
 
   lab.afterEach(() => {

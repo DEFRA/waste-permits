@@ -18,12 +18,12 @@ module.exports = class PostcodePartnerController extends PostcodeController {
     return `${Routes.SELECT_PARTNER.path}/${params.partnerId}`
   }
 
-  getModel () {
+  get task () {
     return PartnerDetails
   }
 
-  async customisePageContext (pageContext, context) {
-    const pageHeading = await this.getModel().getPageHeading(context, pageContext.pageHeading)
+  async customisePageContext (pageContext, request) {
+    const pageHeading = await this.task.getPageHeading(request, pageContext.pageHeading)
     pageContext.pageHeading = pageHeading
     pageContext.pageTitle = Constants.buildPageTitle(pageHeading)
   }

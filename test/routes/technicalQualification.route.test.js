@@ -9,6 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/persistence/entities/application.entity')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const LoggingService = require('../../src/services/logging.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
@@ -50,6 +51,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
   // Stub the asynchronous model methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(CharityDetail, 'get').value(() => undefined)
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(Application, 'getById').value(() => Promise.resolve(new Application(fakeApplication)))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)

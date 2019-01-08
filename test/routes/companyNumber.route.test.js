@@ -10,6 +10,7 @@ const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/persistence/entities/application.entity')
 const Account = require('../../src/persistence/entities/account.entity')
+const CharityDetail = require('../../src/models/charityDetail.model')
 const RecoveryService = require('../../src/services/recovery.service')
 const LoggingService = require('../../src/services/logging.service')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -19,10 +20,20 @@ let sandbox
 let fakeAccount
 let fakeApplication
 let fakeRecovery
+let fakeCharityDetail
 
 const routes = {
   'Limited Company': {
     pageHeading: 'What is the UK company registration number?',
+    routePath: '/permit-holder/company/number',
+    nextPath: '/permit-holder/company/wrong-type',
+    errorPath: '/errors/technical-problem',
+    validCompanyNumber: '01234567',
+    invalidCompanyNumberMessage: 'Enter a valid company registration number with either 8 digits or 2 letters and 6 digits'
+  },
+  'Limited Company (Charity)': {
+    charityPermitHolder: 'CHARITY_PERMIT_HOLDER',
+    pageHeading: `What is the company or Charitable Incorporated Organisation registration number?`,
     routePath: '/permit-holder/company/number',
     nextPath: '/permit-holder/company/wrong-type',
     errorPath: '/errors/technical-problem',
@@ -39,7 +50,7 @@ const routes = {
   }
 }
 
-Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath, errorPath, validCompanyNumber, invalidCompanyNumberMessage }]) => {
+Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder, routePath, nextPath, errorPath, validCompanyNumber, invalidCompanyNumberMessage }]) => {
   lab.experiment(companyType, () => {
     lab.beforeEach(() => {
       fakeAccount = {
@@ -49,12 +60,18 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
       fakeApplication = {
         permitHolderOrganisationId: fakeAccount.id
       }
-      fakeRecovery = () => ({
-        authToken: 'AUTH_TOKEN',
-        applicationId: fakeApplication.id,
-        application: new Application(fakeApplication),
-        account: new Account(fakeAccount)
-      })
+      fakeCharityDetail = {
+        charityPermitHolder
+      }
+      fakeRecovery = () => {
+        return {
+          authToken: 'AUTH_TOKEN',
+          applicationId: fakeApplication.id,
+          application: new Application(fakeApplication),
+          account: new Account(fakeAccount),
+          charityDetail: new CharityDetail(fakeCharityDetail)
+        }
+      }
 
       // Create a sinon sandbox to stub methods
       sandbox = sinon.createSandbox()
@@ -96,8 +113,8 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
         lab.test('success', async () => {
           doc = await GeneralTestHelper.getDoc(getRequest)
 
-          Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(pageHeading)
-          Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+          Code.expect(GeneralTestHelper.getText(doc.getElementById('page-heading'))).to.equal(pageHeading)
+          Code.expect(GeneralTestHelper.getText(doc.getElementById('submit-button'))).to.equal('Continue')
           Code.expect(doc.getElementById('company-number').getAttribute('value')).to.equal(fakeAccount.companyNumber)
           Code.expect(doc.getElementById('overseas-help')).to.exist()
         })
@@ -152,11 +169,11 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
             const doc = await GeneralTestHelper.getDoc(postRequest)
 
             // Panel summary error item
-            Code.expect(doc.getElementById('error-summary-list-item-0').firstChild.nodeValue).to.equal(expectedErrorMessage)
+            Code.expect(GeneralTestHelper.getText(doc.getElementById('error-summary-list-item-0'))).to.equal(expectedErrorMessage)
 
             // Company number field error
             Code.expect(doc.getElementById('company-number').getAttribute('class')).contains('form-control-error')
-            Code.expect(doc.getElementById('company-number-error').firstChild.firstChild.nodeValue).to.equal(expectedErrorMessage)
+            Code.expect(GeneralTestHelper.getText(doc.getElementById('company-number-error'))).to.equal(expectedErrorMessage)
 
             // Company number field contains payload
             Code.expect(doc.getElementById('company-number').getAttribute('value')).to.equal(companyNumber)

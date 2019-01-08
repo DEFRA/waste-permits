@@ -1,13 +1,23 @@
 'use strict'
 
-const { RESPONSIBLE_CONTACT_DETAILS, PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
+const { AddressTypes, PERMIT_HOLDER_TYPES } = require('../../dynamics')
+const { RESPONSIBLE_CONTACT_DETAILS, PARTNER_CONTACT_DETAILS, INDIVIDUAL_PERMIT_HOLDER } = AddressTypes
 
 const BaseTask = require('./base.task')
 const LoggingService = require('../../services/logging.service')
 const ContactDetail = require('../contactDetail.model')
+const CharityDetail = require('../charityDetail.model')
 const Account = require('../../persistence/entities/account.entity')
 const Address = require('../../persistence/entities/address.entity')
-const { INDIVIDUAL_PERMIT_HOLDER } = require('../../dynamics').AddressTypes
+
+const {
+  INDIVIDUAL,
+  LIMITED_COMPANY,
+  PUBLIC_BODY,
+  PARTNERSHIP,
+  SOLE_TRADER
+} = PERMIT_HOLDER_TYPES
+
 const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
 
 const minPartners = 2
@@ -95,27 +105,47 @@ module.exports = class PermitHolderDetails extends BaseTask {
     }
   }
 
+  static async getPermitHolderType (context) {
+    const { permitHolderType } = context
+    const { charityPermitHolder } = await CharityDetail.get(context) || {}
+
+    switch (charityPermitHolder) {
+      case INDIVIDUAL.id:
+        return INDIVIDUAL
+      case LIMITED_COMPANY.id:
+        return LIMITED_COMPANY
+      case PUBLIC_BODY.id:
+        return PUBLIC_BODY
+      default:
+        return permitHolderType
+    }
+  }
+
   static async checkComplete (context) {
     const { application } = context
-    const { isIndividual, isPartnership, isPublicBody, permitHolderOrganisationId } = application
+    const { permitHolderOrganisationId } = application
 
-    if (isIndividual) {
-      // Get the Contact for this application
-      const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
-      const { firstName, lastName, telephone, email } = await ContactDetail.get(context, { type }) || {}
-      return Boolean(firstName && lastName && telephone && email)
-    }
+    const permitHolderType = await this.getPermitHolderType(context)
 
-    if (isPublicBody) {
-      const type = RESPONSIBLE_CONTACT_DETAILS.TYPE
-      const { firstName, lastName, email, jobTitle } = await ContactDetail.get(context, { type }) || {}
-      return Boolean(firstName && lastName && email && jobTitle)
+    switch (permitHolderType) {
+      case INDIVIDUAL:
+      case SOLE_TRADER: {
+        // Get the Contact for this application
+        const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
+        const { firstName, lastName, telephone, email } = await ContactDetail.get(context, { type }) || {}
+        return Boolean(firstName && lastName && telephone && email)
+      }
+      case PUBLIC_BODY: {
+        const type = RESPONSIBLE_CONTACT_DETAILS.TYPE
+        const { firstName, lastName, email, jobTitle } = await ContactDetail.get(context, { type }) || {}
+        return Boolean(firstName && lastName && email && jobTitle)
+      }
     }
 
     // Get the Account for this application
     const account = await Account.getById(context, permitHolderOrganisationId)
 
-    if (isPartnership) {
+    if (permitHolderType === PARTNERSHIP) {
       const type = PARTNER_CONTACT_DETAILS.TYPE
       const list = await ContactDetail.list(context, { type })
       if (list.length < minPartners) {
@@ -129,5 +159,10 @@ module.exports = class PermitHolderDetails extends BaseTask {
 
     // When other organisation types
     return Boolean(account && account.accountName)
+  }
+
+  static isCharity (request) {
+    const { app: { data = {} } } = request
+    return Boolean(data.charityDetail && data.charityDetail.charityPermitHolder)
   }
 }
