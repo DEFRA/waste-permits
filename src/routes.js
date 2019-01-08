@@ -830,7 +830,7 @@ const Routes = {
   MCP_DETAILS: {
     path: '/mcp/template/upload',
     view: 'upload/mcpDetails/mcpDetails',
-    pageHeading: 'Upload the spreadsheet that lists your medium combustion plant',
+    pageHeading: 'Upload the completed MCP template',
     controller: 'upload/mcpDetails/mcpDetails',
     validator: 'upload/upload',
     nextRoute: 'TASK_LIST',

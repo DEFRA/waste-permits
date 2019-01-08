@@ -1,6 +1,5 @@
 'use strict'
 
-const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const McpTemplate = require('../models/taskList/mcpTemplate.task')
 const RecoveryService = require('../services/recovery.service')
@@ -12,7 +11,7 @@ module.exports = class McpTemplateController extends BaseController {
 
     pageContext.isComplete = await McpTemplate.isComplete(context)
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
@@ -20,6 +19,6 @@ module.exports = class McpTemplateController extends BaseController {
 
     await McpTemplate.updateCompleteness(context)
 
-    return this.redirect({ request, h, redirectPath: Routes.TASK_LIST.path })
+    return this.redirect({ h })
   }
 }

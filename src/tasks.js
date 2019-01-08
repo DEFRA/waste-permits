@@ -103,18 +103,18 @@ const tasks = {
   },
   MCP_DETAILS: {
     id: 'mcp-details',
-    label: 'Upload details about the combustion plant',
+    label: 'Upload the plant or generator list template',
     route: Routes.MCP_DETAILS,
     completedLabelId: 'mcp-details-completed',
-    // ruleSetId: 'defra_mcpdetailsrequired', TODO: MCP ruleset to be implemented
+    ruleSetId: 'defra_mcp_sr_uploadtemplate',
     taskListModel: 'mcpDetails'
   },
   MCP_TEMPLATE: {
     id: 'mcp-template',
-    label: 'Download and complete the MCP template',
+    label: 'Download and complete the plant or generator list template',
     route: Routes.MCP_TEMPLATE,
     completedLabelId: 'mcp-template-completed',
-    // ruleSetId: 'defra_mcptemplaterequired', TODO: MCP ruleset to be implemented
+    ruleSetId: 'defra_mcp_sr_downloadtemplate',
     taskListModel: 'mcpTemplate'
   },
   MINING_DATA: {
@@ -291,8 +291,8 @@ const standardRules = [
       tasks.SHOW_COST_AND_TIME,
       tasks.CONFIRM_RULES,
       tasks.SURFACE_DRAINAGE,
-      tasks.MCP_TEMPLATE,
-      tasks.SAVE_AND_RETURN_EMAIL
+      tasks.SAVE_AND_RETURN_EMAIL,
+      tasks.MCP_TEMPLATE
     ]
   },
   {

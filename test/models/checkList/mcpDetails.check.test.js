@@ -55,7 +55,7 @@ lab.experiment('MCP Details Check tests:', () => {
 
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/mcp/template/upload')
-      Code.expect(linkType).to.equal('medium combustion plants details')
+      Code.expect(linkType).to.equal('plant or generator list template')
       Code.expect(linkId).to.equal(`${prefix}-link`)
     })
 

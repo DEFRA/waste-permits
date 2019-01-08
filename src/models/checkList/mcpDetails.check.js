@@ -19,10 +19,10 @@ module.exports = class McpDetailsCheck extends BaseCheck {
   async getMcpDetailsLine () {
     const evidence = await this.getMcpDetails()
     return this.buildLine({
-      heading: 'Medium combustion plants details',
+      heading: 'Plant or generator list',
       answers: evidence.map((file) => file.filename),
       links: [
-        { path, type: 'medium combustion plants details' }
+        { path, type: 'plant or generator list template' }
       ]
     })
   }
