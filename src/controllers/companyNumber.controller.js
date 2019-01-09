@@ -11,7 +11,7 @@ module.exports = class CompanyNumberController extends BaseController {
     const { account, charityDetail } = await RecoveryService.createApplicationContext(h, { account: true })
 
     if (charityDetail && charityDetail.charityPermitHolder) {
-      pageContext.pageHeading = this.route.pageHeadingAlternate
+      pageContext.pageHeading = this.route.pageHeadingCharity
     }
 
     if (request.payload) {
@@ -27,7 +27,7 @@ module.exports = class CompanyNumberController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
     const companyNumber = Utilities.stripWhitespace(request.payload['company-number'])

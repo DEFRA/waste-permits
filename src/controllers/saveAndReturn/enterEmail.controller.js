@@ -8,7 +8,7 @@ const RecoveryService = require('../../services/recovery.service')
 module.exports = class EnterEmailController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
     const isComplete = await SaveAndReturn.isComplete(context)
@@ -28,7 +28,7 @@ module.exports = class EnterEmailController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
     application.saveAndReturnEmail = request.payload['save-and-return-email']
 

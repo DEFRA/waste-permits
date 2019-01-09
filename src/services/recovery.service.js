@@ -14,24 +14,21 @@ const { COOKIE_KEY: { AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_
 const { PERMIT_HOLDER_TYPES } = require('../dynamics')
 
 module.exports = class RecoveryService {
-  static async recoverOptionalData (context, applicationId, applicationLineId, options) {
-    context.applicationId = applicationId
-    context.applicationLineId = applicationLineId
-    // Query in parallel for optional entities
-    const [application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule] = await Promise.all([
-      options.application ? Application.getById(context, applicationId) : Promise.resolve(undefined),
-      options.applicationLine ? ApplicationLine.getById(context, applicationLineId) : Promise.resolve(undefined),
-      options.applicationReturn ? ApplicationReturn.getByApplicationId(context) : Promise.resolve(undefined),
-      options.account ? Account.getByApplicationId(context) : Promise.resolve(undefined),
-      options.contact ? Contact.getByApplicationId(context) : Promise.resolve(undefined),
-      options.cardPayment ? Payment.getCardPaymentDetails(context, applicationLineId) : Promise.resolve(undefined),
-      options.standardRule ? StandardRule.getByApplicationLineId(context, applicationLineId) : Promise.resolve(undefined)
-    ])
-
+  static async recoverOptionalData (context, options) {
     // Add the charity details to the context
     context.charityDetail = await CharityDetail.get(context)
 
-    return { application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule }
+    // Query in parallel for optional entities
+    const [applicationLine, applicationReturn, account, contact, cardPayment, standardRule] = await Promise.all([
+      options.applicationLine ? ApplicationLine.getById(context, context.applicationLineId) : Promise.resolve(undefined),
+      options.applicationReturn ? ApplicationReturn.getByApplicationId(context) : Promise.resolve(undefined),
+      options.account && !context.charityDetail.isIndividual ? Account.getByApplicationId(context) : Promise.resolve(undefined),
+      options.contact && context.charityDetail.isIndividual ? Contact.getByApplicationId(context) : Promise.resolve(undefined),
+      options.cardPayment ? Payment.getCardPaymentDetails(context, context.applicationLineId) : Promise.resolve(undefined),
+      options.standardRule ? StandardRule.getByApplicationLineId(context, context.applicationLineId) : Promise.resolve(undefined)
+    ])
+
+    return { applicationLine, applicationReturn, account, contact, cardPayment, standardRule }
   }
 
   static getPermitHolderType (application) {
@@ -44,63 +41,57 @@ module.exports = class RecoveryService {
   static async recoverFromCookies (slug, request, options) {
     const context = request.app.data
 
+    context.slug = slug
     context.authToken = CookieService.get(request, AUTH_TOKEN)
-    const applicationId = CookieService.get(request, APPLICATION_ID)
-    const application = await Application.getById(context, applicationId)
-    const applicationLineId = CookieService.get(request, APPLICATION_LINE_ID)
-    const standardRuleId = CookieService.get(request, STANDARD_RULE_ID)
-    const standardRuleTypeId = CookieService.get(request, STANDARD_RULE_TYPE_ID)
-    const permitHolderType = RecoveryService.getPermitHolderType(application)
+    context.applicationId = CookieService.get(request, APPLICATION_ID)
+    context.application = await Application.getById(context, context.applicationId)
+    context.applicationLineId = CookieService.get(request, APPLICATION_LINE_ID)
+    context.standardRuleId = CookieService.get(request, STANDARD_RULE_ID)
+    context.standardRuleTypeId = CookieService.get(request, STANDARD_RULE_TYPE_ID)
+    context.permitHolderType = RecoveryService.getPermitHolderType(context.application)
 
-    // Query in parallel for optional entities
-    const { applicationLine, applicationReturn, account, contact, cardPayment, standardRule } = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
-
-    Object.assign(context, { slug, applicationId, applicationLineId, application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType })
+    Object.assign(context, await RecoveryService.recoverOptionalData(context, options))
 
     return context
   }
 
+  static setUpCookies ({ authToken, cookie, applicationId, applicationLineId, standardRuleId, standardRuleTypeId }) {
+    // Setup all the cookies as if the user hadn't left
+    cookie[AUTH_TOKEN] = authToken
+    cookie[APPLICATION_ID] = applicationId
+    cookie[APPLICATION_LINE_ID] = applicationLineId
+    if (standardRuleTypeId) {
+      cookie[STANDARD_RULE_ID] = standardRuleId
+    }
+    if (standardRuleTypeId) {
+      cookie[STANDARD_RULE_TYPE_ID] = standardRuleTypeId
+    }
+  }
+
   static async recoverFromSlug (slug, h, options) {
     const context = h.request.app.data
-    const cookie = await CookieService.generateCookie(h)
-    context.authToken = cookie.authToken
+    context.cookie = await CookieService.generateCookie(h)
+    context.authToken = context.cookie.authToken
+    context.applicationReturn = await ApplicationReturn.getBySlug(context, slug)
+    if (context.applicationReturn) {
+      context.applicationId = context.applicationReturn.applicationId
+      context.application = await Application.getById(context, context.applicationId)
+      context.applicationLine = await ApplicationLine.getByApplicationId(context)
+      context.applicationLineId = context.applicationLine.id
+      context.permitHolderType = RecoveryService.getPermitHolderType(context.application)
 
-    const applicationReturn = await ApplicationReturn.getBySlug(context, slug)
-    if (applicationReturn) {
-      const applicationId = applicationReturn.applicationId
-
-      const application = await Application.getById(context, applicationId)
-
-      context.applicationId = applicationId
-
-      const applicationLine = await ApplicationLine.getByApplicationId(context)
-      const applicationLineId = applicationLine.id
-
-      // Don't attempt to get the application, applicationLine and applicationReturn again
-      options.application = false
+      // Don't attempt to get the applicationLine and applicationReturn again
       options.applicationLine = false
       options.applicationReturn = false
 
       // Always load the standard rule when restoring
       options.standardRule = true
 
-      const { account, contact, cardPayment, standardRule } = await RecoveryService.recoverOptionalData(context, applicationId, applicationLineId, options)
-      const { id: standardRuleId, standardRuleTypeId } = standardRule || {}
+      const { id: standardRuleId, standardRuleTypeId } = context.standardRule || {}
 
-      const permitHolderType = RecoveryService.getPermitHolderType(application)
+      Object.assign(context, { slug, standardRuleId, standardRuleTypeId }, await RecoveryService.recoverOptionalData(context, options))
 
-      Object.assign(context, { slug, cookie, applicationLineId, application, applicationLine, applicationReturn, account, contact, cardPayment, standardRule, standardRuleId, standardRuleTypeId, permitHolderType })
-
-      // Setup all the cookies as if the user hadn't left
-      cookie[AUTH_TOKEN] = context.authToken
-      cookie[APPLICATION_ID] = applicationId
-      cookie[APPLICATION_LINE_ID] = applicationLineId
-      if (standardRuleTypeId) {
-        cookie[STANDARD_RULE_ID] = standardRuleId
-      }
-      if (standardRuleTypeId) {
-        cookie[STANDARD_RULE_TYPE_ID] = standardRuleTypeId
-      }
+      RecoveryService.setUpCookies(context)
     }
 
     return context

@@ -9,7 +9,7 @@ const DrainageTypes = Merge({}, Dynamics.DrainageTypes)
 
 module.exports = class DrainageTypeFailController extends BaseController {
   async doGet (request, h) {
-    const { application, standardRule } = await RecoveryService.createApplicationContext(h, { application: true, standardRule: true })
+    const { application, standardRule } = await RecoveryService.createApplicationContext(h, { standardRule: true })
     const pageContext = this.createPageContext(h)
 
     const drainageType = Object.keys(DrainageTypes)

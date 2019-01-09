@@ -44,7 +44,7 @@ lab.beforeEach(() => {
   sandbox.stub(CostTime, 'isComplete').value(() => false)
   sandbox.stub(CostTime, 'updateCompleteness').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
 })
 
 lab.afterEach(() => {

@@ -60,7 +60,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   sandbox.stub(DataStore, 'save').value(async () => mocks.dataStore.id)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)

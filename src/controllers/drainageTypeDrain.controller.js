@@ -39,7 +39,7 @@ module.exports = class drainageTypeController extends BaseController {
   async doPost (request, h) {
     let path
 
-    const context = await RecoveryService.createApplicationContext(h, { application: true, standardRule: true })
+    const context = await RecoveryService.createApplicationContext(h, { standardRule: true })
     const { application, standardRule } = context
 
     const type = parseInt(request.payload['drainage-type'])

@@ -37,7 +37,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => new Application({}))
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine({}))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   sandbox.stub(PageNotFoundController, 'hasApplication').value(() => false)
 })
 

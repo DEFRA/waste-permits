@@ -56,7 +56,7 @@ lab.beforeEach(() => {
   sandbox.stub(MiningWasteDetails, 'updateCompleteness').value(() => {})
   sandbox.stub(MiningWasteDetails, 'clearCompleteness').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
 })
 
 lab.afterEach(() => {

@@ -73,7 +73,7 @@ lab.beforeEach(() => {
   sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
   sandbox.stub(Payment, 'getBacsPaymentDetails').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
 })
 
 lab.afterEach(() => {

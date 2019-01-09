@@ -52,7 +52,7 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(Application.prototype, 'save').value(() => {})
     sandbox.stub(ApplicationReturn, 'getByApplicationId').value(() => new ApplicationReturn(fakeApplicationReturn))
-    sandbox.stub(CharityDetail, 'get').value(() => undefined)
+    sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
     sandbox.stub(SaveAndReturn, 'isComplete').value(() => false)
     sandbox.stub(SaveAndReturn, 'updateCompleteness').value(() => {})
     sandbox.stub(FeatureConfig, 'hasDisplayRecoveryLinkFeature').value(false)

@@ -49,7 +49,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(SiteNameAndLocation, 'getSiteName').value(() => siteName)
   sandbox.stub(SiteNameAndLocation, 'saveSiteName').value(() => {})
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
 })
 
 lab.afterEach(() => {

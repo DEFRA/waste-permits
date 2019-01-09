@@ -25,7 +25,7 @@ module.exports = class PermitHolderTypeController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
     const permitHolder = PermitHolderTypeController.getHolderTypes()

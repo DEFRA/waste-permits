@@ -22,7 +22,7 @@ module.exports = class PermitHolderContactTradingNameController extends BaseCont
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true, account: true })
+    const context = await RecoveryService.createApplicationContext(h, { account: true })
     let { application, account } = context
 
     // Create an account for this partnership if it doesn't already exist

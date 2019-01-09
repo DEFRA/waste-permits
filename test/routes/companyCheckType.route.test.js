@@ -58,7 +58,7 @@ lab.beforeEach(() => {
   sandbox.stub(Account, 'getByApplicationId').value(() => fakeAccount)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
 })
 
 lab.afterEach(() => {

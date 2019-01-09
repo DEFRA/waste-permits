@@ -40,7 +40,7 @@ module.exports = (lab, { routePath, nextPath, errorPath, pageHeading, excludeAlr
     sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
     sandbox.stub(Application, 'sendAllRecoveryEmails').value(() => numberOfMatchingEmails)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(CharityDetail, 'get').value(() => undefined)
+    sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   })
 
   lab.afterEach(() => {

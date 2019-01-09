@@ -84,7 +84,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
       sandbox.stub(Account.prototype, 'save').value(() => {})
       sandbox.stub(Application.prototype, 'save').value(() => {})
       sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-      sandbox.stub(CharityDetail, 'get').value(() => undefined)
+      sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
     })
 
     lab.afterEach(() => {

@@ -41,7 +41,7 @@ module.exports = class CompanyCheckNameController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true, account: true })
+    const context = await RecoveryService.createApplicationContext(h, { account: true })
     const { application, account } = context
 
     if (application && account) {

@@ -33,7 +33,7 @@ module.exports = class ConfirmMiningWastePlanController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
     const plan = parseInt(request.payload['mining-waste-plan'])

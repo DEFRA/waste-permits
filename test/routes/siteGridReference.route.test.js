@@ -67,7 +67,7 @@ lab.beforeEach(() => {
   sandbox.stub(Location, 'getByApplicationId').value(() => fakeLocation)
   sandbox.stub(LocationDetail, 'getByLocationId').value(() => fakeLocationDetail)
   sandbox.stub(SiteNameAndLocation, 'updateCompleteness').value(() => {})
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
 })
 
 lab.afterEach(() => {

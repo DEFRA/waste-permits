@@ -10,7 +10,7 @@ const { SAVE_AND_RETURN_RECOVER, SAVE_AND_RETURN_SENT_CHECK, SAVE_AND_RETURN_SEN
 module.exports = class EmailSentController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const context = await RecoveryService.createApplicationContext(h, { application: true, applicationReturn: true })
+    const context = await RecoveryService.createApplicationContext(h, { applicationReturn: true })
     const { application, applicationReturn } = context
 
     if (request.payload) {
@@ -46,7 +46,7 @@ module.exports = class EmailSentController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
     if (request.payload['got-email']) {
