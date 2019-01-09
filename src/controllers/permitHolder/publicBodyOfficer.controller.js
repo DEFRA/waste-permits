@@ -29,7 +29,7 @@ module.exports = class PublicBodyOfficerController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { applicationId } = context
     const type = RESPONSIBLE_CONTACT_DETAILS.TYPE
     const contactDetail = (await ContactDetail.get(context, { type })) || new ContactDetail({ applicationId, type })

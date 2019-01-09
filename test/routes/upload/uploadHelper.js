@@ -73,7 +73,7 @@ module.exports = class UploadTestHelper {
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(Application, 'getById').value(() => mocks.application)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(CharityDetail, 'get').value(() => undefined)
+    sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
     sandbox.stub(ClamWrapper, 'isInfected').value(() => Promise.resolve({ isInfected: false }))
     sandbox.stub(LoggingService, 'logError').value(() => {})
   }

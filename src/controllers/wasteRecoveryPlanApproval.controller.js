@@ -25,7 +25,7 @@ module.exports = class WasteRecoveryPlanApprovalController extends BaseControlle
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
     application.recoveryPlanAssessmentStatus = request.payload['selection']

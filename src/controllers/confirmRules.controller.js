@@ -8,7 +8,7 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class ConfirmRulesController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const context = await RecoveryService.createApplicationContext(h, { application: true, standardRule: true })
+    const context = await RecoveryService.createApplicationContext(h, { standardRule: true })
     const { standardRule } = context
 
     pageContext.guidanceUrl = standardRule.guidanceUrl

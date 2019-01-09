@@ -31,7 +31,7 @@ module.exports = class PermitSelectController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true, applicationLine: true })
+    const context = await RecoveryService.createApplicationContext(h, { applicationLine: true })
     let { application, applicationLine } = context
 
     // Look up the Standard Rule based on the chosen permit type

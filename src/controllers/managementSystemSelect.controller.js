@@ -21,7 +21,7 @@ module.exports = class ManagementSystemSelectController extends BaseController {
   }
 
   async doGet (request, h, errors) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const pageContext = this.createPageContext(h, errors)
     const { answerCode } = await ApplicationAnswer.getByQuestionCode(context, questionCode) || {}
 
@@ -46,7 +46,7 @@ module.exports = class ManagementSystemSelectController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
 
     const applicationAnswer = new ApplicationAnswer({ questionCode })
 

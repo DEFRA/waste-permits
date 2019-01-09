@@ -70,7 +70,7 @@ module.exports = class UploadController extends BaseController {
         return this.doGet(request, h, errors)
       }
 
-      const context = await RecoveryService.createApplicationContext(h, { application: true })
+      const context = await RecoveryService.createApplicationContext(h)
       const { application } = context
 
       try {

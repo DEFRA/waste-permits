@@ -74,7 +74,7 @@ lab.beforeEach(() => {
   sandbox.stub(DataStore, 'save').value(async () => mocks.dataStore.id)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   // Todo: Remove hasBespokeFeature syub when bespoke is live
   sandbox.stub(featureConfig, 'hasBespokeFeature').value(() => true)
 })

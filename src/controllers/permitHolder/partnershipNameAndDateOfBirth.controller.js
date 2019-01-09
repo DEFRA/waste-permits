@@ -50,7 +50,7 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const {
       'first-name': firstName,
       'last-name': lastName,

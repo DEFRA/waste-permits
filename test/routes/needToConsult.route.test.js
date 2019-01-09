@@ -57,7 +57,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').callsFake(async () => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   sandbox.stub(NeedToConsult, 'get').callsFake(async () => mocks.needToConsult)
   sandbox.stub(NeedToConsult.prototype, 'save').callsFake(async () => null)
 })

@@ -110,7 +110,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(StandardRule, 'getById').value(() => new Application(fakeStandardRule))
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
 

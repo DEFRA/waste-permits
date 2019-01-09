@@ -47,6 +47,12 @@ module.exports = class AddressSelectController extends BaseController {
     pageContext.changePostcodeLink = this.getPostcodePath(request.params)
     pageContext.manualAddressLink = this.getManualEntryPath(request.params)
 
+    const { charityDetail } = context
+
+    if (charityDetail && charityDetail.charityPermitHolder && this.route.pageHeadingCharity) {
+      pageContext.pageHeading = this.route.pageHeadingCharity
+    }
+
     return this.showView({ h, pageContext })
   }
 

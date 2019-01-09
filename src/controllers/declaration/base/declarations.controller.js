@@ -8,7 +8,7 @@ const { PERMIT_HOLDER_TYPES } = require('../../../dynamics')
 module.exports = class DeclarationsController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const { application, permitHolderType } = await RecoveryService.createApplicationContext(h, { application: true })
+    const { application, permitHolderType } = await RecoveryService.createApplicationContext(h)
 
     switch (permitHolderType) {
       case PERMIT_HOLDER_TYPES.INDIVIDUAL:
@@ -44,7 +44,7 @@ module.exports = class DeclarationsController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
     Object.assign(application, this.getRequestData(request))

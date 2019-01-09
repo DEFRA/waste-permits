@@ -198,7 +198,7 @@ module.exports = class BaseController {
 
     if (this.applicationRequired) {
       try {
-        const context = await RecoveryService.createApplicationContext(h, { application: true }) || {}
+        const context = await RecoveryService.createApplicationContext(h) || {}
         const path = await this.checkRouteAccess(context)
         if (path) {
           return this.redirect({ h, path })

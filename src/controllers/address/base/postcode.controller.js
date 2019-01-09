@@ -9,8 +9,12 @@ module.exports = class PostcodeController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
     // Load entity context within the request object
-    await RecoveryService.createApplicationContext(h)
+    const { charityDetail } = await RecoveryService.createApplicationContext(h)
     const model = await this.task
+
+    if (charityDetail && charityDetail.charityPermitHolder && this.route.pageHeadingCharity) {
+      pageContext.pageHeading = this.route.pageHeadingCharity
+    }
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form

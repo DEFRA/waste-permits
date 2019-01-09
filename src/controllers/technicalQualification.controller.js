@@ -45,7 +45,7 @@ module.exports = class TechnicalQualificationController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
     application.technicalQualification = request.payload['technical-qualification']

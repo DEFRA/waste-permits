@@ -83,7 +83,7 @@ lab.beforeEach(() => {
   sandbox.stub(BaseTaskList, 'getTaskListClass').value(() => TaskList)
   sandbox.stub(BaseTaskList, 'buildTaskList').value(() => new TaskList())
   sandbox.stub(BaseTaskList, 'isComplete').value(() => true)
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
 })
 
 lab.afterEach(() => {

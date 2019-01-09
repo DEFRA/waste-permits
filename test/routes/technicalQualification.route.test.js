@@ -51,7 +51,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
   // Stub the asynchronous model methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CharityDetail, 'get').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(Application, 'getById').value(() => Promise.resolve(new Application(fakeApplication)))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)

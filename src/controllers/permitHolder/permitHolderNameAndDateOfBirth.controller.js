@@ -35,8 +35,8 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
     }
 
     if (charityDetail && charityDetail.charityPermitHolder) {
-      pageContext.pageHeading = this.route.pageHeadingAlternate
-      pageContext.pageTitle = Constants.buildPageTitle(this.route.pageHeadingAlternate)
+      pageContext.pageHeading = this.route.pageHeadingCharity
+      pageContext.pageTitle = Constants.buildPageTitle(this.route.pageHeadingCharity)
       pageContext.isCharity = true
     }
 
@@ -44,7 +44,7 @@ module.exports = class PermitHolderNameAndDateOfBirthController extends BaseCont
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { applicationId, permitHolderType } = context
     const {
       'first-name': firstName,

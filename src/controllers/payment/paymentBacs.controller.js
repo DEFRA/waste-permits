@@ -12,7 +12,7 @@ module.exports = class PaymentBacsController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true, applicationLine: true })
+    const context = await RecoveryService.createApplicationContext(h, { applicationLine: true })
     const { slug, application, applicationLine } = context
 
     const { value = 0 } = applicationLine

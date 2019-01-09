@@ -8,7 +8,7 @@ const { BILLING_INVOICING } = require('../dynamics').AddressTypes
 module.exports = class InvoiceContactController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
 
     if (request.payload) {
       pageContext.formValues = request.payload
@@ -29,7 +29,7 @@ module.exports = class InvoiceContactController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { applicationId, application } = context
     const {
       'first-name': firstName,

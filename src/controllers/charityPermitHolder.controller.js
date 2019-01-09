@@ -31,7 +31,7 @@ module.exports = class CharityPermitHolderController extends BaseController {
         break
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
@@ -43,6 +43,6 @@ module.exports = class CharityPermitHolderController extends BaseController {
     Object.assign(charityDetail, { charityPermitHolder })
 
     await charityDetail.save(context)
-    return this.redirect({ request, h })
+    return this.redirect({ h })
   }
 }

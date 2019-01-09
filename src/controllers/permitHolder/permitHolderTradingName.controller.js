@@ -31,7 +31,7 @@ module.exports = class PermitHolderContactTradingNameController extends BaseCont
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
     // The trading name is only set if the corresponding checkbox is ticked

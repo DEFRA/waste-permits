@@ -12,8 +12,12 @@ module.exports = class AddressManualController extends BaseController {
     }
     const pageContext = this.createPageContext(h, errors)
     pageContext.errorSummaryTitle = addressLookupFailed ? 'Our address finder is not working' : ''
-    // Load entity context within the request object
-    await RecoveryService.createApplicationContext(h)
+
+    const { charityDetail } = await RecoveryService.createApplicationContext(h)
+
+    if (charityDetail && charityDetail.charityPermitHolder && this.route.pageHeadingCharity) {
+      pageContext.pageHeading = this.route.pageHeadingCharity
+    }
 
     if (request.payload) {
       // If we have Address details in the payload then display them in the form
