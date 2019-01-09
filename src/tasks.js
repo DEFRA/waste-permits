@@ -101,6 +101,14 @@ const tasks = {
     shortName: 'mansys',
     taskListModel: 'managementSystem'
   },
+  MCP_BUSINESS_ACTIVITY: {
+    id: 'mcp-business-activity',
+    label: 'Choose business or activity type',
+    route: Routes.MCP_BUSINESS_ACTIVITY,
+    completedLabelId: 'business-activity-completed',
+    ruleSetId: 'defra_mcp_businesstype',
+    taskListModel: 'mcpBusinessActivity'
+  },
   MCP_DETAILS: {
     id: 'mcp-details',
     label: 'Upload the plant or generator list template',
@@ -305,6 +313,7 @@ const standardRules = [
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.SITE_NAME_LOCATION,
       tasks.MCP_DETAILS,
+      tasks.MCP_BUSINESS_ACTIVITY,
       tasks.MINING_DATA,
       tasks.SITE_PLAN,
       tasks.TECHNICAL_QUALIFICATION,

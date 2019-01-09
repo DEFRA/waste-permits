@@ -87,6 +87,10 @@ const Dynamics = {
           hint: 'If you use your own system, it must meet the standards in our guidance'
         }
       ]
+    },
+    MCP_BUSINESS_TYPE: {
+      questionCode: 'mcp-business-type',
+      mainOptionIds: ['d-35', 'c-10', 'e-37', 'q-86', 'a-1']
     }
   },
   BACS_EMAIL_CONFIG: 'PSC-BACS-EMAIL',

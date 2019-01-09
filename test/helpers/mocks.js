@@ -20,6 +20,7 @@ const StandardRuleType = require('../../src/persistence/entities/standardRuleTyp
 const ContactDetail = require('../../src/models/contactDetail.model')
 const CharityDetail = require('../../src/models/charityDetail.model')
 const DataStore = require('../../src/models/dataStore.model')
+const McpBusinessType = require('../../src/models/mcpBusinessType.model')
 
 const ApplicationCostModel = require('../../src/models/triage/applicationCost.model')
 const ApplicationCostItemModel = require('../../src/models/triage/applicationCostItem.model')
@@ -98,6 +99,7 @@ class MockData {
     return {
       questionCode: 'QUESTION_CODE',
       answerCode: 'ANSWER_CODE',
+      answerDescription: 'ANSWER_DESCRIPTION',
       answerText: 'ANSWER_TEXT'
     }
   }
@@ -211,6 +213,13 @@ class MockData {
       id: 'LOCATION_DETAIL_ID',
       addressId: address.id,
       gridReference: 'GRID_REFERENCE'
+    }
+  }
+
+  get mcpBusinessTypesLists () {
+    return {
+      mainTypes: [{ code: 'main-1', description: 'Main 1' }],
+      otherTypes: [{ code: 'other-1', description: 'Other 1' }]
     }
   }
 
@@ -367,6 +376,18 @@ class Mocks {
   get locationDetail () {
     const { locationDetail } = this.mockData
     return this._locationDetail || (this._locationDetail = new LocationDetail(locationDetail))
+  }
+
+  get mcpBusinessType () {
+    return this._mcpBusinessType || (this._mcpBusinessType = new McpBusinessType())
+  }
+
+  get mcpBusinessTypesLists () {
+    const { mcpBusinessTypesLists } = this.mockData
+    return this._mcpBusinessTypesLists || (this._mcpBusinessTypesLists = {
+      mainTypes: mcpBusinessTypesLists.mainTypes.map((item) => Object.assign({}, item)),
+      otherTypes: mcpBusinessTypesLists.otherTypes.map((item) => Object.assign({}, item))
+    })
   }
 
   get needToConsult () {

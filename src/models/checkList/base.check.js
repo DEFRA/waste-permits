@@ -10,6 +10,7 @@ const StandardRule = require('../../persistence/entities/standardRule.entity')
 const ContactDetail = require('../contactDetail.model')
 const CharityDetail = require('../charityDetail.model')
 const NeedToConsult = require('../needToConsult.model')
+const McpBusinessType = require('../mcpBusinessType.model')
 
 const {
   BILLING_INVOICING,
@@ -268,5 +269,13 @@ module.exports = class BaseCheck {
       this.data.mcpDetails = await Annotation.listByApplicationIdAndSubject(this.data, MCP_DETAILS)
     }
     return this.data.mcpDetails || {}
+  }
+
+  async getMcpBusinessType () {
+    const { mcpBusinessType } = this.data
+    if (!mcpBusinessType) {
+      this.data.mcpBusinessType = await McpBusinessType.get(this.data)
+    }
+    return this.data.mcpBusinessType || {}
   }
 }

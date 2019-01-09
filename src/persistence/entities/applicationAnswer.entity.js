@@ -13,6 +13,7 @@ class ApplicationAnswer extends BaseEntity {
     return [
       { field: 'questionCode', dynamics: 'question.defra_shortname', actionField: 'QuestionCode' },
       { field: 'answerCode', dynamics: 'answeroption.defra_shortname', actionField: 'AnswerCode' },
+      { field: 'answerDescription', dynamics: 'answeroption.defra_option', readOnly: true },
       { field: 'answerText', dynamics: 'defra_answertext', actionField: 'AnswerText' }
     ]
   }
