@@ -38,14 +38,17 @@ module.exports = class CharityDetail {
     switch (charityPermitHolder) {
       case PUBLIC_BODY.id:
         application.tradingName = charityName
+        application.applicantType = PUBLIC_BODY.dynamicsApplicantTypeId
         application.organisationType = PUBLIC_BODY.dynamicsOrganisationTypeId
         break
       case INDIVIDUAL.id:
         application.tradingName = undefined
+        application.applicantType = INDIVIDUAL.dynamicsApplicantTypeId
         application.organisationType = INDIVIDUAL.dynamicsOrganisationTypeId
         break
       case LIMITED_COMPANY.id:
         application.tradingName = undefined
+        application.applicantType = LIMITED_COMPANY.dynamicsApplicantTypeId
         application.organisationType = LIMITED_COMPANY.dynamicsOrganisationTypeId
         break
       default:
