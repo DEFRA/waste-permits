@@ -36,13 +36,17 @@ module.exports = class CharityPermitHolderController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
+    const { application, charityDetail } = context
 
     const charityPermitHolder = request.payload['charity-permit-holder-type']
 
-    const charityDetail = await CharityDetail.get(context)
-    Object.assign(charityDetail, { charityPermitHolder })
+    if (charityDetail.charityPermitHolder !== charityPermitHolder) {
+      charityDetail.charityPermitHolder = charityPermitHolder
+      application.permitHolderOrganisationId = undefined
+      application.permitHolderIndividualId = undefined
+      await charityDetail.save(context)
+    }
 
-    await charityDetail.save(context)
     return this.redirect({ h })
   }
 }
