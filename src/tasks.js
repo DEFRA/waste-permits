@@ -92,14 +92,6 @@ const tasks = {
     shortName: 'invoicing',
     taskListModel: 'invoiceAddress'
   },
-  MINING_DATA: {
-    id: 'confirm-mining-data',
-    label: 'Confirm mining waste plan and weight of waste',
-    route: Routes.CONFIRM_MINING_WASTE_PLAN,
-    completedLabelId: 'mining-data-completed',
-    ruleSetId: 'defra_miningdatarequired',
-    taskListModel: 'miningWasteDetails'
-  },
   MANAGEMENT_SYSTEM: {
     id: 'management-system',
     label: 'Provide a management system summary',
@@ -108,6 +100,30 @@ const tasks = {
     ruleSetId: 'defra_mansystemrequired',
     shortName: 'mansys',
     taskListModel: 'managementSystem'
+  },
+  MCP_DETAILS: {
+    id: 'mcp-details',
+    label: 'Upload the plant or generator list template',
+    route: Routes.MCP_DETAILS,
+    completedLabelId: 'mcp-details-completed',
+    ruleSetId: 'defra_mcp_sr_uploadtemplate',
+    taskListModel: 'mcpDetails'
+  },
+  MCP_TEMPLATE: {
+    id: 'mcp-template',
+    label: 'Download and complete the plant or generator list template',
+    route: Routes.MCP_TEMPLATE,
+    completedLabelId: 'mcp-template-completed',
+    ruleSetId: 'defra_mcp_sr_downloadtemplate',
+    taskListModel: 'mcpTemplate'
+  },
+  MINING_DATA: {
+    id: 'confirm-mining-data',
+    label: 'Confirm mining waste plan and weight of waste',
+    route: Routes.CONFIRM_MINING_WASTE_PLAN,
+    completedLabelId: 'mining-data-completed',
+    ruleSetId: 'defra_miningdatarequired',
+    taskListModel: 'miningWasteDetails'
   },
   MINING_WASTE_MANAGEMENT_PLAN: {
     id: 'mining-waste-management-plan',
@@ -275,7 +291,8 @@ const standardRules = [
       tasks.SHOW_COST_AND_TIME,
       tasks.CONFIRM_RULES,
       tasks.SURFACE_DRAINAGE,
-      tasks.SAVE_AND_RETURN_EMAIL
+      tasks.SAVE_AND_RETURN_EMAIL,
+      tasks.MCP_TEMPLATE
     ]
   },
   {
@@ -287,6 +304,7 @@ const standardRules = [
       tasks.CONTACT_DETAILS,
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.SITE_NAME_LOCATION,
+      tasks.MCP_DETAILS,
       tasks.MINING_DATA,
       tasks.SITE_PLAN,
       tasks.TECHNICAL_QUALIFICATION,

@@ -140,7 +140,8 @@ Constants.UploadSubject = {
   WASTE_TYPES_LIST: 'list of waste types',
   ENVIRONMENTAL_RISK_ASSESSMENT: 'environmental risk assessment',
   NON_TECHNICAL_SUMMARY: 'non-technical summary',
-  MANAGEMENT_SYSTEM_SUMMARY: 'management system summary'
+  MANAGEMENT_SYSTEM_SUMMARY: 'management system summary',
+  MCP_DETAILS: 'mcp details'
 }
 
 Constants.CookieValue = {

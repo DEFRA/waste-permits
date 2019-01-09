@@ -1,0 +1,41 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>
+        We need to know about all the plant you want the permit to cover.
+        Download the template and follow the guidance to complete it.
+        For each MCP you want to permit, enter the MCP and operation details.
+        Save it on your computer.
+        You will be asked to upload it later in this application.
+      </p>
+
+      <p>
+        <a id="mcp-template-xls-link" target="_blank" rel="noopener noreferrer" href="https://www.gov.uk">Medium combustion plant spreadsheet template (XLS)</a>
+        or
+        <a id="mcp-template-ods-link" target="_blank" rel="noopener noreferrer" href="https://www.gov.uk">ODS</a>
+      </p>
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+        <div class="form-group">
+          {{#if isComplete}}
+            <button id="return-to-task-list-button" type="submit" class="button" name="Return to task list">Return to task list</button>
+          {{else}}
+            <button id="mcp-template-downloaded-button" type="submit" class="button" name="I downloaded the template">I downloaded the template</button>
+          {{/if}}
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+
+</main>

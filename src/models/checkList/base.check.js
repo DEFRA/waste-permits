@@ -30,7 +30,8 @@ const {
   ENVIRONMENTAL_RISK_ASSESSMENT,
   NON_TECHNICAL_SUMMARY,
   MANAGEMENT_SYSTEM_SUMMARY,
-  TECHNICAL_MANAGERS
+  TECHNICAL_MANAGERS,
+  MCP_DETAILS
 } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -259,5 +260,13 @@ module.exports = class BaseCheck {
       this.data.technicalManagers = await Annotation.listByApplicationIdAndSubject(this.data, TECHNICAL_MANAGERS)
     }
     return this.data.technicalManagers || {}
+  }
+
+  async getMcpDetails () {
+    const { mcpDetails } = this.data
+    if (!mcpDetails) {
+      this.data.mcpDetails = await Annotation.listByApplicationIdAndSubject(this.data, MCP_DETAILS)
+    }
+    return this.data.mcpDetails || {}
   }
 }

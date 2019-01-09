@@ -334,4 +334,11 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(charityDetail).to.equal(fakeCharityDetail)
     Code.expect(context.charityDetails).to.equal(await check.getCharityDetails())
   })
+
+  lab.test('getMcpDetails works correctly', async () => {
+    const check = new BaseCheck(context)
+    const mcpDetails = await check.getMcpDetails()
+    Code.expect(mcpDetails).to.equal([fakeAnnotation])
+    Code.expect(context.mcpDetails).to.equal(await check.getMcpDetails())
+  })
 })
