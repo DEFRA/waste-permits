@@ -253,4 +253,28 @@ lab.experiment('Utilities tests:', () => {
     actual = Utilities.formatFullDateForDisplay(inputValue)
     Code.expect(expected).to.equal(actual)
   })
+
+  lab.test('difference(a, b) correctly returns an array of two arrays containing: "elements in (a) not in (b)", "elements in (b) not in (a)"', () => {
+    const a = [1, 2, 3, 4]
+    const b = [3, 4, 5, 6]
+    Code.expect(Utilities.difference(a, b)).to.equal([[1, 2], [5, 6]])
+  })
+
+  lab.test('allowedParameters(params, allowed) returns the parameters when they are allowed', () => {
+    const params = { a: 1, b: {}, c: [], d: '', e: undefined, f: null }
+    const allowedParams = ['a', 'b', 'c', 'd', 'e', 'f']
+    Code.expect(Utilities.allowedParameters(params, allowedParams)).to.equal(params)
+  })
+
+  lab.test('allowedParameters(params, allowed) throws when there are parameters that are not allowed', () => {
+    const params = { a: 1, b: {}, c: [], d: '', e: undefined, f: null }
+    const allowedParams = ['c', 'd']
+    let message
+    try {
+      Utilities.allowedParameters(params, allowedParams)
+    } catch (error) {
+      message = error.message
+    }
+    Code.expect(message).to.equal('Extra parameters found: "a", "b", "e", "f"')
+  })
 })
