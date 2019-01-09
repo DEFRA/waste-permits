@@ -29,7 +29,7 @@ module.exports = class TriageController extends BaseController {
     pageContext.previousPreviousStepPath = paths.previousPreviousStepPath
 
     if (!triageData.canApplyOnline) {
-      return this.showViewFromRoute({ viewPropertyName: 'applyOfflineView', request, h, pageContext })
+      return this.showViewFromRoute({ viewPropertyName: 'applyOfflineView', h, pageContext })
     }
 
     // Deal with the query string

@@ -21,7 +21,7 @@ module.exports = class CharityDetailsController extends BaseController {
       }
     }
 
-    return this.showView({ request, h, pageContext })
+    return this.showView({ h, pageContext })
   }
 
   getRedirectRoute (charityPermitHolder) {
@@ -51,6 +51,6 @@ module.exports = class CharityDetailsController extends BaseController {
 
     await charityDetail.save(context)
 
-    return this.redirect({ request, h, route: this.getRedirectRoute(charityDetail.charityPermitHolder) })
+    return this.redirect({ h, route: this.getRedirectRoute(charityDetail.charityPermitHolder) })
   }
 }

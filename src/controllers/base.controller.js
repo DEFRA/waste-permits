@@ -2,6 +2,7 @@
 const Config = require('../config/config')
 const Constants = require('../constants')
 const Routes = require('../routes')
+const { allowedParameters } = require('../utilities/utilities')
 const BaseTaskList = require('../models/taskList/base.taskList')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
@@ -95,30 +96,53 @@ module.exports = class BaseController {
     }
   }
 
-  redirect ({ h, request = h.request, route = this.route.nextRoute, path = (typeof route === 'string' ? Routes[route].path : route.path), cookie, error }) {
+  redirect (params) {
+    let {
+      h,
+      route = this.route.nextRoute,
+      path = (typeof route === 'string' ? Routes[route].path : route.path),
+      cookie,
+      error
+    } = allowedParameters(params, ['path', 'route', 'h', 'cookie', 'error'])
+
     if (!cookie) {
-      cookie = request.state[Constants.DEFRA_COOKIE_KEY]
+      cookie = h.request.state[Constants.DEFRA_COOKIE_KEY]
     }
+
     if (Config.isDevelopment && error) {
       path = path.includes('?') ? `${path}&error=${JSON.stringify(error)}` : `${path}?error=${JSON.stringify(error)}`
     }
+
     return h
       .redirect(path)
       .state(Constants.DEFRA_COOKIE_KEY, cookie, Constants.COOKIE_PATH)
   }
 
-  showView ({ h, request = h.request, pageContext, code = 200 }) {
+  showView (params) {
+    let {
+      h,
+      pageContext,
+      code = 200
+    } = allowedParameters(params, ['h', 'pageContext', 'code'])
+
     return h
       .view(this.route.view, pageContext)
       .code(code)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      .state(Constants.DEFRA_COOKIE_KEY, h.request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
-  showViewFromRoute ({ viewPropertyName, request, h, pageContext, code = 200 }) {
+  showViewFromRoute (params) {
+    let {
+      viewPropertyName,
+      h,
+      pageContext,
+      code = 200
+    } = allowedParameters(params, ['viewPropertyName', 'h', 'pageContext', 'code'])
+
     return h
       .view(this.route[viewPropertyName], pageContext)
       .code(code)
-      .state(Constants.DEFRA_COOKIE_KEY, request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
+      .state(Constants.DEFRA_COOKIE_KEY, h.request.state[Constants.DEFRA_COOKIE_KEY], Constants.COOKIE_PATH)
   }
 
   setCustomError (type, field, options = {}) {

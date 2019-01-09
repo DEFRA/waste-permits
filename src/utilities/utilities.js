@@ -1,6 +1,7 @@
 'use strict'
 
 const moment = require('moment')
+const assert = require('assert')
 
 module.exports = class Utilities {
   static stripWhitespace (value) {
@@ -112,5 +113,18 @@ module.exports = class Utilities {
 
   static firstCharToLowercase (str) {
     return str[0].toLowerCase() + str.substr(1)
+  }
+
+  static difference (a, b) {
+    return [
+      a.filter((item) => !b.includes(item)),
+      b.filter((item) => !a.includes(item))
+    ]
+  }
+
+  static allowedParameters (params, allowedParams) {
+    const badParameters = Utilities.difference(Object.keys(params), allowedParams)[0]
+    assert(badParameters.length === 0, `Extra parameters found: "${badParameters.join('", "')}"`)
+    return params
   }
 }
