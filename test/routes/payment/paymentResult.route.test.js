@@ -43,8 +43,7 @@ lab.beforeEach(() => {
   }
 
   fakeApplicationReturn = {
-    applicationId: fakeApplication.id,
-    slug: fakeSlug
+    applicationId: fakeApplication.id
   }
 
   fakePayment = {
@@ -59,7 +58,8 @@ lab.beforeEach(() => {
     application: new Application(fakeApplication),
     applicationLine: new ApplicationLine(fakeApplicationLine),
     applicationReturn: new ApplicationReturn(fakeApplicationReturn),
-    cardPayment: new Payment(fakePayment)
+    cardPayment: new Payment(fakePayment),
+    slug: fakeSlug
   })
 
   // Create a sinon sandbox to stub methods

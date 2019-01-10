@@ -7,7 +7,7 @@ const RecoveryService = require('../../services/recovery.service')
 module.exports = class PaymentResultController extends BaseController {
   async doGet (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { applicationReturn: true, cardPayment: true })
-    const { cardPayment, applicationReturn: { slug } } = context
+    const { cardPayment, slug } = context
 
     const paymentStatus = await cardPayment.getCardPaymentResult(context)
     let path = `${APPLICATION_RECEIVED.path}/${slug}`
