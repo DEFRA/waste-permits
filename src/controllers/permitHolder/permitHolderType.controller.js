@@ -9,27 +9,37 @@ const { PERMIT_HOLDER_TYPES } = require('../../dynamics')
 const { APPLY_OFFLINE, PERMIT_CATEGORY } = require('../../routes')
 
 module.exports = class PermitHolderTypeController extends BaseController {
-  static getHolderTypes (application) {
-    return Object.entries(PERMIT_HOLDER_TYPES)
-      .map(([key, permitHolderType]) => {
-        const isSelected = application && application.applicantType === permitHolderType.dynamicsApplicantTypeId && application.organisationType === permitHolderType.dynamicsOrganisationTypeId
-        return Object.assign({ isSelected }, permitHolderType)
-      })
+  static getHolderTypes (application, charityPermitHolder) {
+    const permitHolderTypes = Object.entries(PERMIT_HOLDER_TYPES).map(([key, permitHolderType]) => Object.assign({}, permitHolderType))
+    let selectedPermitHolderType
+    if (application) {
+      if (charityPermitHolder) {
+        selectedPermitHolderType = permitHolderTypes.find(({ id }) => id === PERMIT_HOLDER_TYPES.CHARITY_OR_TRUST.id)
+      } else {
+        const { applicantType, organisationType } = application
+        selectedPermitHolderType = permitHolderTypes.find(({ dynamicsApplicantTypeId, dynamicsOrganisationTypeId }) => dynamicsApplicantTypeId === applicantType && dynamicsOrganisationTypeId === organisationType)
+      }
+    }
+    if (selectedPermitHolderType) {
+      selectedPermitHolderType.isSelected = true
+    }
+    return permitHolderTypes
   }
 
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const { application } = await RecoveryService.createApplicationContext(h, { application: true })
-    pageContext.holderTypes = PermitHolderTypeController.getHolderTypes(application)
+    const { application, charityDetail = {} } = await RecoveryService.createApplicationContext(h)
+    pageContext.holderTypes = PermitHolderTypeController.getHolderTypes(application, charityDetail.charityPermitHolder)
     return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const { application } = context
+    const { application, charityDetail = {} } = context
 
-    const permitHolder = PermitHolderTypeController.getHolderTypes()
-      .find(({ id }) => request.payload['chosen-holder-type'] === id)
+    const holderTypes = PermitHolderTypeController.getHolderTypes(application, charityDetail.charityPermitHolder)
+
+    const permitHolder = holderTypes.find(({ id }) => request.payload['chosen-holder-type'] === id)
 
     CookieService.remove(request, STANDARD_RULE_ID)
     CookieService.remove(request, STANDARD_RULE_TYPE_ID)
@@ -38,8 +48,10 @@ module.exports = class PermitHolderTypeController extends BaseController {
     application.organisationType = permitHolder.dynamicsOrganisationTypeId
     application.permitHolderOrganisationId = undefined
     application.permitHolderIndividualId = undefined
-
     await application.save(context)
+    if (charityDetail.charityPermitHolder) {
+      await charityDetail.delete(context)
+    }
 
     if (permitHolder.canApplyOnline) {
       return this.redirect({ h, route: PERMIT_CATEGORY })
