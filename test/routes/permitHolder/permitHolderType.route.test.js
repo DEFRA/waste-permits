@@ -21,6 +21,7 @@ const errorPath = '/errors/technical-problem'
 
 let fakeApplication
 let fakePermitHolderType
+let fakeCharityDetail
 let sandbox
 
 lab.beforeEach(() => {
@@ -36,14 +37,19 @@ lab.beforeEach(() => {
     dynamicsApplicantTypeId: 'APPLICANT_TYPE'
   }
 
+  fakeCharityDetail = {
+    charityPermitHolder: 'PERMIT_HOLDER_TYPE_ID'
+  }
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
+  sandbox.stub(CharityDetail.prototype, 'delete').value(() => undefined)
+  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail(fakeCharityDetail))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
 

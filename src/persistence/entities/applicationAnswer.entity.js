@@ -17,7 +17,7 @@ class ApplicationAnswer extends BaseEntity {
     ]
   }
 
-  async save (context = {}, fields) {
+  async save (context = {}) {
     const { dynamicsEntity } = this.constructor
     if (!context) {
       const errorMessage = `Unable to save ${dynamicsEntity}: Context not supplied`

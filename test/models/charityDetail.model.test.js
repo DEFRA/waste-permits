@@ -37,10 +37,11 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
-  sandbox.stub(ApplicationAnswer, 'listByMultipleQuestionCodes').callsFake(() => mocks.applicationAnswers)
-  sandbox.stub(DataStore, 'get').callsFake(() => mocks.dataStore)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(ApplicationAnswer.prototype, 'save').value(() => undefined)
+  sandbox.stub(ApplicationAnswer, 'listByMultipleQuestionCodes').callsFake(() => [fakeApplicationAnswerName, fakeApplicationAnswerNumber])
+  sandbox.stub(ApplicationAnswer.prototype, 'save').value(async () => undefined)
+  sandbox.stub(ApplicationAnswer.prototype, 'clear').value(async () => undefined)
+  sandbox.stub(DataStore, 'get').callsFake(() => mocks.dataStore)
   sandbox.stub(DataStore.prototype, 'save').value(() => undefined)
 })
 
@@ -50,9 +51,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('CharityDetail Model tests:', () => {
-  lab.test('get() method correctly retrieves the charity details when the name is retrieved from the trading name', async () => {
-    mocks.applicationAnswers.push(fakeApplicationAnswerNumber)
-    mocks.applicationAnswers.push(fakeApplicationAnswerName)
+  lab.test('get() method correctly retrieves the charity details when the name is retrieved from the application answers', async () => {
     mocks.application.tradingName = ''
     const charityDetail = await CharityDetail.get(context)
     const { charityName, charityNumber } = charityDetail
@@ -61,7 +60,9 @@ lab.experiment('CharityDetail Model tests:', () => {
   })
 
   lab.test('get() method correctly retrieves the charity details when the name is retrieved from the trading name', async () => {
-    mocks.applicationAnswers.push(fakeApplicationAnswerNumber)
+    fakeApplicationAnswerName = new ApplicationAnswer({
+      questionCode: 'unknown-key'
+    })
     const charityDetail = await CharityDetail.get(context)
     const { charityName, charityNumber } = charityDetail
     Code.expect(charityName).to.equal(mocks.application.tradingName)
@@ -69,35 +70,44 @@ lab.experiment('CharityDetail Model tests:', () => {
   })
 
   lab.experiment('CharityDetail Model tests:', () => {
-    let applicationSpy
-    let applicationAnswerSpy
-    let dataStoreSaveSpy
+    lab.experiment('save() method', () => {
+      let applicationSpy
+      let applicationAnswerSpy
+      let dataStoreSaveSpy
 
-    lab.beforeEach(() => {
-      applicationSpy = sinon.spy(Application.prototype, 'save')
-      applicationAnswerSpy = sinon.spy(ApplicationAnswer.prototype, 'save')
-      dataStoreSaveSpy = sinon.spy(DataStore.prototype, 'save')
+      lab.beforeEach(() => {
+        applicationSpy = sinon.spy(Application.prototype, 'save')
+        applicationAnswerSpy = sinon.spy(ApplicationAnswer.prototype, 'save')
+        dataStoreSaveSpy = sinon.spy(DataStore.prototype, 'save')
+      })
+
+      lab.afterEach(() => {
+        Code.expect(applicationSpy.callCount).to.equal(1)
+        Code.expect(applicationAnswerSpy.callCount).to.equal(2)
+        Code.expect(dataStoreSaveSpy.callCount).to.equal(1)
+        applicationSpy.restore()
+        applicationAnswerSpy.restore()
+        dataStoreSaveSpy.restore()
+      })
+
+      lab.test('correctly saves the charity details when the charity is for an individual', async () => {
+        mocks.charityDetail.charityPermitHolder = 'individual'
+        await mocks.charityDetail.save(context)
+        Code.expect(mocks.application.tradingName).to.equal(undefined)
+      })
+
+      lab.test('correctly saves the charity details when the charity is for a public body', async () => {
+        mocks.charityDetail.charityPermitHolder = 'public-body'
+        await mocks.charityDetail.save(context)
+        Code.expect(mocks.application.tradingName).to.equal(fakeApplicationAnswerName.answerText)
+      })
     })
 
-    lab.afterEach(() => {
-      Code.expect(applicationSpy.callCount).to.equal(1)
+    lab.test('delete() method correctly saves the charity details when the charity is for a public body', async () => {
+      let applicationAnswerSpy = sinon.spy(ApplicationAnswer.prototype, 'clear')
+      await mocks.charityDetail.delete(context)
       Code.expect(applicationAnswerSpy.callCount).to.equal(2)
-      Code.expect(dataStoreSaveSpy.callCount).to.equal(1)
-      applicationSpy.restore()
       applicationAnswerSpy.restore()
-      dataStoreSaveSpy.restore()
-    })
-
-    lab.test('save() method correctly saves the charity details when the charity is for an individual', async () => {
-      mocks.charityDetail.charityPermitHolder = 'individual'
-      await mocks.charityDetail.save(context)
-      Code.expect(mocks.application.tradingName).to.equal(undefined)
-    })
-
-    lab.test('save() method correctly saves the charity details when the charity is for a public body', async () => {
-      mocks.charityDetail.charityPermitHolder = 'public-body'
-      await mocks.charityDetail.save(context)
-      Code.expect(mocks.application.tradingName).to.equal(fakeApplicationAnswerName.answerText)
     })
   })
 })

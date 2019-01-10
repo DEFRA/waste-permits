@@ -72,4 +72,22 @@ module.exports = class CharityDetail {
       return applicationAnswer.save(context)
     }))
   }
+
+  async delete (context) {
+    const { application } = context
+    const { charityPermitHolder } = this
+    if (charityPermitHolder === PUBLIC_BODY.id) {
+      application.tradingName = undefined
+      await application.save(context)
+    }
+    const dataStore = await DataStore.get(context)
+    if (dataStore && dataStore.data && dataStore.data.charityPermitHolder) {
+      delete dataStore.data.charityPermitHolder
+      await dataStore.save(context)
+    }
+    const applicationAnswers = await ApplicationAnswer.listByMultipleQuestionCodes(context, [questionCodeName, questionCodeNumber])
+    return Promise.all(applicationAnswers.map((applicationAnswer) => {
+      return applicationAnswer.clear(context)
+    }))
+  }
 }
