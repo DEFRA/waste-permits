@@ -81,8 +81,10 @@ module.exports = class CharityDetail {
       await application.save(context)
     }
     const dataStore = await DataStore.get(context)
-    delete dataStore.data.charityPermitHolder
-    await dataStore.save(context)
+    if (dataStore && dataStore.data && dataStore.data.charityPermitHolder) {
+      delete dataStore.data.charityPermitHolder
+      await dataStore.save(context)
+    }
     const applicationAnswers = await ApplicationAnswer.listByMultipleQuestionCodes(context, [questionCodeName, questionCodeNumber])
     return Promise.all(applicationAnswers.map((applicationAnswer) => {
       return applicationAnswer.clear(context)
