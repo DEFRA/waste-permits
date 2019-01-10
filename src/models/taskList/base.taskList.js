@@ -22,6 +22,7 @@ class BaseTaskList {
     const dataStore = await DataStore.get(context)
     context.permitType = dataStore.data.permitType
     switch (context.permitType) {
+      case undefined: // Default to standard rules for missing values as these will pre-date the introduction of bespoke
       case STANDARD_RULES: return require('./standardRules.taskList')
       case BESPOKE: return require('./bespoke.taskList')
       default: throw new Error(`Unexpected permitType: ${context.permitType}`)
