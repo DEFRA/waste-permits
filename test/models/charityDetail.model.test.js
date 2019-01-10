@@ -43,7 +43,6 @@ lab.beforeEach(() => {
   sandbox.stub(ApplicationAnswer.prototype, 'clear').value(async () => undefined)
   sandbox.stub(DataStore, 'get').callsFake(() => mocks.dataStore)
   sandbox.stub(DataStore.prototype, 'save').value(() => undefined)
-  // sandbox.stub(DataStore.prototype, 'delete').value(() => undefined)
 })
 
 lab.afterEach(() => {
