@@ -25,7 +25,8 @@ let sandbox
 
 lab.beforeEach(() => {
   fakeApplication = {
-    id: 'APPLICATION_ID'
+    id: 'APPLICATION_ID',
+    applicationNumber: 'EPR/AB1234CD/A001'
   }
 
   fakeStandardRule = {
@@ -67,7 +68,8 @@ lab.experiment('MCP template download page tests:', () => {
     lab.experiment('success', () => {
       lab.test('when not completed', async () => {
         const doc = await GeneralTestHelper.getDoc(request)
-        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Download and complete the MCP template')
+        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Download and complete the plant or generator list template')
+        Code.expect(doc.getElementById('mcp-template-downloaded')).to.not.exist()
         Code.expect(doc.getElementById('mcp-template-downloaded-button')).to.exist()
         Code.expect(doc.getElementById('return-to-task-list-button')).to.not.exist()
       })
@@ -75,9 +77,17 @@ lab.experiment('MCP template download page tests:', () => {
       lab.test('when completed', async () => {
         McpTemplate.isComplete = () => true
         const doc = await GeneralTestHelper.getDoc(request)
-        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Download and complete the MCP template')
+        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Download and complete the plant or generator list template')
+        Code.expect(doc.getElementById('mcp-template-downloaded')).to.exist()
         Code.expect(doc.getElementById('mcp-template-downloaded-button')).to.not.exist()
         Code.expect(doc.getElementById('return-to-task-list-button')).to.exist()
+      })
+
+      lab.test('download links are correct', async () => {
+        McpTemplate.isComplete = () => true
+        const doc = await GeneralTestHelper.getDoc(request)
+        Code.expect(doc.getElementById('mcp-template-xls-link').getAttribute('download')).to.equal('mcp-plant-generator-list-template-v0-1.xls')
+        Code.expect(doc.getElementById('mcp-template-ods-link').getAttribute('download')).to.equal('mcp-plant-generator-list-template-v0-1.ods')
       })
     })
 

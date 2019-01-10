@@ -9,18 +9,27 @@
 
       {{> common/pageHeading pageHeading }}
 
+      {{#if isComplete}}
+      <div id="mcp-template-downloaded" class="panel panel-border-narrow">
+        <p>You have downloaded the template.</p>
+      </div>
+      {{/if}}
+
       <p>
-        We need to know about all the plant you want the permit to cover.
-        Download the template and follow the guidance to complete it.
-        For each MCP you want to permit, enter the MCP and operation details.
-        Save it on your computer.
-        You will be asked to upload it later in this application.
+        Download a template and save it on your computer.
+        Enter the details for each plant or generator you want the permit to cover.
+        You will be asked to upload it later in the application.
       </p>
 
       <p>
-        <a id="mcp-template-xls-link" target="_blank" rel="noopener noreferrer" href="https://www.gov.uk">Medium combustion plant spreadsheet template (XLS)</a>
-        or
-        <a id="mcp-template-ods-link" target="_blank" rel="noopener noreferrer" href="https://www.gov.uk">ODS</a>
+        <a id="mcp-template-xls-link" href="/public/images/mcp-template/mcp-plant-generator-list-template-v0-1.xls" download="mcp-plant-generator-list-template-v0-1.xls">
+          <span id="mcp-template-xls-link-text">Plant or generator list template (Excel XLS)</span>
+        </a>
+      </p>
+      <p>
+        <a id="mcp-template-ods-link" href="/public/images/mcp-template/mcp-plant-generator-list-template-v0-1.ods" download="mcp-plant-generator-list-template-v0-1.ods">
+          <span id="mcp-template-ods-link-text">Plant or generator list template (Open Document ODS)</span>
+        </a>
       </p>
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate">

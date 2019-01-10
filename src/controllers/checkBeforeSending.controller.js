@@ -20,6 +20,7 @@ const EnvironmentalRiskAssessmentCheck = require('../models/checkList/environmen
 const NonTechnicalSummaryCheck = require('../models/checkList/nonTechnicalSummary.check')
 const ManagementSystemCheck = require('../models/checkList/managementSystem.check')
 const NeedToConsult = require('../models/checkList/needToConsult.check')
+const McpDetailsCheck = require('../models/checkList/mcpDetails.check')
 
 module.exports = class CheckBeforeSendingController extends BaseController {
   constructor (...args) {
@@ -35,6 +36,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       NonTechnicalSummaryCheck,
       SiteCheck,
       SitePlanCheck,
+      McpDetailsCheck,
       WasteTypesListCheck,
       TechnicalCompetenceCheck,
       FirePreventionPlanCheck,
