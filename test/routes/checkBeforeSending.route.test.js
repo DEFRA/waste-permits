@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -15,8 +16,6 @@ const CharityDetail = require('../../src/models/charityDetail.model')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
 const CookieService = require('../../src/services/cookie.service')
 
-let fakeApplicationId = 'APPLICATION_ID'
-let fakeApplication
 let fakeValidRuleSetId
 let fakeInvalidRuleSetId
 let fakeLineData
@@ -25,12 +24,10 @@ const routePath = '/check-before-sending'
 const nextRoutePath = '/pay/type'
 
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: fakeApplicationId,
-    declaration: true
-  }
+  mocks = new Mocks()
 
   fakeValidRuleSetId = 'TEST_RULESETID'
   fakeInvalidRuleSetId = 'TEST_INVALID_RULESETID'
@@ -76,14 +73,14 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => true)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
   sandbox.stub(BaseTaskList, 'getTaskListClass').value(() => TaskList)
   sandbox.stub(BaseTaskList, 'buildTaskList').value(() => new TaskList())
   sandbox.stub(BaseTaskList, 'isComplete').value(() => true)
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
 })
 
 lab.afterEach(() => {
