@@ -9,9 +9,11 @@ const ApplicationAnswer = require('../../src/persistence/entities/applicationAns
 const ApplicationData = require('../../src/persistence/entities/applicationData.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
 const ApplicationReturn = require('../../src/persistence/entities/applicationReturn.entity')
+const Configuration = require('../../src/persistence/entities/configuration.entity')
 const Contact = require('../../src/persistence/entities/contact.entity')
 const Location = require('../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../src/persistence/entities/locationDetail.entity')
+const Payment = require('../../src/persistence/entities/payment.entity')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 
 const ContactDetail = require('../../src/models/contactDetail.model')
@@ -148,6 +150,21 @@ class MockData {
     }
   }
 
+  get configuration () {
+    const { application } = this
+    return {
+      paymentReference: `WP-${application.applicationNumber}`,
+      amount: '1,000.99',
+      sortCode: '60-70-80',
+      accountNumber: '1001 4411',
+      accountName: 'EA RECEIPTS',
+      ibanNumber: 'GB23NWK60708010014411',
+      swiftNumber: 'NWBKGB2L',
+      paymentsEmail: 'BACS_EMAIL',
+      description: 'THE DESCRIPTION'
+    }
+  }
+
   get contactDetail () {
     const { address, addressDetail, contact } = this
     return {
@@ -193,6 +210,16 @@ class MockData {
       id: 'LOCATION_DETAIL_ID',
       addressId: address.id,
       gridReference: 'GRID_REFERENCE'
+    }
+  }
+
+  get payment () {
+    const { application, applicationLine } = this
+    return {
+      applicationId: application.id,
+      applicationLineId: applicationLine.id,
+      value: 1000.99,
+      description: 'THE PAYMENT DESCRIPTION'
     }
   }
 
@@ -289,6 +316,11 @@ class Mocks {
     return this._charityDetail || (this._charityDetail = new CharityDetail(charityDetail))
   }
 
+  get configuration () {
+    const { configuration } = this.mockData
+    return this._configuration || (this._configuration = new Configuration(configuration))
+  }
+
   get contact () {
     const { contact } = this.mockData
     return this._contact || (this._contact = new Contact(contact))
@@ -331,6 +363,11 @@ class Mocks {
 
   get needToConsult () {
     return this._needToConsult || (this._needToConsult = new NeedToConsult())
+  }
+
+  get payment () {
+    const { payment } = this.mockData
+    return this._payment || (this._payment = new Payment(payment))
   }
 
   get permitHolderType () {

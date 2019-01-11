@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/persistence/entities/application.entity')
@@ -14,81 +15,39 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-let sandbox
 const fakeSlug = 'SLUG'
-
-let fakeApplication
-let fakeApplicationLine
-let fakePayment
-let fakeContactDetail
-let fakeBacsEmail
-let fakeBacs
-let fakeRecovery
 
 const routePath = `/done/${fakeSlug}`
 
+let bacsPayment
+let cardPayment
+let mocks
+let sandbox
+
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationNumber: 'APPLICATION_NUMBER',
-    paymentReceived: 1
-  }
-
-  fakeApplicationLine = {
-    id: 'APPLICATION_LINE_ID'
-  }
-
-  fakePayment = {
-    applicationId: fakeApplication.id,
-    applicationLineId: 'APPLICATION_LINE_ID',
-    value: 1000.99,
-    description: 'THE PAYMENT DESCRIPTION'
-  }
-
-  fakeContactDetail = {
-    applicationId: fakeApplication.id,
-    email: 'CONTACT_EMAIL'
-  }
-
-  fakeBacsEmail = 'BACS_EMAIL'
-
-  fakeBacs = {
-    paymentReference: `WP-${fakeApplication.applicationNumber}`,
-    amount: '1,000.99',
-    sortCode: '60-70-80',
-    accountNumber: '1001 4411',
-    accountName: 'EA RECEIPTS',
-    ibanNumber: 'GB23NWK60708010014411',
-    swiftNumber: 'NWBKGB2L',
-    paymentsEmail: fakeBacsEmail,
-    description: 'THE DESCRIPTION'
-  }
-
-  fakeRecovery = () => ({
-    slug: fakeSlug,
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    applicationLineId: fakeApplicationLine.id,
-    application: new Application(fakeApplication)
-  })
+  mocks = new Mocks()
+  mocks.application.paymentReceived = 1
+  mocks.configuration.paymentsEmail = 'BACS_EMAIL'
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => true)
-  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
-  sandbox.stub(Payment, 'getBacsPayment').value(() => new Payment(fakePayment))
-  sandbox.stub(Payment, 'getCardPayment').value(() => undefined)
-  sandbox.stub(Configuration, 'getValue').value(() => fakeBacsEmail)
+  sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
+  sandbox.stub(Payment, 'getBacsPayment').value(() => bacsPayment)
+  sandbox.stub(Payment, 'getCardPayment').value(() => cardPayment)
+  sandbox.stub(Configuration, 'getValue').value(() => mocks.configuration.paymentsEmail)
 })
 
 lab.afterEach(() => {
   // Restore the sandbox to make sure the stubs are removed correctly
   sandbox.restore()
+  bacsPayment = undefined
+  cardPayment = undefined
 })
 
 lab.experiment('ApplicationReceived page tests:', () => {
@@ -103,7 +62,7 @@ lab.experiment('ApplicationReceived page tests:', () => {
 
     const checkCommonElements = async (doc, heading = 'Application received') => {
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(heading)
-      Code.expect(doc.getElementById('application-name').firstChild.nodeValue).to.equal(fakeApplication.applicationNumber)
+      Code.expect(doc.getElementById('application-name').firstChild.nodeValue).to.equal(mocks.application.applicationNumber)
 
       return doc
     }
@@ -123,20 +82,21 @@ lab.experiment('ApplicationReceived page tests:', () => {
     })
 
     lab.test('returns the application received page correctly if bacs payment was selected', async () => {
+      bacsPayment = mocks.payment
       const doc = await GeneralTestHelper.getDoc(request)
 
       checkCommonElements(doc)
 
-      Code.expect(doc.getElementById('contact-email').firstChild.nodeValue).to.equal(`${fakeContactDetail.email}.`)
-      Code.expect(doc.getElementById('payment-reference').firstChild.nodeValue).to.equal(fakeBacs.paymentReference)
-      Code.expect(doc.getElementById('amount').firstChild.nodeValue).to.equal(fakeBacs.amount)
-      Code.expect(doc.getElementById('sort-code').firstChild.nodeValue).to.equal(fakeBacs.sortCode)
-      Code.expect(doc.getElementById('account-number').firstChild.nodeValue).to.equal(fakeBacs.accountNumber)
-      Code.expect(doc.getElementById('account-name').firstChild.nodeValue).to.equal(fakeBacs.accountName)
-      Code.expect(doc.getElementById('iban-number').firstChild.nodeValue).to.equal(fakeBacs.ibanNumber)
-      Code.expect(doc.getElementById('swift-number').firstChild.nodeValue).to.equal(fakeBacs.swiftNumber)
-      Code.expect(doc.getElementById('payments-email').firstChild.nodeValue).to.equal(fakeBacs.paymentsEmail)
-      Code.expect(doc.getElementById('payments-email-link').getAttribute('href')).to.equal(`mailto:${fakeBacs.paymentsEmail}`)
+      Code.expect(doc.getElementById('contact-email').firstChild.nodeValue).to.equal(`${mocks.contactDetail.email}.`)
+      Code.expect(doc.getElementById('payment-reference').firstChild.nodeValue).to.equal(mocks.configuration.paymentReference)
+      Code.expect(doc.getElementById('amount').firstChild.nodeValue).to.equal(mocks.configuration.amount)
+      Code.expect(doc.getElementById('sort-code').firstChild.nodeValue).to.equal(mocks.configuration.sortCode)
+      Code.expect(doc.getElementById('account-number').firstChild.nodeValue).to.equal(mocks.configuration.accountNumber)
+      Code.expect(doc.getElementById('account-name').firstChild.nodeValue).to.equal(mocks.configuration.accountName)
+      Code.expect(doc.getElementById('iban-number').firstChild.nodeValue).to.equal(mocks.configuration.ibanNumber)
+      Code.expect(doc.getElementById('swift-number').firstChild.nodeValue).to.equal(mocks.configuration.swiftNumber)
+      Code.expect(doc.getElementById('payments-email').firstChild.nodeValue).to.equal(mocks.configuration.paymentsEmail)
+      Code.expect(doc.getElementById('payments-email-link').getAttribute('href')).to.equal(`mailto:${mocks.configuration.paymentsEmail}`)
 
       GeneralTestHelper.checkElementsExist(doc, [
         'reference-number-paragraph',
@@ -170,15 +130,13 @@ lab.experiment('ApplicationReceived page tests:', () => {
     })
 
     lab.test('returns the application received page correctly if card payment was selected', async () => {
-      sandbox.stub(Payment, 'getBacsPayment').value(() => undefined)
-      sandbox.stub(Payment, 'getCardPayment').value(() => new Payment(fakePayment))
-
+      cardPayment = mocks.payment
       const doc = await GeneralTestHelper.getDoc(request)
 
       checkCommonElements(doc, 'Application and card payment received')
 
-      Code.expect(doc.getElementById('payment-description').firstChild.nodeValue).to.equal(fakePayment.description)
-      Code.expect(doc.getElementById('amount').firstChild.nodeValue).to.equal(fakeBacs.amount)
+      Code.expect(doc.getElementById('payment-description').firstChild.nodeValue).to.equal(cardPayment.description)
+      Code.expect(doc.getElementById('amount').firstChild.nodeValue).to.equal(mocks.configuration.amount)
 
       GeneralTestHelper.checkElementsExist(doc, [
         'reference-number-paragraph',
@@ -190,6 +148,15 @@ lab.experiment('ApplicationReceived page tests:', () => {
         'application-received-warning',
         'give-feedback-link'
       ])
+    })
+
+    lab.test(`returns the application received page correctly even when the payment email hasn't been set`, async () => {
+      bacsPayment = mocks.payment
+      delete mocks.contactDetail.email
+
+      const doc = await GeneralTestHelper.getDoc(request)
+
+      Code.expect(doc.getElementById('contact-email').firstChild.nodeValue).to.equal('UNKNOWN EMAIL ADDRESS.')
     })
   })
 })
