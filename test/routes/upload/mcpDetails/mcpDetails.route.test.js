@@ -48,7 +48,7 @@ lab.experiment('Upload MCP Details tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'mcp-details-description',
-      pageHeading: 'Upload the completed MCP template',
+      pageHeading: 'Upload the completed plant or generator list template',
       submitButton: 'Continue',
       fileTypes: ['XLS', 'XLSX', 'ODS', 'CSV']
     }

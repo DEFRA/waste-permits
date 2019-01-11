@@ -833,7 +833,7 @@ const Routes = {
   MCP_DETAILS: {
     path: '/mcp/template/upload',
     view: 'upload/mcpDetails/mcpDetails',
-    pageHeading: 'Upload the completed MCP template',
+    pageHeading: 'Upload the completed plant or generator list template',
     controller: 'upload/mcpDetails/mcpDetails',
     validator: 'upload/upload',
     nextRoute: 'TASK_LIST',
@@ -851,7 +851,7 @@ const Routes = {
   MCP_TEMPLATE: {
     path: '/mcp/template/download',
     view: 'mcpTemplate',
-    pageHeading: 'Download and complete the MCP template',
+    pageHeading: 'Download and complete the plant or generator list template',
     controller: 'mcpTemplate',
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
