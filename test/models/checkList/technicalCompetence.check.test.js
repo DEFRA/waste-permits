@@ -99,39 +99,33 @@ lab.experiment('TechnicalCompetence Check tests:', () => {
           }
         })
 
-        const { link, linkId, linkType } = links.pop()
+        const { link, linkId, linkType } = links.shift()
         Code.expect(link).to.equal('/technical-competence')
         Code.expect(linkType).to.equal('technical management qualification')
         Code.expect(linkId).to.equal(`${evidencePrefix}-link`)
       })
+
+      lab.test(`(technical managers evidence line) works correctly`, async () => {
+        if (Qualifications[qualification] === Qualifications.ESA_EU_SKILLS) {
+          Code.expect(lines.length).to.equal(1)
+          return
+        }
+        Code.expect(lines.length).to.equal(2)
+        const { heading, headingId, answers, links } = lines.pop()
+        Code.expect(heading).to.equal('Technically competent manager')
+        Code.expect(headingId).to.equal(`${managersPrefix}-heading`)
+
+        answers.forEach(({ answer, answerId }, answerIndex) => {
+          Code.expect(answerId).to.equal(`${managersPrefix}-answer-${answerIndex + 1}`)
+          const { filename } = fakeTechnicalManagersEvidence[answerIndex]
+          Code.expect(answer).to.equal(filename)
+        })
+
+        const { link, linkId, linkType } = links.pop()
+        Code.expect(link).to.equal('/technical-competence/technical-managers')
+        Code.expect(linkType).to.equal('technical manager details')
+        Code.expect(linkId).to.equal(`${managersPrefix}-link`)
+      })
     })
   }
-
-  lab.experiment('buildlines', () => {
-    let check
-    let lines
-
-    lab.beforeEach(async () => {
-      sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => ({}))
-      check = new TechnicalCompetenceCheck()
-      lines = await check.buildLines()
-    })
-
-    lab.test(`(technical managers evidence line) works correctly`, async () => {
-      const { heading, headingId, answers, links } = lines.pop()
-      Code.expect(heading).to.equal('Technically competent manager')
-      Code.expect(headingId).to.equal(`${managersPrefix}-heading`)
-
-      answers.forEach(({ answer, answerId }, answerIndex) => {
-        Code.expect(answerId).to.equal(`${managersPrefix}-answer-${answerIndex + 1}`)
-        const { filename } = fakeTechnicalManagersEvidence[answerIndex]
-        Code.expect(answer).to.equal(filename)
-      })
-
-      const { link, linkId, linkType } = links.pop()
-      Code.expect(link).to.equal('/technical-competence/technical-managers')
-      Code.expect(linkType).to.equal('technical manager details')
-      Code.expect(linkId).to.equal(`${managersPrefix}-link`)
-    })
-  })
 })

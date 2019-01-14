@@ -16,10 +16,13 @@ module.exports = class TechnicalCheck extends BaseCheck {
   }
 
   async buildLines () {
-    return Promise.all([
-      this.getQualificationLine(),
-      this.getTechnicalManagersLine()
-    ])
+    const lines = [this.getQualificationLine()]
+
+    const { technicalQualification = '' } = await this.getApplication()
+    if (technicalQualification !== ESA_EU_SKILLS.TYPE) {
+      lines.push(this.getTechnicalManagersLine())
+    }
+    return Promise.all(lines)
   }
 
   static _getDetails (technicalQualification) {
