@@ -15,6 +15,7 @@ const Location = require('../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../src/persistence/entities/locationDetail.entity')
 const Payment = require('../../src/persistence/entities/payment.entity')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
+const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
 
 const ContactDetail = require('../../src/models/contactDetail.model')
 const CharityDetail = require('../../src/models/charityDetail.model')
@@ -236,6 +237,13 @@ class MockData {
     }
   }
 
+  get standardRuleType () {
+    return {
+      categoryName: 'CATEGORY_NAME',
+      standardRuleTypeId: 'STANDARD_RULE_TYPE_ID'
+    }
+  }
+
   get totalCostItemModel () {
     return {
       description: 'TOTAL_COST_ITEM_DESCRIPTION',
@@ -384,7 +392,8 @@ class Mocks {
         authToken: 'AUTH_TOKEN',
         applicationId: this.application.id,
         applicationLineId: this.applicationLine.id,
-        application: this.application
+        application: this.application,
+        standardRule: this.standardRule
       })
     }
     return this._recovery
@@ -401,6 +410,11 @@ class Mocks {
   get standardRule () {
     const { standardRule } = this.mockData
     return this._standardRule || (this._standardRule = new StandardRule(standardRule))
+  }
+
+  get standardRuleType () {
+    const { standardRuleType } = this.mockData
+    return this._standardRuleType || (this._standardRuleType = new StandardRuleType(standardRuleType))
   }
 }
 
