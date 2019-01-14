@@ -15,7 +15,6 @@ const CookieService = require('../../src/services/cookie.service')
 const featureConfig = require('../../src/config/featureConfig')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-let fakeApplication
 let sandbox
 
 const routePath = '/bespoke-or-standard-rules'
@@ -62,19 +61,15 @@ lab.beforeEach(() => {
     headers: {}
   }
 
-  fakeApplication = {
-    id: 'APPLICATION_ID'
-  }
-
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(DataStore, 'save').value(async () => mocks.dataStore.id)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
   // Todo: Remove hasBespokeFeature syub when bespoke is live
   sandbox.stub(featureConfig, 'hasBespokeFeature').value(() => true)
 })
