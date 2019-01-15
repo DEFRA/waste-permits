@@ -56,8 +56,9 @@ Constants.OFFLINE_CATEGORIES = {
 }
 
 Constants.PROCESSING_TIME = {
-  MCP_CATEGORIES_PROCESSING_TIME: '9 weeks',
-  DEFAULT_CATEGORIES_PROCESSING_TIME: '13 weeks'
+  'mpcd-sg': '9 weeks',
+  'mcpd-mcp': '9 weeks',
+  default: '13 weeks'
 }
 
 Constants.PAYMENT_CONFIGURATION_PREFIX = 'WastePermits.ECOM.'

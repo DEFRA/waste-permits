@@ -90,7 +90,7 @@ lab.experiment('Cost and time for this permit page tests:', () => {
       })
 
       lab.test(`when standard rule is for an mcp`, async () => {
-        mocks.standardRuleType.categoryName = 'CATEGORY-NAME-MCP'
+        mocks.standardRuleType.categoryName = 'MCPD-MCP'
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('includes-waste-recovery-plan')).to.not.exist()

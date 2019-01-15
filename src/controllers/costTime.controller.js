@@ -1,8 +1,7 @@
 'use strict'
 
-const Constants = require('../constants')
-const { WASTE_IN_DEPOSIT_FOR_RECOVERY } = Constants.PermitTypes.STANDARD_RULES
-const { MCP_CATEGORIES_PROCESSING_TIME, DEFAULT_CATEGORIES_PROCESSING_TIME } = Constants.PROCESSING_TIME
+const { PROCESSING_TIME, PermitTypes } = require('../constants')
+const { WASTE_IN_DEPOSIT_FOR_RECOVERY } = PermitTypes.STANDARD_RULES
 const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CostTime = require('../models/taskList/costTime.task')
@@ -20,7 +19,7 @@ module.exports = class CostTimeController extends BaseController {
     const { value = 0 } = applicationLine
 
     pageContext.cost = value.toLocaleString()
-    pageContext.time = categoryName.includes('MCP') ? MCP_CATEGORIES_PROCESSING_TIME : DEFAULT_CATEGORIES_PROCESSING_TIME
+    pageContext.time = PROCESSING_TIME[categoryName.toLowerCase()] || PROCESSING_TIME.default
     pageContext.includesWasteRecoveryPlan = standardRule.code === WASTE_IN_DEPOSIT_FOR_RECOVERY
 
     return this.showView({ h, pageContext })
