@@ -830,6 +830,15 @@ const Routes = {
       ]
     }
   },
+  MCP_BUSINESS_ACTIVITY: {
+    path: '/mcp/business-activity',
+    view: 'mcpBusinessActivity',
+    pageHeading: 'What is the main type of business or activity the plant is used for?',
+    controller: 'mcpBusinessActivity',
+    validator: 'mcpBusinessActivity',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   MCP_DETAILS: {
     path: '/mcp/template/upload',
     view: 'upload/mcpDetails/mcpDetails',

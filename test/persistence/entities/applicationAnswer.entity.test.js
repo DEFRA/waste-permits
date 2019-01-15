@@ -42,25 +42,27 @@ lab.experiment('Application Answer Entity tests:', () => {
   })
 
   lab.test('getByQuestionCode() method should return the applicationAnswer correctly', async () => {
-    fakeApplicationAnswer = { questionCode, answerCode: 'ANSWER_CODE', answerText: 'ANSWER_TEXT' }
+    fakeApplicationAnswer = { questionCode, answerCode: 'ANSWER_CODE', answerDescription: 'ANSWER_DESCRIPTION', answerText: 'ANSWER_TEXT' }
     let applicationAnswer = await ApplicationAnswer.getByQuestionCode(context, questionCode)
     Code.expect(applicationAnswer.answerCode).to.equal(fakeApplicationAnswer.answerCode)
+    Code.expect(applicationAnswer.answerDescription).to.equal(fakeApplicationAnswer.answerDescription)
     Code.expect(applicationAnswer.answerText).to.equal(fakeApplicationAnswer.answerText)
     Code.expect(applicationAnswer.questionCode).to.equal(fakeApplicationAnswer.questionCode)
   })
 
   lab.test('listByMultipleQuestionCodes() method should return the applicationAnswer correctly', async () => {
-    fakeApplicationAnswer = { questionCode, answerCode: 'ANSWER_CODE', answerText: 'ANSWER_TEXT' }
+    fakeApplicationAnswer = { questionCode, answerCode: 'ANSWER_CODE', answerDescription: 'ANSWER_DESCRIPTION', answerText: 'ANSWER_TEXT' }
     const applicationAnswers = await ApplicationAnswer.listByMultipleQuestionCodes(context, [questionCode])
     let applicationAnswer = applicationAnswers.pop()
     Code.expect(applicationAnswer.answerCode).to.equal(fakeApplicationAnswer.answerCode)
+    Code.expect(applicationAnswer.answerDescription).to.equal(fakeApplicationAnswer.answerDescription)
     Code.expect(applicationAnswer.answerText).to.equal(fakeApplicationAnswer.answerText)
     Code.expect(applicationAnswer.questionCode).to.equal(fakeApplicationAnswer.questionCode)
   })
 
   lab.test('save() method should save the applicationAnswer correctly', async () => {
     const callActionSpy = sinon.spy(DynamicsDalService.prototype, 'callAction')
-    const applicationAnswer = new ApplicationAnswer({ questionCode, answerCode: 'ANSWER_CODE', answerText: 'ANSWER_TEXT' })
+    const applicationAnswer = new ApplicationAnswer({ questionCode, answerCode: 'ANSWER_CODE', answerDescription: 'ANSWER_DESCRIPTION', answerText: 'ANSWER_TEXT' })
     await applicationAnswer.save(context)
     let action = `defra_applications(${applicationId})/Microsoft.Dynamics.CRM.defra_set_application_answer`
     Code.expect(callActionSpy.calledWith(action, {

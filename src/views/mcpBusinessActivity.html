@@ -1,0 +1,57 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div id="chosen-type-codes-option" class="form-group {{#getFormErrorGroupClass errors.type-codes-option}}{{/getFormErrorGroupClass}}">
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">{{pageHeading}}</legend>
+          {{> common/fieldError fieldId='type-codes-option-error' message=errors.type-codes-option }}
+
+          {{#each mainTypes}}
+          <div class="multiple-choice">
+            <input id="type-codes-option-{{code}}" name="type-codes-option" type="radio" value="{{code}}"{{#if isSelected}} checked{{/if}}>
+            <label id="type-codes-option-{{code}}-label" for="type-codes-option-{{code}}">{{description}}</label>
+          </div>
+          {{/each}}
+
+          <div class="multiple-choice" data-target="type-codes-option-other-select">
+            <input id="type-codes-option-other" name="type-codes-option" type="radio" value="other"{{#if otherIsSelected}} checked{{/if}}>
+            <label id="type-codes-option-other-label" for="type-codes-option-other">Other activity</label>
+          </div>
+          <div id="type-codes-option-other-select" class="panel panel-border-narrow js-hidden {{#getFormErrorGroupClass errors.type-codes-other}}{{/getFormErrorGroupClass}}">
+            <label id="type-codes-option-other-select-label" class="form-label" for="type-codes-other">Select an activity</label>
+            {{> common/fieldError fieldId='type-codes-other-error' message=errors.type-codes-other }}
+
+            <select class="form-control form-control-char-auto {{#if errors.type-codes-other}}form-control-error{{/if}}" id="type-codes-other" name="type-codes-other">
+              <option value="">Show list</option>
+              {{#each otherTypes}}
+                {{#if isSelected}}
+                  <option value="{{code}}" selected>{{description}}</option>
+                {{else}}
+                  <option value="{{code}}">{{description}}</option>
+                {{/if}}
+              {{/each}}
+            </select>
+          </div>
+
+        </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>

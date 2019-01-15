@@ -17,6 +17,7 @@ const StandardRule = require('../../../src/persistence/entities/standardRule.ent
 const ContactDetail = require('../../../src/models/contactDetail.model')
 const CharityDetail = require('../../../src/models/charityDetail.model')
 const NeedToConsult = require('../../../src/models/needToConsult.model')
+const McpBusinessType = require('../../../src/models/mcpBusinessType.model')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const day = 1
@@ -37,6 +38,7 @@ let fakePermitHolderType
 let fakeStandardRule
 let fakeAnnotation
 let fakeNeedToConsult
+let fakeMcpBusinessType
 
 let sandbox
 let context
@@ -99,6 +101,10 @@ lab.beforeEach(() => {
   fakeNeedToConsult = {
     none: true
   }
+  fakeMcpBusinessType = {
+    code: 'CODE',
+    description: 'DESCRIPTION'
+  }
 
   context = {}
 
@@ -120,6 +126,7 @@ lab.beforeEach(() => {
   sandbox.stub(ContactDetail, 'list').value(() => [new ContactDetail(fakeContactDetail)])
   sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail(fakeCharityDetail))
   sandbox.stub(NeedToConsult, 'get').value(() => new NeedToConsult(fakeNeedToConsult))
+  sandbox.stub(McpBusinessType, 'get').value(() => new McpBusinessType(fakeMcpBusinessType))
 })
 
 lab.afterEach(() => {
@@ -340,5 +347,12 @@ lab.experiment('Base Check tests:', () => {
     const mcpDetails = await check.getMcpDetails()
     Code.expect(mcpDetails).to.equal([fakeAnnotation])
     Code.expect(context.mcpDetails).to.equal(await check.getMcpDetails())
+  })
+
+  lab.test('getMcpBusinessType works correctly', async () => {
+    const check = new BaseCheck(context)
+    const mcpBusinessType = await check.getMcpBusinessType()
+    Code.expect(mcpBusinessType).to.equal(fakeMcpBusinessType)
+    Code.expect(context.mcpBusinessType).to.equal(await check.getMcpBusinessType())
   })
 })
