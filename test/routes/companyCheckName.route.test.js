@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -13,16 +14,11 @@ const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Application = require('../../src/persistence/entities/application.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
 const Account = require('../../src/persistence/entities/account.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
+const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
-
-let sandbox
 
 let postRequest
 let getRequest
-let fakeApplication
-let fakeCompanyData
-let fakeAccountData
 
 const routes = {
   'Limited Company': {
@@ -39,24 +35,11 @@ const routes = {
 
 Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath }]) => {
   lab.experiment(companyType, () => {
+    let mocks
+    let sandbox
+
     lab.beforeEach(() => {
-      fakeApplication = {
-        permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
-        tradingName: 'THE TRADING NAME'
-      }
-
-      fakeCompanyData = {
-        name: 'THE COMPANY NAME',
-        address: 'THE COMPANY ADDRESS',
-        status: 'ACTIVE',
-        IsActive: true
-      }
-
-      fakeAccountData = {
-        id: 'ACCOUNT_ID',
-        companyNumber: fakeCompanyData.companyNumber,
-        accountName: fakeCompanyData.name
-      }
+      mocks = new Mocks()
 
       getRequest = {
         method: 'GET',
@@ -76,15 +59,15 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
 
       // Stub methods
       sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-      sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompanyData)
-      sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-      sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine())
-      sandbox.stub(Account, 'getByApplicationId').value(() => new Account(fakeAccountData))
-      sandbox.stub(Account.prototype, 'confirm').value(() => {})
-      sandbox.stub(Account.prototype, 'save').value(() => {})
-      sandbox.stub(Application.prototype, 'save').value(() => {})
+      sandbox.stub(CompanyLookupService, 'getCompany').value(() => mocks.companyData)
+      sandbox.stub(Application, 'getById').value(() => mocks.application)
+      sandbox.stub(ApplicationLine, 'getById').value(() => mocks.applicationLine)
+      sandbox.stub(Account, 'getByApplicationId').value(() => mocks.account)
+      sandbox.stub(Account.prototype, 'confirm').value(() => undefined)
+      sandbox.stub(Account.prototype, 'save').value(() => undefined)
+      sandbox.stub(Application.prototype, 'save').value(() => undefined)
       sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-      sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+      sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
     })
 
     lab.afterEach(() => {
@@ -122,10 +105,10 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
         ])
 
         element = doc.getElementById('company-name').firstChild
-        Code.expect(element.nodeValue).to.equal(fakeAccountData.accountName)
+        Code.expect(element.nodeValue).to.equal(mocks.account.accountName)
 
         element = doc.getElementById('company-address').firstChild
-        Code.expect(element.nodeValue).to.equal(fakeCompanyData.address)
+        Code.expect(element.nodeValue).to.equal(mocks.companyData.address)
 
         element = doc.getElementById('business-trading-name')
         Code.expect(element.getAttribute('value')).to.equal(expectedValue)
@@ -164,10 +147,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
 
       lab.experiment(`GET ${routePath} page tests`, () => {
         lab.test('Check page elements - no existing trading name saved', async () => {
-          Application.getById = () => new Application({
-            permitHolderOrganisationId: fakeAccountData.id,
-            tradingName: undefined
-          })
+          delete mocks.application.tradingName
           checkPageElements(getRequest, true, '')
         })
 
@@ -178,7 +158,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
         })
 
         lab.test('Check page elements - existing trading name loaded', async () => {
-          checkPageElements(getRequest, true, fakeApplication.tradingName)
+          checkPageElements(getRequest, true, mocks.application.tradingName)
         })
       })
 
@@ -186,7 +166,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
         lab.experiment('Success', () => {
           lab.test('Checkbox ticked and trading name entered - redirects to the next route', async () => {
             postRequest.payload['use-business-trading-name'] = 'on'
-            postRequest.payload['business-trading-name'] = fakeApplication.tradingName
+            postRequest.payload['business-trading-name'] = mocks.application.tradingName
 
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)

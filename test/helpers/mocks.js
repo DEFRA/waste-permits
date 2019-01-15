@@ -153,6 +153,15 @@ class MockData {
     }
   }
 
+  get companyData () {
+    return {
+      name: 'THE COMPANY NAME',
+      address: 'THE COMPANY ADDRESS',
+      status: 'ACTIVE',
+      IsActive: true
+    }
+  }
+
   get configuration () {
     const { application } = this
     return {
@@ -235,21 +244,24 @@ class MockData {
 
   get permitHolderType () {
     return {
-      type: 'Limited company'
+      type: 'Limited company',
+      canApplyOnline: true
     }
   }
 
   get standardRule () {
     return {
+      id: 'STANDARD_RULE_ID',
       code: 'STANDARD_RULE_CODE',
-      permitName: 'STANDARD_RULE_NAME'
+      permitName: 'STANDARD_RULE_NAME',
+      standardRuleTypeId: this.standardRuleType.id
     }
   }
 
   get standardRuleType () {
     return {
       categoryName: 'CATEGORY_NAME',
-      standardRuleTypeId: 'STANDARD_RULE_TYPE_ID'
+      id: 'STANDARD_RULE_TYPE_ID'
     }
   }
 
@@ -333,6 +345,11 @@ class Mocks {
     return this._charityDetail || (this._charityDetail = new CharityDetail(charityDetail))
   }
 
+  get companyData () {
+    const { companyData } = this.mockData
+    return this._companyData || (this._configuration = Object.assign({}, companyData))
+  }
+
   get configuration () {
     const { configuration } = this.mockData
     return this._configuration || (this._configuration = new Configuration(configuration))
@@ -350,15 +367,23 @@ class Mocks {
 
   get context () {
     if (!this._context) {
+      const account = this.account
       const application = this.application
       const applicationLine = this.applicationLine
-      this._context = Object.assign({}, {
+      const standardRule = this.standardRule
+      const permitHolderType = this.permitHolderType
+      this._context = {
         authToken: 'AUTH_TOKEN',
+        account,
         applicationId: application.id,
         applicationLineId: applicationLine.id,
+        standardRuleId: standardRule.id,
+        standardRuleTypeId: standardRule.standardRuleTypeId,
         application,
-        applicationLine
-      })
+        applicationLine,
+        permitHolderType,
+        standardRule
+      }
     }
     return this._context
   }
@@ -409,13 +434,7 @@ class Mocks {
 
   get recovery () {
     if (!this._recovery) {
-      this._recovery = Object.assign({}, {
-        authToken: 'AUTH_TOKEN',
-        applicationId: this.application.id,
-        applicationLineId: this.applicationLine.id,
-        application: this.application,
-        standardRule: this.standardRule
-      })
+      this._recovery = this.context
     }
     return this._recovery
   }
