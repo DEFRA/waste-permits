@@ -55,6 +55,12 @@ Constants.OFFLINE_CATEGORIES = {
   }
 }
 
+Constants.PROCESSING_TIME = {
+  'mpcd-sg': '9 weeks',
+  'mcpd-mcp': '9 weeks',
+  default: '13 weeks'
+}
+
 Constants.PAYMENT_CONFIGURATION_PREFIX = 'WastePermits.ECOM.'
 
 Constants.DEFRA_COOKIE_KEY = 'DefraSession'

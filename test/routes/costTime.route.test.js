@@ -4,14 +4,15 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 
 const Application = require('../../src/persistence/entities/application.entity')
 const CostTime = require('../../src/models/taskList/costTime.task')
-const StandardRule = require('../../src/persistence/entities/standardRule.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
+const RecoveryService = require('../../src/services/recovery.service')
+const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -20,31 +21,23 @@ const routePath = '/costs-times'
 const nextRoutePath = '/task-list'
 const errorPath = '/errors/technical-problem'
 
-let fakeApplication
-let fakeStandardRule
+let mocks
 let sandbox
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID'
-  }
-
-  fakeStandardRule = {
-    code: 'STANDARD_RULE_CODE',
-    guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(CostTime, 'isComplete').value(() => false)
   sandbox.stub(CostTime, 'updateCompleteness').value(() => {})
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(StandardRuleType, 'getById').value(() => mocks.standardRuleType)
 })
 
 lab.afterEach(() => {
@@ -85,13 +78,23 @@ lab.experiment('Cost and time for this permit page tests:', () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('includes-waste-recovery-plan')).to.not.exist()
+        Code.expect(GeneralTestHelper.getText(doc.getElementById('length-of-time-text'))).to.equal('up to 13 weeks')
       })
 
       lab.test(`when standard rule is a recovery plan`, async () => {
-        fakeStandardRule.code = 'SR2015 No 39'
+        mocks.standardRule.code = 'SR2015 No 39'
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('includes-waste-recovery-plan')).to.exist()
+        Code.expect(GeneralTestHelper.getText(doc.getElementById('length-of-time-text'))).to.equal('up to 13 weeks')
+      })
+
+      lab.test(`when standard rule is for an mcp`, async () => {
+        mocks.standardRuleType.categoryName = 'MCPD-MCP'
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        checkCommonElements(doc)
+        Code.expect(doc.getElementById('includes-waste-recovery-plan')).to.not.exist()
+        Code.expect(GeneralTestHelper.getText(doc.getElementById('length-of-time-text'))).to.equal('up to 9 weeks')
       })
     })
   })
@@ -115,7 +118,7 @@ lab.experiment('Cost and time for this permit page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when updateCompletenesss fails', async () => {
+      lab.test('redirects to error screen when updateCompleteness fails', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         CostTime.updateCompleteness = () => {
           throw new Error('update failed')
