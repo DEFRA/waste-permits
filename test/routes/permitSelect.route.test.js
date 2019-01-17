@@ -23,6 +23,7 @@ const { COOKIE_RESULT } = require('../../src/constants')
 const routePath = '/permit/select'
 const nextRoutePath = '/task-list'
 const offlineRoutePath = '/start/apply-offline'
+const existingPermitRoutePath = '/existing-permit'
 const errorPath = '/errors/technical-problem'
 
 let fakeApplication
@@ -229,6 +230,21 @@ lab.experiment('Select a permit page tests:', () => {
         // Make sure a redirection has taken place correctly
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(offlineRoutePath)
+      })
+
+      lab.test(`redirects to "${existingPermitRoutePath}" when permit selected is an MCP permit`, async () => {
+        fakeStandardRuleType = {
+          id: 'STANDARD_RULE_TYPE_ID',
+          category: 'MCPD category',
+          hint: 'category_HINT',
+          categoryName: 'mcpd-mcp'
+        }
+        postRequest.payload['chosen-permit'] = fakeStandardRule.id
+        const res = await server.inject(postRequest)
+
+        // Make sure a redirection has taken place correctly
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(existingPermitRoutePath)
       })
     })
 

@@ -857,6 +857,22 @@ const Routes = {
       ]
     }
   },
+  MCP_EXISTING_PERMIT: {
+    path: '/existing-permit',
+    view: 'existingPermit',
+    pageHeading: 'Does your site or installation already have an environmental (EPR) permit?',
+    controller: 'existingPermit',
+    validator: 'existingPermit',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
+  MCP_HAS_EXISTING_PERMIT: {
+    path: '/existing-permit/yes',
+    view: 'contactUsBefore',
+    pageHeading: 'Contact us before you apply',
+    controller: 'contactUsBefore',
+    types: 'GET, POST'
+  },
   MCP_TEMPLATE: {
     path: '/mcp/template/download',
     view: 'mcpTemplate',
