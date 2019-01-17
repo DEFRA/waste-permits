@@ -4,18 +4,18 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
+const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-const permitSelectRoute = '/permit/select'
 const permitCategoryRoute = '/permit/category'
 const permitHolderRoute = '/permit-holder'
 
@@ -55,13 +55,6 @@ const offlineCategories = {
   }
 }
 
-const onlineCategory = {
-  id: 'mining',
-  name: 'Mining',
-  category: 'Mining',
-  canApplyOnline: true
-}
-
 const offlineStandardRule = {
   id: 'offline-permit',
   permitName: 'Offline Permit',
@@ -73,45 +66,27 @@ const routePath = '/start/apply-offline'
 const errorPath = '/errors/technical-problem'
 const startPath = '/errors/order/start-at-beginning'
 
-let fakeApplication
-let fakeStandardRule
-let fakeStandardRuleId
-let fakeStandardRuleType
+let mocks
 let sandbox
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicantType: 910400001,
-    organisationType: 910400000
-  }
-
-  fakeStandardRule = {
-    id: 'STANDARD_RULE_ID',
-    canApplyOnline: false
-  }
-
-  fakeStandardRuleType = {
-    id: 'offline-category'
-  }
-  fakeStandardRuleId = 'offline-permit'
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub cookies
   GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
-    standardRuleTypeId: () => fakeStandardRuleType.id,
-    standardRuleId: () => fakeStandardRuleId
+    standardRuleTypeId: () => mocks.standardRuleType.id,
+    standardRuleId: () => mocks.standardRule.id
   })
 
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(StandardRule, 'getById').value(() => new Application(fakeStandardRule))
+  sandbox.stub(StandardRule, 'getById').value(() => mocks.standardRule)
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -145,7 +120,8 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
             const standardRuleType = offlineCategories[type]
 
             lab.test(`"${standardRuleType.category}"`, async () => {
-              fakeStandardRuleType = standardRuleType
+              delete mocks.recovery.standardRuleId
+              Object.assign(mocks.standardRuleType, standardRuleType)
 
               const doc = await GeneralTestHelper.getDoc(getRequest)
               checkCommonElements(doc)
@@ -160,26 +136,10 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
               ])
             })
           })
-
-        lab.test(`"${onlineCategory.category}" for permit "${offlineStandardRule.permitName}"`, async () => {
-          fakeStandardRule = offlineStandardRule
-
-          const doc = await GeneralTestHelper.getDoc(getRequest)
-          checkCommonElements(doc)
-          Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`Apply for ${offlineStandardRule.permitName.toLowerCase()} - ${offlineStandardRule.code}`)
-          Code.expect(doc.getElementById('change-selection-link').getAttribute('href')).to.equal(permitSelectRoute)
-
-          Code.expect(doc.getElementById('standard-rules-link').getAttribute('href')).to.equal(defaultLink)
-
-          GeneralTestHelper.checkElementsExist(doc, [
-            'standard-rules-prefix',
-            'standard-rules-link-text'
-          ])
-        })
       })
 
-      lab.test('when the category other is selected', async () => {
-        fakeApplication.organisationType = 910400006
+      lab.test('when the permit holder other is selected', async () => {
+        Object.assign(mocks.permitHolderType, permitHolderTypes.other)
 
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
@@ -198,8 +158,8 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the application ID', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('recovery failed')
         }
 
         const res = await server.inject(getRequest)
@@ -209,8 +169,8 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
       })
 
       lab.test('redirects to start screen when cookie does not contain an offline category id and the permit holder can apply online', async () => {
-        fakeStandardRuleType = offlineStandardRule
-        fakeStandardRule.canApplyOnline = true
+        Object.assign(mocks.standardRule, offlineStandardRule)
+        mocks.standardRule.canApplyOnline = true
         const spy = sandbox.spy(LoggingService, 'logError')
 
         const res = await server.inject(getRequest)
