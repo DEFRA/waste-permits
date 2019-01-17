@@ -6,22 +6,33 @@ const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const RecoveryService = require('../services/recovery.service')
 const StandardRuleType = require('../persistence/entities/standardRuleType.entity')
-const { OFFLINE_CATEGORIES } = Constants
+const { OFFLINE_CATEGORIES, MCP_CATEGORY_NAMES } = Constants
+const featureConfig = require('../config/featureConfig')
 
 module.exports = class PermitCategoryController extends BaseController {
   static isOfflineCategory (categoryId) {
     // Check if the categoryId matches one of the offline categories
     return Object.keys(OFFLINE_CATEGORIES).some((item) => OFFLINE_CATEGORIES[item].id === categoryId)
   }
+  static isMcpCategory (categoryName) {
+    return Boolean(MCP_CATEGORY_NAMES.find((mcpCategoryName) => mcpCategoryName === categoryName))
+  }
+  static useMcpFeature () {
+    return featureConfig.hasMcpFeature
+  }
 
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
 
-    const categories = await StandardRuleType.getCategories(context)
+    let categories = await StandardRuleType.getCategories(context)
     categories.forEach((category) => {
       category.categoryName = category.categoryName.toLowerCase()
     })
+
+    if (!PermitCategoryController.useMcpFeature()) {
+      categories = categories.filter(({ categoryName }) => !PermitCategoryController.isMcpCategory(categoryName))
+    }
 
     pageContext.categories = categories
 

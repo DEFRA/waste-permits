@@ -42,6 +42,7 @@ lab.beforeEach(() => {
   fakeStandardRule = {
     id: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
     permitName: 'Metal recycling, vehicle storage, depollution and dismantling facility',
+    selectionDisplayName: 'Vehicle dismantling',
     limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
     code: 'SR2015 No 18',
     codeForId: 'sr2015-no-18',
@@ -107,6 +108,7 @@ lab.experiment('Select a permit page tests:', () => {
           newPermit({
             id: 'permit-0',
             permitName: 'Permit one',
+            selectionDisplayName: 'Select permit one',
             limits: '',
             code: 'permit code 0',
             codeForId: 'permit-code-0'
@@ -114,6 +116,7 @@ lab.experiment('Select a permit page tests:', () => {
           newPermit({
             id: 'permit-1',
             permitName: 'Permit two',
+            selectionDisplayName: 'Select permit two',
             limits: 'limit two',
             code: 'permit code 1',
             codeForId: 'permit-code-1'
@@ -121,6 +124,7 @@ lab.experiment('Select a permit page tests:', () => {
           newPermit({
             id: 'permit-2',
             permitName: 'Permit three',
+            selectionDisplayName: 'Select permit three',
             limits: '',
             code: 'permit code 2',
             codeForId: 'permit-code-2'
@@ -128,6 +132,7 @@ lab.experiment('Select a permit page tests:', () => {
           newPermit({
             id: 'permit-3',
             permitName: 'Permit four',
+            selectionDisplayName: 'Select permit four',
             limits: '',
             code: 'permit code 3',
             codeForId: 'permit-code-3'
@@ -140,11 +145,11 @@ lab.experiment('Select a permit page tests:', () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
-        permits.forEach(({ id, permitName, code, limits, codeForId }) => {
+        permits.forEach(({ id, permitName, selectionDisplayName, code, limits, codeForId }) => {
           const prefix = `chosen-permit-${codeForId}`
           Code.expect(doc.getElementById(`${prefix}-input`).getAttribute('value')).to.equal(code)
           Code.expect(doc.getElementById(`${prefix}-label`)).to.exist()
-          Code.expect(doc.getElementById(`${prefix}-name`).firstChild.nodeValue.trim()).to.equal(permitName)
+          Code.expect(doc.getElementById(`${prefix}-name`).firstChild.nodeValue.trim()).to.equal(selectionDisplayName)
           Code.expect(doc.getElementById(`${prefix}-code`).firstChild.nodeValue.trim()).to.equal(code)
           if (limits) {
             Code.expect(doc.getElementById(`${prefix}-weight`).firstChild.nodeValue.trim()).to.equal(limits)

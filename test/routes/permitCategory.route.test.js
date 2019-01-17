@@ -14,6 +14,8 @@ const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
+const PermitCategoryController = require('../../src/controllers/permitCategory.controller')
+
 const routePath = '/permit/category'
 const nextRoutePath = '/permit/select'
 const offlineRoutePath = '/start/apply-offline'
@@ -40,6 +42,7 @@ const offlineCategories = [
 let fakeApplication
 let fakeStandardRuleType
 let sandbox
+let mcpFeatureStub
 
 lab.beforeEach(() => {
   fakeApplication = {
@@ -62,6 +65,8 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  // Todo: Remove useMcpFeature stub when MCP is live
+  mcpFeatureStub = sandbox.stub(PermitCategoryController, 'useMcpFeature').callsFake(() => true)
 })
 
 lab.afterEach(() => {
@@ -118,6 +123,12 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
             categoryName: 'transfer',
             category: 'Waste transfer station or amenity site',
             hint: 'with or without treatment'
+          },
+          {
+            id: 'category-4',
+            categoryName: 'mcpd-mcp',
+            category: 'MCP',
+            hint: ''
           }
         ]
 
@@ -140,6 +151,13 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
           }
         })
       })
+
+      lab.test('should exclude MCP categories ', async () => {
+        mcpFeatureStub.callsFake(() => false)
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        Code.expect(doc.getElementById('chosen-category-mcpd-mcp-input')).to.not.exist()
+      })
+
     })
 
     lab.experiment('failure', () => {

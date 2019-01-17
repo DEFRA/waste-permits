@@ -254,6 +254,7 @@ class MockData {
       id: 'STANDARD_RULE_ID',
       code: 'STANDARD_RULE_CODE',
       permitName: 'STANDARD_RULE_NAME',
+      selectionDisplayName: 'STANDARD_RULE_SELECTION_DISPLAY_NAME',
       standardRuleTypeId: this.standardRuleType.id
     }
   }

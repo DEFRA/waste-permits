@@ -28,12 +28,16 @@ const fakeDynamicsRecord = (options = {}) => {
   }
 }
 
+let fakeDynamicsResult
+
+let dynamicsSearchStub
+
 lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
+  dynamicsSearchStub = sandbox.stub(DynamicsDalService.prototype, 'search').callsFake(async () => fakeDynamicsResult)
 })
 
 lab.afterEach(() => {
@@ -42,24 +46,6 @@ lab.afterEach(() => {
 })
 
 lab.experiment('StandardRuleType Entity tests:', () => {
-  lab.test('list() method returns a list of StandardRuleType objects', async () => {
-    const categories = ['Electrical', 'Metal', 'Plastic']
-    DynamicsDalService.prototype.search = () => {
-      return {
-        value: categories.map((category) => fakeDynamicsRecord({ category }))
-      }
-    }
-
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
-    const standardRuleList = await StandardRuleType.list(context)
-    Code.expect(Array.isArray(standardRuleList)).to.be.true()
-    Code.expect(standardRuleList.length).to.equal(categories.length)
-    standardRuleList.forEach((standardRuleType, index) => {
-      Code.expect(standardRuleType).to.equal(Object.assign({}, fakeStandardRuleType, { category: categories[index] }))
-    })
-    Code.expect(spy.callCount).to.equal(1)
-  })
-
   lab.test('getCategories() method returns a list of sorted online and offline Category objects', async () => {
     const categories = ['Electrical', 'Metal', 'Plastic']
 
@@ -69,13 +55,10 @@ lab.experiment('StandardRuleType Entity tests:', () => {
       { categoryName: 'Water', category: 'Water discharges' }
     ]
 
-    DynamicsDalService.prototype.search = () => {
-      return {
-        value: categories.map((category) => fakeDynamicsRecord({ category }))
-      }
+    fakeDynamicsResult = {
+      value: categories.map((category) => fakeDynamicsRecord({ category }))
     }
 
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
     const standardRuleList = await StandardRuleType.getCategories(context)
     Code.expect(Array.isArray(standardRuleList)).to.be.true()
     Code.expect(standardRuleList.length).to.equal(categories.length + offlineCategories.length)
@@ -103,7 +86,33 @@ lab.experiment('StandardRuleType Entity tests:', () => {
         offlineIndex++
       }
     })
-    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(dynamicsSearchStub.callCount).to.equal(1)
+  })
+
+  lab.test('getById() method returns an offline category', async () => {
+    const offlineCategory = { categoryName: 'Flood', category: 'Flood risk activities' }
+
+    const category = await StandardRuleType.getById(context, 'offline-category-flood')
+    Code.expect(category).to.equal({
+      id: `offline-category-${offlineCategory.categoryName.toLowerCase()}`,
+      categoryName: offlineCategory.categoryName,
+      category: offlineCategory.category,
+      hint: ''
+    })
+  })
+
+  lab.test('getById() method returns a standard rule type', async () => {
+    const fakeCategory = 'Fake'
+
+    fakeDynamicsResult = fakeDynamicsRecord({ category: fakeCategory })
+
+    const category = await StandardRuleType.getById(context, fakeStandardRuleType.id)
+    Code.expect(category).to.equal({
+      id: fakeStandardRuleType.id,
+      categoryName: fakeStandardRuleType.categoryName.toLowerCase(),
+      category: fakeCategory,
+      hint: fakeStandardRuleType.hint
+    })
   })
 
   lab.test('save() method should fail as this entity is readOnly', async () => {
