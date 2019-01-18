@@ -37,6 +37,11 @@ Constants.LogLevels = {
   DEBUG: 'DEBUG'
 }
 
+Constants.MCP_CATEGORY_NAMES = [
+  'mcpd-mcp',
+  'mcpd-sg'
+]
+
 Constants.OFFLINE_CATEGORIES = {
   FLOOD_RISK_ACTIVITIES: {
     id: 'offline-category-flood',
@@ -56,10 +61,11 @@ Constants.OFFLINE_CATEGORIES = {
 }
 
 Constants.PROCESSING_TIME = {
-  'mpcd-sg': '9 weeks',
-  'mcpd-mcp': '9 weeks',
   default: '13 weeks'
 }
+Constants.MCP_CATEGORY_NAMES.forEach((mcpCategoryName) => {
+  Constants.PROCESSING_TIME[mcpCategoryName] = '9 weeks'
+})
 
 Constants.PAYMENT_CONFIGURATION_PREFIX = 'WastePermits.ECOM.'
 

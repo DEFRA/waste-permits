@@ -3,6 +3,15 @@
 const { OFFLINE_CATEGORIES } = require('../../constants')
 const BaseEntity = require('./base.entity')
 
+const convertOfflineCategory = (offlineCategoryEntry) => {
+  const { id, category, name: categoryName, hint = '' } = offlineCategoryEntry
+  return { id, categoryName, category, hint }
+}
+const convertStandardRuleType = (standardRuleTypeEntity) => {
+  const { id = '', categoryName = '', category = '', hint = '' } = standardRuleTypeEntity
+  return { id, categoryName: categoryName.toLowerCase(), category, hint }
+}
+
 class StandardRuleType extends BaseEntity {
   static get dynamicsEntity () {
     return 'defra_standardruletypes'
@@ -21,21 +30,11 @@ class StandardRuleType extends BaseEntity {
     ]
   }
 
-  static async list (context) {
-    return this.listBy(context, {}, 'category')
-  }
-
   static async getCategories (context) {
-    const categories = Object.keys(OFFLINE_CATEGORIES)
-      .map((key) => {
-        const { id, category, name: categoryName, hint = '' } = OFFLINE_CATEGORIES[key]
-        return { id, categoryName, category, hint }
-      })
-
-    const standardRuleTypes = await StandardRuleType.list(context)
-    standardRuleTypes.forEach(({ id = '', categoryName = '', category = '', hint = '' }) => {
-      categories.push({ id, categoryName: categoryName.toLowerCase(), category, hint })
-    })
+    const offlineCategories = Object.values(OFFLINE_CATEGORIES).map((offlineCategory) => convertOfflineCategory(offlineCategory))
+    const standardRuleTypeEntities = await StandardRuleType.listBy(context)
+    const standardRuleTypes = standardRuleTypeEntities.map((standardRuleType) => convertStandardRuleType(standardRuleType))
+    const categories = offlineCategories.concat(standardRuleTypes)
 
     categories.sort((a, b) => {
       const categoryA = a.category.toLowerCase() // ignore upper and lowercase
@@ -48,6 +47,16 @@ class StandardRuleType extends BaseEntity {
     })
 
     return categories
+  }
+
+  static async getById (context, categoryId) {
+    const offlineCategory = Object.values(OFFLINE_CATEGORIES).find(({ id }) => id === categoryId)
+    if (offlineCategory) {
+      return convertOfflineCategory(offlineCategory)
+    } else {
+      const standardRuleType = await super.getById(context, categoryId)
+      return convertStandardRuleType(standardRuleType)
+    }
   }
 }
 

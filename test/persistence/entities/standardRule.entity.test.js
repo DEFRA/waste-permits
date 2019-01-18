@@ -21,6 +21,8 @@ const fakeApplicationLine = {
 const fakeStandardRule = {
   id: 'STANDARD_RULE_ID',
   permitName: 'STANDARD_RULE_NAME',
+  selectionDisplayName: 'SELECTION_DISPLAY_NAME',
+  displayOrder: 1,
   limits: 'STANDARD_RULE_LIMITS',
   code: 'SR2015 No 18',
   wamitabRiskLevel: 'WAMITAB_RISK_LEVEL',
@@ -38,6 +40,8 @@ const fakeDynamicsRecord = (options = {}) => {
     defra_code: standardRule.code,
     defra_wamitabrisklevel: standardRule.wamitabRiskLevel,
     defra_rulesnamegovuk: standardRule.permitName,
+    defra_nameinrulesetdocument: standardRule.selectionDisplayName,
+    defra_displayorder: standardRule.displayOrder,
     defra_standardruleid: standardRule.id,
     defra_guidanceurl: standardRule.guidanceUrl,
     defra_canapplyfor: standardRule.canApplyFor,
