@@ -1,0 +1,39 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">Does your site or installation already have an environmental (EPR) permit?</legend>
+
+          <div id="started-application" class="form-group {{#getFormErrorGroupClass errors.existing-permit}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='existing-permit-error' message=errors.existing-permit }}
+
+            <div class="multiple-choice">
+              <input id="existing-permit-yes" type="radio" name="existing-permit" value="yes">
+              <label id="existing-permit-yes-label" for="existing-permit-yes">
+                Yes and I am applying for the same site and operator as the existing permit
+              </label>
+            </div>
+            <div class="multiple-choice">
+              <input id="existing-permit-no" type="radio" name="existing-permit" value="no">
+              <label id="existing-permit-no-label" for="existing-permit-no">No</label>
+            </div>
+          </div>
+        </fieldset>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>
