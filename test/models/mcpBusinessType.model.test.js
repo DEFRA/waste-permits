@@ -99,5 +99,4 @@ lab.experiment('McpBusinessType test:', () => {
       Code.expect(mcpBusinessTypesLists).to.equal(correctList)
     })
   })
-
 })

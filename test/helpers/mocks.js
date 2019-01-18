@@ -88,7 +88,7 @@ class MockData {
       tradingName: 'TRADING_NAME',
       useTradingName: true,
       relevantOffences: true,
-      relevantOffencesDetails: 'CONVICTION DETAILS 1\nCONVICTION DETAILS 2',
+      relevantOffencesDetails: 'RELEVANT OFFENCES DETAILS',
       bankruptcy: true,
       bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS',
       saveAndReturnEmail: 'SAVE@RETURN.EMAIL'

@@ -8,7 +8,7 @@
         <form method="POST" action="{{formAction}}" novalidate="novalidate">
           {{> common/csrfToken token=DefraCsrfToken}}
 
-          <p id="paragraph-1">This should be someone who has authority to sign on behalf of the local authority or public body.</p>
+          <p id="authority-paragraph">This should be someone who has authority to sign on behalf of the {{#unless isCharity}}local authority or public {{/unless}}body.</p>
 
           <div class="form-group {{#getFormErrorGroupClass errors.first-name}}{{/getFormErrorGroupClass}}">
             <label id="first-name-label" class="form-label" for="first-name">
