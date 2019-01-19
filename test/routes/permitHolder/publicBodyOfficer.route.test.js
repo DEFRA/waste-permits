@@ -5,6 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 const GeneralTestHelper = require('../generalTestHelper.test')
+const Mocks = require('../../helpers/mocks')
 
 const server = require('../../../server')
 
@@ -17,51 +18,40 @@ const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
 
-let fakeApplication
-let fakeContactDetail
-let fakeRecovery
-
-let fakeApplicationId = 'APPLICATION_ID'
-let fakeContactDetailId = 'CONTACT_DETAIL_ID'
 let validPayload
 
 const routePath = '/permit-holder/public-body/officer'
 const nextRoutePath = '/permit-holder/public-body/declare-offences'
 
-lab.beforeEach(() => {
-  fakeApplication = {
-    id: fakeApplicationId
-  }
+let mocks
 
-  fakeContactDetail = {
-    id: fakeContactDetailId,
+lab.beforeEach(() => {
+  mocks = new Mocks()
+
+  Object.assign(mocks.contactDetail, {
     firstName: 'John',
     lastName: 'Smith',
     jobTitle: 'Officer',
-    email: 'john.smith@email.com'
-  }
+    email: 'john.smith@email.com' }
+  )
 
-  fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    application: new Application(fakeApplication)
-  })
+  const { firstName, lastName, jobTitle, email } = mocks.contactDetail
 
   validPayload = {
-    'first-name': fakeContactDetail.firstName,
-    'last-name': fakeContactDetail.lastName,
-    'job-title': fakeContactDetail.jobTitle,
-    'email': fakeContactDetail.email
+    'first-name': firstName,
+    'last-name': lastName,
+    'job-title': jobTitle,
+    'email': email
   }
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
   sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
   sandbox.stub(PublicBodyDetails, 'updateCompleteness').value(() => {})
 })
@@ -76,6 +66,29 @@ lab.experiment('Public Body Officer page tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     let request
+
+    const checkPageContent = async (request, charityDetail) => {
+      mocks.recovery.charityDetail = charityDetail
+      const doc = await GeneralTestHelper.getDoc(request)
+
+      Code.expect(GeneralTestHelper.getText(doc.getElementById('page-heading'))).to.equal('Who is the responsible officer or executive?')
+      Code.expect(GeneralTestHelper.getText(doc.getElementById('submit-button'))).to.equal('Continue')
+      if (charityDetail) {
+        Code.expect(GeneralTestHelper.getText(doc.getElementById('authority-paragraph'))).not.includes('local authority or public body')
+      } else {
+        Code.expect(GeneralTestHelper.getText(doc.getElementById('authority-paragraph'))).includes('local authority or public body')
+      }
+
+      // Test for the existence of expected static content
+      GeneralTestHelper.checkElementsExist(doc, [
+        'first-name-label',
+        'last-name-label',
+        'job-title-label',
+        'email-label',
+        'email-hint'
+      ])
+    }
+
     lab.beforeEach(() => {
       request = {
         method: 'GET',
@@ -92,20 +105,12 @@ lab.experiment('Public Body Officer page tests:', () => {
       Code.expect(element).to.exist()
     })
 
-    lab.test('returns the contact page correctly', async () => {
-      const doc = await GeneralTestHelper.getDoc(request)
+    lab.test('returns the contact page correctly when body is not a charity', async () => {
+      return checkPageContent(request)
+    })
 
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Who is the responsible officer or executive?')
-      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
-
-      // Test for the existence of expected static content
-      GeneralTestHelper.checkElementsExist(doc, [
-        'first-name-label',
-        'last-name-label',
-        'job-title-label',
-        'email-label',
-        'email-hint'
-      ])
+    lab.test('returns the contact page correctly when body is a charity', async () => {
+      return checkPageContent(request, mocks.charityDetail)
     })
   })
 

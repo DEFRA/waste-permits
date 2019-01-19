@@ -1,6 +1,7 @@
 'use strict'
 
 const BaseController = require('../../base.controller')
+const Constants = require('../../../constants')
 const RecoveryService = require('../../../services/recovery.service')
 
 const { PERMIT_HOLDER_TYPES } = require('../../../dynamics')
@@ -8,7 +9,7 @@ const { PERMIT_HOLDER_TYPES } = require('../../../dynamics')
 module.exports = class DeclarationsController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const { application, permitHolderType } = await RecoveryService.createApplicationContext(h)
+    const { application, permitHolderType, charityDetail } = await RecoveryService.createApplicationContext(h)
 
     switch (permitHolderType) {
       case PERMIT_HOLDER_TYPES.INDIVIDUAL:
@@ -37,6 +38,11 @@ module.exports = class DeclarationsController extends BaseController {
     pageContext.declared = (pageContext.formValues.declared === 'yes')
     pageContext.noneDeclared = (pageContext.formValues.declared === 'no')
     pageContext.declaredDetailsMaxLength = this.validator.getDeclaredDetailsMaxLength().toLocaleString()
+
+    if (charityDetail && charityDetail.charityPermitHolder && this.route.pageHeadingCharity) {
+      pageContext.pageHeading = this.route.pageHeadingCharity
+      pageContext.pageTitle = Constants.buildPageTitle(this.route.pageHeadingCharity)
+    }
 
     Object.assign(pageContext, this.getSpecificPageContext())
 

@@ -8,10 +8,11 @@ module.exports = class PublicBodyOfficerController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
 
+    const context = await RecoveryService.createApplicationContext(h)
+
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
-      const context = await RecoveryService.createApplicationContext(h)
       const contactDetail = await ContactDetail.get(context, { type: RESPONSIBLE_CONTACT_DETAILS.TYPE })
 
       if (contactDetail) {
@@ -23,6 +24,12 @@ module.exports = class PublicBodyOfficerController extends BaseController {
           email
         }
       }
+    }
+
+    const { charityDetail } = context
+
+    if (charityDetail && charityDetail.charityPermitHolder) {
+      pageContext.isCharity = true
     }
 
     return this.showView({ h, pageContext })
