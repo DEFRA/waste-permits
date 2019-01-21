@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -11,7 +12,7 @@ const CookieService = require('../../src/services/cookie.service')
 const CompanyLookupService = require('../../src/services/companyLookup.service')
 const Application = require('../../src/persistence/entities/application.entity')
 const Account = require('../../src/persistence/entities/account.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
+const RecoveryService = require('../../src/services/recovery.service')
 const LoggingService = require('../../src/services/logging.service')
 
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -21,44 +22,28 @@ const COMPANY_TYPES = {
 
 const VALID_TYPE = 'valid type'
 
-let sandbox
-
-let fakeApplication
-let fakeAccount
-let fakeCompany
-
 const routePath = '/permit-holder/company/wrong-type'
 const nextRoutePath = '/permit-holder/company/status-not-active'
 const errorPath = '/errors/technical-problem'
 
+let mocks
+let sandbox
+
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationNumber: 'APPLICATION_NUMBER'
-  }
-
-  fakeAccount = {
-    id: 'ACCOUNT_ID',
-    companyNumber: '01234567'
-  }
-
-  fakeCompany = {
-    name: 'THE COMPANY NAME',
-    address: 'THE COMPANY ADDRESS',
-    type: 'UK_ESTABLISHMENT'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CompanyLookupService, 'getCompany').value(() => fakeCompany)
+  sandbox.stub(CompanyLookupService, 'getCompany').value(() => mocks.companyData)
   sandbox.stub(CompanyLookupService, 'getActiveDirectors').value(() => [{}])
-  sandbox.stub(Account, 'getByApplicationId').value(() => fakeAccount)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Account.prototype, 'save').value(() => undefined)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -82,10 +67,6 @@ lab.experiment('Check company type page tests:', () => {
         headers: {},
         payload: {}
       }
-
-      Account.getByApplicationId = () => Promise.resolve(new Account(fakeAccount))
-
-      Account.prototype.save = () => new Account(fakeAccount)
     })
 
     lab.experiment('success', () => {
@@ -96,7 +77,7 @@ lab.experiment('Check company type page tests:', () => {
       })
 
       lab.test('for company with a valid type', async () => {
-        fakeCompany.type = VALID_TYPE
+        mocks.companyData.type = VALID_TYPE
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
@@ -105,19 +86,19 @@ lab.experiment('Check company type page tests:', () => {
       lab.experiment('for company with a type of', () => {
         Object.keys(COMPANY_TYPES).forEach((type) => {
           lab.test(`${type}`, async () => {
-            fakeCompany.type = type
+            mocks.companyData.type = type
             const doc = await GeneralTestHelper.getDoc(getRequest)
             Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`That company cannot apply because it is ${COMPANY_TYPES[type]}`)
             Code.expect(doc.getElementById('company-type-message')).to.exist()
-            Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(fakeCompany.name)
+            Code.expect(doc.getElementById('company-name').firstChild.nodeValue).to.equal(mocks.companyData.name)
             Code.expect(doc.getElementById('company-type').firstChild.nodeValue).to.equal(COMPANY_TYPES[type])
-            Code.expect(doc.getElementById('company-number').firstChild.nodeValue).to.equal(fakeAccount.companyNumber)
+            Code.expect(doc.getElementById('company-number').firstChild.nodeValue).to.equal(mocks.account.companyNumber)
           })
         })
       })
 
       lab.test('for a company that does not exist', async () => {
-        fakeCompany = {}
+        sinon.stub(CompanyLookupService, 'getCompany').value(() => undefined)
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
@@ -125,10 +106,10 @@ lab.experiment('Check company type page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Account.getByApplicationId = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('application recovery failed')
         }
 
         const res = await server.inject(getRequest)

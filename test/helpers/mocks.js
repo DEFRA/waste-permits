@@ -157,6 +157,7 @@ class MockData {
     return {
       name: 'THE COMPANY NAME',
       address: 'THE COMPANY ADDRESS',
+      type: 'UK_ESTABLISHMENT',
       status: 'ACTIVE',
       IsActive: true
     }
@@ -348,7 +349,7 @@ class Mocks {
 
   get companyData () {
     const { companyData } = this.mockData
-    return this._companyData || (this._configuration = Object.assign({}, companyData))
+    return this._companyData || (this._companyData = Object.assign({}, companyData))
   }
 
   get configuration () {
