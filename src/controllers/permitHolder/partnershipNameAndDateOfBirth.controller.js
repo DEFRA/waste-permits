@@ -8,7 +8,6 @@ const PartnerDetails = require('../../models/taskList/partnerDetails.task')
 
 const Constants = require('../../constants')
 const { PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
-const { TECHNICAL_PROBLEM } = require('../../routes')
 
 module.exports = class PartnershipNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
@@ -24,13 +23,14 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
       const contactDetail = await PartnerDetails.getContactDetail(request)
 
       if (!contactDetail) {
-        return this.redirect({ h, route: TECHNICAL_PROBLEM })
+        throw new Error('Partner details not found')
       }
 
-      const { firstName, lastName, dateOfBirth } = contactDetail
+      const { firstName, lastName, jobTitle, dateOfBirth } = contactDetail
       if (firstName || lastName) {
         pageContext.formValues['first-name'] = firstName
         pageContext.formValues['last-name'] = lastName
+        pageContext.formValues['job-title'] = jobTitle
         pageContext.pageHeading = this.route.pageHeadingEdit
         pageContext.pageTitle = Constants.buildPageTitle(this.route.pageHeadingEdit)
       } else if (contactDetails.length > 1) {
@@ -46,6 +46,10 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
       }
     }
 
+    if (this.route.includesJobTitle) {
+      pageContext.includesJobTitle = true
+    }
+
     return this.showView({ h, pageContext })
   }
 
@@ -54,6 +58,7 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
     const {
       'first-name': firstName,
       'last-name': lastName,
+      'job-title': jobTitle,
       'dob-day': dobDay,
       'dob-month': dobMonth,
       'dob-year': dobYear
@@ -63,11 +68,14 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
     const contactDetail = await PartnerDetails.getContactDetail(request)
 
     if (!contactDetail) {
-      return this.redirect({ h, route: TECHNICAL_PROBLEM })
+      throw new Error('Partner details not found')
     }
 
     contactDetail.firstName = firstName
     contactDetail.lastName = lastName
+    if (jobTitle) {
+      contactDetail.jobTitle = jobTitle
+    }
     contactDetail.dateOfBirth = dateOfBirth
 
     await contactDetail.save(context)

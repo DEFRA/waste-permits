@@ -13,6 +13,9 @@
           <div id="partner-{{@index}}">
             <dt id="partner-name-{{@index}}" class="cya-question">{{name}}</dt>
             <dd class="cya-answer">
+              {{#if jobTitle}}
+              <span id="partner-jobTitle-{{@index}}">Post: {{jobTitle}}</span><br>
+              {{/if}}
               <span id="partner-address-{{@index}}">{{fullAddress}}</span><br>
               <a id="partner-email-{{@index}}" href="mailto:{{email}}">{{email}}</a><br>
               Telephone: <span id="partner-telephone-{{@index}}">{{telephone}}</span><br>

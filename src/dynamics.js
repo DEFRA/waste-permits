@@ -202,8 +202,8 @@ const Dynamics = {
     },
     OTHER_ORGANISATION: {
       id: 'other-organisation',
-      type: 'Other organisation, for example a club or association',
-      canApplyOnline: false,
+      type: 'Other organisation or group, for example a club,  association or group of individuals',
+      canApplyOnline: true,
       dynamicsApplicantTypeId: 910400001,
       dynamicsOrganisationTypeId: 910400006
     }

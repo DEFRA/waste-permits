@@ -87,12 +87,12 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
       let holderTypes = [
         { id: 'limited-company', type: 'Limited company', canApplyOnline: true },
         { id: 'individual', type: 'Individual', canApplyOnline: true },
-        { id: 'sole-trader', type: 'Sole trader', canApplyOnline: false },
-        { id: 'public-body', type: 'Local authority or public body', canApplyOnline: false },
-        { id: 'partnership', type: 'Partnership', canApplyOnline: false },
-        { id: 'charity-or-trust', type: 'Charity or trust', canApplyOnline: false },
-        { id: 'limited-liability-partnership', type: 'Limited liability partnership', canApplyOnline: false },
-        { id: 'other-organisation', type: 'Other organisation, for example a club or association', canApplyOnline: false }
+        { id: 'sole-trader', type: 'Sole trader', canApplyOnline: true },
+        { id: 'public-body', type: 'Local authority or public body', canApplyOnline: true },
+        { id: 'partnership', type: 'Partnership', canApplyOnline: true },
+        { id: 'charity-or-trust', type: 'Charity or trust', canApplyOnline: true },
+        { id: 'limited-liability-partnership', type: 'Limited liability partnership', canApplyOnline: true },
+        { id: 'other-organisation', type: 'Other organisation or group, for example a club,  association or group of individuals', canApplyOnline: true }
       ]
 
       holderTypes.forEach(({ id, type }) => {

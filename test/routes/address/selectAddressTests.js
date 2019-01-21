@@ -128,6 +128,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
 
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(nextRoutePath)
+          spy.restore()
         })
       })
 

@@ -5,14 +5,9 @@ const RecoveryService = require('../../services/recovery.service')
 const CryptoService = require('../../services/crypto.service')
 const ContactDetail = require('../../models/contactDetail.model')
 const Utilities = require('../../utilities/utilities')
+const Routes = require('../../routes')
 
 const { PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
-const { PARTNERSHIP_NAME_AND_DATE_OF_BIRTH, PARTNERSHIP_PARTNER_LIST, PARTNERSHIP_DELETE_PARTNER } = require('../../routes')
-
-const minPartners = 2
-const addPartnerParam = 'add'
-const addButtonTitle = 'Add another partner'
-const submitButtonTitle = 'All partners added - continue'
 
 module.exports = class PartnershipPartnerListController extends BaseController {
   async createPartner (context) {
@@ -27,20 +22,22 @@ module.exports = class PartnershipPartnerListController extends BaseController {
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h, { account: true })
     const { addAnotherPartner } = request.params
+    const { deleteRoute, holderRoute } = this.route
 
     // Get a list of partners associated with this application
     const list = await ContactDetail.list(context, { type: PARTNER_CONTACT_DETAILS.TYPE })
 
     const contactDetails = await Promise.all(list.map(async (contactDetail) => {
       const { id, dateOfBirth, firstName, lastName, email, telephone, fullAddress } = contactDetail
+
       if (id && dateOfBirth) {
         const name = `${firstName} ${lastName}`
         const [year, month, day] = dateOfBirth.split('-')
         const partnerId = CryptoService.encrypt(id)
         const dob = Utilities.formatDate({ year, month, day })
         if (fullAddress) {
-          const changeLink = `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}`
-          const deleteLink = `${PARTNERSHIP_DELETE_PARTNER.path}/${partnerId}`
+          const changeLink = `${Routes[holderRoute].path}/${partnerId}`
+          const deleteLink = `${Routes[deleteRoute].path}/${partnerId}`
           return { partnerId, name, email, telephone, dob, changeLink, deleteLink, fullAddress }
         }
       }
@@ -52,17 +49,19 @@ module.exports = class PartnershipPartnerListController extends BaseController {
     // Filter out the incomplete partners
     pageContext.partners = contactDetails.filter((partner) => partner)
 
+    const { min, addParam, addButtonTitle, submitButtonTitle } = this.route.list
+
     // Redirect to adding a new partner if the suffix "/add" is on the url or there are no partners or there are incomplete partners for this application
-    if (addAnotherPartner === addPartnerParam || !pageContext.partners.length) {
+    if (addAnotherPartner === addParam || !pageContext.partners.length) {
       const partnerId = await this.createPartner(context)
 
-      return this.redirect({ h, path: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
+      return this.redirect({ h, path: `${Routes[holderRoute].path}/${partnerId}` })
     }
 
-    if (pageContext.partners.length < minPartners) {
+    if (pageContext.partners.length < min) {
       pageContext.submitButtonTitle = addButtonTitle
     } else {
-      pageContext.addAnotherPartnerLink = `${PARTNERSHIP_PARTNER_LIST.path}/${addPartnerParam}`
+      pageContext.addAnotherPartnerLink = `${request.path}/${addParam}`
       pageContext.addButtonTitle = addButtonTitle
       pageContext.submitButtonTitle = submitButtonTitle
     }
@@ -71,12 +70,13 @@ module.exports = class PartnershipPartnerListController extends BaseController {
   }
 
   async doPost (request, h) {
+    const { holderRoute } = this.route
     const context = await RecoveryService.createApplicationContext(h)
     const list = await ContactDetail.list(context, { type: PARTNER_CONTACT_DETAILS.TYPE })
-    if (list.length < minPartners) {
+    if (list.length < this.route.list.min) {
       // In this case the submit button would have been labeled "Add another Partner"
       const partnerId = await this.createPartner(context)
-      return this.redirect({ h, path: `${PARTNERSHIP_NAME_AND_DATE_OF_BIRTH.path}/${partnerId}` })
+      return this.redirect({ h, path: `${Routes[holderRoute].path}/${partnerId}` })
     }
 
     // In this case the submit button would have been labeled "All Partners added - continue"

@@ -20,6 +20,7 @@ module.exports = class PartnershipPartnerDeleteController extends BaseController
 
     const pageContext = this.createPageContext(h)
     pageContext.skipDeletePartnerLink = this.nextPath
+    pageContext.deleteButtonTitle = this.route.deleteButtonTitle
 
     return this.showView({ h, pageContext })
   }
