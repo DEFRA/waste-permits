@@ -21,6 +21,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
   let getRequest
   let postRequest
   let mocks
+  let saveSelectedAddressSpy
 
   lab.beforeEach(() => {
     mocks = new Mocks()
@@ -69,6 +70,8 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
     sandbox.stub(TaskModel, 'saveManualAddress').value(async () => undefined)
     sandbox.stub(ContactDetail, 'get').value(async () => mocks.contactDetail)
     sandbox.stub(ContactDetail.prototype, 'save').value(async () => undefined)
+
+    saveSelectedAddressSpy = sandbox.spy(TaskModel, 'saveSelectedAddress')
   })
 
   lab.afterEach(() => {
@@ -122,13 +125,11 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
         lab.test(`when redirects to the Task List route: ${nextRoutePath}`, async () => {
           postRequest.payload['select-address'] = mocks.address.uprn
 
-          const spy = sinon.spy(TaskModel, 'saveSelectedAddress')
           const res = await server.inject(postRequest)
-          Code.expect(spy.callCount).to.equal(1)
+          Code.expect(saveSelectedAddressSpy.callCount).to.equal(1)
 
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(nextRoutePath)
-          spy.restore()
         })
       })
 
