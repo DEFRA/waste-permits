@@ -12,6 +12,7 @@ Object.entries(Routes)
       try {
         // Add parameters to the route path eg "/recover/application/{slug?}" where "slug?" is an item in the route params and "/recover/application" was the original path
         const route = Merge({}, options)
+        route.basePath = route.path
         if (route.params) {
           route.params.forEach((param) => {
             route.path += `/{${param}}`

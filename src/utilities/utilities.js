@@ -127,4 +127,8 @@ module.exports = class Utilities {
     assert(badParameters.length === 0, `Extra parameters found: "${badParameters.join('", "')}"`)
     return params
   }
+
+  static capitalizeFirstLetter (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
 }

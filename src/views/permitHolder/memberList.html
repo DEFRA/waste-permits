@@ -1,0 +1,47 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }} {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      {{> common/errorSummary }} {{> common/pageHeading pageHeading }}
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <dl class="govuk-check-your-answers cya-questions-short">
+          {{#each members}}
+          <div id="member-{{@index}}">
+            <dt id="member-name-{{@index}}" class="cya-question">{{name}}</dt>
+            <dd class="cya-answer">
+              {{#if jobTitle}}
+              <span id="member-jobTitle-{{@index}}">Post: {{jobTitle}}</span><br>
+              {{/if}}
+              <span id="member-address-{{@index}}">{{fullAddress}}</span><br>
+              <a id="member-email-{{@index}}" href="mailto:{{email}}">{{email}}</a><br>
+              Telephone: <span id="member-telephone-{{@index}}">{{telephone}}</span><br>
+              Date of birth: <span id="member-dob-{{@index}}">{{dob}}</span><br>
+            </dd>
+            <dd class="cya-change">
+              <a id="member-change-{{@index}}" href="{{changeLink}}"><span>Change</span><span id="member-change-name-{{@index}}" class="visuallyhidden">{{name}}</span></a>
+              <br>
+              <br>
+              <a id="member-delete-{{@index}}" href="{{deleteLink}}"><span>Delete</span><span id="member-delete-name-{{@index}}" class="visuallyhidden">{{name}}</span></a>
+            </dd>
+          </div>
+          {{/each}}
+        </dl>
+
+        {{#if addAnotherMemberLink}}
+        <div class="form-group">
+          <p>
+            <a id="add-another-member-link" href="{{addAnotherMemberLink}}">{{addButtonTitle}}</a>
+          </p>
+        </div>
+        {{/if}}
+
+        {{> common/submitButton text=submitButtonTitle}}
+      </form>
+    </div>
+  </div>
+
+</main>

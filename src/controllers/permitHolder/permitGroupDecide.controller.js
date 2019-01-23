@@ -12,8 +12,8 @@ module.exports = class PermitGroupDecideController extends BaseController {
     const { decision } = request.params
 
     if (!decision) {
-      pageContext.applyAsCompanyLink = `${request.path}/company`
-      pageContext.applyAsPostHoldersLink = `${request.path}/group`
+      pageContext.applyAsCompanyLink = `${this.route.basePath}/company`
+      pageContext.applyAsPostHoldersLink = `${this.route.basePath}/group`
 
       return this.showView({ h, pageContext })
     }

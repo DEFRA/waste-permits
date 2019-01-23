@@ -115,7 +115,7 @@ const Routes = {
     nextRoute: 'PARTNERSHIP_PARTNER_LIST',
     types: 'GET, POST'
   },
-  MANUAL_POST_HOLDER: {
+  MANUAL_POSTHOLDER: {
     path: '/permit-holder/group/post-holder/address/address-manual',
     params: ['partnerId'],
     view: 'address/manualEntry',
@@ -172,7 +172,7 @@ const Routes = {
     nextRoute: 'PARTNERSHIP_PARTNER_LIST',
     types: 'GET, POST'
   },
-  POSTCODE_POST_HOLDER: {
+  POSTCODE_POSTHOLDER: {
     path: '/permit-holder/group/post-holder/address/postcode',
     params: ['partnerId'],
     view: 'address/postcode',
@@ -229,7 +229,7 @@ const Routes = {
     nextRoute: 'PARTNERSHIP_PARTNER_LIST',
     types: 'GET, POST'
   },
-  SELECT_POST_HOLDER: {
+  SELECT_POSTHOLDER: {
     path: '/permit-holder/group/post-holder/address/select-address',
     params: ['partnerId'],
     view: 'address/selectAddress',
@@ -525,52 +525,52 @@ const Routes = {
   },
   GROUP_LIST: {
     path: '/permit-holder/group/list',
-    params: ['addAnotherPartner?'],
-    view: 'permitHolder/partnershipPartnerList',
-    pageHeading: 'Post holders you have added',
-    controller: 'permitHolder/partnershipPartnerList',
+    params: ['addAnotherMember?'],
+    view: 'permitHolder/memberList',
+    pageHeading: 'Postholders you have added',
+    controller: 'permitHolder/group/postholderList',
     nextRoute: 'COMPANY_DECLARE_OFFENCES',
-    holderRoute: 'POST_HOLDER_NAME_AND_DATE_OF_BIRTH',
-    deleteRoute: 'GROUP_DELETE_POST_HOLDER',
+    holderRoute: 'POSTHOLDER_NAME_AND_DATE_OF_BIRTH',
+    deleteRoute: 'GROUP_DELETE_POSTHOLDER',
     list: {
       min: 2,
       addParam: 'add',
-      addButtonTitle: 'Add another post holder',
-      submitButtonTitle: 'All post holders added - continue'
+      addButtonTitle: 'Add another postholder',
+      submitButtonTitle: 'All postholders added - continue'
     },
     types: 'GET, POST'
   },
-  GROUP_DELETE_POST_HOLDER: {
+  GROUP_DELETE_POSTHOLDER: {
     path: '/permit-holder/group/post-holder/delete',
     params: ['partnerId'],
-    view: 'permitHolder/partnershipPartnerDelete',
+    view: 'permitHolder/memberDelete',
     pageHeading: 'Confirm you want to delete {{name}}',
-    controller: 'permitHolder/partnershipPartnerDelete',
+    controller: 'permitHolder/group/postholderDelete',
     nextRoute: 'GROUP_LIST',
-    deleteButtonTitle: 'Delete this post holder',
+    deleteButtonTitle: 'Delete this postholder',
     types: 'GET, POST'
   },
-  POST_HOLDER_NAME_AND_DATE_OF_BIRTH: {
+  POSTHOLDER_NAME_AND_DATE_OF_BIRTH: {
     path: '/permit-holder/group/post-holder/name',
     params: ['partnerId'],
     view: 'permitHolder/permitHolderNameAndDateOfBirth',
-    pageHeading: 'Add the first post holder',
-    pageHeadingAdd: 'Add another post holder',
-    pageHeadingEdit: 'Edit this post holder',
-    controller: 'permitHolder/partnershipNameAndDateOfBirth',
+    pageHeading: 'Add the first postholder',
+    pageHeadingAdd: 'Add another postholder',
+    pageHeadingEdit: 'Edit this postholder',
+    controller: 'permitHolder/group/postholderNameAndDateOfBirth',
     validator: 'permitHolder/permitHolderNameAndDateOfBirth',
-    nextRoute: 'POST_HOLDER_CONTACT_DETAILS',
+    nextRoute: 'POSTHOLDER_CONTACT_DETAILS',
     includesJobTitle: true,
     types: 'GET, POST'
   },
-  POST_HOLDER_CONTACT_DETAILS: {
+  POSTHOLDER_CONTACT_DETAILS: {
     path: '/permit-holder/group/post-holder/contact-details',
     params: ['partnerId'],
     view: 'permitHolder/permitHolderContactDetails',
     pageHeading: 'What are the contact details for {{name}}?',
-    controller: 'permitHolder/partnershipContactDetails',
+    controller: 'permitHolder/group/postholderContactDetails',
     validator: 'permitHolder/permitHolderContactDetails',
-    nextRoute: 'POSTCODE_POST_HOLDER',
+    nextRoute: 'POSTCODE_POSTHOLDER',
     types: 'GET, POST'
   },
   PARTNERSHIP_TRADING_NAME: {
@@ -589,7 +589,7 @@ const Routes = {
     pageHeading: 'Add the first partner',
     pageHeadingAdd: 'Add another partner',
     pageHeadingEdit: 'Edit this partner',
-    controller: 'permitHolder/partnershipNameAndDateOfBirth',
+    controller: 'permitHolder/partnership/partnershipNameAndDateOfBirth',
     validator: 'permitHolder/permitHolderNameAndDateOfBirth',
     nextRoute: 'PARTNERSHIP_CONTACT_DETAILS',
     types: 'GET, POST'
@@ -599,17 +599,17 @@ const Routes = {
     params: ['partnerId'],
     view: 'permitHolder/permitHolderContactDetails',
     pageHeading: 'What are the contact details for {{name}}?',
-    controller: 'permitHolder/partnershipContactDetails',
+    controller: 'permitHolder/partnership/partnershipContactDetails',
     validator: 'permitHolder/permitHolderContactDetails',
     nextRoute: 'POSTCODE_PARTNER',
     types: 'GET, POST'
   },
   PARTNERSHIP_PARTNER_LIST: {
     path: '/permit-holder/partners/list',
-    params: ['addAnotherPartner?'],
-    view: 'permitHolder/partnershipPartnerList',
+    params: ['addAnotherMember?'],
+    view: 'permitHolder/memberList',
     pageHeading: 'Business partners you have added to this application',
-    controller: 'permitHolder/partnershipPartnerList',
+    controller: 'permitHolder/partnership/partnershipList',
     nextRoute: 'COMPANY_DECLARE_OFFENCES',
     holderRoute: 'PARTNERSHIP_NAME_AND_DATE_OF_BIRTH',
     deleteRoute: 'PARTNERSHIP_DELETE_PARTNER',
@@ -624,9 +624,9 @@ const Routes = {
   PARTNERSHIP_DELETE_PARTNER: {
     path: '/permit-holder/partners/delete',
     params: ['partnerId'],
-    view: 'permitHolder/partnershipPartnerDelete',
+    view: 'permitHolder/memberDelete',
     pageHeading: 'Confirm you want to delete {{name}}',
-    controller: 'permitHolder/partnershipPartnerDelete',
+    controller: 'permitHolder/partnership/partnershipPartnerDelete',
     nextRoute: 'PARTNERSHIP_PARTNER_LIST',
     deleteButtonTitle: 'Delete this partner',
     types: 'GET, POST'

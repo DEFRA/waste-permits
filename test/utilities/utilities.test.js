@@ -277,4 +277,8 @@ lab.experiment('Utilities tests:', () => {
     }
     Code.expect(message).to.equal('Extra parameters found: "a", "b", "e", "f"')
   })
+
+  lab.test('capitalizeFirstLetter(str) will return the string with the first letter set to upper case', () => {
+    Code.expect(Utilities.capitalizeFirstLetter('the quick brown fox was seen on Friday')).to.equal('The quick brown fox was seen on Friday')
+  })
 })

@@ -49,6 +49,11 @@ const Dynamics = {
     DIRECTOR_CONTACT_DETAILS: {
       TYPE: 910400011,
       NAME: 'Director contact details'
+    },
+    POSTHOLDER_CONTACT_DETAILS: {
+      // ToDo: Change the type to the correct type (910400012) when created on dynamics.
+      TYPE: 910400009,
+      NAME: 'Postholder contact details'
     }
   },
   ApplicationQuestions: {
