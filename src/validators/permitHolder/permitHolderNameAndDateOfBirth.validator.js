@@ -3,6 +3,7 @@
 const moment = require('moment')
 const Joi = require('joi')
 const BaseValidator = require('../base.validator')
+const AddressDetail = require('../../persistence/entities/addressDetail.entity')
 const Contact = require('../../persistence/entities/contact.entity')
 
 const LEADING_AND_TRAILING_DASHES_REGEX = /(^-.*$|^.*-$)/
@@ -38,6 +39,10 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         'custom.no-leading-and-trailing-dashes': `Last name cannot start or end with a dash - delete the dash`,
         'string.max': `Enter a shorter last name with no more than ${Contact.lastName.length.max} characters`
       },
+      'job-title': {
+        'custom.required': `Enter a position or job title`,
+        'custom.max': `Enter a shorter position or job title with no more than ${AddressDetail.jobTitle.length.max} characters`
+      },
       'dob-day': {
         'custom.invalid': 'Enter a valid date of birth',
         'custom.range': `Enter a date of birth that is older than ${MIN_AGE} and under ${MAX_AGE} years of age`
@@ -69,6 +74,10 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
       'last-name': {
         'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value),
         'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value)
+      },
+      'job-title': {
+        'custom.required': (value, { 'includes-job-title': includesJobTitle }) => includesJobTitle && value.length === 0,
+        'custom.max': (value, { 'includes-job-title': includesJobTitle }) => includesJobTitle && value.length > AddressDetail.jobTitle.length.max
       },
       'dob-day': {
         'custom.invalid': (dobDay, { 'dob-month': dobMonth, 'dob-year': dobYear }) => !getAge(dobDay, dobMonth, dobYear),

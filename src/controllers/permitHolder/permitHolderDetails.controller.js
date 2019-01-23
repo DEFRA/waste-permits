@@ -3,8 +3,8 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const { INDIVIDUAL, PARTNERSHIP, SOLE_TRADER, LIMITED_LIABILITY_PARTNERSHIP, PUBLIC_BODY, CHARITY_OR_TRUST } = require('../../dynamics').PERMIT_HOLDER_TYPES
-const { PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, COMPANY_NUMBER, LLP_COMPANY_NUMBER, PARTNERSHIP_TRADING_NAME, PUBLIC_BODY_NAME, CHARITY_PERMIT_HOLDER } = require('../../routes')
+const { INDIVIDUAL, PARTNERSHIP, SOLE_TRADER, LIMITED_LIABILITY_PARTNERSHIP, PUBLIC_BODY, CHARITY_OR_TRUST, OTHER_ORGANISATION } = require('../../dynamics').PERMIT_HOLDER_TYPES
+const { PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, COMPANY_NUMBER, LLP_COMPANY_NUMBER, PARTNERSHIP_TRADING_NAME, PUBLIC_BODY_NAME, CHARITY_PERMIT_HOLDER, PERMIT_GROUP_DECIDE } = require('../../routes')
 
 module.exports = class PermitHolderDetailsController extends BaseController {
   async doGet (request, h) {
@@ -31,6 +31,9 @@ module.exports = class PermitHolderDetailsController extends BaseController {
       case CHARITY_OR_TRUST:
         // Re-direct to partnership details flow
         return this.redirect({ h, route: CHARITY_PERMIT_HOLDER })
+      case OTHER_ORGANISATION:
+        // Re-direct to partnership details flow
+        return this.redirect({ h, route: PERMIT_GROUP_DECIDE })
       default:
         // Re-direct to company details flow
         return this.redirect({ h, route: COMPANY_NUMBER })

@@ -8,7 +8,7 @@
         <form method="POST" action="{{formAction}}" novalidate="novalidate">
           {{> common/csrfToken token=DefraCsrfToken}}
 
-          {{#> common/submitButton text='Delete this partner'}}
+          {{#> common/submitButton text=deleteButtonTitle}}
           <a id="skip-delete-partner-link" href="{{skipDeletePartnerLink}}">Do not delete</a>
           {{/ common/submitButton}}
 

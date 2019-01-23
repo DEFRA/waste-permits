@@ -1,0 +1,35 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }} {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      {{> common/errorSummary }} {{> common/pageHeading pageHeading }}
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <p id="paragraph">The name of the organisation or group is for information only. The people named in the application will hold the permit.</p>
+
+        <div class="form-group {{#getFormErrorGroupClass errors.use-trading-name}}{{/getFormErrorGroupClass}}{{#getFormErrorGroupClass errors.trading-name}}{{/getFormErrorGroupClass}}">
+
+          <fieldset>
+
+            <legend id="trading-name-visually-hidden" class="visually-hidden">{{pageHeading}}</legend>
+              <div id="give-trading-name">
+                <label id="trading-name-label" class="form-label" for="trading-name">
+                  Name of the organisation or group
+                </label>
+                {{> common/fieldError fieldId='trading-name-error' message=errors.trading-name }}
+                <input id="trading-name" class="form-control form-control-char-50 {{#if errors.trading-name}}form-control-error{{/if}}" type="text" name="trading-name" value="{{ formValues.trading-name }}">
+              </div>
+
+          </fieldset>
+
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+    </div>
+  </div>
+
+</main>

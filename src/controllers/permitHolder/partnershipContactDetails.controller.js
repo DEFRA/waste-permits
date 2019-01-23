@@ -5,8 +5,6 @@ const RecoveryService = require('../../services/recovery.service')
 
 const PartnerDetails = require('../../models/taskList/partnerDetails.task')
 
-const { TECHNICAL_PROBLEM, POSTCODE_PARTNER } = require('../../routes')
-
 module.exports = class PartnershipContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
     // Load entity context within the request object
@@ -14,7 +12,7 @@ module.exports = class PartnershipContactDetailsController extends BaseControlle
     const contactDetail = await PartnerDetails.getContactDetail(request)
 
     if (!contactDetail) {
-      return this.redirect({ h, route: TECHNICAL_PROBLEM })
+      throw new Error('Partner details not found')
     }
 
     this.route.pageHeading = await PartnerDetails.getPageHeading(request, this.orginalPageHeading)
@@ -35,7 +33,7 @@ module.exports = class PartnershipContactDetailsController extends BaseControlle
     const contactDetail = await PartnerDetails.getContactDetail(request)
 
     if (!contactDetail) {
-      return this.redirect({ h, route: TECHNICAL_PROBLEM })
+      throw new Error('Partner details not found')
     }
 
     const {
@@ -48,6 +46,6 @@ module.exports = class PartnershipContactDetailsController extends BaseControlle
 
     await contactDetail.save(context)
 
-    return this.redirect({ h, path: `${POSTCODE_PARTNER.path}/${request.params.partnerId}` })
+    return this.redirect({ h, path: `${this.nextPath}/${request.params.partnerId}` })
   }
 }
