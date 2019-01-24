@@ -1,15 +1,13 @@
 'use strict'
 
-const BaseController = require('../base.controller')
-const RecoveryService = require('../../services/recovery.service')
+const BaseController = require('../../base.controller')
+const RecoveryService = require('../../../services/recovery.service')
 
-const ContactDetail = require('../../models/contactDetail.model')
-const PartnerDetails = require('../../models/taskList/partnerDetails.task')
+const ContactDetail = require('../../../models/contactDetail.model')
 
-const Constants = require('../../constants')
-const { PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
+const Constants = require('../../../constants')
 
-module.exports = class PartnershipNameAndDateOfBirthController extends BaseController {
+module.exports = class MemberNameAndDateOfBirthController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
 
@@ -19,8 +17,8 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
       pageContext.formValues = {}
       const context = await RecoveryService.createApplicationContext(h)
 
-      const contactDetails = await ContactDetail.list(context, { type: PARTNER_CONTACT_DETAILS.TYPE })
-      const contactDetail = await PartnerDetails.getContactDetail(request)
+      const contactDetails = await ContactDetail.list(context, { type: this.task.contactType })
+      const contactDetail = await this.task.getContactDetail(request)
 
       if (!contactDetail) {
         throw new Error('Partner details not found')
@@ -65,10 +63,10 @@ module.exports = class PartnershipNameAndDateOfBirthController extends BaseContr
     } = request.payload
 
     const dateOfBirth = [dobYear, dobMonth, dobDay].join('-')
-    const contactDetail = await PartnerDetails.getContactDetail(request)
+    const contactDetail = await this.task.getContactDetail(request)
 
     if (!contactDetail) {
-      throw new Error('Partner details not found')
+      throw new Error('Member details not found')
     }
 
     contactDetail.firstName = firstName

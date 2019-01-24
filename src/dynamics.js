@@ -49,6 +49,10 @@ const Dynamics = {
     DIRECTOR_CONTACT_DETAILS: {
       TYPE: 910400011,
       NAME: 'Director contact details'
+    },
+    POSTHOLDER_CONTACT_DETAILS: {
+      TYPE: 910400012,
+      NAME: 'Postholder contact details'
     }
   },
   ApplicationQuestions: {

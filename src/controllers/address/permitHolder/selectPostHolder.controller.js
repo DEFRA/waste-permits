@@ -11,11 +11,11 @@ module.exports = class AddressSelectPostHolderController extends AddressSelectCo
   }
 
   getManualEntryPath (params) {
-    return `${Routes.MANUAL_POST_HOLDER.path}/${params.partnerId}`
+    return `${Routes.MANUAL_POSTHOLDER.path}/${params.partnerId}`
   }
 
   getPostcodePath (params) {
-    return `${Routes.POSTCODE_POST_HOLDER.path}/${params.partnerId}`
+    return `${Routes.POSTCODE_POSTHOLDER.path}/${params.partnerId}`
   }
 
   get task () {

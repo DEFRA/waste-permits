@@ -7,11 +7,11 @@ const LoggingService = require('../../services/logging.service')
 const CryptoService = require('../../services/crypto.service')
 const ContactDetail = require('../../models/contactDetail.model')
 const Address = require('../../persistence/entities/address.entity')
-const { PARTNER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
+const { POSTHOLDER_CONTACT_DETAILS } = require('../../dynamics').AddressTypes
 
-module.exports = class PartnerDetails extends BaseTask {
+module.exports = class PostholderDetails extends BaseTask {
   static get contactType () {
-    return PARTNER_CONTACT_DETAILS.TYPE
+    return POSTHOLDER_CONTACT_DETAILS.TYPE
   }
 
   static async getContactDetail (request) {

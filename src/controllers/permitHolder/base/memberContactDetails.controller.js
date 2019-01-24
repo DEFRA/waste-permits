@@ -1,21 +1,19 @@
 'use strict'
 
-const BaseController = require('../base.controller')
-const RecoveryService = require('../../services/recovery.service')
+const BaseController = require('../../base.controller')
+const RecoveryService = require('../../../services/recovery.service')
 
-const PartnerDetails = require('../../models/taskList/partnerDetails.task')
-
-module.exports = class PartnershipContactDetailsController extends BaseController {
+module.exports = class MemberContactDetailsController extends BaseController {
   async doGet (request, h, errors) {
     // Load entity context within the request object
     await RecoveryService.createApplicationContext(h)
-    const contactDetail = await PartnerDetails.getContactDetail(request)
+    const contactDetail = await this.task.getContactDetail(request)
 
     if (!contactDetail) {
-      throw new Error('Partner details not found')
+      throw new Error('Member details not found')
     }
 
-    this.route.pageHeading = await PartnerDetails.getPageHeading(request, this.orginalPageHeading)
+    this.route.pageHeading = await this.task.getPageHeading(request, this.orginalPageHeading)
     const pageContext = this.createPageContext(h, errors)
 
     if (request.payload) {
@@ -30,10 +28,10 @@ module.exports = class PartnershipContactDetailsController extends BaseControlle
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const contactDetail = await PartnerDetails.getContactDetail(request)
+    const contactDetail = await this.task.getContactDetail(request)
 
     if (!contactDetail) {
-      throw new Error('Partner details not found')
+      throw new Error('Member details not found')
     }
 
     const {
