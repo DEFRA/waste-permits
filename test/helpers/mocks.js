@@ -226,11 +226,8 @@ class MockData {
     }
   }
 
-  get mcpBusinessTypesLists () {
-    return {
-      mainTypes: [{ code: 'main-1', description: 'Main 1' }],
-      otherTypes: [{ code: 'other-1', description: 'Other 1' }]
-    }
+  get mcpMainBusinessTypesList () {
+    return [{ code: '00.01', description: 'Main 1' }]
   }
 
   get payment () {
@@ -409,12 +406,9 @@ class Mocks {
     return this._mcpBusinessType || (this._mcpBusinessType = new McpBusinessType())
   }
 
-  get mcpBusinessTypesLists () {
-    const { mcpBusinessTypesLists } = this.mockData
-    return this._mcpBusinessTypesLists || (this._mcpBusinessTypesLists = {
-      mainTypes: mcpBusinessTypesLists.mainTypes.map((item) => Object.assign({}, item)),
-      otherTypes: mcpBusinessTypesLists.otherTypes.map((item) => Object.assign({}, item))
-    })
+  get mcpMainBusinessTypesList () {
+    const { mcpMainBusinessTypesList } = this.mockData
+    return this._mcpMainBusinessTypesList || (this._mcpMainBusinessTypesList = mcpMainBusinessTypesList.map((item) => Object.assign({}, item)))
   }
 
   get needToConsult () {

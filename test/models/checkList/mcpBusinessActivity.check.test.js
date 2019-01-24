@@ -34,9 +34,8 @@ lab.afterEach(() => {
 
 lab.experiment('MCP Business or Activity Type Check tests:', () => {
   lab.experiment('buildlines', () => {
-    lab.test('(MCP Business or Activity Type line) works correctly for D.35', async () => {
-      mocks.mcpBusinessType.code = 'd-35'
-      mocks.mcpBusinessType.description = 'D 35 description'
+    lab.test('(MCP Business or Activity Type line) works correctly for 35.11', async () => {
+      mocks.mcpBusinessType.code = '35.11'
 
       check = new McpBusinessActivityCheck()
       lines = await check.buildLines()
@@ -47,7 +46,7 @@ lab.experiment('MCP Business or Activity Type Check tests:', () => {
 
       Code.expect(answers.length).to.equal(1)
       const { answer, answerId } = answers.pop()
-      Code.expect(answer).to.equal('D 35 description')
+      Code.expect(answer).to.equal('35.11')
       Code.expect(answerId).to.equal(`${prefix}-answer`)
 
       const { link, linkId, linkType } = links.pop()

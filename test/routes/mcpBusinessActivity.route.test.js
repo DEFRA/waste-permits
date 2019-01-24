@@ -24,17 +24,17 @@ let sandbox
 let mocks
 
 const checkCommonElements = async (doc) => {
-  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What is the main type of business or activity the plant is used for?')
+  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What is the NACE code for the main business activity that the plant or generator is used for?')
   Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
 
   // Test for the existence of expected entries
   GeneralTestHelper.checkElementsExist(doc, [
-    'type-codes-option-main-1',
-    'type-codes-option-main-1-label',
+    'type-codes-option-00-01',
+    'type-codes-option-00-01-label',
     'type-codes-option-other',
     'type-codes-option-other-label',
-    'type-codes-option-other-select',
-    'type-codes-option-other-select-label',
+    'type-codes-option-other-enter',
+    'type-codes-option-other-enter-label',
     'type-codes-other'
   ])
 }
@@ -51,7 +51,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(CharityDetail, 'get').value(() => undefined)
-  sandbox.stub(McpBusinessType, 'getMcpBusinessTypesLists').callsFake(async () => mocks.mcpBusinessTypesLists)
+  sandbox.stub(McpBusinessType, 'getMcpMainBusinessTypesList').callsFake(() => mocks.mcpMainBusinessTypesList)
   sandbox.stub(McpBusinessType, 'get').callsFake(async () => mocks.mcpBusinessType)
   sandbox.stub(McpBusinessType, 'save').callsFake(async () => null)
 })
@@ -79,16 +79,25 @@ lab.experiment('MCP business or activity page tests:', () => {
       lab.test('when first time', async () => {
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
+        Code.expect(doc.getElementById('type-codes-option-00-01').hasAttribute('checked')).to.be.false()
+        Code.expect(doc.getElementById('type-codes-option-other').hasAttribute('checked')).to.be.false()
+        Code.expect(doc.getElementById('type-codes-other').getAttribute('value')).to.be.empty()
       })
       lab.test('when option already selected', async () => {
-        mocks.mcpBusinessType.code = 'd-35'
+        mocks.mcpBusinessType.code = '00.01'
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
+        Code.expect(doc.getElementById('type-codes-option-00-01').hasAttribute('checked')).to.be.true()
+        Code.expect(doc.getElementById('type-codes-option-other').hasAttribute('checked')).to.be.false()
+        Code.expect(doc.getElementById('type-codes-other').getAttribute('value')).to.be.empty()
       })
-      lab.test('when other value already selected', async () => {
-        mocks.mcpBusinessType.code = 'other-1'
+      lab.test('when other value already entered', async () => {
+        mocks.mcpBusinessType.code = '99.99'
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
+        Code.expect(doc.getElementById('type-codes-option-00-01').hasAttribute('checked')).to.be.false()
+        Code.expect(doc.getElementById('type-codes-option-other').hasAttribute('checked')).to.be.true()
+        Code.expect(doc.getElementById('type-codes-other').getAttribute('value')).to.equal('99.99')
       })
     })
 
@@ -121,14 +130,14 @@ lab.experiment('MCP business or activity page tests:', () => {
 
     lab.experiment('success', async () => {
       lab.test('when option selected', async () => {
-        postRequest.payload = { 'type-codes-option': 'main-1' }
+        postRequest.payload = { 'type-codes-option': '00.01' }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
-      lab.test('when other selected', async () => {
-        postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': 'other-1' }
+      lab.test('when other value entered', async () => {
+        postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': '99.99' }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
@@ -139,14 +148,32 @@ lab.experiment('MCP business or activity page tests:', () => {
       lab.test('when no option selected', async () => {
         postRequest.payload = {}
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await checkCommonElements(doc)
         await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-option', `Select the business or activity`)
       })
-      lab.test(`when 'other' option selected but no value chosen`, async () => {
+      lab.test(`when 'other' option selected but no value entered`, async () => {
         postRequest.payload['type-codes-option'] = 'other'
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Select the business or activity`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Enter a valid 4-digit code that includes the decimal dot`)
+      })
+      lab.test(`when incorrect format value entered 9999`, async () => {
+        postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': '9999' }
+        const doc = await GeneralTestHelper.getDoc(postRequest)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Enter a valid 4-digit code that includes the decimal dot`)
+      })
+      lab.test(`when non-numeric value entered 9a.99`, async () => {
+        postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': '9a.99' }
+        const doc = await GeneralTestHelper.getDoc(postRequest)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Enter a valid 4-digit code that includes the decimal dot`)
+      })
+      lab.test(`when too long value entered 999.99`, async () => {
+        postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': '999.99' }
+        const doc = await GeneralTestHelper.getDoc(postRequest)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Enter a valid 4-digit code that includes the decimal dot`)
+      })
+      lab.test(`when too long value entered 99.999`, async () => {
+        postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': '99.999' }
+        const doc = await GeneralTestHelper.getDoc(postRequest)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Enter a valid 4-digit code that includes the decimal dot`)
       })
     })
   })

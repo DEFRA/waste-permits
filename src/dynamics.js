@@ -90,7 +90,40 @@ const Dynamics = {
     },
     MCP_BUSINESS_TYPE: {
       questionCode: 'mcp-business-type',
-      mainOptionIds: ['d-35', 'c-10', 'e-37', 'q-86', 'a-1']
+      mainAnswers: [
+        {
+          code: '35.11',
+          description: 'Production of electricity 35.11'
+        },
+        {
+          code: '01.13',
+          description: 'Growing of vegetables and melons, roots and tubers 01.13'
+        },
+        {
+          code: '35.30',
+          description: 'Steam and air conditioning supply 35.30'
+        },
+        {
+          code: '37.00',
+          description: 'Sewerage 37.00'
+        },
+        {
+          code: '01.62',
+          description: 'Support activities for animal production 01.62'
+        },
+        {
+          code: '36.00',
+          description: 'Water collection, treatment and supply 36.00'
+        },
+        {
+          code: '38.21',
+          description: 'Treatment and disposal of non-hazardous waste 38.21'
+        },
+        {
+          code: '86.10',
+          description: 'Hospital activities 86.10'
+        }
+      ]
     }
   },
   BACS_EMAIL_CONFIG: 'PSC-BACS-EMAIL',

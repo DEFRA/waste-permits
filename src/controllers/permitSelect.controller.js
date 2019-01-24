@@ -36,8 +36,7 @@ module.exports = class PermitSelectController extends BaseController {
 
     // Look up the Standard Rule based on the chosen permit type
     const standardRule = await StandardRule.getByCode(context, request.payload['chosen-permit'])
-    let { categoryName = '' } = await StandardRuleType.getById(context, standardRule.standardRuleTypeId)
-    categoryName = categoryName.toLowerCase() // TODO: remove once the fixes to standard rule type go in
+    const { categoryName } = await StandardRuleType.getById(context, standardRule.standardRuleTypeId)
     const isMcp = Constants.MCP_CATEGORY_NAMES.find((mcpCategoryName) => mcpCategoryName === categoryName)
 
     CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_ID, standardRule.id)

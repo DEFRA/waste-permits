@@ -20,22 +20,20 @@ module.exports = class McpBusinessActivityController extends BaseController {
         selectedValue = mcpBusinessType.code
       }
     }
-    const { mainTypes, otherTypes } = await McpBusinessType.getMcpBusinessTypesLists(context)
+    const mainTypes = McpBusinessType.getMcpMainBusinessTypesList()
 
+    mainTypes.forEach((item) => {
+      item.id = item.code.replace(/\./g, '-')
+    })
     pageContext.mainTypes = mainTypes
-    pageContext.otherTypes = otherTypes
 
     if (selectedValue) {
-      let foundType
-      foundType = mainTypes.find(({ code }) => code === selectedValue)
+      const foundType = mainTypes.find(({ code }) => code === selectedValue)
       if (foundType) {
         foundType.isSelected = true
       } else {
         pageContext.otherIsSelected = true
-        foundType = otherTypes.find(({ code }) => code === selectedValue)
-        if (foundType) {
-          foundType.isSelected = true
-        }
+        pageContext.other = selectedValue
       }
     }
 
