@@ -51,8 +51,7 @@ const Dynamics = {
       NAME: 'Director contact details'
     },
     POSTHOLDER_CONTACT_DETAILS: {
-      // ToDo: Change the type to the correct type (910400012) when created on dynamics.
-      TYPE: 910400009,
+      TYPE: 910400012,
       NAME: 'Postholder contact details'
     }
   },
