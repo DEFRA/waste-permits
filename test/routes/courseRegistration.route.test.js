@@ -4,10 +4,10 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const StandardRule = require('../../../../src/persistence/entities/standardRule.entity')
+const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 
-const GeneralTestHelper = require('../../generalTestHelper.test')
-const UploadTestHelper = require('../uploadHelper')
+const GeneralTestHelper = require('./generalTestHelper.test')
+const UploadTestHelper = require('./uploadHelper')
 
 const WamitabRiskLevel = {
   LOW: 910400001,

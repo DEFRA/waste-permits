@@ -4,17 +4,19 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const GeneralTestHelper = require('../../generalTestHelper.test')
-const UploadTestHelper = require('../uploadHelper')
+const TechnicalQualification = require('../../src/models/taskList/technicalQualification.task')
+
+const GeneralTestHelper = require('./generalTestHelper.test')
+const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-competence/upload-wamitab-qualification'
+const routePath = '/technical-competence/upload-esa-eu-skills'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
   removePath: `${routePath}/remove/${fakeAnnotationId}`,
-  nextRoutePath: '/technical-competence/technical-managers'
+  nextRoutePath: '/task-list'
 }
 
 const helper = new UploadTestHelper(lab, paths)
@@ -25,6 +27,8 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
 
+  sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
+
   helper.setStubs(sandbox)
 })
 
@@ -33,7 +37,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Company Declare Upload Wamitab tests:', () => {
+lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -43,8 +47,8 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'wamitab-qualification-description',
-      pageHeading: 'WAMITAB or EPOC: upload your evidence',
+      descriptionId: 'esa-eu-skills-description',
+      pageHeading: 'Energy & Utility Skills / ESA: upload your evidence',
       submitButton: 'Continue'
     }
 
@@ -54,13 +58,10 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
       {
         title: 'displays expected static content',
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'wamitab-qualification-description-paragraph-1',
-          'wamitab-qualification-description-paragraph-2',
-          'wamitab-qualification-description-paragraph-3',
-          'wamitab-qualification-operator-competence-link',
-          'wamitab-qualification-operator-competence-link',
-          'wamitab-qualification-operator-competence-link-abbr',
-          'wamitab-qualification-operator-competence-abbr'])
+          'esa-eu-skills-description-span-1',
+          'esa-eu-skills-description-paragraph-1',
+          'esa-eu-skills-description-span-2',
+          'esa-eu-skills-description-paragraph-2'])
       }
     ])
     helper.getFailure()
@@ -80,6 +81,6 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'technical-qualification': 'WAMITAB-QUALIFICATION' } })
+    helper.postSuccess({ payload: { 'technical-qualification': 'esa-eu-skills' } })
   })
 })

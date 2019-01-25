@@ -4,14 +4,14 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const EnvironmentalRiskAssessment = require('../../../../src/models/taskList/environmentalRiskAssessment.task')
+const SitePlan = require('../../src/models/taskList/sitePlan.task')
 
-const GeneralTestHelper = require('../../generalTestHelper.test')
-const UploadTestHelper = require('../uploadHelper')
+const GeneralTestHelper = require('./generalTestHelper.test')
+const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/environmental-risk-assessment'
+const routePath = '/site-plan'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -27,7 +27,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
 
-  sandbox.stub(EnvironmentalRiskAssessment, 'updateCompleteness').value(() => Promise.resolve({}))
+  sandbox.stub(SitePlan, 'updateCompleteness').value(() => Promise.resolve({}))
 
   helper.setStubs(sandbox)
 })
@@ -37,7 +37,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Upload Environmental Risk Assessment tests:', () => {
+lab.experiment('Site Upload Site plan tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -47,10 +47,9 @@ lab.experiment('Upload Environmental Risk Assessment tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'environmental-risk-assessment-description',
-      pageHeading: 'Upload the environmental risk assessment',
-      submitButton: 'Continue',
-      fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
+      descriptionId: 'site-plan-description',
+      pageHeading: 'Upload the site plan',
+      submitButton: 'Continue'
     }
 
     // Perform general get tests
@@ -65,13 +64,13 @@ lab.experiment('Upload Environmental Risk Assessment tests:', () => {
 
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
-    helper.uploadSuccess('application/msword')
-    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT'] }, 'application/msword')
-    helper.uploadFailure('application/msword')
+    helper.uploadSuccess()
+    helper.uploadInvalid()
+    helper.uploadFailure()
   })
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'upload-environmental-risk-assessment': 'upload-environmental-risk-assessment' } })
+    helper.postSuccess({ payload: { 'site-plan': 'site-plan' } })
   })
 })

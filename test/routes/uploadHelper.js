@@ -2,23 +2,23 @@
 
 const Code = require('code')
 const sinon = require('sinon')
-const Mocks = require('../../helpers/mocks')
-const GeneralTestHelper = require('../generalTestHelper.test')
+const Mocks = require('../helpers/mocks')
+const GeneralTestHelper = require('./generalTestHelper.test')
 
 const fs = require('fs')
-const config = require('../../../src/config/config')
-const Annotation = require('../../../src/persistence/entities/annotation.entity')
-const Application = require('../../../src/persistence/entities/application.entity')
-const CharityDetail = require('../../../src/models/charityDetail.model')
-const CookieService = require('../../../src/services/cookie.service')
-const LoggingService = require('../../../src/services/logging.service')
-const UploadService = require('../../../src/services/upload.service')
-const ClamWrapper = require('../../../src/utilities/clamWrapper')
-const { COOKIE_RESULT } = require('../../../src/constants')
+const config = require('../../src/config/config')
+const Annotation = require('../../src/persistence/entities/annotation.entity')
+const Application = require('../../src/persistence/entities/application.entity')
+const CharityDetail = require('../../src/models/charityDetail.model')
+const CookieService = require('../../src/services/cookie.service')
+const LoggingService = require('../../src/services/logging.service')
+const UploadService = require('../../src/services/upload.service')
+const ClamWrapper = require('../../src/utilities/clamWrapper')
+const { COOKIE_RESULT } = require('../../src/constants')
 
 const defaultFileTypes = 'PDF,DOC,DOCX,XLS,XLSX,JPG,ODT,ODS'
 
-const server = require('../../../server')
+const server = require('../../server')
 
 const getDoc = async ({ pageHeading, submitButton }) => {
   const doc = await GeneralTestHelper.getDoc(getRequest)

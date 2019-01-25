@@ -4,19 +4,17 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const TechnicalQualification = require('../../../../src/models/taskList/technicalQualification.task')
-
-const GeneralTestHelper = require('../../generalTestHelper.test')
-const UploadTestHelper = require('../uploadHelper')
+const GeneralTestHelper = require('./generalTestHelper.test')
+const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-competence/upload-esa-eu-skills'
+const routePath = '/technical-competence/upload-deemed-evidence'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
   removePath: `${routePath}/remove/${fakeAnnotationId}`,
-  nextRoutePath: '/task-list'
+  nextRoutePath: '/technical-competence/technical-managers'
 }
 
 const helper = new UploadTestHelper(lab, paths)
@@ -27,8 +25,6 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
 
-  sandbox.stub(TechnicalQualification, 'updateCompleteness').value(() => Promise.resolve({}))
-
   helper.setStubs(sandbox)
 })
 
@@ -37,7 +33,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
+lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -47,8 +43,8 @@ lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'esa-eu-skills-description',
-      pageHeading: 'Energy & Utility Skills / ESA: upload your evidence',
+      descriptionId: 'deemed-evidence-description',
+      pageHeading: 'Deemed competence or an assessment: upload your evidence',
       submitButton: 'Continue'
     }
 
@@ -58,10 +54,14 @@ lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
       {
         title: 'displays expected static content',
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'esa-eu-skills-description-span-1',
-          'esa-eu-skills-description-paragraph-1',
-          'esa-eu-skills-description-span-2',
-          'esa-eu-skills-description-paragraph-2'])
+          'deemed-evidence-description-list-heading',
+          'deemed-evidence-description-list',
+          'deemed-evidence-description-list-item-1',
+          'deemed-evidence-description-list-item-2',
+          'deemed-evidence-description-list-item-3',
+          'deemed-evidence-description-important-info',
+          'deemed-evidence-description-important-info-abbr',
+          'deemed-evidence-description-last-paragraph'])
       }
     ])
     helper.getFailure()
@@ -81,6 +81,6 @@ lab.experiment('Company Declare Upload ESA EU skills tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'technical-qualification': 'esa-eu-skills' } })
+    helper.postSuccess({ payload: { 'technical-qualification': 'deemed-evidence' } })
   })
 })
