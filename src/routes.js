@@ -884,11 +884,12 @@ const Routes = {
     path: '/environmental-risk-assessment',
     view: 'upload/environmentalRiskAssessment/environmentalRiskAssessment',
     pageHeading: 'Upload the environmental risk assessment',
-    controller: 'upload/environmentalRiskAssessment/environmentalRiskAssessment',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
+    subject: 'ENVIRONMENTAL_RISK_ASSESSMENT',
     validatorOptions: {
       fileTypes: [
         { type: 'PDF', mimeType: 'application/pdf' },
@@ -902,11 +903,12 @@ const Routes = {
     path: '/fire-prevention-plan',
     view: 'upload/firePreventionPlan/firePreventionPlan',
     pageHeading: 'Upload the fire prevention plan',
-    controller: 'upload/firePreventionPlan/firePreventionPlan',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
-    baseRoute: 'uploadRoute'
+    baseRoute: 'uploadRoute',
+    subject: 'FIRE_PREVENTION_PLAN'
   },
   HEALTH: {
     path: '/health',
@@ -925,11 +927,12 @@ const Routes = {
     path: '/management-system/upload',
     view: 'upload/managementSystem/managementSystemSummary',
     pageHeading: 'Upload a summary of your management system',
-    controller: 'upload/managementSystem/managementSystemSummary',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
+    subject: 'MANAGEMENT_SYSTEM_SUMMARY',
     validatorOptions: {
       fileTypes: [
         { type: 'PDF', mimeType: 'application/pdf' },
@@ -952,11 +955,12 @@ const Routes = {
     path: '/mcp/template/upload',
     view: 'upload/mcpDetails/mcpDetails',
     pageHeading: 'Upload the completed plant or generator list template',
-    controller: 'upload/mcpDetails/mcpDetails',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
+    subject: 'MCP_DETAILS',
     validatorOptions: {
       fileTypes: [
         { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
@@ -1021,11 +1025,12 @@ const Routes = {
     path: '/non-technical-summary',
     view: 'upload/nonTechnicalSummary/nonTechnicalSummary',
     pageHeading: 'Upload a non-technical summary',
-    controller: 'upload/nonTechnicalSummary/nonTechnicalSummary',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
+    subject: 'NON_TECHNICAL_SUMMARY',
     validatorOptions: {
       fileTypes: [
         { type: 'PDF', mimeType: 'application/pdf' },
@@ -1139,11 +1144,12 @@ const Routes = {
     path: '/site-plan',
     view: 'upload/sitePlan/sitePlan',
     pageHeading: 'Upload the site plan',
-    controller: 'upload/sitePlan/sitePlan',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
-    baseRoute: 'uploadRoute'
+    baseRoute: 'uploadRoute',
+    subject: 'SITE_PLAN'
   },
   SITE_NAME: {
     path: '/site/site-name',
@@ -1184,11 +1190,12 @@ const Routes = {
     path: '/technical-competence/technical-managers',
     view: 'upload/technicalQualification/technicalManagers',
     pageHeading: 'Upload details for all technically competent managers',
-    controller: 'upload/technicalQualification/technicalManagers',
-    validator: 'upload/upload',
+    controller: 'technicalManagers',
+    validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
+    subject: 'TECHNICAL_MANAGERS',
     validatorOptions: {
       fileTypes: [
         { type: 'DOC', mimeType: 'application/msword' },
@@ -1202,41 +1209,45 @@ const Routes = {
     path: '/technical-competence/upload-course-registration',
     view: 'upload/technicalQualification/courseRegistration',
     pageHeading: 'Getting a qualification: upload your evidence',
-    controller: 'upload/technicalQualification/courseRegistration',
-    validator: 'upload/upload',
+    controller: 'courseRegistration',
+    validator: 'upload',
     nextRoute: 'TECHNICAL_MANAGERS',
     types: 'GET, REMOVE, UPLOAD',
-    baseRoute: 'uploadRoute'
+    baseRoute: 'uploadRoute',
+    subject: 'TECHNICAL_QUALIFICATION'
   },
   UPLOAD_DEEMED_EVIDENCE: {
     path: '/technical-competence/upload-deemed-evidence',
     view: 'upload/technicalQualification/deemedEvidence',
     pageHeading: 'Deemed competence or an assessment: upload your evidence',
-    controller: 'upload/technicalQualification/deemedEvidence',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TECHNICAL_MANAGERS',
     types: 'GET, REMOVE, UPLOAD',
-    baseRoute: 'uploadRoute'
+    baseRoute: 'uploadRoute',
+    subject: 'TECHNICAL_QUALIFICATION'
   },
   UPLOAD_ESA_EU_SKILLS: {
     path: '/technical-competence/upload-esa-eu-skills',
     view: 'upload/technicalQualification/esaEuSkills',
     pageHeading: 'Energy & Utility Skills / ESA: upload your evidence',
-    controller: 'upload/technicalQualification/esaEuSkills',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
-    baseRoute: 'uploadRoute'
+    baseRoute: 'uploadRoute',
+    subject: 'TECHNICAL_QUALIFICATION'
   },
   UPLOAD_WAMITAB_QUALIFICATION: {
     path: '/technical-competence/upload-wamitab-qualification',
     view: 'upload/technicalQualification/wamitabQualification',
     pageHeading: 'WAMITAB or EPOC: upload your evidence',
-    controller: 'upload/technicalQualification/wamitabQualification',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TECHNICAL_MANAGERS',
     types: 'GET, REMOVE, UPLOAD',
-    baseRoute: 'uploadRoute'
+    baseRoute: 'uploadRoute',
+    subject: 'TECHNICAL_QUALIFICATION'
   },
   VERSION: {
     path: '/version',
@@ -1260,11 +1271,12 @@ const Routes = {
     path: '/waste-recovery-plan',
     view: 'upload/wasteRecoveryPlan/wasteRecoveryPlan',
     pageHeading: 'Upload the waste recovery plan',
-    controller: 'upload/wasteRecoveryPlan/wasteRecoveryPlan',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
+    subject: 'WASTE_RECOVERY_PLAN',
     validatorOptions: {
       fileTypes: [
         { type: 'PDF', mimeType: 'application/pdf' },
@@ -1278,11 +1290,12 @@ const Routes = {
     path: '/waste-codes',
     view: 'upload/wasteTypesList/wasteTypesList',
     pageHeading: 'Upload a document that lists the types of waste you want to accept',
-    controller: 'upload/wasteTypesList/wasteTypesList',
-    validator: 'upload/upload',
+    controller: 'upload',
+    validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
+    subject: 'WASTE_TYPES_LIST',
     validatorOptions: {
       fileTypes: [
         { type: 'PDF', mimeType: 'application/pdf' },

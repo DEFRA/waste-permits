@@ -4,14 +4,14 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const WasteRecoveryPlan = require('../../../../src/models/taskList/wasteRecoveryPlan.task')
+const ManagementSystemTask = require('../../src/models/taskList/managementSystem.task')
 
-const GeneralTestHelper = require('../../generalTestHelper.test')
-const UploadTestHelper = require('../uploadHelper')
+const GeneralTestHelper = require('./generalTestHelper.test')
+const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/waste-recovery-plan'
+const routePath = '/management-system/upload'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -27,7 +27,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
 
-  sandbox.stub(WasteRecoveryPlan, 'updateCompleteness').value(() => Promise.resolve({}))
+  sandbox.stub(ManagementSystemTask, 'updateCompleteness').value(() => Promise.resolve({}))
 
   helper.setStubs(sandbox)
 })
@@ -37,7 +37,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Waste recovery plan upload tests:', () => {
+lab.experiment('Management system summary upload tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -47,7 +47,7 @@ lab.experiment('Waste recovery plan upload tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      pageHeading: 'Upload the waste recovery plan',
+      pageHeading: 'Upload a summary of your management system',
       submitButton: 'Continue',
       fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
     }
@@ -71,6 +71,6 @@ lab.experiment('Waste recovery plan upload tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'waste-recovery-plan': 'waste-recovery-plan' } })
+    helper.postSuccess({ payload: { 'management-system': 'management-system' } })
   })
 })

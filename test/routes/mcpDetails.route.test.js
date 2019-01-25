@@ -4,14 +4,14 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const ManagementSystemTask = require('../../../../src/models/taskList/managementSystem.task')
+const McpDetails = require('../../src/models/taskList/mcpDetails.task')
 
-const GeneralTestHelper = require('../../generalTestHelper.test')
-const UploadTestHelper = require('../uploadHelper')
+const GeneralTestHelper = require('./generalTestHelper.test')
+const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/management-system/upload'
+const routePath = '/mcp/template/upload'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -27,7 +27,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
 
-  sandbox.stub(ManagementSystemTask, 'updateCompleteness').value(() => Promise.resolve({}))
+  sandbox.stub(McpDetails, 'updateCompleteness').value(() => Promise.resolve({}))
 
   helper.setStubs(sandbox)
 })
@@ -37,7 +37,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Management system summary upload tests:', () => {
+lab.experiment('Upload MCP Details tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -47,9 +47,10 @@ lab.experiment('Management system summary upload tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      pageHeading: 'Upload a summary of your management system',
+      descriptionId: 'mcp-details-description',
+      pageHeading: 'Upload the completed plant or generator list template',
       submitButton: 'Continue',
-      fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
+      fileTypes: ['XLS', 'XLSX', 'ODS', 'CSV']
     }
 
     // Perform general get tests
@@ -64,13 +65,13 @@ lab.experiment('Management system summary upload tests:', () => {
 
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
-    helper.uploadSuccess('application/msword')
-    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT'] }, 'application/msword')
-    helper.uploadFailure('application/msword')
+    helper.uploadSuccess('application/vnd.ms-excel')
+    helper.uploadInvalid({ fileTypes: ['XLS', 'XLSX', 'ODS', 'CSV'] }, 'application/vnd.ms-excel')
+    helper.uploadFailure('application/vnd.ms-excel')
   })
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'management-system': 'management-system' } })
+    helper.postSuccess({ payload: { 'mcp-details': 'mcp-details' } })
   })
 })

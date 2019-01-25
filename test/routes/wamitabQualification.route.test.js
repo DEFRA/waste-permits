@@ -4,12 +4,12 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const GeneralTestHelper = require('../../generalTestHelper.test')
-const UploadTestHelper = require('../uploadHelper')
+const GeneralTestHelper = require('./generalTestHelper.test')
+const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/technical-competence/upload-deemed-evidence'
+const routePath = '/technical-competence/upload-wamitab-qualification'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -33,7 +33,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
+lab.experiment('Company Declare Upload Wamitab tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -43,8 +43,8 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'deemed-evidence-description',
-      pageHeading: 'Deemed competence or an assessment: upload your evidence',
+      descriptionId: 'wamitab-qualification-description',
+      pageHeading: 'WAMITAB or EPOC: upload your evidence',
       submitButton: 'Continue'
     }
 
@@ -54,14 +54,13 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
       {
         title: 'displays expected static content',
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'deemed-evidence-description-list-heading',
-          'deemed-evidence-description-list',
-          'deemed-evidence-description-list-item-1',
-          'deemed-evidence-description-list-item-2',
-          'deemed-evidence-description-list-item-3',
-          'deemed-evidence-description-important-info',
-          'deemed-evidence-description-important-info-abbr',
-          'deemed-evidence-description-last-paragraph'])
+          'wamitab-qualification-description-paragraph-1',
+          'wamitab-qualification-description-paragraph-2',
+          'wamitab-qualification-description-paragraph-3',
+          'wamitab-qualification-operator-competence-link',
+          'wamitab-qualification-operator-competence-link',
+          'wamitab-qualification-operator-competence-link-abbr',
+          'wamitab-qualification-operator-competence-abbr'])
       }
     ])
     helper.getFailure()
@@ -81,6 +80,6 @@ lab.experiment('Company Declare Upload Deemed evidence tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'technical-qualification': 'deemed-evidence' } })
+    helper.postSuccess({ payload: { 'technical-qualification': 'WAMITAB-QUALIFICATION' } })
   })
 })

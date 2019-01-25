@@ -4,10 +4,10 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const NonTechnicalSummary = require('../../../../src/models/taskList/nonTechnicalSummary.task')
+const NonTechnicalSummary = require('../../src/models/taskList/nonTechnicalSummary.task')
 
-const GeneralTestHelper = require('../../generalTestHelper.test')
-const UploadTestHelper = require('../uploadHelper')
+const GeneralTestHelper = require('./generalTestHelper.test')
+const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 

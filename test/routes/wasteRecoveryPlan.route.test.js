@@ -4,14 +4,14 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const SitePlan = require('../../../../src/models/taskList/sitePlan.task')
+const WasteRecoveryPlan = require('../../src/models/taskList/wasteRecoveryPlan.task')
 
-const GeneralTestHelper = require('../../generalTestHelper.test')
-const UploadTestHelper = require('../uploadHelper')
+const GeneralTestHelper = require('./generalTestHelper.test')
+const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/site-plan'
+const routePath = '/waste-recovery-plan'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -27,7 +27,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
 
-  sandbox.stub(SitePlan, 'updateCompleteness').value(() => Promise.resolve({}))
+  sandbox.stub(WasteRecoveryPlan, 'updateCompleteness').value(() => Promise.resolve({}))
 
   helper.setStubs(sandbox)
 })
@@ -37,7 +37,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Site Upload Site plan tests:', () => {
+lab.experiment('Waste recovery plan upload tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -47,9 +47,9 @@ lab.experiment('Site Upload Site plan tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'site-plan-description',
-      pageHeading: 'Upload the site plan',
-      submitButton: 'Continue'
+      pageHeading: 'Upload the waste recovery plan',
+      submitButton: 'Continue',
+      fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
     }
 
     // Perform general get tests
@@ -64,13 +64,13 @@ lab.experiment('Site Upload Site plan tests:', () => {
 
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
-    helper.uploadSuccess()
-    helper.uploadInvalid()
-    helper.uploadFailure()
+    helper.uploadSuccess('application/msword')
+    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT'] }, 'application/msword')
+    helper.uploadFailure('application/msword')
   })
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'site-plan': 'site-plan' } })
+    helper.postSuccess({ payload: { 'waste-recovery-plan': 'waste-recovery-plan' } })
   })
 })

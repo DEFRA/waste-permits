@@ -4,14 +4,14 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const McpDetails = require('../../../../src/models/taskList/mcpDetails.task')
+const EnvironmentalRiskAssessment = require('../../src/models/taskList/environmentalRiskAssessment.task')
 
-const GeneralTestHelper = require('../../generalTestHelper.test')
-const UploadTestHelper = require('../uploadHelper')
+const GeneralTestHelper = require('./generalTestHelper.test')
+const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/mcp/template/upload'
+const routePath = '/environmental-risk-assessment'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -27,7 +27,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
 
-  sandbox.stub(McpDetails, 'updateCompleteness').value(() => Promise.resolve({}))
+  sandbox.stub(EnvironmentalRiskAssessment, 'updateCompleteness').value(() => Promise.resolve({}))
 
   helper.setStubs(sandbox)
 })
@@ -37,7 +37,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Upload MCP Details tests:', () => {
+lab.experiment('Upload Environmental Risk Assessment tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -47,10 +47,10 @@ lab.experiment('Upload MCP Details tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'mcp-details-description',
-      pageHeading: 'Upload the completed plant or generator list template',
+      descriptionId: 'environmental-risk-assessment-description',
+      pageHeading: 'Upload the environmental risk assessment',
       submitButton: 'Continue',
-      fileTypes: ['XLS', 'XLSX', 'ODS', 'CSV']
+      fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
     }
 
     // Perform general get tests
@@ -65,13 +65,13 @@ lab.experiment('Upload MCP Details tests:', () => {
 
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
-    helper.uploadSuccess('application/vnd.ms-excel')
-    helper.uploadInvalid({ fileTypes: ['XLS', 'XLSX', 'ODS', 'CSV'] }, 'application/vnd.ms-excel')
-    helper.uploadFailure('application/vnd.ms-excel')
+    helper.uploadSuccess('application/msword')
+    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT'] }, 'application/msword')
+    helper.uploadFailure('application/msword')
   })
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'mcp-details': 'mcp-details' } })
+    helper.postSuccess({ payload: { 'upload-environmental-risk-assessment': 'upload-environmental-risk-assessment' } })
   })
 })

@@ -1,9 +1,9 @@
 'use strict'
 
 const Joi = require('joi')
-const BaseValidator = require('../base.validator')
-const Annotation = require('../../persistence/entities/annotation.entity')
-const Constants = require('../../constants')
+const BaseValidator = require('./base.validator')
+const Annotation = require('../persistence/entities/annotation.entity')
+const Constants = require('../constants')
 
 module.exports = class UploadValidator extends BaseValidator {
   constructor (options = {}) {

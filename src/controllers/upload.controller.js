@@ -1,15 +1,24 @@
 'use strict'
 
-const Constants = require('../../../constants')
-const Routes = require('../../../routes')
-const BaseController = require('../../base.controller')
-const CookieService = require('../../../services/cookie.service')
-const LoggingService = require('../../../services/logging.service')
-const RecoveryService = require('../../../services/recovery.service')
-const UploadService = require('../../../services/upload.service')
-const Annotation = require('../../../persistence/entities/annotation.entity')
+const Constants = require('../constants')
+const { UploadSubject } = Constants
+const Routes = require('../routes')
+const BaseController = require('./base.controller')
+const CookieService = require('../services/cookie.service')
+const LoggingService = require('../services/logging.service')
+const RecoveryService = require('../services/recovery.service')
+const UploadService = require('../services/upload.service')
+const Annotation = require('../persistence/entities/annotation.entity')
 
 module.exports = class UploadController extends BaseController {
+  get subject () {
+    const { subject = '** subject is missing **' } = this.route
+    if (!UploadSubject[subject]) {
+      throw new Error(`Invalid upload subject: "${subject}"`)
+    }
+    return UploadSubject[subject]
+  }
+
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
