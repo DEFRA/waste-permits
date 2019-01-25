@@ -20,8 +20,8 @@ module.exports = class McpBusinessActivityCheck extends BaseCheck {
     const answers = []
 
     const mcpBusinessType = await this.getMcpBusinessType()
-    if (mcpBusinessType && mcpBusinessType.description) {
-      answers.push(mcpBusinessType.description)
+    if (mcpBusinessType && mcpBusinessType.code) {
+      answers.push(mcpBusinessType.code)
     }
 
     return this.buildLine({

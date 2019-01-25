@@ -11,6 +11,11 @@
 
       {{> common/pageHeading pageHeading }}
 
+      <p>
+        These are the most common codes.
+        If your activity does not exactly match these you should choose 'Other' and enter the code.
+      </p>
+
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
@@ -21,29 +26,32 @@
 
           {{#each mainTypes}}
           <div class="multiple-choice">
-            <input id="type-codes-option-{{code}}" name="type-codes-option" type="radio" value="{{code}}"{{#if isSelected}} checked{{/if}}>
-            <label id="type-codes-option-{{code}}-label" for="type-codes-option-{{code}}">{{description}}</label>
+            <input id="type-codes-option-{{id}}" name="type-codes-option" type="radio" value="{{code}}"{{#if isSelected}} checked{{/if}}>
+            <label id="type-codes-option-{{id}}-label" for="type-codes-option-{{id}}">{{description}}</label>
           </div>
           {{/each}}
 
-          <div class="multiple-choice" data-target="type-codes-option-other-select">
+          <div class="multiple-choice" data-target="type-codes-option-other-enter">
             <input id="type-codes-option-other" name="type-codes-option" type="radio" value="other"{{#if otherIsSelected}} checked{{/if}}>
-            <label id="type-codes-option-other-label" for="type-codes-option-other">Other activity</label>
+            <label id="type-codes-option-other-label" for="type-codes-option-other">Other - I will enter the code</label>
           </div>
-          <div id="type-codes-option-other-select" class="panel panel-border-narrow js-hidden {{#getFormErrorGroupClass errors.type-codes-other}}{{/getFormErrorGroupClass}}">
-            <label id="type-codes-option-other-select-label" class="form-label" for="type-codes-other">Select an activity</label>
+          <div id="type-codes-option-other-enter" class="panel panel-border-narrow js-hidden {{#getFormErrorGroupClass errors.type-codes-other}}{{/getFormErrorGroupClass}}">
+            <p id="nace-code-info">
+              Find the 4-digit NACE code for your business in the
+              <a id="nace-code-list-link" target="_blank" rel="noopener noreferrer" href="/information/nace-codes">
+                list of NACE codes (opens new tab)</a>.
+            </p>
+            <label id="type-codes-option-other-enter-label" class="form-label"
+                   for="type-codes-other" aria-describedby="nace-code-info">
+              NACE code for your business
+              <span class="form-hint">
+                For example 34.11
+              </span>
+            </label>
             {{> common/fieldError fieldId='type-codes-other-error' message=errors.type-codes-other }}
 
-            <select class="form-control form-control-char-auto {{#if errors.type-codes-other}}form-control-error{{/if}}" id="type-codes-other" name="type-codes-other">
-              <option value="">Show list</option>
-              {{#each otherTypes}}
-                {{#if isSelected}}
-                  <option value="{{code}}" selected>{{description}}</option>
-                {{else}}
-                  <option value="{{code}}">{{description}}</option>
-                {{/if}}
-              {{/each}}
-            </select>
+            <input class="form-control form-control-char-15{{#if errors.type-codes-other}} form-control-error{{/if}}"
+                   id="type-codes-other" name="type-codes-other"{{#if other}} value="{{other}}"{{/if}}>
           </div>
 
         </fieldset>

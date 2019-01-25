@@ -942,7 +942,7 @@ const Routes = {
   MCP_BUSINESS_ACTIVITY: {
     path: '/mcp/business-activity',
     view: 'mcpBusinessActivity',
-    pageHeading: 'What is the main type of business or activity the plant is used for?',
+    pageHeading: 'What is the NACE code for the main business activity that the plant or generator is used for?',
     controller: 'mcpBusinessActivity',
     validator: 'mcpBusinessActivity',
     nextRoute: 'TASK_LIST',
@@ -979,8 +979,17 @@ const Routes = {
     path: '/existing-permit/yes',
     view: 'contactUsBefore',
     pageHeading: 'Contact us before you apply',
-    controller: 'contactUsBefore',
-    types: 'GET, POST'
+    controller: 'staticPage',
+    types: 'GET'
+  },
+  MCP_NACE_CODE_LIST: {
+    path: '/information/nace-codes',
+    view: 'naceCodeList',
+    pageHeading: 'List of NACE codes for medium combustion plant and specified generators',
+    controller: 'staticPage',
+    types: 'GET',
+    cookieValidationRequired: false,
+    applicationRequired: false
   },
   MCP_TEMPLATE: {
     path: '/mcp/template/download',
