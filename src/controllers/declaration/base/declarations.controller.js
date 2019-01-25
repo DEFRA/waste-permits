@@ -25,6 +25,9 @@ module.exports = class DeclarationsController extends BaseController {
       case PERMIT_HOLDER_TYPES.PUBLIC_BODY:
         pageContext.operatorTypeIsPublicBody = true
         break
+      case PERMIT_HOLDER_TYPES.OTHER_ORGANISATION:
+        pageContext.operatorTypeIsOther = true
+        break
       default:
         pageContext.operatorTypeIsLimitedCompany = true
     }

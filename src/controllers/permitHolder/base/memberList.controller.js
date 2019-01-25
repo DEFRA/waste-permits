@@ -26,7 +26,7 @@ module.exports = class MemberListController extends BaseController {
     const list = await ContactDetail.list(context, { type: this.task.contactType })
 
     const contactDetails = await Promise.all(list.map(async (contactDetail) => {
-      const { id, dateOfBirth, firstName, lastName, email, telephone, fullAddress } = contactDetail
+      const { id, dateOfBirth, firstName, lastName, jobTitle, email, telephone, fullAddress } = contactDetail
 
       if (id && dateOfBirth) {
         const name = `${firstName} ${lastName}`
@@ -36,7 +36,7 @@ module.exports = class MemberListController extends BaseController {
         if (fullAddress) {
           const changeLink = `${Routes[holderRoute].path}/${memberId}`
           const deleteLink = `${Routes[deleteRoute].path}/${memberId}`
-          return { memberId, name, email, telephone, dob, changeLink, deleteLink, fullAddress }
+          return { memberId, name, jobTitle, email, telephone, dob, changeLink, deleteLink, fullAddress }
         }
       }
       // Remove any incomplete members
