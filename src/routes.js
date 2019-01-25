@@ -529,7 +529,7 @@ const Routes = {
     view: 'permitHolder/memberList',
     pageHeading: 'Postholders you have added',
     controller: 'permitHolder/group/postholderList',
-    nextRoute: 'COMPANY_DECLARE_OFFENCES',
+    nextRoute: 'POSTHOLDER_DECLARE_OFFENCES',
     holderRoute: 'POSTHOLDER_NAME_AND_DATE_OF_BIRTH',
     deleteRoute: 'GROUP_DELETE_POSTHOLDER',
     list: {
@@ -571,6 +571,24 @@ const Routes = {
     controller: 'permitHolder/group/postholderContactDetails',
     validator: 'permitHolder/permitHolderContactDetails',
     nextRoute: 'POSTCODE_POSTHOLDER',
+    types: 'GET, POST'
+  },
+  POSTHOLDER_DECLARE_OFFENCES: {
+    path: '/permit-holder/group/post-holder/declare-offences',
+    view: 'declaration/company/offences',
+    pageHeading: 'Does anyone connected with your group have a conviction for a relevant offence?',
+    controller: 'declaration/company/offences',
+    validator: 'declaration/company/offences',
+    nextRoute: 'POSTHOLDER_DECLARE_BANKRUPTCY',
+    types: 'GET, POST'
+  },
+  POSTHOLDER_DECLARE_BANKRUPTCY: {
+    path: '/permit-holder/group/post-holder/bankruptcy-insolvency',
+    view: 'declaration/company/bankruptcy',
+    pageHeading: 'Do you have current or past bankruptcy or insolvency proceedings to declare?',
+    controller: 'declaration/company/bankruptcy',
+    validator: 'declaration/company/bankruptcy',
+    nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
   PARTNERSHIP_TRADING_NAME: {

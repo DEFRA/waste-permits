@@ -30,16 +30,17 @@ const routes = {
     deleteMemberPath: `/permit-holder/partners/delete/${memberId}`
   },
   'postholder': {
+    includesJobTitle: true,
     heading: 'Postholders you have added',
     routePath: `/permit-holder/group/list`,
-    nextPath: '/permit-holder/company/declare-offences',
+    nextPath: '/permit-holder/group/post-holder/declare-offences',
     errorPath: '/errors/technical-problem',
     editMemberPath: `/permit-holder/group/post-holder/name/${memberId}`,
     deleteMemberPath: `/permit-holder/group/post-holder/delete/${memberId}`
   }
 }
 
-Object.entries(routes).forEach(([member, { heading, routePath, nextPath, errorPath, editMemberPath, deleteMemberPath }]) => {
+Object.entries(routes).forEach(([member, { includesJobTitle, heading, routePath, nextPath, errorPath, editMemberPath, deleteMemberPath }]) => {
   lab.experiment(capitalizeFirstLetter(member), () => {
     let mocks
     let sandbox
@@ -54,6 +55,7 @@ Object.entries(routes).forEach(([member, { heading, routePath, nextPath, errorPa
         partnerId: memberId,
         name: `${mocks.contactDetail.firstName} ${mocks.contactDetail.lastName}`,
         email: mocks.contactDetail.email,
+        post: `Post: ${mocks.contactDetail.jobTitle}`,
         telephone: mocks.contactDetail.telephone,
         dob: formatDate(mocks.contactDetail.dateOfBirth),
         changeLink: editMemberPath,
@@ -86,7 +88,7 @@ Object.entries(routes).forEach(([member, { heading, routePath, nextPath, errorPa
       const checkElements = async (doc, data) => {
         Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(heading)
 
-        data.forEach(({ partnerId, name, email, telephone, dob, changeLink, deleteLink, fullAddress }, index) => {
+        data.forEach(({ partnerId, post, name, email, telephone, dob, changeLink, deleteLink, fullAddress }, index) => {
           Code.expect(doc.getElementById(`member-${index}`)).to.exist()
           Code.expect(doc.getElementById(`member-name-${index}`).firstChild.nodeValue).to.equal(name)
           Code.expect(doc.getElementById(`member-address-${index}`).firstChild.nodeValue).to.equal(fullAddress)
@@ -97,6 +99,10 @@ Object.entries(routes).forEach(([member, { heading, routePath, nextPath, errorPa
           Code.expect(doc.getElementById(`member-change-name-${index}`).firstChild.nodeValue).to.equal(name)
           Code.expect(doc.getElementById(`member-delete-${index}`).getAttribute('href')).to.equal(deleteLink)
           Code.expect(doc.getElementById(`member-delete-name-${index}`).firstChild.nodeValue).to.equal(name)
+
+          if (includesJobTitle) {
+            Code.expect(doc.getElementById(`member-post-${index}`).firstChild.nodeValue).to.equal(post)
+          }
         })
 
         if (data.length > 1) {

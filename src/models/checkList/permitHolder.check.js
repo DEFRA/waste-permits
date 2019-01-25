@@ -6,6 +6,7 @@ const { PERMIT_HOLDER_DETAILS } = require('../../tasks').tasks
 const {
   INDIVIDUAL,
   LIMITED_LIABILITY_PARTNERSHIP,
+  OTHER_ORGANISATION,
   PUBLIC_BODY,
   PARTNERSHIP,
   SOLE_TRADER
@@ -14,6 +15,7 @@ const {
 const {
   RESPONSIBLE_CONTACT_DETAILS,
   PARTNER_CONTACT_DETAILS,
+  POSTHOLDER_CONTACT_DETAILS,
   INDIVIDUAL_PERMIT_HOLDER,
   DIRECTOR_CONTACT_DETAILS,
   DESIGNATED_MEMBER_CONTACT_DETAILS,
@@ -27,6 +29,8 @@ const {
   COMPANY_DIRECTOR_EMAIL,
   COMPANY_NUMBER,
   DIRECTOR_DATE_OF_BIRTH,
+  GROUP_NAME,
+  GROUP_LIST,
   LLP_COMPANY_DESIGNATED_MEMBER_EMAIL,
   LLP_MEMBER_DATE_OF_BIRTH,
   LLP_COMPANY_NUMBER,
@@ -90,6 +94,13 @@ module.exports = class PermitHolderCheck extends BaseCheck {
           this.getResponsibleOfficerLine(),
           this.getConvictionsLine(PUBLIC_BODY_DECLARE_OFFENCES),
           this.getBankruptcyLine(PUBLIC_BODY_DECLARE_BANKRUPTCY)
+        ]))
+      case OTHER_ORGANISATION.type:
+        return Promise.all(lines.concat([
+          this.getGroupLine(),
+          this.getPostHoldersLine(),
+          this.getConvictionsLine(),
+          this.getBankruptcyLine()
         ]))
       default:
         return Promise.all(lines.concat([
@@ -182,6 +193,18 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       links: [{ path, type: 'company details' }]
     })
   }
+  async getGroupLine () {
+    const { path } = GROUP_NAME
+    const { tradingName = '' } = await this.getApplication()
+    let answers = []
+    answers.push(tradingName)
+    return this.buildLine({
+      heading: `Other organisation name`,
+      prefix: 'other-organisation-name',
+      answers,
+      links: [{ path, type: 'other organisation name' }]
+    })
+  }
 
   async getPartnershipLine () {
     const { path } = PARTNERSHIP_TRADING_NAME
@@ -246,6 +269,28 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       prefix: 'designated-member',
       answers,
       links: [{ path, type: `designated member's date of birth` }]
+    })
+  }
+
+  async getPostHoldersLine () {
+    const { path } = GROUP_LIST
+    const partners = await this.listContactDetails(POSTHOLDER_CONTACT_DETAILS)
+    let answers = ['The postholders will be the permit holders and each will be responsible for the operation of the permit.']
+    partners.forEach(({ firstName = '', lastName = '', jobTitle = '', email = '', telephone = '', dateOfBirth = '---', fullAddress = '' }) => {
+      answers.push(blankLine)
+      answers.push(`Post: ${jobTitle}`)
+      answers.push(`${firstName} ${lastName}`)
+      answers.push(fullAddress)
+      answers.push(email)
+      answers.push(`Telephone: ${telephone}`)
+      const [year, month, day] = dateOfBirth.split('-')
+      answers.push(`Date of birth: ${Utilities.formatFullDateForDisplay({ day, month, year })}`)
+    })
+    return this.buildLine({
+      heading: 'Permit holder',
+      prefix: 'postholder',
+      answers,
+      links: [{ path, type: `postholders` }]
     })
   }
 
