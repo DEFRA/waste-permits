@@ -60,7 +60,7 @@ class MockData {
       firstName: contact.firstName,
       lastName: contact.lastName,
       type: 'ADDRESS_DETAIL_TYPE',
-      email: 'EMAIL',
+      email: 'ADDRESS@DETAIL.EMAIL',
       telephone: 'TELEPHONE',
       jobTitle: 'JOB_TITLE',
       fullAddress: [buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode].join(', ')
@@ -173,7 +173,7 @@ class MockData {
       accountName: 'EA RECEIPTS',
       ibanNumber: 'GB23NWK60708010014411',
       swiftNumber: 'NWBKGB2L',
-      paymentsEmail: 'BACS_EMAIL',
+      paymentsEmail: 'BACS@PAYMENT.EMAIL',
       description: 'THE DESCRIPTION'
     }
   }
@@ -253,7 +253,8 @@ class MockData {
       code: 'STANDARD_RULE_CODE',
       permitName: 'STANDARD_RULE_NAME',
       selectionDisplayName: 'STANDARD_RULE_SELECTION_DISPLAY_NAME',
-      standardRuleTypeId: this.standardRuleType.id
+      standardRuleTypeId: this.standardRuleType.id,
+      guidanceUrl: 'GUIDANCE_URL'
     }
   }
 
