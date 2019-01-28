@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -16,67 +17,28 @@ const ContactDetails = require('../../src/models/taskList/contactDetails.task')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-let sandbox
-
-let fakeApplication
-let fakeAccount
-let fakeContactDetail
-let fakeRecovery
-
-let fakeApplicationId = 'APPLICATION_ID'
-let fakeContactId = 'CONTACT_ID'
-let fakeAccountId = 'ACCOUNT_ID'
-
-let validPayload
-
 const routePath = '/contact-details'
 const nextRoutePath = '/task-list'
 
+let mocks
+let sandbox
+
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: fakeApplicationId,
-    contactId: fakeContactId,
-    agentId: fakeAccountId
-  }
+  mocks = new Mocks()
 
-  fakeAccount = {
-    id: fakeAccountId,
-    name: 'Agent'
-  }
-
-  fakeContactDetail = {
-    firstName: 'John',
-    lastName: 'Smith',
-    telephone: '+ 12  012 3456 7890',
-    email: 'john.smith@email.com'
-  }
-
-  fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    application: new Application(fakeApplication),
-    account: new Account(fakeAccount)
-  })
-
-  validPayload = {
-    'first-name': fakeContactDetail.firstName,
-    'last-name': fakeContactDetail.lastName,
-    'telephone': fakeContactDetail.telephone,
-    'email': fakeContactDetail.email
-  }
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(Account.prototype, 'save').value(() => undefined)
+  sandbox.stub(Account, 'getById').value(() => mocks.account)
+  sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
   sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
   sandbox.stub(ContactDetails, 'updateCompleteness').value(() => {})
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -133,7 +95,12 @@ lab.experiment('Contact details page tests:', () => {
         method: 'POST',
         url: routePath,
         headers: {},
-        payload: validPayload
+        payload: {
+          'first-name': mocks.contactDetail.firstName,
+          'last-name': mocks.contactDetail.lastName,
+          'telephone': mocks.contactDetail.telephone,
+          'email': mocks.contactDetail.email
+        }
       }
     })
 
@@ -147,6 +114,8 @@ lab.experiment('Contact details page tests:', () => {
 
       lab.test('redirects to the Task List route after an UPDATE', async () => {
         // TODO Ensure that this is an UPDATE
+        request.payload['is-contact-an-agent'] = true
+        request.payload['agent-company'] = mocks.account.accountName
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
