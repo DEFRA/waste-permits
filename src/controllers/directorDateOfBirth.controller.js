@@ -17,10 +17,10 @@ const {
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
   _getContactType (permitHolderType) {
-    switch (permitHolderType) {
-      case LIMITED_COMPANY:
+    switch (permitHolderType.type) {
+      case LIMITED_COMPANY.type:
         return DIRECTOR_CONTACT_DETAILS.TYPE
-      case LIMITED_LIABILITY_PARTNERSHIP:
+      case LIMITED_LIABILITY_PARTNERSHIP.type:
         return DESIGNATED_MEMBER_CONTACT_DETAILS.TYPE
       default:
         throw new Error(`Unexpected permit holder type: ${permitHolderType.type}`)

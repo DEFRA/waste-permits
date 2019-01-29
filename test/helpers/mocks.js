@@ -61,7 +61,7 @@ class MockData {
       lastName: contact.lastName,
       type: 'ADDRESS_DETAIL_TYPE',
       email: 'ADDRESS@DETAIL.EMAIL',
-      telephone: 'TELEPHONE',
+      telephone: '+ 12  012 3456 7890',
       jobTitle: 'JOB_TITLE',
       fullAddress: [buildingNameOrNumber, addressLine1, addressLine2, townOrCity, postcode].join(', ')
     }
@@ -79,6 +79,7 @@ class MockData {
     return {
       id: 'APPLICATION_ID',
       applicationNumber: 'APPLICATION_NUMBER',
+      agentId: 'AGENT_ID',
       organisationType: 'ORGANISATION_TYPE',
       confidentiality: true,
       confidentialityDetails: 'CONFIDENTIALITY DETAILS 1\nCONFIDENTIALITY DETAILS 2',

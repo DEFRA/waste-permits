@@ -4,15 +4,15 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const DrainageTypeDrain = require('../../src/models/taskList/drainageTypeDrain.task')
-const StandardRule = require('../../src/persistence/entities/standardRule.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
+const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const DrainageTypes = {
@@ -28,10 +28,6 @@ const routePath = '/drainage-type/drain'
 const nextRoutePath = '/task-list'
 const failRoutePath = '/drainage-type/contact-us'
 const errorPath = '/errors/technical-problem'
-
-let fakeApplication
-let fakeStandardRule
-let sandbox
 
 const checkCommonElements = async (doc) => {
   const pageHeading = 'Where does the vehicle storage area drain to?'
@@ -61,29 +57,23 @@ const checkCommonElements = async (doc) => {
   ])
 }
 
-lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID'
-  }
+let mocks
+let sandbox
 
-  fakeStandardRule = {
-    code: 'STANDARD_RULE_CODE',
-    guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL'
-  }
+lab.beforeEach(() => {
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(DrainageTypeDrain, 'isComplete').value(() => false)
-  sandbox.stub(DrainageTypeDrain, 'updateCompleteness').value(() => {})
-  sandbox.stub(DrainageTypeDrain, 'clearCompleteness').value(() => {})
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(DrainageTypeDrain, 'updateCompleteness').value(() => undefined)
+  sandbox.stub(DrainageTypeDrain, 'clearCompleteness').value(() => undefined)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -111,10 +101,10 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('recovery failed')
         }
 
         const res = await server.inject(request)
@@ -170,7 +160,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
       lab.test('when oil separator selected and standard rule is not allowed', async () => {
         postRequest.payload['drainage-type'] = OIL_SEPARATOR
         const spy = sinon.spy(DrainageTypeDrain, 'clearCompleteness')
-        fakeStandardRule.code = DRAINAGE_FAIL_PERMIT
+        mocks.standardRule.code = DRAINAGE_FAIL_PERMIT
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)

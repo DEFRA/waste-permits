@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -14,52 +15,26 @@ const RecoveryService = require('../../src/services/recovery.service')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-let sandbox
-
-let fakeApplication
-let fakeContactDetail
-let fakeRecovery
-
-let fakeApplicationId = 'APPLICATION_ID'
-let fakeContactId = 'CONTACT_ID'
-let fakeAccountId = 'ACCOUNT_ID'
-
-let validPayload
-
 const routePath = '/permit-holder/limited-liability-partnership/designated-member-email'
 const nextRoutePath = '/permit-holder/company/declare-offences'
 
+let mocks
+let sandbox
+
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: fakeApplicationId,
-    contactId: fakeContactId,
-    agentId: fakeAccountId
-  }
+  mocks = new Mocks()
 
-  fakeContactDetail = {
-    email: 'john.smith@email.com'
-  }
-
-  fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    application: new Application(fakeApplication)
-  })
-
-  validPayload = {
-    email: fakeContactDetail.email
-  }
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
   sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -111,7 +86,9 @@ lab.experiment('Designated Member Email page tests:', () => {
         method: 'POST',
         url: routePath,
         headers: {},
-        payload: validPayload
+        payload: {
+          email: mocks.contactDetail.email
+        }
       }
     })
 

@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -15,8 +16,6 @@ const ContactDetail = require('../../src/models/contactDetail.model')
 const Contact = require('../../src/persistence/entities/contact.entity')
 const { COOKIE_RESULT } = require('../../src/constants')
 const { LIMITED_LIABILITY_PARTNERSHIP, LIMITED_COMPANY } = require('../../src/dynamics').PERMIT_HOLDER_TYPES
-
-let sandbox
 
 const routes = {
   'Limited Company': {
@@ -43,83 +42,20 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
     let getRequest
     let postRequest
 
-    let fakeCompanyData
-    let fakeApplication
-    let fakeAccountData
-    let fakeContacts
-    let fakeCompanies
-    let fakeRecovery
+    let mocks
+    let sandbox
 
     lab.beforeEach(() => {
-      fakeCompanyData = {
-        name: 'THE COMPANY NAME',
-        address: 'THE COMPANY ADDRESS',
-        status: 'ACTIVE',
-        IsActive: true
-      }
+      mocks = new Mocks()
 
-      fakeApplication = {
-        id: 'APPLICATION_ID',
-        applicationNumber: 'APPLICATION_NUMBER'
-      }
-
-      fakeAccountData = {
-        companyNumber: fakeCompanyData.companyNumber,
-        name: fakeCompanyData.name
-      }
-
-      fakeContacts = [
-        new Contact({
-          id: 'CONTACT_1_ID',
-          firstName: 'CONTACT_1_FIRST_NAME',
-          lastName: 'CONTACT_1_LAST_NAME',
-          telephone: 'CONTACT_1_TELEPHONE',
-          email: 'CONTACT_1_EMAIL',
-          dob: {
-            day: undefined,
-            month: 1,
-            year: 1970
-          }
-        }),
-        new Contact({
-          id: 'CONTACT_2_ID',
-          firstName: 'CONTACT_2_FIRST_NAME',
-          lastName: 'CONTACT_2_LAST_NAME',
-          telephone: 'CONTACT_2_TELEPHONE',
-          email: 'CONTACT_2_EMAIL',
-          dob: {
-            day: undefined,
-            month: 2,
-            year: 1971
-          }
-        }),
-        new Contact({
-          id: 'CONTACT_3_ID',
-          firstName: 'CONTACT_3_FIRST_NAME',
-          lastName: 'CONTACT_3_LAST_NAME',
-          telephone: 'CONTACT_3_TELEPHONE',
-          email: 'CONTACT_3_EMAIL',
-          dob: {
-            day: undefined,
-            month: 3,
-            year: 1972
-          }
+      mocks.directors = ['/1/1970', '/2/1971', '/3/1973']
+        .map((dateOfBirth) => {
+          const [day, month, year] = dateOfBirth.split('/')
+          return { ...mocks.contactDetail, ...{ dob: { day, month, year } } }
         })
-      ]
 
-      fakeCompanies = [
-        new Account({ companyName: 'COMPANY_NAME_1' }),
-        new Account({ companyName: 'COMPANY_NAME_2' }),
-        new Account({ companyName: 'COMPANY_NAME_3' })
-      ]
-
-      fakeRecovery = () => ({
-        authToken: 'AUTH_TOKEN',
-        applicationId: fakeApplication.id,
-        application: new Application(fakeApplication),
-        account: new Account(fakeAccountData),
-        permitHolderType
-      })
+      mocks.companies = Array(3)
+        .fill({ ...mocks.companyData })
 
       getRequest = {
         method: 'GET',
@@ -139,14 +75,14 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
 
       // Stub methods
       sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-      sandbox.stub(Account.prototype, 'listLinked').value(() => fakeCompanies)
+      sandbox.stub(Account.prototype, 'listLinked').value(() => mocks.companies)
       sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
       sandbox.stub(ContactDetail, 'get').value(() => undefined)
       sandbox.stub(ContactDetail, 'list').value(() => [])
       sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
-      sandbox.stub(Contact, 'list').value(() => fakeContacts)
+      sandbox.stub(Contact, 'list').value(() => mocks.directors)
       sandbox.stub(Contact.prototype, 'save').value(() => undefined)
-      sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+      sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
     })
 
     lab.afterEach(() => {
@@ -155,7 +91,7 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
     })
 
     const checkPageElements = async (request) => {
-      const expectedPageHeading = fakeContacts.length > 1 ? multipleDirectorPageHeading : singleDirectorPageHeading
+      const expectedPageHeading = mocks.directors.length > 1 ? multipleDirectorPageHeading : singleDirectorPageHeading
       const doc = await GeneralTestHelper.getDoc(request)
 
       let element = doc.getElementById('page-heading').firstChild
@@ -171,7 +107,7 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
       ])
 
       // Check the director rows
-      fakeContacts.forEach((contact, index) => {
+      mocks.directors.forEach((contact, index) => {
         element = doc.getElementById(`director-list-item-${index}`)
         Code.expect(element).to.exist()
 
@@ -190,7 +126,7 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
       })
 
       // Check the company rows
-      fakeCompanies.forEach((company, index) => {
+      mocks.companies.forEach((company, index) => {
         element = doc.getElementById(`company-list-item-${index}`)
         Code.expect(element).to.exist()
 
@@ -199,7 +135,7 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
       })
 
       // Check for the 'no data' message (if there is one)
-      if (fakeContacts.length + fakeCompanies.length === 0) {
+      if (mocks.directors.length + mocks.companies.length === 0) {
         element = doc.getElementById(`no-directors`)
         Code.expect(element).to.exist()
       }
@@ -231,39 +167,39 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
       lab.experiment(`GET ${routePath} returns the Director DOB page correctly`, () => {
         lab.test(`when there are no Directors or Companies`, async () => {
           // Empty site name response
-          fakeContacts = []
-          fakeCompanies = []
+          mocks.directors = []
+          mocks.companies = []
           await checkPageElements(getRequest)
         })
 
         lab.test(`for a single Director and no Companies`, async () => {
           // Empty site name response
-          fakeContacts = [new Contact(fakeContacts[0])]
-          fakeCompanies = []
+          mocks.directors = [mocks.directors[0]]
+          mocks.companies = []
           await checkPageElements(getRequest)
         })
 
         lab.test(`for a single Company and no Directors`, async () => {
           // Empty site name response
-          fakeContacts = [new Contact(fakeContacts[0])]
-          fakeCompanies = []
+          mocks.directors = [mocks.directors[0]]
+          mocks.companies = []
           await checkPageElements(getRequest)
         })
 
         lab.test(`for multiple Directors and no Companies`, async () => {
-          fakeCompanies = []
+          mocks.companies = []
           await checkPageElements(getRequest)
         })
 
         lab.test(`multiple Directors with existing data`, async () => {
-          fakeContacts[0].dob.day = 10
-          fakeContacts[1].dob.day = 20
-          fakeContacts[2].dob.day = 30
+          mocks.directors[0].dob.day = 10
+          mocks.directors[1].dob.day = 20
+          mocks.directors[2].dob.day = 30
           await checkPageElements(getRequest)
         })
 
         lab.test(`for multiple Companies and no Directors`, async () => {
-          fakeContacts = []
+          mocks.directors = []
           await checkPageElements(getRequest)
         })
 
@@ -292,9 +228,9 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
 
           lab.test(`POST ${routePath} with a missing day of birth entered displays the correct error message`, async () => {
             postRequest.payload['director-dob-day-0'] = '10'
-            // No day of birth for director-dob-day-1 (fakeContacts[1])
+            // No day of birth for director-dob-day-1 (mocks.directors[1])
             postRequest.payload['director-dob-day-2'] = '30'
-            await checkValidationError('director-dob-day-1', `Enter a date of birth for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
+            await checkValidationError('director-dob-day-1', `Enter a date of birth for ${mocks.directors[1].firstName} ${mocks.directors[1].lastName}`)
           })
 
           lab.test(`POST ${routePath} with a invalid day of birth (31st Feb) displays the correct error message`, async () => {
@@ -303,7 +239,7 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
 
             // Month is Feb therefore this should trigger a validation error
             postRequest.payload['director-dob-day-1'] = '31'
-            await checkValidationError('director-dob-day-1', `Enter a day between 1 and 28 for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
+            await checkValidationError('director-dob-day-1', `Enter a day between 1 and 28 for ${mocks.directors[1].firstName} ${mocks.directors[1].lastName}`)
           })
 
           lab.test(`POST ${routePath} with a invalid integer for the day of birth ('XXX')  displays the correct error message`, async () => {
@@ -312,7 +248,7 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
 
             // Day is not a valid integer therefore this should trigger a validation error
             postRequest.payload['director-dob-day-1'] = 'XXX'
-            await checkValidationError('director-dob-day-1', `Enter a day between 1 and 28 for ${fakeContacts[1].firstName} ${fakeContacts[1].lastName}`)
+            await checkValidationError('director-dob-day-1', `Enter a day between 1 and 28 for ${mocks.directors[1].firstName} ${mocks.directors[1].lastName}`)
           })
         })
       })
