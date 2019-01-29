@@ -28,10 +28,9 @@ class StandardRule extends BaseEntity {
     ]
   }
 
-  constructor (...args) {
-    super(...args)
-    const [standardRule] = args
-    this.codeForId = StandardRule.transformPermitCode(standardRule.code)
+  get codeForId () {
+    // Transform the code into kebab-case for ID
+    return this.code.replace(/\s+/g, '-').toLowerCase()
   }
 
   static async getByCode (context, code) {
@@ -48,11 +47,6 @@ class StandardRule extends BaseEntity {
 
   static async list (context, standardRuleTypeId) {
     return this.listBy(context, { canApplyFor: true, standardRuleTypeId }, 'displayOrder')
-  }
-
-  // Transform the code into kebab-case for ID
-  static transformPermitCode (code) {
-    return code.replace(/\s+/g, '-').toLowerCase()
   }
 }
 

@@ -21,6 +21,7 @@ class Account extends BaseEntity {
       { field: 'isValidatedWithCompaniesHouse', dynamics: 'defra_validatedwithcompanyhouse' }
     ]
   }
+
   static get relationships () {
     return {
       Account: 'defra_parent_child_account_relationship'

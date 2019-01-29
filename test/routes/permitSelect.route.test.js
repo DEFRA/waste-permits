@@ -46,7 +46,6 @@ lab.beforeEach(() => {
     selectionDisplayName: 'Vehicle dismantling',
     limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
     code: 'SR2015 No 18',
-    codeForId: 'sr2015-no-18',
     canApplyOnline: true
   }
 
@@ -111,32 +110,28 @@ lab.experiment('Select a permit page tests:', () => {
             permitName: 'Permit one',
             selectionDisplayName: 'Select permit one',
             limits: '',
-            code: 'permit code 0',
-            codeForId: 'permit-code-0'
+            code: 'permit code 0'
           }),
           newPermit({
             id: 'permit-1',
             permitName: 'Permit two',
             selectionDisplayName: 'Select permit two',
             limits: 'limit two',
-            code: 'permit code 1',
-            codeForId: 'permit-code-1'
+            code: 'permit code 1'
           }),
           newPermit({
             id: 'permit-2',
             permitName: 'Permit three',
             selectionDisplayName: 'Select permit three',
             limits: '',
-            code: 'permit code 2',
-            codeForId: 'permit-code-2'
+            code: 'permit code 2'
           }),
           newPermit({
             id: 'permit-3',
             permitName: 'Permit four',
             selectionDisplayName: 'Select permit four',
             limits: '',
-            code: 'permit code 3',
-            codeForId: 'permit-code-3'
+            code: 'permit code 3'
           })
         ]
         StandardRule.list = () => permits

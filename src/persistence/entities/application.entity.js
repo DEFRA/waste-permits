@@ -61,23 +61,6 @@ class Application extends BaseEntity {
     return this.applicantType === PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId || this.organisationType === PERMIT_HOLDER_TYPES.SOLE_TRADER.dynamicsOrganisationTypeId
   }
 
-  // entityToDynamics (...args) {
-  //   if (this.isIndividual && this.permitHolderOrganisationId) {
-  //     throw new Error('Application cannot have a permitHolderOrganisationId when the permit holder is an individual')
-  //   }
-  //   return super.entityToDynamics(...args)
-  // }
-
-  // static dynamicsToEntity (...args) {
-  //   const model = super.dynamicsToEntity(...args)
-  //   if (model.isIndividual) {
-  //     model.permitHolderOrganisationId = undefined
-  //   } else {
-  //     model.permitHolderIndividualId = undefined
-  //   }
-  //   return model
-  // }
-
   static async getById (...args) {
     const application = await super.getById(...args)
 

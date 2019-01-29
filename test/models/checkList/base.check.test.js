@@ -92,8 +92,7 @@ lab.beforeEach(() => {
   }
   fakeStandardRule = {
     id: 'STANDARD_RULE_ID',
-    code: 'CODE',
-    codeForId: 'code'
+    code: 'CODE'
   }
   fakeAnnotation = {
     id: 'ANNOTATION_ID'
