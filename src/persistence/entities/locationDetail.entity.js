@@ -20,10 +20,6 @@ class LocationDetail extends BaseEntity {
   static async getByLocationId (context, locationId) {
     return super.getBy(context, { locationId })
   }
-
-  setAddress (addressId) {
-    this.addressId = addressId
-  }
 }
 
 LocationDetail.setDefinitions()

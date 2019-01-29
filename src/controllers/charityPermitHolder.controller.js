@@ -2,7 +2,6 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const CharityDetail = require('../models/charityDetail.model')
 const { INDIVIDUAL, LIMITED_COMPANY, PUBLIC_BODY } = require('../dynamics').PERMIT_HOLDER_TYPES
 
 module.exports = class CharityPermitHolderController extends BaseController {
@@ -12,10 +11,9 @@ module.exports = class CharityPermitHolderController extends BaseController {
     if (errors) {
       pageContext.formValues = request.payload
     } else {
-      const context = await RecoveryService.createApplicationContext(h)
-      const { charityPermitHolder } = await CharityDetail.get(context)
+      const { charityDetail } = await RecoveryService.createApplicationContext(h)
       pageContext.formValues = {
-        'charity-permit-holder-type': charityPermitHolder
+        'charity-permit-holder-type': charityDetail.charityPermitHolder
       }
     }
 

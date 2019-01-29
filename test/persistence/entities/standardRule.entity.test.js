@@ -26,7 +26,6 @@ const fakeStandardRule = {
   limits: 'STANDARD_RULE_LIMITS',
   code: 'SR2015 No 18',
   wamitabRiskLevel: 'WAMITAB_RISK_LEVEL',
-  codeForId: 'sr2015-no-18',
   guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL',
   canApplyFor: 'STANDARD_RULE_CAN_APPLY_FOR',
   canApplyOnline: 'STANDARD_RULE_CAN_APPLY_ONLINE',
@@ -70,9 +69,9 @@ lab.experiment('StandardRule Entity tests:', () => {
     DynamicsDalService.prototype.search = () => {
       return {
         value: [
-          fakeDynamicsRecord({ code: codes[0], codeForId: StandardRule.transformPermitCode(codes[0]) }),
-          fakeDynamicsRecord({ code: codes[1], codeForId: StandardRule.transformPermitCode(codes[1]) }),
-          fakeDynamicsRecord({ code: codes[2], codeForId: StandardRule.transformPermitCode(codes[2]) })]
+          fakeDynamicsRecord({ code: codes[0] }),
+          fakeDynamicsRecord({ code: codes[1] }),
+          fakeDynamicsRecord({ code: codes[2] })]
       }
     }
 
@@ -80,12 +79,7 @@ lab.experiment('StandardRule Entity tests:', () => {
     const standardRuleList = await StandardRule.list(context)
     Code.expect(Array.isArray(standardRuleList)).to.be.true()
     Code.expect(standardRuleList.length).to.equal(3)
-    standardRuleList.forEach((standardRule, index) => {
-      Code.expect(standardRule).to.equal(Object.assign({}, fakeStandardRule, {
-        code: codes[index],
-        codeForId: StandardRule.transformPermitCode(codes[index])
-      }))
-    })
+    standardRuleList.forEach((standardRule, index) => Code.expect(standardRule).to.equal(Object.assign({}, fakeStandardRule, { code: codes[index] })))
     Code.expect(spy.callCount).to.equal(1)
   })
 
@@ -109,11 +103,6 @@ lab.experiment('StandardRule Entity tests:', () => {
     const standardRule = await StandardRule.getByApplicationLineId(context)
     Code.expect(standardRule).to.equal(fakeStandardRule)
     Code.expect(spy.callCount).to.equal(1)
-  })
-
-  lab.test('transformPermitCode() method formats string for an ID correctly', () => {
-    const string = 'SR2015 No 10'
-    Code.expect(StandardRule.transformPermitCode(string)).to.equal('sr2015-no-10')
   })
 
   lab.test('save() method should fail as this entity is readOnly', async () => {
