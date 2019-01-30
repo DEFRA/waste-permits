@@ -1,6 +1,6 @@
 {
   "name": "waste-permits",
-  "version": "1.11.1",
+  "version": "1.11.2",
   "description": "GOV.UK front end service built using Node.js for the Waste Permits service",
   "author": "Department for Environment, Food & Rural Affairs",
   "license": "SEE LICENSE IN LICENSE",
@@ -64,7 +64,7 @@
     "govuk_frontend_toolkit": "^8.1.0",
     "govuk_template_mustache": "^0.24.1",
     "handlebars": "^4.0.12",
-    "hapi": "^17.8.1",
+    "hapi": "^18.0.0",
     "hapi-alive": "^2.0.0",
     "hapi-dev-errors": "^3.2.0",
     "hapi-robots": "^3.1.3",
