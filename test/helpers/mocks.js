@@ -81,6 +81,7 @@ class MockData {
       applicationNumber: 'APPLICATION_NUMBER',
       agentId: 'AGENT_ID',
       organisationType: 'ORGANISATION_TYPE',
+      permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
       confidentiality: true,
       confidentialityDetails: 'CONFIDENTIALITY DETAILS 1\nCONFIDENTIALITY DETAILS 2',
       drainageType: 910400000,

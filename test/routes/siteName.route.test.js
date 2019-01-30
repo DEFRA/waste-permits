@@ -4,35 +4,35 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/persistence/entities/application.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const SiteNameAndLocation = require('../../src/models/taskList/siteNameAndLocation.task')
+const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
-
-let sandbox
 
 const routePath = '/site/site-name'
 const nextRoutePath = '/site/grid-reference'
 
-const getRequest = {
-  method: 'GET',
-  url: routePath,
-  headers: {}
-}
+let sandbox
+let getRequest
 let postRequest
+let mocks
 
 const siteName = 'THE_SITE_NAME'
 
-const fakeApplication = {
-  id: 'APPLICATION_ID',
-  applicationNumber: 'APPLICATION_NUMBER'
-}
-
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
+  getRequest = {
+    method: 'GET',
+    url: routePath,
+    headers: {}
+  }
+
   postRequest = {
     method: 'POST',
     url: routePath,
@@ -45,11 +45,10 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(SiteNameAndLocation, 'getSiteName').value(() => siteName)
   sandbox.stub(SiteNameAndLocation, 'saveSiteName').value(() => {})
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
