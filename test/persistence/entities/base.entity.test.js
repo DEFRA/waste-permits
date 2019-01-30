@@ -182,6 +182,10 @@ lab.experiment('Base Entity tests:', () => {
     Code.expect(deleteQuery).to.equal('dynamicsOtherEntity(OTHERID)/dynamicsOtherEntityDynamicsOtherId(ID)/$ref')
   })
 
+  lab.test('_buildQueryCriterion() method to build and encode the query criterion data correctly when it includes an apostrophe', async () => {
+    Code.expect(BaseEntity._buildQueryCriterion('field', true, "O'Shea")).to.equal("field eq 'O''Shea'")
+  })
+
   lab.experiment('readOnly property on entity set to true should', () => {
     const dynamicsEntity = 'read_only_entity'
 

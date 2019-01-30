@@ -318,7 +318,7 @@ module.exports = class BaseEntity {
   }
 
   static _buildQueryCriterion (fieldName, encodeValue, queryValue) {
-    return `${fieldName} eq ${encodeValue ? `'${encodeURIComponent(queryValue)}'` : queryValue}`
+    return `${fieldName} eq ${encodeValue ? `'${encodeURIComponent(queryValue).replace(/'/g, "''")}'` : queryValue}`
   }
 
   static async getBy (context = {}, filterData = {}) {
