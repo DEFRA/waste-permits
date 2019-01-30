@@ -4,23 +4,16 @@ const Code = require('code')
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/persistence/entities/application.entity')
 const Account = require('../../src/persistence/entities/account.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const RecoveryService = require('../../src/services/recovery.service')
 const LoggingService = require('../../src/services/logging.service')
 const { COOKIE_RESULT } = require('../../src/constants')
-
-let sandbox
-
-let fakeAccount
-let fakeApplication
-let fakeRecovery
-let fakeCharityDetail
 
 const routes = {
   'Limited Company': {
@@ -52,25 +45,16 @@ const routes = {
 
 Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder, routePath, nextPath, errorPath, validCompanyNumber, invalidCompanyNumberMessage }]) => {
   lab.experiment(companyType, () => {
+    let sandbox
+    let mocks
+
     lab.beforeEach(() => {
-      fakeAccount = {
-        id: 'ACCOUNT_ID',
-        companyNumber: validCompanyNumber
-      }
-      fakeApplication = {
-        permitHolderOrganisationId: fakeAccount.id
-      }
-      fakeCharityDetail = {
-        charityPermitHolder
-      }
-      fakeRecovery = () => {
-        return {
-          authToken: 'AUTH_TOKEN',
-          applicationId: fakeApplication.id,
-          application: new Application(fakeApplication),
-          account: new Account(fakeAccount),
-          charityDetail: new CharityDetail(fakeCharityDetail)
-        }
+      mocks = new Mocks()
+
+      mocks.account.companyNumber = validCompanyNumber
+
+      if (charityPermitHolder) {
+        mocks.recovery.charityDetail = mocks.charityDetail
       }
 
       // Create a sinon sandbox to stub methods
@@ -78,9 +62,10 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
 
       // Stub methods
       sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-      sandbox.stub(Account, 'getByCompanyNumber').value(() => new Account(fakeAccount))
+      sandbox.stub(Account, 'getByCompanyNumber').value(() => mocks.account)
       sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-      sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+      sandbox.stub(Application.prototype, 'save').value(() => undefined)
+      sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
     })
 
     lab.afterEach(() => {
@@ -115,7 +100,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
 
           Code.expect(GeneralTestHelper.getText(doc.getElementById('page-heading'))).to.equal(pageHeading)
           Code.expect(GeneralTestHelper.getText(doc.getElementById('submit-button'))).to.equal('Continue')
-          Code.expect(doc.getElementById('company-number').getAttribute('value')).to.equal(fakeAccount.companyNumber)
+          Code.expect(doc.getElementById('company-number').getAttribute('value')).to.equal(mocks.account.companyNumber)
           Code.expect(doc.getElementById('overseas-help')).to.exist()
         })
 
@@ -142,7 +127,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
             method: 'POST',
             url: routePath,
             headers: {},
-            payload: { 'company-number': fakeAccount.companyNumber }
+            payload: { 'company-number': validCompanyNumber }
           }
         })
 
@@ -205,6 +190,8 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
               throw new Error('read failed')
             }
 
+            // Delete the account id to force an account create
+            delete mocks.account.id
             const res = await server.inject(postRequest)
             Code.expect(spy.callCount).to.equal(1)
             Code.expect(res.statusCode).to.equal(302)

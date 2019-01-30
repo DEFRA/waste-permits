@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
@@ -19,46 +20,18 @@ const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-const fakeSlug = 'SLUG'
+const slug = 'SLUG'
 
-const routePath = `/r/${fakeSlug}`
+const routePath = `/r/${slug}`
 const nextRoutePath = '/task-list'
 const recoveryFailedPath = '/errors/recovery-failed'
 const errorPath = '/errors/technical-problem'
 
-let fakeApplication
-let fakeApplicationLine
-let fakeApplicationReturn
-let fakeContact
-let fakeStandardRule
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationNumber: 'APPLICATION_NUMBER'
-  }
-
-  fakeApplicationLine = {
-    id: 'APPLICATION_LINE_ID'
-  }
-
-  fakeApplicationReturn = {
-    applicationId: fakeApplication.id,
-    slug: fakeSlug
-  }
-
-  fakeContact = {
-    applicationId: fakeApplication.id,
-    email: 'CONTACT_EMAIL'
-  }
-
-  fakeStandardRule = {
-    id: 'STANDARD_RULE_ID',
-    standardRuleTypeId: 'STANDARD_RULE_TYPE_ID',
-    code: 'CODE',
-    permitName: 'PERMIT_NAME'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -66,14 +39,14 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(CookieService, 'generateCookie').value(() => ({ authToken: 'AUTH_TOKEN' }))
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(ApplicationLine, 'getByApplicationId').value(() => new ApplicationLine(fakeApplicationLine))
-  sandbox.stub(ApplicationReturn, 'getBySlug').value(() => new ApplicationReturn(fakeApplicationReturn))
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
+  sandbox.stub(ApplicationLine, 'getByApplicationId').value(() => mocks.applicationLine)
+  sandbox.stub(ApplicationReturn, 'getBySlug').value(() => mocks.applicationReturn)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Contact, 'getByApplicationId').value(() => new Contact(fakeContact))
+  sandbox.stub(Contact, 'getByApplicationId').value(() => mocks.contact)
   sandbox.stub(Payment, 'getBacsPaymentDetails').value(() => {})
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
+  sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
 })
 
 lab.afterEach(() => {
@@ -82,7 +55,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('We found your application:', () => {
-  new GeneralTestHelper({ lab, routePath, routeParams: [fakeSlug] }).test({
+  new GeneralTestHelper({ lab, routePath, routeParams: [slug] }).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true
   })
@@ -108,9 +81,9 @@ lab.experiment('We found your application:', () => {
         ])
         Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('We found your application')
         Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Go to your application')
-        Code.expect(doc.getElementById('application-number').firstChild.nodeValue).to.equal(fakeApplication.applicationNumber)
-        Code.expect(doc.getElementById('permit-name').firstChild.nodeValue).to.equal(fakeStandardRule.permitName)
-        Code.expect(doc.getElementById('code').firstChild.nodeValue).to.equal(fakeStandardRule.code)
+        Code.expect(doc.getElementById('application-number').firstChild.nodeValue).to.equal(mocks.application.applicationNumber)
+        Code.expect(doc.getElementById('permit-name').firstChild.nodeValue).to.equal(mocks.standardRule.permitName)
+        Code.expect(doc.getElementById('code').firstChild.nodeValue).to.equal(mocks.standardRule.code)
       })
 
       lab.test('when not found', async () => {
@@ -131,7 +104,7 @@ lab.experiment('We found your application:', () => {
         url: routePath,
         headers: {},
         payload: {
-          'save-and-return-email': fakeApplication.saveAndReturnEmail
+          'save-and-return-email': mocks.application.saveAndReturnEmail
         }
       }
     })

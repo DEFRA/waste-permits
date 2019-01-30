@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -14,8 +15,6 @@ const LoggingService = require('../../src/services/logging.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-let sandbox
-
 const routePath = '/waste-recovery-plan/approval'
 const nextRoutePath = '/waste-recovery-plan'
 const errorPath = '/errors/technical-problem'
@@ -25,26 +24,18 @@ const PLAN_HAS_CHANGED = 910400001
 const NOT_ASSESSED = 910400002
 
 let getRequest
-let fakeApplication
-let fakeRecovery
+let sandbox
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
   getRequest = {
     method: 'GET',
     url: routePath,
     headers: {},
     payload: {}
   }
-
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationNumber: 'APPLICATION_NUMBER'
-  }
-
-  fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
-    application: new Application(fakeApplication)
-  })
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -53,8 +44,8 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => false)
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -101,7 +92,7 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
       })
 
       lab.test(`The page should load correctly when already assessed is selected`, async () => {
-        fakeApplication.recoveryPlanAssessmentStatus = ALREADY_ASSESSED
+        mocks.application.recoveryPlanAssessmentStatus = ALREADY_ASSESSED
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('selection-yes-input').getAttribute('checked')).to.equal('checked')
@@ -110,7 +101,7 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
       })
 
       lab.test(`The page should load correctly when not assessed is selected`, async () => {
-        fakeApplication.recoveryPlanAssessmentStatus = NOT_ASSESSED
+        mocks.application.recoveryPlanAssessmentStatus = NOT_ASSESSED
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('selection-yes-input').getAttribute('checked')).to.equal('')
@@ -119,7 +110,7 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
       })
 
       lab.test(`The page should load correctly when plan has changed is selected`, async () => {
-        fakeApplication.recoveryPlanAssessmentStatus = PLAN_HAS_CHANGED
+        mocks.application.recoveryPlanAssessmentStatus = PLAN_HAS_CHANGED
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('selection-yes-input').getAttribute('checked')).to.equal('')
