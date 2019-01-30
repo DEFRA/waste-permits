@@ -64,7 +64,7 @@
     "govuk_frontend_toolkit": "^8.1.0",
     "govuk_template_mustache": "^0.24.1",
     "handlebars": "^4.0.12",
-    "hapi": "^18.0.0",
+    "hapi": "^17.8.1",
     "hapi-alive": "^2.0.0",
     "hapi-dev-errors": "^3.2.0",
     "hapi-robots": "^3.1.3",
