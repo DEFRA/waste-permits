@@ -23,9 +23,9 @@ module.exports = class PartnerDetails extends BaseTask {
 
   static async getPageHeading (request, pageHeading) {
     const { firstName, lastName } = await this.getContactDetail(request)
-    return Handlebars.compile(pageHeading)({
-      name: `${firstName} ${lastName}`
-    })
+    const name = `${firstName} ${lastName}`
+    const heading = await Handlebars.compile(pageHeading)({ name })
+    return heading.replace(/&#x27;/g, "'")
   }
 
   static async getAddress (request) {
