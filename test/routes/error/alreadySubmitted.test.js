@@ -71,8 +71,8 @@ lab.experiment('Already Submitted page tests:', () => {
       'paragraph-1',
       'paragraph-2',
       'paragraph-3',
-      'paragraph-4',
-      'psc-email',
+      'psc-email-link',
+      'mcpd-help-email-link',
       'application-reference',
       'start-new-application-link'
     ])

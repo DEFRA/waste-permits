@@ -250,3 +250,14 @@ textarea+ .form-hint {
 .total {
   font-weight: bold;
 }
+
+.table-no-heading {
+  margin: 1em 0;
+  border-top: 1px solid $grey-2;
+  th, td {
+    vertical-align: top;
+  }
+  th {
+    width: 45%;
+  }
+}
