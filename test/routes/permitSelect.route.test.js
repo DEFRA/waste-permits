@@ -10,9 +10,9 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
+const RecoveryService = require('../../src/services/recovery.service')
 
 const DataStore = require('../../src/models/dataStore.model')
-const CharityDetail = require('../../src/models/charityDetail.model')
 
 const Application = require('../../src/persistence/entities/application.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
@@ -26,50 +26,26 @@ const offlineRoutePath = '/start/apply-offline'
 const existingPermitRoutePath = '/existing-permit'
 const errorPath = '/errors/technical-problem'
 
-let fakeApplication
-let fakeStandardRule
-let fakeStandardRuleType
 let sandbox
 let mocks
 
 lab.beforeEach(() => {
   mocks = new Mocks()
 
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationNumber: 'APPLICATION_NUMBER'
-  }
-
-  fakeStandardRule = {
-    id: 'bd610c23-8ba7-e711-810a-5065f38a5b01',
-    permitName: 'Metal recycling, vehicle storage, depollution and dismantling facility',
-    selectionDisplayName: 'Vehicle dismantling',
-    limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
-    code: 'SR2015 No 18',
-    canApplyOnline: true
-  }
-
-  fakeStandardRuleType = {
-    id: 'STANDARD_RULE_TYPE_ID',
-    category: 'Category',
-    hint: 'category_HINT',
-    categoryName: 'category_NAME'
-  }
-
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   sandbox.stub(DataStore, 'save').value(async () => mocks.dataStore.id)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(ApplicationLine, 'getById').value(() => undefined)
-  sandbox.stub(ApplicationLine.prototype, 'save').value(() => {})
-  sandbox.stub(StandardRule, 'list').value(() => [fakeStandardRule])
-  sandbox.stub(StandardRule, 'getByCode').value(() => fakeStandardRule)
-  sandbox.stub(StandardRuleType, 'getById').value(() => new Application(fakeStandardRuleType))
+  sandbox.stub(ApplicationLine.prototype, 'save').value(() => undefined)
+  sandbox.stub(ApplicationLine.prototype, 'delete').value(() => undefined)
+  sandbox.stub(StandardRule, 'list').value(() => [mocks.standardRule])
+  sandbox.stub(StandardRule, 'getByCryptoId').value(() => mocks.standardRule)
+  sandbox.stub(StandardRuleType, 'getById').value(() => mocks.standardRuleType)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -84,7 +60,7 @@ lab.experiment('Select a permit page tests:', () => {
     Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Select a permit')
     Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
     Code.expect(doc.getElementById('select-permit-hint-text')).to.exist()
-    Code.expect(doc.getElementById('permit-type-description').firstChild.nodeValue).to.equal(fakeStandardRuleType.category.toLowerCase())
+    Code.expect(doc.getElementById('permit-type-description').firstChild.nodeValue).to.equal(mocks.standardRuleType.category.toLowerCase())
   }
 
   lab.experiment(`GET ${routePath}`, () => {
@@ -101,7 +77,7 @@ lab.experiment('Select a permit page tests:', () => {
     lab.experiment('success', () => {
       let permits
 
-      const newPermit = (options) => new StandardRule(Object.assign({}, fakeStandardRule, options))
+      const newPermit = (options) => new StandardRule(Object.assign({}, mocks.standardRule, options))
 
       lab.beforeEach(() => {
         permits = [
@@ -141,9 +117,9 @@ lab.experiment('Select a permit page tests:', () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
-        permits.forEach(({ id, permitName, selectionDisplayName, code, limits, codeForId }) => {
+        permits.forEach(({ id, permitName, selectionDisplayName, code, limits, codeForId, cryptoId }) => {
           const prefix = `chosen-permit-${codeForId}`
-          Code.expect(doc.getElementById(`${prefix}-input`).getAttribute('value')).to.equal(code)
+          Code.expect(doc.getElementById(`${prefix}-input`).getAttribute('value')).to.equal(cryptoId)
           Code.expect(doc.getElementById(`${prefix}-label`)).to.exist()
           Code.expect(doc.getElementById(`${prefix}-name`).firstChild.nodeValue.trim()).to.equal(selectionDisplayName)
           Code.expect(doc.getElementById(`${prefix}-code`).firstChild.nodeValue.trim()).to.equal(code)
@@ -157,10 +133,10 @@ lab.experiment('Select a permit page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('application recovery failed')
         }
 
         const res = await server.inject(getRequest)
@@ -209,7 +185,7 @@ lab.experiment('Select a permit page tests:', () => {
 
     lab.experiment('success', () => {
       lab.test(`redirects to "${nextRoutePath}" when permit selected is an online permit`, async () => {
-        postRequest.payload['chosen-permit'] = fakeStandardRule.id
+        postRequest.payload['chosen-permit'] = mocks.standardRule.cryptoId
         const res = await server.inject(postRequest)
 
         // Make sure a redirection has taken place correctly
@@ -218,8 +194,8 @@ lab.experiment('Select a permit page tests:', () => {
       })
 
       lab.test(`redirects to "${offlineRoutePath}" when permit selected is an offline permit`, async () => {
-        fakeStandardRule.canApplyOnline = false
-        postRequest.payload['chosen-permit'] = fakeStandardRule.id
+        mocks.standardRule.canApplyOnline = false
+        postRequest.payload['chosen-permit'] = mocks.standardRule.cryptoId
         const res = await server.inject(postRequest)
 
         // Make sure a redirection has taken place correctly
@@ -228,13 +204,10 @@ lab.experiment('Select a permit page tests:', () => {
       })
 
       lab.test(`redirects to "${existingPermitRoutePath}" when permit selected is an MCP permit`, async () => {
-        fakeStandardRuleType = {
-          id: 'STANDARD_RULE_TYPE_ID',
-          category: 'MCPD category',
-          hint: 'category_HINT',
-          categoryName: 'mcpd-mcp'
-        }
-        postRequest.payload['chosen-permit'] = fakeStandardRule.id
+        mocks.standardRuleType.category = 'MCPD category'
+        mocks.standardRuleType.hint = 'category_HINT'
+        mocks.standardRuleType.categoryName = 'mcpd-mcp'
+        postRequest.payload['chosen-permit'] = mocks.standardRule.cryptoId
         const res = await server.inject(postRequest)
 
         // Make sure a redirection has taken place correctly

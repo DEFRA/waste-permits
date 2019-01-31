@@ -72,6 +72,9 @@ let sandbox
 lab.beforeEach(() => {
   mocks = new Mocks()
 
+  // Because this should be an offline standard rule
+  mocks.standardRule.canApplyOnline = false
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
