@@ -2,6 +2,7 @@
 
 const BaseEntity = require('./base.entity')
 const ApplicationLine = require('./applicationLine.entity')
+const CryptoService = require('../../services/crypto.service')
 
 class StandardRule extends BaseEntity {
   static get dynamicsEntity () {
@@ -30,7 +31,16 @@ class StandardRule extends BaseEntity {
 
   get codeForId () {
     // Transform the code into kebab-case for ID
-    return this.code.replace(/\s+/g, '-').toLowerCase()
+    return `${this.code} ${this.displayOrder}`.replace(/\s+/g, '-').toLowerCase()
+  }
+
+  get cryptoId () {
+    // Encrypt for use as value in a view
+    return CryptoService.encrypt(this.id)
+  }
+
+  static async getByCryptoId (context, cryptoId) {
+    return super.getById(context, CryptoService.decrypt(cryptoId))
   }
 
   static async getByCode (context, code) {

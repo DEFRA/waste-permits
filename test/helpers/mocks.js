@@ -254,14 +254,17 @@ class MockData {
       id: 'STANDARD_RULE_ID',
       code: 'STANDARD_RULE_CODE',
       permitName: 'STANDARD_RULE_NAME',
+      displayOrder: 1,
       selectionDisplayName: 'STANDARD_RULE_SELECTION_DISPLAY_NAME',
       standardRuleTypeId: this.standardRuleType.id,
-      guidanceUrl: 'GUIDANCE_URL'
+      guidanceUrl: 'GUIDANCE_URL',
+      canApplyOnline: true
     }
   }
 
   get standardRuleType () {
     return {
+      category: 'Category',
       categoryName: 'CATEGORY_NAME',
       id: 'STANDARD_RULE_TYPE_ID'
     }

@@ -24,7 +24,7 @@
 
             {{#each standardRules}}
             <div class="multiple-choice permit-selector">
-              <input id="chosen-permit-{{this.codeForId}}-input" type="radio" name="chosen-permit" value="{{this.code}}">
+              <input id="chosen-permit-{{this.codeForId}}-input" type="radio" name="chosen-permit" data-code="{{this.code}}" value="{{this.cryptoId}}">
               <label id="chosen-permit-{{this.codeForId}}-label" class="selection-button-radio permit-item" for="chosen-permit-{{this.codeForId}}-input">
                 <span id="chosen-permit-{{this.codeForId}}-name" class="permit-name">
                   {{this.selectionDisplayName}}

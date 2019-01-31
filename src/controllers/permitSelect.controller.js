@@ -35,7 +35,7 @@ module.exports = class PermitSelectController extends BaseController {
     let { application, applicationLine } = context
 
     // Look up the Standard Rule based on the chosen permit type
-    const standardRule = await StandardRule.getByCode(context, request.payload['chosen-permit'])
+    const standardRule = await StandardRule.getByCryptoId(context, request.payload['chosen-permit'])
     const { categoryName } = await StandardRuleType.getById(context, standardRule.standardRuleTypeId)
     const isMcp = Constants.MCP_CATEGORY_NAMES.find((mcpCategoryName) => mcpCategoryName === categoryName)
 
