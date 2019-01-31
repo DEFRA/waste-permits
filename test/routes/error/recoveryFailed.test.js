@@ -66,7 +66,6 @@ lab.experiment('Recovery failed page tests:', () => {
     GeneralTestHelper.checkElementsExist(doc, [
       'things-to-try-heading',
       'things-to-try-paragraph',
-      'contact-us',
       'permiting-and-support-centre',
       'support-email-link',
       'support-telephone',
