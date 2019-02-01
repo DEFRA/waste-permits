@@ -123,7 +123,7 @@ span.postcode {
 }
 
 .no-margin-bottom {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 // Form control widths
@@ -252,8 +252,7 @@ textarea+ .form-hint {
 }
 
 .table-no-heading {
-  margin: 1em 0;
-  border-top: 1px solid $grey-2;
+  border-top: 1px solid $border-colour;
   th, td {
     vertical-align: top;
   }
