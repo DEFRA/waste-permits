@@ -4,46 +4,38 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 const McpTemplate = require('../../src/models/taskList/mcpTemplate.task')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
+const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/mcp/template/download'
 const nextRoutePath = '/task-list'
 const errorPath = '/errors/technical-problem'
 
-let fakeApplication
-let fakeStandardRule
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationNumber: 'EPR/AB1234CD/A001'
-  }
-
-  fakeStandardRule = {
-    code: 'STANDARD_RULE_CODE'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(McpTemplate, 'isComplete').value(() => false)
   sandbox.stub(McpTemplate, 'updateCompleteness').value(() => {})
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {

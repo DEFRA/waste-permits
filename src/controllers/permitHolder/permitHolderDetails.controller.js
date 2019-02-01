@@ -12,26 +12,26 @@ module.exports = class PermitHolderDetailsController extends BaseController {
     const { charityPermitHolder } = charityDetail
 
     // If there is a charity detail, it must be a charity
-    switch (charityPermitHolder ? CHARITY_OR_TRUST : permitHolderType) {
+    switch (charityPermitHolder ? CHARITY_OR_TRUST.type : permitHolderType.type) {
       case undefined:
         throw new Error('Permit Holder Type is undefined')
-      case INDIVIDUAL:
-      case SOLE_TRADER:
+      case INDIVIDUAL.type:
+      case SOLE_TRADER.type:
         // Re-direct to individual details flow
         return this.redirect({ h, route: PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH })
-      case LIMITED_LIABILITY_PARTNERSHIP:
+      case LIMITED_LIABILITY_PARTNERSHIP.type:
         // Re-direct to limited liability partnership details flow
         return this.redirect({ h, route: LLP_COMPANY_NUMBER })
-      case PUBLIC_BODY:
+      case PUBLIC_BODY.type:
         // Re-direct to partnership details flow
         return this.redirect({ h, route: PUBLIC_BODY_NAME })
-      case PARTNERSHIP:
+      case PARTNERSHIP.type:
         // Re-direct to partnership details flow
         return this.redirect({ h, route: PARTNERSHIP_TRADING_NAME })
-      case CHARITY_OR_TRUST:
+      case CHARITY_OR_TRUST.type:
         // Re-direct to partnership details flow
         return this.redirect({ h, route: CHARITY_PERMIT_HOLDER })
-      case OTHER_ORGANISATION:
+      case OTHER_ORGANISATION.type:
         // Re-direct to partnership details flow
         return this.redirect({ h, route: PERMIT_GROUP_DECIDE })
       default:

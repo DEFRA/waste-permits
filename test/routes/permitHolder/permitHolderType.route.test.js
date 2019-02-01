@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
@@ -11,6 +12,7 @@ const Application = require('../../../src/persistence/entities/application.entit
 const CharityDetail = require('../../../src/models/charityDetail.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
+const RecoveryService = require('../../../src/services/recovery.service')
 const PermitHolderTypeController = require('../../../src/controllers/permitHolder/permitHolderType.controller')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
@@ -18,38 +20,20 @@ const routePath = '/permit-holder'
 const nextRoutePath = '/permit/category'
 const offlineRoutePath = '/start/apply-offline'
 const errorPath = '/errors/technical-problem'
-
-let fakeApplication
-let fakePermitHolderType
-let fakeCharityDetail
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationNumber: 'APPLICATION_NUMBER'
-  }
-
-  fakePermitHolderType = {
-    id: 'PERMIT_HOLDER_TYPE_ID',
-    type: 'PERMIT_HOLDER_TYPE',
-    canApplyOnline: true,
-    dynamicsApplicantTypeId: 'APPLICANT_TYPE'
-  }
-
-  fakeCharityDetail = {
-    charityPermitHolder: 'PERMIT_HOLDER_TYPE_ID'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(CharityDetail.prototype, 'delete').value(() => undefined)
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail(fakeCharityDetail))
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
 
@@ -108,10 +92,10 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('application recovery failed')
         }
 
         const res = await server.inject(getRequest)
@@ -136,7 +120,7 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
     lab.experiment('success', () => {
       const checkRoute = async (route) => {
-        postRequest.payload['chosen-holder-type'] = fakePermitHolderType.id
+        postRequest.payload['chosen-holder-type'] = mocks.permitHolderType.id
         const res = await server.inject(postRequest)
 
         // Make sure a redirection has taken place correctly
@@ -145,20 +129,20 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
       }
 
       lab.beforeEach(() => {
-        sandbox.stub(PermitHolderTypeController, 'getHolderTypes').value(() => [fakePermitHolderType])
+        sandbox.stub(PermitHolderTypeController, 'getHolderTypes').value(() => [mocks.permitHolderType])
       })
 
       lab.test('when holder type can apply online and is an individual', async () => {
+        mocks.permitHolderType.dynamicsApplicantTypeId = 910400001
         await checkRoute(nextRoutePath)
       })
 
       lab.test('when holder type can apply online and is an organisation', async () => {
-        fakePermitHolderType.dynamicsOrganisationTypeId = 'ORGANISATION_TYPE'
         await checkRoute(nextRoutePath)
       })
 
       lab.test('when holder type cannot apply online', async () => {
-        fakePermitHolderType.canApplyOnline = false
+        mocks.permitHolderType.canApplyOnline = false
         await checkRoute(offlineRoutePath)
       })
     })

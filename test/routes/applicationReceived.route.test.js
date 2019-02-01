@@ -15,9 +15,7 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-const fakeSlug = 'SLUG'
-
-const routePath = `/done/${fakeSlug}`
+const routePath = `/done/slug`
 
 let bacsPayment
 let cardPayment

@@ -44,13 +44,15 @@ module.exports = class RecoveryService {
     context.slug = slug
     context.authToken = CookieService.get(request, AUTH_TOKEN)
     context.applicationId = CookieService.get(request, APPLICATION_ID)
-    context.application = await Application.getById(context, context.applicationId)
-    context.applicationLineId = CookieService.get(request, APPLICATION_LINE_ID)
-    context.standardRuleId = CookieService.get(request, STANDARD_RULE_ID)
-    context.standardRuleTypeId = CookieService.get(request, STANDARD_RULE_TYPE_ID)
-    context.permitHolderType = RecoveryService.getPermitHolderType(context.application)
+    if (context.applicationId) {
+      context.application = await Application.getById(context, context.applicationId)
+      context.applicationLineId = CookieService.get(request, APPLICATION_LINE_ID)
+      context.standardRuleId = CookieService.get(request, STANDARD_RULE_ID)
+      context.standardRuleTypeId = CookieService.get(request, STANDARD_RULE_TYPE_ID)
+      context.permitHolderType = RecoveryService.getPermitHolderType(context.application)
 
-    Object.assign(context, await RecoveryService.recoverOptionalData(context, options))
+      Object.assign(context, await RecoveryService.recoverOptionalData(context, options))
+    }
 
     return context
   }

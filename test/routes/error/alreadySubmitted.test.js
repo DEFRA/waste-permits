@@ -5,40 +5,28 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
-const Application = require('../../../src/persistence/entities/application.entity')
-const CharityDetail = require('../../../src/models/charityDetail.model')
 const CookieService = require('../../../src/services/cookie.service')
+const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
-
-let sandbox
 
 const routePath = '/errors/order/done-cant-go-back'
 const pageHeading = `You have sent your application so you cannot go back and change it`
 
-const fakeApplication = {
-  id: 'APPLICATION_ID',
-  permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
-  tradingName: 'THE TRADING NAME',
-  applicationNumber: 'APPLICATION_REFERENCE'
-}
-
-const getRequest = {
-  method: 'GET',
-  url: routePath,
-  headers: {},
-  payload: {}
-}
+let sandbox
+let mocks
 
 lab.beforeEach(() => {
+  mocks = new Mocks()
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -47,10 +35,21 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Already Submitted page tests:', () => {
+  let getRequest
+
   new GeneralTestHelper({ lab, routePath }).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
     excludeAlreadySubmittedTest: true
+  })
+
+  lab.beforeEach(() => {
+    getRequest = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
   })
 
   lab.test('The page should NOT have a back link', async () => {
@@ -79,6 +78,6 @@ lab.experiment('Already Submitted page tests:', () => {
 
     // Ensure that the application reference is being displayed correctly
     element = doc.getElementById('application-reference')
-    Code.expect(element.textContent).to.equal(fakeApplication.applicationNumber)
+    Code.expect(element.textContent).to.equal(mocks.application.applicationNumber)
   })
 })
