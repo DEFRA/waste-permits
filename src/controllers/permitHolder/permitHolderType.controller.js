@@ -17,7 +17,8 @@ module.exports = class PermitHolderTypeController extends BaseController {
         selectedPermitHolderType = permitHolderTypes.find(({ id }) => id === PERMIT_HOLDER_TYPES.CHARITY_OR_TRUST.id)
       } else {
         const { applicantType, organisationType } = application
-        selectedPermitHolderType = permitHolderTypes.find(({ dynamicsApplicantTypeId, dynamicsOrganisationTypeId }) => dynamicsApplicantTypeId === applicantType && dynamicsOrganisationTypeId === organisationType)
+        selectedPermitHolderType = permitHolderTypes.find(({ dynamicsApplicantTypeId, dynamicsOrganisationTypeId }) =>
+          dynamicsApplicantTypeId === applicantType && dynamicsOrganisationTypeId === organisationType)
       }
     }
     if (selectedPermitHolderType) {

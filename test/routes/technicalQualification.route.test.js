@@ -4,16 +4,15 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/persistence/entities/application.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const LoggingService = require('../../src/services/logging.service')
+const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
-
-let fakeApplication
 
 const routePath = '/technical-competence'
 const nextRoutePath = {
@@ -40,21 +39,18 @@ const Qualification = {
 }
 
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationLineId: 'APPLICATION_LINE_ID'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
   // Stub the asynchronous model methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
-  sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(Application, 'getById').value(() => Promise.resolve(new Application(fakeApplication)))
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -126,28 +122,28 @@ lab.experiment('Technical Management Qualification tests:', () => {
       })
 
       lab.test('when wamitab has been selected', async () => {
-        fakeApplication.technicalQualification = Qualification.WAMITAB_QUALIFICATION.TYPE
+        mocks.application.technicalQualification = Qualification.WAMITAB_QUALIFICATION.TYPE
         doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('wamitab').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when getting-qualification has been selected', async () => {
-        fakeApplication.technicalQualification = Qualification.REGISTERED_ON_A_COURSE.TYPE
+        mocks.application.technicalQualification = Qualification.REGISTERED_ON_A_COURSE.TYPE
         doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('getting-qualification').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when deemed has been selected', async () => {
-        fakeApplication.technicalQualification = Qualification.DEEMED_COMPETENCE.TYPE
+        mocks.application.technicalQualification = Qualification.DEEMED_COMPETENCE.TYPE
         doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('deemed').getAttribute('checked')).to.equal('checked')
       })
 
       lab.test('when esa-eu has been selected', async () => {
-        fakeApplication.technicalQualification = Qualification.ESA_EU_SKILLS.TYPE
+        mocks.application.technicalQualification = Qualification.ESA_EU_SKILLS.TYPE
         doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('esa-eu').getAttribute('checked')).to.equal('checked')
@@ -155,10 +151,10 @@ lab.experiment('Technical Management Qualification tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('application recovery failed')
         }
 
         const res = await server.inject(getRequest)
@@ -209,9 +205,11 @@ lab.experiment('Technical Management Qualification tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => Promise.reject(new Error('read failed'))
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('application recovery failed')
+        }
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)

@@ -808,7 +808,9 @@ const Routes = {
     controller: 'bespokeOrStandardRules',
     validator: 'bespokeOrStandardRules',
     nextRoute: 'PERMIT_HOLDER_TYPE',
-    types: 'GET, POST'
+    types: 'GET, POST',
+    cookieValidationRequired: false,
+    applicationRequired: false
   },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',

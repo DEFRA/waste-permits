@@ -68,8 +68,10 @@ class MockData {
   }
 
   get annotation () {
+    const { application } = this
     return {
       id: 'ANNOTATION_ID',
+      applicationId: application.id,
       subject: 'ANNOTATION_NAME',
       filename: 'ANNOTATION_FILENAME'
     }
@@ -80,12 +82,13 @@ class MockData {
       id: 'APPLICATION_ID',
       applicationNumber: 'APPLICATION_NUMBER',
       agentId: 'AGENT_ID',
-      organisationType: 'ORGANISATION_TYPE',
+      applicantType: 910400001, // organisation
+      organisationType: 910400000, // limited company
       permitHolderOrganisationId: 'PERMIT_HOLDER_ORGANISATION_ID',
       confidentiality: true,
       confidentialityDetails: 'CONFIDENTIALITY DETAILS 1\nCONFIDENTIALITY DETAILS 2',
-      drainageType: 910400000,
-      miningWastePlan: 910400000,
+      drainageType: 910400000, // sewer
+      miningWastePlan: 910400000, // water-based
       miningWasteWeight: 'one,hundred-thousand',
       tradingName: 'TRADING_NAME',
       useTradingName: true,
@@ -224,7 +227,7 @@ class MockData {
     return {
       id: 'LOCATION_DETAIL_ID',
       addressId: address.id,
-      gridReference: 'GRID_REFERENCE'
+      gridReference: 'AB1234567890'
     }
   }
 
@@ -243,9 +246,13 @@ class MockData {
   }
 
   get permitHolderType () {
+    const { application } = this
     return {
+      id: 'limited-company',
       type: 'Limited company',
-      canApplyOnline: true
+      canApplyOnline: true,
+      dynamicsApplicantTypeId: application.applicantType,
+      dynamicsOrganisationTypeId: application.organisationType
     }
   }
 
@@ -375,6 +382,7 @@ class Mocks {
       const account = this.account
       const application = this.application
       const applicationLine = this.applicationLine
+      const applicationReturn = this.applicationReturn
       const standardRule = this.standardRule
       const permitHolderType = this.permitHolderType
       this._context = {
@@ -386,6 +394,7 @@ class Mocks {
         standardRuleTypeId: standardRule.standardRuleTypeId,
         application,
         applicationLine,
+        applicationReturn,
         permitHolderType,
         standardRule
       }

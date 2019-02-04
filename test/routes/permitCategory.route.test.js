@@ -4,14 +4,15 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
+const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const PermitCategoryController = require('../../src/controllers/permitCategory.controller')
@@ -39,32 +40,21 @@ const offlineCategories = [
   }
 ]
 
-let fakeApplication
-let fakeStandardRuleType
 let sandbox
+let mocks
 let mcpFeatureStub
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID'
-  }
-
-  fakeStandardRuleType = {
-    id: 'STANDARD_RULE_TYPE_ID',
-    category: 'CATEGORY',
-    hint: 'CATEGORY_HINT',
-    categoryName: 'CATEGORY_NAME'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   // Todo: Remove useMcpFeature stub when MCP is live
   mcpFeatureStub = sandbox.stub(PermitCategoryController, 'useMcpFeature').callsFake(() => true)
 })
@@ -157,14 +147,13 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
         const doc = await GeneralTestHelper.getDoc(getRequest)
         Code.expect(doc.getElementById('chosen-category-mcpd-mcp-input')).to.not.exist()
       })
-
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('recovery failed')
         }
 
         const res = await server.inject(getRequest)
@@ -201,7 +190,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
     lab.experiment('success', async () => {
       const checkSuccessRoute = async (route) => {
-        postRequest.payload['chosen-category'] = fakeStandardRuleType.id
+        postRequest.payload['chosen-category'] = mocks.standardRuleType.id
         const res = await server.inject(postRequest)
 
         // Make sure a redirection has taken place correctly
@@ -215,7 +204,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
       offlineCategories.forEach((standardRuleType) => {
         lab.test(`when offline ${standardRuleType.category} is selected`, async () => {
-          fakeStandardRuleType = standardRuleType
+          Object.assign(mocks.standardRuleType, standardRuleType)
           await checkSuccessRoute(offlineRoutePath)
         })
       })

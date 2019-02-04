@@ -9,9 +9,9 @@ const fs = require('fs')
 const config = require('../../src/config/config')
 const Annotation = require('../../src/persistence/entities/annotation.entity')
 const Application = require('../../src/persistence/entities/application.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
+const RecoveryService = require('../../src/services/recovery.service')
 const UploadService = require('../../src/services/upload.service')
 const ClamWrapper = require('../../src/utilities/clamWrapper')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -69,13 +69,14 @@ module.exports = class UploadTestHelper {
     sandbox.stub(Annotation, 'getByApplicationIdSubjectAndFilename').value(() => mocks.annotation)
     sandbox.stub(Annotation.prototype, 'delete').value(() => undefined)
     sandbox.stub(Annotation.prototype, 'save').value(() => undefined)
-    sandbox.stub(Application, 'getById').value(() => mocks.application)
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(Application, 'getById').value(() => mocks.application)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
     sandbox.stub(ClamWrapper, 'isInfected').value(() => Promise.resolve({ isInfected: false }))
     sandbox.stub(LoggingService, 'logError').value(() => {})
+    sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
+
+    return mocks
   }
 
   getSuccess (options = {}, additionalTests = []) {

@@ -2,41 +2,35 @@
 
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 
 const Application = require('../../../src/persistence/entities/application.entity')
 const ApplicationReturn = require('../../../src/persistence/entities/applicationReturn.entity')
-const CharityDetail = require('../../../src/models/charityDetail.model')
 const SaveAndReturn = require('../../../src/models/taskList/saveAndReturn.task')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
+const RecoveryService = require('../../../src/services/recovery.service')
 const FeatureConfig = require('../../../src/config/featureConfig')
 const Config = require('../../../src/config/config')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-let fakeApplication
-let fakeApplicationReturn
 let fakeAppUrl
 let fakeRecoveryLink
 let origin
-let sandbox
 
 module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHeading, firstTime }) => {
+  let sandbox
+  let mocks
+
   lab.beforeEach(() => {
+    mocks = new Mocks()
+
     fakeAppUrl = 'http://Waste-Permits-Url'
 
-    fakeApplication = {
-      id: 'APPLICATION_ID',
-      saveAndReturnEmail: 'valid@email.com'
-    }
-
-    fakeApplicationReturn = {
-      slug: 'SLUG'
-    }
-
-    fakeRecoveryLink = `${fakeAppUrl}/r/${fakeApplicationReturn.slug}`
+    fakeRecoveryLink = `${fakeAppUrl}/r/${mocks.applicationReturn.slug}`
 
     origin = undefined
 
@@ -45,18 +39,18 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
 
     // Stub methods
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-    sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+    sandbox.stub(Application, 'getById').value(() => mocks.application)
     sandbox.stub(Application.prototype, 'sendSaveAndReturnEmail').value(() => {
       origin = fakeAppUrl
     })
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(Application.prototype, 'save').value(() => {})
-    sandbox.stub(ApplicationReturn, 'getByApplicationId').value(() => new ApplicationReturn(fakeApplicationReturn))
-    sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+    sandbox.stub(ApplicationReturn, 'getByApplicationId').value(() => mocks.applicationReturn)
     sandbox.stub(SaveAndReturn, 'isComplete').value(() => false)
     sandbox.stub(SaveAndReturn, 'updateCompleteness').value(() => {})
     sandbox.stub(FeatureConfig, 'hasDisplayRecoveryLinkFeature').value(false)
     sandbox.stub(Config, 'wastePermitsAppUrl').value(fakeAppUrl)
+    sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   })
 
   lab.afterEach(() => {
@@ -79,8 +73,8 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
       ])
       Code.expect(doc.getElementById('not-got-email').getAttribute('checked')).to.equal('')
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(pageHeading)
-      Code.expect(doc.getElementById('email-sent').firstChild.nodeValue).to.equal(fakeApplication.saveAndReturnEmail)
-      Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
+      Code.expect(doc.getElementById('email-sent').firstChild.nodeValue).to.equal(mocks.application.saveAndReturnEmail)
+      Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(mocks.application.saveAndReturnEmail)
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
 
       if (firstTime) {
@@ -200,10 +194,10 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
       })
 
       lab.experiment('failure', () => {
-        lab.test('redirects to error screen when failing to get the application ID', async () => {
+        lab.test('redirects to error screen when failing to recover the application', async () => {
           const spy = sandbox.spy(LoggingService, 'logError')
-          Application.getById = () => {
-            throw new Error('read failed')
+          RecoveryService.createApplicationContext = () => {
+            throw new Error('application recovery failed')
           }
 
           const res = await server.inject(postRequest)

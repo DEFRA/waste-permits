@@ -10,8 +10,8 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/persistence/entities/application.entity')
 const DataStore = require('../../src/models/dataStore.model')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const CookieService = require('../../src/services/cookie.service')
+const RecoveryService = require('../../src/services/recovery.service')
 const featureConfig = require('../../src/config/featureConfig')
 const { COOKIE_RESULT } = require('../../src/constants')
 
@@ -67,9 +67,8 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(DataStore, 'save').value(async () => mocks.dataStore.id)
-  sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   // Todo: Remove hasBespokeFeature syub when bespoke is live
   sandbox.stub(featureConfig, 'hasBespokeFeature').value(() => true)
 })
@@ -80,7 +79,11 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Bespoke or standard rules page tests:', () => {
-  new GeneralTestHelper({ lab, routePath }).test()
+  new GeneralTestHelper({ lab, routePath }).test({
+    excludeAlreadySubmittedTest: true,
+    excludeCookieGetTests: true,
+    excludeCookiePostTests: true
+  })
 
   lab.experiment('GET:', () => {
     lab.test('GET returns the Bespoke or Standard Rules page correctly', async () => {

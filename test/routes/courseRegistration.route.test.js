@@ -27,6 +27,7 @@ const paths = {
 const helper = new UploadTestHelper(lab, paths)
 
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
   // Stub methods
@@ -34,7 +35,7 @@ lab.beforeEach(() => {
 
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => Promise.resolve({}))
 
-  helper.setStubs(sandbox)
+  mocks = helper.setStubs(sandbox)
 })
 
 lab.afterEach(() => {
@@ -62,14 +63,14 @@ lab.experiment('Company Declare Upload Course registration tests:', () => {
       // Additional tests
       {
         title: 'displays WAMITAB medium or high risk information',
-        stubs: () => (StandardRule.getByApplicationLineId = () => ({ wamitabRiskLevel: WamitabRiskLevel.MEDIUM })),
+        stubs: () => (mocks.standardRule.wamitabRiskLevel = WamitabRiskLevel.MEDIUM),
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
           'wamitab-risk-is-medium-or-high',
           'wamitab-risk-is-medium-or-high-abbr'])
       },
       {
         title: 'displays WAMITAB low risk information',
-        stubs: () => (StandardRule.getByApplicationLineId = () => ({ wamitabRiskLevel: WamitabRiskLevel.LOW })),
+        stubs: () => (mocks.standardRule.wamitabRiskLevel = WamitabRiskLevel.LOW),
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
           'wamitab-risk-is-low'])
       },

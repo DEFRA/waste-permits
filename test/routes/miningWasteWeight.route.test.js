@@ -4,24 +4,24 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const MiningWasteDetails = require('../../src/models/taskList/miningWasteDetails.task')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
+const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/mining-waste/weight'
 const nextRoutePath = '/task-list'
 const errorPath = '/errors/technical-problem'
 
-let fakeApplication
-let fakeStandardRule
 let sandbox
+let mocks
 
 const checkCommonElements = async (doc) => {
   Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('How much extractive waste will you produce?')
@@ -35,28 +35,20 @@ const checkCommonElements = async (doc) => {
 }
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID'
-  }
-
-  fakeStandardRule = {
-    code: 'STANDARD_RULE_CODE',
-    guidanceUrl: 'STANDARD_RULE_GUIDANCE_URL'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => {})
   sandbox.stub(MiningWasteDetails, 'isComplete').value(() => false)
   sandbox.stub(MiningWasteDetails, 'updateCompleteness').value(() => {})
   sandbox.stub(MiningWasteDetails, 'clearCompleteness').value(() => {})
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new Application(fakeStandardRule))
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -86,10 +78,10 @@ lab.experiment('How much extractive waste will you produce? page tests:', () => 
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('application recovery failed')
         }
 
         const res = await server.inject(request)
