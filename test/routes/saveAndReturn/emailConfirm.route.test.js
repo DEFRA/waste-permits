@@ -4,41 +4,38 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 
 const Application = require('../../../src/persistence/entities/application.entity')
-const CharityDetail = require('../../../src/models/charityDetail.model')
 const SaveAndReturn = require('../../../src/models/taskList/saveAndReturn.task')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
+const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 const routePath = '/save-return/confirm'
 const nextRoutePath = '/save-return/email-sent-check'
 const errorPath = '/errors/technical-problem'
 
-let fakeApplication
 let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    saveAndReturnEmail: 'valid@email.com'
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
   sandbox.stub(Application.prototype, 'sendSaveAndReturnEmail').value(() => {})
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(SaveAndReturn, 'isComplete').value(() => false)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -76,7 +73,7 @@ lab.experiment('Save and return confirm page tests:', () => {
           'save-and-return-email-label',
           'email-hint'
         ])
-        Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(fakeApplication.saveAndReturnEmail)
+        Code.expect(doc.getElementById('save-and-return-email').getAttribute('value')).to.equal(mocks.application.saveAndReturnEmail)
         Code.expect(doc.getElementById('save-and-return-email-label').getAttribute('aria-describedby')).to.equal('email-hint')
         Code.expect(doc.getElementById('got-email').getAttribute('value')).to.equal('false')
       })
@@ -93,7 +90,7 @@ lab.experiment('Save and return confirm page tests:', () => {
         headers: {},
         payload: {
           'got-email': 'false',
-          'save-and-return-email': fakeApplication.saveAndReturnEmail
+          'save-and-return-email': mocks.application.saveAndReturnEmail
         }
       }
     })
@@ -128,10 +125,10 @@ lab.experiment('Save and return confirm page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the application ID', async () => {
+      lab.test('redirects to error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Application.getById = () => {
-          throw new Error('read failed')
+        RecoveryService.createApplicationContext = () => {
+          throw new Error('application recovery failed')
         }
 
         const res = await server.inject(postRequest)

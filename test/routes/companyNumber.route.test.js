@@ -141,7 +141,6 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
           })
 
           lab.test('when account is updated', async () => {
-            // Account.getByApplicationId = () => Promise.resolve(new Account(fakeAccount))
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
             Code.expect(res.headers['location']).to.equal(nextPath)

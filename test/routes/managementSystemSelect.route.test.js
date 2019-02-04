@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
@@ -23,10 +24,8 @@ const routePath = '/management-system/select'
 const nextRoutePath = '/management-system/upload'
 const errorPath = '/errors/technical-problem'
 
-let fakeApplication
-let fakeApplicationAnswer
-let fakeRecovery
 let sandbox
+let mocks
 
 const checkCommonElements = (doc) => {
   const pageHeading = 'Which management system will you use?'
@@ -43,34 +42,18 @@ const checkCommonElements = (doc) => {
 }
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID'
-  }
-
-  fakeApplicationAnswer = {
-    questionCode: 'QUESTION_CODE',
-    answerCode: 'ANSWER_CODE',
-    answerText: 'ANSWER_TEXT'
-  }
-
-  fakeRecovery = () => {
-    return {
-      authToken: 'AUTH_TOKEN',
-      applicationId: fakeApplication.id,
-      application: new Application(fakeApplication)
-    }
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(ApplicationAnswer, 'getByQuestionCode').value(() => [new ApplicationAnswer(fakeApplicationAnswer)])
+  sandbox.stub(ApplicationAnswer, 'getByQuestionCode').value(() => mocks.applicationAnswers)
   sandbox.stub(ApplicationAnswer.prototype, 'save').value(() => undefined)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {

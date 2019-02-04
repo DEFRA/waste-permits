@@ -12,9 +12,9 @@ const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const BaseTaskList = require('../../src/models/taskList/base.taskList')
 const BaseCheck = require('../../src/models/checkList/base.check')
-const CharityDetail = require('../../src/models/charityDetail.model')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
 const CookieService = require('../../src/services/cookie.service')
+const RecoveryService = require('../../src/services/recovery.service')
 
 let fakeValidRuleSetId
 let fakeInvalidRuleSetId
@@ -73,14 +73,13 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => true)
-  sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
   sandbox.stub(BaseTaskList, 'getTaskListClass').value(() => TaskList)
   sandbox.stub(BaseTaskList, 'buildTaskList').value(() => new TaskList())
   sandbox.stub(BaseTaskList, 'isComplete').value(() => true)
-  sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
