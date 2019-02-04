@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 
 const Account = require('../../../src/persistence/entities/account.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
@@ -19,113 +20,43 @@ const CharityDetail = require('../../../src/models/charityDetail.model')
 const NeedToConsult = require('../../../src/models/needToConsult.model')
 const McpBusinessType = require('../../../src/models/mcpBusinessType.model')
 
+const RecoveryService = require('../../../src/services/recovery.service')
+
 const BaseCheck = require('../../../src/models/checkList/base.check')
-const day = 1
-const month = 2
-const year = 1998
 
-let fakeAddressType
-let fakeAccount
-let fakeApplication
-let fakeApplicationAnswer
-let fakeCharityDetail
-let fakeCompanies
-let fakeContactDetail
-let fakeLocation
-let fakeLocationDetail
-let fakeAddress
-let fakePermitHolderType
-let fakeStandardRule
-let fakeAnnotation
-let fakeNeedToConsult
-let fakeMcpBusinessType
-
-let sandbox
 let context
+let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeAddressType = {
-    TYPE: 'ADDRESS_TYPE'
-  }
-  fakeAccount = {
-    id: 'ACCOUNT_ID',
-    companyNumber: 'COMPANY_NUMBER'
-  }
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    agentId: 'AGENT_ID',
-    contactId: 'CONTACT_ID',
-    declaration: true
-  }
-  fakeApplicationAnswer = {
-    questionCode: 'QUESTION_CODE'
-  }
-  fakeCompanies = [new Account(fakeAccount)]
-  fakeAddress = {
-    id: 'ADDRESS_ID'
-  }
-  fakeContactDetail = {
-    id: 'CONTACT_DETAILS_ID',
-    firstName: 'FIRSTNAME',
-    lastName: 'LASTNAME',
-    dateOfBirth: `${year}-${month}-${day}`,
-    email: 'EMAIL',
-    telephone: 'TELEPHONE',
-    fullAddress: 'FULL ADDRESS',
-    type: fakeAddressType.TYPE,
-    addressId: fakeAddress.id
-  }
-  fakeCharityDetail = {
-    charityPermitHolder: 'individual',
-    charityName: 'CHARITY_NAME',
-    charityNumber: 'CHARITY_NUMBER'
-  }
-  fakeLocation = {
-    id: 'LOCATION_ID',
-    applicationLineId: 'APPLICATION_LINE_ID'
-  }
-  fakeLocationDetail = {
-    id: 'LOCATION_DETAIL_ID'
-  }
-  fakePermitHolderType = {
-    id: 'PERMIT_HOLDER_TYPE'
-  }
-  fakeStandardRule = {
-    id: 'STANDARD_RULE_ID',
-    code: 'CODE'
-  }
-  fakeAnnotation = {
-    id: 'ANNOTATION_ID'
-  }
-  fakeNeedToConsult = {
-    none: true
-  }
-  fakeMcpBusinessType = {
-    code: 'CODE',
-    description: 'DESCRIPTION'
-  }
+  mocks = new Mocks()
 
-  context = {}
+  context = mocks.context
+
+  mocks.addressType = {
+    TYPE: mocks.contactDetail.type
+  }
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous model methods
-  sandbox.stub(Account, 'getById').value(() => new Account(fakeAccount))
-  sandbox.stub(Account, 'getByApplicationId').value(() => new Account(fakeAccount))
-  sandbox.stub(Account.prototype, 'listLinked').value(() => [new Account(fakeAccount)])
-  sandbox.stub(Address, 'getById').value(() => new Address(fakeAddress))
-  sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [new Annotation(fakeAnnotation)])
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
-  sandbox.stub(ApplicationAnswer, 'getByQuestionCode').value(() => new ApplicationAnswer(fakeApplicationAnswer))
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => new StandardRule(fakeStandardRule))
-  sandbox.stub(Location, 'getByApplicationId').value(() => new Location(fakeLocation))
-  sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(fakeLocationDetail))
-  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
-  sandbox.stub(ContactDetail, 'list').value(() => [new ContactDetail(fakeContactDetail)])
-  sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail(fakeCharityDetail))
-  sandbox.stub(NeedToConsult, 'get').value(() => new NeedToConsult(fakeNeedToConsult))
-  sandbox.stub(McpBusinessType, 'get').value(() => new McpBusinessType(fakeMcpBusinessType))
+  sandbox.stub(Account, 'getById').value(() => mocks.account)
+  sandbox.stub(Account, 'getByApplicationId').value(() => mocks.account)
+  sandbox.stub(Account.prototype, 'listLinked').value(() => [mocks.account])
+  sandbox.stub(Address, 'getById').value(() => mocks.address)
+  sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [mocks.annotation])
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
+  sandbox.stub(ApplicationAnswer, 'getByQuestionCode').value(() => mocks.applicationAnswers[0])
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
+  sandbox.stub(Location, 'getByApplicationId').value(() => mocks.location)
+  sandbox.stub(LocationDetail, 'getByLocationId').value(() => new LocationDetail(mocks.locationDetail))
+  sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
+  sandbox.stub(ContactDetail, 'list').value(() => [mocks.contactDetail])
+  sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
+  sandbox.stub(NeedToConsult, 'get').value(() => mocks.needToConsult)
+  sandbox.stub(McpBusinessType, 'get').value(() => mocks.mcpBusinessType)
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -160,198 +91,228 @@ lab.experiment('Base Check tests:', () => {
   })
 
   lab.test('getApplication works correctly', async () => {
+    delete context.application
     const check = new BaseCheck(context)
     const application = await check.getApplication()
-    Code.expect(application).to.equal(fakeApplication)
+    Code.expect(application).to.equal(mocks.application)
     Code.expect(context.application).to.equal(await check.getApplication())
   })
 
   lab.test('getAgentAccount works correctly', async () => {
+    delete context.agentAccount
     const check = new BaseCheck(context)
     const agentAccount = await check.getAgentAccount()
-    Code.expect(agentAccount).to.equal(fakeAccount)
+    Code.expect(agentAccount).to.equal(mocks.account)
     Code.expect(context.agentAccount).to.equal(await check.getAgentAccount())
   })
 
   lab.test('getContactDetails works correctly', async () => {
+    delete context.contactDetails
     const check = new BaseCheck(context)
-    const contactDetail = await check.getContactDetails(fakeAddressType)
-    Code.expect(contactDetail).to.equal(fakeContactDetail)
-    Code.expect(context.contactDetails[0]).to.equal(await check.getContactDetails(fakeAddressType))
+    const contactDetail = await check.getContactDetails(mocks.addressType)
+    Code.expect(contactDetail).to.equal(mocks.contactDetail)
+    Code.expect(context.contactDetails[0]).to.equal(await check.getContactDetails(mocks.addressType))
   })
 
   lab.test('listContactDetails works correctly', async () => {
+    delete context.contactDetails
     const check = new BaseCheck(context)
-    const contactDetails = await check.listContactDetails(fakeAddressType)
-    Code.expect(contactDetails).to.equal([fakeContactDetail])
-    Code.expect(context.contactDetails).to.equal(await check.listContactDetails(fakeAddressType))
+    const contactDetails = await check.listContactDetails(mocks.addressType)
+    Code.expect(contactDetails).to.equal([mocks.contactDetail])
+    Code.expect(context.contactDetails).to.equal(await check.listContactDetails(mocks.addressType))
   })
 
   lab.test('getCompanyRegisteredAddress works correctly', async () => {
+    delete context.companyRegisteredAddress
     const check = new BaseCheck(context)
     const companyRegisteredAddress = await check.getCompanyRegisteredAddress()
-    Code.expect(companyRegisteredAddress).to.equal(fakeContactDetail)
+    Code.expect(companyRegisteredAddress).to.equal(mocks.contactDetail)
     Code.expect(context.companyRegisteredAddress).to.equal(await check.getCompanyRegisteredAddress())
   })
 
   lab.test('getCompanies works correctly', async () => {
+    delete context.companies
     const check = new BaseCheck(context)
     const companies = await check.getCompanies()
-    Code.expect(companies).to.equal(fakeCompanies)
+    Code.expect(companies).to.equal([mocks.account])
     Code.expect(context.companies).to.equal(await check.getCompanies())
   })
 
   lab.test('getPermitHolderType works correctly', async () => {
-    context.permitHolderType = fakePermitHolderType
+    delete context.permitHolderType
+    context.permitHolderType = mocks.permitHolderType
     const check = new BaseCheck(context)
     const permitHolderType = await check.getPermitHolderType()
-    Code.expect(permitHolderType).to.equal(fakePermitHolderType)
+    Code.expect(permitHolderType).to.equal(mocks.permitHolderType)
     Code.expect(context.permitHolderType).to.equal(await check.getPermitHolderType())
   })
 
   lab.test('getBillingInvoicingDetails works correctly', async () => {
-    fakeAddressType = { TYPE: 910400004 }
-    fakeContactDetail.type = fakeAddressType.TYPE
+    delete context.contactDetails
+    mocks.contactDetail.type = 910400004
     const check = new BaseCheck(context)
     const billingInvoicingDetails = await check.getBillingInvoicingDetails()
-    Code.expect(billingInvoicingDetails).to.equal(fakeContactDetail)
+    Code.expect(billingInvoicingDetails).to.equal(mocks.contactDetail)
     Code.expect(context.contactDetails[0]).to.equal(await check.getBillingInvoicingDetails())
   })
 
   lab.test('getLocation works correctly', async () => {
+    delete context.location
     const check = new BaseCheck(context)
     const location = await check.getLocation()
-    Code.expect(location).to.equal(fakeLocation)
+    Code.expect(location).to.equal(mocks.location)
     Code.expect(context.location).to.equal(await check.getLocation())
   })
 
   lab.test('getLocationDetail works correctly', async () => {
+    delete context.locationDetail
     const check = new BaseCheck(context)
     const locationDetail = await check.getLocationDetail()
-    Code.expect(locationDetail).to.equal(fakeLocationDetail)
+    Code.expect(locationDetail).to.equal(mocks.locationDetail)
     Code.expect(context.locationDetail).to.equal(await check.getLocationDetail())
   })
 
   lab.test('getMainAddress works correctly', async () => {
-    fakeAddressType = { TYPE: 910400001 }
-    fakeContactDetail.type = fakeAddressType.TYPE
+    delete context.mainAddress
+    mocks.contactDetail.type = 910400001
     const check = new BaseCheck(context)
     const mainAddress = await check.getMainAddress()
-    Code.expect(mainAddress).to.equal(fakeContactDetail)
+    Code.expect(mainAddress).to.equal(mocks.contactDetail)
     Code.expect(context.mainAddress).to.equal(await check.getMainAddress())
   })
 
   lab.test('getLocationAddress works correctly', async () => {
     const check = new BaseCheck(context)
     const locationAddress = await check.getLocationAddress()
-    Code.expect(locationAddress).to.equal(fakeAddress)
+    Code.expect(locationAddress).to.equal(mocks.address)
     Code.expect(context.locationAddress).to.equal(await check.getLocationAddress())
   })
 
   lab.test('getInvoiceAddress works correctly', async () => {
-    fakeAddressType = { TYPE: 910400004 }
-    fakeContactDetail.type = fakeAddressType.TYPE
+    delete context.invoiceAddress
+    mocks.contactDetail.type = 910400004
     const check = new BaseCheck(context)
     const invoiceAddress = await check.getInvoiceAddress()
-    Code.expect(invoiceAddress).to.equal(fakeAddress)
+    Code.expect(invoiceAddress).to.equal(mocks.address)
     Code.expect(context.invoiceAddress).to.equal(await check.getInvoiceAddress())
   })
 
   lab.test('getStandardRule works correctly', async () => {
+    delete context.standardRule
     const check = new BaseCheck(context)
     const standardRule = await check.getStandardRule()
-    Code.expect(standardRule).to.equal(fakeStandardRule)
+    Code.expect(standardRule).to.equal(mocks.standardRule)
     Code.expect(context.standardRule).to.equal(await check.getStandardRule())
   })
 
   lab.test('getTechnicalCompetenceEvidence works correctly', async () => {
+    delete context.technicalCompetenceEvidence
     const check = new BaseCheck(context)
     const technicalCompetenceEvidence = await check.getTechnicalCompetenceEvidence()
-    Code.expect(technicalCompetenceEvidence).to.equal([fakeAnnotation])
+    Code.expect(technicalCompetenceEvidence).to.equal([mocks.annotation])
     Code.expect(context.technicalCompetenceEvidence).to.equal(await check.getTechnicalCompetenceEvidence())
   })
 
   lab.test('getSitePlan works correctly', async () => {
+    delete context.sitePlan
     const check = new BaseCheck(context)
     const sitePlan = await check.getSitePlan()
-    Code.expect(sitePlan).to.equal([fakeAnnotation])
+    Code.expect(sitePlan).to.equal([mocks.annotation])
     Code.expect(context.sitePlan).to.equal(await check.getSitePlan())
   })
 
   lab.test('getFirePreventionPlan works correctly', async () => {
+    delete context.firePreventionPlan
     const check = new BaseCheck(context)
     const firePreventionPlan = await check.getFirePreventionPlan()
-    Code.expect(firePreventionPlan).to.equal([fakeAnnotation])
+    Code.expect(firePreventionPlan).to.equal([mocks.annotation])
     Code.expect(context.firePreventionPlan).to.equal(await check.getFirePreventionPlan())
   })
 
   lab.test('getWasteRecoveryPlan works correctly', async () => {
+    delete context.wasteRecoveryPlan
     const check = new BaseCheck(context)
     const wasteRecoveryPlan = await check.getWasteRecoveryPlan()
-    Code.expect(wasteRecoveryPlan).to.equal([fakeAnnotation])
+    Code.expect(wasteRecoveryPlan).to.equal([mocks.annotation])
     Code.expect(context.wasteRecoveryPlan).to.equal(await check.getWasteRecoveryPlan())
   })
 
   lab.test('getWasteTypesList works correctly', async () => {
+    delete context.wasteTypesList
     const check = new BaseCheck(context)
     const wasteTypesList = await check.getWasteTypesList()
-    Code.expect(wasteTypesList).to.equal([fakeAnnotation])
+    Code.expect(wasteTypesList).to.equal([mocks.annotation])
     Code.expect(context.wasteTypesList).to.equal(await check.getWasteTypesList())
   })
 
   lab.test('getEnvironmentalRiskAssessment works correctly', async () => {
+    delete context.environmentalRiskAssessment
     const check = new BaseCheck(context)
     const environmentalRiskAssessment = await check.getEnvironmentalRiskAssessment()
-    Code.expect(environmentalRiskAssessment).to.equal([fakeAnnotation])
+    Code.expect(environmentalRiskAssessment).to.equal([mocks.annotation])
     Code.expect(context.environmentalRiskAssessment).to.equal(await check.getEnvironmentalRiskAssessment())
   })
 
   lab.test('getNonTechnicalSummary works correctly', async () => {
+    delete context.nonTechnicalSummary
     const check = new BaseCheck(context)
     const nonTechnicalSummary = await check.getNonTechnicalSummary()
-    Code.expect(nonTechnicalSummary).to.equal([fakeAnnotation])
+    Code.expect(nonTechnicalSummary).to.equal([mocks.annotation])
     Code.expect(context.nonTechnicalSummary).to.equal(await check.getNonTechnicalSummary())
   })
 
   lab.test('getManagementSystem works correctly', async () => {
     const check = new BaseCheck(context)
     const managementSystem = await check.getManagementSystem()
-    Code.expect(managementSystem).to.equal(fakeApplicationAnswer)
+    Code.expect(managementSystem).to.equal(mocks.applicationAnswers[0])
     Code.expect(context.managementSystem).to.equal(await check.getManagementSystem())
   })
 
   lab.test('getManagementSystemSummary works correctly', async () => {
+    delete context.managementSystemSummary
     const check = new BaseCheck(context)
     const managementSystemSummary = await check.getManagementSystemSummary()
-    Code.expect(managementSystemSummary).to.equal([fakeAnnotation])
+    Code.expect(managementSystemSummary).to.equal([mocks.annotation])
     Code.expect(context.managementSystemSummary).to.equal(await check.getManagementSystemSummary())
   })
 
   lab.test('getNeedToConsult works correctly', async () => {
+    delete context.needToConsult
     const check = new BaseCheck(context)
     const needToConsult = await check.getNeedToConsult()
-    Code.expect(needToConsult).to.equal(fakeNeedToConsult)
+    Code.expect(needToConsult).to.equal(mocks.needToConsult)
     Code.expect(context.needToConsult).to.equal(await check.getNeedToConsult())
   })
 
   lab.test('getCharityDetails works correctly', async () => {
+    delete context.charityDetails
     const check = new BaseCheck(context)
     const charityDetail = await check.getCharityDetails()
-    Code.expect(charityDetail).to.equal(fakeCharityDetail)
+    Code.expect(charityDetail).to.equal(mocks.charityDetail)
     Code.expect(context.charityDetails).to.equal(await check.getCharityDetails())
   })
 
   lab.test('getMcpDetails works correctly', async () => {
+    delete context.mcpDetails
     const check = new BaseCheck(context)
     const mcpDetails = await check.getMcpDetails()
-    Code.expect(mcpDetails).to.equal([fakeAnnotation])
+    Code.expect(mcpDetails).to.equal([mocks.annotation])
     Code.expect(context.mcpDetails).to.equal(await check.getMcpDetails())
   })
 
   lab.test('getMcpBusinessType works correctly', async () => {
+    delete context.mcpBusinessType
     const check = new BaseCheck(context)
     const mcpBusinessType = await check.getMcpBusinessType()
-    Code.expect(mcpBusinessType).to.equal(fakeMcpBusinessType)
+    Code.expect(mcpBusinessType).to.equal(mocks.mcpBusinessType)
     Code.expect(context.mcpBusinessType).to.equal(await check.getMcpBusinessType())
+  })
+
+  lab.test('getTechnicalManagers works correctly', async () => {
+    delete context.technicalManagers
+    const check = new BaseCheck(context)
+    const technicalManagers = await check.getTechnicalManagers()
+    Code.expect(technicalManagers).to.equal([mocks.annotation])
+    Code.expect(context.technicalManagers).to.equal(await check.getTechnicalManagers())
   })
 })
