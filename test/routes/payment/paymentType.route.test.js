@@ -4,12 +4,11 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const Application = require('../../../src/persistence/entities/application.entity')
-const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
-const ApplicationReturn = require('../../../src/persistence/entities/applicationReturn.entity')
 const TaskList = require('../../../src/models/taskList/base.taskList')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
@@ -22,49 +21,25 @@ const PaymentTypes = {
 }
 
 let sandbox
+let mocks
 
 const fakeSlug = 'SLUG'
 
 const routePath = `/pay/type`
 const errorPath = '/errors/technical-problem'
 
-let fakeApplication
-let fakeApplicationLine
-let fakeApplicationReturn
-let fakeRecovery
-
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID'
-  }
+  mocks = new Mocks()
 
-  fakeApplicationLine = {
-    id: 'APPLICATION_LINE_ID'
-  }
-
-  fakeApplicationReturn = {
-    applicationId: fakeApplication.id,
-    slug: fakeSlug
-  }
-
-  fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    applicationLineId: fakeApplicationLine.id,
-    application: new Application(fakeApplication),
-    applicationLine: new ApplicationLine(fakeApplicationLine),
-    applicationReturn: new ApplicationReturn(fakeApplicationReturn)
-  })
+  mocks.context.slug = fakeSlug
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application, 'getById').value(async () => new Application(fakeApplication))
-  sandbox.stub(ApplicationLine, 'getById').value(async () => new ApplicationLine(fakeApplicationLine))
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => mocks.recovery)
   sandbox.stub(TaskList, 'getTaskListClass').value(async () => TaskList)
   sandbox.stub(TaskList, 'isComplete').value(async () => true)
 })
@@ -105,7 +80,7 @@ lab.experiment(`How do you want to pay?:`, () => {
 
     lab.experiment('success', () => {
       lab.test('value is formated correctly including pence', async () => {
-        fakeApplicationLine.value = 10000.25
+        mocks.applicationLine.value = 10000.25
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
@@ -113,7 +88,7 @@ lab.experiment(`How do you want to pay?:`, () => {
       })
 
       lab.test('value is formated without pence', async () => {
-        fakeApplicationLine.value = 1000
+        mocks.applicationLine.value = 1000
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 

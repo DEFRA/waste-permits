@@ -4,21 +4,17 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const Application = require('../../../src/persistence/entities/application.entity')
-const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
-const ApplicationReturn = require('../../../src/persistence/entities/applicationReturn.entity')
 const Payment = require('../../../src/persistence/entities/payment.entity')
-const StandardRule = require('../../../src/persistence/entities/standardRule.entity')
 const TaskList = require('../../../src/models/taskList/base.taskList')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
-
-let sandbox
 
 const slug = 'SLUG'
 const paymentErrorStatus = 'error'
@@ -28,63 +24,28 @@ const errorPath = '/errors/technical-problem'
 const cardProblemPath = `/pay/card-problem/${slug}?status=${paymentErrorStatus}`
 const returnFromGovPayUrl = '/return/from/govr/pay/url'
 
-let fakeApplication
-let fakeApplicationLine
-let fakeApplicationReturn
-let fakePayment
-let fakePaymentResult
-let fakeStandardRule
-let fakeRecovery
+let mocks
+let sandbox
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    submitted: false
-  }
+  mocks = new Mocks()
 
-  fakeApplicationLine = {
-    id: 'APPLICATION_LINE_ID'
-  }
+  mocks.recovery.slug = slug
 
-  fakeApplicationReturn = {
-    applicationId: fakeApplication.id
-  }
-
-  fakePayment = {
-    referenceNumber: 12345,
-    returnUrl: returnFromGovPayUrl
-  }
-
-  fakePaymentResult = {
+  mocks.paymentResult = {
     PaymentNextUrlHref: returnFromGovPayUrl
   }
-
-  fakeStandardRule = {
-    permitName: 'STANDARD_RULE_NAME',
-    code: 'SR2015 No 18'
-  }
-
-  fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    applicationLineId: fakeApplicationLine.id,
-    application: new Application(fakeApplication),
-    applicationLine: new ApplicationLine(fakeApplicationLine),
-    applicationReturn: new ApplicationReturn(fakeApplicationReturn),
-    standardRule: new StandardRule(fakeStandardRule),
-    slug: 'SLUG'
-  })
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(Application.prototype, 'isSubmitted').value(() => fakeApplication.submitted)
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => mocks.application.submitted)
   sandbox.stub(Payment.prototype, 'save').value(async () => undefined)
-  sandbox.stub(Payment.prototype, 'makeCardPayment').value(async () => fakePaymentResult)
-  sandbox.stub(Payment, 'getCardPaymentDetails').value(async () => new Payment(fakePayment))
+  sandbox.stub(Payment.prototype, 'makeCardPayment').value(async () => mocks.paymentResult)
+  sandbox.stub(Payment, 'getCardPaymentDetails').value(async () => mocks.payment)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => mocks.recovery)
   sandbox.stub(TaskList, 'getTaskListClass').value(async () => TaskList)
   sandbox.stub(TaskList, 'isComplete').value(async () => true)
 })
@@ -122,7 +83,7 @@ lab.experiment(`How do you want to pay?:`, () => {
       })
 
       lab.test('redirects to card problem when status is error', async () => {
-        fakePaymentResult.PaymentStatus = paymentErrorStatus
+        mocks.paymentResult.PaymentStatus = paymentErrorStatus
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(cardProblemPath)
