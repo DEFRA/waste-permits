@@ -19,6 +19,7 @@ const nextRoutePath = '/permit-holder/contact-details'
 
 let sandbox
 let mocks
+let getContactDetailStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
@@ -31,7 +32,8 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
+  getContactDetailStub = sandbox.stub(ContactDetail, 'get')
+  getContactDetailStub.value(() => mocks.contactDetail)
   sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
@@ -95,7 +97,7 @@ lab.experiment('Permit Holder Name page tests:', () => {
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the permit holder name page correctly when it is a new application`, async () => {
       // No current permit holder
-      sinon.stub(ContactDetail, 'get').value(() => undefined)
+      getContactDetailStub.value(() => undefined)
       checkPageElements(getRequest)
     })
 
