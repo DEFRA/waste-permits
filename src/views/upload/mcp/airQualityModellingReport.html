@@ -1,0 +1,34 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>Upload these files</p>
+
+      <ol class="list list-number">
+        <li>The completed modelling report.</li>
+        <li>The modelling input files.</li>
+        <li>A completed specified generator Tranche B screening tool.</li>
+      </ol>
+
+      <p>See the guidance on <a id="guidence-link" href="" target="_blank" rel="noopener noreferrer">how to do detailed air quality modelling for emissions from specified generators (opens new tab)</a> and the information you must include in your <a href="">report</a>.</p>
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>
