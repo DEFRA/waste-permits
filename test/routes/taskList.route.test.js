@@ -16,31 +16,8 @@ const StandardRule = require('../../src/persistence/entities/standardRule.entity
 const StandardRulesTaskList = require('../../src/models/taskList/standardRules.taskList')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-let sandbox
-
 const routePath = '/task-list'
 const alreadySubmittedRoutePath = '/errors/order/done-cant-go-back'
-
-let getRequest
-
-const fakeApplication = {
-  id: 'APPLICATION_ID',
-  applicationNumber: 'APPLICATION_NUMBER'
-}
-
-const fakeCookie = {
-  applicationId: 'APPLICATION_ID',
-  authToken: 'AUTH_TOKEN'
-}
-
-const fakeStandardRule = {
-  id: 'STANDARD_RULE_ID',
-  permitName: 'Metal recycling, vehicle storage, depollution and dismantling facility',
-  limits: 'Less than 25,000 tonnes a year of waste metal and less than 5,000 tonnes a year of waste motor vehicles',
-  code: 'SR2015 No 18',
-  codeForId: 'sr2015-no-18',
-  guidanceUrl: 'https://www.gov.uk/government/publications/sr2015-no18-metal-recycling-vehicle-storage-depollution-and-dismantling-facility'
-}
 
 const fakeTaskList = {
   sections: [
@@ -189,38 +166,34 @@ const checkElement = (element, text, href) => {
     Code.expect(element.getAttribute('href')).to.equal(href)
   }
 }
-let dataStore
+
+let sandbox
 let mocks
 
 lab.beforeEach(() => {
   mocks = new Mocks()
 
-  dataStore = mocks.dataStore
+  const { applicationId, authToken } = mocks.context
 
-  getRequest = {
-    method: 'GET',
-    url: routePath,
-    headers: {},
-    payload: {}
-  }
+  mocks.cookie = { applicationId, authToken }
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub cookies
   GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
-    applicationId: () => fakeApplication.id
+    applicationId: () => mocks.application.id
   })
 
   // Stub methods
-  sandbox.stub(CookieService, 'generateCookie').value(() => fakeCookie)
+  sandbox.stub(CookieService, 'generateCookie').value(() => mocks.cookie)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
-  sandbox.stub(DataStore, 'get').value(async () => dataStore)
-  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => fakeStandardRule)
-  sandbox.stub(StandardRule, 'getByCode').value(() => fakeStandardRule)
+  sandbox.stub(DataStore, 'get').value(async () => mocks.dataStore)
+  sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
+  sandbox.stub(StandardRule, 'getByCode').value(() => mocks.standardRule)
   sandbox.stub(StandardRulesTaskList, 'buildTaskList').value(() => fakeTaskList)
 })
 
@@ -230,8 +203,19 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List page tests:', () => {
+  let getRequest
+
   new GeneralTestHelper({ lab, routePath }).test({
     excludeCookiePostTests: true
+  })
+
+  lab.beforeEach(() => {
+    getRequest = {
+      method: 'GET',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
   })
 
   lab.test('The page should NOT have a back link', async () => {
@@ -252,7 +236,7 @@ lab.experiment('Task List page tests:', () => {
     // Check the existence of the page title and Standard Rule infos
     checkElement(doc.getElementById('page-heading'), 'Apply for a standard rules environmental permit')
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
-    checkElement(doc.getElementById('standard-rule-name-and-code'), `${fakeStandardRule.permitName} - ${fakeStandardRule.code}`)
+    checkElement(doc.getElementById('standard-rule-name-and-code'), `${mocks.standardRule.permitName} - ${mocks.standardRule.code}`)
     checkElement(doc.getElementById('select-a-different-permit'))
   })
 

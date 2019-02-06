@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../../helpers/mocks')
 const GeneralTestHelper = require('../../generalTestHelper.test')
 
 const server = require('../../../../server')
@@ -14,37 +15,29 @@ const LoggingService = require('../../../../src/services/logging.service')
 const RecoveryService = require('../../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../../src/constants')
 
-let sandbox
-
-let fakeApplication
-let fakeRecovery
-
 const routePath = '/confidentiality'
 const nextRoutePath = '/task-list'
 const errorPath = '/errors/technical-problem'
 
-lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    confidentialityDetails: 'CONFIDENTIALITY DETAILS',
-    confidentiality: true
-  }
+let sandbox
+let mocks
 
-  fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    application: new Application(fakeApplication)
-  })
+function trimLines (value) {
+  return value.replace(/[\\n\s]+\s/g, `\n`)
+}
+
+lab.beforeEach(() => {
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application.prototype, 'isSubmitted').value(() => {})
-  sandbox.stub(Application.prototype, 'save').value(() => false)
+  sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(Confidentiality, 'updateCompleteness').value(() => {})
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -78,8 +71,8 @@ lab.experiment('Is part of your application commercially confidential? page test
       doc = await GeneralTestHelper.getDoc(getRequest)
 
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Is part of your application commercially confidential?')
+      Code.expect(trimLines(doc.getElementById('declaration-details').firstChild.nodeValue)).to.equal(mocks.application.confidentialityDetails)
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
-      Code.expect(doc.getElementById('declaration-details').firstChild.nodeValue).to.equal(fakeApplication.confidentialityDetails)
       Code.expect(doc.getElementById('confidentiality-hint')).to.exist()
       Code.expect(doc.getElementById('declaration-notice')).to.not.exist()
     })
@@ -108,8 +101,8 @@ lab.experiment('Is part of your application commercially confidential? page test
         url: routePath,
         headers: {},
         payload: {
-          'declared': fakeApplication.confidentiality,
-          'declaration-details': fakeApplication.confidentialityDetails
+          'declared': mocks.application.confidentiality,
+          'declaration-details': mocks.application.confidentialityDetails
         }
       }
     })

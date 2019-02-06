@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
@@ -13,69 +14,28 @@ const ContactDetail = require('../../../src/models/contactDetail.model')
 const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-let sandbox
-
 const routePath = '/permit-holder/name'
 const nextRoutePath = '/permit-holder/contact-details'
 
-const getRequest = {
-  method: 'GET',
-  url: routePath,
-  headers: {}
-}
-let postRequest
-let validContactDetails
-let fakeApplication
-let fakeContactDetail
-let fakeRecovery
+let sandbox
+let mocks
+let getContactDetailStub
 
 lab.beforeEach(() => {
-  fakeContactDetail = {
-    id: 'CONTACT_DETAIL_ID',
-    firstName: 'John',
-    lastName: 'Smith',
-    dateOfBirth: '1995-3-5'
-  }
-
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationNumber: 'APPLICATION_NUMBER',
-    applicantType: 910400000,
-    permitHolderIndividualId: fakeContactDetail.id
-  }
-
-  fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    application: new Application(fakeApplication)
-  })
-
-  validContactDetails = {
-    'first-name': fakeContactDetail.firstName,
-    'last-name': fakeContactDetail.lastName,
-    'dob-day': '5',
-    'dob-month': '3',
-    'dob-year': '1995'
-  }
-
-  postRequest = {
-    method: 'POST',
-    url: routePath,
-    headers: {},
-    payload: validContactDetails
-  }
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
+  sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(ContactDetail, 'get').value(() => new ContactDetail(fakeContactDetail))
+  getContactDetailStub = sandbox.stub(ContactDetail, 'get')
+  getContactDetailStub.value(() => mocks.contactDetail)
   sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -121,44 +81,71 @@ const checkPageElements = async (request, expectedFirstName = '', expectedLastNa
   Code.expect(element.nodeValue).to.equal('Continue')
 }
 
-const checkValidationErrors = async (field, expectedErrors) => {
-  const doc = await GeneralTestHelper.getDoc(postRequest)
-
-  let element
-
-  for (let i = 0; i < expectedErrors.length; i++) {
-    // Panel summary error item
-    element = doc.getElementById(`error-summary-list-item-${i}`).firstChild
-    Code.expect(element.nodeValue).to.equal(expectedErrors[i])
-
-    // Field error
-    Code.expect(doc.getElementById(field).getAttribute('class')).contains('form-control-error')
-    element = doc.getElementById(`${field}-error`).childNodes[i].firstChild
-    Code.expect(element.nodeValue).to.equal(expectedErrors[i])
-  }
-}
-
 lab.experiment('Permit Holder Name page tests:', () => {
+  let getRequest
+
   new GeneralTestHelper({ lab, routePath }).test()
+
+  lab.beforeEach(() => {
+    getRequest = {
+      method: 'GET',
+      url: routePath,
+      headers: {}
+    }
+  })
 
   lab.experiment('GET:', () => {
     lab.test(`GET ${routePath} returns the permit holder name page correctly when it is a new application`, async () => {
       // No current permit holder
-      fakeContactDetail = {}
+      getContactDetailStub.value(() => undefined)
       checkPageElements(getRequest)
     })
 
     lab.test(`GET ${routePath} returns the permit holder name page correctly when there is an existing contact`, async () => {
-      const { firstName, lastName, dateOfBirth } = fakeContactDetail
+      const { firstName, lastName, dateOfBirth } = mocks.contactDetail
       checkPageElements(getRequest, firstName, lastName, dateOfBirth)
     })
   })
 
   lab.experiment('POST:', () => {
+    let postRequest
+
+    const checkValidationErrors = async (field, expectedErrors) => {
+      const doc = await GeneralTestHelper.getDoc(postRequest)
+
+      let element
+
+      for (let i = 0; i < expectedErrors.length; i++) {
+        // Panel summary error item
+        element = doc.getElementById(`error-summary-list-item-${i}`).firstChild
+        Code.expect(element.nodeValue).to.equal(expectedErrors[i])
+
+        // Field error
+        Code.expect(doc.getElementById(field).getAttribute('class')).contains('form-control-error')
+        element = doc.getElementById(`${field}-error`).childNodes[i].firstChild
+        Code.expect(element.nodeValue).to.equal(expectedErrors[i])
+      }
+    }
+
+    lab.beforeEach(() => {
+      postRequest = {
+        method: 'POST',
+        url: routePath,
+        headers: {},
+        payload: {
+          'first-name': mocks.contactDetail.firstName,
+          'last-name': mocks.contactDetail.lastName,
+          'dob-day': '5',
+          'dob-month': '3',
+          'dob-year': '1995'
+        }
+      }
+    })
+
     lab.experiment('Success:', () => {
       lab.test(`(new Permit Holder) redirects to the next route ${nextRoutePath}`, async () => {
         // No current permit holder
-        fakeApplication.individualPermitHolderId = () => {
+        mocks.application.individualPermitHolderId = () => {
           return undefined
         }
 
@@ -169,7 +156,7 @@ lab.experiment('Permit Holder Name page tests:', () => {
 
       lab.test(`POST ${routePath} (existing Permit Holder) redirects to the next route ${nextRoutePath}`, async () => {
         // Existing permit holder
-        fakeApplication.individualPermitHolderId = () => {
+        mocks.application.individualPermitHolderId = () => {
           return 1
         }
 
@@ -181,7 +168,7 @@ lab.experiment('Permit Holder Name page tests:', () => {
 
       lab.test(`POST ${routePath} (updated Permit Holder) redirects to the next route ${nextRoutePath}`, async () => {
         // Existing permit holder
-        fakeApplication.individualPermitHolderId = () => {
+        mocks.application.individualPermitHolderId = () => {
           return 1
         }
 

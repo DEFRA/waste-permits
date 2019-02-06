@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
@@ -14,6 +15,7 @@ const Application = require('../../../src/persistence/entities/application.entit
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 let sandbox
+let mocks
 
 const routePath = '/permit-holder/trading-name'
 const errorPath = '/errors/technical-problem'
@@ -23,30 +25,17 @@ const nextRoutePath = '/permit-holder/contact-details'
 const YES = 910400000
 const NO = 910400001
 
-let fakeRecovery
-let fakeApplication
-
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationNumber: 'APPLICATION_NUMBER',
-    applicantType: 910400000
-  }
-
-  fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    application: new Application(fakeApplication)
-  })
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => {})
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
 })
 
 lab.afterEach(() => {
@@ -91,6 +80,7 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
       })
 
       lab.test('returns the contact page correctly on first load when nothing is selected', async () => {
+        delete mocks.application.tradingName
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
@@ -100,7 +90,8 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
       })
 
       lab.test(`returns the contact page correctly on first load when don't use trading name is selected`, async () => {
-        fakeApplication.useTradingName = NO
+        mocks.application.useTradingName = NO
+        delete mocks.application.tradingName
 
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
@@ -111,15 +102,14 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
       })
 
       lab.test(`returns the contact page correctly on first load when use trading name is selected`, async () => {
-        fakeApplication.useTradingName = YES
-        fakeApplication.tradingName = 'TRADING_NAME'
+        mocks.application.useTradingName = YES
 
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
         Code.expect(doc.getElementById('use-trading-name-on').getAttribute('checked')).to.equal('checked')
         Code.expect(doc.getElementById('use-trading-name-off').getAttribute('checked')).to.equal('')
-        Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal('TRADING_NAME')
+        Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal(mocks.application.tradingName)
       })
     })
 
