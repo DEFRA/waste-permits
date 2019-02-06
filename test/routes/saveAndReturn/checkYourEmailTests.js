@@ -2,28 +2,24 @@
 
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 
 const Application = require('../../../src/persistence/entities/application.entity')
 const CookieService = require('../../../src/services/cookie.service')
-const CharityDetail = require('../../../src/models/charityDetail.model')
+const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-let fakeEmail
-let fakeApplication
 let numberOfMatchingEmails
-let sandbox
 
 module.exports = (lab, { routePath, nextPath, errorPath, pageHeading, excludeAlreadySubmittedTest }) => {
-  lab.beforeEach(() => {
-    fakeEmail = 'valid@email.com'
+  let mocks
+  let sandbox
 
-    fakeApplication = {
-      id: 'APPLICATION_ID',
-      saveAndReturnEmail: fakeEmail
-    }
+  lab.beforeEach(() => {
+    mocks = new Mocks()
 
     numberOfMatchingEmails = 10
 
@@ -32,15 +28,14 @@ module.exports = (lab, { routePath, nextPath, errorPath, pageHeading, excludeAlr
 
     // Stub cookies
     GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
-      'saveAndReturnEmail': () => fakeEmail
+      'saveAndReturnEmail': () => mocks.contactDetail.email
     })
 
     // Stub methods
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-    sandbox.stub(Application, 'getById').value(() => new Application(fakeApplication))
     sandbox.stub(Application, 'sendAllRecoveryEmails').value(() => numberOfMatchingEmails)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(CharityDetail, 'get').value(() => new CharityDetail({}))
+    sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   })
 
   lab.afterEach(() => {
@@ -90,7 +85,7 @@ module.exports = (lab, { routePath, nextPath, errorPath, pageHeading, excludeAlr
         })
 
         lab.test('when email is not saved in the cookie', async () => {
-          fakeEmail = ''
+          mocks.contactDetail.email = ''
           const doc = await GeneralTestHelper.getDoc(getRequest)
           await checkCommonElements(doc)
           Code.expect(doc.getElementById('email-link-paragraph')).to.exist()

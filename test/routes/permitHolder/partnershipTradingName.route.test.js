@@ -4,6 +4,7 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
@@ -14,44 +15,25 @@ const Application = require('../../../src/persistence/entities/application.entit
 const Account = require('../../../src/persistence/entities/account.entity')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-let sandbox
-
 const routePath = '/permit-holder/partners/trading-name'
 const errorPath = '/errors/technical-problem'
 const nextRoutePath = '/permit-holder/partners/list'
 
-let fakeRecovery
-let fakeApplication
-let fakeAccount
+let sandbox
+let mocks
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID',
-    applicationNumber: 'APPLICATION_NUMBER',
-    applicantType: 910400000
-  }
-
-  fakeAccount = {
-    id: 'ACCOUNT_ID',
-    accountName: 'ACCOUNT_NAME'
-  }
-
-  fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    application: new Application(fakeApplication),
-    account: new Account(fakeAccount)
-  })
+  mocks = new Mocks()
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(Application.prototype, 'save').value(() => fakeApplication.id)
-  sandbox.stub(Account.prototype, 'save').value(() => fakeAccount.id)
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
+  sandbox.stub(Account.prototype, 'save').value(() => undefined)
 })
 
 lab.afterEach(() => {
@@ -96,17 +78,16 @@ lab.experiment('Partnership Trading Name page tests:', () => {
       })
 
       lab.test('returns the contact page on first load correctly', async () => {
+        delete mocks.application.tradingName
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal('')
       })
 
       lab.test(`returns the contact page correctly when trading name has already been entered previously`, async () => {
-        fakeApplication.tradingName = 'TRADING_NAME'
-
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
-        Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal('TRADING_NAME')
+        Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal(mocks.application.tradingName)
       })
     })
 

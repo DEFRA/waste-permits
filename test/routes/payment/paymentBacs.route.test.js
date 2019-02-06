@@ -4,11 +4,11 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
+const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const Application = require('../../../src/persistence/entities/application.entity')
-const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
 const Payment = require('../../../src/persistence/entities/payment.entity')
 const TaskList = require('../../../src/models/taskList/base.taskList')
 const CookieService = require('../../../src/services/cookie.service')
@@ -16,54 +16,19 @@ const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-let sandbox
-
 const fakeSlug = 'SLUG'
 
 const routePath = '/pay/bacs'
 const nextRoutePath = `/done/${fakeSlug}`
 const errorPath = '/errors/technical-problem'
 
-let fakeApplication
-let fakeApplicationLine
-let fakePayment
-let fakeRecovery
-let getRequest
+let mocks
+let sandbox
 
 lab.beforeEach(() => {
-  fakeApplication = {
-    id: 'APPLICATION_ID'
-  }
+  mocks = new Mocks()
 
-  fakeApplicationLine = {
-    id: 'APPLICATION_LINE_ID',
-    value: 'VALUE'
-  }
-
-  fakePayment = {
-    applicationId: 'APPLICATION_ID',
-    applicationLineId: 'APPLICATION_LINE_ID',
-    category: 'CATEGORY',
-    statusCode: 'STATUS_CODE',
-    type: 'TYPE',
-    value: 'VALUE'
-  }
-
-  fakeRecovery = () => ({
-    slug: fakeSlug,
-    authToken: 'AUTH_TOKEN',
-    applicationId: fakeApplication.id,
-    applicationLineId: fakeApplicationLine.id,
-    application: new Application(fakeApplication),
-    applicationLine: new ApplicationLine(fakeApplicationLine)
-  })
-
-  getRequest = {
-    method: 'GET',
-    url: routePath,
-    headers: {},
-    payload: {}
-  }
+  mocks.context.slug = fakeSlug
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -72,9 +37,9 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(async () => undefined)
-  sandbox.stub(Payment, 'getBacsPaymentDetails').value(async () => new Payment(fakePayment))
+  sandbox.stub(Payment, 'getBacsPaymentDetails').value(async () => mocks.payment)
   sandbox.stub(Payment.prototype, 'save').value(async () => undefined)
-  sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => fakeRecovery())
+  sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(TaskList, 'getTaskListClass').value(async () => TaskList)
   sandbox.stub(TaskList, 'isComplete').value(async () => true)
 })
@@ -89,8 +54,15 @@ lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     let doc
+    let getRequest
 
-    lab.beforeEach(() => { })
+    lab.beforeEach(() => {
+      getRequest = {
+        method: 'GET',
+        url: routePath,
+        headers: {}
+      }
+    })
 
     lab.test('success', async () => {
       doc = await GeneralTestHelper.getDoc(getRequest)
