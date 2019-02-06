@@ -30,7 +30,7 @@ module.exports = class InvoiceContactController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const { applicationId, application } = context
+    const { applicationId } = context
     const {
       'first-name': firstName,
       'last-name': lastName,
@@ -43,9 +43,6 @@ module.exports = class InvoiceContactController extends BaseController {
 
     Object.assign(contactDetail, { firstName, lastName, telephone, email })
     await contactDetail.save(context)
-
-    application.contactId = contactDetail.customerId
-    await application.save(context)
 
     return this.redirect({ h })
   }
