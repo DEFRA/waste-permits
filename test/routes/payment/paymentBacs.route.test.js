@@ -19,11 +19,13 @@ const { COOKIE_RESULT } = require('../../../src/constants')
 const fakeSlug = 'SLUG'
 
 const routePath = '/pay/bacs'
-const nextRoutePath = `/done/${fakeSlug}`
+const nextRoutePath = '/pay/bacs-proof'
 const errorPath = '/errors/technical-problem'
 
 let mocks
 let sandbox
+let getBacsPaymentStub
+let saveBacsPaymentStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
@@ -37,8 +39,10 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(async () => undefined)
-  sandbox.stub(Payment, 'getBacsPaymentDetails').value(async () => mocks.payment)
-  sandbox.stub(Payment.prototype, 'save').value(async () => undefined)
+  getBacsPaymentStub = sandbox.stub(Payment, 'getBacsPaymentDetails')
+  getBacsPaymentStub.resolves(mocks.payment)
+  saveBacsPaymentStub = sandbox.stub(Payment.prototype, 'save')
+  saveBacsPaymentStub.resolves(undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(TaskList, 'getTaskListClass').value(async () => TaskList)
   sandbox.stub(TaskList, 'isComplete').value(async () => true)
@@ -67,8 +71,8 @@ lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
     lab.test('success', async () => {
       doc = await GeneralTestHelper.getDoc(getRequest)
 
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('You have chosen to pay by bank transfer using Bacs')
-      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Send application')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Confirm you will pay by bank transfer using Bacs')
+      Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('I will pay by Bacs')
 
       // Test for the existence of expected static content
       GeneralTestHelper.checkElementsExist(doc, [
@@ -99,7 +103,7 @@ lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when failing to get the payment details', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Payment.getBacsPaymentDetails = () => Promise.reject(new Error('read failed'))
+        getBacsPaymentStub.rejects(new Error('read failed'))
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
@@ -109,7 +113,7 @@ lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
 
       lab.test('redirects to error screen when save fails', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
-        Payment.prototype.save = () => Promise.reject(new Error('save failed'))
+        saveBacsPaymentStub.rejects(new Error('save failed'))
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)

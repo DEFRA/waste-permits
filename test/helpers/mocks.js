@@ -183,6 +183,21 @@ class MockData {
     }
   }
 
+  get configurationForMcp () {
+    const { application } = this
+    return {
+      paymentReference: `MCP-${application.applicationNumber}`,
+      amount: '1,000.99',
+      sortCode: '60-70-80',
+      accountNumber: '1001 4411',
+      accountName: 'EA RECEIPTS',
+      ibanNumber: 'GB23NWK60708010014411',
+      swiftNumber: 'NWBKGB2L',
+      paymentsEmail: 'BACS@PAYMENT.EMAIL',
+      description: 'THE DESCRIPTION'
+    }
+  }
+
   get contactDetail () {
     const { address, addressDetail, contact } = this
     return {
@@ -277,6 +292,14 @@ class MockData {
     }
   }
 
+  get standardRuleTypeForMcp () {
+    return {
+      category: 'Mcp category',
+      categoryName: 'mcpd-mcp',
+      id: 'STANDARD_RULE_TYPE_ID'
+    }
+  }
+
   get totalCostItemModel () {
     return {
       description: 'TOTAL_COST_ITEM_DESCRIPTION',
@@ -365,6 +388,11 @@ class Mocks {
   get configuration () {
     const { configuration } = this.mockData
     return this._configuration || (this._configuration = new Configuration(configuration))
+  }
+
+  get configurationForMcp () {
+    const { configurationForMcp } = this.mockData
+    return this._configurationForMcp || (this._configurationForMcp = new Configuration(configurationForMcp))
   }
 
   get contact () {
@@ -466,6 +494,11 @@ class Mocks {
   get standardRuleType () {
     const { standardRuleType } = this.mockData
     return this._standardRuleType || (this._standardRuleType = new StandardRuleType(standardRuleType))
+  }
+
+  get standardRuleTypeForMcp () {
+    const { standardRuleTypeForMcp } = this.mockData
+    return this._standardRuleTypeForMcp || (this._standardRuleTypeForMcp = new StandardRuleType(standardRuleTypeForMcp))
   }
 }
 

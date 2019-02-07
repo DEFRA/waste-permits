@@ -13,10 +13,10 @@ module.exports = class PaymentBacsController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { applicationLine: true })
-    const { slug, application, applicationLine } = context
+    const { application, applicationLine } = context
 
     const { value = 0 } = applicationLine
-    const payment = await Payment.getBacsPaymentDetails(context, applicationLine.id)
+    const payment = await Payment.getBacsPaymentDetails(context)
 
     payment.value = value
     payment.category = Dynamics.PAYMENT_CATEGORY
@@ -25,6 +25,6 @@ module.exports = class PaymentBacsController extends BaseController {
     payment.title = `${Dynamics.PaymentTitle.BACS_PAYMENT} ${application.applicationNumber}`
     await payment.save(context)
 
-    return this.redirect({ h, path: `${this.nextPath}/${slug}` })
+    return this.redirect({ h, path: `${this.nextPath}` })
   }
 }
