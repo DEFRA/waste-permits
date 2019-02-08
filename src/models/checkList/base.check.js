@@ -23,6 +23,7 @@ const {
 } = require('../../dynamics').ApplicationQuestions
 
 const {
+  ENERGY_EFFICIENCY_REPORT,
   TECHNICAL_QUALIFICATION,
   SITE_PLAN,
   FIRE_PREVENTION_PLAN,
@@ -189,6 +190,14 @@ module.exports = class BaseCheck {
       this.data.sitePlan = await Annotation.listByApplicationIdAndSubject(this.data, SITE_PLAN)
     }
     return this.data.sitePlan || {}
+  }
+
+  async getEnergyEfficiencyReport () {
+    const { energyEfficiencyReport } = this.data
+    if (!energyEfficiencyReport) {
+      this.data.energyEfficiencyReport = await Annotation.listByApplicationIdAndSubject(this.data, ENERGY_EFFICIENCY_REPORT)
+    }
+    return this.data.energyEfficiencyReport || {}
   }
 
   async getWasteRecoveryPlan () {
