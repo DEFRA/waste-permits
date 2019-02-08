@@ -237,6 +237,14 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(context.wasteRecoveryPlan).to.equal(await check.getWasteRecoveryPlan())
   })
 
+  lab.test('getEnergyEfficiencyReport works correctly', async () => {
+    delete context.energyEfficiencyReport
+    const check = new BaseCheck(context)
+    const energyEfficiencyReport = await check.getEnergyEfficiencyReport()
+    Code.expect(energyEfficiencyReport).to.equal([mocks.annotation])
+    Code.expect(context.energyEfficiencyReport).to.equal(await check.getEnergyEfficiencyReport())
+  })
+
   lab.test('getWasteTypesList works correctly', async () => {
     delete context.wasteTypesList
     const check = new BaseCheck(context)

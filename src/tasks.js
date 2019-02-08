@@ -86,7 +86,8 @@ const tasks = {
     label: 'Upload the energy efficiency report',
     route: Routes.ENERGY_EFFICIENCY_REPORT,
     completedLabelId: 'upload-energy-efficiency-report-completed',
-    shortName: 'energyefficiency'
+    shortName: 'energyEfficiency',
+    taskListModel: 'energyEfficiencyReport'
   },
   ENVIRONMENTAL_RISK_ASSESSMENT: {
     id: 'environmental-risk-assessment',
