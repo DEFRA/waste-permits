@@ -11,7 +11,7 @@ const McpBusinessType = require('../../src/models/mcpBusinessType.model')
 
 const context = { authToken: 'AUTH_TOKEN' }
 
-const expectedItems =  [
+const expectedItems = [
   { code: '35.11', description: 'Production of electricity 35.11' },
   { code: '86.10', description: 'Hospital activities 86.10' }
 ]
