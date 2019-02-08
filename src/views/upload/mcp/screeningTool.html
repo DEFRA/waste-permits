@@ -1,0 +1,27 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>Upload a completed copy of the specified generator Tranche B screening tool to prove that you do not have to do air quality modelling.</p>
+      <p>If you used an alternative tool you should upload that tool or its report instead.</p>
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

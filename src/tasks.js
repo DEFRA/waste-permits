@@ -1,6 +1,19 @@
 const Routes = require('./routes')
 
 const tasks = {
+  AIR_QUALITY_MANAGEMENT: {
+    id: 'air-quality-management',
+    label: 'Give Air Quality Management Area details',
+    route: Routes.AIR_QUALITY_MANAGEMENT,
+    completedLabelId: 'air-quality-management-completed',
+    shortName: 'aqma'
+  },
+  AIR_DISPERTION_MODELLING_REPORT: {
+    id: 'upload-air-dispersion-modelling-report',
+    label: 'Upload air dispersion modelling report',
+    completedLabelId: 'upload-air-dispersion-modelling-report-completed',
+    shortName: 'airreport'
+  },
   BASELINE_REPORT: {
     id: 'baseline-report',
     ruleSetId: 'defra_baselinereportreq'
@@ -8,16 +21,26 @@ const tasks = {
   BASIC_OPERATION_DETAILS: {
     id: 'basic-operation-details',
     label: 'Give basic details about the operation',
+    completedLabelId: 'basic-operation-details-completed',
     shortName: 'basicdetails'
   },
   BATTERY_PROCESSING: {
     id: 'battery-processing',
     label: 'Battery processing',
+    completedLabelId: 'battery-processing-completed',
     shortName: 'battery'
+  },
+  BEST_AVAILABLE_TECHNIQUES_ASSESSMENT: {
+    id: 'upload-best-available-techniques-assessment',
+    label: 'Upload the best available techniques assessment',
+    route: Routes.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
+    completedLabelId: 'upload-best-available-techniques-assessment-completed',
+    shortName: 'batassessment'
   },
   CLINICAL_WASTE_TEMPLATE: {
     id: 'clinical-waste-template',
     label: 'Complete and upload the clinical waste template and supporting documents',
+    completedLabelId: 'clinical-waste-template-completed',
     shortName: 'clinical'
   },
   CONFIRM_CONFIDENTIALLY: {
@@ -49,12 +72,21 @@ const tasks = {
   EMISSIONS_AND_MONITORING: {
     id: 'emissions-and-monitoring',
     label: 'Tell us about emissions and monitoring',
+    completedLabelId: 'emissions-and-monitoring-completed',
     shortName: 'emissionsmonitoring'
   },
   EMISSIONS_MANAGEMENT_PLAN: {
     id: 'emissions-management-plan',
     label: 'Upload the emissions management plan',
+    completedLabelId: 'emissions-management-plan-completed',
     shortName: 'emissionsplan'
+  },
+  ENERGY_EFFICENCY_REPORT: {
+    id: 'upload-energy-efficiency-report',
+    label: 'Upload the energy efficiency report',
+    route: Routes.ENERGY_EFFICIENCY_REPORT,
+    completedLabelId: 'upload-energy-efficiency-report-completed',
+    shortName: 'energyefficiency'
   },
   ENVIRONMENTAL_RISK_ASSESSMENT: {
     id: 'environmental-risk-assessment',
@@ -76,11 +108,13 @@ const tasks = {
   HABITATS_ASSESSMENT: {
     id: 'habitats-assessment',
     label: 'Habitats assessment',
+    completedLabelId: 'habitats-assessment-completed',
     shortName: 'habitats'
   },
   HAZARDOUS_WASTE_TEMPLATE: {
     id: 'hazardous-waste-template',
     label: 'Complete and upload the hazardous waste template and supporting documents',
+    completedLabelId: 'hazardous-waste-template-completed',
     shortName: 'hazwaste'
   },
   INVOICING_DETAILS: {
@@ -135,7 +169,8 @@ const tasks = {
   },
   MINING_WASTE_MANAGEMENT_PLAN: {
     id: 'mining-waste-management-plan',
-    ruleSetId: 'defra_miningwastemanplanreq'
+    ruleSetId: 'defra_miningwastemanplanreq',
+    completedLabelId: 'mining-waste-management-completed'
   },
   NEED_TO_CONSULT: {
     id: 'need-to-consult',
@@ -147,11 +182,13 @@ const tasks = {
   },
   NHS_SCREENING: {
     id: 'nhs-screening',
-    ruleSetId: 'defra_nhscreeningrequired'
+    ruleSetId: 'defra_nhscreeningrequired',
+    completedLabelId: 'nhs-screening-completed'
   },
   NOISE_MANAGEMENT_PLAN: {
     id: 'noise-management-plan',
     label: 'Upload the noise and vibration management plan',
+    completedLabelId: 'noise-management-plan-completed',
     shortName: 'noiseplan'
   },
   NON_TECHNICAL_SUMMARY: {
@@ -165,6 +202,7 @@ const tasks = {
   ODOUR_MANAGEMENT_PLAN: {
     id: 'odour-management-plan',
     label: 'Upload the odour management plan',
+    completedLabelId: 'odour-management-plan-completed',
     shortName: 'odourplan'
   },
   PERMIT_HOLDER_DETAILS: {
@@ -187,6 +225,7 @@ const tasks = {
   RECOVERY_AND_DISPOSAL_CODES: {
     id: 'recovery-and-disposal-codes',
     label: 'List the recovery and disposal codes for your activities',
+    completedLabelId: 'recovery-and-disposal-completed',
     shortName: 'rdcode'
   },
   SAVE_AND_RETURN_EMAIL: {
@@ -198,9 +237,17 @@ const tasks = {
     shortName: 'save',
     taskListModel: 'saveAndReturn'
   },
+  SCREENING_TOOL: {
+    id: 'upload-screening-tool',
+    label: 'Upload screening tool',
+    route: Routes.SCREENING_TOOL,
+    completedLabelId: 'screening-tool-completed',
+    shortName: 'screeningtool'
+  },
   SHIP_BREAKING: {
     id: 'ship-breaking',
     label: 'Ship breaking',
+    completedLabelId: 'ship-breaking-completed',
     shortName: 'ships'
   },
   SHOW_COST_AND_TIME: {
@@ -214,6 +261,7 @@ const tasks = {
   SITE_CONDITION_REPORT: {
     id: 'site-condition-report',
     label: 'Upload the site condition report',
+    completedLabelId: 'site-condition-completed',
     shortName: 'sitecondition'
   },
   SITE_NAME_LOCATION: {
@@ -236,7 +284,8 @@ const tasks = {
   },
   STACK_HEIGHT: {
     id: 'stack-height',
-    ruleSetId: 'defra_stackheightreq'
+    ruleSetId: 'defra_stackheightreq',
+    completedLabelId: 'stack-height-completed'
   },
   SUBMIT_PAY: {
     id: 'submit-pay',
@@ -266,6 +315,7 @@ const tasks = {
   TECHNICAL_STANDARDS: {
     id: 'technical-standards',
     label: 'List the technical standards you use',
+    completedLabelId: 'technical-standards-completed',
     shortName: 'techstandards'
   },
   WASTE_RECOVERY_PLAN: {
@@ -287,7 +337,8 @@ const tasks = {
   },
   WASTE_WEIGHT: {
     id: 'waste-weight',
-    ruleSetId: 'defra_extwasteweightreq'
+    ruleSetId: 'defra_extwasteweightreq',
+    completedLabelId: 'waste-weight-completed'
   }
 }
 
@@ -360,27 +411,35 @@ const bespoke = [
       tasks.NON_TECHNICAL_SUMMARY,
       tasks.SITE_NAME_LOCATION,
       tasks.SITE_CONDITION_REPORT,
-      tasks.SITE_PLAN
+      tasks.SITE_PLAN,
+      tasks.AIR_QUALITY_MANAGEMENT
     ]
   },
   {
     id: 'activities-section',
     label: 'Activities',
     tasks: [
-      tasks.RECOVERY_AND_DISPOSAL_CODES,
-      tasks.WASTE_TYPES_LIST
+      tasks.MCP_TEMPLATE,
+      tasks.MCP_DETAILS,
+      tasks.MCP_BUSINESS_ACTIVITY,
+      tasks.WASTE_TYPES_LIST,
+      tasks.RECOVERY_AND_DISPOSAL_CODES
     ]
   },
   {
     id: 'evidence-section',
     label: 'Evidence',
     tasks: [
+      tasks.AIR_DISPERTION_MODELLING_REPORT,
+      tasks.SCREENING_TOOL,
+      tasks.ENERGY_EFFICENCY_REPORT,
+      tasks.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
       tasks.TECHNICAL_QUALIFICATION,
+      tasks.MANAGEMENT_SYSTEM,
       tasks.FIRE_PREVENTION_PLAN,
       tasks.WASTE_RECOVERY_PLAN,
       tasks.ENVIRONMENTAL_RISK_ASSESSMENT,
       tasks.EMISSIONS_AND_MONITORING,
-      tasks.MANAGEMENT_SYSTEM,
       tasks.TECHNICAL_STANDARDS,
       tasks.CLINICAL_WASTE_TEMPLATE,
       tasks.HAZARDOUS_WASTE_TEMPLATE,

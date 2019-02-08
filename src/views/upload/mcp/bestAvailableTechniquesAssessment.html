@@ -1,0 +1,27 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>This permit requires a Best Available Techniques assessment. </p>
+      <p><a id="guidence-link" href="" target="_blank" rel="noopener noreferrer">Read Best Available techniques guidance</a>.</p>
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

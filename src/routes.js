@@ -774,6 +774,33 @@ const Routes = {
 
   // OTHER
   // *****
+  AIR_QUALITY_MANAGEMENT: {
+    path: '/mcp/air-quality-modelling/management',
+    view: 'generic',
+    pageHeading: 'Who should we consult about your application?',
+    controller: 'generic',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
+  AIR_QUALITY_MODELLING_REPORT: {
+    path: '/mcp/air-quality-modelling/upload/modelling',
+    view: 'upload/mcp/airQualityModellingReport',
+    pageHeading: 'Upload the air quality modelling report and screening tool',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'AIR_QUALITY_MODELLING_REPORT',
+    validatorOptions: {
+      fileTypes: [
+        { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
+        { type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+        { type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet' },
+        { type: 'PDF', mimeType: 'application/pdf' }
+      ]
+    }
+  },
   APPLICATION_RECEIVED: {
     path: '/done',
     params: ['slug?'],
@@ -811,6 +838,25 @@ const Routes = {
     types: 'GET, POST',
     cookieValidationRequired: false,
     applicationRequired: false
+  },
+  BEST_AVAILABLE_TECHNIQUES_ASSESSMENT: {
+    path: '/mcp/best-available-techniques-assessment/upload',
+    view: 'upload/mcp/bestAvailableTechniquesAssessment',
+    pageHeading: 'Upload Best Available Techniques Assessment',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'BEST_AVAILABLE_TECHNIQUES_ASSESSMENT',
+    validatorOptions: {
+      fileTypes: [
+        { type: 'PDF', mimeType: 'application/pdf' },
+        { type: 'DOC', mimeType: 'application/msword' },
+        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
+      ]
+    }
   },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',
@@ -899,6 +945,25 @@ const Routes = {
     controller: 'drainageTypeDrain',
     validator: 'drainageTypeDrain',
     types: 'GET, POST'
+  },
+  ENERGY_EFFICIENCY_REPORT: {
+    path: '/mcp/energy-efficiency/upload',
+    view: 'upload/mcp/energyEfficiencyReport',
+    pageHeading: 'Upload an energy efficiency report',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'ENERGY_EFFICIENCY_REPORT',
+    validatorOptions: {
+      fileTypes: [
+        { type: 'PDF', mimeType: 'application/pdf' },
+        { type: 'DOC', mimeType: 'application/msword' },
+        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
+      ]
+    }
   },
   ENVIRONMENTAL_RISK_ASSESSMENT: {
     path: '/environmental-risk-assessment',
@@ -1140,6 +1205,25 @@ const Routes = {
     controller: 'saveAndReturn/enterEmail',
     validator: 'saveAndReturn',
     types: 'GET, POST'
+  },
+  SCREENING_TOOL: {
+    path: '/mcp/air-quality-modelling/upload/screening-only',
+    view: 'upload/mcp/screeningTool',
+    pageHeading: 'Upload the completed screening tool',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'AIR_QUALITY_MODELLING_REPORT',
+    validatorOptions: {
+      fileTypes: [
+        { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
+        { type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+        { type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet' },
+        { type: 'PDF', mimeType: 'application/pdf' }
+      ]
+    }
   },
   SEARCH_YOUR_EMAIL: {
     path: '/save-return/search-your-email',
