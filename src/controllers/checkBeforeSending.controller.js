@@ -20,6 +20,8 @@ const EnvironmentalRiskAssessmentCheck = require('../models/checkList/environmen
 const NonTechnicalSummaryCheck = require('../models/checkList/nonTechnicalSummary.check')
 const BestAvailableTechniquesAssessmentCheck = require('../models/checkList/bestAvailableTechniquesAssessment.check')
 const EnergyEfficiencyReportCheck = require('../models/checkList/energyEfficiencyReport.check')
+const AirQualityModellingReportCheck = require('../models/checkList/airQualityModellingReport.check')
+const ScreeningToolCheck = require('../models/checkList/screeningTool.check')
 const ManagementSystemCheck = require('../models/checkList/managementSystem.check')
 const NeedToConsult = require('../models/checkList/needToConsult.check')
 const McpDetailsCheck = require('../models/checkList/mcpDetails.check')
@@ -43,6 +45,8 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       McpBusinessActivityCheck,
       WasteTypesListCheck,
       TechnicalCompetenceCheck,
+      AirQualityModellingReportCheck,
+      ScreeningToolCheck,
       EnergyEfficiencyReportCheck,
       BestAvailableTechniquesAssessmentCheck,
       FirePreventionPlanCheck,
