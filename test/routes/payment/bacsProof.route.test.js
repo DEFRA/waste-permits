@@ -35,7 +35,6 @@ const checkCommonElements = (doc) => {
   Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Send application')
 }
 
-
 lab.beforeEach(() => {
   mocks = new Mocks()
 
@@ -86,7 +85,7 @@ lab.experiment(`Give proof of your Bacs payment:`, () => {
 
       checkCommonElements(doc)
 
-      Code.expect(doc.getElementById('payment-reference').firstChild.nodeValue).to.equal(mocks.configuration.paymentReference)
+      Code.expect(doc.getElementById('bacs-payment-reference').firstChild.nodeValue).to.equal(mocks.configuration.paymentReference)
       Code.expect(doc.getElementById('amount').firstChild.nodeValue).to.equal(mocks.configuration.amount)
       Code.expect(doc.getElementById('sort-code').firstChild.nodeValue).to.equal(mocks.configuration.sortCode)
       Code.expect(doc.getElementById('account-number').firstChild.nodeValue).to.equal(mocks.configuration.accountNumber)
@@ -98,7 +97,7 @@ lab.experiment(`Give proof of your Bacs payment:`, () => {
     lab.test('success for MCP', async () => {
       getStandardRuleTypeStub.resolves(mocks.standardRuleTypeForMcp)
       doc = await GeneralTestHelper.getDoc(getRequest)
-      Code.expect(doc.getElementById('payment-reference').firstChild.nodeValue).to.equal(mocks.configurationForMcp.paymentReference)
+      Code.expect(doc.getElementById('bacs-payment-reference').firstChild.nodeValue).to.equal(mocks.configurationForMcp.paymentReference)
     })
 
     lab.test('failure when no payment details', async () => {
