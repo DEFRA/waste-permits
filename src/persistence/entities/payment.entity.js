@@ -24,7 +24,10 @@ class Payment extends BaseEntity {
       { field: 'statusCode', dynamics: 'statuscode' },
       { field: 'type', dynamics: 'defra_type' },
       { field: 'title', dynamics: 'defra_title' },
-      { field: 'value', dynamics: 'defra_paymentvalue' }
+      { field: 'value', dynamics: 'defra_paymentvalue' },
+      { field: 'customerPaymentReference', dynamics: 'defra_customer_payment_reference', encode: true, length: { max: 30 } },
+      { field: 'customerPaymentAmount', dynamics: 'defra_customer_payment_amount' },
+      { field: 'customerPaymentDate', dynamics: 'defra_customer_payment_date', isDate: true }
     ]
   }
 

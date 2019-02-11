@@ -11,13 +11,15 @@
 
       <h1 id="page-heading" class="heading-large">{{pageHeading}}</h1>
 
-      <p id="arrangement-information">The Bacs payment details are on the next screen. You will need to arrange the payment with your own bank.</p>
-      <p id="email-information">We will email you a copy of the payment details.</p>
+      <p id="arrangement-information" class="panel panel-border-narrow">
+        You must arrange the payment with your own bank. You will then need to give us the payment date and reference before you send the application.
+      </p>
+      <p id="email-information">We will send you an email with a copy of the payment details.</p>
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
-        {{> common/submitButton text="Send application"}}
+        {{> common/submitButton text="I will pay by Bacs"}}
       </form>
     </div>
   </div>

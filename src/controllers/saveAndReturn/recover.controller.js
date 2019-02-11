@@ -1,8 +1,9 @@
 'use strict'
 
-const { RECOVERY_FAILED, TASK_LIST } = require('../../routes')
+const { RECOVERY_FAILED, TASK_LIST, BACS_PROOF } = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
+const Payment = require('../../persistence/entities/payment.entity')
 
 module.exports = class RecoverController extends BaseController {
   async doGet (request, h) {
@@ -22,6 +23,12 @@ module.exports = class RecoverController extends BaseController {
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
     const { cookie } = context
+
+    // If there is an outstanding BACS payment then redirect to that rather than the task list
+    const bacsPayment = await Payment.getBacsPayment(context)
+    if (bacsPayment) {
+      return this.redirect({ h, route: BACS_PROOF, cookie })
+    }
 
     // Now redirect to the tasklist
     return this.redirect({ h, route: TASK_LIST, cookie })

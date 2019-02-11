@@ -655,8 +655,18 @@ const Routes = {
   BACS_PAYMENT: {
     path: '/pay/bacs',
     view: 'payment/paymentBacs',
-    pageHeading: 'You have chosen to pay by bank transfer using Bacs',
+    pageHeading: 'Confirm you will pay by bank transfer using Bacs',
     controller: 'payment/paymentBacs',
+    nextRoute: 'BACS_PROOF',
+    types: 'GET, POST',
+    tasksCompleteRequired: true
+  },
+  BACS_PROOF: {
+    path: '/pay/bacs-proof',
+    view: 'payment/bacsProof',
+    pageHeading: 'Give proof of your Bacs payment before you send your application',
+    controller: 'payment/bacsProof',
+    validator: 'payment/bacsProof',
     nextRoute: 'APPLICATION_RECEIVED',
     types: 'GET, POST',
     tasksCompleteRequired: true

@@ -24,11 +24,13 @@ const slug = 'SLUG'
 
 const routePath = `/r/${slug}`
 const nextRoutePath = '/task-list'
+const nextPathForBacs = '/pay/bacs-proof'
 const recoveryFailedPath = '/errors/recovery-failed'
 const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks
+let bacsPaymentStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
@@ -45,6 +47,8 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Contact, 'getByApplicationId').value(() => mocks.contact)
   sandbox.stub(Payment, 'getBacsPaymentDetails').value(() => {})
+  bacsPaymentStub = sandbox.stub(Payment, 'getBacsPayment')
+  bacsPaymentStub.resolves(undefined)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
   sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
 })
@@ -113,6 +117,13 @@ lab.experiment('We found your application:', () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
+    })
+
+    lab.test('success when outstanding BACS payment', async () => {
+      bacsPaymentStub.resolves(mocks.payment)
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(nextPathForBacs)
     })
 
     lab.experiment('failure', () => {
