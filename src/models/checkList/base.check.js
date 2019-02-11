@@ -23,6 +23,7 @@ const {
 } = require('../../dynamics').ApplicationQuestions
 
 const {
+  BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
   ENERGY_EFFICIENCY_REPORT,
   TECHNICAL_QUALIFICATION,
   SITE_PLAN,
@@ -198,6 +199,14 @@ module.exports = class BaseCheck {
       this.data.energyEfficiencyReport = await Annotation.listByApplicationIdAndSubject(this.data, ENERGY_EFFICIENCY_REPORT)
     }
     return this.data.energyEfficiencyReport || {}
+  }
+
+  async getBestAvailableTechniquesAssessment () {
+    const { bestAvailableTechniquesAssessment } = this.data
+    if (!bestAvailableTechniquesAssessment) {
+      this.data.bestAvailableTechniquesAssessment = await Annotation.listByApplicationIdAndSubject(this.data, BEST_AVAILABLE_TECHNIQUES_ASSESSMENT)
+    }
+    return this.data.bestAvailableTechniquesAssessment || {}
   }
 
   async getWasteRecoveryPlan () {

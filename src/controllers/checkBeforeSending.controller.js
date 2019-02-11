@@ -18,6 +18,7 @@ const MiningWasteCheck = require('../models/checkList/miningWaste.check')
 const WasteTypesListCheck = require('../models/checkList/wasteTypesList.check')
 const EnvironmentalRiskAssessmentCheck = require('../models/checkList/environmentalRiskAssessment.check')
 const NonTechnicalSummaryCheck = require('../models/checkList/nonTechnicalSummary.check')
+const BestAvailableTechniquesAssessmentCheck = require('../models/checkList/bestAvailableTechniquesAssessment.check')
 const EnergyEfficiencyReportCheck = require('../models/checkList/energyEfficiencyReport.check')
 const ManagementSystemCheck = require('../models/checkList/managementSystem.check')
 const NeedToConsult = require('../models/checkList/needToConsult.check')
@@ -43,6 +44,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       WasteTypesListCheck,
       TechnicalCompetenceCheck,
       EnergyEfficiencyReportCheck,
+      BestAvailableTechniquesAssessmentCheck,
       FirePreventionPlanCheck,
       WasteRecoveryPlanCheck,
       EnvironmentalRiskAssessmentCheck,
