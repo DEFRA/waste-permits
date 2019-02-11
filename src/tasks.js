@@ -35,7 +35,8 @@ const tasks = {
     label: 'Upload the best available techniques assessment',
     route: Routes.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
     completedLabelId: 'upload-best-available-techniques-assessment-completed',
-    shortName: 'batassessment'
+    shortName: 'batassessment',
+    taskListModel: 'bestAvailableTechniquesAssessment'
   },
   CLINICAL_WASTE_TEMPLATE: {
     id: 'clinical-waste-template',
