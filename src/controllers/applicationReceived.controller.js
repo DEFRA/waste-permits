@@ -1,10 +1,7 @@
 'use strict'
 
-const Constants = require('../constants')
-const { BACS_EMAIL_CONFIG } = require('../dynamics')
 const { PRIMARY_CONTACT_DETAILS } = require('../dynamics').AddressTypes
 const BaseController = require('./base.controller')
-const Configuration = require('../persistence/entities/configuration.entity')
 const Payment = require('../persistence/entities/payment.entity')
 const ContactDetail = require('../models/contactDetail.model')
 const RecoveryService = require('../services/recovery.service')
@@ -30,16 +27,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
     }
 
     if (bacsPayment) {
-      pageContext.bacs = {
-        paymentReference: `WP-${application.applicationNumber}`,
-        amount: bacsPayment.value.toLocaleString(),
-        sortCode: Constants.BankAccountDetails.SORT_CODE,
-        accountNumber: Constants.BankAccountDetails.ACCOUNT_NUMBER,
-        accountName: Constants.BankAccountDetails.ACCOUNT_NAME,
-        ibanNumber: Constants.BankAccountDetails.IBAN_NUMBER,
-        swiftNumber: Constants.BankAccountDetails.SWIFT_NUMBER,
-        paymentEmail: await Configuration.getValue(context, BACS_EMAIL_CONFIG)
-      }
+      pageContext.bacs = true
     } else if (cardPayment) {
       pageContext.pageHeading = this.route.pageHeadingAlternate
       pageContext.cardPayment = {

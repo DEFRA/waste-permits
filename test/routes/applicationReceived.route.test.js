@@ -86,43 +86,14 @@ lab.experiment('ApplicationReceived page tests:', () => {
       checkCommonElements(doc)
 
       Code.expect(doc.getElementById('contact-email').firstChild.nodeValue).to.equal(`${mocks.contactDetail.email}.`)
-      Code.expect(doc.getElementById('payment-reference').firstChild.nodeValue).to.equal(mocks.configuration.paymentReference)
-      Code.expect(doc.getElementById('amount').firstChild.nodeValue).to.equal(mocks.configuration.amount)
-      Code.expect(doc.getElementById('sort-code').firstChild.nodeValue).to.equal(mocks.configuration.sortCode)
-      Code.expect(doc.getElementById('account-number').firstChild.nodeValue).to.equal(mocks.configuration.accountNumber)
-      Code.expect(doc.getElementById('account-name').firstChild.nodeValue).to.equal(mocks.configuration.accountName)
-      Code.expect(doc.getElementById('iban-number').firstChild.nodeValue).to.equal(mocks.configuration.ibanNumber)
-      Code.expect(doc.getElementById('swift-number').firstChild.nodeValue).to.equal(mocks.configuration.swiftNumber)
-      Code.expect(doc.getElementById('payments-email').firstChild.nodeValue).to.equal(mocks.configuration.paymentsEmail)
-      Code.expect(doc.getElementById('payments-email-link').getAttribute('href')).to.equal(`mailto:${mocks.configuration.paymentsEmail}`)
 
       GeneralTestHelper.checkElementsExist(doc, [
         'reference-number-paragraph',
         'confirmation-email-message-prefix',
+        'what-happens-next-heading',
         'application-received-info',
         'application-received-hint',
         'application-received-warning',
-        'when-we-get-your-payment-heading',
-        'confirmation-email-message-suffix',
-        'bacs-paragraph',
-        'application-processing-payment-message',
-        'pay-using-bacs-heading-1',
-        'pay-using-bacs-heading-2',
-        'payment-reference-heading',
-        'amount-heading',
-        'sort-code-heading',
-        'account-number-heading',
-        'account-name-heading',
-        'iban-number-text',
-        'swift-number-text',
-        'swift-abbr',
-        'payment-ref-text',
-        'overseas-account-hint',
-        'overseas-account-hint-paragraph-1',
-        'overseas-account-hint-paragraph-2',
-        'overseas-account-hint-paragraph-3',
-        'payments-email-link',
-        'confirm-your-payment-message',
         'give-feedback-link'
       ])
     })
