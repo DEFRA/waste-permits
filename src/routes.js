@@ -854,7 +854,8 @@ const Routes = {
         { type: 'PDF', mimeType: 'application/pdf' },
         { type: 'DOC', mimeType: 'application/msword' },
         { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
+        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' },
+        { type: 'JPG', mimeType: 'image/jpeg' }
       ]
     }
   },
