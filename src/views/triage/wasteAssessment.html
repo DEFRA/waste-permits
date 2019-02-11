@@ -18,12 +18,12 @@
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
         {{#with triageData}}
-        {{#if includedAssessments.items.length}}
+        {{#if includedWasteAssessments.items.length}}
 
         <h2 id="included-assessments" class="heading-medium">Included</h2>
 
         <div class="form-group">
-            {{#each includedAssessments.items}}
+            {{#each includedWasteAssessments.items}}
               <p>
                 <span id="assessment-{{this.id}}-prefix">Assessment: </span>
                 <a id="assessment-{{this.id}}-link"
@@ -42,7 +42,7 @@
            <div id="optionalAssessment" class="form-group {{#getFormErrorGroupClass errors.assessment}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='assessment-error' message=errors.assessment }}
             {{#with triageData}}
-            {{#each availableOptionalAssessments.items}}
+            {{#each availableOptionalWasteAssessments.items}}
             <div class="multiple-choice">
               <input id="assessment-{{this.id}}-input" type="checkbox" name="assessment" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
               <label id="assessment-{{this.id}}-label" for="assessment-{{this.id}}-input">

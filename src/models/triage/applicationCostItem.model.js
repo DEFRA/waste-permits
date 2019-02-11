@@ -1,9 +1,9 @@
 'use strict'
 
 module.exports = class ApplicationCostItem {
-  constructor ({ activity, assessment, description, cost }) {
-    this.activity = activity
-    this.assessment = assessment
+  constructor ({ wasteActivity, wasteAssessment, description, cost }) {
+    this.wasteActivity = wasteActivity
+    this.wasteAssessment = wasteAssessment
     this.description = description
     this.cost = cost
   }

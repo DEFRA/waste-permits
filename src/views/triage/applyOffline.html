@@ -7,10 +7,10 @@
   <div class="grid-row">
     <div class="column-two-thirds">
 
-      {{#if triageData.selectedOptionalAssessments}}
+      {{#if triageData.selectedOptionalWasteAssessments}}
       <h1 id="page-heading" class="heading-large">Apply for a bespoke permit</h1>
 
-      {{#each triageData.selectedOptionalAssessments.items}}
+      {{#each triageData.selectedOptionalWasteAssessments.items}}
         {{#unless this.canApplyOnline}}
           <p>{{this.text}}</p>
         {{/unless}}
@@ -20,10 +20,10 @@
         You cannot apply online yet for permits that require these types of plan. We hope to add them soon.
       </p>
 
-      {{else if triageData.selectedActivities}}
+      {{else if triageData.selectedWasteActivities}}
       <h1 id="page-heading" class="heading-large">Apply for a bespoke permit</h1>
 
-      {{#each triageData.selectedActivities.items}}
+      {{#each triageData.selectedWasteActivities.items}}
       {{#unless this.canApplyOnline}}
       <p>{{this.text}}</p>
       {{/unless}}

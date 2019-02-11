@@ -3,7 +3,7 @@
 const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 
-module.exports = class ActivityValidator extends BaseValidator {
+module.exports = class WasteActivityValidator extends BaseValidator {
   get errorMessages () {
     return {
       'activity': {

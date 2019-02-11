@@ -48,22 +48,22 @@ const Routes = {
     cookieValidationRequired: false,
     applicationRequired: false
   },
-  TRIAGE_ACTIVITY: {
+  TRIAGE_WASTE_ACTIVITY: {
     path: '/select',
     params: ['permitType', 'permitHolderType', 'facilityType'],
-    view: 'triage/activity',
+    view: 'triage/wasteActivity',
     applyOfflineView: 'triage/applyOffline',
     pageHeading: 'Select all the activities you want the permit to cover',
     controller: 'triage/triage',
-    validator: 'triage/activity',
+    validator: 'triage/wasteActivity',
     types: 'GET, POST',
     cookieValidationRequired: true,
     applicationRequired: false
   },
-  TRIAGE_ASSESSMENT: {
+  TRIAGE_WASTE_ASSESSMENT: {
     path: '/select',
-    params: ['permitType', 'permitHolderType', 'facilityType', 'activity'],
-    view: 'triage/assessment',
+    params: ['permitType', 'permitHolderType', 'facilityType', 'wasteActivity'],
+    view: 'triage/wasteAssessment',
     applyOfflineView: 'triage/applyOffline',
     triageCompleteView: 'triage/complete',
     pageHeading: 'What plans do we need to assess?',
@@ -74,7 +74,7 @@ const Routes = {
   },
   TRIAGE_COMPLETE: {
     path: '/select',
-    params: ['permitType', 'permitHolderType', 'facilityType', 'activity', 'assessment'],
+    params: ['permitType', 'permitHolderType', 'facilityType', 'wasteActivity', 'wasteAssessment'],
     view: 'triage/complete',
     applyOfflineView: 'triage/applyOffline',
     pageHeading: 'Confirm activities and assessments',

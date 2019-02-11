@@ -10,7 +10,7 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 const AuthService = require('../../../src/services/activeDirectoryAuth.service')
 const DUMMY_AUTH_TOKEN = 'dummy-auth-token'
 
-const PermitTypeList = require('../../../src/models/triage/permitTypeList.model')
+const TriageList = require('../../../src/models/triage/triageList.model')
 
 let sandbox
 
@@ -92,8 +92,8 @@ lab.experiment('Triage permit type (bespoke or standard rules) page tests:', () 
 
     lab.test('GET for permit type that cannot be applied for online shows apply offline page', async () => {
       fakePermitType = Object.assign({}, FAKE_PERMIT_TYPE)
-      fakePermitTypeList = new PermitTypeList({}, [fakePermitType])
-      sandbox.stub(PermitTypeList, 'getListOfAllPermitTypes').value(() => fakePermitTypeList)
+      fakePermitTypeList = new TriageList([fakePermitType])
+      sandbox.stub(TriageList, 'createPermitTypesList').value(() => fakePermitTypeList)
       getRequest.url = offlinePath
       const doc = await GeneralTestHelper.getDoc(getRequest)
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit')

@@ -2,8 +2,7 @@
 
 const ApplicationCostItem = require('./applicationCostItem.model')
 
-const Activity = require('./activity.model')
-const Assessment = require('./assessment.model')
+const TriageListItem = require('./triageListItem.model')
 
 const ApplicationEntity = require('../../persistence/entities/application.entity')
 const ApplicationLineEntity = require('../../persistence/entities/applicationLine.entity')
@@ -25,27 +24,27 @@ module.exports = class ApplicationCost {
 
   static async getApplicationCostForApplicationId (entityContextToUse) {
     const { applicationId } = entityContextToUse
-    const itemEntities = await ItemEntity.getAllActivitiesAndAssessments(entityContextToUse)
-    const activityItemEntities = itemEntities.activities
-    const assessmentItemEntities = itemEntities.assessments
+    const itemEntities = await ItemEntity.getAllWasteActivitiesAndAssessments(entityContextToUse)
+    const wasteActivityItemEntities = itemEntities.wasteActivities
+    const wasteAssessmentItemEntities = itemEntities.wasteAssessments
 
     const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId })
-    const activityLineEntities = applicationLineEntities.filter(({ itemId }) => activityItemEntities.find(({ id }) => id === itemId))
-    const assessmentLineEntities = applicationLineEntities.filter(({ itemId }) => assessmentItemEntities.find(({ id }) => id === itemId))
+    const wasteActivityLineEntities = applicationLineEntities.filter(({ itemId }) => wasteActivityItemEntities.find(({ id }) => id === itemId))
+    const wasteAssessmentLineEntities = applicationLineEntities.filter(({ itemId }) => wasteAssessmentItemEntities.find(({ id }) => id === itemId))
 
-    const activityApplicationCostItems = activityLineEntities.map((line) => {
-      const activity = Activity.createFromItemEntity(activityItemEntities.find(({ id }) => id === line.itemId))
-      const description = activity.text
+    const wasteActivityApplicationCostItems = wasteActivityLineEntities.map((line) => {
+      const wasteActivity = TriageListItem.createWasteActivityFromItemEntity(wasteActivityItemEntities.find(({ id }) => id === line.itemId))
+      const description = wasteActivity.text
       const cost = line.value
-      return new ApplicationCostItem({ activity, description, cost })
+      return new ApplicationCostItem({ wasteActivity, description, cost })
     })
-    const assessmentApplicationCostItems = assessmentLineEntities.map((line) => {
-      const assessment = Assessment.createFromItemEntity(assessmentItemEntities.find(({ id }) => id === line.itemId))
-      const description = assessment.text
+    const wasteAssessmentApplicationCostItems = wasteAssessmentLineEntities.map((line) => {
+      const wasteAssessment = TriageListItem.createWasteAssessmentFromItemEntity(wasteAssessmentItemEntities.find(({ id }) => id === line.itemId))
+      const description = wasteAssessment.text
       const cost = line.value
-      return new ApplicationCostItem({ assessment, description, cost })
+      return new ApplicationCostItem({ wasteAssessment, description, cost })
     })
-    const applicationCostItems = activityApplicationCostItems.concat(assessmentApplicationCostItems)
+    const applicationCostItems = wasteActivityApplicationCostItems.concat(wasteAssessmentApplicationCostItems)
 
     const applicationEntity = await ApplicationEntity.getById(entityContextToUse, applicationId)
     const totalCost = applicationEntity.lineItemsTotalAmount

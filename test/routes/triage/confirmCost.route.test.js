@@ -18,7 +18,7 @@ const ApplicationCost = require('../../../src/models/triage/applicationCost.mode
 const LTD_CO = { id: 'limited-company', canApplyOnline: true }
 
 const routePath = '/selected/confirm'
-const expectedActivitiesPath = '/select/bespoke/limited-company/waste'
+const expectedWasteActivitiesPath = '/select/bespoke/limited-company/waste'
 const nextRoutePath = '/task-list'
 
 let getRequest
@@ -67,8 +67,8 @@ lab.experiment('Triage confirm costs page tests:', () => {
 
     lab.test('GET provides correct activity link', async () => {
       const doc = await GeneralTestHelper.getDoc(getRequest)
-      Code.expect(doc.getElementById('change-activities')).to.exist()
-      Code.expect(doc.getElementById('change-activities').getAttribute('href')).to.equal(expectedActivitiesPath)
+      Code.expect(doc.getElementById('change-waste-activities')).to.exist()
+      Code.expect(doc.getElementById('change-waste-activities').getAttribute('href')).to.equal(expectedWasteActivitiesPath)
     })
 
     lab.experiment('GET displays the correct costs', () => {
