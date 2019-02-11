@@ -23,6 +23,7 @@ const {
 } = require('../../dynamics').ApplicationQuestions
 
 const {
+  AIR_QUALITY_MODELLING_REPORT,
   BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
   ENERGY_EFFICIENCY_REPORT,
   TECHNICAL_QUALIFICATION,
@@ -199,6 +200,22 @@ module.exports = class BaseCheck {
       this.data.energyEfficiencyReport = await Annotation.listByApplicationIdAndSubject(this.data, ENERGY_EFFICIENCY_REPORT)
     }
     return this.data.energyEfficiencyReport || {}
+  }
+
+  async getAirQualityModellingReport () {
+    const { airQualityModellingReport } = this.data
+    if (!airQualityModellingReport) {
+      this.data.airQualityModellingReport = await Annotation.listByApplicationIdAndSubject(this.data, AIR_QUALITY_MODELLING_REPORT)
+    }
+    return this.data.airQualityModellingReport || {}
+  }
+
+  async getScreeningTool () {
+    const { screeningTool } = this.data
+    if (!screeningTool) {
+      this.data.screeningTool = await Annotation.listByApplicationIdAndSubject(this.data, AIR_QUALITY_MODELLING_REPORT)
+    }
+    return this.data.screeningTool || {}
   }
 
   async getBestAvailableTechniquesAssessment () {

@@ -245,6 +245,22 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(context.energyEfficiencyReport).to.equal(await check.getEnergyEfficiencyReport())
   })
 
+  lab.test('getAirQualityModellingReport works correctly', async () => {
+    delete context.airQualityModellingReport
+    const check = new BaseCheck(context)
+    const airQualityModellingReport = await check.getAirQualityModellingReport()
+    Code.expect(airQualityModellingReport).to.equal([mocks.annotation])
+    Code.expect(context.airQualityModellingReport).to.equal(await check.getAirQualityModellingReport())
+  })
+
+  lab.test('getScreeningTool works correctly', async () => {
+    delete context.screeningTool
+    const check = new BaseCheck(context)
+    const screeningTool = await check.getScreeningTool()
+    Code.expect(screeningTool).to.equal([mocks.annotation])
+    Code.expect(context.screeningTool).to.equal(await check.getScreeningTool())
+  })
+
   lab.test('getBestAvailableTechniquesAssessment works correctly', async () => {
     delete context.bestAvailableTechniquesAssessment
     const check = new BaseCheck(context)
