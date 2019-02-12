@@ -290,8 +290,7 @@ const Dynamics = {
     LOW: 910400001,
     MEDIUM: 910400002,
     HIGH: 910400003
-  },
-  WASTE_REGIME: 910400000
+  }
 }
 
 module.exports = Dynamics

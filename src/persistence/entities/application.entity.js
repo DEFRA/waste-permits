@@ -6,7 +6,7 @@ const ApplicationReturn = require('./applicationReturn.entity')
 const LoggingService = require('../../services/logging.service')
 
 const { SAVE_AND_RETURN_RECOVER } = require('../../routes')
-const { DIGITAL_SOURCE, PERMIT_HOLDER_TYPES, WASTE_REGIME } = require('../../dynamics')
+const { DIGITAL_SOURCE, PERMIT_HOLDER_TYPES } = require('../../dynamics')
 
 class Application extends BaseEntity {
   static get dynamicsEntity () {
@@ -30,7 +30,6 @@ class Application extends BaseEntity {
       { field: 'paymentReceived', dynamics: 'defra_paymentreceived' },
       { field: 'permitHolderOrganisationId', dynamics: '_defra_customerid_value', bind: { id: 'defra_customerid_account', relationship: 'defra_account_defra_application_customerid', dynamicsEntity: 'accounts' } },
       { field: 'permitHolderIndividualId', dynamics: '_defra_customerid_value', bind: { id: 'defra_customerid_contact', relationship: 'defra_contact_defra_application_customerid', dynamicsEntity: 'contacts' } },
-      { field: 'regime', dynamics: 'defra_regime', constant: WASTE_REGIME },
       { field: 'relevantOffences', dynamics: 'defra_convictionsdeclaration' },
       { field: 'relevantOffencesDetails', dynamics: 'defra_convictionsdeclarationdetails', length: { max: 2000 } },
       { field: 'recoveryPlanAssessmentStatus', dynamics: 'defra_plan_assessment_status' },
