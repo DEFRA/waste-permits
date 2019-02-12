@@ -25,7 +25,7 @@ class Entity extends BaseEntity {
       { field: 'dob.year', dynamics: 'dynamicsDobYear' },
       { field: 'ref', dynamics: 'dynamicsRef', readOnly: true },
       { field: 'secret', dynamics: 'dynamicsSecret', writeOnly: true },
-      { field: 'regime', dynamics: 'dynamicsRegime', constant: 'REGIME' },
+      { field: 'constantValue', dynamics: 'dynamicsConstantValue', constant: 'CONSTANT VALUE' },
       { field: 'optionalData', dynamics: 'dynamicsOptionalData' }
     ]
   }
@@ -50,7 +50,7 @@ lab.experiment('Base Entity tests:', () => {
         year: 'YEAR'
       },
       ref: 'REF',
-      regime: 'REGIME',
+      constantValue: 'CONSTANT VALUE',
       secret: 'SECRET',
       optionalData: undefined
     }
@@ -61,7 +61,7 @@ lab.experiment('Base Entity tests:', () => {
       dynamicsName: 'ENTITY_NAME',
       dynamicsDobMonth: 'MONTH',
       dynamicsDobYear: 'YEAR',
-      dynamicsRegime: 'REGIME',
+      dynamicsConstantValue: 'CONSTANT VALUE',
       dynamicsSecret: 'SECRET',
       dynamicsOptionalData: undefined
     }
@@ -97,7 +97,7 @@ lab.experiment('Base Entity tests:', () => {
 
   lab.test('toString() method serialises  test entity object correctly', () => {
     const entity = new Entity(entityData)
-    Code.expect(entity.toString()).to.equal('Entity: {\n  "id": "ID", "otherId": "OTHERID", "entityName": "ENTITY_NAME", "dob": {\n  "month": "MONTH", "year": "YEAR"\n}, "ref": "REF", "regime": "REGIME", "secret": "SECRET"\n}')
+    Code.expect(entity.toString()).to.equal('Entity: {\n  "id": "ID", "otherId": "OTHERID", "entityName": "ENTITY_NAME", "dob": {\n  "month": "MONTH", "year": "YEAR"\n}, "ref": "REF", "constantValue": "CONSTANT VALUE", "secret": "SECRET"\n}')
   })
 
   lab.test('isNew() correctly identifies if the instance has a Dynamics ID', () => {
