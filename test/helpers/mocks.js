@@ -26,6 +26,7 @@ const ApplicationCostModel = require('../../src/models/triage/applicationCost.mo
 const ApplicationCostItemModel = require('../../src/models/triage/applicationCostItem.model')
 
 const NeedToConsult = require('../../src/models/needToConsult.model')
+const AirQualityManagement = require('../../src/models/airQualityManagement.model')
 
 // ************* Data used by exported mocks ************* //
 class MockData {
@@ -456,6 +457,10 @@ class Mocks {
 
   get needToConsult () {
     return this._needToConsult || (this._needToConsult = new NeedToConsult())
+  }
+
+  get airQualityManagement () {
+    return this._airQualityManagement || (this._airQualityManagement = new AirQualityManagement())
   }
 
   get payment () {

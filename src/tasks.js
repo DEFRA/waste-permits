@@ -402,7 +402,8 @@ const bespoke = [
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.CONFIRM_CONFIDENTIALLY,
       tasks.INVOICING_DETAILS,
-      tasks.NEED_TO_CONSULT
+      tasks.NEED_TO_CONSULT,
+      tasks.AIR_QUALITY_MANAGEMENT
     ]
   },
   {

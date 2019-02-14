@@ -11,6 +11,7 @@ const ContactDetail = require('../contactDetail.model')
 const CharityDetail = require('../charityDetail.model')
 const NeedToConsult = require('../needToConsult.model')
 const McpBusinessType = require('../mcpBusinessType.model')
+const AirQualityManagement = require('../airQualityManagement.model')
 
 const {
   BILLING_INVOICING,
@@ -312,5 +313,13 @@ module.exports = class BaseCheck {
       this.data.mcpBusinessType = await McpBusinessType.get(this.data)
     }
     return this.data.mcpBusinessType || {}
+  }
+
+  async getAirQualityManagement () {
+    const { airQualityManagement } = this.data
+    if (!airQualityManagement) {
+      this.data.airQualityManagement = await AirQualityManagement.get(this.data)
+    }
+    return this.data.airQualityManagement || {}
   }
 }
