@@ -2,9 +2,11 @@
 
 const BaseEntity = require('./base.entity')
 
-const ACTIVITY = 'wasteactivity'
-const ASSESSMENT = 'wasteassessment'
+const WASTE_ACTIVITY = 'wasteactivity'
+const WASTE_ASSESSMENT = 'wasteassessment'
 const FACILITY_TYPE = 'facilitytype'
+const MCP_TYPE = 'mcptype'
+const MCP_ASSESSMENT = 'mcpassessment'
 
 const mapping = [
   { field: 'id', dynamics: 'defra_itemid' },
@@ -15,35 +17,59 @@ const mapping = [
   { field: 'canApplyOnline', dynamics: 'defra_canapplyonline' }
 ]
 
-const linkEntityFromFieldStartTag = (entityName, fieldName) => `<link-entity name='${entityName}' from='${fieldName}'>`
-const linkEntityToFieldStartTag = (entityName, fieldName) => `<link-entity name='${entityName}' to='${fieldName}'>`
-const LINK_ENTITY_END_TAG = '</link-entity>'
+const FETCH_START = `<fetch version='1.0' mapping='logical' distinct='true'><entity name='defra_item'>` + mapping.map(({ dynamics }) => `<attribute name='${dynamics}'/>`).join('')
+const FETCH_END = '</entity></fetch>'
 
-const queryByShortNameTag = (shortNameValue) => `<filter><condition attribute='defra_shortname' operator='eq' value='${shortNameValue}'/></filter>`
-const QUERY_BY_VALUE_START_TAG = `<filter><condition attribute='defra_value' operator='in'>`
-const QUERY_BY_VALUE_END_TAG = '</condition></filter>'
-const VALUE_START_TAG = '<value>'
-const VALUE_END_TAG = '</value>'
+const listItemsForDetailTypeValuesQuery = (itemType, detailType, detailValues) => {
+  return `
+  ${FETCH_START}
+    <link-entity name='defra_itemdetail' from='defra_itemid'>
+      <link-entity name='defra_itemdetailtype' to='defra_itemdetailtypeid'>
+        <filter>
+          <condition attribute='defra_shortname' operator='eq' value='${detailType}'/>
+        </filter>
+      </link-entity>
+      <filter>
+        <condition attribute='defra_value' operator='in'>
+          ${detailValues.map((item) => `<value>${sanitiseSearchTerm(item)}</value>`).join('')}
+        </condition>
+      </filter>
+    </link-entity>
+    <link-entity name='defra_itemtype' to='defra_itemtypeid'>
+      <filter>
+        <condition attribute='defra_shortname' operator='eq' value='${itemType}'/>
+      </filter>
+    </link-entity>
+  ${FETCH_END}
+  `.replace(/\n\s+/g, '')
+}
 
-const LINK_ITEM_TYPE_ENTITY = linkEntityToFieldStartTag('defra_itemtype', 'defra_itemtypeid')
-const LINK_ITEM_DETAIL_ENTITY = linkEntityFromFieldStartTag('defra_itemdetail', 'defra_itemid')
-const LINK_ITEM_DETAIL_TYPE_ENTITY = linkEntityToFieldStartTag('defra_itemdetailtype', 'defra_itemdetailtypeid')
+const listItemsQuery = (itemType) => {
+  return `
+  ${FETCH_START}
+    <link-entity name='defra_itemtype' to='defra_itemtypeid'>
+      <filter>
+        <condition attribute='defra_shortname' operator='eq' value='${itemType}'/>
+      </filter>
+    </link-entity>
+  ${FETCH_END}
+  `.replace(/\n\s+/g, '')
+}
 
-const IS_ACTIVITY = LINK_ITEM_TYPE_ENTITY + queryByShortNameTag(ACTIVITY) + LINK_ENTITY_END_TAG
-const IS_ASSESSMENT = LINK_ITEM_TYPE_ENTITY + queryByShortNameTag(ASSESSMENT) + LINK_ENTITY_END_TAG
-const IS_FACILITY_TYPE = LINK_ITEM_DETAIL_TYPE_ENTITY + queryByShortNameTag(FACILITY_TYPE) + LINK_ENTITY_END_TAG
-
-const FETCH_PREFIX = `<fetch version='1.0' mapping='logical' distinct='true'><entity name='defra_item'>` + mapping.map(({ dynamics }) => `<attribute name='${dynamics}'/>`).join('')
-const FETCH_SUFFIX = '</entity></fetch>'
-
-const FETCH_ALL_ACTIVITIES = FETCH_PREFIX + IS_ACTIVITY + FETCH_SUFFIX
-const FETCH_ALL_ASSESSMENTS = FETCH_PREFIX + IS_ASSESSMENT + FETCH_SUFFIX
-const FETCH_ACTIVITIES_FOR_FACILITY_TYPES_PREFIX = FETCH_PREFIX + LINK_ITEM_DETAIL_ENTITY + IS_FACILITY_TYPE + QUERY_BY_VALUE_START_TAG
-const FETCH_ACTIVITIES_FOR_FACILITY_TYPES_SUFFIX = QUERY_BY_VALUE_END_TAG + LINK_ENTITY_END_TAG + FETCH_SUFFIX
-const FETCH_AN_ACTIVITY_PREFIX = FETCH_PREFIX + IS_ACTIVITY
-const FETCH_AN_ACTIVITY_SUFFIX = FETCH_SUFFIX
-const FETCH_AN_ASSESSMENT_PREFIX = FETCH_PREFIX + IS_ASSESSMENT
-const FETCH_AN_ASSESSMENT_SUFFIX = FETCH_SUFFIX
+const getItemQuery = (itemType, itemShortName) => {
+  return `
+  ${FETCH_START}
+    <link-entity name='defra_itemtype' to='defra_itemtypeid'>
+      <filter>
+        <condition attribute='defra_shortname' operator='eq' value='${itemType}'/>
+      </filter>
+    </link-entity>
+    <filter>
+      <condition attribute='defra_shortname' operator='eq' value='${itemShortName}'/>
+    </filter>
+  ${FETCH_END}
+  `.replace(/\n\s+/g, '')
+}
 
 // Only allow alphanumeric, hyphen and underscore in search terms
 const sanitiseSearchTerm = (searchTerm) => {
@@ -63,34 +89,49 @@ class Item extends BaseEntity {
     return mapping
   }
 
-  static async listAssessments (context) {
-    return this.listUsingFetchXml(context, FETCH_ALL_ASSESSMENTS)
+  static async listWasteAssessments (context) {
+    return this.listUsingFetchXml(context, listItemsQuery(WASTE_ASSESSMENT))
   }
 
-  static async listActivitiesForFacilityTypes (context, facilityTypes) {
-    const searchValues = facilityTypes.map((item) => `${VALUE_START_TAG}${sanitiseSearchTerm(item)}${VALUE_END_TAG}`).join('')
-    return this.listUsingFetchXml(context, `${FETCH_ACTIVITIES_FOR_FACILITY_TYPES_PREFIX}${searchValues}${FETCH_ACTIVITIES_FOR_FACILITY_TYPES_SUFFIX}`)
+  static async listWasteActivitiesForFacilityTypes (context, facilityTypes) {
+    const searchValues = facilityTypes.map((item) => sanitiseSearchTerm(item))
+    return this.listUsingFetchXml(context, listItemsForDetailTypeValuesQuery(WASTE_ACTIVITY, FACILITY_TYPE, searchValues))
   }
 
-  static async getActivity (context, activity) {
+  static async getWasteActivity (context, activity) {
     const searchValue = sanitiseSearchTerm(activity)
-    const query = FETCH_AN_ACTIVITY_PREFIX + queryByShortNameTag(searchValue) + FETCH_AN_ACTIVITY_SUFFIX
-    const results = await this.listUsingFetchXml(context, query)
+    const results = await this.listUsingFetchXml(context, getItemQuery(WASTE_ACTIVITY, searchValue))
     return results.pop()
   }
 
-  static async getAssessment (context, assessment) {
+  static async getWasteAssessment (context, assessment) {
     const searchValue = sanitiseSearchTerm(assessment)
-    const query = FETCH_AN_ASSESSMENT_PREFIX + queryByShortNameTag(searchValue) + FETCH_AN_ASSESSMENT_SUFFIX
-    const results = await this.listUsingFetchXml(context, query)
+    const results = await this.listUsingFetchXml(context, getItemQuery(WASTE_ASSESSMENT, searchValue))
     return results.pop()
   }
 
-  static async getAllActivitiesAndAssessments (context) {
+  static async getAllWasteActivitiesAndAssessments (context) {
     return {
-      activities: await this.listUsingFetchXml(context, FETCH_ALL_ACTIVITIES),
-      assessments: await this.listUsingFetchXml(context, FETCH_ALL_ASSESSMENTS)
+      wasteActivities: await this.listUsingFetchXml(context, listItemsQuery(WASTE_ACTIVITY)),
+      wasteAssessments: await this.listUsingFetchXml(context, listItemsQuery(WASTE_ASSESSMENT))
     }
+  }
+
+  static async listMcpTypesForFacilityTypes (context, facilityTypes) {
+    const searchValues = facilityTypes.map((item) => sanitiseSearchTerm(item))
+    return this.listUsingFetchXml(context, listItemsForDetailTypeValuesQuery(MCP_TYPE, FACILITY_TYPE, searchValues))
+  }
+
+  static async getMcpType (context, mcpType) {
+    const searchValue = sanitiseSearchTerm(mcpType)
+    const results = await this.listUsingFetchXml(context, getItemQuery(MCP_TYPE, searchValue))
+    return results.pop()
+  }
+
+  static async getMcpAssessment (context, mcpAssessment) {
+    const searchValue = sanitiseSearchTerm(mcpAssessment)
+    const results = await this.listUsingFetchXml(context, getItemQuery(MCP_ASSESSMENT, searchValue))
+    return results.pop()
   }
 }
 

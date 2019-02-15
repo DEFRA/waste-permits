@@ -12,7 +12,7 @@
       {{> common/pageHeading pageHeading }}
 
       <p>
-        Showing activities for {{triageData.selectedFacilityTypes.typeText}}.
+        Showing activities for {{triageData.selectedFacilityTypes.facilityTypeText}}.
         <a id="change-facility" href="{{previousStepPath}}">Change facility type</a>.
       </p>
 
@@ -25,7 +25,7 @@
           <div id="activity" class="form-group {{#getFormErrorGroupClass errors.activity}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='activity-error' message=errors.activity }}
             {{#with triageData}}
-            {{#each availableActivities.items}}
+            {{#each availableWasteActivities.items}}
             <div class="multiple-choice">
               <input id="activity-{{this.id}}-input" type="checkbox" name="activity" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
               <label id="activity-{{this.id}}-label" for="activity-{{this.id}}-input">

@@ -6,8 +6,8 @@ const Code = require('code')
 const sinon = require('sinon')
 
 const ApplicationModel = require('../../../src/models/triage/application.model')
-const Activity = require('../../../src/models/triage/activity.model')
-const Assessment = require('../../../src/models/triage/assessment.model')
+const TriageListItem = require('../../../src/models/triage/triageListItem.model')
+
 const ItemEntity = require('../../../src/persistence/entities/item.entity')
 const ApplicationEntity = require('../../../src/persistence/entities/application.entity')
 const ApplicationLineEntity = require('../../../src/persistence/entities/applicationLine.entity')
@@ -18,7 +18,7 @@ const ACTIVITY_ITEM_TYPE_ID = 'ACTIVITY_ITEM_TYPE_ID'
 const ASSESSMENT_ITEM_TYPE_ID = 'ASSESSMENT_ITEM_TYPE_ID'
 
 const ITEMS = {
-  activities: [{
+  wasteActivities: [{
     id: 'ACTIVITY_ITEM_ID_1',
     shortName: 'activity-1',
     canApplyOnline: true,
@@ -34,7 +34,7 @@ const ITEMS = {
     canApplyOnline: true,
     itemTypeId: ACTIVITY_ITEM_TYPE_ID
   }],
-  assessments: [{
+  wasteAssessments: [{
     id: 'ASSESSMENT_ITEM_ID_1',
     shortName: 'assessment-1',
     canApplyOnline: true,
@@ -85,8 +85,8 @@ lab.experiment('Application Model test:', () => {
   let sandbox
 
   lab.beforeEach(() => {
-    fakeActivities = ITEMS.activities.map((item) => Activity.createFromItemEntity(item))
-    fakeAssessments = ITEMS.assessments.map((item) => Assessment.createFromItemEntity(item))
+    fakeActivities = ITEMS.wasteActivities.map((item) => TriageListItem.createWasteActivityFromItemEntity(item))
+    fakeAssessments = ITEMS.wasteAssessments.map((item) => TriageListItem.createWasteAssessmentFromItemEntity(item))
     fakeApplicationEntity = new ApplicationEntity({
       id: FAKE_APPLICATION_ID,
       applicantType: DYNAMICS_PERMIT_HOLDER_TYPES.PARTNERSHIP.dynamicsApplicantTypeId,
@@ -98,9 +98,9 @@ lab.experiment('Application Model test:', () => {
     sandbox = sinon.createSandbox()
 
     // Stub methods
-    sandbox.stub(ItemEntity, 'getAllActivitiesAndAssessments').callsFake(async () => ITEMS)
-    sandbox.stub(ItemEntity, 'getActivity').callsFake(async (entityContext, activityId) => ITEMS.activities.find(item => item.shortName === activityId))
-    sandbox.stub(ItemEntity, 'getAssessment').callsFake(async (entityContext, activityId) => ITEMS.assessments.find(item => item.shortName === activityId))
+    sandbox.stub(ItemEntity, 'getAllWasteActivitiesAndAssessments').callsFake(async () => ITEMS)
+    sandbox.stub(ItemEntity, 'getWasteActivity').callsFake(async (entityContext, activityId) => ITEMS.wasteActivities.find(item => item.shortName === activityId))
+    sandbox.stub(ItemEntity, 'getWasteAssessment').callsFake(async (entityContext, activityId) => ITEMS.wasteAssessments.find(item => item.shortName === activityId))
     sandbox.stub(ApplicationEntity, 'getById').callsFake(async () => fakeApplicationEntity)
     sandbox.stub(ApplicationLineEntity, 'listBy').callsFake(async () => fakeApplicationLineEntities)
     sandbox.stub(ApplicationLineEntity, 'getById').callsFake(async () => fakeApplicationLineEntities[0])
@@ -116,8 +116,8 @@ lab.experiment('Application Model test:', () => {
       const application = await ApplicationModel.getApplicationForId(context)
       Code.expect(application.id).to.equal(fakeApplicationEntity.id)
       Code.expect(application.permitHolderType.id).to.equal(PERMIT_HOLDER_TYPES.PARTNERSHIP.id)
-      Code.expect(application.activities.length).to.equal(2)
-      Code.expect(application.assessments.length).to.equal(2)
+      Code.expect(application.wasteActivities.length).to.equal(2)
+      Code.expect(application.wasteAssessments.length).to.equal(2)
     })
 
     lab.test('getApplicationForId with invalid permit holder type', async () => {
@@ -140,10 +140,10 @@ lab.experiment('Application Model test:', () => {
       Code.expect(application.permitHolderType.id).to.equal(PERMIT_HOLDER_TYPES.INDIVIDUAL.id)
     })
 
-    lab.test('setActivities - add new and remove existing', async () => {
+    lab.test('setWasteActivities - add new and remove existing', async () => {
       const application = await ApplicationModel.getApplicationForId(context)
-      application.setActivities([fakeActivities[0], fakeActivities[2]])
-      const activities = application.activities
+      application.setWasteActivities([fakeActivities[0], fakeActivities[2]])
+      const activities = application.wasteActivities
       Code.expect(activities.length).to.equal(3)
       const activitiesToBeDeleted = activities.filter(item => item.toBeDeleted)
       Code.expect(activitiesToBeDeleted.length).to.equal(1)
@@ -151,11 +151,11 @@ lab.experiment('Application Model test:', () => {
       Code.expect(activitiesToBeAdded.length).to.equal(1)
     })
 
-    lab.test('setActivities - remove new', async () => {
+    lab.test('setWasteActivities - remove new', async () => {
       const application = await ApplicationModel.getApplicationForId(context)
-      application.setActivities([fakeActivities[0], fakeActivities[2]])
-      application.setActivities([fakeActivities[0]])
-      const activities = application.activities
+      application.setWasteActivities([fakeActivities[0], fakeActivities[2]])
+      application.setWasteActivities([fakeActivities[0]])
+      const activities = application.wasteActivities
       Code.expect(activities.length).to.equal(2)
       const activitiesToBeDeleted = activities.filter(item => item.toBeDeleted)
       Code.expect(activitiesToBeDeleted.length).to.equal(1)
@@ -163,11 +163,11 @@ lab.experiment('Application Model test:', () => {
       Code.expect(activitiesToBeAdded.length).to.equal(0)
     })
 
-    lab.test('setActivities - re-add existing', async () => {
+    lab.test('setWasteActivities - re-add existing', async () => {
       const application = await ApplicationModel.getApplicationForId(context)
-      application.setActivities([fakeActivities[0], fakeActivities[2]])
-      application.setActivities([fakeActivities[0], fakeActivities[1]])
-      const activities = application.activities
+      application.setWasteActivities([fakeActivities[0], fakeActivities[2]])
+      application.setWasteActivities([fakeActivities[0], fakeActivities[1]])
+      const activities = application.wasteActivities
       Code.expect(activities.length).to.equal(2)
       const activitiesToBeDeleted = activities.filter(item => item.toBeDeleted)
       Code.expect(activitiesToBeDeleted.length).to.equal(0)
@@ -175,10 +175,10 @@ lab.experiment('Application Model test:', () => {
       Code.expect(activitiesToBeAdded.length).to.equal(0)
     })
 
-    lab.test('setAssessments - add new and remove existing', async () => {
+    lab.test('setWasteAssessments - add new and remove existing', async () => {
       const application = await ApplicationModel.getApplicationForId(context)
-      application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
-      const assessments = application.assessments
+      application.setWasteAssessments([fakeAssessments[0], fakeAssessments[2]])
+      const assessments = application.wasteAssessments
       Code.expect(assessments.length).to.equal(3)
       const assessmentsToBeDeleted = assessments.filter(item => item.toBeDeleted)
       Code.expect(assessmentsToBeDeleted.length).to.equal(1)
@@ -186,11 +186,11 @@ lab.experiment('Application Model test:', () => {
       Code.expect(assessmentsToBeAdded.length).to.equal(1)
     })
 
-    lab.test('re setAssessments - remove new', async () => {
+    lab.test('setWasteAssessments - remove new', async () => {
       const application = await ApplicationModel.getApplicationForId(context)
-      application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
-      application.setAssessments([fakeAssessments[0]])
-      const assessments = application.assessments
+      application.setWasteAssessments([fakeAssessments[0], fakeAssessments[2]])
+      application.setWasteAssessments([fakeAssessments[0]])
+      const assessments = application.wasteAssessments
       Code.expect(assessments.length).to.equal(2)
       const assessmentsToBeDeleted = assessments.filter(item => item.toBeDeleted)
       Code.expect(assessmentsToBeDeleted.length).to.equal(1)
@@ -198,11 +198,11 @@ lab.experiment('Application Model test:', () => {
       Code.expect(assessmentsToBeAdded.length).to.equal(0)
     })
 
-    lab.test('re setAssessments - re-add existing', async () => {
+    lab.test('setWasteAssessments - re-add existing', async () => {
       const application = await ApplicationModel.getApplicationForId(context)
-      application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
-      application.setAssessments([fakeAssessments[0], fakeAssessments[1]])
-      const assessments = application.assessments
+      application.setWasteAssessments([fakeAssessments[0], fakeAssessments[2]])
+      application.setWasteAssessments([fakeAssessments[0], fakeAssessments[1]])
+      const assessments = application.wasteAssessments
       Code.expect(assessments.length).to.equal(2)
       const assessmentsToBeDeleted = assessments.filter(item => item.toBeDeleted)
       Code.expect(assessmentsToBeDeleted.length).to.equal(0)
@@ -231,8 +231,8 @@ lab.experiment('Application Model test:', () => {
     lab.test('save values into a completely blank new application', async () => {
       const application = new ApplicationModel({})
       application.setPermitHolderType(PERMIT_HOLDER_TYPES.INDIVIDUAL)
-      application.setActivities([fakeActivities[0], fakeActivities[2]])
-      application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
+      application.setWasteActivities([fakeActivities[0], fakeActivities[2]])
+      application.setWasteAssessments([fakeAssessments[0], fakeAssessments[2]])
       await application.save(context)
       Code.expect(applicationEntitySaveStub.calledOnce).to.be.true()
       Code.expect(applicationLineEntitySaveStub.callCount).to.equal(4)
@@ -243,8 +243,8 @@ lab.experiment('Application Model test:', () => {
       fakeApplicationLineEntities = []
       const application = await ApplicationModel.getApplicationForId(context)
       application.setPermitHolderType(PERMIT_HOLDER_TYPES.INDIVIDUAL)
-      application.setActivities([fakeActivities[0], fakeActivities[2]])
-      application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
+      application.setWasteActivities([fakeActivities[0], fakeActivities[2]])
+      application.setWasteAssessments([fakeAssessments[0], fakeAssessments[2]])
       await application.save(context)
       Code.expect(applicationEntitySaveStub.calledOnce).to.be.true()
       Code.expect(applicationLineEntitySaveStub.callCount).to.equal(4)
@@ -262,8 +262,8 @@ lab.experiment('Application Model test:', () => {
     lab.test('save on an already populated application', async () => {
       const application = await ApplicationModel.getApplicationForId(context)
       application.setPermitHolderType(PERMIT_HOLDER_TYPES.PUBLIC_BODY)
-      application.setActivities([fakeActivities[0], fakeActivities[2]])
-      application.setAssessments([fakeAssessments[0], fakeAssessments[2]])
+      application.setWasteActivities([fakeActivities[0], fakeActivities[2]])
+      application.setWasteAssessments([fakeAssessments[0], fakeAssessments[2]])
       await application.save(context)
       Code.expect(applicationEntitySaveStub.calledOnce).to.be.true()
       Code.expect(applicationLineEntitySaveStub.callCount).to.equal(2)

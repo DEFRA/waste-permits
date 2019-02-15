@@ -12,13 +12,9 @@ const DUMMY_AUTH_TOKEN = 'dummy-auth-token'
 const CookieService = require('../../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-const ActivityList = require('../../../src/models/triage/activityList.model')
-const AssessmentList = require('../../../src/models/triage/assessmentList.model')
+const TriageList = require('../../../src/models/triage/triageList.model')
 const Application = require('../../../src/models/triage/application.model')
 
-const BESPOKE = [{ id: 'bespoke', canApplyOnline: true }]
-const LTD_CO = [{ id: 'limited-company', canApplyOnline: true }]
-const WASTE = [{ id: 'waste', canApplyOnline: true }]
 const ACTIVITIES = [{ id: 'activity-1', canApplyOnline: true }, { id: 'activity-2', canApplyOnline: true }]
 
 const FAKE_ASSESSMENT_ID = 'fake-assessment'
@@ -50,16 +46,15 @@ const checkCommonElements = async (doc) => {
 }
 
 lab.beforeEach(() => {
-  fakeActivityList = new ActivityList({}, BESPOKE, LTD_CO, WASTE, ACTIVITIES)
-
+  fakeActivityList = new TriageList(ACTIVITIES)
   fakeAssessment = Object.assign({}, FAKE_ASSESSMENT)
-  fakeAssessmentList = new AssessmentList({}, BESPOKE, LTD_CO, WASTE, ACTIVITIES, [fakeAssessment])
+  fakeAssessmentList = new TriageList([fakeAssessment])
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
   sandbox.stub(AuthService.prototype, 'getToken').value(() => DUMMY_AUTH_TOKEN)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(ActivityList, 'createList').value(() => fakeActivityList)
+  sandbox.stub(TriageList, 'createWasteActivitiesList').value(() => fakeActivityList)
 })
 
 lab.afterEach(() => {
@@ -67,7 +62,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Triage assessment page tests:', () => {
+lab.experiment('Triage waste assessment page tests:', () => {
   lab.experiment('GET:', () => {
     lab.beforeEach(() => {
       getRequest = {
@@ -77,8 +72,9 @@ lab.experiment('Triage assessment page tests:', () => {
       }
       fakeAssessment = Object.assign({}, FAKE_ASSESSMENT)
       const fakeAssessment2 = Object.assign({}, FAKE_ASSESSMENT2)
-      fakeAssessmentList = new AssessmentList({}, BESPOKE, LTD_CO, WASTE, ACTIVITIES, [fakeAssessment, fakeAssessment2])
-      sandbox.stub(AssessmentList, 'createList').value(() => fakeAssessmentList)
+      fakeAssessmentList = new TriageList([fakeAssessment, fakeAssessment2])
+      sandbox.stub(TriageList, 'createOptionalWasteAssessmentsList').value(() => fakeAssessmentList)
+      sandbox.stub(TriageList, 'createIncludedWasteAssessmentsList').value(() => new TriageList([]))
     })
 
     new GeneralTestHelper({ lab, routePath }).test({
@@ -86,37 +82,37 @@ lab.experiment('Triage assessment page tests:', () => {
       excludeCookiePostTests: true,
       excludeAlreadySubmittedTest: true })
 
-    lab.test('GET returns the assessment page correctly', async () => {
+    lab.test('GET returns the waste assessment page correctly', async () => {
       const doc = await GeneralTestHelper.getDoc(getRequest)
       await checkCommonElements(doc)
     })
 
-    lab.test('GET redirects to the assessment page when an invalid value is requested in the path', async () => {
+    lab.test('GET redirects to the waste assessment page when an invalid value is requested in the path', async () => {
       getRequest.url = badPath
       const res = await server.inject(getRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(routePath)
     })
 
-    lab.test('GET for assessment that cannot be applied for online shows apply offline page', async () => {
+    lab.test('GET for waste assessment that cannot be applied for online shows apply offline page', async () => {
       fakeAssessment.canApplyOnline = false
-      sandbox.stub(AssessmentList, 'createList').value(() => fakeAssessmentList)
+      sandbox.stub(TriageList, 'createOptionalWasteAssessmentsList').value(() => fakeAssessmentList)
       getRequest.url = `${routePath}/${FAKE_ASSESSMENT_ID}`
       const doc = await GeneralTestHelper.getDoc(getRequest)
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit')
       Code.expect(doc.getElementById('bespoke-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/waste-environmental-permits#how-to-apply-for-a-bespoke-permit')
     })
 
-    lab.test('GET for multiple assessments where some cannot be applied for online shows apply offline page', async () => {
-      fakeAssessmentList = new AssessmentList({}, BESPOKE, LTD_CO, WASTE, ACTIVITIES, [fakeAssessment, Object.assign({}, FAKE_ASSESSMENT2)])
-      sandbox.stub(AssessmentList, 'createList').value(() => fakeAssessmentList)
+    lab.test('GET for multiple waste assessments where some cannot be applied for online shows apply offline page', async () => {
+      fakeAssessmentList = new TriageList([fakeAssessment, Object.assign({}, FAKE_ASSESSMENT2)])
+      sandbox.stub(TriageList, 'createOptionalWasteAssessmentsList').value(() => fakeAssessmentList)
       getRequest.url = `${routePath}/${FAKE_ASSESSMENT_ID}+${FAKE_ASSESSMENT_ID2}`
       const doc = await GeneralTestHelper.getDoc(getRequest)
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit')
       Code.expect(doc.getElementById('bespoke-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/waste-environmental-permits#how-to-apply-for-a-bespoke-permit')
     })
 
-    lab.experiment('GET displays the correct assessments', () => {
+    lab.experiment('GET displays the correct waste assessments', () => {
       // Currently only testing one scenario - there might be others
       const expectedAssessments = [
         { id: FAKE_ASSESSMENT_ID, text: FAKE_ASSESSMENT.text },
@@ -143,34 +139,35 @@ lab.experiment('Triage assessment page tests:', () => {
 
     lab.beforeEach(() => {
       fakeAssessment = Object.assign({}, FAKE_ASSESSMENT)
-      fakeAssessmentList = new AssessmentList({}, BESPOKE, LTD_CO, WASTE, ACTIVITIES, [fakeAssessment])
+      fakeAssessmentList = new TriageList([fakeAssessment])
       postRequest = {
         method: 'POST',
         url: routePath,
         headers: {},
         payload: { 'assessment': FAKE_ASSESSMENT_ID }
       }
-      sandbox.stub(AssessmentList, 'createList').value(() => fakeAssessmentList)
+      sandbox.stub(TriageList, 'createOptionalWasteAssessmentsList').value(() => fakeAssessmentList)
+      sandbox.stub(TriageList, 'createIncludedWasteAssessmentsList').value(() => new TriageList([]))
       applicationGetStub = sandbox.stub(Application, 'getApplicationForId')
       applicationGetStub.callsFake(async () => new Application({}))
       applicationSaveStub = sandbox.stub(Application.prototype, 'save')
       applicationSaveStub.callsFake(async () => null)
     })
 
-    lab.test('POST assessment redirects to next route', async () => {
+    lab.test('POST waste assessment redirects to next route', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(endRoutePath)
     })
 
-    lab.test('POST with no assessments also redirects to next route', async () => {
+    lab.test('POST with no waste assessments also redirects to next route', async () => {
       postRequest.payload = {}
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(endRoutePath)
     })
 
-    lab.test('POST of confirmation after GETing assessment also redirects to next route', async () => {
+    lab.test('POST of confirmation after GETing waste assessment also redirects to next route', async () => {
       postRequest.url = `${routePath}/--`
       postRequest.payload = {}
       const res = await server.inject(postRequest)
@@ -178,13 +175,13 @@ lab.experiment('Triage assessment page tests:', () => {
       Code.expect(res.headers['location']).to.equal(endRoutePath)
     })
 
-    lab.test('POST assessment saves the application', async () => {
+    lab.test('POST waste assessment saves the application', async () => {
       await server.inject(postRequest)
       Code.expect(applicationGetStub.calledOnce).to.be.true()
       Code.expect(applicationSaveStub.calledOnce).to.be.true()
     })
 
-    lab.test('POST of confirmation after GETing assessment also saves the application', async () => {
+    lab.test('POST of confirmation after GETing waste assessment also saves the application', async () => {
       postRequest.url = `${routePath}/--`
       postRequest.payload = {}
       await server.inject(postRequest)

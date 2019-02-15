@@ -115,12 +115,28 @@ const FACILITY_TYPES = {
     text: 'Groundwater activity',
     typeText: 'groundwater activities',
     canApplyOnline: false
+  },
+  MCP: {
+    id: 'mcp',
+    key: '06',
+    text: 'Medium combustion plant or specified generator',
+    typeText: 'medium combustion plant or specified generator',
+    canApplyOnline: false
+  },
+  LANDFILL: {
+    id: 'landfill',
+    key: '07',
+    text: 'Landfill and deposit for recovery',
+    typeText: 'landfill and deposit for recovery',
+    canApplyOnline: false
   }
 }
 
 const FACILITY_TYPE_LIST = [
   FACILITY_TYPES.INSTALLATION,
   FACILITY_TYPES.WASTE_OPERATION,
+  FACILITY_TYPES.LANDFILL,
+  FACILITY_TYPES.MCP,
   FACILITY_TYPES.MINING_WASTE_OPERATION,
   FACILITY_TYPES.WATER_DISCHARGE,
   FACILITY_TYPES.GROUNDWATER

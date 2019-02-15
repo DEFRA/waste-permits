@@ -12,10 +12,8 @@ const DUMMY_AUTH_TOKEN = 'dummy-auth-token'
 const CookieService = require('../../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-const FacilityTypeList = require('../../../src/models/triage/facilityTypeList.model')
+const TriageList = require('../../../src/models/triage/triageList.model')
 
-const BESPOKE = [{ id: 'bespoke', canApplyOnline: true }]
-const LTD_CO = [{ id: 'limited-company', canApplyOnline: true }]
 const FAKE_FACILITY_TYPE_ID = 'fake-facility-type'
 const FAKE_FACILITY_TYPE = { id: FAKE_FACILITY_TYPE_ID, canApplyOnline: true }
 
@@ -43,7 +41,7 @@ const checkCommonElements = async (doc) => {
 
 lab.beforeEach(() => {
   fakeFacilityType = Object.assign({}, FAKE_FACILITY_TYPE)
-  fakeFacilityTypeList = new FacilityTypeList({}, BESPOKE, LTD_CO, [fakeFacilityType])
+  fakeFacilityTypeList = new TriageList([fakeFacilityType])
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -85,7 +83,7 @@ lab.experiment('Triage facility type page tests:', () => {
 
     lab.test('GET for facility types that cannot be applied for online shows apply offline page', async () => {
       fakeFacilityType.canApplyOnline = false
-      sandbox.stub(FacilityTypeList, 'createList').value(() => fakeFacilityTypeList)
+      sandbox.stub(TriageList, 'createFacilityTypesList').value(() => fakeFacilityTypeList)
       getRequest.url = nextRoutePath
       const doc = await GeneralTestHelper.getDoc(getRequest)
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit for an installation, landfill, mine or water discharge')
@@ -124,7 +122,7 @@ lab.experiment('Triage facility type page tests:', () => {
         headers: {},
         payload: { 'facility-type': FAKE_FACILITY_TYPE_ID }
       }
-      sandbox.stub(FacilityTypeList, 'createList').value(() => fakeFacilityTypeList)
+      sandbox.stub(TriageList, 'createFacilityTypesList').value(() => fakeFacilityTypeList)
     })
 
     lab.test('POST facility type redirects to next route', async () => {

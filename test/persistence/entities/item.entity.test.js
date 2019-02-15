@@ -65,51 +65,80 @@ lab.experiment('Item Entity tests:', () => {
     Code.expect(error.message).to.equal('Unable to save defra_items: Read only!')
   })
 
-  lab.test('listAssessments() returns correct values', async () => {
+  lab.test('listWasteAssessments() returns correct values', async () => {
     stub.callsFake(async () => {
       return { value: [fakeDynamicsRecord('00001')] }
     })
     const expectedItems = [fakeItem('00001')]
-    const items = await Item.listAssessments(entityContext)
+    const items = await Item.listWasteAssessments(entityContext)
     Code.expect(items).to.exist()
     Code.expect(items).to.equal(expectedItems)
   })
 
-  lab.test('getAllActivitiesAndAssessments() returns correct values', async () => {
+  lab.test('getAllWasteActivitiesAndAssessments() returns correct values', async () => {
     stub.onFirstCall().resolves({ value: [fakeDynamicsRecord('00001')] })
     stub.onSecondCall().resolves({ value: [fakeDynamicsRecord('00002')] })
-    const expectedItems = { activities: [fakeItem('00001')], assessments: [fakeItem('00002')] }
-    const items = await Item.getAllActivitiesAndAssessments(entityContext)
+    const expectedItems = { wasteActivities: [fakeItem('00001')], wasteAssessments: [fakeItem('00002')] }
+    const items = await Item.getAllWasteActivitiesAndAssessments(entityContext)
     Code.expect(items).to.exist()
     Code.expect(items).to.equal(expectedItems)
   })
 
-  lab.test('getActivity() returns correct values', async () => {
+  lab.test('getWasteActivity() returns correct values', async () => {
     stub.callsFake(async () => {
       return { value: [fakeDynamicsRecord('00001')] }
     })
     const expectedItem = fakeItem('00001')
-    const item = await Item.getActivity(entityContext, expectedItem.shortName)
+    const item = await Item.getWasteActivity(entityContext, expectedItem.shortName)
     Code.expect(item).to.exist()
     Code.expect(item).to.equal(expectedItem)
   })
 
-  lab.test('getAssessment() returns correct values', async () => {
+  lab.test('getWasteAssessment() returns correct values', async () => {
     stub.callsFake(async () => {
       return { value: [fakeDynamicsRecord('00001')] }
     })
     const expectedItem = fakeItem('00001')
-    const item = await Item.getAssessment(entityContext, expectedItem.shortName)
+    const item = await Item.getWasteAssessment(entityContext, expectedItem.shortName)
     Code.expect(item).to.exist()
     Code.expect(item).to.equal(expectedItem)
   })
 
-  lab.test('listActivitiesForFacilityTypes() returns correct values', async () => {
+  lab.test('listWasteActivitiesForFacilityTypes() returns correct values', async () => {
     stub.callsFake(async () => {
       return { value: [fakeDynamicsRecord('00001')] }
     })
     const expectedItems = [fakeItem('00001')]
-    const items = await Item.listActivitiesForFacilityTypes(entityContext, ['DUMMY'])
+    const items = await Item.listWasteActivitiesForFacilityTypes(entityContext, ['DUMMY'])
+    Code.expect(items).to.equal(expectedItems)
+  })
+
+  lab.test('getMcpType() returns correct values', async () => {
+    stub.callsFake(async () => {
+      return { value: [fakeDynamicsRecord('00001')] }
+    })
+    const expectedItem = fakeItem('00001')
+    const item = await Item.getMcpType(entityContext, expectedItem.shortName)
+    Code.expect(item).to.exist()
+    Code.expect(item).to.equal(expectedItem)
+  })
+
+  lab.test('getMcpAssessment() returns correct values', async () => {
+    stub.callsFake(async () => {
+      return { value: [fakeDynamicsRecord('00001')] }
+    })
+    const expectedItem = fakeItem('00001')
+    const item = await Item.getMcpAssessment(entityContext, expectedItem.shortName)
+    Code.expect(item).to.exist()
+    Code.expect(item).to.equal(expectedItem)
+  })
+
+  lab.test('listMcpTypesForFacilityTypes() returns correct values', async () => {
+    stub.callsFake(async () => {
+      return { value: [fakeDynamicsRecord('00001')] }
+    })
+    const expectedItems = [fakeItem('00001')]
+    const items = await Item.listMcpTypesForFacilityTypes(entityContext, ['DUMMY'])
     Code.expect(items).to.equal(expectedItems)
   })
 })

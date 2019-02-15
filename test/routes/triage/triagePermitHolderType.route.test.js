@@ -10,9 +10,8 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 const AuthService = require('../../../src/services/activeDirectoryAuth.service')
 const DUMMY_AUTH_TOKEN = 'dummy-auth-token'
 
-const PermitHolderTypeList = require('../../../src/models/triage/permitHolderTypeList.model')
+const TriageList = require('../../../src/models/triage/triageList.model')
 
-const BESPOKE = [{ id: 'bespoke', canApplyOnline: true }]
 const FAKE_PERMIT_HOLDER_TYPE_ID = 'fake-permit-holder-type'
 const FAKE_PERMIT_HOLDER_TYPE = { id: FAKE_PERMIT_HOLDER_TYPE_ID, canApplyOnline: true }
 
@@ -40,7 +39,7 @@ const checkCommonElements = async (doc) => {
 
 lab.beforeEach(() => {
   fakePermitHolderType = Object.assign({}, FAKE_PERMIT_HOLDER_TYPE)
-  fakePermitHolderTypeList = new PermitHolderTypeList({}, BESPOKE, [fakePermitHolderType])
+  fakePermitHolderTypeList = new TriageList([fakePermitHolderType])
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -81,7 +80,7 @@ lab.experiment('Triage permit holder type page tests:', () => {
 
     lab.test('GET for permit holder types that cannot be applied for online shows apply offline page', async () => {
       fakePermitHolderType.canApplyOnline = false
-      sandbox.stub(PermitHolderTypeList, 'createList').value(() => fakePermitHolderTypeList)
+      sandbox.stub(TriageList, 'createPermitHolderTypesList').value(() => fakePermitHolderTypeList)
       getRequest.url = nextRoutePath
       const doc = await GeneralTestHelper.getDoc(getRequest)
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit')
@@ -120,7 +119,7 @@ lab.experiment('Triage permit holder type page tests:', () => {
         headers: {},
         payload: { 'permit-holder-type': FAKE_PERMIT_HOLDER_TYPE_ID }
       }
-      sandbox.stub(PermitHolderTypeList, 'createList').value(() => fakePermitHolderTypeList)
+      sandbox.stub(TriageList, 'createPermitHolderTypesList').value(() => fakePermitHolderTypeList)
     })
 
     lab.test('POST permit holder type redirects to next route', async () => {

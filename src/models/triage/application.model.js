@@ -8,10 +8,7 @@ const KEYED_DYNAMICS_PERMIT_HOLDER_TYPES = Object.values(DYNAMICS_PERMIT_HOLDER_
   return acc
 }, {})
 
-const PermitType = require('./permitType.model')
-const PermitHolderType = require('./permitHolderType.model')
-const Activity = require('./activity.model')
-const Assessment = require('./assessment.model')
+const TriageListItem = require('./triageListItem.model')
 
 const ApplicationEntity = require('../../persistence/entities/application.entity')
 const ApplicationLineEntity = require('../../persistence/entities/applicationLine.entity')
@@ -39,35 +36,35 @@ const createLine = async (entityContext, itemId) => {
   return applicationLineEntity.save(entityContext, ['applicationId', 'itemId', 'permitType'])
 }
 
-const createActivityLine = async (entityContext, activityId) => {
-  const activityEntity = await ItemEntity.getActivity(entityContext, activityId)
-  return createLine(entityContext, activityEntity.id)
+const createWasteActivityLine = async (entityContext, wasteActivityId) => {
+  const wasteActivityEntity = await ItemEntity.getWasteActivity(entityContext, wasteActivityId)
+  return createLine(entityContext, wasteActivityEntity.id)
 }
 
-const createAssessmentLine = async (entityContext, assessmentId) => {
-  const assessmentEntity = await ItemEntity.getAssessment(entityContext, assessmentId)
-  return createLine(entityContext, assessmentEntity.id)
+const createWasteAssessmentLine = async (entityContext, wasteAssessmentId) => {
+  const wasteAssessmentEntity = await ItemEntity.getWasteAssessment(entityContext, wasteAssessmentId)
+  return createLine(entityContext, wasteAssessmentEntity.id)
 }
 
 module.exports = class Application {
-  constructor ({ id, permitHolderType, activities, assessments }) {
+  constructor ({ id, permitHolderType, wasteActivities, wasteAssessments }) {
     this.id = id
     this.permitHolderType = permitHolderType
-    this.activities = activities
-    this.assessments = assessments
-    this.permitType = new PermitType(PERMIT_TYPES.BESPOKE)
+    this.wasteActivities = wasteActivities
+    this.wasteAssessments = wasteAssessments
+    this.permitType = new TriageListItem(PERMIT_TYPES.BESPOKE)
   }
 
   setPermitHolderType (permitHolderTypeToSet) {
     this.permitHolderType = permitHolderTypeToSet
   }
 
-  setActivities (activitiesToSet) {
-    let activityLines = this.activities || []
+  setWasteActivities (wasteActivitiesToSet) {
+    let wasteActivityLines = this.wasteActivities || []
 
     // Set the deletion status on any existing items
-    activityLines.forEach((existing) => {
-      if (activitiesToSet.find((item) => item.id === existing.activity.id)) {
+    wasteActivityLines.forEach((existing) => {
+      if (wasteActivitiesToSet.find((item) => item.id === existing.wasteActivity.id)) {
         if (existing.toBeDeleted) {
           delete existing.toBeDeleted
         }
@@ -77,22 +74,22 @@ module.exports = class Application {
     })
 
     // Remove any items that are flagged to be both added and deleted
-    activityLines = activityLines.filter((item) => !(item.toBeAdded && item.toBeDeleted))
+    wasteActivityLines = wasteActivityLines.filter((item) => !(item.toBeAdded && item.toBeDeleted))
 
     // Any activities not already in the list should be added as new items
-    const newActivities = activitiesToSet.filter((item) => !activityLines.find((existing) => existing.activity.id === item.id))
-    const activitiesToBeAdded = newActivities.map((item) => ({ activity: item, toBeAdded: true }))
-    activityLines = activityLines.concat(activitiesToBeAdded)
+    const newWasteActivities = wasteActivitiesToSet.filter((item) => !wasteActivityLines.find((existing) => existing.wasteActivity.id === item.id))
+    const wasteActivitiesToBeAdded = newWasteActivities.map((item) => ({ wasteActivity: item, toBeAdded: true }))
+    wasteActivityLines = wasteActivityLines.concat(wasteActivitiesToBeAdded)
 
-    this.activities = activityLines
+    this.wasteActivities = wasteActivityLines
   }
 
-  setAssessments (assessmentsToSet) {
-    let assessmentLines = this.assessments || []
+  setWasteAssessments (wasteAssessmentsToSet) {
+    let wasteAssessmentLines = this.wasteAssessments || []
 
     // Set the deletion status on any existing items
-    assessmentLines.forEach((existing) => {
-      if (assessmentsToSet.find((item) => item.id === existing.assessment.id)) {
+    wasteAssessmentLines.forEach((existing) => {
+      if (wasteAssessmentsToSet.find((item) => item.id === existing.wasteAssessment.id)) {
         if (existing.toBeDeleted) {
           delete existing.toBeDeleted
         }
@@ -102,14 +99,14 @@ module.exports = class Application {
     })
 
     // Remove any items that are flagged to be both added and deleted
-    assessmentLines = assessmentLines.filter((item) => !(item.toBeAdded && item.toBeDeleted))
+    wasteAssessmentLines = wasteAssessmentLines.filter((item) => !(item.toBeAdded && item.toBeDeleted))
 
     // Any assessments not already in the list should be added as new items
-    const newAssessments = assessmentsToSet.filter((item) => !assessmentLines.find((existing) => existing.assessment.id === item.id))
-    const assessmentsToBeAdded = newAssessments.map((item) => ({ assessment: item, toBeAdded: true }))
-    assessmentLines = assessmentLines.concat(assessmentsToBeAdded)
+    const newWasteAssessments = wasteAssessmentsToSet.filter((item) => !wasteAssessmentLines.find((existing) => existing.wasteAssessment.id === item.id))
+    const wasteAssessmentsToBeAdded = newWasteAssessments.map((item) => ({ wasteAssessment: item, toBeAdded: true }))
+    wasteAssessmentLines = wasteAssessmentLines.concat(wasteAssessmentsToBeAdded)
 
-    this.assessments = assessmentLines
+    this.wasteAssessments = wasteAssessmentLines
   }
 
   async save (entityContextToUse) {
@@ -118,8 +115,8 @@ module.exports = class Application {
     // So now each operation is individually awaited.
 
     const permitHolderType = this.permitHolderType
-    const activities = this.activities || []
-    const assessments = this.assessments || []
+    const wasteActivities = this.wasteActivities || []
+    const wasteAssessments = this.wasteAssessments || []
 
     const applicationValues = {}
     if (permitHolderType) {
@@ -129,19 +126,19 @@ module.exports = class Application {
     }
     await setApplicationValues(entityContextToUse, applicationValues)
 
-    for (const item of activities) {
+    for (const item of wasteActivities) {
       if (item.toBeDeleted) {
         await deleteLine(entityContextToUse, item.id)
       } else if (item.toBeAdded) {
-        await createActivityLine(entityContextToUse, item.activity.id)
+        await createWasteActivityLine(entityContextToUse, item.wasteActivity.id)
       }
     }
 
-    for (const item of assessments) {
+    for (const item of wasteAssessments) {
       if (item.toBeDeleted) {
         await deleteLine(entityContextToUse, item.id)
       } else if (item.toBeAdded) {
-        await createAssessmentLine(entityContextToUse, item.assessment.id)
+        await createWasteAssessmentLine(entityContextToUse, item.wasteAssessment.id)
       }
     }
 
@@ -154,19 +151,19 @@ module.exports = class Application {
     // Determine the permit holder type
     const permitHolderType = await this.getPermitHolderTypeForApplicationId(entityContextToUse, applicationId)
 
-    const itemEntities = await ItemEntity.getAllActivitiesAndAssessments(entityContextToUse)
-    const activityItemEntities = itemEntities.activities
-    const assessmentItemEntities = itemEntities.assessments
+    const itemEntities = await ItemEntity.getAllWasteActivitiesAndAssessments(entityContextToUse)
+    const wasteActivityItemEntities = itemEntities.wasteActivities
+    const wasteAssessmentItemEntities = itemEntities.wasteAssessments
 
     const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId })
 
-    const activityLineEntities = applicationLineEntities.filter(({ itemId }) => activityItemEntities.find(({ id }) => id === itemId))
-    const assessmentLineEntities = applicationLineEntities.filter(({ itemId }) => assessmentItemEntities.find(({ id }) => id === itemId))
+    const wasteActivityLineEntities = applicationLineEntities.filter(({ itemId }) => wasteActivityItemEntities.find(({ id }) => id === itemId))
+    const wasteAssessmentLineEntities = applicationLineEntities.filter(({ itemId }) => wasteAssessmentItemEntities.find(({ id }) => id === itemId))
 
-    const activities = activityLineEntities.map((line) => ({ id: line.id, activity: Activity.createFromItemEntity(activityItemEntities.find(({ id }) => id === line.itemId)) }))
-    const assessments = assessmentLineEntities.map((line) => ({ id: line.id, assessment: Assessment.createFromItemEntity(assessmentItemEntities.find(({ id }) => id === line.itemId)) }))
+    const wasteActivities = wasteActivityLineEntities.map((line) => ({ id: line.id, wasteActivity: TriageListItem.createWasteActivityFromItemEntity(wasteActivityItemEntities.find(({ id }) => id === line.itemId)) }))
+    const wasteAssessments = wasteAssessmentLineEntities.map((line) => ({ id: line.id, wasteAssessment: TriageListItem.createWasteAssessmentFromItemEntity(wasteAssessmentItemEntities.find(({ id }) => id === line.itemId)) }))
 
-    return new Application({ id: applicationId, permitHolderType, activities, assessments })
+    return new Application({ id: applicationId, permitHolderType, wasteActivities, wasteAssessments })
   }
 
   static async getPermitHolderTypeForApplicationId (entityContextToUse) {
@@ -183,7 +180,7 @@ module.exports = class Application {
     if (dynamicsPermitHolderType) {
       const matchingPermitHolderType = PERMIT_HOLDER_TYPE_LIST.find((item) => item.id === dynamicsPermitHolderType.id)
       if (matchingPermitHolderType) {
-        permitHolderType = new PermitHolderType(matchingPermitHolderType)
+        permitHolderType = new TriageListItem(matchingPermitHolderType)
       }
     }
 

@@ -17,7 +17,7 @@ const ASSESSMENT_ITEM_TYPE_ID = 'ASSESSMENT_ITEM_TYPE_ID'
 const { PERMIT_HOLDER_TYPES: DYNAMICS_PERMIT_HOLDER_TYPES } = require('../../../src/dynamics')
 
 const ITEMS = {
-  activities: [{
+  wasteActivities: [{
     id: 'ACTIVITY_ITEM_ID_1',
     shortName: 'activity-1',
     canApplyOnline: true,
@@ -33,7 +33,7 @@ const ITEMS = {
     canApplyOnline: true,
     itemTypeId: ACTIVITY_ITEM_TYPE_ID
   }],
-  assessments: [{
+  wasteAssessments: [{
     id: 'ASSESSMENT_ITEM_ID_1',
     shortName: 'assessment-1',
     canApplyOnline: true,
@@ -105,9 +105,9 @@ lab.experiment('Application Cost Model test:', () => {
     sandbox = sinon.createSandbox()
 
     // Stub methods
-    sandbox.stub(ItemEntity, 'getAllActivitiesAndAssessments').callsFake(async () => ITEMS)
-    sandbox.stub(ItemEntity, 'getActivity').callsFake(async (entityContext, activityId) => ITEMS.find(item => item.shortName === activityId))
-    sandbox.stub(ItemEntity, 'getAssessment').callsFake(async (entityContext, activityId) => ITEMS.find(item => item.shortName === activityId))
+    sandbox.stub(ItemEntity, 'getAllWasteActivitiesAndAssessments').callsFake(async () => ITEMS)
+    sandbox.stub(ItemEntity, 'getWasteActivity').callsFake(async (entityContext, activityId) => ITEMS.find(item => item.shortName === activityId))
+    sandbox.stub(ItemEntity, 'getWasteAssessment').callsFake(async (entityContext, activityId) => ITEMS.find(item => item.shortName === activityId))
     sandbox.stub(ApplicationEntity, 'getById').callsFake(async () => fakeApplicationEntity)
     sandbox.stub(ApplicationLineEntity, 'listBy').callsFake(async () => fakeApplicationLineEntities)
     sandbox.stub(ApplicationLineEntity, 'getById').callsFake(async () => fakeApplicationLineEntities[0])
