@@ -1,0 +1,42 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div id="mcp-type" class="form-group {{#getFormErrorGroupClass errors.mcp-type}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='facility-type-error' message=errors.mcp-type }}
+            {{#with triageData}}
+            {{#each availableMcpTypes.items}}
+            <div class="multiple-choice">
+              <input id="mcp-type-{{this.id}}-input" type="radio" name="mcp-type" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
+              <label id="mcp-type-{{this.id}}-label" class="selection-button-radio" for="mcp-type-{{this.id}}-input">
+                <span id="mcp-type-{{this.id}}-text">{{this.text}}</span>
+                {{#if this.description}}<span id="mcp-type-{{this.id}}-hint" class="form-hint">{{this.description}}</span>{{/if}}
+              </label>
+            </div>
+            {{/each}}
+            {{/with}}
+          </div>
+
+        </fieldset>
+
+        {{> common/submitButton }}
+
+      </form>
+    </div>
+  </div>
+</main>

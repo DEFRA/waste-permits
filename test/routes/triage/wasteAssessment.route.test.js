@@ -22,7 +22,7 @@ const FAKE_ASSESSMENT_ID2 = `${FAKE_ASSESSMENT_ID}-2`
 const FAKE_ASSESSMENT = { id: FAKE_ASSESSMENT_ID, text: 'Fake assessment text', canApplyOnline: true }
 const FAKE_ASSESSMENT2 = { id: FAKE_ASSESSMENT_ID2, text: 'Fake assessment 2 text', canApplyOnline: false }
 
-const routePath = '/select/bespoke/limited-company/waste/activity-1+activity-2'
+const routePath = '/select/bespoke/limited-company/waste/--/activity-1+activity-2'
 const badPath = `${routePath}/invalid`
 const endRoutePath = `/selected/confirm`
 

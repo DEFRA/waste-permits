@@ -121,7 +121,7 @@ const FACILITY_TYPES = {
     key: '06',
     text: 'Medium combustion plant or specified generator',
     typeText: 'medium combustion plant or specified generator',
-    canApplyOnline: false
+    canApplyOnline: true
   },
   LANDFILL: {
     id: 'landfill',
@@ -142,10 +142,56 @@ const FACILITY_TYPE_LIST = [
   FACILITY_TYPES.GROUNDWATER
 ]
 
+const MCP_TYPES = {
+  STATIONARY_MCP: {
+    id: 'stationary-mcp',
+    key: '01',
+    text: 'Stationary medium combustion plant (MCP)',
+    isMobile: false,
+    canApplyOnline: true
+  },
+  STATIONARY_SG: {
+    id: 'stationary-sg',
+    key: '02',
+    text: 'Stationary specified generator (SG)',
+    isMobile: false,
+    canApplyOnline: true
+  },
+  STATIONARY_MCP_AND_SG: {
+    id: 'stationary-mcp-sg',
+    key: '03',
+    text: 'Stationary MCP which is also an SG',
+    isMobile: false,
+    canApplyOnline: true
+  },
+  MOBILE_SG: {
+    id: 'mobile-sg',
+    key: '04',
+    text: 'Mobile SG',
+    isMobile: true,
+    canApplyOnline: true
+  },
+  MOBILE_SG_AND_MCP: {
+    id: 'mobile-sg-mcp',
+    key: '05',
+    text: 'Mobile SG which is also an MCP',
+    isMobile: true,
+    canApplyOnline: true
+  }
+}
+const MCP_TYPE_LIST = [
+  MCP_TYPES.STATIONARY_MCP,
+  MCP_TYPES.STATIONARY_SG,
+  MCP_TYPES.STATIONARY_MCP_AND_SG,
+  MCP_TYPES.MOBILE_SG,
+  MCP_TYPES.MOBILE_SG_AND_MCP
+]
+
 module.exports = {
   PERMIT_TYPES,
   PERMIT_TYPE_LIST,
   PERMIT_HOLDER_TYPES,
   PERMIT_HOLDER_TYPE_LIST,
-  FACILITY_TYPE_LIST
+  FACILITY_TYPE_LIST,
+  MCP_TYPE_LIST
 }

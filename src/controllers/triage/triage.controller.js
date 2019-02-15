@@ -48,87 +48,136 @@ module.exports = class TriageController extends BaseController {
     entityContext.applicationId = request.state && request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
     const data = await TriageController.initialiseDataFromParams(entityContext, request.params)
 
-    if (data.selectedPermitTypes) {
-      if (data.selectedPermitHolderTypes) {
-        if (data.selectedFacilityTypes) {
-          if (data.selectedWasteActivities) {
-            if (data.selectedOptionalWasteAssessments) {
-              // POSTing confirmation - any POST to here constitutes confirmation
-              await TriageController.saveApplication(request, entityContext, data)
-              return this.redirect({ h, route: Routes.CONFIRM_COST })
-            } else {
-              // POSTing optional waste assessments
-              const requestedOptionalWasteAssessments = request.payload['assessment'] ? request.payload['assessment'].split(',') : []
-              data.selectedOptionalWasteAssessments = data.availableOptionalWasteAssessments.getListFilteredByIds(requestedOptionalWasteAssessments)
-              data.canApplyOnline = requestedOptionalWasteAssessments.length === 0 || data.selectedOptionalWasteAssessments.canApplyOnline
-              if (data.canApplyOnline) {
-                // SAVE and DONE
-                await TriageController.saveApplication(request, entityContext, data)
-                return this.redirect({ h, route: Routes.CONFIRM_COST })
-              }
-            }
-          } else {
-            // POSTing waste activities
-            const requestedWasteActivities = request.payload['activity'] ? request.payload['activity'].split(',') : []
-            const selectedWasteActivities = data.availableWasteActivities.getListFilteredByIds(requestedWasteActivities)
-            if (selectedWasteActivities.items.length !== 0) {
-              data.selectedWasteActivities = selectedWasteActivities
-              data.canApplyOnline = selectedWasteActivities.canApplyOnline
-              if (data.canApplyOnline) {
-                // Check to see if there are any optional additional waste assessments that we want to ask for, otherwise we skip that step
-                const { selectedWasteActivities } = data
-                const optionalWasteAssessmentList = await TriageList.createOptionalWasteAssessmentsList(entityContext, { selectedWasteActivities })
-                if (optionalWasteAssessmentList.items.length === 0) {
-                  data.selectedOptionalWasteAssessments = optionalWasteAssessmentList
-                  // SAVE and DONE
-                  await TriageController.saveApplication(request, entityContext, data)
-                  return this.redirect({ h, route: Routes.CONFIRM_COST })
-                }
-              }
-            }
-          }
-        } else {
-          // POSTing facility type(s)
-          const requestedFacilityType = request.payload['facility-type']
-          const selectedFacilityTypes = data.availableFacilityTypes.getListFilteredByIds([requestedFacilityType])
-          // Currently only waste facilities are supported online
-          if (selectedFacilityTypes.items.length === 1) {
-            data.selectedFacilityTypes = selectedFacilityTypes
-            data.canApplyOnline = selectedFacilityTypes.canApplyOnline
-          }
-        }
-      } else {
-        // POSTing permit holder type(s)
-        const requestedPermitHolderType = request.payload['permit-holder-type']
-        const selectedPermitHolderTypes = data.availablePermitHolderTypes.getListFilteredByIds([requestedPermitHolderType])
-        if (selectedPermitHolderTypes.items.length === 1) {
-          data.selectedPermitHolderTypes = selectedPermitHolderTypes
-          data.canApplyOnline = selectedPermitHolderTypes.canApplyOnline
-        }
-      }
-    } else {
-      // POSTing permit type(s)
-      const requestedPermitType = request.payload['permit-type']
-      const selectedPermitTypes = data.availablePermitTypes.getListFilteredByIds([requestedPermitType])
-      if (selectedPermitTypes.items.length === 1) {
-        data.selectedPermitTypes = selectedPermitTypes
-        data.canApplyOnline = selectedPermitTypes.canApplyOnline
-
-        // Currently standard rules steps out of triage - just go to the usual page
-        if (requestedPermitType === 'standard-rules') {
-          return this.redirect({ h, route: Routes.PERMIT_HOLDER_TYPE })
-        }
-      }
+    if (data.selectedOptionalWasteAssessments) {
+      // POSTing confirmation - any POST to here constitutes confirmation
+      await TriageController.saveApplication(request, entityContext, data)
+      return this.redirect({ h, route: Routes.CONFIRM_COST })
     }
 
-    const paths = TriageController.generatePathsFromData(data)
+    if (data.selectedWasteActivities) {
+      // POSTing optional waste assessments
+      const requestedOptionalWasteAssessments = request.payload['assessment'] ? request.payload['assessment'].split(',') : []
+      data.selectedOptionalWasteAssessments = data.availableOptionalWasteAssessments.getListFilteredByIds(requestedOptionalWasteAssessments)
+      data.canApplyOnline = requestedOptionalWasteAssessments.length === 0 || data.selectedOptionalWasteAssessments.canApplyOnline
+      if (data.canApplyOnline) {
+        // SAVE and DONE
+        await TriageController.saveApplication(request, entityContext, data)
+        return this.redirect({ h, route: Routes.CONFIRM_COST })
+      }
+      const paths = TriageController.generatePathsFromData(data)
+      return this.redirect({ h, path: paths.currentStepPath })
+    }
 
+    if (data.selectedMcpTypes) {
+      // POSTing waste activities
+      const requestedWasteActivities = request.payload['activity'] ? request.payload['activity'].split(',') : []
+      const selectedWasteActivities = data.availableWasteActivities.getListFilteredByIds(requestedWasteActivities)
+      if (selectedWasteActivities.items.length !== 0) {
+        data.selectedWasteActivities = selectedWasteActivities
+        data.canApplyOnline = selectedWasteActivities.canApplyOnline
+        if (data.canApplyOnline) {
+          // Check to see if there are any optional additional waste assessments that we want to ask for, otherwise we skip that step
+          const { selectedWasteActivities } = data
+          const optionalWasteAssessmentList = await TriageList.createOptionalWasteAssessmentsList(entityContext, { selectedWasteActivities })
+          if (optionalWasteAssessmentList.items.length === 0) {
+            data.selectedOptionalWasteAssessments = optionalWasteAssessmentList
+            // SAVE and DONE
+            await TriageController.saveApplication(request, entityContext, data)
+            return this.redirect({ h, route: Routes.CONFIRM_COST })
+          }
+        }
+      }
+      const paths = TriageController.generatePathsFromData(data)
+      return this.redirect({ h, path: paths.currentStepPath })
+    }
+
+    if (data.selectedFacilityTypes) {
+      // POSTING MCP types
+      const requestedMcpType = request.payload['mcp-type']
+      const selectedMcpTypes = data.availableMcpTypes.getListFilteredByIds([requestedMcpType])
+      // Only one mcp type is allowed
+      if (selectedMcpTypes.items.length === 1) {
+        data.selectedMcpTypes = selectedMcpTypes
+        data.canApplyOnline = selectedMcpTypes.canApplyOnline
+        if (data.canApplyOnline) {
+          // Check to see if there are any waste activities available, otherwise we skip the next steps
+          const { selectedPermitTypes, selectedFacilityTypes } = data
+          const availableWasteActivitiesList = await TriageList.createWasteActivitiesList(entityContext, { selectedPermitTypes, selectedFacilityTypes })
+          if (availableWasteActivitiesList.items.length === 0) {
+            data.selectedWasteActivities = availableWasteActivitiesList
+            data.selectedOptionalWasteAssessments = new TriageList([])
+            // SAVE and DONE
+            await TriageController.saveApplication(request, entityContext, data)
+            return this.redirect({ h, route: Routes.CONFIRM_COST })
+          }
+        }
+      }
+      const paths = TriageController.generatePathsFromData(data)
+      return this.redirect({ h, path: paths.currentStepPath })
+    }
+
+    if (data.selectedPermitHolderTypes) {
+      // POSTing facility type(s)
+      const requestedFacilityType = request.payload['facility-type']
+      const selectedFacilityTypes = data.availableFacilityTypes.getListFilteredByIds([requestedFacilityType])
+      // Currently only a single type of facility is allowed
+      if (selectedFacilityTypes.items.length === 1) {
+        data.selectedFacilityTypes = selectedFacilityTypes
+        data.canApplyOnline = selectedFacilityTypes.canApplyOnline
+        if (data.canApplyOnline) {
+          // Check to see if there are any MCP types available, otherwise we skip that step
+          const { selectedPermitTypes, selectedFacilityTypes } = data
+          const availableMcpTypeList = await TriageList.createMcpTypesList(entityContext, { selectedPermitTypes, selectedFacilityTypes })
+          if (availableMcpTypeList.items.length === 0) {
+            data.selectedMcpTypes = availableMcpTypeList
+            // Check to see if there are any waste activities available, otherwise we skip the next steps
+            const availableWasteActivitiesList = await TriageList.createWasteActivitiesList(entityContext, { selectedPermitTypes, selectedFacilityTypes })
+            if (availableWasteActivitiesList.items.length === 0) {
+              data.selectedWasteActivities = availableWasteActivitiesList
+              data.selectedOptionalWasteAssessments = new TriageList([])
+              // SAVE and DONE
+              await TriageController.saveApplication(request, entityContext, data)
+              return this.redirect({ h, route: Routes.CONFIRM_COST })
+            }
+          }
+        }
+      }
+      const paths = TriageController.generatePathsFromData(data)
+      return this.redirect({ h, path: paths.currentStepPath })
+    }
+
+    if (data.selectedPermitTypes) {
+      // POSTing permit holder type(s)
+      const requestedPermitHolderType = request.payload['permit-holder-type']
+      const selectedPermitHolderTypes = data.availablePermitHolderTypes.getListFilteredByIds([requestedPermitHolderType])
+      if (selectedPermitHolderTypes.items.length === 1) {
+        data.selectedPermitHolderTypes = selectedPermitHolderTypes
+        data.canApplyOnline = selectedPermitHolderTypes.canApplyOnline
+      }
+      const paths = TriageController.generatePathsFromData(data)
+      return this.redirect({ h, path: paths.currentStepPath })
+    }
+
+    // POSTing permit type(s)
+    const requestedPermitType = request.payload['permit-type']
+    const selectedPermitTypes = data.availablePermitTypes.getListFilteredByIds([requestedPermitType])
+    if (selectedPermitTypes.items.length === 1) {
+      data.selectedPermitTypes = selectedPermitTypes
+      data.canApplyOnline = selectedPermitTypes.canApplyOnline
+
+      // Currently standard rules steps out of triage - just go to the usual page
+      if (requestedPermitType === 'standard-rules') {
+        return this.redirect({ h, route: Routes.PERMIT_HOLDER_TYPE })
+      }
+    }
+    const paths = TriageController.generatePathsFromData(data)
     return this.redirect({ h, path: paths.currentStepPath })
   }
 
   static async saveApplication (request, entityContext, triageData) {
     const application = await Application.getApplicationForId(entityContext)
     application.setPermitHolderType(triageData.selectedPermitHolderTypes.items[0])
+    application.setMcpType(triageData.selectedMcpTypes.items[0])
     application.setWasteActivities(triageData.selectedWasteActivities.items)
     application.setWasteAssessments(triageData.selectedOptionalWasteAssessments.items)
     await application.save(entityContext)
@@ -185,26 +234,80 @@ module.exports = class TriageController extends BaseController {
           data.canApplyOnline = chosenFacilityTypeList.canApplyOnline
           if (data.canApplyOnline) {
             const { selectedPermitTypes, selectedFacilityTypes } = data
-            data.availableWasteActivities = await TriageList.createWasteActivitiesList(entityContext, { selectedPermitTypes, selectedFacilityTypes })
+            data.availableMcpTypes = await TriageList.createMcpTypesList(entityContext, { selectedPermitTypes, selectedFacilityTypes })
+            if (data.availableMcpTypes.items.length === 0) {
+              data.selectedMcpTypes = new TriageList([])
+              data.availableWasteActivities = await TriageList.createWasteActivitiesList(entityContext, { selectedPermitTypes, selectedFacilityTypes })
+              if (data.availableWasteActivities.items.length === 0) {
+                data.selectedWasteActivities = new TriageList([])
+                data.includedWasteAssessments = new TriageList([])
+                data.availableOptionalWasteAssessments = new TriageList([])
+                data.selectedOptionalWasteAssessments = new TriageList([])
+                return data
+              }
+            }
           }
         }
       }
     }
 
-    // If we've managed to select a valid facility type then check for waste activities
+    // If we've managed to select a valid facility type then check for MCP types
     if (data.selectedFacilityTypes && data.canApplyOnline) {
+      const mcpTypeParam = decodeParamValue(params.mcpType)
+      if (mcpTypeParam) {
+        const chosenMcpTypeList = data.availableMcpTypes.getListFilteredByIds(mcpTypeParam)
+        if (data.availableMcpTypes.items.length === 0) {
+          // If there are no MCP types available we must have chosen none
+          if (mcpTypeParam.length === 0) {
+            data.selectedMcpTypes = chosenMcpTypeList
+            const { selectedPermitTypes, selectedFacilityTypes } = data
+            data.availableWasteActivities = await TriageList.createWasteActivitiesList(entityContext, { selectedPermitTypes, selectedFacilityTypes })
+          }
+        } else {
+          // We have to have chosen valid entries from the list of available MCP types
+          if (chosenMcpTypeList.items.length === mcpTypeParam.length) {
+            data.selectedMcpTypes = chosenMcpTypeList
+            data.canApplyOnline = chosenMcpTypeList.canApplyOnline
+            if (data.canApplyOnline) {
+              const { selectedPermitTypes, selectedFacilityTypes } = data
+              data.availableWasteActivities = await TriageList.createWasteActivitiesList(entityContext, { selectedPermitTypes, selectedFacilityTypes })
+              if (data.availableWasteActivities.items.length === 0) {
+                data.selectedWasteActivities = new TriageList([])
+                data.includedWasteAssessments = new TriageList([])
+                data.availableOptionalWasteAssessments = new TriageList([])
+                data.selectedOptionalWasteAssessments = new TriageList([])
+                return data
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // If we've managed to select a valid MCP type then check for waste activities
+    if (data.selectedMcpTypes && data.canApplyOnline) {
       const wasteActivityParam = decodeParamValue(params.wasteActivity)
-      // We have to have chosen at least one activity
-      if (wasteActivityParam && wasteActivityParam.length !== 0) {
+      if (wasteActivityParam) {
         const chosenWasteActivityList = data.availableWasteActivities.getListFilteredByIds(wasteActivityParam)
-        // We have to have chosen valid entries from the list of available waste activities
-        if (chosenWasteActivityList.items.length === wasteActivityParam.length) {
-          data.selectedWasteActivities = chosenWasteActivityList
-          data.canApplyOnline = chosenWasteActivityList.canApplyOnline
-          if (data.canApplyOnline) {
-            const { selectedWasteActivities } = data
-            data.includedWasteAssessments = await TriageList.createIncludedWasteAssessmentsList(entityContext, { selectedWasteActivities })
-            data.availableOptionalWasteAssessments = await TriageList.createOptionalWasteAssessmentsList(entityContext, { selectedWasteActivities })
+        if (data.availableWasteActivities.items.length === 0) {
+          // If there are no waste activities available we must have chosen none
+          if (wasteActivityParam.length === 0) {
+            data.selectedWasteActivities = chosenWasteActivityList
+            data.includedWasteAssessments = new TriageList([])
+            data.availableOptionalWasteAssessments = new TriageList([])
+            data.selectedOptionalWasteAssessments = new TriageList([])
+            return data
+          }
+        } else {
+          // We have to have chosen valid entries from the list of available waste activities
+          if (chosenWasteActivityList.items.length === wasteActivityParam.length) {
+            data.selectedWasteActivities = chosenWasteActivityList
+            data.canApplyOnline = chosenWasteActivityList.canApplyOnline
+            if (data.canApplyOnline) {
+              const { selectedWasteActivities } = data
+              data.includedWasteAssessments = await TriageList.createIncludedWasteAssessmentsList(entityContext, { selectedWasteActivities })
+              data.availableOptionalWasteAssessments = await TriageList.createOptionalWasteAssessmentsList(entityContext, { selectedWasteActivities })
+            }
           }
         }
       }
@@ -256,6 +359,10 @@ module.exports = class TriageController extends BaseController {
 
     if (data.selectedFacilityTypes) {
       pathItems.push(encodeParamValue(data.selectedFacilityTypes.ids))
+    }
+
+    if (data.selectedMcpTypes) {
+      pathItems.push(encodeParamValue(data.selectedMcpTypes.ids))
     }
 
     if (data.selectedWasteActivities) {

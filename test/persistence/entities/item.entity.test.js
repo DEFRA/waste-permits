@@ -113,6 +113,8 @@ lab.experiment('Item Entity tests:', () => {
     Code.expect(items).to.equal(expectedItems)
   })
 
+  // TODO: MCP - Add tests for getAllMcpTypes
+
   lab.test('getMcpType() returns correct values', async () => {
     stub.callsFake(async () => {
       return { value: [fakeDynamicsRecord('00001')] }
