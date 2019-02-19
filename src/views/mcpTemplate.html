@@ -21,6 +21,8 @@
         You will be asked to upload it later in the application.
       </p>
 
+      <!--  the template links are different for standard rules and bespoke. Show the standard rules templates: -->
+      {{#if standardPermitType}}
       <p>
         <a id="mcp-template-xls-link" href="/public/images/mcp-template/mcp-plant-generator-list-template-v0-1.xls" download="mcp-plant-generator-list-template-v0-1.xls">
           <span id="mcp-template-xls-link-text">Plant or generator list template (Excel XLS)</span>
@@ -31,6 +33,21 @@
           <span id="mcp-template-ods-link-text">Plant or generator list template (Open Document ODS)</span>
         </a>
       </p>
+      {{/if}}
+
+      <!--  the template links are different for standard rules and bespoke. Show the bespoke rules templates: -->
+      {{#if bespokePermitType}}
+      <p>
+        <a id="mcp-template-xls-link" href="/public/images/mcp-template/tbc" download="tbc">
+          <span id="mcp-template-xls-link-text">Plant or generator list template APPENDIX TBC (Excel XLS)</span>
+        </a>
+      </p>
+      <p>
+        <a id="mcp-template-ods-link" href="/public/images/mcp-template/tbc" download="mcp-plant-generator-list-template-v0-1.ods">
+          <span id="mcp-template-ods-link-text">Plant or generator list template APPENDIX TBC (Open Document ODS)</span>
+        </a>
+      </p>
+      {{/if}}
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
