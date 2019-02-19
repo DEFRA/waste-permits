@@ -108,7 +108,7 @@ module.exports = class TriageController extends BaseController {
             data.selectedOptionalWasteAssessments = new TriageList([])
             // SAVE and DONE
             await TriageController.saveApplication(request, entityContext, data)
-            return this.redirect({ h, route: Routes.TASK_LIST })
+            return this.redirect({ h, route: Routes.MCP_EXISTING_PERMIT })
           }
         }
       }
