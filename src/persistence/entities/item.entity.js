@@ -117,6 +117,10 @@ class Item extends BaseEntity {
     }
   }
 
+  static async getAllMcpTypes (context) {
+    return this.listUsingFetchXml(context, listItemsQuery(MCP_TYPE))
+  }
+
   static async listMcpTypesForFacilityTypes (context, facilityTypes) {
     const searchValues = facilityTypes.map((item) => sanitiseSearchTerm(item))
     return this.listUsingFetchXml(context, listItemsForDetailTypeValuesQuery(MCP_TYPE, FACILITY_TYPE, searchValues))

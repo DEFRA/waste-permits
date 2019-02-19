@@ -1,6 +1,6 @@
 'use strict'
 
-const { PERMIT_TYPE_LIST, PERMIT_HOLDER_TYPE_LIST, FACILITY_TYPE_LIST } = require('./triageLists')
+const { PERMIT_TYPE_LIST, PERMIT_HOLDER_TYPE_LIST, FACILITY_TYPE_LIST, MCP_TYPE_LIST } = require('./triageLists')
 const TriageListItem = require('./triageListItem.model')
 const ItemEntity = require('../../persistence/entities/item.entity')
 
@@ -64,6 +64,19 @@ module.exports = class TriageList {
       facilityTypes = FACILITY_TYPE_LIST.map((item) => TriageListItem.createFacilityTypeFromDefinition(item))
     }
     return new TriageList(facilityTypes)
+  }
+
+  static async createMcpTypesList (context, { selectedPermitTypes, selectedFacilityTypes }) {
+    let mcpTypes = []
+    // Only bespoke permit types have MCP types
+    if (selectedPermitTypes.entry('bespoke')) {
+      // All permit holder types have the same list of MCP types
+      // Only MCP facility types have MCP types
+      if (selectedFacilityTypes.entry('mcp')) {
+        mcpTypes = MCP_TYPE_LIST.map((item) => TriageListItem.createMcpTypeFromDefinition(item))
+      }
+    }
+    return new TriageList(mcpTypes)
   }
 
   static async createWasteActivitiesList (context, { selectedPermitTypes, selectedFacilityTypes }) {

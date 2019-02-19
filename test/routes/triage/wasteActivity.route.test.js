@@ -20,7 +20,7 @@ const FAKE_ACTIVITY_ID2 = `${FAKE_ACTIVITY_ID}-2`
 const FAKE_ACTIVITY = { id: FAKE_ACTIVITY_ID, text: 'Fake activity text', activityCode: '1.fake.code', canApplyOnline: true }
 const FAKE_ACTIVITY2 = { id: FAKE_ACTIVITY_ID2, text: 'Fake activity 2 text', canApplyOnline: false }
 
-const routePath = '/select/bespoke/limited-company/waste'
+const routePath = '/select/bespoke/limited-company/waste/--'
 const badPath = `${routePath}/invalid`
 const nextRoutePath = `${routePath}/${FAKE_ACTIVITY_ID}`
 const endRoutePath = `/selected/confirm`

@@ -11,13 +11,14 @@ const TriageListItem = require('../../../src/models/triage/triageListItem.model'
 const ItemEntity = require('../../../src/persistence/entities/item.entity')
 const ApplicationEntity = require('../../../src/persistence/entities/application.entity')
 const ApplicationLineEntity = require('../../../src/persistence/entities/applicationLine.entity')
-
+const { MCP_TYPE_LIST } = require('../../../src/models/triage/triageLists')
 const FAKE_APPLICATION_ID = 'FAKE_APPLICATION_ID'
 const context = { authToken: 'AUTH_TOKEN', applicationId: FAKE_APPLICATION_ID }
 const ACTIVITY_ITEM_TYPE_ID = 'ACTIVITY_ITEM_TYPE_ID'
 const ASSESSMENT_ITEM_TYPE_ID = 'ASSESSMENT_ITEM_TYPE_ID'
 
 const ITEMS = {
+  mcpTypes: MCP_TYPE_LIST.map((item, index) => ({ id: `MCP_TYPE_ITEM_ID_${index}`, shortName: item.id, canApplyOnline: item.canApplyOnline })),
   wasteActivities: [{
     id: 'ACTIVITY_ITEM_ID_1',
     shortName: 'activity-1',
@@ -99,6 +100,8 @@ lab.experiment('Application Model test:', () => {
 
     // Stub methods
     sandbox.stub(ItemEntity, 'getAllWasteActivitiesAndAssessments').callsFake(async () => ITEMS)
+    sandbox.stub(ItemEntity, 'getAllMcpTypes').callsFake(async () => ITEMS.mcpTypes)
+    sandbox.stub(ItemEntity, 'getMcpType').callsFake(async (entityContext, mcpTypeId) => ITEMS.mcpTypes.find(item => item.shortName === mcpTypeId))
     sandbox.stub(ItemEntity, 'getWasteActivity').callsFake(async (entityContext, activityId) => ITEMS.wasteActivities.find(item => item.shortName === activityId))
     sandbox.stub(ItemEntity, 'getWasteAssessment').callsFake(async (entityContext, activityId) => ITEMS.wasteAssessments.find(item => item.shortName === activityId))
     sandbox.stub(ApplicationEntity, 'getById').callsFake(async () => fakeApplicationEntity)
@@ -139,6 +142,8 @@ lab.experiment('Application Model test:', () => {
       application.setPermitHolderType(PERMIT_HOLDER_TYPES.INDIVIDUAL)
       Code.expect(application.permitHolderType.id).to.equal(PERMIT_HOLDER_TYPES.INDIVIDUAL.id)
     })
+
+    // TODO: MCP - Add tests for setMcpType
 
     lab.test('setWasteActivities - add new and remove existing', async () => {
       const application = await ApplicationModel.getApplicationForId(context)
@@ -227,6 +232,8 @@ lab.experiment('Application Model test:', () => {
       Code.expect(applicationEntitySaveStub.calledOnce).to.be.true()
       Code.expect(applicationLineEntitySaveStub.notCalled).to.be.true()
     })
+
+    // TODO: MCP - Add tests to save an MCP application
 
     lab.test('save values into a completely blank new application', async () => {
       const application = new ApplicationModel({})

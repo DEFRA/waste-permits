@@ -13,6 +13,7 @@ const CookieService = require('../../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 const TriageList = require('../../../src/models/triage/triageList.model')
+const Application = require('../../../src/models/triage/application.model')
 
 const FAKE_FACILITY_TYPE_ID = 'fake-facility-type'
 const FAKE_FACILITY_TYPE = { id: FAKE_FACILITY_TYPE_ID, canApplyOnline: true }
@@ -20,6 +21,7 @@ const FAKE_FACILITY_TYPE = { id: FAKE_FACILITY_TYPE_ID, canApplyOnline: true }
 const routePath = '/select/bespoke/limited-company'
 const badPath = `${routePath}/invalid`
 const nextRoutePath = `${routePath}/${FAKE_FACILITY_TYPE_ID}`
+const endRoutePath = `/selected/confirm`
 
 let getRequest
 let postRequest
@@ -84,6 +86,7 @@ lab.experiment('Triage facility type page tests:', () => {
     lab.test('GET for facility types that cannot be applied for online shows apply offline page', async () => {
       fakeFacilityType.canApplyOnline = false
       sandbox.stub(TriageList, 'createFacilityTypesList').value(() => fakeFacilityTypeList)
+      sandbox.stub(TriageList, 'createWasteActivitiesList').value(() => new TriageList([]))
       getRequest.url = nextRoutePath
       const doc = await GeneralTestHelper.getDoc(getRequest)
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a bespoke permit for an installation, landfill, mine or water discharge')
@@ -115,6 +118,8 @@ lab.experiment('Triage facility type page tests:', () => {
   })
 
   lab.experiment('POST:', () => {
+    let applicationGetStub
+    let applicationSaveStub
     lab.beforeEach(() => {
       postRequest = {
         method: 'POST',
@@ -123,12 +128,18 @@ lab.experiment('Triage facility type page tests:', () => {
         payload: { 'facility-type': FAKE_FACILITY_TYPE_ID }
       }
       sandbox.stub(TriageList, 'createFacilityTypesList').value(() => fakeFacilityTypeList)
+      sandbox.stub(TriageList, 'createWasteActivitiesList').value(() => new TriageList([]))
+      sandbox.stub(TriageList, 'createIncludedWasteAssessmentsList').value(() => new TriageList([]))
+      applicationGetStub = sandbox.stub(Application, 'getApplicationForId')
+      applicationGetStub.callsFake(async () => new Application({}))
+      applicationSaveStub = sandbox.stub(Application.prototype, 'save')
+      applicationSaveStub.callsFake(async () => null)
     })
 
     lab.test('POST facility type redirects to next route', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers['location']).to.equal(endRoutePath)
     })
 
     lab.test('POST shows the error message summary panel when no facility type has been selected', async () => {
@@ -136,6 +147,12 @@ lab.experiment('Triage facility type page tests:', () => {
       const doc = await GeneralTestHelper.getDoc(postRequest)
       await checkCommonElements(doc)
       await GeneralTestHelper.checkValidationMessage(doc, 'facility-type', 'Select the type of facility you want')
+    })
+
+    lab.test('POST facility with no MCP types or waste activities saves the application', async () => {
+      await server.inject(postRequest)
+      Code.expect(applicationGetStub.calledOnce).to.be.true()
+      Code.expect(applicationSaveStub.calledOnce).to.be.true()
     })
   })
 })
