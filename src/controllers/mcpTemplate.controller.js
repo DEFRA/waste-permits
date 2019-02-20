@@ -12,18 +12,34 @@ module.exports = class McpTemplateController extends BaseController {
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
 
-    // Check the permit type (standard rules vs bespoke) and set a flag for the view
-    // (I didn't pass the permitType value into the view because it would mean hardcoding the permitType values (set in constants.js) in the view)
+    // Show the templates relevant for this application
     const { data: { permitType } } = await DataStore.get(context)
-    switch (permitType) {
-      case STANDARD_RULES:
-        pageContext.standardPermitType = true
-        break
-      case BESPOKE:
-        pageContext.bespokePermitType = true
-        break
-      default:
-        throw new Error(`Unexpected permitType: ${permitType}`)
+    // TODO: Temporarily hard-coded.  Get the mcp type chosen by the user (it's not yet in Dynamics, but Kas is looking into storing it)
+    const mcpType = 'stationary-mcp-sg'
+
+    if (permitType === STANDARD_RULES) {
+      pageContext.templates = [
+        { id: 'mcp-template-xls-link', name: 'Plant or generator list template (Excel XLS)', file: 'mcp-plant-generator-list-template-v0-1.xls' },
+        { id: 'mcp-template-ods-link', name: 'Plant or generator list template (Open Document ODS)', file: 'mcp-plant-generator-list-template-v0-1.ods' }
+      ]
+    } else if (permitType === BESPOKE) {
+      // TODO: Rather than the mcp type id being hard-coded here, pull in the MCP type ids (this is set in ../models/triage/triageLists, however the object name isn't exported (different than constants.js), so unavailable.  Chat to Ben Sagar about it.)
+      // TODO: Set the correct links and put the linked files in place
+      if (mcpType === 'stationary-mcp' || mcpType === 'stationary-mcp-sg' || mcpType === 'mobile-sg-mcp') {
+        pageContext.templates = [
+          { id: 'mcp-template-xls-link', name: 'Plant or generator list template APPENDIX 1 (Excel XLS)', file: 'todo' },
+          { id: 'mcp-template-ods-link', name: 'Plant or generator list template APPENDIX 1 (Open Document ODS)', file: 'todo' }
+        ]
+      } else if (mcpType === 'stationary-sg' || mcpType === 'mobile-sg') {
+        pageContext.templates = [
+          { id: 'mcp-template-xls-link', name: 'Plant or generator list template APPENDIX 2 (Excel XLS)', file: 'todo' },
+          { id: 'mcp-template-ods-link', name: 'Plant or generator list template APPENDIX 2 (Open Document ODS)', file: 'todo' }
+        ]
+      } else {
+        throw new Error(`Unexpected mcpType: ${mcpType}`)
+      }
+    } else {
+      throw new Error(`Unexpected permitType: ${permitType}`)
     }
 
     pageContext.isComplete = await McpTemplate.isComplete(context)
