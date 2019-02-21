@@ -50,6 +50,7 @@ lab.experiment('Existing permit page tests:', () => {
         Code.expect(doc.getElementById('existing-permit-yes').getAttribute('value')).to.equal('yes')
         Code.expect(doc.getElementById('existing-permit-no')).to.exist()
         Code.expect(doc.getElementById('existing-permit-no').getAttribute('value')).to.equal('no')
+        Code.expect(doc.getElementById('back-link')).to.exist()
       })
     })
   })
