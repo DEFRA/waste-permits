@@ -14,8 +14,11 @@ module.exports = class McpTemplateController extends BaseController {
 
     // Show the templates relevant for this application
     const { data: { permitType } } = await DataStore.get(context)
-    // TODO: Temporarily hard-coded.  Get the mcp type chosen by the user (it's not yet in Dynamics, but Kas is looking into storing it)
+    // TODO: mcpType temporarily hard-coded.  Get the mcp type chosen by the user (it's not yet in Dynamics, but Kas is looking into storing it)
+    // TODO: Not sure if it can be here for standard rules.  I assume it would just be a undefined for a standard rule rather than breaking it
     const mcpType = 'stationary-mcp-sg'
+    const { application } = context
+    console.log(application)
 
     if (permitType === STANDARD_RULES) {
       pageContext.templates = [
@@ -23,8 +26,8 @@ module.exports = class McpTemplateController extends BaseController {
         { id: 'mcp-template-ods-link', name: 'Plant or generator list template (Open Document ODS)', file: 'mcp-plant-generator-list-template-v0-1.ods' }
       ]
     } else if (permitType === BESPOKE) {
-      // TODO: Rather than the mcp type id being hard-coded here, pull in the MCP type ids (this is set in ../models/triage/triageLists, however the object name isn't exported (different than constants.js), so unavailable.  Chat to Ben Sagar about it.)
-      // TODO: Set the correct links and put the linked files in place
+      // TODO: Rather than the mcp type id being hard-coded here, pull in the MCP type ids (this is set in ../models/triage/triageLists, however the object name isn't exported (a different pattern than constants.js), so is unavailable.  Chat to Ben Sagar about it.)
+      // TODO: Set the correct links and put the linked files in place, ready for download
       if (mcpType === 'stationary-mcp' || mcpType === 'stationary-mcp-sg' || mcpType === 'mobile-sg-mcp') {
         pageContext.templates = [
           { id: 'mcp-template-xls-link', name: 'Plant or generator list template APPENDIX 1 (Excel XLS)', file: 'todo' },
