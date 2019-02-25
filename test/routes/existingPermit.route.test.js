@@ -11,24 +11,30 @@ const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
+const DataStore = require('../../src/models/dataStore.model')
 const { COOKIE_RESULT } = require('../../src/constants')
+const { PermitTypes } = require('../../src/constants')
 
 const routePath = '/existing-permit'
 const nextRoutePathYes = '/existing-permit/yes'
-const nextRoutePathNo = '/task-list'
+const nextRoutePathNoSr = '/task-list'
+const nextRoutePathNoBespoke = '/mcp-check/energy-report'
 
 lab.experiment('Existing permit page tests:', () => {
   let mocks
   let sandbox
+  let dataStoreData
 
   lab.beforeEach(() => {
     mocks = new Mocks()
+
     sandbox = sinon.createSandbox()
     sandbox.stub(Application, 'getById').value(() => mocks.application)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
-  })
+    sandbox.stub(DataStore, 'get').value(() => dataStoreData)
+})
 
   lab.afterEach(() => {
     sandbox.restore()
@@ -69,11 +75,19 @@ lab.experiment('Existing permit page tests:', () => {
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePathYes)
       })
-      lab.test('when no selected', async () => {
+      lab.test('when standard rule and no selected', async () => {
+        dataStoreData = { data: { permitType: PermitTypes.STANDARD_RULES.id } }
         postRequest.payload['existing-permit'] = 'no'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePathNo)
+        Code.expect(res.headers['location']).to.equal(nextRoutePathNoSr)
+      })
+      lab.test('when bespoke and no selected', async () => {
+        dataStoreData = { data: { permitType: PermitTypes.BESPOKE.id } }
+        postRequest.payload['existing-permit'] = 'no'
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePathNoBespoke)
       })
     })
 

@@ -4,9 +4,16 @@ const DataStore = require('../models/dataStore.model')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 
-module.exports = class TechnicalQualificationController extends BaseController {
+module.exports = class EnergyEfficiencyReportController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
+    const context = await RecoveryService.createApplicationContext(h)
+    const dataStore = await DataStore.get(context)
+
+    // TODO: Confirm if we need to redirect on mobile SG which is also MCP
+    if (dataStore.data.mcpType === 'mobile-sg') {
+      return this.redirect({ h })
+    }
 
     if (request.payload) {
       pageContext.newOrRefurbished = request.payload['new-or-refurbished'] === 'yes'
