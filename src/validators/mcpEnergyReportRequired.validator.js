@@ -3,7 +3,7 @@
 const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
-module.exports = class TechnicalQualificationValidator extends BaseValidator {
+module.exports = class EnergyReportRequiredValidator extends BaseValidator {
   get errorMessages () {
     return {
       'new-or-refurbished': {

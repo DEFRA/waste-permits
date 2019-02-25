@@ -4,7 +4,7 @@ const DataStore = require('../models/dataStore.model')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 
-module.exports = class EnergyEfficiencyReportController extends BaseController {
+module.exports = class EnergyReportRequiredController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
