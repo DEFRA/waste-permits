@@ -12,6 +12,9 @@ const authService = new ActiveDirectoryAuthService()
 
 const { DEFRA_COOKIE_KEY, COOKIE_KEY: { APPLICATION_ID } } = require('../../constants')
 
+const RecoveryService = require('../../services/recovery.service')
+const DataStore = require('../../models/dataStore.model')
+
 module.exports = class TriageController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
@@ -92,6 +95,11 @@ module.exports = class TriageController extends BaseController {
     }
 
     if (data.selectedFacilityTypes) {
+      // TODO: WE-2216 - After a discussion with Dave T and Ben Sagar we decided to revist the triage controller.  We agreed to store the user decisions in the datastore up until the 'start application' button.  After this code, the remaining triage controller logic left here needs to be revisited.  Is it still needed?
+      // Store the chosen MCP type in the data store
+      const context = await RecoveryService.createApplicationContext(h)
+      await DataStore.save(context, { mcpType: request.payload['mcp-type'] })
+
       // POSTING MCP types
       const requestedMcpType = request.payload['mcp-type']
       const selectedMcpTypes = data.availableMcpTypes.getListFilteredByIds([requestedMcpType])
