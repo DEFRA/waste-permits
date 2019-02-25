@@ -15,6 +15,6 @@ module.exports = class ExistingPermitController extends BaseController {
     if (existingPermit === 'yes') {
       return this.redirect({ h, route: 'MCP_HAS_EXISTING_PERMIT' })
     }
-    return this.redirect({ h })
+    return this.redirect({ h, route: 'MCP_REQUIRES_ENERGY_REPORT' })
   }
 }
