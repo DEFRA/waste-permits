@@ -28,7 +28,7 @@
               <input id="card-payment" type="radio" name="payment-type" value="{{formValues.card-payment}}">
               <label for="card-payment">
                 <span id="card-payment-label">Debit or credit card</span>
-                <span id="card-payment-label-hint" class="form-hint">Application processed immediately. No extra charge.</span>
+                <span id="card-payment-label-hint" class="form-hint">No extra charge for card payments</span>
               </label>
             </div>
 
@@ -36,7 +36,7 @@
               <input id="bacs-payment" type="radio" name="payment-type" value="{{formValues.bacs-payment}}">
               <label for="bacs-payment">
                 <span id="bacs-payment-label">Bank transfer by {{> abbreviations/BACS id="bacs-payment-label-abbr"}}</span>
-                <span id="bacs-payment-label-hint" class="form-hint">Application processed after the payment arrives</span>
+                <span id="bacs-payment-label-hint" class="form-hint">You must make the payment before you send your application</span>
               </label>
             </div>
 
