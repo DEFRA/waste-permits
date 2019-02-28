@@ -16,7 +16,8 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 const DataStore = require('../../src/models/dataStore.model')
-const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = require('../../src/constants').PermitTypes
+const { BESPOKE, STANDARD_RULES } = require('../../src/constants').PermitTypes
+const { MCP_TYPES: { STATIONARY_MCP, MOBILE_SG } } = require('../../src/models/triage/triageLists')
 
 const routePath = '/mcp/template/download'
 const nextRoutePath = '/task-list'
@@ -79,7 +80,7 @@ lab.experiment('MCP template download page tests:', () => {
       })
 
       lab.test('download links are correct for standard rules application', async () => {
-        mocks.dataStore.data.permitType = STANDARD_RULES // Set the mock permit type to STANDARD_RULES
+        mocks.dataStore.data.permitType = STANDARD_RULES.id // Set the mock permit type
         McpTemplate.isComplete = () => true
         const doc = await GeneralTestHelper.getDoc(request)
         Code.expect(doc.getElementById('mcp-template-xls-link-text').textContent).to.equal('Plant or generator list template (Excel XLS)')
@@ -88,27 +89,29 @@ lab.experiment('MCP template download page tests:', () => {
         Code.expect(doc.getElementById('mcp-template-ods-link').getAttribute('download')).to.equal('mcp-plant-generator-list-template-v0-1.ods')
       })
 
-      // TODO: check against the correct mcp types
       // TODO: Set the correct download links once the files have been created
-      // lab.test('download links are correct for bespoke applications with mcp types that get APPENDIX 1', async () => {
-      //   mocks.dataStore.data.permitType = BESPOKE // Set the mock permit type to BESPOKE
-      //   McpTemplate.isComplete = () => true
-      //   const doc = await GeneralTestHelper.getDoc(request)
-      //   Code.expect(doc.getElementById('mcp-template-xls-link-text').textContent).to.equal('Plant or generator list template APPENDIX 1 (Excel XLS)')
-      //   Code.expect(doc.getElementById('mcp-template-xls-link').getAttribute('download')).to.equal('TODO')
-      //   Code.expect(doc.getElementById('mcp-template-ods-link-text').textContent).to.equal('Plant or generator list template APPENDIX 1 (Open Document ODS)')
-      //   Code.expect(doc.getElementById('mcp-template-ods-link').getAttribute('download')).to.equal('TODO')
-      // })
+      lab.test('download links are correct for bespoke applications with mcp types that get APPENDIX 1', async () => {
+        mocks.dataStore.data.permitType = BESPOKE.id // Set the mock permit type
+        mocks.dataStore.data.mcpType = STATIONARY_MCP.id // Set the mock mcp type to
+        McpTemplate.isComplete = () => true
+        const doc = await GeneralTestHelper.getDoc(request)
+        Code.expect(doc.getElementById('mcp-template-xls-link-text').textContent).to.equal('Plant or generator list template APPENDIX 1 (Excel XLS)')
+        // Code.expect(doc.getElementById('mcp-template-xls-link').getAttribute('download')).to.equal('TODO')
+        Code.expect(doc.getElementById('mcp-template-ods-link-text').textContent).to.equal('Plant or generator list template APPENDIX 1 (Open Document ODS)')
+        // Code.expect(doc.getElementById('mcp-template-ods-link').getAttribute('download')).to.equal('TODO')
+      })
 
-      // lab.test('download links are correct for bespoke applications with mcp types that get APPENDIX 2', async () => {
-      //   mocks.dataStore.data.permitType = BESPOKE // Set the mock permit type to BESPOKE
-      //   McpTemplate.isComplete = () => true
-      //   const doc = await GeneralTestHelper.getDoc(request)
-      //   Code.expect(doc.getElementById('mcp-template-xls-link-text').textContent).to.equal('Plant or generator list template APPENDIX 2 (Excel XLS)')
-      //   Code.expect(doc.getElementById('mcp-template-xls-link').getAttribute('download')).to.equal('TODO')
-      //   Code.expect(doc.getElementById('mcp-template-ods-link-text').textContent).to.equal('Plant or generator list template APPENDIX 2 (Open Document ODS)')
-      //   Code.expect(doc.getElementById('mcp-template-ods-link').getAttribute('download')).to.equal('TODO')
-      // })
+      // TODO: Set the correct download links once the files have been created
+      lab.test('download links are correct for bespoke applications with mcp types that get APPENDIX 2', async () => {
+        mocks.dataStore.data.permitType = BESPOKE.id // Set the mock permit type
+        mocks.dataStore.data.mcpType = MOBILE_SG.id // Set the mock mcp type to
+        McpTemplate.isComplete = () => true
+        const doc = await GeneralTestHelper.getDoc(request)
+        Code.expect(doc.getElementById('mcp-template-xls-link-text').textContent).to.equal('Plant or generator list template APPENDIX 2 (Excel XLS)')
+        // Code.expect(doc.getElementById('mcp-template-xls-link').getAttribute('download')).to.equal('TODO')
+        Code.expect(doc.getElementById('mcp-template-ods-link-text').textContent).to.equal('Plant or generator list template APPENDIX 2 (Open Document ODS)')
+        // Code.expect(doc.getElementById('mcp-template-ods-link').getAttribute('download')).to.equal('TODO')
+      })
     })
 
     lab.experiment('failure', () => {
