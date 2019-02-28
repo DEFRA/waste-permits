@@ -1078,6 +1078,15 @@ const Routes = {
       ]
     }
   },
+  MCP_AIR_DISPERSION_MODELLING: {
+    path: '/mcp-check/air-dispersion-modelling-report',
+    view: 'airDispersionModelling',
+    pageHeading: 'Do you need to provide an air dispersion modelling report?',
+    controller: 'airDispersionModelling',
+    validator: 'airDispersionModelling',
+    nextRoute: 'MCP_REQUIRES_ENERGY_REPORT',
+    types: 'GET, POST'
+  },
   MCP_EXISTING_PERMIT: {
     path: '/existing-permit',
     view: 'existingPermit',

@@ -1,0 +1,58 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p id="page-description-paragraph-1">
+        Do you need to provide an air dispersion modelling report?
+      </p>
+      <p id="page-description-paragraph-2">
+        To find out if your application should include an air dispersion modelling report use the ‘specified generator screening tool’ or a similar tool that uses an equivalent level of detail.
+      </p>
+      <!-- TODO: Get the file into the right place and set the url (/public/...) -->
+      <p>
+        <a id="specified-generator-screening-tool-download" href="" download="">
+          <span id="specified-generator-screening-tool-download-text">Specified generator screening tool (Excel XLS)</span>
+        </a>
+      </p>
+
+      <p>
+        Follow the <a id="air-emissions-risk-assessment-guidance-link" href="https://www.gov.uk/guidance/air-emissions-risk-assessment-for-your-environmental-permit" target="_blank">air emissions risk assessment guidance (opens new tab)</a> to check your emissions.
+      </p>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.air-dispersion-modelling}}{{/getFormErrorGroupClass}}">
+          <fieldset>
+
+            <legend id="air-dispersion-modelling-legend" class="visually-hidden">{{pageHeading}}</legend>
+
+            {{> common/fieldError fieldId='air-dispersion-modelling-error' message=errors.air-dispersion-modelling }}
+            <div class="multiple-choice">
+              <input id="air-dispersion-modelling-yes" type="radio" name="air-dispersion-modelling" value="yes">
+              <label id="air-dispersion-modelling-yes-label" for="air-dispersion-modelling-yes">Yes, we need to provide an air dispersion modelling report</label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="air-dispersion-modelling-no" type="radio" name="air-dispersion-modelling" value="no">
+              <label id="air-dispersion-modelling-no-label" for="air-dispersion-modelling-no">No</label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+    </div>
+  </div>
+
+</main>
