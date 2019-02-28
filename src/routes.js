@@ -1111,6 +1111,15 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
+  MCP_REQUIRES_ENERGY_REPORT: {
+    path: '/mcp-check/energy-report',
+    view: 'mcpEnergyReportRequired',
+    pageHeading: 'About your MCP or SG',
+    controller: 'mcpEnergyReportRequired',
+    validator: 'mcpEnergyReportRequired',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   MINING_WASTE_WEIGHT: {
     path: '/mining-waste/weight',
     view: 'miningWasteWeight',

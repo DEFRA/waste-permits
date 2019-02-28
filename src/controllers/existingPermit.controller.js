@@ -1,6 +1,9 @@
 'use strict'
 
 const BaseController = require('./base.controller')
+const DataStore = require('../models/dataStore.model')
+const RecoveryService = require('../services/recovery.service')
+const { BESPOKE: { id: BESPOKE } } = require('../../src/constants').PermitTypes
 
 module.exports = class ExistingPermitController extends BaseController {
   async doGet (request, h, errors) {
@@ -15,6 +18,13 @@ module.exports = class ExistingPermitController extends BaseController {
     if (existingPermit === 'yes') {
       return this.redirect({ h, route: 'MCP_HAS_EXISTING_PERMIT' })
     }
-    return this.redirect({ h })
+
+    const context = await RecoveryService.createApplicationContext(h)
+    const dataStore = await DataStore.get(context)
+    if (dataStore.data.permitType === BESPOKE) {
+      return this.redirect({ h, route: 'MCP_REQUIRES_ENERGY_REPORT' })
+    } else {
+      return this.redirect({ h, route: 'TASK_LIST' })
+    }
   }
 }

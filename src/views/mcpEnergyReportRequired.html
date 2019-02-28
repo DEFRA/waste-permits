@@ -1,0 +1,110 @@
+<main id="content" tabindex="-1" role="main">
+
+    {{> common/betaBanner }}
+  
+    {{> common/backLink }}
+  
+    <div class="grid-row">
+      <div class="column-two-thirds">
+  
+        {{> common/errorSummary }}
+  
+        {{> common/pageHeading pageHeading }}
+  
+        <form method="POST" action="{{formAction}}" novalidate="novalidate">
+          {{> common/csrfToken token=DefraCsrfToken}}
+  
+          <div class="body-text">
+            <legend id="energy-report-required-message" aria-describedby="energy-report-required-details"><p>Is your MCP or SG new or substantially refurbished?</p></legend>
+    
+            <details id="energy-report-required-help">
+              <summary id="energy-report-required-legend">How to decide if it is new or substantially refurbished</summary>
+              <div class="panel panel-border-narrow" id="energy-report-required-details">
+                Plant is considered to be new if it is:
+                <ul id="grid-reference-help-list" class="list list-bullet">
+                  <li>put into operation on or after 20 December 2018</li>
+                  <li>altered or repaired such that the emission limit values (ELV) change - for example if an existing boiler is running on heavy oil and it is converted to run on natural gas</li>
+                  <li>substantially refurbished, meaning that the cost of refurbishment was more than 50% of the investment cost for a new comparable MCP unit</li>
+                </ul>
+              </div>     
+            </details>
+          </div>
+
+          <div id="energy-report-required" class="form-group {{#getFormErrorGroupClass errors.energy-report-required}}{{/getFormErrorGroupClass}}">      
+            <div class="form-group {{#getFormErrorGroupClass errors.new-or-refurbished}}{{/getFormErrorGroupClass}}">
+              <fieldset id="new-or-refurbished">
+                
+                {{> common/fieldError fieldId='new-or-refurbished-error' message=errors.new-or-refurbished }}
+
+                <div class="multiple-choice" data-target="thermal-input-and-engine-type">
+                  <input id="new-or-refurbished-yes" type="radio" name="new-or-refurbished" value="yes" {{#if newOrRefurbished}}checked="checked"{{/if}}>
+                  <label for="new-or-refurbished-yes">
+                    <span id="new-or-refurbished-yes-label">Yes it is new or substantially refurbished</span>
+                  </label>
+                </div>
+                <div class="multiple-choice">
+                  <input id="new-or-refurbished-no" type="radio" name="new-or-refurbished" value="no" {{#if notNewOrRefurbished}}checked="checked"{{/if}}>
+                  <label for="new-or-refurbished-no">
+                    <span id="new-or-refurbished-no-label">No</span>
+                  </label>
+                </div>
+                <div class="panel panel-border-narrow js-hidden" id="thermal-input-and-engine-type">  
+                  <div class="form-group {{#getFormErrorGroupClass errors.total-aggregated-thermal-input}}{{/getFormErrorGroupClass}}">
+                    <fieldset id="total-aggregated-thermal-input">
+                      <legend id="total-aggregated-thermal-legend">What is its total aggregated thermal input?</legend>
+  
+                      {{> common/fieldError fieldId='total-aggregated-thermal-input-error' message=errors.total-aggregated-thermal-input }}
+  
+                      <div class="multiple-choice">
+                        <input id="total-aggregated-thermal-input-under-20" type="radio" name="total-aggregated-thermal-input" value="under 20" {{#if thermalInputUnder20}}checked="checked"{{/if}}>
+                        <label for="total-aggregated-thermal-input-under-20">
+                          <span id="total-aggregated-thermal-input-under-20-label">Under 20MW thermal</span>
+                        </label>
+                      </div>
+                      <div class="multiple-choice">
+                        <input id="total-aggregated-thermal-input-over-20" type="radio" name="total-aggregated-thermal-input" value="over 20" {{#if thermalInputOver20}}checked="checked"{{/if}}>
+                        <label for="total-aggregated-thermal-input-over-20">
+                          <span id="total-aggregated-thermal-input-over-20-label">20MW thermal or more</span>
+                        </label>
+                      </div>
+                    </fieldset>
+                  </div>
+
+                  <div class="form-group {{#getFormErrorGroupClass errors.engine-type}}{{/getFormErrorGroupClass}}">
+                    <fieldset id="engine-type">
+                      <legend id="engine-type-legend">What type of engine does it use?</legend>
+  
+                      {{> common/fieldError fieldId='engine-type-error' message=errors.engine-type }}
+  
+                      <div class="multiple-choice">
+                        <input id="engine-type-boiler-etc" type="radio" name="engine-type" value="boiler etc" {{#if boiler}}checked="checked"{{/if}}>
+                        <label for="engine-type-boiler-etc">
+                          <span id="engine-type-boiler-etc-label">Boiler, furnace, gas turbine or compression ignition engine</span>
+                        </label>
+                      </div>
+                      <div class="multiple-choice">
+                        <input id="engine-type-spark-ignition" type="radio" name="engine-type" value="spark ignition" {{#if sparkIgnition}}checked="checked"{{/if}}>
+                        <label for="engine-type-spark-ignition">
+                          <span id="engine-type-spark-ignition-label">Spark ignition engine</span>
+                        </label>
+                      </div>
+                    </fieldset>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+  
+          {{> common/submitButton }}
+  
+          <div>
+            We are asking this to check if you need to provide a best available techniques assessment. If you do, we will add it to your application task list.
+          </div>
+
+        </form>
+  
+      </div>
+    </div>
+  
+  </main>
+  
