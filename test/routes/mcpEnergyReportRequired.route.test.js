@@ -19,11 +19,10 @@ const nextRoutePath = '/task-list'
 let sandbox
 let mocks
 let dataStoreStub
-let dataStoreData
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-  dataStoreData = { data: { mcpType: 'stationary-sg' } } // Set the mock permit to one that this screen displays for
+  mocks.dataStore.data.mcpType = 'stationary-sg' // Set the mock permit to one that this screen displays for
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -32,10 +31,8 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
-  sandbox.stub(DataStore, 'get').value(() => dataStoreData)
+  sandbox.stub(DataStore, 'get').value(() => mocks.dataStore)
   dataStoreStub = sandbox.stub(DataStore, 'save')
-
-  // TODO: Set the mcp type to one that shows the screen; 'stationary-sg'
 })
 
 lab.afterEach(() => {
@@ -71,7 +68,7 @@ lab.experiment('Energy efficiency report page tests:', () => {
       })
 
       lab.test('Check we don\'t display this page for certain permit types', async () => {
-        dataStoreData.data.mcpType = 'mobile-sg' // Set the mock permit to one that this screen doesn't display for
+        mocks.dataStore.data.mcpType = 'mobile-sg' // Set the mock permit to one that this screen doesn't display for
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
