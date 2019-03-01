@@ -30,7 +30,7 @@
             </details>
           </div>
 
-          <div id="energy-report-required" class="form-group {{#getFormErrorGroupClass errors.energy-report-required}}{{/getFormErrorGroupClass}}">      
+          <div id="energy-report-required" >
             <div class="form-group {{#getFormErrorGroupClass errors.new-or-refurbished}}{{/getFormErrorGroupClass}}">
               <fieldset id="new-or-refurbished">
                 
@@ -43,7 +43,7 @@
                   </label>
                 </div>
                 <div class="multiple-choice">
-                  <input id="new-or-refurbished-no" type="radio" name="new-or-refurbished" value="no" {{#if notNewOrRefurbished}}checked="checked"{{/if}}>
+                  <input id="new-or-refurbished-no" type="radio" name="new-or-refurbished" value="no">
                   <label for="new-or-refurbished-no">
                     <span id="new-or-refurbished-no-label">No</span>
                   </label>
@@ -98,7 +98,7 @@
           {{> common/submitButton }}
   
           <div>
-            We are asking this to check if you need to provide a best available techniques assessment. If you do, we will add it to your application task list.
+            We are asking this to check if you need to provide an energy efficiency report. If you do, we will add it to your application task list.
           </div>
 
         </form>

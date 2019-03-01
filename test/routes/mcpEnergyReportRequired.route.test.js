@@ -72,6 +72,8 @@ lab.experiment('Energy efficiency report page tests:', () => {
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(dataStoreStub.callCount).to.equal(1)
+        Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
       })
     })
   })
