@@ -1096,6 +1096,15 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
+  MCP_HABITAT_ASSESSMENT: {
+    path: '/mcp-check/habitat-assessment',
+    view: 'habitatAssessment',
+    pageHeading: 'Do you need a habitat assessment?',
+    controller: 'habitatAssessment',
+    validator: 'habitatAssessment',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   MCP_HAS_EXISTING_PERMIT: {
     path: '/existing-permit/yes',
     view: 'contactUsBefore',
