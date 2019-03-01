@@ -1093,7 +1093,6 @@ const Routes = {
     pageHeading: 'Does your site or installation already have an environmental (EPR) permit?',
     controller: 'existingPermit',
     validator: 'existingPermit',
-    nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
   MCP_HABITAT_ASSESSMENT: {

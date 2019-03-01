@@ -18,7 +18,7 @@ const { PermitTypes } = require('../../src/constants')
 const routePath = '/existing-permit'
 const nextRoutePathYes = '/existing-permit/yes'
 const nextRoutePathNoSr = '/task-list'
-const nextRoutePathNoBespoke = '/mcp-check/energy-report'
+const nextRoutePathNoBespoke = '/mcp-check/air-dispersion-modelling-report'
 
 lab.experiment('Existing permit page tests:', () => {
   let mocks
