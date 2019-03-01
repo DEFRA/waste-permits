@@ -100,7 +100,7 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       }
     })
 
-    lab.test('Success', async () => {
+    lab.test('Success - yes', async () => {
       // Choose 'Yes' and click 'Continue'
       postRequest.payload['air-dispersion-modelling'] = 'yes'
       const res = await server.inject(postRequest)
@@ -108,6 +108,16 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
       Code.expect(dataStoreStub.callCount).to.equal(1)
       Code.expect(dataStoreStub.args[0][1].airDispersionModelling).to.equal('yes')
+    })
+
+    lab.test('Success - no', async () => {
+      // Choose 'No' and click 'Continue'
+      postRequest.payload['air-dispersion-modelling'] = 'no'
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(dataStoreStub.callCount).to.equal(1)
+      Code.expect(dataStoreStub.args[0][1].airDispersionModelling).to.equal('no')
     })
 
     lab.test('Invalid input', async () => {
