@@ -12,16 +12,16 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const DataStore = require('../../src/models/dataStore.model')
 const { COOKIE_RESULT } = require('../../src/constants')
-const routePath = '/mcp-check/best-available-techniques/sg'
+const routePath = '/mcp-check/best-available-techniques/mcp'
 
-const nextRoutePath = '/mcp-check/best-available-techniques/mcp'
+const nextRoutePath = '/mcp-check/habitat-assessment'
 let sandbox
 let mocks
 let dataStoreStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-  mocks.dataStore.data.mcpType = 'stationary-sg' // Set the mock permit to one that this screen displays for
+  mocks.dataStore.data.mcpType = 'stationary-mcp' // Set the mock permit to one that this screen displays for
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -39,7 +39,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Best available techniques report required for SG tests:', () => {
+lab.experiment('Best available techniques report required for MCP tests:', () => {
   new GeneralTestHelper({ lab, routePath }).test()
   lab.experiment(`GET ${routePath}`, () => {
     let request
@@ -54,13 +54,21 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
     lab.experiment('Success', () => {
       lab.test('Check the basics', async () => {
         const doc = await GeneralTestHelper.getDoc(request)
-        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('About your generators')
+        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Are you burning waste biomass?')
         Code.expect(doc.getElementById('back-link')).to.exist()
-        Code.expect(doc.getElementById('best-available-techniques-required-sg-message')).to.exist()
-        Code.expect(doc.getElementById('thermal-rating-20-to-50')).to.exist()
-        Code.expect(doc.getElementById('thermal-rating-not-20-to-50')).to.exist()
-        Code.expect(doc.getElementById('engine-type-boiler-etc')).to.exist()
-        Code.expect(doc.getElementById('engine-type-spark')).to.exist()
+        Code.expect(doc.getElementById('best-available-techniques-required-mcp-message')).to.exist()
+        Code.expect(doc.getElementById('thermal-rating-over-20')).to.exist()
+        Code.expect(doc.getElementById('thermal-rating-not-over-20')).to.exist()
+        Code.expect(doc.getElementById('meets-criteria-yes')).to.exist()
+        Code.expect(doc.getElementById('meets-criteria-no')).to.exist()
+      })
+
+      lab.test('Check we don\'t display this page if we\'ve already selected best available techniques assessment', async () => {
+        mocks.dataStore.data.bestAvailableTechniquesAssessment = true
+        const res = await server.inject(request)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(dataStoreStub.callCount).to.equal(0)
       })
 
       lab.test('Check we don\'t display this page for certain permit types', async () => {
@@ -89,40 +97,40 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
     lab.experiment('Success', async () => {
       lab.test('Redirects correctly', async () => {
         // Make selections and click 'Continue'
-        postRequest.payload['thermal-rating'] = '20 to 50'
-        postRequest.payload['engine-type'] = 'boiler etc'
+        postRequest.payload['thermal-rating'] = 'over 20'
+        postRequest.payload['meets-criteria'] = 'yes'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
-      lab.test('Thermal rating 20MW to 50MW, boiler', async () => {
-        postRequest.payload['thermal-rating'] = '20 to 50'
-        postRequest.payload['engine-type'] = 'boiler etc'
+      lab.test('Thermal rating over 20MW, meets criteria', async () => {
+        postRequest.payload['thermal-rating'] = 'over 20'
+        postRequest.payload['meets-criteria'] = 'yes'
         await server.inject(postRequest)
         Code.expect(dataStoreStub.callCount).to.equal(1)
         Code.expect(dataStoreStub.args[0][1].bestAvailableTechniquesAssessment).to.equal(true)
       })
 
-      lab.test('Thermal rating 20MW to 50MW, spark ignition', async () => {
-        postRequest.payload['thermal-rating'] = '20 to 50'
-        postRequest.payload['engine-type'] = 'spark ignition'
+      lab.test('Thermal rating over 20MW, does not meet criteria', async () => {
+        postRequest.payload['thermal-rating'] = 'over 20'
+        postRequest.payload['meets-criteria'] = 'no'
         await server.inject(postRequest)
         Code.expect(dataStoreStub.callCount).to.equal(1)
         Code.expect(dataStoreStub.args[0][1].bestAvailableTechniquesAssessment).to.equal(false)
       })
 
-      lab.test('Thermal rating not 20MW to 50MW, boiler', async () => {
-        postRequest.payload['thermal-rating'] = 'not 20 to 50'
-        postRequest.payload['engine-type'] = 'boiler etc'
+      lab.test('Thermal rating not over 20MW, meets criteria', async () => {
+        postRequest.payload['thermal-rating'] = 'not over 20'
+        postRequest.payload['meets-criteria'] = 'yes'
         await server.inject(postRequest)
         Code.expect(dataStoreStub.callCount).to.equal(1)
         Code.expect(dataStoreStub.args[0][1].bestAvailableTechniquesAssessment).to.equal(false)
       })
 
-      lab.test('Thermal rating not 20MW to 50MW, spark ignition', async () => {
-        postRequest.payload['thermal-rating'] = 'not 20 to 50'
-        postRequest.payload['engine-type'] = 'spark ignition'
+      lab.test('Thermal rating not over 20MW, does not meet criteria', async () => {
+        postRequest.payload['thermal-rating'] = 'not over 20'
+        postRequest.payload['meets-criteria'] = 'no'
         await server.inject(postRequest)
         Code.expect(dataStoreStub.callCount).to.equal(1)
         Code.expect(dataStoreStub.args[0][1].bestAvailableTechniquesAssessment).to.equal(false)
@@ -131,22 +139,22 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
 
     lab.experiment('Invalid rating', async () => {
       lab.test('Missing thermal rating', async () => {
-        postRequest.payload['engine-type'] = 'boiler etc'
+        postRequest.payload['meets-criteria'] = 'no'
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await GeneralTestHelper.checkValidationMessage(doc, 'thermal-rating', 'Select yes or no')
       })
 
-      lab.test('Missing engine type', async () => {
-        postRequest.payload['thermal-rating'] = '20 to 50'
+      lab.test('Missing meets criteria', async () => {
+        postRequest.payload['thermal-rating'] = 'over 20'
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'engine-type', 'Select where it get its energy from')
+        await GeneralTestHelper.checkValidationMessage(doc, 'meets-criteria', 'Select yes or no')
       })
 
       lab.test('Missing everything', async () => {
         postRequest.payload = {}
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await GeneralTestHelper.checkValidationMessage(doc, 'thermal-rating', 'Select yes or no')
-        await GeneralTestHelper.checkNoValidationMessage(doc, 'engine-type')
+        await GeneralTestHelper.checkNoValidationMessage(doc, 'meets-criteria')
       })
     })
   })

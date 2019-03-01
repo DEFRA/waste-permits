@@ -1134,7 +1134,16 @@ const Routes = {
     pageHeading: 'About your generators',
     controller: 'mcpBestAvailableTechniquesRequiredSg',
     validator: 'mcpBestAvailableTechniquesRequiredSg',
-    nextRoute: 'TASK_LIST',
+    nextRoute: 'MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_MCP',
+    types: 'GET, POST'
+  },
+  MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_MCP: {
+    path: '/mcp-check/best-available-techniques/mcp',
+    view: 'mcpBestAvailableTechniquesRequiredMcp',
+    pageHeading: 'Are you burning waste biomass?',
+    controller: 'mcpBestAvailableTechniquesRequiredMcp',
+    validator: 'mcpBestAvailableTechniquesRequiredMcp',
+    nextRoute: 'MCP_HABITAT_ASSESSMENT',
     types: 'GET, POST'
   },
   MCP_REQUIRES_ENERGY_REPORT: {
