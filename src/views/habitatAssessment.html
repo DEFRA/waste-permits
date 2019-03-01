@@ -1,0 +1,60 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+      {{> common/pageHeading pageHeading }}
+
+      <p id="page-description-paragraph-2">
+        If you have an emission point that is within the screening distance of a natural habitat that is either a Special Area of Conservation, Special Protection Area, site of special scientific interest (SSSI) or Ramsar wetlands site, you will need to pay us to do a habitat assessment.
+      </p>
+      <p>
+        The screening distance for an MCP burning:
+      </p>
+      <ul id="grid-reference-help-list" class="list list-bullet">
+        <li>natural gas or low-sulphur diesel is 5km</li>
+        <li>biogas or landfill gas is 10km</li>
+      </ul>
+      <p>
+        If you have a specified generator you should use the specified generator screening tool to calculate the screening distance for your site.
+      </p>
+      <p>
+        If you are not sure if there is a relevant habitat within the screening distance of your site, then you can order a free <a id="habitat-assessment-guidance-link" href="https://www.gov.uk/government/publications/environmental-permit-pre-application-advice-form" target="_blank">nature and heritage conservation screen (opens new tab)</a>.
+      </p>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.habitat-assessment}}{{/getFormErrorGroupClass}}">
+          <fieldset>
+
+            <legend id="habitat-assessment-legend" class="visually-hidden">{{pageHeading}}</legend>
+
+            {{> common/fieldError fieldId='habitat-assessment-error' message=errors.habitat-assessment }}
+            <div class="multiple-choice">
+              <input id="habitat-assessment-yes" type="radio" name="habitat-assessment" value="yes">
+              <label id="habitat-assessment-yes-label" for="habitat-assessment-yes">Yes, we need the Environment Agency to do a habitat assessment</label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="habitat-assessment-no" type="radio" name="habitat-assessment" value="no">
+              <label id="habitat-assessment-no-label" for="habitat-assessment-no">No</label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+
+      <p>
+        If you need a habitat assessment, we will ask you for the location of the plant or generators later in the application.
+      </p>
+    </div>
+  </div>
+
+</main>
