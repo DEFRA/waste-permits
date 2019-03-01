@@ -14,8 +14,7 @@ const DataStore = require('../../src/models/dataStore.model')
 const { COOKIE_RESULT } = require('../../src/constants')
 const routePath = '/mcp-check/energy-report'
 
-// TODO: Set to the correct next route path (not task-list)
-const nextRoutePath = '/task-list'
+const nextRoutePath = '/mcp-check/best-available-techniques/sg'
 let sandbox
 let mocks
 let dataStoreStub
