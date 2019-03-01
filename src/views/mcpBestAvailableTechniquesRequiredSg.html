@@ -1,0 +1,72 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+
+        <div class="form-group {{#getFormErrorGroupClass errors.thermal-rating}}{{/getFormErrorGroupClass}}">
+          <fieldset id="thermal-rating">
+            <legend id="best-available-techniques-required-sg-message"><p>Does any single generator unit have a rated thermal input between 20MW and 50MW?</p></legend>
+            
+            {{> common/fieldError fieldId='thermal-rating-error' message=errors.thermal-rating }}
+
+            <div class="multiple-choice" data-target="engine-type">
+              <input id="thermal-rating-20-to-50" type="radio" name="thermal-rating" value="20 to 50" {{#if thermalRating20To50}}checked="checked"{{/if}}>
+              <label for="thermal-rating-20-to-50">
+                <span id="thermal-rating-20-to-50-label">Yes, a single unit is rated between 20MW and 50MW thermal</span>
+              </label>
+            </div>
+            <div class="multiple-choice">
+              <input id="thermal-rating-not-20-to-50" type="radio" name="thermal-rating" value="not 20 to 50">
+              <label for="thermal-rating-not-20-to-50">
+                <span id="thermal-rating-not-20-to-50-label">No</span>
+              </label>
+            </div>
+            <div class="panel panel-border-narrow js-hidden" id="engine-type">  
+              <div class="form-group {{#getFormErrorGroupClass errors.engine-type}}{{/getFormErrorGroupClass}}">
+                <fieldset id="engine-type-form">
+                  <legend id="engine-type-legend">What does that generator get its energy from?</legend>
+
+                  {{> common/fieldError fieldId='engine-type-error' message=errors.engine-type }}
+
+                  <div class="multiple-choice">
+                    <input id="engine-type-boiler-etc" type="radio" name="engine-type" value="boiler etc">
+                    <label for="engine-type-boiler-etc">
+                      <span id="engine-type-boiler-etc-label">Boiler, furnace, gas turbine or compression ignition engine</span>
+                    </label>
+                  </div>
+                  <div class="multiple-choice">
+                    <input id="engine-type-spark" type="radio" name="engine-type" value="spark">
+                    <label for="engine-type-spark">
+                      <span id="engine-type-spark-label">Spark ignition engine</span>
+                    </label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+
+        <div>
+          We are asking this to check if you need to provide a best available techniques assessment. If you do, we will add it to your application task list.
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</main>

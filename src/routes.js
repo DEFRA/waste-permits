@@ -1128,13 +1128,22 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
+  MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_SG: {
+    path: '/mcp-check/best-available-techniques/sg',
+    view: 'mcpBestAvailableTechniquesRequiredSg',
+    pageHeading: 'About your generators',
+    controller: 'mcpBestAvailableTechniquesRequiredSg',
+    validator: 'mcpBestAvailableTechniquesRequiredSg',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   MCP_REQUIRES_ENERGY_REPORT: {
     path: '/mcp-check/energy-report',
     view: 'mcpEnergyReportRequired',
     pageHeading: 'About your MCP or SG',
     controller: 'mcpEnergyReportRequired',
     validator: 'mcpEnergyReportRequired',
-    nextRoute: 'TASK_LIST',
+    nextRoute: 'MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_SG',
     types: 'GET, POST'
   },
   MINING_WASTE_WEIGHT: {
