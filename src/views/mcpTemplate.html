@@ -21,16 +21,16 @@
         You will be asked to upload it later in the application.
       </p>
 
+      <!-- The templates can be different, therefore handled in the controller -->
+      {{#if templates}}
+      {{#each templates}}
       <p>
-        <a id="mcp-template-xls-link" href="/public/images/mcp-template/mcp-plant-generator-list-template-v0-1.xls" download="mcp-plant-generator-list-template-v0-1.xls">
-          <span id="mcp-template-xls-link-text">Plant or generator list template (Excel XLS)</span>
+        <a id="{{id}}" href="/public/images/mcp-template/{{file}}" download="{{file}}">
+          <span id="{{id}}-text">{{name}}</span>
         </a>
       </p>
-      <p>
-        <a id="mcp-template-ods-link" href="/public/images/mcp-template/mcp-plant-generator-list-template-v0-1.ods" download="mcp-plant-generator-list-template-v0-1.ods">
-          <span id="mcp-template-ods-link-text">Plant or generator list template (Open Document ODS)</span>
-        </a>
-      </p>
+      {{/each}}
+      {{/if}}
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
