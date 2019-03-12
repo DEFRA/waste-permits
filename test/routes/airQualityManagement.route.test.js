@@ -83,11 +83,6 @@ lab.experiment('Air Quality Management Area page tests:', () => {
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
       })
-      // lab.test('when value already selected', async () => {
-      //   mocks.airQualityManagement.none = true
-      //   const doc = await GeneralTestHelper.getDoc(request)
-      //   await checkCommonElements(doc)
-      // })
       lab.test('when all data already entered', async () => {
         mocks.airQualityManagement.isInAqma = true
         mocks.airQualityManagement.aqmaName = 'AQMA NAME'
@@ -96,10 +91,6 @@ lab.experiment('Air Quality Management Area page tests:', () => {
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
       })
-      // 'aqma-is-in-aqma': 'yes',
-      // 'aqma-name': 'AQMA NAME',
-      // 'aqma-nitrogen-dioxide-level': '50',
-      // 'aqma-local-authority-name': 'AQMA LOCAL AUTHORITY NAME'
     })
 
     lab.experiment('failure', () => {

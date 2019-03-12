@@ -2,7 +2,6 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-// const DataStore = require('../models/dataStore.model')
 const AirQualityManagementModel = require('../models/airQualityManagement.model')
 
 module.exports = class AirQualityManagementController extends BaseController {
