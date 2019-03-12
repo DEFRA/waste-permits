@@ -26,7 +26,7 @@ const ManagementSystemCheck = require('../models/checkList/managementSystem.chec
 const NeedToConsult = require('../models/checkList/needToConsult.check')
 const McpDetailsCheck = require('../models/checkList/mcpDetails.check')
 const McpBusinessActivityCheck = require('../models/checkList/mcpBusinessActivity.check')
-const AirQualityManagement = require('../models/checkList/airQualityManagement.check')
+const AirQualityManagementCheck = require('../models/checkList/airQualityManagement.check')
 
 module.exports = class CheckBeforeSendingController extends BaseController {
   constructor (...args) {
@@ -46,6 +46,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       McpBusinessActivityCheck,
       WasteTypesListCheck,
       TechnicalCompetenceCheck,
+      AirQualityManagementCheck,
       AirQualityModellingReportCheck,
       ScreeningToolCheck,
       EnergyEfficiencyReportCheck,
@@ -56,8 +57,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       ManagementSystemCheck,
       MiningWasteCheck,
       ConfidentialityCheck,
-      InvoiceCheck,
-      AirQualityManagement // not sure if in correct place
+      InvoiceCheck
     ]
   }
 

@@ -411,11 +411,11 @@ const bespoke = [
     label: 'Operations',
     tasks: [
       tasks.BASIC_OPERATION_DETAILS,
-      tasks.NON_TECHNICAL_SUMMARY,
       tasks.SITE_NAME_LOCATION,
-      tasks.SITE_CONDITION_REPORT,
       tasks.SITE_PLAN,
-      tasks.AIR_QUALITY_MANAGEMENT
+      tasks.SITE_CONDITION_REPORT,
+      tasks.AIR_QUALITY_MANAGEMENT,
+      tasks.NON_TECHNICAL_SUMMARY
     ]
   },
   {
