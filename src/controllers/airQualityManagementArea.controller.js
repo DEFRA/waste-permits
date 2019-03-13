@@ -2,9 +2,9 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const AirQualityManagementModel = require('../models/airQualityManagement.model')
+const AirQualityManagementAreaModel = require('../models/airQualityManagementArea.model')
 
-module.exports = class AirQualityManagementController extends BaseController {
+module.exports = class AirQualityManagementAreaController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
 
@@ -12,7 +12,7 @@ module.exports = class AirQualityManagementController extends BaseController {
       pageContext.formValues = request.payload
     } else {
       const context = await RecoveryService.createApplicationContext(h)
-      const aqma = await AirQualityManagementModel.get(context)
+      const aqma = await AirQualityManagementAreaModel.get(context)
       const isInAqma = (aqma.aqmaIsInAqma === 'yes')
       pageContext.formValues = {
         'aqma-is-in-aqma': aqma.aqmaIsInAqma,
@@ -50,7 +50,7 @@ module.exports = class AirQualityManagementController extends BaseController {
       aqma.localAuthorityName = aqmaLocalAuthorityName
     }
 
-    const aqmaModel = new AirQualityManagementModel(aqma)
+    const aqmaModel = new AirQualityManagementAreaModel(aqma)
     await aqmaModel.save(context)
 
     return this.redirect({ h })

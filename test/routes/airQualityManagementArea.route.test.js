@@ -14,7 +14,7 @@ const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-const AirQualityManagement = require('../../src/models/airQualityManagement.model')
+const AirQualityManagementArea = require('../../src/models/airQualityManagementArea.model')
 
 const routePath = '/mcp/aqma/name'
 const nextRoutePath = '/task-list'
@@ -54,8 +54,8 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
-  sandbox.stub(AirQualityManagement, 'get').callsFake(async () => mocks.airQualityManagement)
-  sandbox.stub(AirQualityManagement.prototype, 'save').callsFake(async () => undefined)
+  sandbox.stub(AirQualityManagementArea, 'get').callsFake(async () => mocks.airQualityManagementArea)
+  sandbox.stub(AirQualityManagementArea.prototype, 'save').callsFake(async () => undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
@@ -84,10 +84,10 @@ lab.experiment('Air Quality Management Area page tests:', () => {
         await checkCommonElements(doc)
       })
       lab.test('when all data already entered', async () => {
-        mocks.airQualityManagement.isInAqma = true
-        mocks.airQualityManagement.aqmaName = 'AQMA NAME'
-        mocks.airQualityManagement.nitrogenDioxideLevel = 50
-        mocks.airQualityManagement.localAuthorityName = 'AQMA LOCAL AUTHORITY NAME'
+        mocks.airQualityManagementArea.isInAqma = true
+        mocks.airQualityManagementArea.aqmaName = 'AQMA NAME'
+        mocks.airQualityManagementArea.nitrogenDioxideLevel = 50
+        mocks.airQualityManagementArea.localAuthorityName = 'AQMA LOCAL AUTHORITY NAME'
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
       })

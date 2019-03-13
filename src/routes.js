@@ -798,10 +798,10 @@ const Routes = {
   // *****
   AIR_QUALITY_MANAGEMENT: {
     path: '/mcp/aqma/name',
-    view: 'airQualityManagement',
+    view: 'airQualityManagementArea',
     pageHeading: 'Is any plant or generator in an Air Quality Management Area?',
-    controller: 'airQualityManagement',
-    validator: 'airQualityManagement',
+    controller: 'airQualityManagementArea',
+    validator: 'airQualityManagementArea',
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },

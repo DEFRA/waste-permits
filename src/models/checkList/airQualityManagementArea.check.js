@@ -3,7 +3,7 @@ const BaseCheck = require('./base.check')
 const { AIR_QUALITY_MANAGEMENT } = require('../../tasks').tasks
 const { AIR_QUALITY_MANAGEMENT: { path } } = require('../../routes')
 
-module.exports = class AirQualityManagementCheck extends BaseCheck {
+module.exports = class AirQualityManagementAreaCheck extends BaseCheck {
   static get task () {
     return AIR_QUALITY_MANAGEMENT
   }
@@ -23,12 +23,12 @@ module.exports = class AirQualityManagementCheck extends BaseCheck {
 
   async getIsInAqmaLine () {
     const answers = []
-    const aqma = await this.getAirQualityManagement()
+    const aqma = await this.getAirQualityManagementArea()
 
     if (aqma.isInAqma) {
-      answers.push('Is in AQMA')
+      answers.push('You are in an AQMA')
     } else {
-      answers.push('Is not in AQMA')
+      answers.push('You are not in an AQMA')
     }
 
     return this.buildLine({
@@ -41,7 +41,7 @@ module.exports = class AirQualityManagementCheck extends BaseCheck {
   }
 
   async getAqmaNameLine () {
-    const aqma = await this.getAirQualityManagement()
+    const aqma = await this.getAirQualityManagementArea()
 
     if (aqma.isInAqma) {
       return this.buildLine({
@@ -55,7 +55,7 @@ module.exports = class AirQualityManagementCheck extends BaseCheck {
   }
 
   async getNitrogenDioxideLevelLine () {
-    const aqma = await this.getAirQualityManagement()
+    const aqma = await this.getAirQualityManagementArea()
 
     if (aqma.isInAqma) {
       return this.buildLine({
@@ -69,7 +69,7 @@ module.exports = class AirQualityManagementCheck extends BaseCheck {
   }
 
   async getLocalAuthorityNameLine () {
-    const aqma = await this.getAirQualityManagement()
+    const aqma = await this.getAirQualityManagementArea()
 
     if (aqma.isInAqma) {
       return this.buildLine({

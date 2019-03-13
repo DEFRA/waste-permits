@@ -7,7 +7,7 @@ const sinon = require('sinon')
 const Mocks = require('../helpers/mocks')
 
 const ApplicationAnswer = require('../../src/persistence/entities/applicationAnswer.entity')
-const AirQualityManagement = require('../../src/models/airQualityManagement.model')
+const AirQualityManagementArea = require('../../src/models/airQualityManagementArea.model')
 
 const context = { authToken: 'AUTH_TOKEN' }
 
@@ -18,7 +18,7 @@ const TEST_AUTH_NAME = 'Test authority'
 let mocks
 let saveSpy
 
-lab.experiment('AirQualityManagement test:', () => {
+lab.experiment('AirQualityManagementArea test:', () => {
   let sandbox
 
   lab.beforeEach(() => {
@@ -42,11 +42,11 @@ lab.experiment('AirQualityManagement test:', () => {
     lab.test('AQMA is set as no', async () => {
       mocks.applicationAnswers[0].questionCode = 'aqma-is-in-aqma'
       mocks.applicationAnswers[0].answerCode = false
-      const airQualityManagement = await AirQualityManagement.get(context)
-      Code.expect(airQualityManagement.aqmaIsInAqma).to.be.false()
-      Code.expect(airQualityManagement.aqmaName).to.not.exist()
-      Code.expect(airQualityManagement.aqmaNitrogenDioxideLevel).to.not.exist()
-      Code.expect(airQualityManagement.aqmaLocalAuthorityName).to.not.exist()
+      const airQualityManagementArea = await AirQualityManagementArea.get(context)
+      Code.expect(airQualityManagementArea.aqmaIsInAqma).to.be.false()
+      Code.expect(airQualityManagementArea.aqmaName).to.not.exist()
+      Code.expect(airQualityManagementArea.aqmaNitrogenDioxideLevel).to.not.exist()
+      Code.expect(airQualityManagementArea.aqmaLocalAuthorityName).to.not.exist()
     })
 
     lab.test('AQMA is set as yes', async () => {
@@ -59,30 +59,30 @@ lab.experiment('AirQualityManagement test:', () => {
       mocks.applicationAnswers[3].questionCode = 'aqma-local-authority-name'
       mocks.applicationAnswers[3].answerText = TEST_AUTH_NAME
 
-      const airQualityManagement = await AirQualityManagement.get(context)
+      const airQualityManagementArea = await AirQualityManagementArea.get(context)
 
-      Code.expect(airQualityManagement.aqmaIsInAqma).to.be.true()
-      Code.expect(airQualityManagement.aqmaName).to.equal(TEST_AQMA_NAME)
-      Code.expect(airQualityManagement.aqmaNitrogenDioxideLevel).to.equal(TEST_NO2_LEVEL)
-      Code.expect(airQualityManagement.aqmaLocalAuthorityName).to.equal(TEST_AUTH_NAME)
+      Code.expect(airQualityManagementArea.aqmaIsInAqma).to.be.true()
+      Code.expect(airQualityManagementArea.aqmaName).to.equal(TEST_AQMA_NAME)
+      Code.expect(airQualityManagementArea.aqmaNitrogenDioxideLevel).to.equal(TEST_NO2_LEVEL)
+      Code.expect(airQualityManagementArea.aqmaLocalAuthorityName).to.equal(TEST_AUTH_NAME)
     })
   })
 
   lab.experiment('save', () => {
     lab.test('with AQMA set to No', async () => {
-      const airQualityManagement = new AirQualityManagement()
-      airQualityManagement.aqmaIsInAqma = false
-      await airQualityManagement.save(context)
+      const airQualityManagementArea = new AirQualityManagementArea()
+      airQualityManagementArea.aqmaIsInAqma = false
+      await airQualityManagementArea.save(context)
       Code.expect(saveSpy.callCount).to.equal(1)
     })
 
     lab.test('with AQMA set to Yes', async () => {
-      const airQualityManagement = new AirQualityManagement()
-      airQualityManagement.aqmaIsInAqma = true
-      airQualityManagement.aqmaName = TEST_AQMA_NAME
-      airQualityManagement.nitrogenDioxideLevelAnswer = TEST_NO2_LEVEL
-      airQualityManagement.localAuthorityNameAnswer = TEST_AUTH_NAME
-      await airQualityManagement.save(context)
+      const airQualityManagementArea = new AirQualityManagementArea()
+      airQualityManagementArea.aqmaIsInAqma = true
+      airQualityManagementArea.aqmaName = TEST_AQMA_NAME
+      airQualityManagementArea.nitrogenDioxideLevelAnswer = TEST_NO2_LEVEL
+      airQualityManagementArea.localAuthorityNameAnswer = TEST_AUTH_NAME
+      await airQualityManagementArea.save(context)
       Code.expect(saveSpy.callCount).to.equal(1)
     })
   })

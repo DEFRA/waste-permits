@@ -7,7 +7,7 @@ const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
-const AirQualityManagement = require('../../../src/models/checkList/airQualityManagement.check')
+const AirQualityManagementArea = require('../../../src/models/checkList/airQualityManagementArea.check')
 
 const prefix = 'section-aqma'
 
@@ -28,7 +28,7 @@ lab.beforeEach(() => {
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
-  sandbox.stub(BaseCheck.prototype, 'getAirQualityManagement').value(async () => mocks.airQualityManagement)
+  sandbox.stub(BaseCheck.prototype, 'getAirQualityManagementArea').value(async () => mocks.airQualityManagementArea)
 })
 
 lab.afterEach(() => {
@@ -39,9 +39,9 @@ lab.afterEach(() => {
 lab.experiment('AQMA tests:', () => {
   lab.experiment('buildlines', () => {
     lab.test('Returns correct response when not in AQMA', async () => {
-      mocks.airQualityManagement.isInAqma = false
+      mocks.airQualityManagementArea.isInAqma = false
 
-      check = new AirQualityManagement()
+      check = new AirQualityManagementArea()
       lines = await check.buildLines()
       const { heading, headingId, answers, links } = lines[0]
 
@@ -50,7 +50,7 @@ lab.experiment('AQMA tests:', () => {
 
       Code.expect(answers.length).to.equal(1)
       const { answer, answerId } = answers.pop()
-      Code.expect(answer).to.equal('Is not in AQMA')
+      Code.expect(answer).to.equal('You are not in an AQMA')
       Code.expect(answerId).to.equal(`${prefix}-answer`)
 
       const { link, linkId, linkType } = links.pop()
@@ -60,11 +60,11 @@ lab.experiment('AQMA tests:', () => {
     })
 
     lab.test('Returns correct response when in AQMA', async () => {
-      mocks.airQualityManagement.isInAqma = true
-      mocks.airQualityManagement.aqmaName = TEST_AQMA_NAME
-      mocks.airQualityManagement.aqmaNitrogenDioxideLevel = TEST_NO2_LEVEL
-      mocks.airQualityManagement.aqmaLocalAuthorityName = TEST_AUTH_NAME
-      check = new AirQualityManagement()
+      mocks.airQualityManagementArea.isInAqma = true
+      mocks.airQualityManagementArea.aqmaName = TEST_AQMA_NAME
+      mocks.airQualityManagementArea.aqmaNitrogenDioxideLevel = TEST_NO2_LEVEL
+      mocks.airQualityManagementArea.aqmaLocalAuthorityName = TEST_AUTH_NAME
+      check = new AirQualityManagementArea()
       lines = await check.buildLines()
 
       lines.forEach(({ heading, headingId, answers, links }, answerIndex) => {
@@ -79,7 +79,7 @@ lab.experiment('AQMA tests:', () => {
         switch (answerIndex) {
           case 0:
             Code.expect(heading).to.equal('Is in AQMA')
-            Code.expect(answer).to.equal('Is in AQMA')
+            Code.expect(answer).to.equal('You are in an AQMA')
             Code.expect(linkType).to.equal('AQMA')
             break
           case 1:

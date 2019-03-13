@@ -11,7 +11,7 @@ const answerIds = [IS_IN_AQMA, AQMA_NAME, NO2_LEVEL, AUTH_NAME]
 const YES = 'yes'
 const NO = 'no'
 
-module.exports = class AirQualityManagement {
+module.exports = class AirQualityManagementArea {
   constructor (data = {}) {
     Object.entries(data).forEach(([field, value]) => {
       this[field] = value
@@ -65,6 +65,6 @@ module.exports = class AirQualityManagement {
       aqmaLocalAuthorityName: localAuthorityNameAnswer && localAuthorityNameAnswer.answerText
     }
 
-    return new AirQualityManagement(aqma)
+    return new AirQualityManagementArea(aqma)
   }
 }

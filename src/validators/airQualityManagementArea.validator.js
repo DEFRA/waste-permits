@@ -7,7 +7,7 @@ const NITROGEN_DIOXIDE_MIN = 0
 const NITROGEN_DIOXIDE_MAX = 100
 const NITROGEN_DIOXIDE_OUT_OF_RANGE = 'The background level should be a number between 0 and 100'
 
-module.exports = class AirQualityManagementValidator extends BaseValidator {
+module.exports = class AirQualityManagementAreaValidator extends BaseValidator {
   get errorMessages () {
     return {
       'aqma-is-in-aqma': {
