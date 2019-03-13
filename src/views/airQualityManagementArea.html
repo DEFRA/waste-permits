@@ -57,6 +57,14 @@
                 <input id="aqma-name" class="form-control form-control-char-40 {{#if errors.aqma-name}}form-control-error{{/if}}" type="text" name="aqma-name" value="{{ formValues.aqma-name }}">
               </p>
 
+              <p id="aqma-local-authority-name-field">
+                <label id="aqma-local-authority-name-label" class="form-label" for="aqma-local-authority-name">
+                  What is the name of the local authority where the site is located?
+                </label>
+                {{> common/fieldError fieldId='aqma-local-authority-name-error' message=errors.aqma-local-authority-name }}
+                <input id="aqma-local-authority-name" class="form-control form-control-char-30 {{#if errors.aqma-local-authority-name}}form-control-error{{/if}}"  type="text" name="aqma-local-authority-name" value="{{formValues.aqma-local-authority-name}}">
+              </p>
+
               <p id="aqma-nitrogen-dioxide-level-field">
                 <label id="aqma-nitrogen-dioxide-level-label" class="form-label" for="aqma-nitrogen-dioxide-level">
                   What is the background level of nitrogen dioxide?
@@ -68,13 +76,6 @@
                 <input id="aqma-nitrogen-dioxide-level" class="form-control form-control-char-10 {{#if errors.aqma-nitrogen-dioxide-level}}form-control-error{{/if}}" type="text" name="aqma-nitrogen-dioxide-level" value="{{ formValues.aqma-nitrogen-dioxide-level }}"> &#x00B5;g/m<sup>3</sup>
               </p>
 
-              <p id="aqma-local-authority-name-field">
-                <label id="aqma-local-authority-name-label" class="form-label" for="aqma-local-authority-name">
-                  What is the name of the local authority where the site is located?
-                </label>
-                {{> common/fieldError fieldId='aqma-local-authority-name-error' message=errors.aqma-local-authority-name }}
-                <input id="aqma-local-authority-name" class="form-control form-control-char-30 {{#if errors.aqma-local-authority-name}}form-control-error{{/if}}"  type="text" name="aqma-local-authority-name" value="{{formValues.aqma-local-authority-name}}">
-              </p>
             </div>
 
             <div class="multiple-choice">
