@@ -33,6 +33,8 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
+// TODO: lines subject to change so may need to revisit this
+
 lab.experiment('AQMA tests:', () => {
   lab.experiment('buildlines', () => {
     lab.test('Returns correct response when not in AQMA', async () => {
@@ -52,7 +54,7 @@ lab.experiment('AQMA tests:', () => {
 
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/mcp/aqma/name')
-      Code.expect(linkType).to.equal('AQMA')
+      Code.expect(linkType).to.equal('Air Quality Management Area')
       Code.expect(linkId).to.equal(`${prefix}-link`)
     })
 
@@ -63,36 +65,26 @@ lab.experiment('AQMA tests:', () => {
       mocks.airQualityManagementArea.aqmaLocalAuthorityName = TEST_AUTH_NAME
       check = new AirQualityManagementArea()
       lines = await check.buildLines()
+      const { heading, headingId, answers, links } = lines[0]
 
-      lines.forEach(({ heading, headingId, answers, links }, answerIndex) => {
-        Code.expect(headingId).to.equal(`${prefix}-heading`)
+      Code.expect(heading).to.equal(heading)
+      Code.expect(headingId).to.equal(`${prefix}-heading`)
+      Code.expect(answers.length).to.equal(4)
 
-        const { link, linkId, linkType } = links.pop()
-        Code.expect(link).to.equal('/mcp/aqma/name')
-        Code.expect(linkId).to.equal(`${prefix}-link`)
-
-        const { answerId, answer } = answers.pop()
-        Code.expect(answerId).to.equal(`${prefix}-answer`)
+      answers.forEach(({ answerId, answer }, answerIndex) => {
+        Code.expect(answerId).to.equal(`${prefix}-answer-${answerIndex + 1}`)
         switch (answerIndex) {
           case 0:
-            Code.expect(heading).to.equal('Is in AQMA')
-            Code.expect(answer).to.equal('You are in an AQMA')
-            Code.expect(linkType).to.equal('AQMA')
+            Code.expect(answer).to.equal('You are in an AQMA, or may deploy to an AQMA')
             break
           case 1:
-            Code.expect(heading).to.equal('Name of AQMA')
-            Code.expect(answer).to.equal(TEST_AQMA_NAME)
-            Code.expect(linkType).to.equal('AQMA name')
+            Code.expect(answer).to.equal(`AQMA name: ${TEST_AQMA_NAME}`)
             break
           case 2:
-            Code.expect(heading).to.equal('Background level of nitrogen dioxide')
-            Code.expect(answer).to.equal(TEST_NO2_LEVEL)
-            Code.expect(linkType).to.equal('AQMA nitrogen dioxide level')
+            Code.expect(answer).to.equal(`Background level of nitrogen dioxide: ${TEST_NO2_LEVEL} µg/m3`)
             break
           case 3:
-            Code.expect(heading).to.equal('Name of AQMA local authority')
-            Code.expect(answer).to.equal(TEST_AUTH_NAME)
-            Code.expect(linkType).to.equal('AQMA local authority name')
+            Code.expect(answer).to.equal(`Local authority: ${TEST_AUTH_NAME}`)
             break
         }
       })

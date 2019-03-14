@@ -14,71 +14,30 @@ module.exports = class AirQualityManagementAreaCheck extends BaseCheck {
 
   async buildLines () {
     return Promise.all([
-      this.getIsInAqmaLine(),
-      this.getAqmaNameLine(),
-      this.getNitrogenDioxideLevelLine(),
-      this.getLocalAuthorityNameLine()
+      this.getAqmaLine()
     ])
   }
 
-  async getIsInAqmaLine () {
-    const answers = []
-    const aqma = await this.getAirQualityManagementArea()
+  // TODO: lines subject to change so may need to revisit this
 
-    if (aqma.isInAqma) {
-      answers.push('You are in an AQMA')
+  async getAqmaLine () {
+    const aqma = await this.getAirQualityManagementArea()
+    const { isInAqma, aqmaName, aqmaNitrogenDioxideLevel, aqmaLocalAuthorityName } = aqma
+    const answers = []
+
+    if (isInAqma) {
+      answers.push('You are in an AQMA, or may deploy to an AQMA')
+      answers.push(`AQMA name: ${aqmaName}`)
+      answers.push(`Background level of nitrogen dioxide: ${aqmaNitrogenDioxideLevel} µg/m3`)
+      answers.push(`Local authority: ${aqmaLocalAuthorityName}`)
     } else {
       answers.push('You are not in an AQMA')
     }
 
     return this.buildLine({
-      heading: 'Is in AQMA',
+      heading: 'Air Quality Management Area (AQMA)',
       answers,
-      links: [
-        { path, type: 'AQMA' }
-      ]
+      links: [{ path, type: 'Air Quality Management Area' }]
     })
-  }
-
-  async getAqmaNameLine () {
-    const aqma = await this.getAirQualityManagementArea()
-
-    if (aqma.isInAqma) {
-      return this.buildLine({
-        heading: 'Name of AQMA',
-        answers: [aqma.aqmaName],
-        links: [
-          { path, type: 'AQMA name' }
-        ]
-      })
-    }
-  }
-
-  async getNitrogenDioxideLevelLine () {
-    const aqma = await this.getAirQualityManagementArea()
-
-    if (aqma.isInAqma) {
-      return this.buildLine({
-        heading: 'Background level of nitrogen dioxide',
-        answers: [aqma.aqmaNitrogenDioxideLevel],
-        links: [
-          { path, type: 'AQMA nitrogen dioxide level' }
-        ]
-      })
-    }
-  }
-
-  async getLocalAuthorityNameLine () {
-    const aqma = await this.getAirQualityManagementArea()
-
-    if (aqma.isInAqma) {
-      return this.buildLine({
-        heading: 'Name of AQMA local authority',
-        answers: [aqma.aqmaLocalAuthorityName],
-        links: [
-          { path, type: 'AQMA local authority name' }
-        ]
-      })
-    }
   }
 }
