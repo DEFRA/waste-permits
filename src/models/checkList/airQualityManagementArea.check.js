@@ -1,11 +1,11 @@
 const BaseCheck = require('./base.check')
 
-const { AIR_QUALITY_MANAGEMENT } = require('../../tasks').tasks
-const { AIR_QUALITY_MANAGEMENT: { path } } = require('../../routes')
+const { AIR_QUALITY_MANAGEMENT_AREA } = require('../../tasks').tasks
+const { AIR_QUALITY_MANAGEMENT_AREA: { path } } = require('../../routes')
 
 module.exports = class AirQualityManagementAreaCheck extends BaseCheck {
   static get task () {
-    return AIR_QUALITY_MANAGEMENT
+    return AIR_QUALITY_MANAGEMENT_AREA
   }
 
   get prefix () {

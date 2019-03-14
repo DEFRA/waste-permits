@@ -22,9 +22,6 @@ let lines
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-  mocks.dataStore.data.consult = {
-    none: true
-  }
 
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()

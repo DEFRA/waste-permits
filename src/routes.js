@@ -796,7 +796,7 @@ const Routes = {
 
   // OTHER
   // *****
-  AIR_QUALITY_MANAGEMENT: {
+  AIR_QUALITY_MANAGEMENT_AREA: {
     path: '/mcp/aqma/name',
     view: 'airQualityManagementArea',
     pageHeading: 'Is any plant or generator in an Air Quality Management Area?',

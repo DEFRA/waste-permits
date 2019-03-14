@@ -1,10 +1,10 @@
 const Routes = require('./routes')
 
 const tasks = {
-  AIR_QUALITY_MANAGEMENT: {
+  AIR_QUALITY_MANAGEMENT_AREA: {
     id: 'air-quality-management',
     label: 'Give Air Quality Management Area details',
-    route: Routes.AIR_QUALITY_MANAGEMENT,
+    route: Routes.AIR_QUALITY_MANAGEMENT_AREA,
     completedLabelId: 'air-quality-management-completed',
     shortName: 'aqma'
   },
@@ -402,8 +402,7 @@ const bespoke = [
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.CONFIRM_CONFIDENTIALLY,
       tasks.INVOICING_DETAILS,
-      tasks.NEED_TO_CONSULT,
-      tasks.AIR_QUALITY_MANAGEMENT
+      tasks.NEED_TO_CONSULT
     ]
   },
   {
@@ -414,7 +413,7 @@ const bespoke = [
       tasks.SITE_NAME_LOCATION,
       tasks.SITE_PLAN,
       tasks.SITE_CONDITION_REPORT,
-      tasks.AIR_QUALITY_MANAGEMENT,
+      tasks.AIR_QUALITY_MANAGEMENT_AREA,
       tasks.NON_TECHNICAL_SUMMARY
     ]
   },
