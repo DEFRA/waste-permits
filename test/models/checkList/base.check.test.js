@@ -19,6 +19,7 @@ const ContactDetail = require('../../../src/models/contactDetail.model')
 const CharityDetail = require('../../../src/models/charityDetail.model')
 const NeedToConsult = require('../../../src/models/needToConsult.model')
 const McpBusinessType = require('../../../src/models/mcpBusinessType.model')
+const AirQualityManagementArea = require('../../../src/models/airQualityManagementArea.model')
 
 const RecoveryService = require('../../../src/services/recovery.service')
 
@@ -56,6 +57,7 @@ lab.beforeEach(() => {
   sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
   sandbox.stub(NeedToConsult, 'get').value(() => mocks.needToConsult)
   sandbox.stub(McpBusinessType, 'get').value(() => mocks.mcpBusinessType)
+  sandbox.stub(AirQualityManagementArea, 'get').value(() => mocks.airQualityManagementArea)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
@@ -314,6 +316,14 @@ lab.experiment('Base Check tests:', () => {
     const needToConsult = await check.getNeedToConsult()
     Code.expect(needToConsult).to.equal(mocks.needToConsult)
     Code.expect(context.needToConsult).to.equal(await check.getNeedToConsult())
+  })
+
+  lab.test('getAirQualityManagementArea works correctly', async () => {
+    delete context.airQualityManagementArea
+    const check = new BaseCheck(context)
+    const airQualityManagementArea = await check.getAirQualityManagementArea()
+    Code.expect(airQualityManagementArea).to.equal(mocks.airQualityManagementArea)
+    Code.expect(context.airQualityManagementArea).to.equal(await check.getAirQualityManagementArea())
   })
 
   lab.test('getCharityDetails works correctly', async () => {

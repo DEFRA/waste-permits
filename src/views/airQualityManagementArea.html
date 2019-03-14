@@ -1,0 +1,107 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>
+          Is any plant or generator in an Air Quality Management Area (AQMA)
+          or if mobile, do you want the option of deploying to an AQMA?
+      </p>
+
+      <details role="group" class="form-hint-details">
+        <summary role="button" aria-controls="details-content-0" aria-expanded="false">
+          <span id="aqma-check-summary" class="summary">How to check if the site is in an AQMA</span>
+        </summary>
+        <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true">
+          <ol id="aqma-check-list" class="list list-number">
+            <li id="aqma-check-list-item-1">Go to the <a id="aqma-check-hint-link" target="_blank" href="https://uk-air.defra.gov.uk/aqma/maps">AQMAs interactive map on the Defra UK AIR website (opens new tab)</a>.</li>
+            <li id="aqma-check-list-item-2">Select the ‘AQMA Boundaries’ option to display the AQMAs.</li>
+            <li id="aqma-check-list-item-3">Search for a postcode or find the area on the map and zoom in to check if you are in an AQMA.</li>
+            <li id="aqma-check-list-item-4">Select the AQMA on the map to read the AQMA name.</li>
+          </ol>
+        </div>
+      </details>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+        <div class="form-group {{#getFormErrorGroupClass errors.aqma-details}}{{/getFormErrorGroupClass}}">
+
+          <fieldset>
+
+            <legend id="aqma-name-visually-hidden" class="visually-hidden">{{pageHeading}}</legend>
+
+            {{> common/fieldError fieldId='aqma-is-in-aqma-error' message=errors.aqma-is-in-aqma }}
+
+            <div class="multiple-choice" data-target="is-in-aqma">
+              <input id="aqma-on" name="aqma-is-in-aqma" type="radio" value="yes" {{#if formValues.aqma-is-in-aqma}}checked="checked"{{/if}}>
+              <label id="aqma-on-label" for="aqma-on">
+                Yes
+              </label>
+            </div>
+
+            <div class="panel panel-border-narrow js-hidden" id="is-in-aqma">
+
+              <p id="aqma-name-field">
+                <label id="aqma-name-label" class="form-label" for="aqma-name">
+                  What is the name of the AQMA?
+                </label>
+                {{> common/fieldError fieldId='aqma-name-error' message=errors.aqma-name }}
+                <input id="aqma-name" class="form-control form-control-char-40 {{#if errors.aqma-name}}form-control-error{{/if}}" type="text" name="aqma-name" value="{{ formValues.aqma-name }}">
+              </p>
+
+              <p id="aqma-local-authority-name-field">
+                <label id="aqma-local-authority-name-label" class="form-label" for="aqma-local-authority-name">
+                  What is the name of the local authority where the site is located?
+                </label>
+                {{> common/fieldError fieldId='aqma-local-authority-name-error' message=errors.aqma-local-authority-name }}
+                <input id="aqma-local-authority-name" class="form-control form-control-char-30 {{#if errors.aqma-local-authority-name}}form-control-error{{/if}}"  type="text" name="aqma-local-authority-name" value="{{formValues.aqma-local-authority-name}}">
+              </p>
+
+              <p id="aqma-nitrogen-dioxide-level-field">
+                <label id="aqma-nitrogen-dioxide-level-label" class="form-label" for="aqma-nitrogen-dioxide-level">
+                  What is the background level of nitrogen dioxide?
+                  <span id="aqma-nitrogen-dioxide-level-hint" class="form-hint">
+                      Enter the annual mean in microgrammes per cubic metre (&#x00B5;g/m<sup>3</sup>)
+                  </span>
+                </label>
+                {{> common/fieldError fieldId='aqma-nitrogen-dioxide-level-error' message=errors.aqma-nitrogen-dioxide-level }}
+                <input id="aqma-nitrogen-dioxide-level" class="form-control form-control-char-10 {{#if errors.aqma-nitrogen-dioxide-level}}form-control-error{{/if}}" type="text" name="aqma-nitrogen-dioxide-level" value="{{ formValues.aqma-nitrogen-dioxide-level }}"> &#x00B5;g/m<sup>3</sup>
+              </p>
+
+              <details role="group" class="form-hint-details">
+                <summary role="button" aria-controls="details-content-1" aria-expanded="false">
+                  <span id="background-level-summary" class="summary">Find out the background level of nitrogen dioxide</span>
+                </summary>
+                <div class="panel panel-border-narrow" id="details-content-1" aria-hidden="true">
+                  <ol id="background-level-list" class="list list-number">
+                    <li id="background-level-list-item-1">Go to the <a id="background-level-hint-link" target="_blank" href="https://uk-air.defra.gov.uk/data/exceedence?f_parameter_id=NO2&f_region_reference_id=5&f_year_start=2019&f_year_end=2019&f_output=screen&action=exceedence1a&f_group_id=4&go=Step+2">annual and exceedence statistics on the Defra UK AIR website (opens new tab)</a>.</li>
+                    <li id="background-level-list-item-2">Select the local authority for the site from the Sub Zone list.</li>
+                    <li id="background-level-list-item-3">Select ‘Annual Mean’ from the statistic list.</li>
+                  </ol>
+                </div>
+              </details>
+        
+            </div>
+
+            <div class="multiple-choice">
+              <input id="aqma-off" name="aqma-is-in-aqma" type="radio" value="no">
+              <label id="aqma-off-label" for="aqma-off">No</label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>
