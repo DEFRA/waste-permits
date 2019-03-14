@@ -84,17 +84,20 @@ const Routes = {
     cookieValidationRequired: true,
     applicationRequired: false
   },
-  TRIAGE_COMPLETE: {
-    path: '/select',
-    params: ['permitType', 'permitHolderType', 'facilityType', 'mcpType', 'wasteActivity', 'wasteAssessment'],
-    view: 'triage/complete',
-    applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'Confirm activities and assessments',
-    controller: 'triage/triage',
-    types: 'GET,POST',
-    cookieValidationRequired: true,
-    applicationRequired: false
-  },
+
+  // This route is never reached.  Ben Sagar suggests this was leftover from the triage thinking.  No longer needed.  Left here commented out just in case.
+  // TODO: If removed, remove the view 'triage/complete'
+  // TRIAGE_COMPLETE: {
+  //   path: '/select',
+  //   params: ['permitType', 'permitHolderType', 'facilityType', 'mcpType', 'wasteActivity', 'wasteAssessment'],
+  //   view: 'triage/complete',
+  //   applyOfflineView: 'triage/applyOffline',
+  //   pageHeading: 'Confirm activities and assessments',
+  //   controller: 'triage/triage',
+  //   types: 'GET,POST',
+  //   cookieValidationRequired: true,
+  //   applicationRequired: false
+  // },
   CONFIRM_COST: {
     path: '/selected/confirm',
     view: 'triage/confirmCost',
@@ -1102,7 +1105,7 @@ const Routes = {
     pageHeading: 'Do you need a habitat assessment?',
     controller: 'habitatAssessment',
     validator: 'habitatAssessment',
-    nextRoute: 'TASK_LIST',
+    nextRoute: 'CONFIRM_COST',
     types: 'GET, POST'
   },
   MCP_HAS_EXISTING_PERMIT: {
