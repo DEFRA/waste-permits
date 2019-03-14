@@ -1,0 +1,90 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="body-text">
+          <legend id="best-available-techniques-required-mcp-message" aria-describedby="best-available-techniques-required-mcp-details"><p>Does your MCP burn waste biomass and have a rated thermal input over 20MW?</p></legend>
+  
+          <details id="best-available-techniques-required-mcp-help">
+            <summary id="best-available-techniques-required-mcp-legend">Waste biomass definition</summary>
+            <div class="panel panel-border-narrow" id="best-available-techniques-required-mcp-details">
+              Waste biomass means:
+              <ul id="grid-reference-help-list" class="list list-bullet">
+                <li>vegetable waste from agriculture and forestry</li>
+                <li>vegetable waste from the food processing industry, if the heat generated is recovered</li>
+                <li>fibrous vegetable waste from virgin pulp production and from production of paper from pulp if it is co-incinerated where it was produced and the heat generated is recovered</li>
+                <li>cork waste</li>
+                <li>wood waste with some exceptions</li>
+              </ul>
+
+              <p>Wood waste is not biomass if it contains halogenated organic compounds or heavy metals from wood preservatives or coatings, in particular if it comes from from construction and demolition waste.</p>
+            </div>     
+          </details>
+        </div>
+
+        <div class="form-group {{#getFormErrorGroupClass errors.thermal-rating}}{{/getFormErrorGroupClass}}">
+          <fieldset id="thermal-rating">
+            {{> common/fieldError fieldId='thermal-rating-error' message=errors.thermal-rating }}
+
+            <div class="multiple-choice" data-target="meets-criteria">
+              <input id="thermal-rating-over-20" type="radio" name="thermal-rating" value="over 20" {{#if thermalRatingOver20}}checked="checked"{{/if}}>
+              <label for="thermal-rating-over-20">
+                <span id="thermal-rating-over-20-label">Yes, it burns waste biomass and is over 20MW thermal input</span>
+              </label>
+            </div>
+            <div class="multiple-choice">
+              <input id="thermal-rating-not-over-20" type="radio" name="thermal-rating" value="not over 20">
+              <label for="thermal-rating-not-over-20">
+                <span id="thermal-rating-not-over-20-label">No</span>
+              </label>
+            </div>
+            <div class="panel panel-border-narrow js-hidden" id="meets-criteria">  
+              <div class="form-group {{#getFormErrorGroupClass errors.meets-criteria}}{{/getFormErrorGroupClass}}">
+                <fieldset id="meets-criteria-form">
+                  <legend id="meets-criteria-legend">Do any MCP meet the criteria of a Chapter 1, Section 1.1 Part B activity or a Chapter 5, Section 5.1 Part B activity?</legend>
+                  <div class="form-hint">Contact the Environment Agency if you need to check this</div>
+                  
+                  {{> common/fieldError fieldId='meets-criteria-error' message=errors.meets-criteria }}
+
+                  <div class="multiple-choice">
+                    <input id="meets-criteria-yes" type="radio" name="meets-criteria" value="yes">
+                    <label for="meets-criteria-yes">
+                      <span id="meets-criteria-yes-label">Yes, they meet those criteria</span>
+                    </label>
+                  </div>
+                  <div class="multiple-choice">
+                    <input id="meets-criteria-no" type="radio" name="meets-criteria" value="no">
+                    <label for="meets-criteria-no">
+                      <span id="meets-criteria-no-label">No</span>
+                    </label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+
+        <div>
+          We are asking this to check if you need to provide a best available techniques assessment. If you do, we will add it to your application task list.
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</main>
