@@ -18,7 +18,7 @@ module.exports = class AirQualityManagementAreaValidator extends BaseValidator {
       'aqma-nitrogen-dioxide-level': {
         'any.empty': 'Enter the background level of nitrogen dioxide',
         'any.required': 'Enter the background level of nitrogen dioxide',
-        'string.regex.base': 'The background level should be a number between 0 and 100'
+        'string.regex.base': 'The background level should be a whole number between 0 and 100'
       },
       'aqma-local-authority-name': {
         'any.required': 'Enter the local authority name',
@@ -40,11 +40,11 @@ module.exports = class AirQualityManagementAreaValidator extends BaseValidator {
 
     // This has to be validated as a string, otherwise Joi converts our input to a number
     // and Dynamics will only accept values cast as a string, not a number.
-    // Therefore we use regex to check for numbers in the range 0-100.
+    // Therefore we use regex to check for whole numbers in the range 0-100.
     const nitrogenDioxideLevelCheck = Joi
       .string()
       .required()
-      .regex(/^(100(?:\.00?)?|\d?\d(?:\.\d\d?)?)$/)
+      .regex(/^([1-9]?\d|100)$/)
 
     const localAuthorityNameCheck = Joi
       .string()
