@@ -25,6 +25,7 @@ module.exports = class PermitHolderContactTradingNameController extends BaseCont
     const context = await RecoveryService.createApplicationContext(h, { account: true })
     let { application, account } = context
 
+    // TODO: This code is duplicated in charityDetails.controller.js. Should we pull this out into a permit holder model?
     // Create an account for this partnership if it doesn't already exist
     if (!account) {
       account = new Account({ organisationType: application.organisationType })

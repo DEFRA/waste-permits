@@ -10,9 +10,11 @@ const Mocks = require('../helpers/mocks')
 const server = require('../../server')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/persistence/entities/application.entity')
+const Account = require('../../src/persistence/entities/account.entity')
 const CharityDetail = require('../../src/models/charityDetail.model')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
+const { TRADING_NAME_USAGE } = require('../../src/dynamics')
 
 let sandbox
 
@@ -20,15 +22,17 @@ const routePath = '/permit-holder/charity-details'
 const companyRoutePath = '/permit-holder/company/number'
 const individualRoutePath = '/permit-holder/name'
 const publicBodyRoutePath = '/permit-holder/public-body/address/postcode'
+const charityName = 'charity name'
+const charityNumber = '012345'
 
 let getRequest
 let postRequest
 let mocks
 
+let accountStub
+
 lab.beforeEach(() => {
   mocks = new Mocks()
-
-  const { charityName, charityNumber } = mocks.charityDetail
 
   getRequest = {
     method: 'GET',
@@ -52,7 +56,9 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application, 'getById').value(() => mocks.application)
+  sandbox.stub(Application.prototype, 'save').value(() => mocks.application.id)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  accountStub = sandbox.stub(Account.prototype, 'save').value(() => mocks.account.id)
   sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
   sandbox.stub(CharityDetail.prototype, 'save').value(() => undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
@@ -122,28 +128,88 @@ lab.experiment('Charity Details page tests:', () => {
 
   lab.experiment('POST:', () => {
     lab.experiment('Success:', () => {
-      lab.experiment(`POST ${routePath} (Individual Charity) redirects to the next route ${individualRoutePath}`, () => {
-        lab.test(`when the permit holder is the matching contact`, async () => {
-          mocks.charityDetail.charityPermitHolder = 'individual'
-          const res = await server.inject(postRequest)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(individualRoutePath)
-        })
+      let originalPermitHolderOrganisationId
+      let originalUseTradingName
+      let originalTradingName
+
+      lab.beforeEach(() => {
+        originalPermitHolderOrganisationId = mocks.application.permitHolderOrganisationId
+        originalUseTradingName = mocks.application.useTradingName
+        originalTradingName = mocks.application.tradingName
       })
-      lab.experiment(`POST ${routePath} (Registered Company Charity) redirects to the next route ${companyRoutePath}`, () => {
-        lab.test(`when the permit holder is the matching contact`, async () => {
+
+      lab.experiment('when the permit holder is a limited company', async () => {
+        lab.beforeEach(() => {
           mocks.charityDetail.charityPermitHolder = 'limited-company'
+        })
+
+        lab.test(`redirects to the correct route`, async () => {
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(companyRoutePath)
         })
+
+        lab.test(`sets charity details`, async () => {
+          await server.inject(postRequest)
+          Code.expect(mocks.charityDetail.charityName).to.equal(charityName)
+          Code.expect(mocks.charityDetail.charityNumber).to.equal(charityNumber)
+        })
+
+        lab.test(`does not set organisation details`, async () => {
+          await server.inject(postRequest)
+          Code.expect(mocks.application.permitHolderOrganisationId).to.equal(originalPermitHolderOrganisationId)
+          Code.expect(mocks.application.useTradingName).to.equal(originalUseTradingName)
+          Code.expect(mocks.application.tradingName).to.equal(originalTradingName)
+        })
       })
-      lab.experiment(`POST ${routePath} (Public Body Charity) redirects to the next route ${publicBodyRoutePath}`, () => {
-        lab.test(`when the permit holder is the matching contact`, async () => {
+
+      lab.experiment('when the permit holder is an individual', async () => {
+        lab.beforeEach(() => {
+          mocks.charityDetail.charityPermitHolder = 'individual'
+        })
+
+        lab.test(`redirects to the correct route`, async () => {
+          const res = await server.inject(postRequest)
+          Code.expect(res.statusCode).to.equal(302)
+          Code.expect(res.headers['location']).to.equal(individualRoutePath)
+        })
+
+        lab.test(`sets charity details`, async () => {
+          await server.inject(postRequest)
+          Code.expect(mocks.charityDetail.charityName).to.equal(charityName)
+          Code.expect(mocks.charityDetail.charityNumber).to.equal(charityNumber)
+        })
+
+        lab.test(`does not set organisation details`, async () => {
+          await server.inject(postRequest)
+          Code.expect(mocks.application.permitHolderOrganisationId).to.equal(originalPermitHolderOrganisationId)
+          Code.expect(mocks.application.useTradingName).to.equal(originalUseTradingName)
+          Code.expect(mocks.application.tradingName).to.equal(originalTradingName)
+        })
+      })
+
+      lab.experiment('when the permit holder is a public body', async () => {
+        lab.beforeEach(() => {
           mocks.charityDetail.charityPermitHolder = 'public-body'
+        })
+
+        lab.test(`redirects to the correct route`, async () => {
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(publicBodyRoutePath)
+        })
+
+        lab.test(`sets charity details`, async () => {
+          await server.inject(postRequest)
+          Code.expect(mocks.charityDetail.charityName).to.equal(charityName)
+          Code.expect(mocks.charityDetail.charityNumber).to.equal(charityNumber)
+        })
+
+        lab.test(`sets organisation details`, async () => {
+          await server.inject(postRequest)
+          Code.expect(mocks.application.useTradingName).to.equal(TRADING_NAME_USAGE.YES)
+          Code.expect(mocks.application.tradingName).to.equal(charityName)
+          Code.expect(mocks.account.accountName).to.equal(charityName)
         })
       })
     })
