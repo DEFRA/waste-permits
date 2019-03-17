@@ -3,9 +3,6 @@
 const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 const NAME_LENGTH_MAX = 150
-const NITROGEN_DIOXIDE_MIN = 0
-const NITROGEN_DIOXIDE_MAX = 100
-const NITROGEN_DIOXIDE_OUT_OF_RANGE = 'The background level should be a number between 0 and 100'
 
 module.exports = class AirQualityManagementAreaValidator extends BaseValidator {
   get errorMessages () {
@@ -19,10 +16,9 @@ module.exports = class AirQualityManagementAreaValidator extends BaseValidator {
         'string.max': `Enter the AQMA name with fewer than ${NAME_LENGTH_MAX} characters`
       },
       'aqma-nitrogen-dioxide-level': {
+        'any.empty': 'Enter the background level of nitrogen dioxide',
         'any.required': 'Enter the background level of nitrogen dioxide',
-        'number.min': NITROGEN_DIOXIDE_OUT_OF_RANGE,
-        'number.max': NITROGEN_DIOXIDE_OUT_OF_RANGE,
-        'number.base': NITROGEN_DIOXIDE_OUT_OF_RANGE
+        'string.regex.base': 'The background level should be a whole number between 0 and 100'
       },
       'aqma-local-authority-name': {
         'any.required': 'Enter the local authority name',
@@ -32,34 +28,35 @@ module.exports = class AirQualityManagementAreaValidator extends BaseValidator {
   }
 
   get formValidators () {
-    const aqmaIsInAqmaCheck = Joi
-      .boolean()
-      .truthy('yes')
-      .falsy('no')
+    const isInAqmaCheck = Joi
+      .string()
       .required()
+      .valid('yes', 'no')
 
-    const aqmaNameCheck = Joi
+    const nameCheck = Joi
       .string()
       .max(NAME_LENGTH_MAX)
       .required()
 
-    const aqmaNitrogenDioxideLevelCheck = Joi
-      .number()
-      .min(NITROGEN_DIOXIDE_MIN)
-      .max(NITROGEN_DIOXIDE_MAX)
+    // This has to be validated as a string, otherwise Joi converts our input to a number
+    // and Dynamics will only accept values cast as a string, not a number.
+    // Therefore we use regex to check for whole numbers in the range 0-100.
+    const nitrogenDioxideLevelCheck = Joi
+      .string()
       .required()
+      .regex(/^([1-9]?\d|100)$/)
 
-    const aqmaLocalAuthorityNameCheck = Joi
+    const localAuthorityNameCheck = Joi
       .string()
       .max(NAME_LENGTH_MAX)
       .required()
 
-    return Joi.object({ 'aqma-is-in-aqma': aqmaIsInAqmaCheck })
+    return Joi.object({ 'aqma-is-in-aqma': isInAqmaCheck })
       .when(Joi.object({ 'aqma-is-in-aqma': 'yes' }), {
         then: Joi.object({
-          'aqma-name': aqmaNameCheck,
-          'aqma-nitrogen-dioxide-level': aqmaNitrogenDioxideLevelCheck,
-          'aqma-local-authority-name': aqmaLocalAuthorityNameCheck
+          'aqma-name': nameCheck,
+          'aqma-nitrogen-dioxide-level': nitrogenDioxideLevelCheck,
+          'aqma-local-authority-name': localAuthorityNameCheck
         })
       })
   }

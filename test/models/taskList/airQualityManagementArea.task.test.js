@@ -41,16 +41,16 @@ lab.experiment('Task List: AirQualityManagementArea Model tests:', () => {
   })
 
   lab.test('isComplete() method correctly returns TRUE when AQMA is set as false', async () => {
-    mocks.airQualityManagementArea.aqmaIsInAqma = false
+    mocks.airQualityManagementArea.isInAqma = false
     const result = await AirQualityManagementAreaTask.isComplete(mocks.context)
     Code.expect(result).to.equal(true)
   })
 
   lab.test('isComplete() method correctly returns TRUE when AQMA is set as true and all data entered', async () => {
-    mocks.airQualityManagementArea.aqmaIsInAqma = true
-    mocks.airQualityManagementArea.aqmaName = TEST_AQMA_NAME
-    mocks.airQualityManagementArea.aqmaNitrogenDioxideLevel = TEST_NO2_LEVEL
-    mocks.airQualityManagementArea.aqmaLocalAuthorityName = TEST_AUTH_NAME
+    mocks.airQualityManagementArea.isInAqma = true
+    mocks.airQualityManagementArea.name = TEST_AQMA_NAME
+    mocks.airQualityManagementArea.nitrogenDioxideLevel = TEST_NO2_LEVEL
+    mocks.airQualityManagementArea.localAuthorityName = TEST_AUTH_NAME
     const result = await AirQualityManagementAreaTask.isComplete(mocks.context)
     Code.expect(result).to.equal(true)
   })
@@ -58,37 +58,37 @@ lab.experiment('Task List: AirQualityManagementArea Model tests:', () => {
   lab.test('isComplete() method correctly returns FALSE when AQMA is set as true and data is incomplete', async () => {
     let result
 
-    mocks.airQualityManagementArea.aqmaIsInAqma = true
+    mocks.airQualityManagementArea.isInAqma = true
     result = await AirQualityManagementAreaTask.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
 
-    mocks.airQualityManagementArea.aqmaName = TEST_AQMA_NAME
+    mocks.airQualityManagementArea.name = TEST_AQMA_NAME
     result = await AirQualityManagementAreaTask.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
-    delete mocks.airQualityManagementArea.aqmaName
+    delete mocks.airQualityManagementArea.name
 
-    mocks.airQualityManagementArea.aqmaNitrogenDioxideLevel = TEST_NO2_LEVEL
+    mocks.airQualityManagementArea.nitrogenDioxideLevel = TEST_NO2_LEVEL
     result = await AirQualityManagementAreaTask.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
-    delete mocks.airQualityManagementArea.aqmaNitrogenDioxideLevel
+    delete mocks.airQualityManagementArea.nitrogenDioxideLevel
 
-    mocks.airQualityManagementArea.aqmaLocalAuthorityName = TEST_AUTH_NAME
+    mocks.airQualityManagementArea.localAuthorityName = TEST_AUTH_NAME
     result = await AirQualityManagementAreaTask.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
-    delete mocks.airQualityManagementArea.aqmaLocalAuthorityName
+    delete mocks.airQualityManagementArea.localAuthorityName
 
-    mocks.airQualityManagementArea.aqmaName = TEST_AQMA_NAME
-    mocks.airQualityManagementArea.aqmaNitrogenDioxideLevel = TEST_NO2_LEVEL
+    mocks.airQualityManagementArea.name = TEST_AQMA_NAME
+    mocks.airQualityManagementArea.nitrogenDioxideLevel = TEST_NO2_LEVEL
     result = await AirQualityManagementAreaTask.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
-    delete mocks.airQualityManagementArea.aqmaName
-    delete mocks.airQualityManagementArea.aqmaNitrogenDioxideLevel
+    delete mocks.airQualityManagementArea.name
+    delete mocks.airQualityManagementArea.nitrogenDioxideLevel
 
-    mocks.airQualityManagementArea.aqmaNitrogenDioxideLevel = TEST_NO2_LEVEL
-    mocks.airQualityManagementArea.aqmaLocalAuthorityName = TEST_AUTH_NAME
+    mocks.airQualityManagementArea.nitrogenDioxideLevel = TEST_NO2_LEVEL
+    mocks.airQualityManagementArea.localAuthorityName = TEST_AUTH_NAME
     result = await AirQualityManagementAreaTask.isComplete(mocks.context)
     Code.expect(result).to.equal(false)
-    delete mocks.airQualityManagementArea.aqmaNitrogenDioxideLevel
-    delete mocks.airQualityManagementArea.aqmaLocalAuthorityName
+    delete mocks.airQualityManagementArea.nitrogenDioxideLevel
+    delete mocks.airQualityManagementArea.localAuthorityName
   })
 })

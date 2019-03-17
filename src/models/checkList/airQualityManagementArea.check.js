@@ -22,14 +22,14 @@ module.exports = class AirQualityManagementAreaCheck extends BaseCheck {
 
   async getAqmaLine () {
     const aqma = await this.getAirQualityManagementArea()
-    const { isInAqma, aqmaName, aqmaNitrogenDioxideLevel, aqmaLocalAuthorityName } = aqma
+    const { isInAqma, name, nitrogenDioxideLevel, localAuthorityName } = aqma
     const answers = []
 
     if (isInAqma) {
       answers.push('You are in an AQMA, or may deploy to an AQMA')
-      answers.push(`AQMA name: ${aqmaName}`)
-      answers.push(`Background level of nitrogen dioxide: ${aqmaNitrogenDioxideLevel} µg/m3`)
-      answers.push(`Local authority: ${aqmaLocalAuthorityName}`)
+      answers.push(`AQMA name: ${name}`)
+      answers.push(`Background level of nitrogen dioxide: ${nitrogenDioxideLevel} µg/m3`)
+      answers.push(`Local authority: ${localAuthorityName}`)
     } else {
       answers.push('You are not in an AQMA')
     }

@@ -83,9 +83,14 @@ lab.experiment('Air Quality Management Area page tests:', () => {
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
       })
-      lab.test('when all data already entered', async () => {
+      lab.test('when  data already entered and not in Aqma', async () => {
+        mocks.airQualityManagementArea.isInAqma = false
+        const doc = await GeneralTestHelper.getDoc(request)
+        await checkCommonElements(doc)
+      })
+      lab.test('when all data already entered and in Aqma', async () => {
         mocks.airQualityManagementArea.isInAqma = true
-        mocks.airQualityManagementArea.aqmaName = 'AQMA NAME'
+        mocks.airQualityManagementArea.name = 'AQMA NAME'
         mocks.airQualityManagementArea.nitrogenDioxideLevel = 50
         mocks.airQualityManagementArea.localAuthorityName = 'AQMA LOCAL AUTHORITY NAME'
         const doc = await GeneralTestHelper.getDoc(request)
@@ -132,6 +137,20 @@ lab.experiment('Air Quality Management Area page tests:', () => {
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
+      lab.test('when a nitrogen dioxide level of 0 is entered', async () => {
+        postRequest.payload['aqma-nitrogen-dioxide-level'] = '0'
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      })
+
+      lab.test('when a nitrogen dioxide level of 100 is entered', async () => {
+        postRequest.payload['aqma-nitrogen-dioxide-level'] = '100'
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      })
+
       lab.test('when No to AQMA', async () => {
         postRequest.payload = { 'aqma-is-in-aqma': 'no' }
         const res = await server.inject(postRequest)
@@ -171,19 +190,25 @@ lab.experiment('Air Quality Management Area page tests:', () => {
         postRequest.payload['aqma-nitrogen-dioxide-level'] = '-1'
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'aqma-nitrogen-dioxide-level', 'The background level should be a number between 0 and 100')
+        await GeneralTestHelper.checkValidationMessage(doc, 'aqma-nitrogen-dioxide-level', 'The background level should be a whole number between 0 and 100')
       })
       lab.test('when a nitrogen dioxide level above 100 is entered', async () => {
-        postRequest.payload['aqma-nitrogen-dioxide-level'] = '150'
+        postRequest.payload['aqma-nitrogen-dioxide-level'] = '101'
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'aqma-nitrogen-dioxide-level', 'The background level should be a number between 0 and 100')
+        await GeneralTestHelper.checkValidationMessage(doc, 'aqma-nitrogen-dioxide-level', 'The background level should be a whole number between 0 and 100')
+      })
+      lab.test('when a decimal nitrogen dioxide level is entered', async () => {
+        postRequest.payload['aqma-nitrogen-dioxide-level'] = '50.1'
+        const doc = await GeneralTestHelper.getDoc(postRequest)
+        await checkCommonElements(doc)
+        await GeneralTestHelper.checkValidationMessage(doc, 'aqma-nitrogen-dioxide-level', 'The background level should be a whole number between 0 and 100')
       })
       lab.test('when an invalid string is entered for the nitrogen dioxide level', async () => {
         postRequest.payload['aqma-nitrogen-dioxide-level'] = 'INVALID STRING'
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'aqma-nitrogen-dioxide-level', 'The background level should be a number between 0 and 100')
+        await GeneralTestHelper.checkValidationMessage(doc, 'aqma-nitrogen-dioxide-level', 'The background level should be a whole number between 0 and 100')
       })
 
       lab.test('when no string is entered for local authority name', async () => {

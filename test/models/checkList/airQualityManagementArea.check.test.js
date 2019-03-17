@@ -60,9 +60,9 @@ lab.experiment('AQMA tests:', () => {
 
     lab.test('Returns correct response when in AQMA', async () => {
       mocks.airQualityManagementArea.isInAqma = true
-      mocks.airQualityManagementArea.aqmaName = TEST_AQMA_NAME
-      mocks.airQualityManagementArea.aqmaNitrogenDioxideLevel = TEST_NO2_LEVEL
-      mocks.airQualityManagementArea.aqmaLocalAuthorityName = TEST_AUTH_NAME
+      mocks.airQualityManagementArea.name = TEST_AQMA_NAME
+      mocks.airQualityManagementArea.nitrogenDioxideLevel = TEST_NO2_LEVEL
+      mocks.airQualityManagementArea.localAuthorityName = TEST_AUTH_NAME
       check = new AirQualityManagementArea()
       lines = await check.buildLines()
       const { heading, headingId, answers, links } = lines[0]
@@ -70,6 +70,11 @@ lab.experiment('AQMA tests:', () => {
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${prefix}-heading`)
       Code.expect(answers.length).to.equal(4)
+
+      const { link, linkId, linkType } = links.pop()
+      Code.expect(link).to.equal('/mcp/aqma/name')
+      Code.expect(linkType).to.equal('Air Quality Management Area')
+      Code.expect(linkId).to.equal(`${prefix}-link`)
 
       answers.forEach(({ answerId, answer }, answerIndex) => {
         Code.expect(answerId).to.equal(`${prefix}-answer-${answerIndex + 1}`)

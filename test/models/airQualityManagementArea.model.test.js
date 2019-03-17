@@ -43,10 +43,10 @@ lab.experiment('AirQualityManagementArea test:', () => {
       mocks.applicationAnswers[0].questionCode = 'aqma-is-in-aqma'
       mocks.applicationAnswers[0].answerCode = false
       const airQualityManagementArea = await AirQualityManagementArea.get(context)
-      Code.expect(airQualityManagementArea.aqmaIsInAqma).to.be.false()
-      Code.expect(airQualityManagementArea.aqmaName).to.not.exist()
-      Code.expect(airQualityManagementArea.aqmaNitrogenDioxideLevel).to.not.exist()
-      Code.expect(airQualityManagementArea.aqmaLocalAuthorityName).to.not.exist()
+      Code.expect(airQualityManagementArea.isInAqma).to.be.false()
+      Code.expect(airQualityManagementArea.name).to.not.exist()
+      Code.expect(airQualityManagementArea.nitrogenDioxideLevel).to.not.exist()
+      Code.expect(airQualityManagementArea.localAuthorityName).to.not.exist()
     })
 
     lab.test('AQMA is set as yes', async () => {
@@ -61,29 +61,29 @@ lab.experiment('AirQualityManagementArea test:', () => {
 
       const airQualityManagementArea = await AirQualityManagementArea.get(context)
 
-      Code.expect(airQualityManagementArea.aqmaIsInAqma).to.be.true()
-      Code.expect(airQualityManagementArea.aqmaName).to.equal(TEST_AQMA_NAME)
-      Code.expect(airQualityManagementArea.aqmaNitrogenDioxideLevel).to.equal(TEST_NO2_LEVEL)
-      Code.expect(airQualityManagementArea.aqmaLocalAuthorityName).to.equal(TEST_AUTH_NAME)
+      Code.expect(airQualityManagementArea.isInAqma).to.be.true()
+      Code.expect(airQualityManagementArea.name).to.equal(TEST_AQMA_NAME)
+      Code.expect(airQualityManagementArea.nitrogenDioxideLevel).to.equal(TEST_NO2_LEVEL)
+      Code.expect(airQualityManagementArea.localAuthorityName).to.equal(TEST_AUTH_NAME)
     })
   })
 
   lab.experiment('save', () => {
     lab.test('with AQMA set to No', async () => {
       const airQualityManagementArea = new AirQualityManagementArea()
-      airQualityManagementArea.aqmaIsInAqma = false
+      airQualityManagementArea.isInAqma = false
       await airQualityManagementArea.save(context)
       Code.expect(saveSpy.callCount).to.equal(1)
     })
 
     lab.test('with AQMA set to Yes', async () => {
       const airQualityManagementArea = new AirQualityManagementArea()
-      airQualityManagementArea.aqmaIsInAqma = true
-      airQualityManagementArea.aqmaName = TEST_AQMA_NAME
+      airQualityManagementArea.isInAqma = true
+      airQualityManagementArea.name = TEST_AQMA_NAME
       airQualityManagementArea.nitrogenDioxideLevelAnswer = TEST_NO2_LEVEL
       airQualityManagementArea.localAuthorityNameAnswer = TEST_AUTH_NAME
       await airQualityManagementArea.save(context)
-      Code.expect(saveSpy.callCount).to.equal(1)
+      Code.expect(saveSpy.callCount).to.equal(4)
     })
   })
 })
