@@ -18,7 +18,7 @@ const { MCP_TYPES: { MOBILE_SG, MOBILE_SG_AND_MCP } } = require('../../src/model
 
 const routePath = '/mcp-check/habitat-assessment'
 // TODO: set to the correct next page (not the task list)
-const nextRoutePath = '/selected/create-application'
+const nextRoutePath = '/selected/create-application-lines'
 
 let sandbox
 let mocks

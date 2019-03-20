@@ -1,13 +1,11 @@
 'use strict'
 
-const { DEFRA_COOKIE_KEY, COOKIE_KEY: { APPLICATION_ID } } = require('../../constants')
 const BaseController = require('../base.controller')
 const Application = require('../../models/triage/application.model')
-const ActiveDirectoryAuthService = require('../../services/activeDirectoryAuth.service')
 const RecoveryService = require('../../services/recovery.service')
 const DataStore = require('../../models/dataStore.model')
 
-module.exports = class CreateApplicationController extends BaseController {
+module.exports = class CreateApplicationLinesController extends BaseController {
   // TODO: I think this should be in a POST (not a GET) as it is writing to Dynamics.  If so, how can we do this?  Alternatively the better way will be to skip this controller, go straight to the CONFIRM_COSTS page, which will ask Dynamics for the costs (without creating the lines...Kas says this is possible) then when the user clicks 'Start Application', create the lines in that POST
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
