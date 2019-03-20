@@ -62,8 +62,7 @@ module.exports = class CharityDetail {
         answerText: charityNumber
       }, {
         questionCode: questionCodeName,
-        // Only set the charity name if it's not already been saved as a trading name
-        answerText: application.tradingName ? undefined : charityName
+        answerText: charityName
       }
     ]
 
