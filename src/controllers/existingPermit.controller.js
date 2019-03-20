@@ -4,7 +4,7 @@ const BaseController = require('./base.controller')
 const DataStore = require('../models/dataStore.model')
 const RecoveryService = require('../services/recovery.service')
 const { BESPOKE: { id: BESPOKE } } = require('../../src/constants').PermitTypes
-const { MCP_TYPES: { MOBILE_SG } } = require('../models/triage/triageLists')
+const { MCP_TYPES: { MOBILE_SG, MOBILE_SG_AND_MCP } } = require('../models/triage/triageLists')
 
 module.exports = class ExistingPermitController extends BaseController {
   async doGet (request, h, errors) {
@@ -16,7 +16,7 @@ module.exports = class ExistingPermitController extends BaseController {
     //   so jump to air dispersion steps
     if (
       data.permitType === BESPOKE &&
-      data.mcpType === MOBILE_SG.id
+      (data.mcpType === MOBILE_SG.id || data.mcpType === MOBILE_SG_AND_MCP.id)
     ) {
       return this.redirect({ h, route: 'MCP_AIR_DISPERSION_MODELLING' })
     }
