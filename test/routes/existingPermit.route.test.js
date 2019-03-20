@@ -19,7 +19,7 @@ const { MCP_TYPES: { MOBILE_SG, MOBILE_SG_AND_MCP } } = require('../../src/model
 const routePath = '/existing-permit'
 const nextRoutePathYes = '/existing-permit/yes'
 const nextRoutePathNoSr = '/task-list'
-const nextRoutePathNoBespoke = '/mcp-check/air-dispersion-modelling-report'
+const nextRoutePathNoBespoke = '/mcp-check/under-500-hours'
 
 lab.experiment('Existing permit page tests:', () => {
   let mocks
