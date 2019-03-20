@@ -144,7 +144,7 @@ module.exports = class Application {
     // So now each operation is individually awaited.
 
     const permitHolderType = this.permitHolderType
-    const mcpTypes = this.mcpTypes || [] // TODO (WE-2307) - Can we remove this now?
+    // const mcpTypes = this.mcpTypes || [] // TODO (WE-2307) - Can we remove this now?
     const wasteActivities = this.wasteActivities || []
     const wasteAssessments = this.wasteAssessments || []
 
