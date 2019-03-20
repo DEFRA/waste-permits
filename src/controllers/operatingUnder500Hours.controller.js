@@ -39,9 +39,6 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
         bestAvailableTechniquesAssessment: false,
         habitatAssessment: 'no'
       })
-      // TODO:
-      // * Add activity 1.10.3 "Medium combustion plant site - does not require dispersion modelling"
-      // * Remove task "'Upload air dispersion modelling report or screening tool'"
       return this.redirect({ h, route: Routes.CONFIRM_COST })
     } else {
       await DataStore.save(context, {
