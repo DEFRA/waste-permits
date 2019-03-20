@@ -74,7 +74,7 @@ lab.experiment('Operating under 500 hours page tests:', () => {
           STATIONARY_MCP,
           STATIONARY_MCP_AND_SG
         ]
-        for (const element of mcpTestTypes.entries()) {
+        for (const element of mcpTestTypes) {
           mocks.dataStore.data.mcpType = element.id // Set the mock mcp type so the screen will display
           const doc = await GeneralTestHelper.getDoc(getRequest)
           Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Will your MCP operate for less than 500 hours a year?')
@@ -92,13 +92,11 @@ lab.experiment('Operating under 500 hours page tests:', () => {
           STATIONARY_SG,
           MOBILE_SG_AND_MCP
         ]
-        for (const [index, element] of mcpTestTypes.entries()) {
+        for (const element of mcpTestTypes) {
           mocks.dataStore.data.mcpType = element.id // Set the mock mcp type so the screen does NOT display
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(noRoutePath)
-          Code.expect(dataStoreStub.callCount).to.equal(index + 1)
-          Code.expect(dataStoreStub.args[0][1].operatingUnder500Hours).to.equal('no')
         }
       })
     })
@@ -137,7 +135,6 @@ lab.experiment('Operating under 500 hours page tests:', () => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(yesRoutePath)
       Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].operatingUnder500Hours).to.equal('yes')
       Code.expect(dataStoreStub.args[0][1].airDispersionModelling).to.equal('no')
       Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
       Code.expect(dataStoreStub.args[0][1].bestAvailableTechniquesAssessment).to.equal(false)
@@ -150,8 +147,6 @@ lab.experiment('Operating under 500 hours page tests:', () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(noRoutePath)
-      Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].operatingUnder500Hours).to.equal('no')
     })
 
     lab.test('Invalid input', async () => {

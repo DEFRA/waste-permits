@@ -20,8 +20,6 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
     if (mcpType === STATIONARY_SG.id ||
       mcpType === MOBILE_SG.id ||
       mcpType === MOBILE_SG_AND_MCP.id) {
-      // Set the operatingUnder500Hours to 'no' and redirect to the next page
-      await DataStore.save(context, { operatingUnder500Hours: 'no' })
       return this.redirect({ h })
     }
 
@@ -33,7 +31,6 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
 
     if (request.payload['operating-under-500-hours'] === 'yes') {
       await DataStore.save(context, {
-        operatingUnder500Hours: request.payload['operating-under-500-hours'],
         airDispersionModelling: 'no',
         energyEfficiencyReportRequired: false,
         bestAvailableTechniquesAssessment: false,
@@ -41,9 +38,6 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
       })
       return this.redirect({ h, route: Routes.CONFIRM_COST })
     } else {
-      await DataStore.save(context, {
-        operatingUnder500Hours: request.payload['operating-under-500-hours']
-      })
       return this.redirect({ h })
     }
   }

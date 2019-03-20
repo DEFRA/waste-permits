@@ -18,9 +18,7 @@ module.exports = class OperatingUnder500HoursValidator extends BaseValidator {
   get formValidators () {
     return {
       'operating-under-500-hours': Joi
-        .string()
         .required()
-        .valid('yes', 'no')
     }
   }
 }
