@@ -14,6 +14,7 @@ const RecoveryService = require('../../src/services/recovery.service')
 const DataStore = require('../../src/models/dataStore.model')
 const { COOKIE_RESULT } = require('../../src/constants')
 const { PermitTypes } = require('../../src/constants')
+const { MCP_TYPES: { MOBILE_SG, MOBILE_SG_AND_MCP } } = require('../../src/models/triage/triageLists')
 
 const routePath = '/existing-permit'
 const nextRoutePathYes = '/existing-permit/yes'
@@ -45,13 +46,53 @@ lab.experiment('Existing permit page tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     let request
     lab.beforeEach(() => {
-      request = { method: 'GET', url: routePath, headers: {} }
+      request = {
+        method: 'GET',
+        url: routePath,
+        headers: {}
+      }
+      dataStoreData = undefined
     })
 
+    lab.experiment('redirect if mobile', () => {
+      lab.test('page redirects to correct location dependant on Moble SG type', async () => {
+        dataStoreData = {
+          data: {
+            permitType: PermitTypes.BESPOKE.id,
+            mcpType: MOBILE_SG.id
+          }
+        }
+        const res = await server.inject(request)
+        Code.expect(res.statusCode).to.equal(302)
+        Code
+          .expect(res.headers['location'])
+          .to
+          .equal('/mcp-check/air-dispersion-modelling-report')
+        dataStoreData = undefined
+      })
+      lab.test('page redirects to correct location dependant on Moble SG also MCP type', async () => {
+        dataStoreData = {
+          data: {
+            permitType: PermitTypes.BESPOKE.id,
+            mcpType: MOBILE_SG_AND_MCP.id
+          }
+        }
+        const res = await server.inject(request)
+        Code.expect(res.statusCode).to.equal(302)
+        Code
+          .expect(res.headers['location'])
+          .to
+          .equal('/mcp-check/air-dispersion-modelling-report')
+        dataStoreData = undefined
+      })
+    })
     lab.experiment('success', () => {
       lab.test('page displays correct details', async () => {
         const doc = await GeneralTestHelper.getDoc(request)
-        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Does your site or installation already have an environmental (EPR) permit?')
+        Code
+          .expect(doc.getElementById('page-heading').firstChild.nodeValue)
+          .to
+          .equal('Does your site or installation already have an environmental (EPR) permit?')
         Code.expect(doc.getElementById('existing-permit-yes')).to.exist()
         Code.expect(doc.getElementById('existing-permit-yes').getAttribute('value')).to.equal('yes')
         Code.expect(doc.getElementById('existing-permit-no')).to.exist()
