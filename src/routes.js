@@ -88,7 +88,7 @@ const Routes = {
   // TODO: This name is a mis-name, as the Dynamics application is created earlier from the route START_OR_OPEN_SAVED.  It should ideally be moved to this route controller.
   // The end game is to remove this route, go straight to the CONFIRM_COSTS page, which will ask Dynamics for the costs (without creating the lines...Kas says this is possible) then when the user clicks 'Start Application', create the lines in that POST
   CREATE_APPLICATION: {
-    path: '/create-application',
+    path: '/selected/create-application',
     controller: 'triage/create-application',
     nextRoute: 'CONFIRM_COST',
     types: 'GET,POST',

@@ -4,7 +4,6 @@ const { DEFRA_COOKIE_KEY, COOKIE_KEY: { APPLICATION_ID } } = require('../../cons
 const BaseController = require('../base.controller')
 const Application = require('../../models/triage/application.model')
 const ActiveDirectoryAuthService = require('../../services/activeDirectoryAuth.service')
-const authService = new ActiveDirectoryAuthService()
 const RecoveryService = require('../../services/recovery.service')
 const DataStore = require('../../models/dataStore.model')
 

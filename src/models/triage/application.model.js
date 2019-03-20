@@ -61,32 +61,32 @@ module.exports = class Application {
   }
 
   // TODO (WE-2307) - Can we remove this now?
-  // setMcpType (mcpTypeToSet) {
-  //   let mcpTypes = this.mcpTypes || []
-  //
-  //   // Set the deletion status on any existing items
-  //   mcpTypes.forEach((existing) => {
-  //     if (existing.mcpType.id === mcpTypeToSet.id) {
-  //       if (existing.toBeDeleted) {
-  //         delete existing.toBeDeleted
-  //       }
-  //     } else {
-  //       existing.toBeDeleted = true
-  //     }
-  //   })
-  //
-  //   // Remove any items that are flagged to be both added and deleted
-  //   mcpTypes = mcpTypes.filter((item) => !(item.toBeAdded && item.toBeDeleted))
-  //
-  //   // Add the MCP type if it is not already in the list
-  //   if (mcpTypeToSet && mcpTypeToSet.id) {
-  //     if (!mcpTypes.find((item) => item.mcpType.id === mcpTypeToSet.id)) {
-  //       mcpTypes.push({ mcpType: mcpTypeToSet, toBeAdded: true })
-  //     }
-  //   }
-  //
-  //   this.mcpTypes = mcpTypes
-  // }
+  setMcpType (mcpTypeToSet) {
+    let mcpTypes = this.mcpTypes || []
+
+    // Set the deletion status on any existing items
+    mcpTypes.forEach((existing) => {
+      if (existing.mcpType.id === mcpTypeToSet.id) {
+        if (existing.toBeDeleted) {
+          delete existing.toBeDeleted
+        }
+      } else {
+        existing.toBeDeleted = true
+      }
+    })
+
+    // Remove any items that are flagged to be both added and deleted
+    mcpTypes = mcpTypes.filter((item) => !(item.toBeAdded && item.toBeDeleted))
+
+    // Add the MCP type if it is not already in the list
+    if (mcpTypeToSet && mcpTypeToSet.id) {
+      if (!mcpTypes.find((item) => item.mcpType.id === mcpTypeToSet.id)) {
+        mcpTypes.push({ mcpType: mcpTypeToSet, toBeAdded: true })
+      }
+    }
+
+    this.mcpTypes = mcpTypes
+  }
 
   setWasteActivities (wasteActivitiesToSet) {
     let wasteActivityLines = this.wasteActivities || []
