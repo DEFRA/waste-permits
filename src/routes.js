@@ -84,6 +84,17 @@ const Routes = {
     cookieValidationRequired: true,
     applicationRequired: false
   },
+  TRIAGE_COMPLETE: {
+    path: '/select',
+    params: ['permitType', 'permitHolderType', 'facilityType', 'mcpType', 'wasteActivity', 'wasteAssessment'],
+    view: 'triage/complete',
+    applyOfflineView: 'triage/applyOffline',
+    pageHeading: 'Confirm activities and assessments',
+    controller: 'triage/triage',
+    types: 'GET,POST',
+    cookieValidationRequired: true,
+    applicationRequired: false
+  },
   // TODO: This is a temporary route.  The expected end game is to remove this route, go straight to the CONFIRM_COSTS page, which will ask Dynamics for the costs (without creating the lines...Kas says this is possible) then when the user clicks 'Start Application', create the application lines in that POST
   CREATE_APPLICATION_LINES: {
     path: '/selected/create-application-lines',
