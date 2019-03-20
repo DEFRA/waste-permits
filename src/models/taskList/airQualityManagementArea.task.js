@@ -13,11 +13,10 @@ module.exports = class AirQualityManagementArea extends BaseTask {
 
     return Boolean(
       (
-        !aqma.aqmaIsInAqma || (
-          aqma.aqmaIsInAqma &&
-          aqma.aqmaName &&
-          aqma.aqmaNitrogenDioxideLevel &&
-          aqma.aqmaLocalAuthorityName
+        !aqma.isInAqma || (
+          aqma.name &&
+          aqma.nitrogenDioxideLevel &&
+          aqma.localAuthorityName
         ))
     )
   }
