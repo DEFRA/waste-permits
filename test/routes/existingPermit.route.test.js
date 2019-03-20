@@ -18,7 +18,7 @@ const { PermitTypes } = require('../../src/constants')
 const routePath = '/existing-permit'
 const nextRoutePathYes = '/existing-permit/yes'
 const nextRoutePathNoSr = '/task-list'
-const nextRoutePathNoBespoke = '/mcp-check/air-dispersion-modelling-report'
+const nextRoutePathNoBespoke = '/mcp-check/under-500-hours'
 
 lab.experiment('Existing permit page tests:', () => {
   let mocks
@@ -34,7 +34,7 @@ lab.experiment('Existing permit page tests:', () => {
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
     sandbox.stub(DataStore, 'get').value(() => dataStoreData)
-})
+  })
 
   lab.afterEach(() => {
     sandbox.restore()

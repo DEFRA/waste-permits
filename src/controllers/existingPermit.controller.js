@@ -22,7 +22,7 @@ module.exports = class ExistingPermitController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
     const dataStore = await DataStore.get(context)
     if (dataStore.data.permitType === BESPOKE) {
-      return this.redirect({ h, route: 'MCP_AIR_DISPERSION_MODELLING' })
+      return this.redirect({ h, route: 'MCP_UNDER_500_HOURS' })
     } else {
       return this.redirect({ h, route: 'TASK_LIST' })
     }
