@@ -13,12 +13,11 @@ module.exports = class AirQualityManagementAreaController extends BaseController
     } else {
       const context = await RecoveryService.createApplicationContext(h)
       const aqma = await AirQualityManagementAreaModel.get(context)
-      const isInAqma = (aqma.aqmaIsInAqma === 'yes')
       pageContext.formValues = {
-        'aqma-is-in-aqma': aqma.aqmaIsInAqma,
-        'aqma-name': isInAqma ? aqma.aqmaName : '',
-        'aqma-nitrogen-dioxide-level': isInAqma ? aqma.aqmaNitrogenDioxideLevel : '',
-        'aqma-local-authority-name': isInAqma ? aqma.aqmaLocalAuthorityName : ''
+        'aqma-is-in-aqma': aqma.isInAqma,
+        'aqma-name': aqma.isInAqma ? aqma.name : '',
+        'aqma-nitrogen-dioxide-level': aqma.isInAqma ? aqma.nitrogenDioxideLevel : '',
+        'aqma-local-authority-name': aqma.isInAqma ? aqma.localAuthorityName : ''
       }
     }
 
@@ -29,25 +28,23 @@ module.exports = class AirQualityManagementAreaController extends BaseController
     const context = await RecoveryService.createApplicationContext(h)
 
     const {
-      'aqma-is-in-aqma': aqmaIsInAqma,
-      'aqma-name': aqmaName,
-      'aqma-nitrogen-dioxide-level': aqmaNitrogenDioxideLevel,
-      'aqma-local-authority-name': aqmaLocalAuthorityName
+      'aqma-is-in-aqma': isInAqma,
+      'aqma-name': name,
+      'aqma-nitrogen-dioxide-level': nitrogenDioxideLevel,
+      'aqma-local-authority-name': localAuthorityName
     } = request.payload
 
     const aqma = {
-      isInAqma: undefined,
+      isInAqma: isInAqma,
       name: undefined,
       nitrogenDioxideLevel: undefined,
       localAuthorityName: undefined
     }
 
-    aqma.isInAqma = aqmaIsInAqma
-
-    if (aqma.isInAqma) {
-      aqma.name = aqmaName
-      aqma.nitrogenDioxideLevel = aqmaNitrogenDioxideLevel
-      aqma.localAuthorityName = aqmaLocalAuthorityName
+    if (aqma.isInAqma === 'yes') {
+      aqma.name = name
+      aqma.nitrogenDioxideLevel = nitrogenDioxideLevel
+      aqma.localAuthorityName = localAuthorityName
     }
 
     const aqmaModel = new AirQualityManagementAreaModel(aqma)

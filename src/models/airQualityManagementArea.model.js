@@ -54,15 +54,15 @@ module.exports = class AirQualityManagementArea {
   static async get (context) {
     const applicationAnswers = await ApplicationAnswer.listByMultipleQuestionCodes(context, answerIds)
     const isInAqmaAnswer = applicationAnswers.find(({ questionCode }) => questionCode === IS_IN_AQMA)
-    const aqmaNameAnswer = applicationAnswers.find(({ questionCode }) => questionCode === AQMA_NAME)
+    const nameAnswer = applicationAnswers.find(({ questionCode }) => questionCode === AQMA_NAME)
     const nitrogenDioxideLevelAnswer = applicationAnswers.find(({ questionCode }) => questionCode === NO2_LEVEL)
     const localAuthorityNameAnswer = applicationAnswers.find(({ questionCode }) => questionCode === AUTH_NAME)
 
     const aqma = {
-      aqmaIsInAqma: isInAqmaAnswer && isInAqmaAnswer.answerCode === true,
-      aqmaName: aqmaNameAnswer && aqmaNameAnswer.answerText,
-      aqmaNitrogenDioxideLevel: nitrogenDioxideLevelAnswer && nitrogenDioxideLevelAnswer.answerText,
-      aqmaLocalAuthorityName: localAuthorityNameAnswer && localAuthorityNameAnswer.answerText
+      isInAqma: isInAqmaAnswer && isInAqmaAnswer.answerCode === true,
+      name: nameAnswer && nameAnswer.answerText,
+      nitrogenDioxideLevel: nitrogenDioxideLevelAnswer && nitrogenDioxideLevelAnswer.answerText,
+      localAuthorityName: localAuthorityNameAnswer && localAuthorityNameAnswer.answerText
     }
 
     return new AirQualityManagementArea(aqma)
