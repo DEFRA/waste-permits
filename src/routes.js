@@ -1079,6 +1079,15 @@ const Routes = {
       ]
     }
   },
+  MCP_UNDER_500_HOURS: {
+    path: '/mcp-check/under-500-hours',
+    view: 'operatingUnder500Hours',
+    pageHeading: 'Will your MCP operate for less than 500 hours a year?',
+    controller: 'operatingUnder500Hours',
+    validator: 'operatingUnder500Hours',
+    nextRoute: 'MCP_AIR_DISPERSION_MODELLING',
+    types: 'GET, POST'
+  },
   MCP_AIR_DISPERSION_MODELLING: {
     path: '/mcp-check/air-dispersion-modelling-report',
     view: 'airDispersionModelling',

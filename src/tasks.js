@@ -8,7 +8,7 @@ const tasks = {
     completedLabelId: 'air-quality-management-completed',
     shortName: 'aqma'
   },
-  AIR_DISPERTION_MODELLING_REPORT: {
+  AIR_DISPERSION_MODELLING_REPORT: {
     id: 'upload-air-dispersion-modelling-report',
     label: 'Upload air dispersion modelling report',
     completedLabelId: 'upload-air-dispersion-modelling-report-completed',
@@ -432,7 +432,7 @@ const bespoke = [
     id: 'evidence-section',
     label: 'Evidence',
     tasks: [
-      tasks.AIR_DISPERTION_MODELLING_REPORT,
+      tasks.AIR_DISPERSION_MODELLING_REPORT,
       tasks.SCREENING_TOOL,
       tasks.ENERGY_EFFICENCY_REPORT,
       tasks.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
