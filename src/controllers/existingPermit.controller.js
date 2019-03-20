@@ -10,11 +10,15 @@ module.exports = class ExistingPermitController extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
     const dataStore = await DataStore.get(context)
-    const data = dataStore.data
+    let data
+    if (dataStore) {
+      data = dataStore.data
+    }
     // if the mcp type is mobile:
     //   no need to worry about existing application
     //   so jump to air dispersion steps
     if (
+      data &&
       data.permitType === BESPOKE &&
       (data.mcpType === MOBILE_SG.id || data.mcpType === MOBILE_SG_AND_MCP.id)
     ) {
