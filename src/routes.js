@@ -85,19 +85,14 @@ const Routes = {
     applicationRequired: false
   },
 
-  // This route is never reached.  Ben Sagar suggests this was leftover from the triage thinking.  No longer needed.  Left here commented out just in case.
-  // TODO: If removed, remove the view 'triage/complete'
-  // TRIAGE_COMPLETE: {
-  //   path: '/select',
-  //   params: ['permitType', 'permitHolderType', 'facilityType', 'mcpType', 'wasteActivity', 'wasteAssessment'],
-  //   view: 'triage/complete',
-  //   applyOfflineView: 'triage/applyOffline',
-  //   pageHeading: 'Confirm activities and assessments',
-  //   controller: 'triage/triage',
-  //   types: 'GET,POST',
-  //   cookieValidationRequired: true,
-  //   applicationRequired: false
-  // },
+  // TODO: This name is a mis-name, as the Dynamics application is created earlier from the route START_OR_OPEN_SAVED.  It should ideally be moved to this route controller.
+  // The end game is to remove this route, go straight to the CONFIRM_COSTS page, which will ask Dynamics for the costs (without creating the lines...Kas says this is possible) then when the user clicks 'Start Application', create the lines in that POST
+  CREATE_APPLICATION: {
+    path: '/create-application',
+    controller: 'triage/create-application',
+    nextRoute: 'CONFIRM_COST',
+    types: 'GET,POST',
+  },
   CONFIRM_COST: {
     path: '/selected/confirm',
     view: 'triage/confirmCost',
@@ -1105,7 +1100,7 @@ const Routes = {
     pageHeading: 'Do you need a habitat assessment?',
     controller: 'habitatAssessment',
     validator: 'habitatAssessment',
-    nextRoute: 'CONFIRM_COST',
+    nextRoute: 'CREATE_APPLICATION',
     types: 'GET, POST'
   },
   MCP_HAS_EXISTING_PERMIT: {

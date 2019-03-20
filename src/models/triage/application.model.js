@@ -36,13 +36,6 @@ const createLine = async (entityContext, itemId) => {
   return applicationLineEntity.save(entityContext, ['applicationId', 'itemId', 'permitType'])
 }
 
-const createMcpTypeLine = async (entityContext, mcpTypeId) => {
-  // TODO: MCP - Save this once Dynamics has the item records set up
-  // const mcpTypeEntity = await ItemEntity.getMcpType(entityContext, mcpTypeId)
-  // return createLine(entityContext, mcpTypeEntity.id)
-  return null
-}
-
 const createWasteActivityLine = async (entityContext, wasteActivityId) => {
   const wasteActivityEntity = await ItemEntity.getWasteActivity(entityContext, wasteActivityId)
   return createLine(entityContext, wasteActivityEntity.id)
@@ -57,7 +50,7 @@ module.exports = class Application {
   constructor ({ id, permitHolderType, mcpTypes, wasteActivities, wasteAssessments }) {
     this.id = id
     this.permitHolderType = permitHolderType
-    this.mcpTypes = mcpTypes
+    this.mcpTypes = mcpTypes // TODO (WE-2307) - Can we remove this now?
     this.wasteActivities = wasteActivities
     this.wasteAssessments = wasteAssessments
     this.permitType = new TriageListItem(PERMIT_TYPES.BESPOKE)
@@ -67,32 +60,33 @@ module.exports = class Application {
     this.permitHolderType = permitHolderTypeToSet
   }
 
-  setMcpType (mcpTypeToSet) {
-    let mcpTypes = this.mcpTypes || []
-
-    // Set the deletion status on any existing items
-    mcpTypes.forEach((existing) => {
-      if (existing.mcpType.id === mcpTypeToSet.id) {
-        if (existing.toBeDeleted) {
-          delete existing.toBeDeleted
-        }
-      } else {
-        existing.toBeDeleted = true
-      }
-    })
-
-    // Remove any items that are flagged to be both added and deleted
-    mcpTypes = mcpTypes.filter((item) => !(item.toBeAdded && item.toBeDeleted))
-
-    // Add the MCP type if it is not already in the list
-    if (mcpTypeToSet && mcpTypeToSet.id) {
-      if (!mcpTypes.find((item) => item.mcpType.id === mcpTypeToSet.id)) {
-        mcpTypes.push({ mcpType: mcpTypeToSet, toBeAdded: true })
-      }
-    }
-
-    this.mcpTypes = mcpTypes
-  }
+  // TODO (WE-2307) - Can we remove this now?
+  // setMcpType (mcpTypeToSet) {
+  //   let mcpTypes = this.mcpTypes || []
+  //
+  //   // Set the deletion status on any existing items
+  //   mcpTypes.forEach((existing) => {
+  //     if (existing.mcpType.id === mcpTypeToSet.id) {
+  //       if (existing.toBeDeleted) {
+  //         delete existing.toBeDeleted
+  //       }
+  //     } else {
+  //       existing.toBeDeleted = true
+  //     }
+  //   })
+  //
+  //   // Remove any items that are flagged to be both added and deleted
+  //   mcpTypes = mcpTypes.filter((item) => !(item.toBeAdded && item.toBeDeleted))
+  //
+  //   // Add the MCP type if it is not already in the list
+  //   if (mcpTypeToSet && mcpTypeToSet.id) {
+  //     if (!mcpTypes.find((item) => item.mcpType.id === mcpTypeToSet.id)) {
+  //       mcpTypes.push({ mcpType: mcpTypeToSet, toBeAdded: true })
+  //     }
+  //   }
+  //
+  //   this.mcpTypes = mcpTypes
+  // }
 
   setWasteActivities (wasteActivitiesToSet) {
     let wasteActivityLines = this.wasteActivities || []
@@ -150,7 +144,7 @@ module.exports = class Application {
     // So now each operation is individually awaited.
 
     const permitHolderType = this.permitHolderType
-    const mcpTypes = this.mcpTypes || []
+    const mcpTypes = this.mcpTypes || [] // TODO (WE-2307) - Can we remove this now?
     const wasteActivities = this.wasteActivities || []
     const wasteAssessments = this.wasteAssessments || []
 
@@ -162,13 +156,14 @@ module.exports = class Application {
     }
     await setApplicationValues(entityContextToUse, applicationValues)
 
-    for (const item of mcpTypes) {
-      if (item.toBeDeleted) {
-        await deleteLine(entityContextToUse, item.id)
-      } else if (item.toBeAdded) {
-        await createMcpTypeLine(entityContextToUse, item.mcpType.id)
-      }
-    }
+    // TODO (WE-2307) - Can we remove this now?
+    // for (const item of mcpTypes) {
+    //   if (item.toBeDeleted) {
+    //     await deleteLine(entityContextToUse, item.id)
+    //   } else if (item.toBeAdded) {
+    //     await createMcpTypeLine(entityContextToUse, item.mcpType.id)
+    //   }
+    // }
 
     for (const item of wasteActivities) {
       if (item.toBeDeleted) {
@@ -195,18 +190,18 @@ module.exports = class Application {
     // Determine the permit holder type
     const permitHolderType = await this.getPermitHolderTypeForApplicationId(entityContextToUse, applicationId)
 
-    const mcpTypeItemEntities = await ItemEntity.getAllMcpTypes(entityContextToUse)
+    const mcpTypeItemEntities = await ItemEntity.getAllMcpTypes(entityContextToUse) // TODO (WE-2307) - Can we remove this now?
     const itemEntities = await ItemEntity.getAllWasteActivitiesAndAssessments(entityContextToUse)
     const wasteActivityItemEntities = itemEntities.wasteActivities
     const wasteAssessmentItemEntities = itemEntities.wasteAssessments
 
     const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId })
 
-    const mcpTypeLineEntities = applicationLineEntities.filter(({ itemId }) => mcpTypeItemEntities.find(({ id }) => id === itemId))
+    const mcpTypeLineEntities = applicationLineEntities.filter(({ itemId }) => mcpTypeItemEntities.find(({ id }) => id === itemId)) // TODO (WE-2307) - Can we remove this now?
     const wasteActivityLineEntities = applicationLineEntities.filter(({ itemId }) => wasteActivityItemEntities.find(({ id }) => id === itemId))
     const wasteAssessmentLineEntities = applicationLineEntities.filter(({ itemId }) => wasteAssessmentItemEntities.find(({ id }) => id === itemId))
 
-    const mcpTypes = mcpTypeLineEntities.map((line) => ({ id: line.id, mcpType: TriageListItem.createMcpTypeFromItemEntity(wasteActivityItemEntities.find(({ id }) => id === line.itemId)) }))
+    const mcpTypes = mcpTypeLineEntities.map((line) => ({ id: line.id, mcpType: TriageListItem.createMcpTypeFromItemEntity(wasteActivityItemEntities.find(({ id }) => id === line.itemId)) })) // TODO (WE-2307) - Can we remove this now?
     const wasteActivities = wasteActivityLineEntities.map((line) => ({ id: line.id, wasteActivity: TriageListItem.createWasteActivityFromItemEntity(wasteActivityItemEntities.find(({ id }) => id === line.itemId)) }))
     const wasteAssessments = wasteAssessmentLineEntities.map((line) => ({ id: line.id, wasteAssessment: TriageListItem.createWasteAssessmentFromItemEntity(wasteAssessmentItemEntities.find(({ id }) => id === line.itemId)) }))
 
