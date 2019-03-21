@@ -21,7 +21,7 @@ let dataStoreStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-  mocks.dataStore.data.mcpType = 'stationary-sg' // Set the mock permit to one that this screen displays for
+  mocks.dataStore.data.mcpType = 'stationary-mcp' // Set the mock permit to one that this screen displays for
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -54,7 +54,7 @@ lab.experiment('Energy efficiency report page tests:', () => {
     lab.experiment('Success', () => {
       lab.test('Check the basics', async () => {
         const doc = await GeneralTestHelper.getDoc(request)
-        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('About your MCP or SG')
+        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Do you need to provide an energy efficiency report?')
         Code.expect(doc.getElementById('back-link')).to.exist()
         Code.expect(doc.getElementById('energy-report-required-message')).to.exist()
         Code.expect(doc.getElementById('energy-report-required-help')).to.exist()
@@ -66,8 +66,16 @@ lab.experiment('Energy efficiency report page tests:', () => {
         Code.expect(doc.getElementById('engine-type-spark-ignition')).to.exist()
       })
 
-      lab.test('Check we don\'t display this page for certain permit types', async () => {
-        mocks.dataStore.data.mcpType = 'mobile-sg' // Set the mock permit to one that this screen doesn't display for
+      lab.test('Check we don\'t display this page for mobile sg', async () => {
+        mocks.dataStore.data.mcpType = 'mobile-sg'
+        const res = await server.inject(request)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(dataStoreStub.callCount).to.equal(1)
+        Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
+      })
+      lab.test('Check we don\'t display this page for stationary sg', async () => {
+        mocks.dataStore.data.mcpType = 'stationary-sg'
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
@@ -172,7 +180,6 @@ lab.experiment('Energy efficiency report page tests:', () => {
         Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
       })
     })
-
     lab.experiment('Invalid input', async () => {
       lab.test('Missing new or refurbished', async () => {
         postRequest.payload['total-aggregated-thermal-input'] = 'under 20'
