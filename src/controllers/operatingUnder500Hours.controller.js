@@ -31,12 +31,12 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
 
     if (request.payload['operating-under-500-hours'] === 'yes') {
       await DataStore.save(context, {
-        airDispersionModelling: 'no',
+        airDispersionModellingRequired: false,
         energyEfficiencyReportRequired: false,
         bestAvailableTechniquesAssessment: false,
-        habitatAssessment: 'no'
+        habitatAssessmentRequired: false
       })
-      return this.redirect({ h, route: Routes.CONFIRM_COST })
+      return this.redirect({ h, route: Routes.CREATE_APPLICATION_LINES }) // TODO: Be aware this should jump to the CONFIRM_COSTS page, but for now goes to our temporary CREATE_APPLICATION_LINES route (which creates the lines and jumps to the CONFIRM_COSTS page)
     } else {
       return this.redirect({ h })
     }

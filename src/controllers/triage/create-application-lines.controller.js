@@ -19,19 +19,18 @@ module.exports = class CreateApplicationLinesController extends BaseController {
     // application.setMcpType({ id: dataStoreData.mcpType })
 
     // Set the MCP activity
-    // Possible change - Ideally change the air dispersion modelling controller to use true/false, rather than yes/no (to match the other assessment questions below)
     const activitiesArray = []
-    dataStoreData.airDispersionModelling === 'yes'
+    dataStoreData.airDispersionModellingRequired
       ? activitiesArray.push({ id: '1-10-2' }) // Medium combustion plant site – requires dispersion modelling
       : activitiesArray.push({ id: '1-10-3' }) // Medium combustion plant site – does not require dispersion modelling
     application.setWasteActivities(activitiesArray)
 
-    // TODO (WE-2308) - Set the assessments
-    // const assessmentsArray = []
-    // if (dataStoreData.energyEfficiencyReportRequired) assessmentsArray.push({ id: 'TODO' })
-    // if (dataStoreData.bestAvailableTechniquesAssessment) assessmentsArray.push({ id: 'TODO' })
-    // if (dataStoreData.habitatAssessment) assessmentsArray.push({ id: 'TODO' })
-    // application.setWasteAssessments(assessmentsArray.items)
+    // Set the assessments
+    const assessmentsArray = []
+    if (dataStoreData.energyEfficiencyReportRequired) assessmentsArray.push({ id: 'MCP-EER' }) // Energy efficiency report
+    if (dataStoreData.bestAvailableTechniquesAssessment) assessmentsArray.push({ id: 'MCP-BAT' }) // Best available techniques assessment
+    if (dataStoreData.habitatAssessmentRequired) assessmentsArray.push({ id: '1-19-2' }) // Habitats assessment
+    application.setWasteAssessments(assessmentsArray)
 
     // Save the application lines chosen by the user
     await application.save(context)
