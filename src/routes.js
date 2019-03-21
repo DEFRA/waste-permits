@@ -95,6 +95,13 @@ const Routes = {
     cookieValidationRequired: true,
     applicationRequired: false
   },
+  // TODO: This is a temporary route. The expected end game is to remove this route, go straight to the CONFIRM_COSTS page, which will ask Dynamics for the costs (without creating the lines...Kas says this is possible) then when the user clicks 'Start Application', create the application lines in that POST
+  CREATE_APPLICATION_LINES: {
+    path: '/selected/create-application-lines',
+    controller: 'triage/create-application-lines',
+    nextRoute: 'CONFIRM_COST',
+    types: 'GET,POST'
+  },
   CONFIRM_COST: {
     path: '/selected/confirm',
     view: 'triage/confirmCost',
@@ -1111,7 +1118,7 @@ const Routes = {
     pageHeading: 'Do you need a habitat assessment?',
     controller: 'habitatAssessment',
     validator: 'habitatAssessment',
-    nextRoute: 'TASK_LIST',
+    nextRoute: 'CREATE_APPLICATION_LINES',
     types: 'GET, POST'
   },
   MCP_HAS_EXISTING_PERMIT: {
