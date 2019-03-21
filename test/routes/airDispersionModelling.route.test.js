@@ -83,7 +83,7 @@ lab.experiment('Dispersion modelling report page tests:', () => {
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
         Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].airDispersionModelling).to.equal('no')
+        Code.expect(dataStoreStub.args[0][1].airDispersionModellingRequired).to.equal(false)
       })
     })
   })
@@ -107,7 +107,7 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
       Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].airDispersionModelling).to.equal('yes')
+      Code.expect(dataStoreStub.args[0][1].airDispersionModellingRequired).to.equal(true)
     })
 
     lab.test('Success - no', async () => {
@@ -117,7 +117,7 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
       Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].airDispersionModelling).to.equal('no')
+      Code.expect(dataStoreStub.args[0][1].airDispersionModellingRequired).to.equal(false)
     })
 
     lab.test('Invalid input', async () => {

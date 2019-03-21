@@ -25,7 +25,7 @@ const { MCP_TYPES: {
 } } = require('../../src/models/triage/triageLists')
 
 const routePath = '/mcp-check/under-500-hours'
-const yesRoutePath = '/selected/confirm'
+const yesRoutePath = '/selected/create-application-lines'
 const noRoutePath = '/mcp-check/air-dispersion-modelling-report'
 const errorPath = '/errors/technical-problem'
 
@@ -135,10 +135,10 @@ lab.experiment('Operating under 500 hours page tests:', () => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(yesRoutePath)
       Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].airDispersionModelling).to.equal('no')
+      Code.expect(dataStoreStub.args[0][1].airDispersionModellingRequired).to.equal(false)
       Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
       Code.expect(dataStoreStub.args[0][1].bestAvailableTechniquesAssessment).to.equal(false)
-      Code.expect(dataStoreStub.args[0][1].habitatAssessment).to.equal('no')
+      Code.expect(dataStoreStub.args[0][1].habitatAssessmentRequired).to.equal(false)
     })
 
     lab.test('Success - no', async () => {

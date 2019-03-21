@@ -80,7 +80,7 @@ lab.experiment('Habitat assessment page tests:', () => {
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
         Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].habitatAssessment).to.equal('no')
+        Code.expect(dataStoreStub.args[0][1].habitatAssessmentRequired).to.equal(false)
       })
     })
   })
@@ -104,7 +104,7 @@ lab.experiment('Habitat assessment page tests:', () => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
       Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].habitatAssessment).to.equal('yes')
+      Code.expect(dataStoreStub.args[0][1].habitatAssessmentRequired).to.equal(true)
     })
 
     lab.test('Success - no', async () => {
@@ -114,7 +114,7 @@ lab.experiment('Habitat assessment page tests:', () => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
       Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].habitatAssessment).to.equal('no')
+      Code.expect(dataStoreStub.args[0][1].habitatAssessmentRequired).to.equal(false)
     })
 
     lab.test('Invalid input', async () => {

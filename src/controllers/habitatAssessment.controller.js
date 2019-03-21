@@ -14,8 +14,8 @@ module.exports = class HabitatAssessmentController extends BaseController {
     const { data: { mcpType } } = await DataStore.get(context)
     if (mcpType === MOBILE_SG.id ||
         mcpType === MOBILE_SG_AND_MCP.id) {
-      // Set the habitatAssessment to 'no' and redirect to the next page
-      await DataStore.save(context, { habitatAssessment: 'no' })
+      // Set the habitatAssessmentRequired to false and redirect to the next page
+      await DataStore.save(context, { habitatAssessmentRequired: false })
       return this.redirect({ h })
     }
 
@@ -23,9 +23,10 @@ module.exports = class HabitatAssessmentController extends BaseController {
   }
 
   async doPost (request, h) {
-    // Store the answer and redirect to the next page
+    // Store the true/false answer and redirect to the next page
     const context = await RecoveryService.createApplicationContext(h)
-    await DataStore.save(context, { habitatAssessment: request.payload['habitat-assessment'] })
+    const habitatAssessmentRequired = request.payload['habitat-assessment'] === 'yes'
+    await DataStore.save(context, { habitatAssessmentRequired: habitatAssessmentRequired })
 
     return this.redirect({ h })
   }
