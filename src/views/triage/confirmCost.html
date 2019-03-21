@@ -35,12 +35,6 @@
 
       </dl>
 
-      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
-        {{> common/csrfToken token=DefraCsrfToken}}
-
-        {{> common/submitButton text="Start application" }}
-      </form>
-
       <p>
         You must pay these charges before we will start assessing your application.
         You do not pay VAT on these costs.
@@ -49,6 +43,12 @@
       <p>
         <a id="change-waste-activities" href="{{wasteActivitiesLink}}">Change activities or assessments</a>.
       </p>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        {{> common/submitButton text="Start application" }}
+      </form>
 
     </div>
   </div>

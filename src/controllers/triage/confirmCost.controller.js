@@ -21,7 +21,7 @@ module.exports = class ConfirmCostController extends BaseController {
 
     // Determine triage path for page
     const permitHolderType = await Application.getPermitHolderTypeForApplicationId(entityContext)
-    pageContext.wasteActivitiesLink = `${TRIAGE_WASTE_ACTIVITY.path}/bespoke/${permitHolderType.id}/waste`
+    pageContext.wasteActivitiesLink = `${TRIAGE_WASTE_ACTIVITY.path}/bespoke/${permitHolderType.id}`
 
     return this.showView({ h, pageContext })
   }

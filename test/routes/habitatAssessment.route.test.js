@@ -14,10 +14,9 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 const DataStore = require('../../src/models/dataStore.model')
-const { MCP_TYPES: { MOBILE_SG, MOBILE_SG_AND_MCP } } = require('../../src/models/triage/triageLists')
+const { MCP_TYPES: { MOBILE_SG } } = require('../../src/models/triage/triageLists')
 
 const routePath = '/mcp-check/habitat-assessment'
-// TODO: set to the correct next page (not the task list)
 const nextRoutePath = '/selected/create-application-lines'
 
 let sandbox
