@@ -3,7 +3,7 @@
 const DataStore = require('../models/dataStore.model')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const { MCP_TYPES: { MOBILE_SG } } = require('../models/triage/triageLists')
+const { MCP_TYPES: { MOBILE_SG, STATIONARY_SG } } = require('../models/triage/triageLists')
 
 module.exports = class EnergyReportRequiredController extends BaseController {
   async doGet (request, h, errors) {
@@ -11,8 +11,10 @@ module.exports = class EnergyReportRequiredController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
     const dataStore = await DataStore.get(context)
 
-    // TODO: Confirm if we need to redirect on mobile SG which is also MCP
-    if (dataStore.data.mcpType === MOBILE_SG.id) {
+    if (
+      dataStore.data.mcpType === MOBILE_SG.id ||
+      dataStore.data.mcpType === STATIONARY_SG.id
+    ) {
       await DataStore.save(context, { energyEfficiencyReportRequired: false })
       return this.redirect({ h })
     }
