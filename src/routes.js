@@ -1166,7 +1166,7 @@ const Routes = {
   MCP_REQUIRES_ENERGY_REPORT: {
     path: '/mcp-check/energy-report',
     view: 'mcpEnergyReportRequired',
-    pageHeading: 'About your MCP or SG',
+    pageHeading: 'Do you need to provide an energy efficiency report?',
     controller: 'mcpEnergyReportRequired',
     validator: 'mcpEnergyReportRequired',
     nextRoute: 'MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_SG',
