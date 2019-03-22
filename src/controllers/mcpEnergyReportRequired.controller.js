@@ -21,10 +21,6 @@ module.exports = class EnergyReportRequiredController extends BaseController {
 
     if (request.payload) {
       pageContext.newOrRefurbished = request.payload['new-or-refurbished'] === 'yes'
-      pageContext.thermalInputUnder20 = request.payload['total-aggregated-thermal-input'] === 'under 20'
-      pageContext.thermalInputOver20 = request.payload['total-aggregated-thermal-input'] === 'over 20'
-      pageContext.boiler = request.payload['engine-type'] === 'boiler etc'
-      pageContext.sparkIgnition = request.payload['engine-type'] === 'spark ignition'
     }
 
     return this.showView({ h, pageContext })
@@ -32,9 +28,7 @@ module.exports = class EnergyReportRequiredController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const energyEfficiencyReportRequired = request.payload['new-or-refurbished'] === 'yes' &&
-                                           request.payload['total-aggregated-thermal-input'] === 'over 20' &&
-                                           request.payload['engine-type'] === 'boiler etc'
+    const energyEfficiencyReportRequired = request.payload['new-or-refurbished'] === 'yes'
 
     await DataStore.save(context, { energyEfficiencyReportRequired })
     return this.redirect({ h })
