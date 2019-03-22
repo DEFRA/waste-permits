@@ -60,10 +60,6 @@ lab.experiment('Energy efficiency report page tests:', () => {
         Code.expect(doc.getElementById('energy-report-required-help')).to.exist()
         Code.expect(doc.getElementById('new-or-refurbished-yes')).to.exist()
         Code.expect(doc.getElementById('new-or-refurbished-no')).to.exist()
-        Code.expect(doc.getElementById('total-aggregated-thermal-input-under-20')).to.exist()
-        Code.expect(doc.getElementById('total-aggregated-thermal-input-over-20')).to.exist()
-        Code.expect(doc.getElementById('engine-type-boiler-etc')).to.exist()
-        Code.expect(doc.getElementById('engine-type-spark-ignition')).to.exist()
       })
 
       lab.test('Check we don\'t display this page for mobile sg', async () => {
@@ -101,8 +97,6 @@ lab.experiment('Energy efficiency report page tests:', () => {
       lab.test('Redirects correctly', async () => {
         // Make selections and click 'Continue'
         postRequest.payload['new-or-refurbished'] = 'yes'
-        postRequest.payload['total-aggregated-thermal-input'] = 'under 20'
-        postRequest.payload['engine-type'] = 'boiler etc'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
@@ -110,75 +104,11 @@ lab.experiment('Energy efficiency report page tests:', () => {
 
       lab.test('New or refurbished, thermal input over 20MW, boiler', async () => {
         postRequest.payload['new-or-refurbished'] = 'yes'
-        postRequest.payload['total-aggregated-thermal-input'] = 'over 20'
-        postRequest.payload['engine-type'] = 'boiler etc'
         await server.inject(postRequest)
         Code.expect(dataStoreStub.callCount).to.equal(1)
         Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(true)
       })
 
-      lab.test('New or refurbished, thermal input over 20MW, spark ignition', async () => {
-        postRequest.payload['new-or-refurbished'] = 'yes'
-        postRequest.payload['total-aggregated-thermal-input'] = 'over 20'
-        postRequest.payload['engine-type'] = 'spark ignition'
-        await server.inject(postRequest)
-        Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
-      })
-
-      lab.test('New or refurbished, thermal input under 20MW, boiler', async () => {
-        postRequest.payload['new-or-refurbished'] = 'yes'
-        postRequest.payload['total-aggregated-thermal-input'] = 'under 20'
-        postRequest.payload['engine-type'] = 'boiler etc'
-        await server.inject(postRequest)
-        Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
-      })
-
-      lab.test('New or refurbished, thermal input under 20MW, spark ignition', async () => {
-        postRequest.payload['new-or-refurbished'] = 'yes'
-        postRequest.payload['total-aggregated-thermal-input'] = 'under 20'
-        postRequest.payload['engine-type'] = 'spark ignition'
-        await server.inject(postRequest)
-        Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
-      })
-
-      lab.test('Not new or refurbished, thermal input over 20MW, boiler', async () => {
-        postRequest.payload['new-or-refurbished'] = 'no'
-        postRequest.payload['total-aggregated-thermal-input'] = 'over 20'
-        postRequest.payload['engine-type'] = 'boiler etc'
-        await server.inject(postRequest)
-        Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
-      })
-
-      lab.test('Not new or refurbished, thermal input over 20MW, spark ignition', async () => {
-        postRequest.payload['new-or-refurbished'] = 'no'
-        postRequest.payload['total-aggregated-thermal-input'] = 'over 20'
-        postRequest.payload['engine-type'] = 'spark ignition'
-        await server.inject(postRequest)
-        Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
-      })
-
-      lab.test('Not new or refurbished, thermal input under 20MW, boiler', async () => {
-        postRequest.payload['new-or-refurbished'] = 'no'
-        postRequest.payload['total-aggregated-thermal-input'] = 'under 20'
-        postRequest.payload['engine-type'] = 'boiler etc'
-        await server.inject(postRequest)
-        Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
-      })
-
-      lab.test('Not new or refurbished, thermal input under 20MW, spark ignition', async () => {
-        postRequest.payload['new-or-refurbished'] = 'no'
-        postRequest.payload['total-aggregated-thermal-input'] = 'under 20'
-        postRequest.payload['engine-type'] = 'spark ignition'
-        await server.inject(postRequest)
-        Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
-      })
     })
     lab.experiment('Invalid input', async () => {
       lab.test('Missing new or refurbished', async () => {
@@ -188,32 +118,10 @@ lab.experiment('Energy efficiency report page tests:', () => {
         await GeneralTestHelper.checkValidationMessage(doc, 'new-or-refurbished', 'Select yes or no')
       })
 
-      lab.test('Missing thermal input', async () => {
-        postRequest.payload['new-or-refurbished'] = 'yes'
-        postRequest.payload['engine-type'] = 'boiler etc'
-        const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'total-aggregated-thermal-input', 'Select a thermal input')
-      })
-
-      lab.test('Missing engine type', async () => {
-        postRequest.payload['new-or-refurbished'] = 'yes'
-        postRequest.payload['total-aggregated-thermal-input'] = 'under 20'
-        const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'engine-type', 'Select the type of engine it uses')
-      })
-
-      lab.test('Missing thermal input and engine type', async () => {
-        postRequest.payload['new-or-refurbished'] = 'yes'
-        const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessageCount(doc, 2)
-      })
-
       lab.test('Missing everything', async () => {
         postRequest.payload = {}
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await GeneralTestHelper.checkValidationMessage(doc, 'new-or-refurbished', 'Select yes or no')
-        await GeneralTestHelper.checkNoValidationMessage(doc, 'total-aggregated-thermal-input')
-        await GeneralTestHelper.checkNoValidationMessage(doc, 'engine-type')
       })
     })
   })
