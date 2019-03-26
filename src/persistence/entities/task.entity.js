@@ -46,7 +46,10 @@ class Task extends BaseEntity {
   }
 
   static async getAvailableTasks (context) {
-    return this.listUsingFetchXml(context, this.buildQuery(context))
+    if (!context.availableTasks) {
+      context.availableTasks = await this.listUsingFetchXml(context, this.buildQuery(context))
+    }
+    return context.availableTasks
   }
 }
 

@@ -11,6 +11,7 @@ const tasks = {
   AIR_DISPERSION_MODELLING_REPORT: {
     id: 'upload-air-dispersion-modelling-report',
     label: 'Upload air dispersion modelling report',
+    route: Routes.MCP_AIR_DISPERSION_MODELLING,
     completedLabelId: 'upload-air-dispersion-modelling-report-completed',
     shortName: 'airreport'
   },
@@ -87,7 +88,7 @@ const tasks = {
     label: 'Upload the energy efficiency report',
     route: Routes.ENERGY_EFFICIENCY_REPORT,
     completedLabelId: 'upload-energy-efficiency-report-completed',
-    shortName: 'energyEfficiency',
+    shortName: 'energyefficiency',
     taskListModel: 'energyEfficiencyReport'
   },
   ENVIRONMENTAL_RISK_ASSESSMENT: {
@@ -143,6 +144,7 @@ const tasks = {
     route: Routes.MCP_BUSINESS_ACTIVITY,
     completedLabelId: 'business-activity-completed',
     ruleSetId: 'defra_mcp_businesstype',
+    shortName: 'nacecode',
     taskListModel: 'mcpBusinessActivity'
   },
   MCP_DETAILS: {
@@ -151,6 +153,7 @@ const tasks = {
     route: Routes.MCP_DETAILS,
     completedLabelId: 'mcp-details-completed',
     ruleSetId: 'defra_mcp_sr_uploadtemplate',
+    shortName: 'templateupload',
     taskListModel: 'mcpDetails'
   },
   MCP_TEMPLATE: {
@@ -159,6 +162,7 @@ const tasks = {
     route: Routes.MCP_TEMPLATE,
     completedLabelId: 'mcp-template-completed',
     ruleSetId: 'defra_mcp_sr_downloadtemplate',
+    shortName: 'templatedownload',
     taskListModel: 'mcpTemplate'
   },
   MINING_DATA: {
