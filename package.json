@@ -18,12 +18,14 @@
   "main": "server.js",
   "scripts": {
     "postinstall": "gulp build",
+    "add-route": "node cli",
     "test": "lab -t 90",
     "test-cov-html": "lab -r html -o coverage.html"
   },
   "devDependencies": {
     "browser-sync": "^2.26.3",
     "code": "^5.2.4",
+    "fs-extra": "^7.0.1",
     "good": "^8.1.1",
     "good-console": "^7.1.0",
     "good-file": "^6.0.1",
@@ -42,6 +44,7 @@
     "gulp-uglify": "^3.0.1",
     "gulp-watch": "^5.0.1",
     "htmlhint": "^0.10.1",
+    "inquirer": "^6.2.2",
     "lab": "^18.0.0",
     "nock": "^10.0.2",
     "run-sequence": "^2.2.1",
