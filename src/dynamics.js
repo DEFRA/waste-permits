@@ -128,6 +128,9 @@ const Dynamics = {
           description: 'Hospital activities 86.10'
         }
       ]
+    },
+    MCP_PERMIT_TYPES: {
+      questionCode: 'mcp-permit-type'
     }
   },
   BACS_EMAIL_CONFIG: 'PSC-BACS-EMAIL',

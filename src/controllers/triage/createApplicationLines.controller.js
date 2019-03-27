@@ -2,6 +2,8 @@
 
 const BaseController = require('../base.controller')
 const Application = require('../../models/triage/application.model')
+const ApplicationAnswer = require('../../persistence/entities/applicationAnswer.entity')
+const { questionCode } = require('../../dynamics').ApplicationQuestions.MCP_PERMIT_TYPES
 const RecoveryService = require('../../services/recovery.service')
 const DataStore = require('../../models/dataStore.model')
 
@@ -15,8 +17,10 @@ module.exports = class CreateApplicationLinesController extends BaseController {
     // This includes the existing application.wasteActivities
     const application = await Application.getApplicationForId(context)
 
-    // TODO (WE-2307) - If the McpType is not stored explicitly in Dynamics (rather an activity is created for it), then we can remove the application.model setMcpType method.  We should also remove the call to it from the triage.contollor
-    // application.setMcpType({ id: dataStoreData.mcpType })
+    // Retrieve the MCP Type from the datastore and store in Dynamics application answers
+    const applicationAnswer = new ApplicationAnswer({ questionCode })
+    applicationAnswer.answerCode = dataStoreData.mcpType
+    await applicationAnswer.save(context)
 
     // Set the MCP activity
     const activitiesArray = []

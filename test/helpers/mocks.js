@@ -218,7 +218,8 @@ class MockData {
 
   get data () {
     return {
-      permitType: Constants.PermitTypes.STANDARD_RULES.id
+      permitType: Constants.PermitTypes.STANDARD_RULES.id,
+      mcpType: 'MCP_TYPE'
     }
   }
 
