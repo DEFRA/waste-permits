@@ -61,6 +61,28 @@ class RouteGenerator {
     })
   }
 
+  async getNextRoute (defaultVal) {
+    return inquirer.prompt({
+      type: 'input',
+      name: 'nextRoute',
+      message: 'Next route eg: "NEXT_ROUTE": ',
+      default: defaultVal,
+      validate: (nextRoute) => {
+        if (nextRoute) {
+          if (routes[nextRoute]) {
+            return true
+          } else {
+            if (nextRoute.match(/^([A-Z]([A-Z_]*[A-Z0-9])?)+$/)) {
+              return true
+            } else {
+              error(`Route ID "${nextRoute}" is invalid!`)
+            }
+          }
+        }
+      }
+    })
+  }
+
   async getPath (defaultVal) {
     return inquirer.prompt({
       type: 'input',
@@ -287,6 +309,7 @@ class RouteGenerator {
   const { view, isNewView, hasBackLink, hasSubmitButton } = await routeGenerator.getView(controller)
   const { pageHeading } = view ? await routeGenerator.getPageHeading(utilities.capitalizeFirstLetter(routeId.replace(/_/g, ` `).toLowerCase())) : {}
   const { validator, isNewValidator } = view ? await routeGenerator.getValidator(controller) : {}
+  const { nextRoute } = await routeGenerator.getNextRoute('TASK_LIST')
   const types = `GET${hasSubmitButton ? ', POST' : ''}`
 
   const route = {
@@ -296,7 +319,8 @@ class RouteGenerator {
     pageHeading,
     controller,
     validator,
-    types
+    types,
+    nextRoute
   }
 
   // Remove falsy properties
