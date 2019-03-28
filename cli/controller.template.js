@@ -18,7 +18,7 @@ module.exports = class ${controllerName}Controller extends BaseController {
       pageContext.formValues = request.payload
     } else {
       pageContext.formValues = {
-        'some-field': 'invalid'
+        'some-data': 'valid'
       }    
     }` : ''}
     
@@ -35,7 +35,7 @@ module.exports = class ${controllerName}Controller extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
 
     const {
-      'some-field': someField
+      'some-data': someData
     } = request.payload
     
     // ToDo: Add code here

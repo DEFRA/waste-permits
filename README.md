@@ -81,7 +81,7 @@ sudo service clamav-daemon start
 
 Use the following command line interface to add any new routes.  This will create placeholder controller, view and validator files that can then be edited.
 ```bash
-node run add-route
+npm run add-route
 ```
 ## Contributing to this project
 
