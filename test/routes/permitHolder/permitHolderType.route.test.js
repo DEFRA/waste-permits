@@ -16,8 +16,8 @@ const RecoveryService = require('../../../src/services/recovery.service')
 const PermitHolderTypeController = require('../../../src/controllers/permitHolder/permitHolderType.controller')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-const routePath = '/permit-holder'
-const nextRoutePath = '/permit-holder/details'
+const routePath = '/permit-holder/type'
+const nextRoutePath = '/permit-holder/name'
 const offlineRoutePath = '/start/apply-offline'
 const errorPath = '/errors/technical-problem'
 let sandbox

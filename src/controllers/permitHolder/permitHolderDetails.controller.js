@@ -14,7 +14,6 @@ const {
 } = require('../../dynamics').PERMIT_HOLDER_TYPES
 
 const {
-  PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH,
   COMPANY_NUMBER,
   LLP_COMPANY_NUMBER,
   PARTNERSHIP_TRADING_NAME,
@@ -39,8 +38,7 @@ module.exports = class PermitHolderDetailsController extends BaseController {
         return this.redirect({ h, route: PERMIT_HOLDER_TYPE })
       case INDIVIDUAL.type:
       case SOLE_TRADER.type:
-        // Re-direct to individual details flow
-        return this.redirect({ h, route: PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH })
+        return this.redirect({ h, route: PERMIT_HOLDER_TYPE })
       case LIMITED_LIABILITY_PARTNERSHIP.type:
         // Re-direct to limited liability partnership details flow
         return this.redirect({ h, route: LLP_COMPANY_NUMBER })

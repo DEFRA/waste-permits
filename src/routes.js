@@ -526,7 +526,7 @@ const Routes = {
     types: 'GET, POST'
   },
   PERMIT_HOLDER_TYPE: {
-    path: '/permit-holder',
+    path: '/permit-holder/type',
     view: 'permitHolder/permitHolderType',
     pageHeading: 'Who will be the permit holder?',
     controller: 'permitHolder/permitHolderType',
