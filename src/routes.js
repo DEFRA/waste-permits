@@ -531,6 +531,7 @@ const Routes = {
     pageHeading: 'Who will be the permit holder?',
     controller: 'permitHolder/permitHolderType',
     validator: 'permitHolder/permitHolderType',
+    nextRoute: 'PERMIT_HOLDER_DETAILS',
     types: 'GET, POST'
   },
   GROUP_NAME: {
@@ -864,7 +865,7 @@ const Routes = {
     pageHeading: 'Confirm the type of permit you want',
     controller: 'bespokeOrStandardRules',
     validator: 'bespokeOrStandardRules',
-    nextRoute: 'PERMIT_HOLDER_TYPE',
+    nextRoute: 'PERMIT_CATEGORY',
     types: 'GET, POST',
     cookieValidationRequired: false,
     applicationRequired: false

@@ -3,18 +3,41 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const { INDIVIDUAL, PARTNERSHIP, SOLE_TRADER, LIMITED_LIABILITY_PARTNERSHIP, PUBLIC_BODY, CHARITY_OR_TRUST, OTHER_ORGANISATION } = require('../../dynamics').PERMIT_HOLDER_TYPES
-const { PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH, COMPANY_NUMBER, LLP_COMPANY_NUMBER, PARTNERSHIP_TRADING_NAME, PUBLIC_BODY_NAME, CHARITY_PERMIT_HOLDER, PERMIT_GROUP_DECIDE } = require('../../routes')
+const {
+  INDIVIDUAL,
+  PARTNERSHIP,
+  SOLE_TRADER,
+  LIMITED_LIABILITY_PARTNERSHIP,
+  PUBLIC_BODY,
+  CHARITY_OR_TRUST,
+  OTHER_ORGANISATION
+} = require('../../dynamics').PERMIT_HOLDER_TYPES
+
+const {
+  PERMIT_HOLDER_NAME_AND_DATE_OF_BIRTH,
+  COMPANY_NUMBER,
+  LLP_COMPANY_NUMBER,
+  PARTNERSHIP_TRADING_NAME,
+  PUBLIC_BODY_NAME,
+  CHARITY_PERMIT_HOLDER,
+  PERMIT_GROUP_DECIDE,
+  PERMIT_HOLDER_TYPE,
+  PERMIT_HOLDER_DETAILS
+} = require('../../routes')
 
 module.exports = class PermitHolderDetailsController extends BaseController {
   async doGet (request, h) {
     const { permitHolderType, charityDetail = {} } = await RecoveryService.createApplicationContext(h)
     const { charityPermitHolder } = charityDetail
 
+    if (permitHolderType === undefined) {
+      return this.redirect({ h, route: PERMIT_HOLDER_TYPE })
+    }
+
     // If there is a charity detail, it must be a charity
     switch (charityPermitHolder ? CHARITY_OR_TRUST.type : permitHolderType.type) {
       case undefined:
-        throw new Error('Permit Holder Type is undefined')
+        return this.redirect({ h, route: PERMIT_HOLDER_TYPE })
       case INDIVIDUAL.type:
       case SOLE_TRADER.type:
         // Re-direct to individual details flow
