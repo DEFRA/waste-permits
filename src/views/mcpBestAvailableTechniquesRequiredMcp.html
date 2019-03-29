@@ -15,7 +15,7 @@
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <div class="body-text">
-          <legend id="best-available-techniques-required-mcp-message" aria-describedby="best-available-techniques-required-mcp-details"><p>Does your MCP burn waste biomass and have a rated thermal input over 20MW?</p></legend>
+          <legend id="best-available-techniques-required-mcp-message" aria-describedby="best-available-techniques-required-mcp-details"><p>Does your MCP burn waste biomass at a rate between 225kg per hour and 3 tonnes per hour?</p></legend>
   
           <details id="best-available-techniques-required-mcp-help">
             <summary id="best-available-techniques-required-mcp-legend">Waste biomass definition</summary>
@@ -41,7 +41,7 @@
             <div class="multiple-choice" data-target="meets-criteria">
               <input id="thermal-rating-over-20" type="radio" name="thermal-rating" value="over 20" {{#if thermalRatingOver20}}checked="checked"{{/if}}>
               <label for="thermal-rating-over-20">
-                <span id="thermal-rating-over-20-label">Yes, it burns waste biomass and is over 20MW thermal input</span>
+                <span id="thermal-rating-over-20-label">Yes, it burns waste biomass at a rate between 225kg per hour and 3 tonnes per hour</span>
               </label>
             </div>
             <div class="multiple-choice">
@@ -53,15 +53,14 @@
             <div class="panel panel-border-narrow js-hidden" id="meets-criteria">  
               <div class="form-group {{#getFormErrorGroupClass errors.meets-criteria}}{{/getFormErrorGroupClass}}">
                 <fieldset id="meets-criteria-form">
-                  <legend id="meets-criteria-legend">Do any MCP meet the criteria of a Chapter 1, Section 1.1 Part B activity or a Chapter 5, Section 5.1 Part B activity?</legend>
-                  <div class="form-hint">Contact the Environment Agency if you need to check this</div>
+                  <legend id="meets-criteria-legend">Does any individual plant burning biomass exceed 1MW thermal?</legend>
                   
                   {{> common/fieldError fieldId='meets-criteria-error' message=errors.meets-criteria }}
 
                   <div class="multiple-choice">
                     <input id="meets-criteria-yes" type="radio" name="meets-criteria" value="yes">
                     <label for="meets-criteria-yes">
-                      <span id="meets-criteria-yes-label">Yes, they meet those criteria</span>
+                      <span id="meets-criteria-yes-label">Yes, at least one exceeds 1MW thermal</span>
                     </label>
                   </div>
                   <div class="multiple-choice">

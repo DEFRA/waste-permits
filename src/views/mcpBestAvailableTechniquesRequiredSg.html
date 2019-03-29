@@ -17,7 +17,7 @@
 
         <div class="form-group {{#getFormErrorGroupClass errors.thermal-rating}}{{/getFormErrorGroupClass}}">
           <fieldset id="thermal-rating">
-            <legend id="best-available-techniques-required-sg-message"><p>Does any single generator unit have a rated thermal input between 20MW and 50MW?</p></legend>
+            <legend class="visuallyhidden">{{ pageHeading }}</legend>
             
             {{> common/fieldError fieldId='thermal-rating-error' message=errors.thermal-rating }}
 
