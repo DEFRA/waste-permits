@@ -1149,7 +1149,7 @@ const Routes = {
   MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_SG: {
     path: '/mcp-check/best-available-techniques/sg',
     view: 'mcpBestAvailableTechniquesRequiredSg',
-    pageHeading: 'About your generators',
+    pageHeading: 'Does any single generator unit have a rated thermal input between 20MW and 50MW?',
     controller: 'mcpBestAvailableTechniquesRequiredSg',
     validator: 'mcpBestAvailableTechniquesRequiredSg',
     nextRoute: 'MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_MCP',
