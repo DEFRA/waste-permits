@@ -18,7 +18,7 @@ const { COOKIE_RESULT } = require('../../src/constants')
 let sandbox
 
 const routePath = '/bespoke-or-standard-rules'
-const nextRoutePath = '/permit-holder'
+const nextRoutePath = '/permit/category'
 const bespokeRoutePath = '/select/bespoke'
 
 const permitTypeQuery = '?permit-type='

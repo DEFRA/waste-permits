@@ -21,8 +21,7 @@ const {
   PUBLIC_BODY_NAME,
   CHARITY_PERMIT_HOLDER,
   PERMIT_GROUP_DECIDE,
-  PERMIT_HOLDER_TYPE,
-  PERMIT_HOLDER_DETAILS
+  PERMIT_HOLDER_TYPE
 } = require('../../routes')
 
 module.exports = class PermitHolderDetailsController extends BaseController {
