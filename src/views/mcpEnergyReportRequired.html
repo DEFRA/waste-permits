@@ -24,7 +24,7 @@
         <div class="body-text">
 
           <details id="energy-report-required-help">
-            <summary id="energy-report-required-legend">How to decide if it is new or substantially refurbished</summary>
+            <summary id="energy-report-required-legend">How to decide if the plant is new or substantially refurbished</summary>
             <div class="panel panel-border-narrow" id="energy-report-required-details">
               Plant is considered to be new if it is:
               <ul id="grid-reference-help-list" class="list list-bullet">
@@ -50,7 +50,7 @@
                 <div class="multiple-choice" data-target="thermal-input-and-engine-type">
                   <input id="new-or-refurbished-yes" type="radio" name="new-or-refurbished" value="yes" {{#if newOrRefurbished}}checked="checked"{{/if}}>
                   <label for="new-or-refurbished-yes">
-                    <span id="new-or-refurbished-yes-label">Yes it is new or substantially refurbished</span>
+                    <span id="new-or-refurbished-yes-label">Yes we need to provide an energy efficiency report</span>
                   </label>
                 </div>
                 <div class="multiple-choice">
@@ -64,10 +64,6 @@
           </div>
 
           {{> common/submitButton }}
-
-          <div>
-            We are asking this to check if you need to provide an energy efficiency report. If you do, we will add it to your application task list.
-          </div>
 
         </form>
 
