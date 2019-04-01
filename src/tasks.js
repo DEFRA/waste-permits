@@ -11,9 +11,10 @@ const tasks = {
   AIR_DISPERSION_MODELLING_REPORT: {
     id: 'upload-air-dispersion-modelling-report',
     label: 'Upload air dispersion modelling report',
-    route: Routes.MCP_AIR_DISPERSION_MODELLING,
+    route: Routes.AIR_DISPERSION_MODELLING_REPORT,
     completedLabelId: 'upload-air-dispersion-modelling-report-completed',
-    shortName: 'airreport'
+    shortName: 'airreport',
+    taskListModel: 'airDispersionModellingReport'
   },
   BASELINE_REPORT: {
     id: 'baseline-report',
@@ -248,7 +249,8 @@ const tasks = {
     label: 'Upload screening tool',
     route: Routes.SCREENING_TOOL,
     completedLabelId: 'screening-tool-completed',
-    shortName: 'screeningtool'
+    shortName: 'screeningtool',
+    taskListModel: 'screeningTool'
   },
   SHIP_BREAKING: {
     id: 'ship-breaking',

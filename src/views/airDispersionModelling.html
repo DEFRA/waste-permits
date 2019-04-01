@@ -9,19 +9,33 @@
       {{> common/errorSummary }}
       {{> common/pageHeading pageHeading }}
 
-      <p id="page-description-paragraph-2">
-        To find out if your application should include an air dispersion modelling report use the ‘specified generator screening tool’ or a similar tool that uses an equivalent level of detail.
-      </p>
-      <!-- TODO: Get the file into the right place and set the url (/public/...) -->
-      <p>
-        <a id="specified-generator-screening-tool-download" href="" download="">
-          <span id="specified-generator-screening-tool-download-text">Specified generator screening tool (Excel XLS)</span>
-        </a>
-      </p>
+      <div class="body-text">
+        {{#if isStationaryMCP}}
+          <div id="air-dispersion-modelling-report-help-for-stationary-mcp">
+            You should use the Environment Agency’s <a id="stationary-mcp-risk-assessment-tool-link" href="https://www.gov.uk/government/collections/risk-assessments-for-specific-activities-environmental-permits#H1-software-tool" target="_blank" rel="noopener noreferrer">H1 risk assessment tool (opens new tab)</a> to check this if:
+            <ul class="list list-bullet">
+              <li>the fuel is natural gas or low-sulphur diesel and there are designated European protected habitats (SAC, SPA or RAMSAR) within 5km</li>
+              <li>the fuel is biogas or landfill gas and there are designated European protected habitats (SAC, SPA or RAMSAR) within 10km</li>
+              <li>there are sites of special scientific interest (SSSI) within 2km</li>
+            </ul>
 
-      <p>
-        Follow the <a id="air-emissions-risk-assessment-guidance-link" href="https://www.gov.uk/guidance/air-emissions-risk-assessment-for-your-environmental-permit" target="_blank">air emissions risk assessment guidance (opens new tab)</a> to check your emissions.
-      </p>
+            <p>If there are no protected habitats within these screening distances then a detailed modelling assessment is not required for ecological assessment.</p>
+          </div>
+        {{else}}
+          <div id="air-dispersion-modelling-report-help-for-sg">
+            To check this:
+            <ul class="list list-bullet">
+              <li>for abated diesels generators operating less than 500 hours per or for gas fuelled generators operating over any period use the
+                <!-- ToDo: add correct specified-screening-tool-link -->
+                <a id="specified-screening-tool-link" href="" target="_blank" rel="noopener noreferrer">specified generator screening tool (opens new tab)</a>
+              </li>
+              <li>for generator plant operating on other fuels or for diesel generator plant operating for more than 500 hours per year use Environment Agency’s
+                <a id="stationary-sg-risk-assessment-tool-link" href="https://www.gov.uk/government/collections/risk-assessments-for-specific-activities-environmental-permits#H1-software-tool" target="_blank" rel="noopener noreferrer">H1 risk assessment tool (opens new tab)</a>
+              </li>
+            </ul>
+          </div>
+        {{/if}}
+      </div>
 
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
