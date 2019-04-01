@@ -214,7 +214,7 @@ const tasks = {
   PERMIT_HOLDER_DETAILS: {
     id: 'give-permit-holder-details',
     label: 'Give permit holder details',
-    route: Routes.PERMIT_HOLDER_DETAILS,
+    route: Routes.PERMIT_HOLDER_TYPE,
     completedLabelId: 'site-operator-completed',
     ruleSetId: 'defra_pholderdetailsrequired',
     shortName: 'permitholder',
