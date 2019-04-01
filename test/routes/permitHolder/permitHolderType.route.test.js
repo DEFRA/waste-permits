@@ -17,7 +17,7 @@ const PermitHolderTypeController = require('../../../src/controllers/permitHolde
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 const routePath = '/permit-holder/type'
-const nextRoutePath = '/permit-holder/name'
+const nextRoutePath = '/permit-holder/details'
 const offlineRoutePath = '/start/apply-offline'
 const errorPath = '/errors/technical-problem'
 let sandbox

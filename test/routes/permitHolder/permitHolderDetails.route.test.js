@@ -15,7 +15,7 @@ const { COOKIE_RESULT } = require('../../../src/constants')
 
 const routePath = '/permit-holder/details'
 const companyNumberPath = '/permit-holder/company/number'
-const permitHolderTypeRoute = '/permit-holder/type'
+const permitHolderNameRoute = '/permit-holder/name'
 
 let sandbox
 let mocks
@@ -67,7 +67,7 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
 
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(permitHolderTypeRoute)
+        Code.expect(res.headers['location']).to.equal(permitHolderNameRoute)
       })
     })
   })
