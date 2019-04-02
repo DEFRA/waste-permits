@@ -2,6 +2,8 @@
 
 const { DEFRA_COOKIE_KEY, COOKIE_KEY: { APPLICATION_ID } } = require('../../constants')
 
+const { TRIAGE_FACILITY_TYPE } = require('../../routes.js')
+
 const BaseController = require('../base.controller')
 const ApplicationCost = require('../../models/triage/applicationCost.model')
 
@@ -15,6 +17,8 @@ module.exports = class ConfirmCostController extends BaseController {
     entityContext.applicationId = request.state[DEFRA_COOKIE_KEY] ? request.state[DEFRA_COOKIE_KEY][APPLICATION_ID] : undefined
 
     pageContext.calculatedCosts = await ApplicationCost.getApplicationCostForApplicationId(entityContext)
+
+    pageContext.wasteActivitiesLink = `${TRIAGE_FACILITY_TYPE.path}/bespoke`
 
     return this.showView({ h, pageContext })
   }

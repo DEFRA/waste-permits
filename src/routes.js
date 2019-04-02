@@ -24,20 +24,6 @@ const Routes = {
     cookieValidationRequired: false,
     applicationRequired: false
   },
-  /*
-  TRIAGE_PERMIT_HOLDER_TYPE: {
-    path: '/select',
-    params: ['permitType'],
-    view: 'triage/permitHolderType',
-    applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'Who will be the permit holder?',
-    controller: 'triage/triage',
-    validator: 'triage/permitHolderType',
-    types: 'GET, POST',
-    cookieValidationRequired: false,
-    applicationRequired: false
-  },
-  */
   TRIAGE_FACILITY_TYPE: {
     path: '/select',
     params: ['permitType'],
