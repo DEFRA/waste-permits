@@ -85,7 +85,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       Code.expect(answerId).to.equal(`${linePrefix}-answer`)
 
       const { link, linkId, linkType } = links.pop()
-      Code.expect(link).to.equal('/permit-holder')
+      Code.expect(link).to.equal('/permit-holder/type')
       Code.expect(linkType).to.equal(`permit holder`)
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })

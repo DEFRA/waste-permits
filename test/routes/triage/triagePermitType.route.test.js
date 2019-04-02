@@ -19,7 +19,7 @@ const FAKE_PERMIT_TYPE = { id: FAKE_PERMIT_TYPE_ID, canApplyOnline: false }
 
 const routePath = '/select'
 const badPath = `${routePath}/invalid`
-const standardRuleRoutePath = '/permit-holder'
+const standardRuleRoutePath = '/permit-holder/type'
 const bespokeRoutePath = `${routePath}/bespoke`
 const offlinePath = `${routePath}/${FAKE_PERMIT_TYPE_ID}`
 

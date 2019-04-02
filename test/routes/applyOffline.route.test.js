@@ -17,7 +17,7 @@ const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const permitCategoryRoute = '/permit/category'
-const permitHolderRoute = '/permit-holder'
+const permitHolderRoute = '/permit-holder/type'
 
 const defaultLink = 'https://www.gov.uk/government/collections/environmental-permit-application-forms-for-a-standard-permit-installations-mining-waste-or-waste-operation'
 
