@@ -70,11 +70,17 @@ lab.experiment('Dispersion modelling report page tests:', () => {
         Code.expect(doc.getElementById('air-dispersion-modelling-no-label')).to.exist()
       })
 
-      lab.test('Check the download links are correct', async () => {
+      lab.test('Check the links are correct when the type is a stationary mcp', async () => {
+        mocks.dataStore.data.mcpType = STATIONARY_MCP.id
         const doc = await GeneralTestHelper.getDoc(getRequest)
-        Code.expect(doc.getElementById('air-emissions-risk-assessment-guidance-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/air-emissions-risk-assessment-for-your-environmental-permit')
-        // TODO: Set the correct links
-        Code.expect(doc.getElementById('specified-generator-screening-tool-download').getAttribute('download')).to.equal('')
+        Code.expect(doc.getElementById('stationary-mcp-risk-assessment-tool-link').getAttribute('href')).to.equal('https://www.gov.uk/government/collections/risk-assessments-for-specific-activities-environmental-permits#H1-software-tool')
+      })
+
+      lab.test('Check the links are correct when the type is a stationary sg', async () => {
+        mocks.dataStore.data.mcpType = STATIONARY_SG.id
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        Code.expect(doc.getElementById('stationary-sg-risk-assessment-tool-link').getAttribute('href')).to.equal('https://www.gov.uk/government/collections/risk-assessments-for-specific-activities-environmental-permits#H1-software-tool')
+        Code.expect(doc.getElementById('specified-screening-tool-link').getAttribute('href')).to.equal('')
       })
 
       lab.test('Check the page is not displayed for certain mcp types', async () => {

@@ -53,7 +53,7 @@ lab.experiment('Screening Tool Check tests:', () => {
       })
 
       const { link, linkId, linkType } = links.pop()
-      Code.expect(link).to.equal('/mcp/air-quality-modelling/upload/screening-only')
+      Code.expect(link).to.equal('/mcp/air-dispersion-modelling/upload/screening-only')
       Code.expect(linkType).to.equal('screening tool')
       Code.expect(linkId).to.equal(`${prefix}-link`)
     })

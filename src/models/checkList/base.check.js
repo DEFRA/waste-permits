@@ -24,7 +24,7 @@ const {
 } = require('../../dynamics').ApplicationQuestions
 
 const {
-  AIR_QUALITY_MODELLING_REPORT,
+  AIR_DISPERSION_MODELLING_REPORT,
   BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
   ENERGY_EFFICIENCY_REPORT,
   TECHNICAL_QUALIFICATION,
@@ -203,18 +203,18 @@ module.exports = class BaseCheck {
     return this.data.energyEfficiencyReport || {}
   }
 
-  async getAirQualityModellingReport () {
-    const { airQualityModellingReport } = this.data
-    if (!airQualityModellingReport) {
-      this.data.airQualityModellingReport = await Annotation.listByApplicationIdAndSubject(this.data, AIR_QUALITY_MODELLING_REPORT)
+  async getAirDispersionModellingReport () {
+    const { airDispersionModellingReport } = this.data
+    if (!airDispersionModellingReport) {
+      this.data.airDispersionModellingReport = await Annotation.listByApplicationIdAndSubject(this.data, AIR_DISPERSION_MODELLING_REPORT)
     }
-    return this.data.airQualityModellingReport || {}
+    return this.data.airDispersionModellingReport || {}
   }
 
   async getScreeningTool () {
     const { screeningTool } = this.data
     if (!screeningTool) {
-      this.data.screeningTool = await Annotation.listByApplicationIdAndSubject(this.data, AIR_QUALITY_MODELLING_REPORT)
+      this.data.screeningTool = await Annotation.listByApplicationIdAndSubject(this.data, AIR_DISPERSION_MODELLING_REPORT)
     }
     return this.data.screeningTool || {}
   }

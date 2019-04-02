@@ -6,7 +6,7 @@ const Annotation = require('../../persistence/entities/annotation.entity')
 
 module.exports = class ScreenTooling extends BaseTask {
   static async checkComplete (context) {
-    const evidence = await Annotation.listByApplicationIdAndSubject(context, Constants.UploadSubject.AIR_QUALITY_MODELLING_REPORT)
+    const evidence = await Annotation.listByApplicationIdAndSubject(context, Constants.UploadSubject.SCREENING_TOOL)
     return Boolean(evidence.length)
   }
 }

@@ -815,16 +815,16 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
-  AIR_QUALITY_MODELLING_REPORT: {
-    path: '/mcp/air-quality-modelling/upload/modelling',
-    view: 'upload/mcp/airQualityModellingReport',
-    pageHeading: 'Upload the air quality modelling report and screening tool',
+  AIR_DISPERSION_MODELLING_REPORT: {
+    path: '/mcp/air-dispersion-modelling/upload/modelling',
+    view: 'upload/mcp/airDispersionModellingReport',
+    pageHeading: 'Upload the air dispersion modelling report and screening tool',
     controller: 'upload',
     validator: 'upload',
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
-    subject: 'AIR_QUALITY_MODELLING_REPORT',
+    subject: 'AIR_DISPERSION_MODELLING_REPORT',
     validatorOptions: {
       fileTypes: [
         { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
@@ -875,7 +875,7 @@ const Routes = {
   BEST_AVAILABLE_TECHNIQUES_ASSESSMENT: {
     path: '/mcp/best-available-techniques-assessment/upload',
     view: 'upload/mcp/bestAvailableTechniquesAssessment',
-    pageHeading: 'Upload Best Available Techniques Assessment',
+    pageHeading: 'Upload the best available techniques (BAT) assessment',
     controller: 'upload',
     validator: 'upload',
     nextRoute: 'TASK_LIST',
@@ -1294,7 +1294,7 @@ const Routes = {
     types: 'GET, POST'
   },
   SCREENING_TOOL: {
-    path: '/mcp/air-quality-modelling/upload/screening-only',
+    path: '/mcp/air-dispersion-modelling/upload/screening-only',
     view: 'upload/mcp/screeningTool',
     pageHeading: 'Upload the completed screening tool',
     controller: 'upload',
@@ -1302,7 +1302,7 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
-    subject: 'AIR_QUALITY_MODELLING_REPORT',
+    subject: 'AIR_DISPERSION_MODELLING_REPORT',
     validatorOptions: {
       fileTypes: [
         { type: 'XLS', mimeType: 'application/vnd.ms-excel' },

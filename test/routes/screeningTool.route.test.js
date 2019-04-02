@@ -11,7 +11,7 @@ const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/mcp/air-quality-modelling/upload/screening-only'
+const routePath = '/mcp/air-dispersion-modelling/upload/screening-only'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -71,6 +71,6 @@ lab.experiment('Screening tool upload tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'air-quality-modelling': 'air-quality-modelling' } })
+    helper.postSuccess({ payload: { 'air-dispersion-modelling': 'air-dispersion-modelling' } })
   })
 })

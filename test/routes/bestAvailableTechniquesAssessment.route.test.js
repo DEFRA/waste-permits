@@ -47,7 +47,7 @@ lab.experiment('Best available techniques assessment upload tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      pageHeading: 'Upload Best Available Techniques Assessment',
+      pageHeading: 'Upload the best available techniques (BAT) assessment',
       submitButton: 'Continue',
       fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT', 'JPG']
     }
