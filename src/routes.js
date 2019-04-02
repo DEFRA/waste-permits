@@ -872,7 +872,7 @@ const Routes = {
   BEST_AVAILABLE_TECHNIQUES_ASSESSMENT: {
     path: '/mcp/best-available-techniques-assessment/upload',
     view: 'upload/mcp/bestAvailableTechniquesAssessment',
-    pageHeading: 'Upload Best Available Techniques Assessment',
+    pageHeading: 'Upload the best available techniques (BAT) assessment',
     controller: 'upload',
     validator: 'upload',
     nextRoute: 'TASK_LIST',
