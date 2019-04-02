@@ -3,7 +3,7 @@
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const DataStore = require('../models/dataStore.model')
-const { MCP_TYPES: { STATIONARY_MCP, MOBILE_SG } } = require('../models/triage/triageLists')
+const { MCP_TYPES: { STATIONARY_MCP, MOBILE_SG, MOBILE_SG_AND_MCP } } = require('../models/triage/triageLists')
 
 module.exports = class AirDispersionModellingController extends BaseController {
   async doGet (request, h, errors) {
@@ -13,10 +13,15 @@ module.exports = class AirDispersionModellingController extends BaseController {
     // TODO: Not sure yet whether to show the page or not to MOBILE_SG_AND_MCP
     const context = await RecoveryService.createApplicationContext(h)
     const { data: { mcpType } } = await DataStore.get(context)
-    if (mcpType === STATIONARY_MCP.id || mcpType === MOBILE_SG.id) {
-      // Set the airDispersionModellingRequired to false and redirect to the next page
-      await DataStore.save(context, { airDispersionModellingRequired: false })
-      return this.redirect({ h })
+
+    switch (mcpType) {
+      case MOBILE_SG.id:
+      case MOBILE_SG_AND_MCP.id:
+        // Set the airDispersionModellingRequired to false and redirect to the next page
+        await DataStore.save(context, { airDispersionModellingRequired: false })
+        return this.redirect({ h })
+      case STATIONARY_MCP.id:
+        pageContext.isStationaryMCP = true
     }
 
     return this.showView({ h, pageContext })

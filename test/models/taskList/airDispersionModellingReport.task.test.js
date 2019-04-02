@@ -7,7 +7,7 @@ const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
 const Annotation = require('../../../src/persistence/entities/annotation.entity')
-const AirQualityModellingReport = require('../../../src/models/taskList/airQualityModellingReport.task')
+const AirDispersionModellingReport = require('../../../src/models/taskList/airDispersionModellingReport.task')
 
 let sandbox
 let mocks
@@ -27,15 +27,15 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Task List: AirQualityModellingReport Model tests:', () => {
+lab.experiment('Task List: AirDispersionModellingReport Model tests:', () => {
   lab.test(`checkComplete() method correctly returns FALSE when annotations don't exist`, async () => {
     Annotation.listByApplicationIdAndSubject = () => []
-    const result = await AirQualityModellingReport.checkComplete(mocks.context)
+    const result = await AirDispersionModellingReport.checkComplete(mocks.context)
     Code.expect(result).to.equal(false)
   })
 
   lab.test('checkComplete() method correctly returns TRUE when annotations exist', async () => {
-    const result = await AirQualityModellingReport.checkComplete(mocks.context)
+    const result = await AirDispersionModellingReport.checkComplete(mocks.context)
     Code.expect(result).to.equal(true)
   })
 })

@@ -4,14 +4,14 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const sinon = require('sinon')
 
-const AirQualityModellingReport = require('../../src/models/taskList/airQualityModellingReport.task')
+const AirDispersionModellingReport = require('../../src/models/taskList/airDispersionModellingReport.task')
 
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/mcp/air-quality-modelling/upload/modelling'
+const routePath = '/mcp/air-dispersion-modelling/upload/modelling'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
@@ -27,7 +27,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox = sinon.createSandbox()
 
-  sandbox.stub(AirQualityModellingReport, 'updateCompleteness').value(() => Promise.resolve({}))
+  sandbox.stub(AirDispersionModellingReport, 'updateCompleteness').value(() => Promise.resolve({}))
 
   helper.setStubs(sandbox)
 })
@@ -37,7 +37,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Air quality modelling report upload tests:', () => {
+lab.experiment('Air dispersion modelling report upload tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -47,7 +47,7 @@ lab.experiment('Air quality modelling report upload tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      pageHeading: 'Upload the air quality modelling report and screening tool',
+      pageHeading: 'Upload the air dispersion modelling report and screening tool',
       submitButton: 'Continue',
       fileTypes: ['XLS', 'XLSX', 'ODS', 'PDF']
     }
@@ -71,6 +71,6 @@ lab.experiment('Air quality modelling report upload tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'air-quality-modelling': 'air-quality-modelling' } })
+    helper.postSuccess({ payload: { 'air-dispersion-modelling': 'air-dispersion-modelling' } })
   })
 })

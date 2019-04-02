@@ -144,7 +144,8 @@ Constants.Company = {
 }
 
 Constants.UploadSubject = {
-  AIR_QUALITY_MODELLING_REPORT: 'air quality modelling report',
+  AIR_DISPERSION_MODELLING_REPORT: 'air dispersion modelling report',
+  SCREENING_TOOL: 'screening tool',
   ENERGY_EFFICIENCY_REPORT: 'energy efficiency report',
   TECHNICAL_QUALIFICATION: 'technical qualification',
   BEST_AVAILABLE_TECHNIQUES_ASSESSMENT: 'best available techniques assessment',
