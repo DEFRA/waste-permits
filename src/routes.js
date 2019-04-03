@@ -1288,7 +1288,7 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
-    subject: 'AIR_DISPERSION_MODELLING_REPORT',
+    subject: 'SCREENING_TOOL',
     validatorOptions: {
       fileTypes: [
         { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
