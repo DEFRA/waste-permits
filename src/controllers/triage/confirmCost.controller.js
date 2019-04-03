@@ -2,11 +2,10 @@
 
 const { DEFRA_COOKIE_KEY, COOKIE_KEY: { APPLICATION_ID } } = require('../../constants')
 
-const { TRIAGE_WASTE_ACTIVITY } = require('../../routes')
+const { TRIAGE_FACILITY_TYPE } = require('../../routes.js')
 
 const BaseController = require('../base.controller')
 const ApplicationCost = require('../../models/triage/applicationCost.model')
-const Application = require('../../models/triage/application.model')
 
 const ActiveDirectoryAuthService = require('../../services/activeDirectoryAuth.service')
 const authService = new ActiveDirectoryAuthService()
@@ -19,9 +18,7 @@ module.exports = class ConfirmCostController extends BaseController {
 
     pageContext.calculatedCosts = await ApplicationCost.getApplicationCostForApplicationId(entityContext)
 
-    // Determine triage path for page
-    const permitHolderType = await Application.getPermitHolderTypeForApplicationId(entityContext)
-    pageContext.wasteActivitiesLink = `${TRIAGE_WASTE_ACTIVITY.path}/bespoke/${permitHolderType.id}`
+    pageContext.wasteActivitiesLink = `${TRIAGE_FACILITY_TYPE.path}/bespoke`
 
     return this.showView({ h, pageContext })
   }

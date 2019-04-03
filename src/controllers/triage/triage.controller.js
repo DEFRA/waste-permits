@@ -124,7 +124,7 @@ module.exports = class TriageController extends BaseController {
       return this.redirect({ h, path: paths.currentStepPath })
     }
 
-    if (data.selectedPermitHolderTypes) {
+    if (data.selectedPermitTypes) {
       // POSTing facility type(s)
       const requestedFacilityType = request.payload['facility-type']
       const selectedFacilityTypes = data.availableFacilityTypes.getListFilteredByIds([requestedFacilityType])
@@ -154,18 +154,6 @@ module.exports = class TriageController extends BaseController {
       return this.redirect({ h, path: paths.currentStepPath })
     }
 
-    if (data.selectedPermitTypes) {
-      // POSTing permit holder type(s)
-      const requestedPermitHolderType = request.payload['permit-holder-type']
-      const selectedPermitHolderTypes = data.availablePermitHolderTypes.getListFilteredByIds([requestedPermitHolderType])
-      if (selectedPermitHolderTypes.items.length === 1) {
-        data.selectedPermitHolderTypes = selectedPermitHolderTypes
-        data.canApplyOnline = selectedPermitHolderTypes.canApplyOnline
-      }
-      const paths = TriageController.generatePathsFromData(data)
-      return this.redirect({ h, path: paths.currentStepPath })
-    }
-
     // POSTing permit type(s)
     const requestedPermitType = request.payload['permit-type']
     const selectedPermitTypes = data.availablePermitTypes.getListFilteredByIds([requestedPermitType])
@@ -184,7 +172,6 @@ module.exports = class TriageController extends BaseController {
 
   static async saveApplication (request, entityContext, triageData) {
     const application = await Application.getApplicationForId(entityContext)
-    application.setPermitHolderType(triageData.selectedPermitHolderTypes.items[0])
     application.setMcpType(triageData.selectedMcpTypes.items[0])
     application.setWasteActivities(triageData.selectedWasteActivities.items)
     application.setWasteAssessments(triageData.selectedOptionalWasteAssessments.items)
@@ -206,32 +193,13 @@ module.exports = class TriageController extends BaseController {
       if (chosenPermitTypeList.items.length === 1) {
         data.selectedPermitTypes = chosenPermitTypeList
         data.canApplyOnline = chosenPermitTypeList.canApplyOnline
-        if (data.canApplyOnline) {
-          data.availablePermitHolderTypes = await TriageList.createPermitHolderTypesList(entityContext)
-        }
       }
     }
 
     // If we've managed to select a valid permit type then check for permit holder types
     if (data.selectedPermitTypes && data.canApplyOnline) {
-      const permitHolderTypeParam = decodeParamValue(params.permitHolderType)
-      // We have to have chosen exactly one permit holder type
-      if (permitHolderTypeParam && permitHolderTypeParam.length === 1) {
-        const chosenPermitHolderTypeList = data.availablePermitHolderTypes.getListFilteredByIds(permitHolderTypeParam)
-        // We have to have chosen a valid entry from the list of available types of permit holder
-        if (chosenPermitHolderTypeList.items.length === 1) {
-          data.selectedPermitHolderTypes = chosenPermitHolderTypeList
-          data.canApplyOnline = chosenPermitHolderTypeList.canApplyOnline
-          if (data.canApplyOnline) {
-            const { selectedPermitTypes } = data
-            data.availableFacilityTypes = await TriageList.createFacilityTypesList(entityContext, { selectedPermitTypes })
-          }
-        }
-      }
-    }
-
-    // If we've managed to select a valid permit holder type then check for facility types
-    if (data.selectedPermitHolderTypes && data.canApplyOnline) {
+      const { selectedPermitTypes } = data
+      data.availableFacilityTypes = await TriageList.createFacilityTypesList(entityContext, { selectedPermitTypes })
       const facilityTypeParam = decodeParamValue(params.facilityType)
       // We have to have chosen exactly one facility type
       if (facilityTypeParam && facilityTypeParam.length === 1) {
@@ -359,10 +327,6 @@ module.exports = class TriageController extends BaseController {
 
     if (data.selectedPermitTypes) {
       pathItems.push(encodeParamValue(data.selectedPermitTypes.ids))
-    }
-
-    if (data.selectedPermitHolderTypes) {
-      pathItems.push(encodeParamValue(data.selectedPermitHolderTypes.ids))
     }
 
     if (data.selectedFacilityTypes) {

@@ -18,7 +18,7 @@ const Application = require('../../../src/models/triage/application.model')
 const FAKE_FACILITY_TYPE_ID = 'fake-facility-type'
 const FAKE_FACILITY_TYPE = { id: FAKE_FACILITY_TYPE_ID, canApplyOnline: true }
 
-const routePath = '/select/bespoke/limited-company'
+const routePath = '/select/bespoke'
 const badPath = `${routePath}/invalid`
 const nextRoutePath = `${routePath}/${FAKE_FACILITY_TYPE_ID}`
 const endRoutePath = `/selected/confirm`

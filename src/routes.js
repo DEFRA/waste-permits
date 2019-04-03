@@ -19,26 +19,14 @@ const Routes = {
     pageHeading: 'Confirm the type of permit you want',
     controller: 'triage/triage',
     validator: 'triage/permitType',
-    nextRoute: 'TRIAGE_PERMIT_HOLDER_TYPE',
-    types: 'GET, POST',
-    cookieValidationRequired: false,
-    applicationRequired: false
-  },
-  TRIAGE_PERMIT_HOLDER_TYPE: {
-    path: '/select',
-    params: ['permitType'],
-    view: 'triage/permitHolderType',
-    applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'Who will be the permit holder?',
-    controller: 'triage/triage',
-    validator: 'triage/permitHolderType',
+    nextRoute: 'TRIAGE_FACILITY_TYPE',
     types: 'GET, POST',
     cookieValidationRequired: false,
     applicationRequired: false
   },
   TRIAGE_FACILITY_TYPE: {
     path: '/select',
-    params: ['permitType', 'permitHolderType'],
+    params: ['permitType'],
     view: 'triage/facilityType',
     applyOfflineView: 'triage/applyOffline',
     pageHeading: 'What type of facility do you want the permit for?',
@@ -50,7 +38,7 @@ const Routes = {
   },
   TRIAGE_MCP_TYPE: {
     path: '/select',
-    params: ['permitType', 'permitHolderType', 'facilityType'],
+    params: ['permitType', 'facilityType'],
     view: 'triage/mcpType',
     applyOfflineView: 'triage/applyOffline',
     pageHeading: 'What is your permit for?',
@@ -62,7 +50,7 @@ const Routes = {
   },
   TRIAGE_WASTE_ACTIVITY: {
     path: '/select',
-    params: ['permitType', 'permitHolderType', 'facilityType', 'mcpType'],
+    params: ['permitType', 'facilityType', 'mcpType'],
     view: 'triage/wasteActivity',
     applyOfflineView: 'triage/applyOffline',
     pageHeading: 'Select all the activities you want the permit to cover',
@@ -74,7 +62,7 @@ const Routes = {
   },
   TRIAGE_WASTE_ASSESSMENT: {
     path: '/select',
-    params: ['permitType', 'permitHolderType', 'facilityType', 'mcpType', 'wasteActivity'],
+    params: ['permitType', 'facilityType', 'mcpType', 'wasteActivity'],
     view: 'triage/wasteAssessment',
     applyOfflineView: 'triage/applyOffline',
     triageCompleteView: 'triage/complete',
@@ -86,7 +74,7 @@ const Routes = {
   },
   TRIAGE_COMPLETE: {
     path: '/select',
-    params: ['permitType', 'permitHolderType', 'facilityType', 'mcpType', 'wasteActivity', 'wasteAssessment'],
+    params: ['permitType', 'facilityType', 'mcpType', 'wasteActivity', 'wasteAssessment'],
     view: 'triage/complete',
     applyOfflineView: 'triage/applyOffline',
     pageHeading: 'Confirm activities and assessments',

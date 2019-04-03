@@ -18,7 +18,7 @@ const ApplicationCost = require('../../../src/models/triage/applicationCost.mode
 const LTD_CO = { id: 'limited-company', canApplyOnline: true }
 
 const routePath = '/selected/confirm'
-const expectedWasteActivitiesPath = '/select/bespoke/limited-company'
+const expectedWasteActivitiesPath = '/select/bespoke'
 const nextRoutePath = '/task-list'
 
 let getRequest

@@ -6,6 +6,8 @@ const Code = require('code')
 const sinon = require('sinon')
 const server = require('../../../server')
 const GeneralTestHelper = require('../generalTestHelper.test')
+const CookieService = require('../../../src/services/cookie.service')
+const { COOKIE_RESULT } = require('../../../src/constants')
 
 const AuthService = require('../../../src/services/activeDirectoryAuth.service')
 const DUMMY_AUTH_TOKEN = 'dummy-auth-token'
@@ -54,6 +56,7 @@ lab.beforeEach(() => {
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
   sandbox.stub(AuthService.prototype, 'getToken').value(() => DUMMY_AUTH_TOKEN)
+  sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
 
 lab.afterEach(() => {
