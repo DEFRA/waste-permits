@@ -4,6 +4,8 @@ const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const AirQualityManagementAreaModel = require('../models/airQualityManagementArea.model')
 
+const YES = 'yes'
+
 module.exports = class AirQualityManagementAreaController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
@@ -13,8 +15,12 @@ module.exports = class AirQualityManagementAreaController extends BaseController
     } else {
       const context = await RecoveryService.createApplicationContext(h)
       const aqma = await AirQualityManagementAreaModel.get(context)
+      // we set a separate no variable for aqma-is-in-aqma as Handlebars only allow us to check whether a variable equates to true/false
+      // which causes problems as we can't differentiate between 'aqma-is-in-aqma is false' (ie. No was selected)
+      // and 'aqma-is-in-aqma is undefined' (ie. nothing has been selected yet)
       pageContext.formValues = {
         'aqma-is-in-aqma': aqma.isInAqma,
+        'aqma-is-in-aqma-no': aqma.isInAqma === false,
         'aqma-name': aqma.isInAqma ? aqma.name : '',
         'aqma-nitrogen-dioxide-level': aqma.isInAqma ? aqma.nitrogenDioxideLevel : '',
         'aqma-local-authority-name': aqma.isInAqma ? aqma.localAuthorityName : ''
@@ -35,13 +41,10 @@ module.exports = class AirQualityManagementAreaController extends BaseController
     } = request.payload
 
     const aqma = {
-      isInAqma: isInAqma,
-      name: undefined,
-      nitrogenDioxideLevel: undefined,
-      localAuthorityName: undefined
+      isInAqma: isInAqma === YES
     }
 
-    if (aqma.isInAqma === 'yes') {
+    if (aqma.isInAqma) {
       aqma.name = name
       aqma.nitrogenDioxideLevel = nitrogenDioxideLevel
       aqma.localAuthorityName = localAuthorityName

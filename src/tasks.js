@@ -6,7 +6,8 @@ const tasks = {
     label: 'Give Air Quality Management Area details',
     route: Routes.AIR_QUALITY_MANAGEMENT_AREA,
     completedLabelId: 'air-quality-management-completed',
-    shortName: 'aqma'
+    shortName: 'aqma',
+    taskListModel: 'airQualityManagementArea'
   },
   AIR_DISPERSION_MODELLING_REPORT: {
     id: 'upload-air-dispersion-modelling-report',

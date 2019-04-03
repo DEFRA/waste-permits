@@ -11,6 +11,8 @@ const AirQualityManagementArea = require('../../src/models/airQualityManagementA
 
 const context = { authToken: 'AUTH_TOKEN' }
 
+const YES = 'yes'
+const NO = 'no'
 const TEST_AQMA_NAME = 'Test AQMA'
 const TEST_NO2_LEVEL = 42
 const TEST_AUTH_NAME = 'Test authority'
@@ -41,7 +43,7 @@ lab.experiment('AirQualityManagementArea test:', () => {
   lab.experiment('get', () => {
     lab.test('AQMA is set as no', async () => {
       mocks.applicationAnswers[0].questionCode = 'aqma-is-in-aqma'
-      mocks.applicationAnswers[0].answerCode = false
+      mocks.applicationAnswers[0].answerCode = NO
       const airQualityManagementArea = await AirQualityManagementArea.get(context)
       Code.expect(airQualityManagementArea.isInAqma).to.be.false()
       Code.expect(airQualityManagementArea.name).to.not.exist()
@@ -51,7 +53,7 @@ lab.experiment('AirQualityManagementArea test:', () => {
 
     lab.test('AQMA is set as yes', async () => {
       mocks.applicationAnswers[0].questionCode = 'aqma-is-in-aqma'
-      mocks.applicationAnswers[0].answerCode = true
+      mocks.applicationAnswers[0].answerText = YES
       mocks.applicationAnswers[1].questionCode = 'aqma-name'
       mocks.applicationAnswers[1].answerText = TEST_AQMA_NAME
       mocks.applicationAnswers[2].questionCode = 'aqma-nitrogen-dioxide-level'
