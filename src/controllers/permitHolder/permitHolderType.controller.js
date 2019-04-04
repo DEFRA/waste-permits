@@ -6,7 +6,7 @@ const RecoveryService = require('../../services/recovery.service')
 
 const { COOKIE_KEY: { STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID } } = require('../../constants')
 const { PERMIT_HOLDER_TYPES } = require('../../dynamics')
-const { APPLY_OFFLINE, PERMIT_HOLDER_DETAILS } = require('../../routes')
+const { PERMIT_HOLDER_DETAILS } = require('../../routes')
 
 module.exports = class PermitHolderTypeController extends BaseController {
   static getHolderTypes (application, charityPermitHolder) {
@@ -54,10 +54,6 @@ module.exports = class PermitHolderTypeController extends BaseController {
       await charityDetail.delete(context)
     }
 
-    if (permitHolder.canApplyOnline) {
-      return this.redirect({ h, route: PERMIT_HOLDER_DETAILS })
-    }
-
-    return this.redirect({ h, route: APPLY_OFFLINE })
+    return this.redirect({ h, route: PERMIT_HOLDER_DETAILS })
   }
 }

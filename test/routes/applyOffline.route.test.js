@@ -17,22 +17,6 @@ const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const permitCategoryRoute = '/permit/category'
-const permitHolderRoute = '/permit-holder/type'
-
-const defaultLink = 'https://www.gov.uk/government/collections/environmental-permit-application-forms-for-a-standard-permit-installations-mining-waste-or-waste-operation'
-
-const permitHolderTypes = {
-  limitedCompany: {
-    id: 'limited-company',
-    type: 'Limited company',
-    canApplyOnline: true
-  },
-  other: {
-    id: 'other-organisation',
-    type: 'Other organisation, for example a club or association',
-    canApplyOnline: false
-  }
-}
 
 const offlineCategories = {
   flood: {
@@ -117,7 +101,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
     })
 
     lab.experiment('success', () => {
-      lab.experiment(`when the permit holder is "${permitHolderTypes.limitedCompany.type}" and the category is`, () => {
+      lab.experiment(`when the category is`, () => {
         Object.keys(offlineCategories)
           .forEach((type) => {
             const standardRuleType = offlineCategories[type]
@@ -139,22 +123,6 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
               ])
             })
           })
-      })
-
-      lab.test('when the permit holder other is selected', async () => {
-        Object.assign(mocks.permitHolderType, permitHolderTypes.other)
-
-        const doc = await GeneralTestHelper.getDoc(getRequest)
-        checkCommonElements(doc)
-
-        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a permit for an other organisation, for example a club or association')
-        Code.expect(doc.getElementById('change-selection-link').getAttribute('href')).to.equal(permitHolderRoute)
-        Code.expect(doc.getElementById('standard-rules-link').getAttribute('href')).to.equal(defaultLink)
-
-        GeneralTestHelper.checkElementsExist(doc, [
-          'standard-rules-prefix',
-          'standard-rules-link-text'
-        ])
       })
     })
 
