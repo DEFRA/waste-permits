@@ -51,16 +51,14 @@ module.exports = class ApplyOfflineController extends BaseController {
     let offlineCategory
     let standardRule
 
-    if (permitHolderType.canApplyOnline) {
-      const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
-      offlineCategory = ApplyOfflineController.getOfflineCategory(standardRuleTypeId)
-      if (standardRuleId) {
-        standardRule = await StandardRule.getById(context, standardRuleId)
-      }
-      if ((!standardRule && !offlineCategory) || (standardRule && standardRule.canApplyOnline)) {
-        LoggingService.logError(`Unable to get offline category for : ${standardRuleTypeId}`)
-        return this.redirect({ h, route: Routes.START_AT_BEGINNING })
-      }
+    const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
+    offlineCategory = ApplyOfflineController.getOfflineCategory(standardRuleTypeId)
+    if (standardRuleId) {
+      standardRule = await StandardRule.getById(context, standardRuleId)
+    }
+    if ((!standardRule && !offlineCategory) || (standardRule && standardRule.canApplyOnline)) {
+      LoggingService.logError(`Unable to get offline category for : ${standardRuleTypeId}`)
+      return this.redirect({ h, route: Routes.START_AT_BEGINNING })
     }
 
     const chosenOption = ApplyOfflineController.getChosenOption(offlineCategory, standardRule, permitHolderType)

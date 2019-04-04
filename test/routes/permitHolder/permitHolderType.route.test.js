@@ -18,7 +18,6 @@ const { COOKIE_RESULT } = require('../../../src/constants')
 
 const routePath = '/permit-holder/type'
 const nextRoutePath = '/permit-holder/details'
-const offlineRoutePath = '/start/apply-offline'
 const errorPath = '/errors/technical-problem'
 let sandbox
 let mocks
@@ -69,14 +68,14 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
     lab.experiment('success', () => {
       let holderTypes = [
-        { id: 'limited-company', type: 'Limited company', canApplyOnline: true },
-        { id: 'individual', type: 'Individual', canApplyOnline: true },
-        { id: 'sole-trader', type: 'Sole trader', canApplyOnline: true },
-        { id: 'public-body', type: 'Local authority or public body', canApplyOnline: true },
-        { id: 'partnership', type: 'Partnership', canApplyOnline: true },
-        { id: 'charity-or-trust', type: 'Charity or trust', canApplyOnline: true },
-        { id: 'limited-liability-partnership', type: 'Limited liability partnership', canApplyOnline: true },
-        { id: 'other-organisation', type: 'Other organisation or group, for example a club,  association or group of individuals', canApplyOnline: true }
+        { id: 'limited-company', type: 'Limited company' },
+        { id: 'individual', type: 'Individual' },
+        { id: 'sole-trader', type: 'Sole trader' },
+        { id: 'public-body', type: 'Local authority or public body' },
+        { id: 'partnership', type: 'Partnership' },
+        { id: 'charity-or-trust', type: 'Charity or trust' },
+        { id: 'limited-liability-partnership', type: 'Limited liability partnership' },
+        { id: 'other-organisation', type: 'Other organisation or group, for example a club,  association or group of individuals' }
       ]
 
       holderTypes.forEach(({ id, type }) => {
@@ -139,11 +138,6 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
       lab.test('when holder type can apply online and is an organisation', async () => {
         await checkRoute(nextRoutePath)
-      })
-
-      lab.test('when holder type cannot apply online', async () => {
-        mocks.permitHolderType.canApplyOnline = false
-        await checkRoute(offlineRoutePath)
       })
     })
 

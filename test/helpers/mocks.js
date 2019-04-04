@@ -267,7 +267,6 @@ class MockData {
     return {
       id: 'limited-company',
       type: 'Limited company',
-      canApplyOnline: true,
       dynamicsApplicantTypeId: application.applicantType,
       dynamicsOrganisationTypeId: application.organisationType
     }
