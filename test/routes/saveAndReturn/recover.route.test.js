@@ -15,6 +15,7 @@ const ApplicationReturn = require('../../../src/persistence/entities/application
 const Contact = require('../../../src/persistence/entities/contact.entity')
 const Payment = require('../../../src/persistence/entities/payment.entity')
 const StandardRule = require('../../../src/persistence/entities/standardRule.entity')
+const DataStore = require('../../../src/models/dataStore.model')
 const CharityDetail = require('../../../src/models/charityDetail.model')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
@@ -51,6 +52,7 @@ lab.beforeEach(() => {
   bacsPaymentStub.resolves(undefined)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
   sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
+  sandbox.stub(DataStore, 'get').value(() => mocks.dataStore)
 })
 
 lab.afterEach(() => {

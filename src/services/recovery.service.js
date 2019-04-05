@@ -8,13 +8,21 @@ const ApplicationReturn = require('../persistence/entities/applicationReturn.ent
 const Contact = require('../persistence/entities/contact.entity')
 const Payment = require('../persistence/entities/payment.entity')
 const StandardRule = require('../persistence/entities/standardRule.entity')
+const DataStore = require('../models/dataStore.model')
 const CharityDetail = require('../models/charityDetail.model')
 
+const { STANDARD_RULES } = require('../constants').PermitTypes
 const { COOKIE_KEY: { AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID } } = require('../constants')
 const { PERMIT_HOLDER_TYPES } = require('../dynamics')
 
 module.exports = class RecoveryService {
   static async recoverOptionalData (context, options) {
+    // Get data from the data store
+    const { data } = await DataStore.get(context)
+
+    context.permitType = data.permitType
+    context.mcpType = data.mcpType
+
     // Add the charity details to the context
     context.charityDetail = await CharityDetail.get(context)
 
@@ -25,7 +33,7 @@ module.exports = class RecoveryService {
       options.account && !context.charityDetail.isIndividual ? Account.getByApplicationId(context) : Promise.resolve(undefined),
       options.contact && context.charityDetail.isIndividual ? Contact.getByApplicationId(context) : Promise.resolve(undefined),
       options.cardPayment ? Payment.getCardPaymentDetails(context, context.applicationLineId) : Promise.resolve(undefined),
-      options.standardRule ? StandardRule.getByApplicationLineId(context, context.applicationLineId) : Promise.resolve(undefined)
+      options.standardRule && context.permitType === STANDARD_RULES.id ? StandardRule.getByApplicationLineId(context, context.applicationLineId) : Promise.resolve(undefined)
     ])
 
     return { applicationLine, applicationReturn, account, contact, cardPayment, standardRule }
