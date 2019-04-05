@@ -8,12 +8,14 @@ const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
+const Constants = require('../../src/constants')
 const CookieService = require('../../src/services/cookie.service')
 const Application = require('../../src/persistence/entities/application.entity')
 const CharityDetail = require('../../src/models/charityDetail.model')
 const DataStore = require('../../src/models/dataStore.model')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 const StandardRulesTaskList = require('../../src/models/taskList/standardRules.taskList')
+const BespokeTaskList = require('../../src/models/taskList/bespoke.taskList')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/task-list'
@@ -195,6 +197,7 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
   sandbox.stub(StandardRule, 'getByCode').value(() => mocks.standardRule)
   sandbox.stub(StandardRulesTaskList, 'buildTaskList').value(() => fakeTaskList)
+  sandbox.stub(BespokeTaskList, 'buildTaskList').value(() => fakeTaskList)
 })
 
 lab.afterEach(() => {
@@ -237,6 +240,32 @@ lab.experiment('Task List page tests:', () => {
     checkElement(doc.getElementById('page-heading'), 'Apply for a standard rules environmental permit')
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
     checkElement(doc.getElementById('standard-rule-name-and-code'), `${mocks.standardRule.permitName} - ${mocks.standardRule.code}`)
+    checkElement(doc.getElementById('select-a-different-permit'))
+  })
+
+  lab.test('Task list page contains the correct heading and Bespoke info when dispersion modelling is required', async () => {
+    mocks.dataStore.data.permitType = Constants.PermitTypes.BESPOKE.id
+    mocks.dataStore.data.airDispersionModellingRequired = true
+    mocks.dataStore.data.mcpType = 'stationary-mcp'
+    const doc = await GeneralTestHelper.getDoc(getRequest)
+
+    // Check the existence of the page title and Bespoke info
+    checkElement(doc.getElementById('page-heading'), 'Apply for a bespoke environmental permit')
+    checkElement(doc.getElementById('task-list-heading-visually-hidden'))
+    checkElement(doc.getElementById('activity-name'), `Medium combustion plant site - requires dispersion modelling`)
+    checkElement(doc.getElementById('select-a-different-permit'))
+  })
+
+  lab.test('Task list page contains the correct heading and Bespoke info when dispersion modelling is not required', async () => {
+    mocks.dataStore.data.permitType = Constants.PermitTypes.BESPOKE.id
+    mocks.dataStore.data.airDispersionModellingRequired = false
+    mocks.dataStore.data.mcpType = 'stationary-mcp'
+    const doc = await GeneralTestHelper.getDoc(getRequest)
+
+    // Check the existence of the page title and Bespoke info
+    checkElement(doc.getElementById('page-heading'), 'Apply for a bespoke environmental permit')
+    checkElement(doc.getElementById('task-list-heading-visually-hidden'))
+    checkElement(doc.getElementById('activity-name'), `Medium combustion plant site - does not require dispersion modelling`)
     checkElement(doc.getElementById('select-a-different-permit'))
   })
 
