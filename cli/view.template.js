@@ -1,6 +1,6 @@
 module.exports = class view {
   static getTemplate (options) {
-    const { hasBackLink, hasSubmitButton, hasPageHeading, hasValidator } = options
+    const { hasBackLink, hasSubmitButton, hasPageHeading, hasValidator, isUpload } = options
     return `
 
 <main id="content" tabindex="-1" role="main">
@@ -12,8 +12,16 @@ module.exports = class view {
   <div class="grid-row">
     <div class="column-two-thirds">
       ${hasValidator ? `{{> common/errorSummary }}` : ''}
-      ${hasPageHeading ? `{{> common/pageHeading pageHeading }}` : ''}
-          
+      ${hasPageHeading ? `{{> common/pageHeading pageHeading }}` : ''}     
+      ${isUpload ? `
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+      ` : `          
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
         ${hasValidator ? `
@@ -27,7 +35,7 @@ module.exports = class view {
         ` : ''}
         ${hasSubmitButton ? `{{> common/submitButton }}` : ''}
       </form>
-        
+      `}  
     </div>
   </div>
   

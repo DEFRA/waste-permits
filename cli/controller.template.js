@@ -1,5 +1,5 @@
 module.exports = class controller {
-  static getTemplate (options) {
+  static getBaseTemplate (options) {
     const { controllerName, hasView, hasSubmitButton } = options
     return `
 'use strict'
@@ -42,8 +42,25 @@ module.exports = class ${controllerName}Controller extends BaseController {
     
     return this.redirect({ h })
   }` : ''}
+}            
+`
+  }
+
+  static getUploadTemplate (options) {
+    const { controllerName } = options
+    return `
+'use strict'
+
+const UploadController = require('./upload.controller')
+const RecoveryService = require('../services/recovery.service')
+    
+module.exports = class ${controllerName}Controller extends UploadController {
+  async getSpecificPageContext (h, pageContext) {
+    return {
+      example: 'example page content'
+    }
+  }
 }
-            
 `
   }
 }

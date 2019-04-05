@@ -157,7 +157,8 @@ Constants.UploadSubject = {
   ENVIRONMENTAL_RISK_ASSESSMENT: 'environmental risk assessment',
   NON_TECHNICAL_SUMMARY: 'non-technical summary',
   MANAGEMENT_SYSTEM_SUMMARY: 'management system summary',
-  MCP_DETAILS: 'mcp details'
+  MCP_DETAILS: 'mcp details',
+  ARBITRARY_UPLOADS: 'arbitrary uploads'
 }
 
 Constants.CookieValue = {

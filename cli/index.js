@@ -158,8 +158,8 @@ class RouteGenerator {
     return { params: params.length ? params : undefined }
   }
 
-  async getView (defaultVal) {
-    if (defaultVal) {
+  async getView (defaultVal, isUpload) {
+    if (!isUpload && defaultVal) {
       const { confirm } = await this.getConfirm(`Is a view required? `)
       if (!confirm) {
         return {}
@@ -191,7 +191,7 @@ class RouteGenerator {
       const { confirm } = await this.getConfirm(`View "${file}" doesn't exist. Create? `)
       if (confirm) {
         const { confirm: hasBackLink } = await this.getConfirm(`Does this view contain a back link? `)
-        const { confirm: hasSubmitButton } = await this.getConfirm(`Does this view contain a submit button? `)
+        const { confirm: hasSubmitButton } = isUpload ? { confirm: true } : await this.getConfirm(`Does this view contain a submit button? `)
         return { view, isNewView: true, hasBackLink, hasSubmitButton }
       }
     }
@@ -239,17 +239,19 @@ class RouteGenerator {
       }
     })
 
+    let isUpload = (controller === 'upload') || (await this.getConfirm(`Is ${controller} an upload controller? `, false)).confirm
+
     const file = buildFilename('controller', controller)
 
     if (fs.existsSync(file)) {
       const { confirm } = await this.getConfirm(`Controller "${file}" already exists. Reuse? `)
       if (confirm) {
-        return { controller }
+        return { controller, isUpload }
       }
     } else {
       const { confirm } = await this.getConfirm(`Controller "${file}" doesn't exist. Create? `)
       if (confirm) {
-        return { controller, isNewController: true }
+        return { controller, isUpload, isNewController: true }
       }
     }
 
@@ -305,12 +307,14 @@ class RouteGenerator {
   const { routeId } = await routeGenerator.getRouteId()
   const { path } = await routeGenerator.getPath(`/${routeId.replace(/_/g, `-`).toLowerCase()}`)
   const { params } = await routeGenerator.getRouteParam()
-  const { controller, isNewController } = await routeGenerator.getController(snakeToCamel(routeId))
-  const { view, isNewView, hasBackLink, hasSubmitButton } = await routeGenerator.getView(controller)
+  const { controller, isUpload, isNewController } = await routeGenerator.getController(snakeToCamel(routeId))
+  const { view, isNewView, hasBackLink, hasSubmitButton } = await routeGenerator.getView(controller, isUpload)
   const { pageHeading } = view ? await routeGenerator.getPageHeading(utilities.capitalizeFirstLetter(routeId.replace(/_/g, ` `).toLowerCase())) : {}
-  const { validator, isNewValidator } = view ? await routeGenerator.getValidator(controller) : {}
+  const { validator, isNewValidator } = isUpload ? { validator: 'upload' } : view ? await routeGenerator.getValidator(controller) : {}
   const { nextRoute } = await routeGenerator.getNextRoute('TASK_LIST')
-  const types = `GET${hasSubmitButton ? ', POST' : ''}`
+  const types = `GET${isUpload ? ', REMOVE, UPLOAD' : hasSubmitButton ? ', POST' : ''}`
+  const baseRoute = isUpload ? 'uploadRoute' : ''
+  const subject = isUpload ? 'ARBITRARY_UPLOADS' : ''
 
   const route = {
     path,
@@ -319,8 +323,10 @@ class RouteGenerator {
     pageHeading,
     controller,
     validator,
+    nextRoute,
     types,
-    nextRoute
+    baseRoute,
+    subject
   }
 
   // Remove falsy properties
@@ -331,11 +337,12 @@ class RouteGenerator {
   console.log(route)
 
   if (isNewController) {
-    saveFile(buildFilename('controller', controller), Controller.getTemplate({ controllerName: utilities.capitalizeFirstLetter(controller), hasView: !!view, hasSubmitButton }))
+    const options = { controllerName: utilities.capitalizeFirstLetter(controller), hasView: !!view, hasSubmitButton }
+    saveFile(buildFilename('controller', controller), isUpload ? Controller.getUploadTemplate(options) : Controller.getBaseTemplate(options))
   }
 
   if (isNewView) {
-    saveFile(buildFilename('view', view), View.getTemplate({ hasBackLink, hasSubmitButton, hasPageHeading: !!pageHeading, hasValidator: !!validator }))
+    saveFile(buildFilename('view', view), View.getTemplate({ hasBackLink, hasSubmitButton, hasPageHeading: !!pageHeading, hasValidator: !!validator, isUpload }))
   }
 
   if (isNewValidator) {
