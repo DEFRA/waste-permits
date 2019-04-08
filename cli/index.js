@@ -351,7 +351,7 @@ class RouteGenerator {
 
   // Format and add route to routes file
   const props = Object.entries(route)
-    .map(([prop, val]) => typeof val === 'string' ? `${prop}: '${val}'` : `${prop}: ${val}`)
+    .map(([prop, val]) => `${prop}: ${JSON.stringify(val)}`.replace(/"/g, `'`))
     .join(`,
      `)
 
