@@ -88,6 +88,26 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
           Code.expect(doc.getElementById(`${prefix}-type`).firstChild.nodeValue.trim()).to.equal(type)
         })
       })
+
+      const mcpTypes = [
+        { mcpType: 'stationary-mcp', isMobile: false },
+        { mcpType: 'stationary-sg', isMobile: false },
+        { mcpType: 'stationary-mcp-sg', isMobile: false },
+        { mcpType: 'mobile-sg-mcp', isMobile: true },
+        { mcpType: 'mobile-sg', isMobile: true }
+      ]
+
+      mcpTypes.forEach(({ mcpType, isMobile }) => {
+        lab.test(`should ${isMobile ? 'include' : 'omit'} the mobile generator text when the mcpType is ${mcpType}`, async () => {
+          mocks.context.mcpType = mcpType
+          const doc = await GeneralTestHelper.getDoc(getRequest)
+          if (isMobile) {
+            Code.expect(doc.getElementById('mobile-generator-message')).to.exist()
+          } else {
+            Code.expect(doc.getElementById('mobile-generator-message')).to.not.exist()
+          }
+        })
+      })
     })
 
     lab.experiment('failure', () => {

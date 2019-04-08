@@ -1,12 +1,12 @@
 'use strict'
 
 const BaseController = require('../base.controller')
-const CookieService = require('../../services/cookie.service')
 const RecoveryService = require('../../services/recovery.service')
 
-const { COOKIE_KEY: { STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID } } = require('../../constants')
+const { MCP_TYPE_LIST } = require('../../models/triage/triageLists')
 const { PERMIT_HOLDER_TYPES } = require('../../dynamics')
 const { PERMIT_HOLDER_DETAILS } = require('../../routes')
+const { MOBILE_GENERATOR_0_TO_20_MW } = require('../../constants').PermitTypes.STANDARD_RULES
 
 module.exports = class PermitHolderTypeController extends BaseController {
   static getHolderTypes (application, charityPermitHolder) {
@@ -29,7 +29,9 @@ module.exports = class PermitHolderTypeController extends BaseController {
 
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const { application, charityDetail = {} } = await RecoveryService.createApplicationContext(h)
+    const { application, charityDetail = {}, standardRule = {}, mcpType } = await RecoveryService.createApplicationContext(h, { standardRule: true })
+    const isMobile = Boolean(MCP_TYPE_LIST.find(({ id, isMobile }) => mcpType === id && isMobile))
+    pageContext.mobileGenerator = isMobile || standardRule.code === MOBILE_GENERATOR_0_TO_20_MW
     pageContext.holderTypes = PermitHolderTypeController.getHolderTypes(application, charityDetail.charityPermitHolder)
     return this.showView({ h, pageContext })
   }
@@ -41,9 +43,6 @@ module.exports = class PermitHolderTypeController extends BaseController {
     const holderTypes = PermitHolderTypeController.getHolderTypes(application, charityDetail.charityPermitHolder)
 
     const permitHolder = holderTypes.find(({ id }) => request.payload['chosen-holder-type'] === id)
-
-    CookieService.remove(request, STANDARD_RULE_ID)
-    CookieService.remove(request, STANDARD_RULE_TYPE_ID)
 
     application.applicantType = permitHolder.dynamicsApplicantTypeId
     application.organisationType = permitHolder.dynamicsOrganisationTypeId

@@ -21,6 +21,11 @@
             <span>legal operator of the facility (opens new tab).</span>
           </a>
         </p>
+        {{#if mobileGenerator}}
+        <p id="mobile-generator-message">
+          For mobile generators, the legal operator is the company or person that owns and hires out the mobile plant.
+        </p>
+        {{/if}}
       </div>
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
