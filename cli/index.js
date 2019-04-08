@@ -349,5 +349,15 @@ class RouteGenerator {
     saveFile(buildFilename('validator', validator), Validator.getTemplate({ validatorName: utilities.capitalizeFirstLetter(validator) }))
   }
 
-  saveFile('./src/routes.js', `Routes.${routeId} = ${JSON.stringify(route)}`)
+  // Format and add route to routes file
+  const props = Object.entries(route)
+    .map(([prop, val]) => typeof val === 'string' ? `${prop}: '${val}'` : `${prop}: ${val}`)
+    .join(`,
+     `)
+
+  saveFile('./src/routes.js', `Routes.${routeId} =
+   {
+     ${props}
+   }
+  `)
 })()
