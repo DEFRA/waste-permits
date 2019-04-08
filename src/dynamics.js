@@ -163,6 +163,60 @@ const Dynamics = {
       allowed: false
     }
   },
+  FACILITY_TYPES: {
+    INSTALLATION: {
+      id: 'installation',
+      key: '01',
+      text: 'Installation',
+      description: 'Facilities which carry out industrial processes like refineries, food and drink factories and intensive farming activities',
+      typeText: 'installations',
+      canApplyOnline: false
+    },
+    WASTE_OPERATION: {
+      id: 'waste',
+      key: '02',
+      text: 'Waste operation',
+      description: 'For example, transfer stations, waste treatment, recycling and composting',
+      typeText: 'waste operations',
+      canApplyOnline: true
+    },
+    LANDFILL: {
+      id: 'landfill',
+      key: '03',
+      text: 'Landfill and deposit for recovery',
+      typeText: 'landfill and deposit for recovery',
+      canApplyOnline: false
+    },
+    MCP: {
+      id: 'mcp',
+      key: '04',
+      text: 'Medium combustion plant or specified generator',
+      typeText: 'medium combustion plant or specified generator',
+      canApplyOnline: true
+    },
+    MINING_WASTE_OPERATION: {
+      id: 'mining',
+      key: '05',
+      text: 'Mining waste operation',
+      typeText: 'mining waste operations',
+      canApplyOnline: false
+    },
+    WATER_DISCHARGE: {
+      id: 'discharge',
+      key: '06',
+      text: 'Water discharge',
+      description: 'For example, sewage, industrial or trade discharge, clearing water channels',
+      typeText: 'water discharges',
+      canApplyOnline: false
+    },
+    GROUNDWATER: {
+      id: 'groundwater',
+      key: '07',
+      text: 'Groundwater activity',
+      typeText: 'groundwater activities',
+      canApplyOnline: false
+    }
+  },
   MiningWastePlans: {
     WATER_BASED: {
       id: 'water-based',

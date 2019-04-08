@@ -42,7 +42,7 @@ module.exports = class TaskListController extends BaseController {
     } else {
       const dataStore = await DataStore.get(context)
 
-      const { airDispersionModellingRequired, mcpType, permitType } = dataStore.data
+      const { airDispersionModellingRequired, mcpType } = dataStore.data
 
       pageContext.activityName = airDispersionModellingRequired
         ? 'Medium combustion plant site - requires dispersion modelling'
@@ -55,7 +55,7 @@ module.exports = class TaskListController extends BaseController {
         cost: context.application.lineItemsTotalAmount
       })
 
-      pageContext.permitCategoryRoute = `${Routes.TRIAGE_FACILITY_TYPE.path}/${permitType}`
+      pageContext.permitCategoryRoute = Routes.BESPOKE_OR_STANDARD_RULES.path
     }
 
     pageContext.formValues = request.payload

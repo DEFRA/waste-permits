@@ -345,7 +345,7 @@ module.exports = class TriageController extends BaseController {
       pathItems.push(encodeParamValue(data.selectedOptionalWasteAssessments.ids))
     }
 
-    const pathPrefix = Routes.TRIAGE_PERMIT_TYPE.path
+    const pathPrefix = Routes.TRIAGE_WASTE_ACTIVITY.path
     const currentStepPath = pathItems.join('/')
     const paths = pathItems.map((item, index, array) => array.slice(0, index).join('/'))
     paths.push(currentStepPath)
