@@ -21,7 +21,7 @@
             {{> common/fieldError fieldId='facility-type-error' message=errors.mcp-type }}
             {{#with triageData}}
             {{#each availableMcpTypes.items}}
-            <div class="multiple-choice">
+            <div class="multiple-choice"{{#if this.mcpIsMobile}} data-target="mobile-info"{{/if}}>
               <input id="mcp-type-{{this.id}}-input" type="radio" name="mcp-type" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
               <label id="mcp-type-{{this.id}}-label" class="selection-button-radio" for="mcp-type-{{this.id}}-input">
                 <span id="mcp-type-{{this.id}}-text">{{this.text}}</span>
@@ -30,6 +30,11 @@
             </div>
             {{/each}}
             {{/with}}
+          </div>
+          <div class="panel panel-border-narrow js-hidden" id="mobile-info">
+            <p>
+              Before you can use your mobile MCP or SG permit, you must make a further application to deploy the plant on a particular site.
+            </p>
           </div>
 
         </fieldset>

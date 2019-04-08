@@ -42,6 +42,8 @@ module.exports = class TriageController extends BaseController {
       }
     }
 
+    console.log(pageContext.triageData.availableMcpTypes)
+
     return this.showView({ h, pageContext })
   }
 
