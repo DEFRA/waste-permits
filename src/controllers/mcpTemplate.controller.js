@@ -31,7 +31,7 @@ module.exports = class McpTemplateController extends BaseController {
         switch (mcpType) {
           case STATIONARY_MCP.id:
           case STATIONARY_MCP_AND_SG.id:
-          case MOBILE_SG_AND_MCP:
+          case MOBILE_SG_AND_MCP.id:
             return templatesBespokeAppendix1
           case STATIONARY_SG.id:
           case MOBILE_SG.id:
