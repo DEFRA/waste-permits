@@ -19,8 +19,7 @@
 
           <div id="facility-type" class="form-group {{#getFormErrorGroupClass errors.facility-type}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='facility-type-error' message=errors.facility-type }}
-            {{#with triageData}}
-            {{#each availableFacilityTypes.items}}
+            {{#each facilityTypes}}
             <div class="multiple-choice">
               <input id="facility-type-{{this.id}}-input" type="radio" name="facility-type" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
               <label id="facility-type-{{this.id}}-label" class="selection-button-radio" for="facility-type-{{this.id}}-input">
@@ -29,7 +28,6 @@
               </label>
             </div>
             {{/each}}
-            {{/with}}
           </div>
 
         </fieldset>

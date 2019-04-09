@@ -1,6 +1,5 @@
 'use strict'
 
-const { TRIAGE_PERMIT_TYPE } = require('../routes')
 const BaseController = require('./base.controller')
 const featureConfig = require('../config/featureConfig')
 const RecoveryService = require('../services/recovery.service')
@@ -38,7 +37,7 @@ module.exports = class BespokeOrStandardRulesController extends BaseController {
 
       if (permitType === BESPOKE) {
         // Enter the triage steps for bespoke
-        return this.redirect({ h, path: `${TRIAGE_PERMIT_TYPE.path}/bespoke` })
+        return this.redirect({ h, route: this.route.bespokeRoute })
       } else {
         return this.redirect({ h })
       }

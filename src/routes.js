@@ -12,30 +12,6 @@ const Routes = {
 
   // TRIAGE
   // ******
-  TRIAGE_PERMIT_TYPE: {
-    path: '/select',
-    view: 'triage/permitType',
-    applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'Confirm the type of permit you want',
-    controller: 'triage/triage',
-    validator: 'triage/permitType',
-    nextRoute: 'TRIAGE_FACILITY_TYPE',
-    types: 'GET, POST',
-    cookieValidationRequired: false,
-    applicationRequired: false
-  },
-  TRIAGE_FACILITY_TYPE: {
-    path: '/select',
-    params: ['permitType'],
-    view: 'triage/facilityType',
-    applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'What type of facility do you want the permit for?',
-    controller: 'triage/triage',
-    validator: 'triage/facilityType',
-    types: 'GET, POST',
-    cookieValidationRequired: true,
-    applicationRequired: false
-  },
   TRIAGE_MCP_TYPE: {
     path: '/select',
     params: ['permitType', 'facilityType'],
@@ -854,6 +830,7 @@ const Routes = {
     controller: 'bespokeOrStandardRules',
     validator: 'bespokeOrStandardRules',
     nextRoute: 'PERMIT_CATEGORY',
+    bespokeRoute: 'FACILITY_TYPE',
     types: 'GET, POST',
     cookieValidationRequired: false,
     applicationRequired: false
@@ -1003,6 +980,17 @@ const Routes = {
         { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
       ]
     }
+  },
+  FACILITY_TYPE: {
+    path: '/facility-type',
+    view: 'facilityType',
+    pageHeading: 'What type of facility do you want the permit for?',
+    controller: 'facilityType',
+    validator: 'facilityType',
+    nextRoute: 'TRIAGE_MCP_TYPE',
+    types: 'GET, POST',
+    cookieValidationRequired: true,
+    applicationRequired: false
   },
   FIRE_PREVENTION_PLAN: {
     path: '/fire-prevention-plan',
