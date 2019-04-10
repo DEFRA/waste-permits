@@ -11,10 +11,8 @@ const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
-const DataStore = require('../../src/models/dataStore.model')
 const { COOKIE_RESULT } = require('../../src/constants')
-const { PermitTypes } = require('../../src/constants')
-const { MCP_TYPES: { MOBILE_SG, MOBILE_SG_AND_MCP } } = require('../../src/models/triage/triageLists')
+const { MOBILE_SG, MOBILE_SG_AND_MCP } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/existing-permit'
 const nextRoutePathYes = '/existing-permit/yes'
@@ -24,7 +22,6 @@ const nextRoutePathNoBespoke = '/mcp-check/under-500-hours'
 lab.experiment('Existing permit page tests:', () => {
   let mocks
   let sandbox
-  let dataStoreData
 
   lab.beforeEach(() => {
     mocks = new Mocks()
@@ -34,7 +31,6 @@ lab.experiment('Existing permit page tests:', () => {
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
-    sandbox.stub(DataStore, 'get').value(() => dataStoreData)
   })
 
   lab.afterEach(() => {
@@ -51,39 +47,28 @@ lab.experiment('Existing permit page tests:', () => {
         url: routePath,
         headers: {}
       }
-      dataStoreData = undefined
     })
 
     lab.experiment('redirect if mobile', () => {
       lab.test('page redirects to correct location dependant on Moble SG type', async () => {
-        dataStoreData = {
-          data: {
-            permitType: PermitTypes.BESPOKE.id,
-            mcpType: MOBILE_SG.id
-          }
-        }
+        mocks.context.isBespoke = true
+        Object.assign(mocks.mcpType, MOBILE_SG)
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code
           .expect(res.headers['location'])
           .to
           .equal('/mcp-check/air-dispersion-modelling-report')
-        dataStoreData = undefined
       })
       lab.test('page redirects to correct location dependant on Moble SG also MCP type', async () => {
-        dataStoreData = {
-          data: {
-            permitType: PermitTypes.BESPOKE.id,
-            mcpType: MOBILE_SG_AND_MCP.id
-          }
-        }
+        mocks.context.isBespoke = true
+        Object.assign(mocks.mcpType, MOBILE_SG_AND_MCP)
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code
           .expect(res.headers['location'])
           .to
           .equal('/mcp-check/air-dispersion-modelling-report')
-        dataStoreData = undefined
       })
     })
     lab.experiment('success', () => {
@@ -117,14 +102,14 @@ lab.experiment('Existing permit page tests:', () => {
         Code.expect(res.headers['location']).to.equal(nextRoutePathYes)
       })
       lab.test('when standard rule and no selected', async () => {
-        dataStoreData = { data: { permitType: PermitTypes.STANDARD_RULES.id } }
+        mocks.context.isBespoke = false
         postRequest.payload['existing-permit'] = 'no'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePathNoSr)
       })
       lab.test('when bespoke and no selected', async () => {
-        dataStoreData = { data: { permitType: PermitTypes.BESPOKE.id } }
+        mocks.context.isBespoke = true
         postRequest.payload['existing-permit'] = 'no'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)

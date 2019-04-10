@@ -172,7 +172,6 @@ module.exports = class TriageController extends BaseController {
 
   static async saveApplication (request, entityContext, triageData) {
     const application = await Application.getApplicationForId(entityContext)
-    application.setMcpType(triageData.selectedMcpTypes.items[0])
     application.setWasteActivities(triageData.selectedWasteActivities.items)
     application.setWasteAssessments(triageData.selectedOptionalWasteAssessments.items)
     await application.save(entityContext)

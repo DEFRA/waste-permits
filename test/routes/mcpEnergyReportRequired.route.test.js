@@ -12,6 +12,7 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const DataStore = require('../../src/models/dataStore.model')
 const { COOKIE_RESULT } = require('../../src/constants')
+const { MOBILE_SG, STATIONARY_MCP, STATIONARY_SG } = require('../../src/dynamics').MCP_TYPES
 const routePath = '/mcp-check/energy-report'
 
 const nextRoutePath = '/mcp-check/best-available-techniques/sg'
@@ -21,7 +22,7 @@ let dataStoreStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-  mocks.dataStore.data.mcpType = 'stationary-mcp' // Set the mock permit to one that this screen displays for
+  Object.assign(mocks.mcpType, STATIONARY_MCP) // Set the mock permit to one that this screen displays for
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -63,7 +64,7 @@ lab.experiment('Energy efficiency report page tests:', () => {
       })
 
       lab.test('Check we don\'t display this page for mobile sg', async () => {
-        mocks.dataStore.data.mcpType = 'mobile-sg'
+        Object.assign(mocks.mcpType, MOBILE_SG)
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
@@ -71,7 +72,7 @@ lab.experiment('Energy efficiency report page tests:', () => {
         Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(false)
       })
       lab.test('Check we don\'t display this page for stationary sg', async () => {
-        mocks.dataStore.data.mcpType = 'stationary-sg'
+        Object.assign(mocks.mcpType, STATIONARY_SG)
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
@@ -108,7 +109,6 @@ lab.experiment('Energy efficiency report page tests:', () => {
         Code.expect(dataStoreStub.callCount).to.equal(1)
         Code.expect(dataStoreStub.args[0][1].energyEfficiencyReportRequired).to.equal(true)
       })
-
     })
     lab.experiment('Invalid input', async () => {
       lab.test('Missing new or refurbished', async () => {

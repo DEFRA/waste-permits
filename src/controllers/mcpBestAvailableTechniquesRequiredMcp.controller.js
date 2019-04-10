@@ -3,7 +3,7 @@
 const DataStore = require('../models/dataStore.model')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const { MCP_TYPES: { MOBILE_SG, STATIONARY_SG } } = require('../models/triage/triageLists')
+const { MOBILE_SG, STATIONARY_SG } = require('../dynamics').MCP_TYPES
 
 module.exports = class BestAvailableTechniquesRequiredMcpController extends BaseController {
   async doGet (request, h, errors) {
@@ -15,11 +15,11 @@ module.exports = class BestAvailableTechniquesRequiredMcpController extends Base
       return this.redirect({ h })
     }
 
-    // TODO: Confirm if we need to redirect on mobile SG which is also MCP
-    if (dataStore.data.mcpType === MOBILE_SG.id ||
-        dataStore.data.mcpType === STATIONARY_SG.id) {
-      await DataStore.save(context, { bestAvailableTechniquesAssessment: false })
-      return this.redirect({ h })
+    switch (context.mcpType.id) {
+      case MOBILE_SG.id:
+      case STATIONARY_SG.id:
+        await DataStore.save(context, { bestAvailableTechniquesAssessment: false })
+        return this.redirect({ h })
     }
 
     if (request.payload) {
@@ -31,8 +31,12 @@ module.exports = class BestAvailableTechniquesRequiredMcpController extends Base
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const bestAvailableTechniquesAssessment = request.payload['thermal-rating'] === 'over 20' &&
-                                           request.payload['meets-criteria'] === 'yes'
+    const {
+      'thermal-rating': thermalRating,
+      'meets-criteria': meetsCriteria
+    } = request.payload
+
+    const bestAvailableTechniquesAssessment = thermalRating === 'over 20' && meetsCriteria === 'yes'
 
     await DataStore.save(context, { bestAvailableTechniquesAssessment })
     return this.redirect({ h })

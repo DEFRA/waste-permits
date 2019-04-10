@@ -15,6 +15,8 @@ const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/facility-type'
 const nextRoutePath = '/select/bespoke'
+const applyOfflinePath = '/apply-offline/bespoke'
+const mcpPath = '/mcp-type'
 
 let mocks
 let sandbox
@@ -80,7 +82,17 @@ lab.experiment('Facility Type page tests:', () => {
           request.payload['facility-type'] = facilityType
           const res = await server.inject(request)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(`${nextRoutePath}/${facilityType}`)
+          switch (facilityType) {
+            case 'mcp':
+              Code.expect(res.headers['location']).to.equal(mcpPath)
+              break
+            case 'waste':
+              Code.expect(res.headers['location']).to.equal(`${nextRoutePath}/${facilityType}`)
+              break
+            default:
+              Code.expect(res.headers['location']).to.equal(`${applyOfflinePath}/${facilityType}`)
+              break
+          }
         })
       })
     })

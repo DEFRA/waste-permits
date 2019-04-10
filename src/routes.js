@@ -12,14 +12,12 @@ const Routes = {
 
   // TRIAGE
   // ******
-  TRIAGE_MCP_TYPE: {
+  TRIAGE_FACILITY: {
     path: '/select',
     params: ['permitType', 'facilityType'],
-    view: 'triage/mcpType',
-    applyOfflineView: 'triage/applyOffline',
+    view: 'triage/applyOffline',
     pageHeading: 'What is your permit for?',
     controller: 'triage/triage',
-    validator: 'triage/mcpType',
     types: 'GET, POST',
     cookieValidationRequired: true,
     applicationRequired: false
@@ -814,15 +812,6 @@ const Routes = {
     controller: 'applyOffline',
     types: 'GET'
   },
-  BESPOKE_APPLY_OFFLINE: {
-    path: '/bespoke-apply-offline',
-    view: 'bespokeApplyOffline',
-    pageHeading: 'Apply for a bespoke permit',
-    controller: 'bespokeApplyOffline',
-    types: 'GET',
-    cookieValidationRequired: false,
-    applicationRequired: false
-  },
   BESPOKE_OR_STANDARD_RULES: {
     path: '/bespoke-or-standard-rules',
     view: 'bespokeOrStandardRules',
@@ -987,10 +976,20 @@ const Routes = {
     pageHeading: 'What type of facility do you want the permit for?',
     controller: 'facilityType',
     validator: 'facilityType',
-    nextRoute: 'TRIAGE_MCP_TYPE',
+    nextRoute: 'TRIAGE_FACILITY',
     types: 'GET, POST',
-    cookieValidationRequired: true,
-    applicationRequired: false
+    cookieValidationRequired: true
+  },
+  FACILITY_APPLY_OFFLINE: {
+    path: '/apply-offline',
+    params: ['permitType', 'facilityType'],
+    view: 'bespokeApplyOffline',
+    pageHeading: 'Apply for a bespoke permit for an installation, landfill, mine or water discharge',
+    pageDescription: 'You cannot apply online yet for that type of facility. We hope to add them soon.',
+    controller: 'bespokeApplyOffline',
+    nextRoute: 'FACILITY_TYPE',
+    types: 'GET',
+    cookieValidationRequired: true
   },
   FIRE_PREVENTION_PLAN: {
     path: '/fire-prevention-plan',
@@ -1148,6 +1147,17 @@ const Routes = {
     validator: 'mcpEnergyReportRequired',
     nextRoute: 'MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_SG',
     types: 'GET, POST'
+  },
+  MCP_TYPE: {
+    path: '/mcp-type',
+    view: 'mcpType',
+    pageHeading: 'What is your permit for?',
+    controller: 'mcpType',
+    validator: 'mcpType',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST',
+    cookieValidationRequired: true,
+    applicationRequired: false
   },
   MINING_WASTE_WEIGHT: {
     path: '/mining-waste/weight',

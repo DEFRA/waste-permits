@@ -1,7 +1,6 @@
 'use strict'
 
 const config = require('../../config/config')
-const DataStore = require('../../models/dataStore.model')
 const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = require('../../constants').PermitTypes
 
 class BaseTaskList {
@@ -19,8 +18,6 @@ class BaseTaskList {
   }
 
   static async getTaskListClass (context) {
-    const dataStore = await DataStore.get(context)
-    context.permitType = dataStore.data.permitType
     switch (context.permitType) {
       case undefined: // Default to standard rules for missing values as these will pre-date the introduction of bespoke
       case STANDARD_RULES: return require('./standardRules.taskList')

@@ -19,6 +19,7 @@ const StandardRuleType = require('../../src/persistence/entities/standardRuleTyp
 
 const ContactDetail = require('../../src/models/contactDetail.model')
 const CharityDetail = require('../../src/models/charityDetail.model')
+const McpType = require('../../src/models/mcpType.model')
 const DataStore = require('../../src/models/dataStore.model')
 const McpBusinessType = require('../../src/models/mcpBusinessType.model')
 
@@ -218,8 +219,7 @@ class MockData {
 
   get data () {
     return {
-      permitType: Constants.PermitTypes.STANDARD_RULES.id,
-      mcpType: 'MCP_TYPE'
+      permitType: Constants.PermitTypes.STANDARD_RULES.id
     }
   }
 
@@ -250,6 +250,16 @@ class MockData {
 
   get mcpMainBusinessTypesList () {
     return [{ code: '00.01', description: 'Main 1' }]
+  }
+
+  get mcpType () {
+    return {
+      id: 'stationary-mcp',
+      key: '01',
+      text: 'Stationary medium combustion plant (MCP)',
+      isMobile: false,
+      canApplyOnline: true
+    }
   }
 
   get payment () {
@@ -414,6 +424,7 @@ class Mocks {
       const applicationReturn = this.applicationReturn
       const standardRule = this.standardRule
       const permitHolderType = this.permitHolderType
+      const mcpType = this.mcpType
       this._context = {
         authToken: 'AUTH_TOKEN',
         account,
@@ -425,7 +436,10 @@ class Mocks {
         applicationLine,
         applicationReturn,
         permitHolderType,
-        standardRule
+        standardRule,
+        mcpType,
+        permitType: Constants.PermitTypes.STANDARD_RULES.id,
+        isBespoke: false
       }
     }
     return this._context
@@ -453,6 +467,11 @@ class Mocks {
   get mcpMainBusinessTypesList () {
     const { mcpMainBusinessTypesList } = this.mockData
     return this._mcpMainBusinessTypesList || (this._mcpMainBusinessTypesList = mcpMainBusinessTypesList.map((item) => Object.assign({}, item)))
+  }
+
+  get mcpType () {
+    const { mcpType } = this.mockData
+    return this._mcpType || (this._mcpType = new McpType(mcpType))
   }
 
   get needToConsult () {
