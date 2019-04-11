@@ -36,28 +36,25 @@ module.exports = class AirQualityManagementAreaValidator extends BaseValidator {
     const nameCheck = Joi
       .string()
       .max(NAME_LENGTH_MAX)
-      .required()
+      .when('aqma-is-in-aqma', {
+        is: 'yes',
+        then: Joi.required() })
 
     // This has to be validated as a string, otherwise Joi converts our input to a number
     // and Dynamics will only accept values cast as a string, not a number.
     // Therefore we use regex to check for whole numbers in the range 0-100.
     const nitrogenDioxideLevelCheck = Joi
       .string()
-      .required()
       .regex(/^([1-9]?\d|100)$/)
+      .when('aqma-is-in-aqma', {
+        is: 'yes',
+        then: Joi.required() })
 
-    const localAuthorityNameCheck = Joi
-      .string()
-      .max(NAME_LENGTH_MAX)
-      .required()
-
-    return Joi.object({ 'aqma-is-in-aqma': isInAqmaCheck })
-      .when(Joi.object({ 'aqma-is-in-aqma': 'yes' }), {
-        then: Joi.object({
-          'aqma-name': nameCheck,
-          'aqma-nitrogen-dioxide-level': nitrogenDioxideLevelCheck,
-          'aqma-local-authority-name': localAuthorityNameCheck
-        })
-      })
+    return {
+      'aqma-is-in-aqma': isInAqmaCheck,
+      'aqma-name': nameCheck,
+      'aqma-nitrogen-dioxide-level': nitrogenDioxideLevelCheck,
+      'aqma-local-authority-name': nameCheck
+    }
   }
 }

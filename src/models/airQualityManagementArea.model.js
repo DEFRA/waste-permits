@@ -2,11 +2,10 @@
 
 const ApplicationAnswer = require('../persistence/entities/applicationAnswer.entity')
 
-const ID_PREFIX = 'aqma-'
-const IS_IN_AQMA = `${ID_PREFIX}is-in-aqma`
-const AQMA_NAME = `${ID_PREFIX}name`
-const NO2_LEVEL = `${ID_PREFIX}nitrogen-dioxide-level`
-const AUTH_NAME = `${ID_PREFIX}local-authority-name`
+const IS_IN_AQMA = 'aqma-is-in-aqma'
+const AQMA_NAME = 'aqma-name'
+const NO2_LEVEL = 'aqma-nitrogen-dioxide-level'
+const AUTH_NAME = 'aqma-local-authority-name'
 const answerIds = [IS_IN_AQMA, AQMA_NAME, NO2_LEVEL, AUTH_NAME]
 const YES = 'yes'
 const NO = 'no'
@@ -23,22 +22,18 @@ module.exports = class AirQualityManagementArea {
 
     applicationAnswers = [{
       questionCode: IS_IN_AQMA,
-      answerCode: this.isInAqma ? YES : NO,
-      answerText: undefined
+      answerText: this.isInAqma ? YES : NO
     }]
 
     if (this.isInAqma) {
       applicationAnswers.push({
         questionCode: AQMA_NAME,
-        answerCode: undefined,
         answerText: this.name
       }, {
         questionCode: NO2_LEVEL,
-        answerCode: undefined,
         answerText: this.nitrogenDioxideLevel
       }, {
         questionCode: AUTH_NAME,
-        answerCode: undefined,
         answerText: this.localAuthorityName
       })
     }
@@ -59,7 +54,7 @@ module.exports = class AirQualityManagementArea {
     const localAuthorityNameAnswer = applicationAnswers.find(({ questionCode }) => questionCode === AUTH_NAME)
 
     const aqma = {
-      isInAqma: isInAqmaAnswer && isInAqmaAnswer.answerCode === true,
+      isInAqma: isInAqmaAnswer && isInAqmaAnswer.answerText === YES,
       name: nameAnswer && nameAnswer.answerText,
       nitrogenDioxideLevel: nitrogenDioxideLevelAnswer && nitrogenDioxideLevelAnswer.answerText,
       localAuthorityName: localAuthorityNameAnswer && localAuthorityNameAnswer.answerText

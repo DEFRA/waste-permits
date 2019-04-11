@@ -7,13 +7,10 @@ module.exports = class AirQualityManagementArea extends BaseTask {
   static async checkComplete (context) {
     const aqma = await AirQualityManagementAreaModel.get(context)
 
-    if (Object.keys(aqma).length === 0) {
-      return false
-    }
-
     return Boolean(
       (
-        !aqma.isInAqma || (
+        aqma.isInAqma === false || (
+          aqma.isInAqma &&
           aqma.name &&
           aqma.nitrogenDioxideLevel &&
           aqma.localAuthorityName
