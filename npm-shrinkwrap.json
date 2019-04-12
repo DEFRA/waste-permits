@@ -5923,7 +5923,7 @@
         "catbox-memory": {
           "version": "4.0.1",
           "resolved": "https://registry.npmjs.org/catbox-memory/-/catbox-memory-4.0.1.tgz",
-          "integrity": "sha512-ZmqNiLsYCIu9qvBJ/MQbznDV2bFH5gFiH67TgIJgSSffJFtTXArT+MM3AvJQlby9NSkLHOX4eH/uuUqnch/Ldw==",
+          "integrity": "sha512-1tDnll066au0HXBSDHS/YQ34MQ2omBsmnA9g/jseyq/M3m7UPrajVtPDZK/rXgikSC1dfjo9Pa+kQ1qcyG2d3g==",
           "requires": {
             "boom": "7.x.x",
             "hoek": "6.x.x"
