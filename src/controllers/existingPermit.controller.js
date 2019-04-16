@@ -7,7 +7,7 @@ const { MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
 
 module.exports = class ExistingPermitController extends BaseController {
   async doGet (request, h, errors) {
-    const { mcpType, isBespoke } = await RecoveryService.createApplicationContext(h)
+    const { mcpType = {}, isBespoke } = await RecoveryService.createApplicationContext(h)
 
     if (isBespoke) {
       switch (mcpType.id) {

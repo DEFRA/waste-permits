@@ -47,7 +47,7 @@ const createWasteAssessmentLine = async (entityContext, wasteAssessmentId) => {
 }
 
 module.exports = class Application {
-  constructor ({ id, permitHolderType, mcpTypes, wasteActivities, wasteAssessments }) {
+  constructor ({ id, permitHolderType, wasteActivities, wasteAssessments }) {
     this.id = id
     this.permitHolderType = permitHolderType
     this.wasteActivities = wasteActivities

@@ -12,7 +12,8 @@ module.exports = class AirDispersionModellingController extends BaseController {
     // Do not show the page for some MCP types
     // TODO: Not sure yet whether to show the page or not to MOBILE_SG_AND_MCP
     const context = await RecoveryService.createApplicationContext(h)
-    switch (context.mcpType.id) {
+    const { mcpType = {} } = context
+    switch (mcpType.id) {
       case MOBILE_SG.id:
       case MOBILE_SG_AND_MCP.id:
         // Set the airDispersionModellingRequired to false and redirect to the next page

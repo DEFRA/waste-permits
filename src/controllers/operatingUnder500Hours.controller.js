@@ -14,8 +14,8 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
     const pageContext = this.createPageContext(h, errors)
 
     // Do not show the page for some MCP types
-    const context = await RecoveryService.createApplicationContext(h)
-    switch (context.mcpType.id) {
+    const { mcpType = {} } = await RecoveryService.createApplicationContext(h)
+    switch (mcpType.id) {
       case STATIONARY_SG.id:
       case MOBILE_SG.id:
       case MOBILE_SG_AND_MCP.id:

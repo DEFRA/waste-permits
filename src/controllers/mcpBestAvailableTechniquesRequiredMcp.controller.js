@@ -15,7 +15,8 @@ module.exports = class BestAvailableTechniquesRequiredMcpController extends Base
       return this.redirect({ h })
     }
 
-    switch (context.mcpType.id) {
+    const { mcpType = {} } = context
+    switch (mcpType.id) {
       case MOBILE_SG.id:
       case STATIONARY_SG.id:
         await DataStore.save(context, { bestAvailableTechniquesAssessment: false })

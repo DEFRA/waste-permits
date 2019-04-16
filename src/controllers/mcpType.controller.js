@@ -13,8 +13,8 @@ const mcpTypes = Object.keys(MCP_TYPES).map((mcpType) => MCP_TYPES[mcpType])
 
 module.exports = class McpTypeController extends BaseController {
   async doGet (request, h, errors) {
-    const { mcpType } = await RecoveryService.createApplicationContext(h)
-    const { id: mcpTypeId } = mcpType || {}
+    const { mcpType = {} } = await RecoveryService.createApplicationContext(h)
+    const { id: mcpTypeId } = mcpType
     const pageContext = this.createPageContext(h, errors)
 
     pageContext.mcpTypes = mcpTypes.map((mcpType) => Object.assign(mcpType, { selected: mcpType.id === mcpTypeId }))
@@ -26,7 +26,7 @@ module.exports = class McpTypeController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
     const { 'mcp-type': mcpTypeId } = request.payload
 
-    const mcpType = await McpType.get(context)
+    const mcpType = await McpType.get(context) || new McpType()
     mcpType.id = mcpTypeId
     await mcpType.save(context)
 

@@ -10,8 +10,8 @@ module.exports = class BestAvailableTechniquesRequiredSgController extends BaseC
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
 
-    // TODO: Confirm if we need to redirect on mobile SG which is also MCP
-    switch (context.mcpType.id) {
+    const { mcpType = {} } = context
+    switch (mcpType.id) {
       case MOBILE_SG.id:
       case STATIONARY_MCP.id:
         await DataStore.save(context, { bestAvailableTechniquesAssessment: false })
