@@ -4,11 +4,7 @@ const BaseController = require('./base.controller')
 const Routes = require('../routes')
 const RecoveryService = require('../services/recovery.service')
 const DataStore = require('../models/dataStore.model')
-const { MCP_TYPES: {
-  STATIONARY_SG,
-  MOBILE_SG,
-  MOBILE_SG_AND_MCP
-} } = require('../models/triage/triageLists')
+const { STATIONARY_SG, MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
 
 module.exports = class OperatingUnder500HoursController extends BaseController {
   async doGet (request, h, errors) {
@@ -16,11 +12,11 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
 
     // Do not show the page for some MCP types
     const context = await RecoveryService.createApplicationContext(h)
-    const { data: { mcpType } } = await DataStore.get(context)
-    if (mcpType === STATIONARY_SG.id ||
-      mcpType === MOBILE_SG.id ||
-      mcpType === MOBILE_SG_AND_MCP.id) {
-      return this.redirect({ h })
+    switch (context.mcpType.id) {
+      case STATIONARY_SG.id:
+      case MOBILE_SG.id:
+      case MOBILE_SG_AND_MCP.id:
+        return this.redirect({ h })
     }
 
     return this.showView({ h, pageContext })

@@ -3,20 +3,18 @@
 const DataStore = require('../models/dataStore.model')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const { MCP_TYPES: { MOBILE_SG, STATIONARY_SG } } = require('../models/triage/triageLists')
+const { MOBILE_SG, STATIONARY_SG } = require('../dynamics').MCP_TYPES
 
 module.exports = class EnergyReportRequiredController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
-    const dataStore = await DataStore.get(context)
 
-    if (
-      dataStore.data.mcpType === MOBILE_SG.id ||
-      dataStore.data.mcpType === STATIONARY_SG.id
-    ) {
-      await DataStore.save(context, { energyEfficiencyReportRequired: false })
-      return this.redirect({ h })
+    switch (context.mcpType.id) {
+      case MOBILE_SG.id:
+      case STATIONARY_SG.id:
+        await DataStore.save(context, { energyEfficiencyReportRequired: false })
+        return this.redirect({ h })
     }
 
     if (request.payload) {

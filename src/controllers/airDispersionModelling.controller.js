@@ -3,7 +3,7 @@
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const DataStore = require('../models/dataStore.model')
-const { MCP_TYPES: { STATIONARY_MCP, MOBILE_SG, MOBILE_SG_AND_MCP } } = require('../models/triage/triageLists')
+const { STATIONARY_MCP, MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
 
 module.exports = class AirDispersionModellingController extends BaseController {
   async doGet (request, h, errors) {
@@ -12,9 +12,7 @@ module.exports = class AirDispersionModellingController extends BaseController {
     // Do not show the page for some MCP types
     // TODO: Not sure yet whether to show the page or not to MOBILE_SG_AND_MCP
     const context = await RecoveryService.createApplicationContext(h)
-    const { data: { mcpType } } = await DataStore.get(context)
-
-    switch (mcpType) {
+    switch (context.mcpType.id) {
       case MOBILE_SG.id:
       case MOBILE_SG_AND_MCP.id:
         // Set the airDispersionModellingRequired to false and redirect to the next page

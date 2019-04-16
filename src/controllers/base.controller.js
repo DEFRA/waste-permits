@@ -96,14 +96,15 @@ module.exports = class BaseController {
     }
   }
 
-  redirect (params) {
+  redirect (options) {
     let {
       h,
       route = this.route.nextRoute,
-      path = (typeof route === 'string' ? Routes[route].path : route.path),
+      params,
+      path = (typeof route === 'string' ? Routes[route].path : route.path) + (params && params.length ? `/${params.join('/')}` : ''),
       cookie,
       error
-    } = allowedParameters(params, ['path', 'route', 'h', 'cookie', 'error'])
+    } = allowedParameters(options, ['path', 'params', 'route', 'h', 'cookie', 'error'])
 
     if (!cookie) {
       cookie = h.request.state[Constants.DEFRA_COOKIE_KEY]

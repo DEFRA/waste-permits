@@ -2,8 +2,6 @@
 
 const BaseController = require('../base.controller')
 const Application = require('../../models/triage/application.model')
-const ApplicationAnswer = require('../../persistence/entities/applicationAnswer.entity')
-const { questionCode } = require('../../dynamics').ApplicationQuestions.MCP_PERMIT_TYPES
 const RecoveryService = require('../../services/recovery.service')
 const DataStore = require('../../models/dataStore.model')
 
@@ -16,11 +14,6 @@ module.exports = class CreateApplicationLinesController extends BaseController {
     // Get the existing application from Dynamics
     // This includes the existing application.wasteActivities
     const application = await Application.getApplicationForId(context)
-
-    // Retrieve the MCP Type from the datastore and store in Dynamics application answers
-    const applicationAnswer = new ApplicationAnswer({ questionCode })
-    applicationAnswer.answerCode = dataStoreData.mcpType
-    await applicationAnswer.save(context)
 
     // Set the MCP activity
     const activitiesArray = []

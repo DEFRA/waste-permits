@@ -3,10 +3,9 @@
 const BaseController = require('./base.controller')
 const McpTemplate = require('../models/taskList/mcpTemplate.task')
 const RecoveryService = require('../services/recovery.service')
-const DataStore = require('../models/dataStore.model')
 const Constants = require('../constants')
 const { BESPOKE, STANDARD_RULES } = Constants.PermitTypes
-const { MCP_TYPES: { STATIONARY_MCP, STATIONARY_SG, STATIONARY_MCP_AND_SG, MOBILE_SG, MOBILE_SG_AND_MCP } } = require('../models/triage/triageLists')
+const { STATIONARY_MCP, STATIONARY_SG, STATIONARY_MCP_AND_SG, MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
 let templatesStandardRules = [
   { id: 'mcp-template-xls-link', name: 'Plant or generator list template (Excel XLS)', file: 'mcp-plant-generator-list-template-v0-1.xls' },
   { id: 'mcp-template-ods-link', name: 'Plant or generator list template (Open Document ODS)', file: 'mcp-plant-generator-list-template-v0-1.ods' }
@@ -21,14 +20,13 @@ let templatesBespokeAppendix2 = [
 ]
 
 module.exports = class McpTemplateController extends BaseController {
-  async getTemplates (context) {
+  async getTemplates ({ permitType, mcpType = {} }) {
     // There are different templates, so show the template downloads relevant to this application
-    const { data: { permitType, mcpType } } = await DataStore.get(context)
     switch (permitType) {
       case STANDARD_RULES.id:
         return templatesStandardRules
       case BESPOKE.id:
-        switch (mcpType) {
+        switch (mcpType.id) {
           case STATIONARY_MCP.id:
           case STATIONARY_MCP_AND_SG.id:
           case MOBILE_SG_AND_MCP.id:
@@ -37,7 +35,7 @@ module.exports = class McpTemplateController extends BaseController {
           case MOBILE_SG.id:
             return templatesBespokeAppendix2
           default:
-            throw new Error(`Unexpected mcpType: ${mcpType}`)
+            throw new Error(`Unexpected mcpType: ${mcpType.id}`)
         }
       default:
         throw new Error(`Unexpected permitType: ${permitType}`)

@@ -10,16 +10,7 @@ const RecoveryService = require('../services/recovery.service')
 const DataStore = require('../models/dataStore.model')
 const ApplicationCostItem = require('../models/triage/applicationCostItem.model')
 
-const { MCP_TYPES } = require('../../src/models/triage/triageLists')
-
 module.exports = class TaskListController extends BaseController {
-  static getMcpType (mcpTypeId) {
-    return Object.keys(MCP_TYPES)
-      .filter((item) => MCP_TYPES[item].id === mcpTypeId)
-      .map((item) => MCP_TYPES[item])
-      .pop()
-  }
-
   async doGet (request, h, errors, firstTimeIn = true) {
     const context = await RecoveryService.createApplicationContext(h)
     const TaskList = await BaseTaskList.getTaskListClass(context)
@@ -42,13 +33,13 @@ module.exports = class TaskListController extends BaseController {
     } else {
       const dataStore = await DataStore.get(context)
 
-      const { airDispersionModellingRequired, mcpType } = dataStore.data
+      const { airDispersionModellingRequired } = dataStore.data
 
       pageContext.activityName = airDispersionModellingRequired
         ? 'Medium combustion plant site - requires dispersion modelling'
         : 'Medium combustion plant site - does not require dispersion modelling'
 
-      pageContext.mcpType = TaskListController.getMcpType(mcpType)
+      pageContext.mcpType = context.mcpType
 
       pageContext.totalCostIem = new ApplicationCostItem({
         description: 'Total',

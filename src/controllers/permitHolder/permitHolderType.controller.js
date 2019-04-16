@@ -3,10 +3,11 @@
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
 
-const { MCP_TYPE_LIST } = require('../../models/triage/triageLists')
-const { PERMIT_HOLDER_TYPES } = require('../../dynamics')
+const { MCP_TYPES, PERMIT_HOLDER_TYPES } = require('../../dynamics')
 const { PERMIT_HOLDER_DETAILS } = require('../../routes')
 const { MOBILE_GENERATOR_0_TO_20_MW } = require('../../constants').PermitTypes.STANDARD_RULES
+
+const mcpTypes = Object.keys(MCP_TYPES).map((mcpType) => MCP_TYPES[mcpType])
 
 module.exports = class PermitHolderTypeController extends BaseController {
   static getHolderTypes (application, charityPermitHolder) {
@@ -30,7 +31,7 @@ module.exports = class PermitHolderTypeController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
     const { application, charityDetail = {}, standardRule = {}, mcpType } = await RecoveryService.createApplicationContext(h, { standardRule: true })
-    const isMobile = Boolean(MCP_TYPE_LIST.find(({ id, isMobile }) => mcpType === id && isMobile))
+    const isMobile = Boolean(mcpTypes.find(({ id, isMobile }) => mcpType.id === id && isMobile))
     pageContext.mobileGenerator = isMobile || standardRule.code === MOBILE_GENERATOR_0_TO_20_MW
     pageContext.holderTypes = PermitHolderTypeController.getHolderTypes(application, charityDetail.charityPermitHolder)
     return this.showView({ h, pageContext })

@@ -14,11 +14,10 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 const DataStore = require('../../src/models/dataStore.model')
-const { MCP_TYPES: { STATIONARY_MCP, STATIONARY_SG, MOBILE_SG } } = require('../../src/models/triage/triageLists')
+const { STATIONARY_MCP, STATIONARY_SG, MOBILE_SG } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp-check/air-dispersion-modelling-report'
 const nextRoutePath = '/mcp-check/energy-report'
-const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks
@@ -71,20 +70,20 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       })
 
       lab.test('Check the links are correct when the type is a stationary mcp', async () => {
-        mocks.dataStore.data.mcpType = STATIONARY_MCP.id
+        Object.assign(mocks.mcpType, STATIONARY_MCP)
         const doc = await GeneralTestHelper.getDoc(getRequest)
         Code.expect(doc.getElementById('stationary-mcp-risk-assessment-tool-link').getAttribute('href')).to.equal('https://www.gov.uk/government/collections/risk-assessments-for-specific-activities-environmental-permits#H1-software-tool')
       })
 
       lab.test('Check the links are correct when the type is a stationary sg', async () => {
-        mocks.dataStore.data.mcpType = STATIONARY_SG.id
+        Object.assign(mocks.mcpType, STATIONARY_SG)
         const doc = await GeneralTestHelper.getDoc(getRequest)
         Code.expect(doc.getElementById('stationary-sg-risk-assessment-tool-link').getAttribute('href')).to.equal('https://www.gov.uk/government/collections/risk-assessments-for-specific-activities-environmental-permits#H1-software-tool')
         Code.expect(doc.getElementById('specified-screening-tool-link').getAttribute('href')).to.equal('')
       })
 
       lab.test('Check the page is not displayed for certain mcp types', async () => {
-        mocks.dataStore.data.mcpType = MOBILE_SG.id // Set the mock mcp type so the screen does NOT display
+        Object.assign(mocks.mcpType, MOBILE_SG) // Set the mock mcp type so the screen does NOT display
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)

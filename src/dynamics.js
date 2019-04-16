@@ -217,6 +217,43 @@ const Dynamics = {
       canApplyOnline: false
     }
   },
+  MCP_TYPES: {
+    STATIONARY_MCP: {
+      id: 'stationary-mcp',
+      key: '01',
+      text: 'Stationary medium combustion plant (MCP)',
+      isMobile: false,
+      canApplyOnline: true
+    },
+    STATIONARY_SG: {
+      id: 'stationary-sg',
+      key: '02',
+      text: 'Stationary specified generator (SG)',
+      isMobile: false,
+      canApplyOnline: true
+    },
+    STATIONARY_MCP_AND_SG: {
+      id: 'stationary-mcp-sg',
+      key: '03',
+      text: 'Stationary MCP which is also an SG',
+      isMobile: false,
+      canApplyOnline: true
+    },
+    MOBILE_SG: {
+      id: 'mobile-sg',
+      key: '04',
+      text: 'Mobile SG',
+      isMobile: true,
+      canApplyOnline: true
+    },
+    MOBILE_SG_AND_MCP: {
+      id: 'mobile-sg-mcp',
+      key: '05',
+      text: 'Mobile SG which is also an MCP',
+      isMobile: true,
+      canApplyOnline: true
+    }
+  },
   MiningWastePlans: {
     WATER_BASED: {
       id: 'water-based',

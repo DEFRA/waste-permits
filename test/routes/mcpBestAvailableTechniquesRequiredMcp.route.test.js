@@ -12,6 +12,7 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const DataStore = require('../../src/models/dataStore.model')
 const { COOKIE_RESULT } = require('../../src/constants')
+const { MOBILE_SG, STATIONARY_MCP } = require('../../src/dynamics').MCP_TYPES
 const routePath = '/mcp-check/best-available-techniques/mcp'
 
 const nextRoutePath = '/mcp-check/habitat-assessment'
@@ -21,7 +22,7 @@ let dataStoreStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-  mocks.dataStore.data.mcpType = 'stationary-mcp' // Set the mock permit to one that this screen displays for
+  Object.assign(mocks.mcpType, STATIONARY_MCP) // Set the mock permit to one that this screen displays for
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -72,7 +73,7 @@ lab.experiment('Best available techniques report required for MCP tests:', () =>
       })
 
       lab.test('Check we don\'t display this page for certain permit types', async () => {
-        mocks.dataStore.data.mcpType = 'mobile-sg' // Set the mock permit to one that this screen doesn't display for
+        Object.assign(mocks.mcpType, MOBILE_SG) // Set the mock permit to one that this screen doesn't display for
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)

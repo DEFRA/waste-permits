@@ -15,6 +15,7 @@ const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const PermitHolderTypeController = require('../../../src/controllers/permitHolder/permitHolderType.controller')
 const { COOKIE_RESULT } = require('../../../src/constants')
+const { MCP_TYPES } = require('../../../src/dynamics')
 
 const routePath = '/permit-holder/type'
 const nextRoutePath = '/permit-holder/details'
@@ -89,16 +90,11 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
         })
       })
 
-      const mcpTypes = [
-        { mcpType: 'stationary-mcp', isMobile: false },
-        { mcpType: 'stationary-sg', isMobile: false },
-        { mcpType: 'stationary-mcp-sg', isMobile: false },
-        { mcpType: 'mobile-sg-mcp', isMobile: true },
-        { mcpType: 'mobile-sg', isMobile: true }
-      ]
+      const mcpTypes = Object.keys(MCP_TYPES).map((mcpType) => MCP_TYPES[mcpType])
 
-      mcpTypes.forEach(({ mcpType, isMobile }) => {
-        lab.test(`should ${isMobile ? 'include' : 'omit'} the mobile generator text when the mcpType is ${mcpType}`, async () => {
+      mcpTypes.forEach((mcpType) => {
+        const { id, isMobile } = mcpType
+        lab.test(`should ${isMobile ? 'include' : 'omit'} the mobile generator text when the mcpType is ${id}`, async () => {
           mocks.context.mcpType = mcpType
           const doc = await GeneralTestHelper.getDoc(getRequest)
           if (isMobile) {

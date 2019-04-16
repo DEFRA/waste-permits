@@ -16,13 +16,13 @@ const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 const DataStore = require('../../src/models/dataStore.model')
 
-const { MCP_TYPES: {
+const {
   STATIONARY_MCP,
   STATIONARY_SG,
   STATIONARY_MCP_AND_SG,
   MOBILE_SG,
   MOBILE_SG_AND_MCP
-} } = require('../../src/models/triage/triageLists')
+} = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp-check/under-500-hours'
 const yesRoutePath = '/selected/create-application-lines'
@@ -35,7 +35,7 @@ let dataStoreStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-  mocks.dataStore.data.mcpType = STATIONARY_MCP.id // Set the mock mcp type so the screen displays
+  Object.assign(mocks.mcpType, STATIONARY_MCP) // Set the mock mcp type so the screen displays
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -74,8 +74,8 @@ lab.experiment('Operating under 500 hours page tests:', () => {
           STATIONARY_MCP,
           STATIONARY_MCP_AND_SG
         ]
-        for (const element of mcpTestTypes) {
-          mocks.dataStore.data.mcpType = element.id // Set the mock mcp type so the screen will display
+        for (const mcpType of mcpTestTypes) {
+          Object.assign(mocks.mcpType, mcpType) // Set the mock mcp type so the screen will display
           const doc = await GeneralTestHelper.getDoc(getRequest)
           Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Will your MCP operate for less than 500 hours a year?')
           Code.expect(doc.getElementById('back-link')).to.exist()
@@ -92,8 +92,8 @@ lab.experiment('Operating under 500 hours page tests:', () => {
           STATIONARY_SG,
           MOBILE_SG_AND_MCP
         ]
-        for (const element of mcpTestTypes) {
-          mocks.dataStore.data.mcpType = element.id // Set the mock mcp type so the screen does NOT display
+        for (const mcpType of mcpTestTypes) {
+          Object.assign(mocks.mcpType, mcpType) // Set the mock mcp type so the screen does NOT display
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(noRoutePath)

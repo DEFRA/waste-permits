@@ -14,7 +14,7 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 const DataStore = require('../../src/models/dataStore.model')
-const { MCP_TYPES: { MOBILE_SG } } = require('../../src/models/triage/triageLists')
+const { MOBILE_SG } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp-check/habitat-assessment'
 const nextRoutePath = '/selected/create-application-lines'
@@ -74,7 +74,7 @@ lab.experiment('Habitat assessment page tests:', () => {
       })
 
       lab.test('Check the page is not displayed for certain mcp types', async () => {
-        mocks.dataStore.data.mcpType = MOBILE_SG.id // Set the mock mcp type so the screen does NOT display
+        Object.assign(mocks.mcpType, MOBILE_SG) // Set the mock mcp type so the screen does NOT display
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)

@@ -1,29 +1,22 @@
 'use strict'
 
 const BaseController = require('./base.controller')
-const DataStore = require('../models/dataStore.model')
 const RecoveryService = require('../services/recovery.service')
-const { BESPOKE: { id: BESPOKE } } = require('../../src/constants').PermitTypes
-const { MCP_TYPES: { MOBILE_SG, MOBILE_SG_AND_MCP } } = require('../models/triage/triageLists')
+const { MCP_AIR_DISPERSION_MODELLING, MCP_HAS_EXISTING_PERMIT, MCP_UNDER_500_HOURS, TASK_LIST } = require('../routes')
+const { MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
 
 module.exports = class ExistingPermitController extends BaseController {
   async doGet (request, h, errors) {
-    const context = await RecoveryService.createApplicationContext(h)
-    const dataStore = await DataStore.get(context)
-    let data
-    if (dataStore) {
-      data = dataStore.data
+    const { mcpType, isBespoke } = await RecoveryService.createApplicationContext(h)
+
+    if (isBespoke) {
+      switch (mcpType.id) {
+        case MOBILE_SG.id:
+        case MOBILE_SG_AND_MCP.id:
+          return this.redirect({ h, route: MCP_AIR_DISPERSION_MODELLING })
+      }
     }
-    // if the mcp type is mobile:
-    //   no need to worry about existing application
-    //   so jump to air dispersion steps
-    if (
-      data &&
-      data.permitType === BESPOKE &&
-      (data.mcpType === MOBILE_SG.id || data.mcpType === MOBILE_SG_AND_MCP.id)
-    ) {
-      return this.redirect({ h, route: 'MCP_AIR_DISPERSION_MODELLING' })
-    }
+
     const pageContext = this.createPageContext(h, errors)
 
     return this.showView({ h, pageContext })
@@ -33,15 +26,14 @@ module.exports = class ExistingPermitController extends BaseController {
     const { 'existing-permit': existingPermit } = request.payload
 
     if (existingPermit === 'yes') {
-      return this.redirect({ h, route: 'MCP_HAS_EXISTING_PERMIT' })
+      return this.redirect({ h, route: MCP_HAS_EXISTING_PERMIT })
     }
 
-    const context = await RecoveryService.createApplicationContext(h)
-    const dataStore = await DataStore.get(context)
-    if (dataStore.data.permitType === BESPOKE) {
-      return this.redirect({ h, route: 'MCP_UNDER_500_HOURS' })
+    const { isBespoke } = await RecoveryService.createApplicationContext(h)
+    if (isBespoke) {
+      return this.redirect({ h, route: MCP_UNDER_500_HOURS })
     } else {
-      return this.redirect({ h, route: 'TASK_LIST' })
+      return this.redirect({ h, route: TASK_LIST })
     }
   }
 }
