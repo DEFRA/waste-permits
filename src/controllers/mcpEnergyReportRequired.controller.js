@@ -10,7 +10,8 @@ module.exports = class EnergyReportRequiredController extends BaseController {
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
 
-    switch (context.mcpType.id) {
+    const { mcpType = {} } = context
+    switch (mcpType.id) {
       case MOBILE_SG.id:
       case STATIONARY_SG.id:
         await DataStore.save(context, { energyEfficiencyReportRequired: false })

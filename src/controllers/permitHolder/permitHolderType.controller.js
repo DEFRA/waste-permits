@@ -30,7 +30,7 @@ module.exports = class PermitHolderTypeController extends BaseController {
 
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const { application, charityDetail = {}, standardRule = {}, mcpType } = await RecoveryService.createApplicationContext(h, { standardRule: true })
+    const { application, charityDetail = {}, standardRule = {}, mcpType = {} } = await RecoveryService.createApplicationContext(h, { standardRule: true })
     const isMobile = Boolean(mcpTypes.find(({ id, isMobile }) => mcpType.id === id && isMobile))
     pageContext.mobileGenerator = isMobile || standardRule.code === MOBILE_GENERATOR_0_TO_20_MW
     pageContext.holderTypes = PermitHolderTypeController.getHolderTypes(application, charityDetail.charityPermitHolder)

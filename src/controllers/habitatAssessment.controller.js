@@ -11,7 +11,8 @@ module.exports = class HabitatAssessmentController extends BaseController {
 
     // Do not show the page for some MCP types
     const context = await RecoveryService.createApplicationContext(h)
-    switch (context.mcpType.id) {
+    const { mcpType = {} } = context
+    switch (mcpType.id) {
       case MOBILE_SG.id:
       case MOBILE_SG_AND_MCP.id:
       // Set the habitatAssessmentRequired to false and redirect to the next page
