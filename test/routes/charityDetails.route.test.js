@@ -29,8 +29,6 @@ let getRequest
 let postRequest
 let mocks
 
-let accountStub
-
 lab.beforeEach(() => {
   mocks = new Mocks()
 
@@ -58,7 +56,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'save').value(() => mocks.application.id)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  accountStub = sandbox.stub(Account.prototype, 'save').value(() => mocks.account.id)
+  sandbox.stub(Account.prototype, 'save').value(() => mocks.account.id)
   sandbox.stub(CharityDetail, 'get').value(() => mocks.charityDetail)
   sandbox.stub(CharityDetail.prototype, 'save').value(() => undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)

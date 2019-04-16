@@ -360,6 +360,11 @@ class Mocks {
       }))
   }
 
+  get applicationAnswer () {
+    const { applicationAnswer } = this.mockData
+    return this._applicationAnswer || (this._applicationAnswer = new ApplicationAnswer(applicationAnswer))
+  }
+
   get applicationAnswers () {
     const { applicationAnswer } = this.mockData
     return this._applicationAnswers || (this._applicationAnswers = [

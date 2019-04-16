@@ -19,7 +19,9 @@ module.exports = class McpType {
 
   static async get (context) {
     const { answerCode } = await ApplicationAnswer.getByQuestionCode(context, questionCode) || {}
-    const mcpType = mcpTypes.find(({ id }) => id === answerCode) || {}
-    return new McpType(mcpType)
+    const mcpType = mcpTypes.find(({ id }) => id === answerCode)
+    if (mcpType) {
+      return new McpType(mcpType)
+    }
   }
 }
