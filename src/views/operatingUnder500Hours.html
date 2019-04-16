@@ -46,14 +46,14 @@
 
             {{> common/fieldError fieldId='operating-under-500-hours-error' message=errors.operating-under-500-hours }}
             <div class="multiple-choice">
-              <input id="operating-under-500-hours-yes" type="radio" name="operating-under-500-hours" value="yes">
+              <input id="operating-under-500-hours-yes" type="radio" name="operating-under-500-hours" value="yes"{{#if formValues.operating-under-500-hours}} checked="checked"{{/if}}>
               <label id="operating-under-500-hours-yes-label" for="operating-under-500-hours-yes">
                 Yes, I declare that we will operate for less than 500 hours a year on average and meet the conditions to be exempt from ELV.
               </label>
             </div>
 
             <div class="multiple-choice">
-              <input id="operating-under-500-hours-no" type="radio" name="operating-under-500-hours" value="no">
+              <input id="operating-under-500-hours-no" type="radio" name="operating-under-500-hours" value="no"{{#if formValues.operating-under-500-hours-no}} checked="checked"{{/if}}>
               <label id="operating-under-500-hours-no-label" for="operating-under-500-hours-no">
                 No, we will operate for more than 500 hours a year.
               </label>

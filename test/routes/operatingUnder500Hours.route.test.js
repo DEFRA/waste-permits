@@ -16,6 +16,8 @@ const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 const DataStore = require('../../src/models/dataStore.model')
 
+const OperatingUnder500Hours = require('../../src/models/operatingUnder500Hours.model')
+
 const {
   STATIONARY_MCP,
   STATIONARY_SG,
@@ -41,6 +43,9 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
+  sandbox.stub(OperatingUnder500Hours, 'get').callsFake(async () => mocks.operatingUnder500Hours)
+  sandbox.stub(OperatingUnder500Hours.prototype, 'save').callsFake(async () => undefined)
+
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
@@ -86,18 +91,20 @@ lab.experiment('Operating under 500 hours page tests:', () => {
         }
       })
 
-      lab.test('Check the page is not displayed for certain mcp types', async () => {
-        const mcpTestTypes = [
-          MOBILE_SG,
-          STATIONARY_SG,
-          MOBILE_SG_AND_MCP
-        ]
-        for (const mcpType of mcpTestTypes) {
+      const mcpTypes = [
+        MOBILE_SG,
+        STATIONARY_SG,
+        MOBILE_SG_AND_MCP
+      ]
+
+      mcpTypes.forEach((mcpType) => {
+        const { id } = mcpType
+        lab.test(`Check the page is not displayed for MCP type ${id}`, async () => {
           Object.assign(mocks.mcpType, mcpType) // Set the mock mcp type so the screen does NOT display
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(noRoutePath)
-        }
+        })
       })
     })
 
@@ -124,7 +131,9 @@ lab.experiment('Operating under 500 hours page tests:', () => {
         method: 'POST',
         url: routePath,
         headers: {},
-        payload: {}
+        payload: {
+          'operating-under-500-hours': 'yes'
+        }
       }
     })
 
