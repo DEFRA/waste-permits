@@ -1,7 +1,7 @@
 # Waste Permits Service
 
 [![Build Status](https://travis-ci.org/DEFRA/waste-permits.svg?branch=master)](https://travis-ci.org/DEFRA/waste-permits)
-[[![Known Vulnerabilities](https://snyk.io/test/github/defra/waste-permits/badge.svg)](https://snyk.io/test/github/defra/waste-permits)
+[![Known Vulnerabilities](https://snyk.io/test/github/defra/waste-permits/badge.svg)](https://snyk.io/test/github/defra/waste-permits)
 [![dependencies Status](https://david-dm.org/defra/waste-permits/status.svg)](https://david-dm.org/defra/waste-permits)
 [![Code Climate](https://codeclimate.com/github/DEFRA/waste-permits/badges/gpa.svg)](https://codeclimate.com/github/DEFRA/waste-permits)
 [![Test Coverage](https://codeclimate.com/github/DEFRA/waste-permits/badges/coverage.svg)](https://codeclimate.com/github/DEFRA/waste-permits/coverage)
