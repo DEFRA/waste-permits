@@ -28,6 +28,7 @@ const ApplicationCostItemModel = require('../../src/models/triage/applicationCos
 
 const NeedToConsult = require('../../src/models/needToConsult.model')
 const AirQualityManagementArea = require('../../src/models/airQualityManagementArea.model')
+const OperatingUnder500Hours = require('../../src/models/operatingUnder500Hours.model')
 
 // ************* Data used by exported mocks ************* //
 class MockData {
@@ -485,6 +486,10 @@ class Mocks {
 
   get airQualityManagementArea () {
     return this._airQualityManagementArea || (this._airQualityManagementArea = new AirQualityManagementArea())
+  }
+
+  get operatingUnder500Hours () {
+    return this._operatingUnder500Hours || (this._operatingUnder500Hours = new OperatingUnder500Hours())
   }
 
   get payment () {

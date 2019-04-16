@@ -4,7 +4,10 @@ const BaseController = require('./base.controller')
 const Routes = require('../routes')
 const RecoveryService = require('../services/recovery.service')
 const DataStore = require('../models/dataStore.model')
+const OperatingUnder500HoursModel = require('../models/operatingUnder500Hours.model')
+
 const { STATIONARY_SG, MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
+const YES = 'yes'
 
 module.exports = class OperatingUnder500HoursController extends BaseController {
   async doGet (request, h, errors) {
@@ -19,19 +22,40 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
         return this.redirect({ h })
     }
 
+    const under500Hours = await OperatingUnder500HoursModel.get(context)
+
+    // we set a separate no variable as Handlebars only allow us to check whether a variable equates to true/false
+    // which causes problems as we can't differentiate between 'operating-under-500-hours is false' (ie. No was selected)
+    // and 'operating-under-500-hours is undefined' (ie. nothing has been selected yet)
+    pageContext.formValues = {
+      'operating-under-500-hours': under500Hours.operatingUnder500Hours,
+      'operating-under-500-hours-no': under500Hours.operatingUnder500Hours === false
+    }
+
     return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
 
-    if (request.payload['operating-under-500-hours'] === 'yes') {
-      await DataStore.save(context, {
-        airDispersionModellingRequired: false,
-        energyEfficiencyReportRequired: false,
-        bestAvailableTechniquesAssessment: false,
-        habitatAssessmentRequired: false
-      })
+    const operatingUnder500Hours = request.payload['operating-under-500-hours'] === YES
+
+    const under500Hours = {
+      operatingUnder500Hours: operatingUnder500Hours
+    }
+
+    const operatingUnder500HoursModel = new OperatingUnder500HoursModel(under500Hours)
+    await operatingUnder500HoursModel.save(context)
+
+    // If they are operating for under 500 hours then these are set to false, otherwise they're set true
+    await DataStore.save(context, {
+      airDispersionModellingRequired: !operatingUnder500Hours,
+      energyEfficiencyReportRequired: !operatingUnder500Hours,
+      bestAvailableTechniquesAssessment: !operatingUnder500Hours,
+      habitatAssessmentRequired: !operatingUnder500Hours
+    })
+
+    if (operatingUnder500Hours) {
       return this.redirect({ h, route: Routes.CREATE_APPLICATION_LINES }) // TODO: Be aware this should jump to the CONFIRM_COSTS page, but for now goes to our temporary CREATE_APPLICATION_LINES route (which creates the lines and jumps to the CONFIRM_COSTS page)
     } else {
       return this.redirect({ h })

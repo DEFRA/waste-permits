@@ -43,7 +43,7 @@ lab.experiment('AirQualityManagementArea test:', () => {
   lab.experiment('get', () => {
     lab.test('AQMA is set as no', async () => {
       mocks.applicationAnswers[0].questionCode = 'aqma-is-in-aqma'
-      mocks.applicationAnswers[0].answerCode = NO
+      mocks.applicationAnswers[0].answerText = NO
       const airQualityManagementArea = await AirQualityManagementArea.get(context)
       Code.expect(airQualityManagementArea.isInAqma).to.be.false()
       Code.expect(airQualityManagementArea.name).to.not.exist()
