@@ -40,9 +40,11 @@
         You do not pay VAT on these costs.
       </p>
 
+      {{#if wasteActivitiesLink}}
       <p>
         <a id="change-waste-activities" href="{{wasteActivitiesLink}}">Change activities or assessments</a>.
       </p>
+      {{/if}}
 
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}

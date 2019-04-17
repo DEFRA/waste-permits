@@ -12,8 +12,7 @@
       {{> common/pageHeading pageHeading }}
 
       <p>
-        Showing activities for {{triageData.selectedFacilityTypes.facilityTypeText}}.
-        <a id="change-facility" href="{{previousPreviousStepPath}}">Change facility type</a>.
+        Select any other assessments identified by your risk assessment or as a result of pre-application advice.
       </p>
 
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
@@ -22,18 +21,16 @@
         <fieldset>
           <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
 
-          <div id="activity" class="form-group {{#getFormErrorGroupClass errors.activity}}{{/getFormErrorGroupClass}}">
-            {{> common/fieldError fieldId='activity-error' message=errors.activity }}
-            {{#with triageData}}
-            {{#each availableWasteActivities.items}}
+          <div id="assessment" class="form-group {{#getFormErrorGroupClass errors.assessment}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='assessment-error' message=errors.assessment }}
+            {{#each assessments}}
             <div class="multiple-choice">
-              <input id="activity-{{this.id}}-input" type="checkbox" name="activity" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
-              <label id="activity-{{this.id}}-label" for="activity-{{this.id}}-input">
-                <span id="activity-{{this.id}}-text">{{this.text}}</span>
+              <input id="assessment-{{this.id}}-input" type="checkbox" name="assessment" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
+              <label id="assessment-{{this.id}}-label" for="assessment-{{this.id}}-input">
+                <span id="assessment-{{this.id}}-text">{{this.text}}</span>
               </label>
             </div>
             {{/each}}
-            {{/with}}
           </div>
 
         </fieldset>

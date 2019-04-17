@@ -11,20 +11,24 @@
 
       {{> common/pageHeading pageHeading }}
 
+      <p>
+        Showing activities for waste operations.
+        <a id="change-facility" href="{{previousLink}}">Change facility type</a>.
+      </p>
+
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <fieldset>
           <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
 
-          <div id="facility-type" class="form-group {{#getFormErrorGroupClass errors.facility-type}}{{/getFormErrorGroupClass}}">
-            {{> common/fieldError fieldId='facility-type-error' message=errors.facility-type }}
-            {{#each facilityTypes}}
+          <div id="activity" class="form-group {{#getFormErrorGroupClass errors.activity}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='activity-error' message=errors.activity }}
+            {{#each activities}}
             <div class="multiple-choice">
-              <input id="facility-type-{{this.id}}-input" type="radio" name="facility-type" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
-              <label id="facility-type-{{this.id}}-label" class="selection-button-radio" for="facility-type-{{this.id}}-input">
-                <span id="facility-type-{{this.id}}-text">{{this.text}}</span>
-                {{#if this.description}}<span id="facility-type-{{this.id}}-hint" class="form-hint">{{this.description}}</span>{{/if}}
+              <input id="activity-{{this.id}}-input" type="checkbox" name="activity" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
+              <label id="activity-{{this.id}}-label" for="activity-{{this.id}}-input">
+                <span id="activity-{{this.id}}-text">{{this.text}}</span>
               </label>
             </div>
             {{/each}}

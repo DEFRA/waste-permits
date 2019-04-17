@@ -4,21 +4,17 @@ const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
-const server = require('../../../server')
-const GeneralTestHelper = require('../generalTestHelper.test')
-const Mocks = require('../../helpers/mocks')
-const AuthService = require('../../../src/services/activeDirectoryAuth.service')
-const DUMMY_AUTH_TOKEN = 'dummy-auth-token'
-const CookieService = require('../../../src/services/cookie.service')
-const { COOKIE_RESULT } = require('../../../src/constants')
+const server = require('../../server')
+const GeneralTestHelper = require('./generalTestHelper.test')
+const Mocks = require('../helpers/mocks')
+const CookieService = require('../../src/services/cookie.service')
+const RecoveryService = require('../../src/services/recovery.service')
+const { COOKIE_RESULT } = require('../../src/constants')
 
-const Application = require('../../../src/models/triage/application.model')
-const ApplicationCost = require('../../../src/models/triage/applicationCost.model')
+const ApplicationCost = require('../../src/models/applicationCost.model')
 
-const LTD_CO = { id: 'limited-company', canApplyOnline: true }
-
-const routePath = '/selected/confirm'
-const expectedWasteActivitiesPath = '/select/bespoke'
+const routePath = '/confirm-cost'
+const expectedWasteActivitiesPath = '/waste-activity'
 const nextRoutePath = '/task-list'
 
 let getRequest
@@ -32,10 +28,9 @@ lab.beforeEach(() => {
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
-  sandbox.stub(AuthService.prototype, 'getToken').value(() => DUMMY_AUTH_TOKEN)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(ApplicationCost, 'getApplicationCostForApplicationId').callsFake(async () => mocks.applicationCostModel)
-  sandbox.stub(Application, 'getPermitHolderTypeForApplicationId').callsFake(async () => LTD_CO)
+  sandbox.stub(RecoveryService, 'createApplicationContext').callsFake(async () => mocks.recovery)
 })
 
 lab.afterEach(() => {
@@ -66,6 +61,7 @@ lab.experiment('Triage confirm costs page tests:', () => {
     })
 
     lab.test('GET provides correct activity link', async () => {
+      delete mocks.context.mcpType
       const doc = await GeneralTestHelper.getDoc(getRequest)
       Code.expect(doc.getElementById('change-waste-activities')).to.exist()
       Code.expect(doc.getElementById('change-waste-activities').getAttribute('href')).to.equal(expectedWasteActivitiesPath)

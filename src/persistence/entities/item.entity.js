@@ -93,6 +93,10 @@ class Item extends BaseEntity {
     return this.listUsingFetchXml(context, listItemsQuery(WASTE_ASSESSMENT))
   }
 
+  static async listWasteActivities (context) {
+    return this.listUsingFetchXml(context, listItemsQuery(WASTE_ACTIVITY))
+  }
+
   static async listWasteActivitiesForFacilityTypes (context, facilityTypes) {
     const searchValues = facilityTypes.map((item) => sanitiseSearchTerm(item))
     return this.listUsingFetchXml(context, listItemsForDetailTypeValuesQuery(WASTE_ACTIVITY, FACILITY_TYPE, searchValues))
