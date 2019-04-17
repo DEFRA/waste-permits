@@ -12,6 +12,9 @@ const StandardRule = require('../../src/persistence/entities/standardRule.entity
 const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
 
 const CookieService = require('../../src/services/cookie.service')
+const DataStore = require('../../src/models/dataStore.model')
+const Mocks = require('../helpers/mocks')
+
 const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
@@ -19,6 +22,15 @@ let sandbox
 const routePath = '/start/start-or-open-saved'
 const nextRoutePath = '/bespoke-or-standard-rules'
 const checkEmailRoutePath = '/save-return/search-your-email'
+
+const shortcutPathMCP = `${routePath}/mcp`
+const shortcutPathMCPNext = '/permit/select'
+
+const shortcutPathMCPBespoke = `${routePath}/mcp-bespoke`
+const shortcutPathMCPBespokeNext = '/mcp-type'
+
+const shortcutPathGenerators = `${routePath}/generators`
+const shortcutPathGeneratorsNext = '/permit/select'
 
 const permitTypeQuery = '?permit-type='
 const bespokeQuery = `${permitTypeQuery}bespoke`
@@ -28,6 +40,7 @@ const invalidParameterQuery = '?invalid-parameter=invalid-value'
 
 let getRequest
 let postRequest
+let mocks
 
 const fakeCookie = {
   applicationId: 'my_application_id',
@@ -46,14 +59,21 @@ lab.beforeEach(() => {
     headers: {}
   }
 
+  mocks = new Mocks()
+
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'generateCookie').value(() => fakeCookie)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(CookieService, 'set').value(async () => true)
+  sandbox.stub(DataStore, 'save').value(async () => mocks.dataStore.id)
   sandbox.stub(Application.prototype, 'save').value(async () => undefined)
-  sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
+  sandbox.stub(StandardRuleType, 'getCategories').value(() => [
+    { categoryName: 'mcpd-mcp', id: 123 },
+    { categoryName: 'mcpd-sg', id: 321 }
+  ])
 })
 
 lab.afterEach(() => {
@@ -187,6 +207,36 @@ lab.experiment('Start or Open Saved page tests:', () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
+    })
+  })
+
+  lab.experiment('POST with optional shortcuts:', () => {
+    lab.test('POST on Start or Open Saved page (with optional permitCategory == mcp)', async () => {
+      postRequest.payload = {
+        'started-application': 'new'
+      }
+      postRequest.url = shortcutPathMCP
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(shortcutPathMCPNext)
+    })
+    lab.test('POST on Start or Open Saved page (with optional permitCategory == generators)', async () => {
+      postRequest.payload = {
+        'started-application': 'new'
+      }
+      postRequest.url = shortcutPathGenerators
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(shortcutPathGeneratorsNext)
+    })
+    lab.test('POST on Start or Open Saved page (with optional permitCategory == mcp-bespoke)', async () => {
+      postRequest.payload = {
+        'started-application': 'new'
+      }
+      postRequest.url = shortcutPathMCPBespoke
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(shortcutPathMCPBespokeNext)
     })
   })
 })
