@@ -35,6 +35,14 @@ Please make sure the following are installed:
 - [Chrome](https://www.google.com/chrome/index.html) our default `gulp` task assumes **Chrome** is installed
 - ClamAV Daemon. You will need to install clamdscan and clamav-daemon then run clamav-daemon as a service
 
+Check that your environment is running the correct versions of `node` and `npm`:
+```bash
+$ npm --version
+6.9.0
+$ node --version
+v10.15.3
+```
+
 ## Installation
 
 Clone the repository and install its package
