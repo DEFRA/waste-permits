@@ -86,7 +86,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
           // set bespoke
           await DataStore.save(cookie, { BESPOKE })
           // set Medium combustion plant or specified generator
-          path = '/select/bespoke/mcp'
+          path = '/mcp-type'
           return this.redirect({ h, path, cookie })
       }
     } else {
