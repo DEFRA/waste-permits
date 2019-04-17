@@ -7,6 +7,8 @@ const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
 const Application = require('../persistence/entities/application.entity')
+const StandardRuleType = require('../persistence/entities/standardRuleType.entity')
+const DataStore = require('../models/dataStore.model')
 const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = Constants.PermitTypes
 
 module.exports = class StartOrOpenSavedController extends BaseController {
@@ -57,6 +59,35 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       const permitType = request.query['permit-type']
       if (permitType && (permitType === BESPOKE || permitType === STANDARD_RULES)) {
         path = `${path}?permit-type=${permitType}`
+      }
+
+      // If there is a permit category parameter then set up the next steps accordingly
+      const { permitCategory } = request.params
+      let categories = await StandardRuleType.getCategories({ authToken })
+      let category
+      switch (permitCategory) {
+        case 'mcp':
+          // set standard rules
+          await DataStore.save(cookie, { STANDARD_RULES })
+          // set Medium combustion plant - stationary and in operation after (mcp)
+          category = categories.find(({ categoryName }) => categoryName === 'mcpd-mcp')
+          CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID, category.id)
+          cookie.standardRuleTypeId = category.id
+          return this.redirect({ h, route: Routes.PERMIT_SELECT, cookie })
+        case 'generators':
+          // set standard rules
+          await DataStore.save(cookie, { STANDARD_RULES })
+          // Generators - Specified Generator, Tranche B
+          category = categories.find(category => category.categoryName === 'mcpd-sg')
+          CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID, category.id)
+          cookie.standardRuleTypeId = category.id
+          return this.redirect({ h, route: Routes.PERMIT_SELECT, cookie })
+        case 'mcp-bespoke':
+          // set bespoke
+          await DataStore.save(cookie, { BESPOKE })
+          // set Medium combustion plant or specified generator
+          path = '/select/bespoke/mcp'
+          return this.redirect({ h, path, cookie })
       }
     } else {
       path = Routes.SEARCH_YOUR_EMAIL.path
