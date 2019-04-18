@@ -1337,6 +1337,7 @@ const Routes = {
   },
   START_OR_OPEN_SAVED: {
     path: '/start/start-or-open-saved',
+    params: ['permitCategory?'],
     view: 'startOrOpenSaved',
     pageHeading: 'Apply for a standard rules environmental permit',
     controller: 'startOrOpenSaved',
