@@ -85,9 +85,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
         case 'mcp-bespoke':
           // set bespoke
           await DataStore.save(cookie, { BESPOKE })
-          // set Medium combustion plant or specified generator
-          path = '/mcp-type'
-          return this.redirect({ h, path, cookie })
+          return this.redirect({ h, route: Routes.MCP_TYPE })
       }
     } else {
       path = Routes.SEARCH_YOUR_EMAIL.path
