@@ -2,32 +2,41 @@
 'use strict'
 
 const BaseController = require('./base.controller')
+const RecoveryService = require('../services/recovery.service')
+const FacilityType = require('../models/facilityType.model')
 const { FACILITY_TYPES } = require('../dynamics')
-const { FACILITY_APPLY_OFFLINE, MCP_TYPE, TRIAGE_FACILITY } = require('../routes')
+const { MCP, WASTE_OPERATION } = FACILITY_TYPES
+const { FACILITY_APPLY_OFFLINE, MCP_TYPE, WASTE_ACTIVITY } = require('../routes')
 
 const facilityTypes = Object.keys(FACILITY_TYPES).map((facilityType) => FACILITY_TYPES[facilityType])
 
 module.exports = class FacilityTypeController extends BaseController {
   async doGet (request, h, errors) {
+    const context = await RecoveryService.createApplicationContext(h)
+    const { facilityType = {} } = context
+    const { id: facilityTypeId } = facilityType
     const pageContext = this.createPageContext(h, errors)
 
-    pageContext.facilityTypes = facilityTypes
+    pageContext.facilityTypes = facilityTypes.map((facilityType) => Object.assign(facilityType, { isSelected: facilityType.id === facilityTypeId }))
 
     return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
+    const context = await RecoveryService.createApplicationContext(h)
     const { 'facility-type': facilityTypeId } = request.payload
 
-    const facilityType = facilityTypes.find(({ id, canApplyOnline }) => canApplyOnline && id === facilityTypeId)
+    const facilityType = context.facilityType || new FacilityType()
+    facilityType.id = facilityTypeId
+    await facilityType.save(context)
 
-    switch (facilityType) {
-      case FACILITY_TYPES.MCP:
+    switch (facilityType.id) {
+      case MCP.id:
         return this.redirect({ h, route: MCP_TYPE })
-      case FACILITY_TYPES.WASTE_OPERATION:
-        return this.redirect({ h, route: TRIAGE_FACILITY, params: ['bespoke', facilityTypeId] })
+      case WASTE_OPERATION.id:
+        return this.redirect({ h, route: WASTE_ACTIVITY })
       default:
-        return this.redirect({ h, route: FACILITY_APPLY_OFFLINE, params: ['bespoke', facilityTypeId] })
+        return this.redirect({ h, route: FACILITY_APPLY_OFFLINE })
     }
   }
 }

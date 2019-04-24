@@ -18,7 +18,7 @@
           <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
 
           <div id="mcp-type" class="form-group {{#getFormErrorGroupClass errors.mcp-type}}{{/getFormErrorGroupClass}}">
-            {{> common/fieldError fieldId='facility-type-error' message=errors.mcp-type }}
+            {{> common/fieldError fieldId='mcp-type-error' message=errors.mcp-type }}
             {{#each mcpTypes}}
             <div class="multiple-choice" data-target="{{#if this.mcpIsMobile}}mobile-info{{/if}}">
               {{#if selected}}

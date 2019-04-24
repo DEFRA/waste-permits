@@ -9,6 +9,10 @@
 
             {{> common/pageHeading pageHeading }}
 
+            {{#each items}}
+            <p>{{this}}</p>
+            {{/each}}
+
             <p>{{pageDescription}}</p>
 
             <a id="change-selection-link" href="{{changeSelectionLink}}">Change your selection</a>

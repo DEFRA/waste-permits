@@ -27,7 +27,7 @@ const {
 } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp-check/under-500-hours'
-const yesRoutePath = '/selected/create-application-lines'
+const yesRoutePath = '/maintain-application-lines'
 const noRoutePath = '/mcp-check/air-dispersion-modelling-report'
 const errorPath = '/errors/technical-problem'
 

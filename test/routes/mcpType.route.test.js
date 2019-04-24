@@ -9,16 +9,18 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
-const FacilityType = require('../../src/models/facilityType.model')
+const McpType = require('../../src/models/mcpType.model')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
+const { MCP_TYPES } = require('../../src/dynamics')
+const { MOBILE_SG, MOBILE_SG_AND_MCP, STATIONARY_MCP, STATIONARY_MCP_AND_SG, STATIONARY_SG } = MCP_TYPES
 
-const routePath = '/facility-type'
+const routePath = '/mcp-type'
 const nextRoutePath = '/select/bespoke'
-const applyOfflinePath = '/facility-type/apply-offline'
-const mcpPath = '/mcp-type'
-const wastePath = '/waste-activity'
+const existingPermitPath = '/existing-permit'
+const maintainApplicationLinesPath = '/maintain-application-lines'
+const requiresEnergyReportPath = '/mcp-check/energy-report'
 
 let mocks
 let sandbox
@@ -33,7 +35,8 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
-  sandbox.stub(FacilityType.prototype, 'save').value(() => undefined)
+  sandbox.stub(McpType.prototype, 'save').value(() => undefined)
+  sandbox.stub(McpType, 'get').value(() => mocks.mcpType)
 })
 
 lab.afterEach(() => {
@@ -41,7 +44,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Facility Type page tests:', () => {
+lab.experiment('Mcp Type page tests:', () => {
   new GeneralTestHelper({ lab, routePath }).test({ excludeAlreadySubmittedTest: true })
 
   lab.experiment(`GET ${routePath}`, () => {
@@ -57,7 +60,7 @@ lab.experiment('Facility Type page tests:', () => {
 
     lab.test('The page should have a back link', async () => {
       const doc = await GeneralTestHelper.getDoc(request)
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What type of facility do you want the permit for?')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What is your permit for?')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
 
       const element = doc.getElementById('back-link')
@@ -78,22 +81,22 @@ lab.experiment('Facility Type page tests:', () => {
     })
 
     lab.experiment('success', () => {
-      const facilityTypes = ['installation', 'waste', 'landfill', 'mcp', 'mining', 'discharge', 'groundwater']
-
-      facilityTypes.forEach((facilityType) => {
-        lab.test(`redirects to ${nextRoutePath}/${facilityType} when ${facilityType} is selected`, async () => {
-          request.payload['facility-type'] = facilityType
+      Object.values(MCP_TYPES).forEach((mcpType) => {
+        lab.test(`redirects to ${nextRoutePath}/${mcpType.id} when ${mcpType.id} is selected`, async () => {
+          request.payload['mcp-type'] = mcpType.id
           const res = await server.inject(request)
           Code.expect(res.statusCode).to.equal(302)
-          switch (facilityType) {
-            case 'mcp':
-              Code.expect(res.headers['location']).to.equal(mcpPath)
+          switch (mcpType.id) {
+            case STATIONARY_MCP.id:
+            case STATIONARY_SG.id:
+            case STATIONARY_MCP_AND_SG.id:
+              Code.expect(res.headers['location']).to.equal(existingPermitPath)
               break
-            case 'waste':
-              Code.expect(res.headers['location']).to.equal(wastePath)
+            case MOBILE_SG.id:
+              Code.expect(res.headers['location']).to.equal(maintainApplicationLinesPath)
               break
-            default:
-              Code.expect(res.headers['location']).to.equal(applyOfflinePath)
+            case MOBILE_SG_AND_MCP.id:
+              Code.expect(res.headers['location']).to.equal(requiresEnergyReportPath)
               break
           }
         })
@@ -101,10 +104,10 @@ lab.experiment('Facility Type page tests:', () => {
     })
 
     lab.experiment('invalid', () => {
-      lab.test('when facility type not selected', async () => {
+      lab.test('when mcp type not selected', async () => {
         request.payload = {}
         const doc = await GeneralTestHelper.getDoc(request)
-        await GeneralTestHelper.checkValidationMessage(doc, 'facility-type', 'Select the type of facility you want')
+        await GeneralTestHelper.checkValidationMessage(doc, 'mcp-type', 'Select what your permit is for')
       })
     })
   })

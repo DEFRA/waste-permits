@@ -8,7 +8,7 @@ const BaseTaskList = require('../models/taskList/base.taskList')
 const StandardRule = require('../persistence/entities/standardRule.entity')
 const RecoveryService = require('../services/recovery.service')
 const DataStore = require('../models/dataStore.model')
-const ApplicationCostItem = require('../models/triage/applicationCostItem.model')
+const ApplicationCostItem = require('../models/applicationCostItem.model')
 
 module.exports = class TaskListController extends BaseController {
   async doGet (request, h, errors, firstTimeIn = true) {

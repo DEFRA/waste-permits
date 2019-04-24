@@ -19,12 +19,15 @@ const StandardRuleType = require('../../src/persistence/entities/standardRuleTyp
 
 const ContactDetail = require('../../src/models/contactDetail.model')
 const CharityDetail = require('../../src/models/charityDetail.model')
+const FacilityType = require('../../src/models/facilityType.model')
+const WasteActivities = require('../../src/models/wasteActivities.model')
+const WasteAssessments = require('../../src/models/wasteAssessments.model')
 const McpType = require('../../src/models/mcpType.model')
 const DataStore = require('../../src/models/dataStore.model')
 const McpBusinessType = require('../../src/models/mcpBusinessType.model')
 
-const ApplicationCostModel = require('../../src/models/triage/applicationCost.model')
-const ApplicationCostItemModel = require('../../src/models/triage/applicationCostItem.model')
+const ApplicationCostModel = require('../../src/models/applicationCost.model')
+const ApplicationCostItemModel = require('../../src/models/applicationCostItem.model')
 
 const NeedToConsult = require('../../src/models/needToConsult.model')
 const AirQualityManagementArea = require('../../src/models/airQualityManagementArea.model')
@@ -233,6 +236,17 @@ class MockData {
     }
   }
 
+  get facilityType () {
+    return {
+      id: 'waste',
+      key: '02',
+      text: 'Waste operation',
+      description: 'For example, transfer stations, waste treatment, recycling and composting',
+      typeText: 'waste operations',
+      canApplyOnline: true
+    }
+  }
+
   get location () {
     return {
       id: 'LOCATION_ID',
@@ -317,6 +331,14 @@ class MockData {
       description: 'TOTAL_COST_ITEM_DESCRIPTION',
       cost: 1234.56
     }
+  }
+
+  get wasteActivities () {
+    return []
+  }
+
+  get wasteAssessments () {
+    return []
   }
 }
 
@@ -428,9 +450,12 @@ class Mocks {
       const application = this.application
       const applicationLine = this.applicationLine
       const applicationReturn = this.applicationReturn
+      const dataStore = this.dataStore
       const standardRule = this.standardRule
       const permitHolderType = this.permitHolderType
       const mcpType = this.mcpType
+      const facilityType = this.facilityType
+      const wasteActivities = this.wasteActivities
       this._context = {
         authToken: 'AUTH_TOKEN',
         account,
@@ -441,9 +466,12 @@ class Mocks {
         application,
         applicationLine,
         applicationReturn,
+        dataStore,
         permitHolderType,
         standardRule,
         mcpType,
+        facilityType,
+        wasteActivities,
         permitType: Constants.PermitTypes.STANDARD_RULES.id,
         isBespoke: false
       }
@@ -454,6 +482,11 @@ class Mocks {
   get dataStore () {
     const { dataStore } = this.mockData
     return this._dataStore || (this._dataStore = new DataStore(dataStore))
+  }
+
+  get facilityType () {
+    const { facilityType } = this.mockData
+    return this._facilityType || (this._facilityType = new FacilityType(facilityType))
   }
 
   get location () {
@@ -533,6 +566,16 @@ class Mocks {
   get standardRuleTypeForMcp () {
     const { standardRuleTypeForMcp } = this.mockData
     return this._standardRuleTypeForMcp || (this._standardRuleTypeForMcp = new StandardRuleType(standardRuleTypeForMcp))
+  }
+
+  get wasteActivities () {
+    const { wasteActivities } = this.mockData
+    return this._wasteActivities || (this._wasteActivities = new WasteActivities(wasteActivities))
+  }
+
+  get wasteAssessments () {
+    const { wasteAssessments } = this.mockData
+    return this._wasteAssessments || (this._wasteAssessments = new WasteAssessments(wasteAssessments))
   }
 }
 

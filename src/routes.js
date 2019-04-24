@@ -10,71 +10,6 @@ const Routes = {
     applicationRequired: false
   },
 
-  // TRIAGE
-  // ******
-  TRIAGE_FACILITY: {
-    path: '/select',
-    params: ['permitType', 'facilityType'],
-    view: 'triage/applyOffline',
-    pageHeading: 'What is your permit for?',
-    controller: 'triage/triage',
-    types: 'GET, POST',
-    cookieValidationRequired: true,
-    applicationRequired: false
-  },
-  TRIAGE_WASTE_ACTIVITY: {
-    path: '/select',
-    params: ['permitType', 'facilityType', 'mcpType'],
-    view: 'triage/wasteActivity',
-    applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'Select all the activities you want the permit to cover',
-    controller: 'triage/triage',
-    validator: 'triage/wasteActivity',
-    types: 'GET, POST',
-    cookieValidationRequired: true,
-    applicationRequired: false
-  },
-  TRIAGE_WASTE_ASSESSMENT: {
-    path: '/select',
-    params: ['permitType', 'facilityType', 'mcpType', 'wasteActivity'],
-    view: 'triage/wasteAssessment',
-    applyOfflineView: 'triage/applyOffline',
-    triageCompleteView: 'triage/complete',
-    pageHeading: 'What plans do we need to assess?',
-    controller: 'triage/triage',
-    types: 'GET, POST',
-    cookieValidationRequired: true,
-    applicationRequired: false
-  },
-  TRIAGE_COMPLETE: {
-    path: '/select',
-    params: ['permitType', 'facilityType', 'mcpType', 'wasteActivity', 'wasteAssessment'],
-    view: 'triage/complete',
-    applyOfflineView: 'triage/applyOffline',
-    pageHeading: 'Confirm activities and assessments',
-    controller: 'triage/triage',
-    types: 'GET,POST',
-    cookieValidationRequired: true,
-    applicationRequired: false
-  },
-  // TODO: This is a temporary route. The expected end game is to remove this route, go straight to the CONFIRM_COSTS page, which will ask Dynamics for the costs (without creating the lines...Kas says this is possible) then when the user clicks 'Start Application', create the application lines in that POST
-  CREATE_APPLICATION_LINES: {
-    path: '/selected/create-application-lines',
-    controller: 'triage/createApplicationLines',
-    nextRoute: 'CONFIRM_COST',
-    types: 'GET,POST'
-  },
-  CONFIRM_COST: {
-    path: '/selected/confirm',
-    view: 'triage/confirmCost',
-    pageHeading: 'Confirm activities and assessments',
-    controller: 'triage/confirmCost',
-    nextRoute: 'TASK_LIST',
-    types: 'GET,POST',
-    cookieValidationRequired: true,
-    applicationRequired: false
-  },
-
   // ADDRESS
   // *******
   MANUAL_INVOICE: {
@@ -873,6 +808,16 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
+  CONFIRM_COST: {
+    path: '/confirm-cost',
+    view: 'confirmCost',
+    pageHeading: 'Confirm activities and assessments',
+    controller: 'confirmCost',
+    nextRoute: 'TASK_LIST',
+    types: 'GET,POST',
+    cookieValidationRequired: true,
+    applicationRequired: false
+  },
   CONFIRM_MINING_WASTE_PLAN: {
     path: '/mining-waste/plan',
     view: 'confirmMiningWastePlan',
@@ -976,13 +921,11 @@ const Routes = {
     pageHeading: 'What type of facility do you want the permit for?',
     controller: 'facilityType',
     validator: 'facilityType',
-    nextRoute: 'TRIAGE_FACILITY',
     types: 'GET, POST',
     cookieValidationRequired: true
   },
   FACILITY_APPLY_OFFLINE: {
-    path: '/apply-offline',
-    params: ['permitType', 'facilityType'],
+    path: '/facility-type/apply-offline',
     view: 'bespokeApplyOffline',
     pageHeading: 'Apply for a bespoke permit for an installation, landfill, mine or water discharge',
     pageDescription: 'You cannot apply online yet for that type of facility. We hope to add them soon.',
@@ -1005,6 +948,12 @@ const Routes = {
   HEALTH: {
     path: '/health',
     pageHeading: 'Health'
+  },
+  MAINTAIN_APPLICATION_LINES: {
+    path: '/maintain-application-lines',
+    controller: 'maintainApplicationLines',
+    nextRoute: 'CONFIRM_COST',
+    types: 'GET'
   },
   MANAGEMENT_SYSTEM_SELECT: {
     path: '/management-system/select',
@@ -1094,7 +1043,7 @@ const Routes = {
     pageHeading: 'Do you need a habitat assessment?',
     controller: 'habitatAssessment',
     validator: 'habitatAssessment',
-    nextRoute: 'CREATE_APPLICATION_LINES',
+    nextRoute: 'MAINTAIN_APPLICATION_LINES',
     types: 'GET, POST'
   },
   MCP_HAS_EXISTING_PERMIT: {
@@ -1433,6 +1382,46 @@ const Routes = {
     types: 'GET',
     cookieValidationRequired: false,
     applicationRequired: false
+  },
+  WASTE_ACTIVITY: {
+    path: '/waste-activity',
+    view: 'wasteActivity',
+    pageHeading: 'Select all the activities you want the permit to cover',
+    controller: 'wasteActivity',
+    validator: 'wasteActivity',
+    nextRoute: 'WASTE_ASSESSMENT',
+    previousRoute: 'FACILITY_TYPE',
+    types: 'GET, POST'
+  },
+  WASTE_ACTIVITY_APPLY_OFFLINE: {
+    path: '/waste-activity/apply-offline',
+    view: 'bespokeApplyOffline',
+    pageHeading: 'Apply for a bespoke permit',
+    pageDescription: 'You cannot apply online yet for these types of activity. We hope to add them soon.',
+    itemType: 'wasteActivity',
+    controller: 'bespokeApplyOffline',
+    nextRoute: 'WASTE_ACTIVITY',
+    types: 'GET',
+    cookieValidationRequired: true
+  },
+  WASTE_ASSESSMENT: {
+    path: '/waste-assessment',
+    view: 'wasteAssessment',
+    pageHeading: 'What plans do we need to assess?',
+    controller: 'wasteAssessment',
+    nextRoute: 'MAINTAIN_APPLICATION_LINES',
+    types: 'GET, POST'
+  },
+  WASTE_ASSESSMENT_APPLY_OFFLINE: {
+    path: '/waste-assessment/apply-offline',
+    view: 'bespokeApplyOffline',
+    pageHeading: 'Apply for a bespoke permit',
+    pageDescription: 'You cannot apply online yet for permits that require these types of plan. We hope to add them soon.',
+    itemType: 'wasteAssessment',
+    controller: 'bespokeApplyOffline',
+    nextRoute: 'WASTE_ASSESSMENT',
+    types: 'GET',
+    cookieValidationRequired: true
   },
   WASTE_RECOVERY_PLAN_APPROVAL: {
     path: '/waste-recovery-plan/approval',

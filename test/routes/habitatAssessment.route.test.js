@@ -17,7 +17,7 @@ const DataStore = require('../../src/models/dataStore.model')
 const { MOBILE_SG } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp-check/habitat-assessment'
-const nextRoutePath = '/selected/create-application-lines'
+const nextRoutePath = '/maintain-application-lines'
 
 let sandbox
 let mocks

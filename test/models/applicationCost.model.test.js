@@ -5,16 +5,16 @@ const lab = exports.lab = Lab.script()
 const Code = require('code')
 const sinon = require('sinon')
 
-const ApplicationCostModel = require('../../../src/models/triage/applicationCost.model')
-const ItemEntity = require('../../../src/persistence/entities/item.entity')
-const ApplicationEntity = require('../../../src/persistence/entities/application.entity')
-const ApplicationLineEntity = require('../../../src/persistence/entities/applicationLine.entity')
+const ApplicationCostModel = require('../../src/models/applicationCost.model')
+const ItemEntity = require('../../src/persistence/entities/item.entity')
+const ApplicationEntity = require('../../src/persistence/entities/application.entity')
+const ApplicationLineEntity = require('../../src/persistence/entities/applicationLine.entity')
 
 const context = { authToken: 'AUTH_TOKEN' }
 const ACTIVITY_ITEM_TYPE_ID = 'ACTIVITY_ITEM_TYPE_ID'
 const ASSESSMENT_ITEM_TYPE_ID = 'ASSESSMENT_ITEM_TYPE_ID'
 
-const { PERMIT_HOLDER_TYPES: DYNAMICS_PERMIT_HOLDER_TYPES } = require('../../../src/dynamics')
+const { PERMIT_HOLDER_TYPES: DYNAMICS_PERMIT_HOLDER_TYPES } = require('../../src/dynamics')
 
 const ITEMS = {
   wasteActivities: [{

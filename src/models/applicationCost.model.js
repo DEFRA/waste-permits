@@ -1,12 +1,9 @@
 'use strict'
 
 const ApplicationCostItem = require('./applicationCostItem.model')
-
-const TriageListItem = require('./triageListItem.model')
-
-const ApplicationEntity = require('../../persistence/entities/application.entity')
-const ApplicationLineEntity = require('../../persistence/entities/applicationLine.entity')
-const ItemEntity = require('../../persistence/entities/item.entity')
+const ApplicationEntity = require('../persistence/entities/application.entity')
+const ApplicationLineEntity = require('../persistence/entities/applicationLine.entity')
+const ItemEntity = require('../persistence/entities/item.entity')
 
 module.exports = class ApplicationCost {
   constructor ({ applicationCostItems, totalCostItem }) {
@@ -33,16 +30,16 @@ module.exports = class ApplicationCost {
     const wasteAssessmentLineEntities = applicationLineEntities.filter(({ itemId }) => wasteAssessmentItemEntities.find(({ id }) => id === itemId))
 
     const wasteActivityApplicationCostItems = wasteActivityLineEntities.map((line) => {
-      const wasteActivity = TriageListItem.createWasteActivityFromItemEntity(wasteActivityItemEntities.find(({ id }) => id === line.itemId))
-      const description = wasteActivity.text
+      const wasteActivity = wasteActivityItemEntities.find(({ id }) => id === line.itemId)
+      const description = wasteActivity.itemName
       const cost = line.value
-      return new ApplicationCostItem({ wasteActivity, description, cost })
+      return new ApplicationCostItem({ description, cost })
     })
     const wasteAssessmentApplicationCostItems = wasteAssessmentLineEntities.map((line) => {
-      const wasteAssessment = TriageListItem.createWasteAssessmentFromItemEntity(wasteAssessmentItemEntities.find(({ id }) => id === line.itemId))
-      const description = wasteAssessment.text
+      const wasteAssessment = wasteAssessmentItemEntities.find(({ id }) => id === line.itemId)
+      const description = wasteAssessment.itemName
       const cost = line.value
-      return new ApplicationCostItem({ wasteAssessment, description, cost })
+      return new ApplicationCostItem({ description, cost })
     })
     const applicationCostItems = wasteActivityApplicationCostItems.concat(wasteAssessmentApplicationCostItems)
 

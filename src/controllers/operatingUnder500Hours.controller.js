@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseController = require('./base.controller')
-const Routes = require('../routes')
+const { MAINTAIN_APPLICATION_LINES } = require('../routes')
 const RecoveryService = require('../services/recovery.service')
 const DataStore = require('../models/dataStore.model')
 const OperatingUnder500HoursModel = require('../models/operatingUnder500Hours.model')
@@ -57,7 +57,7 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
     })
 
     if (operatingUnder500Hours) {
-      return this.redirect({ h, route: Routes.CREATE_APPLICATION_LINES }) // TODO: Be aware this should jump to the CONFIRM_COSTS page, but for now goes to our temporary CREATE_APPLICATION_LINES route (which creates the lines and jumps to the CONFIRM_COSTS page)
+      return this.redirect({ h, route: MAINTAIN_APPLICATION_LINES })
     } else {
       return this.redirect({ h })
     }
