@@ -24,14 +24,11 @@ module.exports = class drainageTypeController extends BaseController {
 
     const drainageType = pageContext.formValues['drainage-type']
 
-    const drainageTypes = Object.entries(Merge({}, DrainageTypes))
-      .map(([type, drainageType]) => drainageType)
+    pageContext.drainageTypes = Object.values(Merge({}, DrainageTypes))
 
-    drainageTypes.forEach((item) => {
+    pageContext.drainageTypes.forEach((item) => {
       item.selected = drainageType === item.type
     })
-
-    pageContext.drainageTypes = drainageTypes
 
     return this.showView({ h, pageContext })
   }
@@ -44,10 +41,8 @@ module.exports = class drainageTypeController extends BaseController {
 
     const type = parseInt(request.payload['drainage-type'])
 
-    const drainageType = Object.entries(Merge({}, DrainageTypes))
-      .map(([type, drainageType]) => drainageType)
-      .filter((drainageType) => drainageType.type === type)
-      .pop()
+    const drainageType = Object.values(Merge({}, DrainageTypes))
+      .find((drainageType) => drainageType.type === type)
 
     if (!drainageType) {
       throw new Error(`Unexpected drainage type (${type})`)

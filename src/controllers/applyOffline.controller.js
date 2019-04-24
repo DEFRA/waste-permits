@@ -13,10 +13,8 @@ const { OFFLINE_CATEGORIES } = Constants
 module.exports = class ApplyOfflineController extends BaseController {
   static getOfflineCategory (categoryId) {
     // Get matching offline category
-    return Object.keys(OFFLINE_CATEGORIES)
-      .filter((item) => OFFLINE_CATEGORIES[item].id === categoryId)
-      .map((item) => OFFLINE_CATEGORIES[item])
-      .pop()
+    return Object.values(OFFLINE_CATEGORIES)
+      .find(({ id }) => id === categoryId)
   }
 
   static getChangeSelectionRoute (offlineCategory = {}, standardRule = {}) {

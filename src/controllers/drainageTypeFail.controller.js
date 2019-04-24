@@ -12,10 +12,8 @@ module.exports = class DrainageTypeFailController extends BaseController {
     const { application, standardRule } = await RecoveryService.createApplicationContext(h, { standardRule: true })
     const pageContext = this.createPageContext(h)
 
-    const drainageType = Object.keys(DrainageTypes)
-      .filter((key) => DrainageTypes[key].type === application.drainageType)
-      .map((key) => DrainageTypes[key])
-      .pop()
+    const drainageType = Object.values(DrainageTypes)
+      .find(({ type }) => type === application.drainageType)
 
     if (!drainageType) {
       throw new Error(`Unexpected drainage type (${application.drainageType})`)

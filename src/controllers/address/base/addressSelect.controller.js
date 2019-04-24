@@ -19,7 +19,7 @@ module.exports = class AddressSelectController extends BaseController {
 
       if (!errors && address && addresses) {
         // Set a flag on the selected address
-        const selectedAddress = addresses.filter((element) => element.uprn === address.uprn).pop()
+        const selectedAddress = addresses.find(({ uprn }) => uprn === address.uprn)
         if (selectedAddress) {
           selectedAddress.selected = true
         }

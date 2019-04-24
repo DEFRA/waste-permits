@@ -3,7 +3,7 @@
 const DataStore = require('../models/dataStore.model')
 const { FACILITY_TYPES } = require('../dynamics')
 
-const facilityTypes = Object.keys(FACILITY_TYPES).map((facilityType) => FACILITY_TYPES[facilityType])
+const facilityTypes = Object.values(FACILITY_TYPES)
 
 module.exports = class FacilityType {
   constructor (data) {

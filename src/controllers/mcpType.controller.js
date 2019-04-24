@@ -9,7 +9,7 @@ const { MAINTAIN_APPLICATION_LINES, MCP_EXISTING_PERMIT, MCP_REQUIRES_ENERGY_REP
 const { MCP_TYPES } = Dynamics
 const { MOBILE_SG, MOBILE_SG_AND_MCP, STATIONARY_MCP, STATIONARY_MCP_AND_SG, STATIONARY_SG } = MCP_TYPES
 
-const mcpTypes = Object.keys(MCP_TYPES).map((mcpType) => MCP_TYPES[mcpType])
+const mcpTypes = Object.values(MCP_TYPES)
 
 module.exports = class McpTypeController extends BaseController {
   async doGet (request, h, errors) {

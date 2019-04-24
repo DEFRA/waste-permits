@@ -19,12 +19,10 @@ module.exports = class DrainageCheck extends BaseCheck {
   }
 
   async getDrainageLine () {
-    const { drainageType: type = '' } = await this.getApplication()
+    const { drainageType: selectedDrainageType = '' } = await this.getApplication()
 
-    const drainageType = Object.keys(DrainageTypes)
-      .filter((key) => DrainageTypes[key].type === type)
-      .map((key) => DrainageTypes[key])
-      .pop()
+    const drainageType = Object.values(DrainageTypes)
+      .find(({ type }) => selectedDrainageType === type)
 
     const description = drainageType && drainageType.description ? drainageType.description.toLowerCase() : 'unknown'
 

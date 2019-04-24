@@ -4,7 +4,7 @@ const ApplicationAnswer = require('../persistence/entities/applicationAnswer.ent
 const { MCP_TYPES, ApplicationQuestions } = require('../dynamics')
 const { questionCode } = ApplicationQuestions.MCP_PERMIT_TYPES
 
-const mcpTypes = Object.keys(MCP_TYPES).map((mcpType) => MCP_TYPES[mcpType])
+const mcpTypes = Object.values(MCP_TYPES)
 
 module.exports = class McpType {
   constructor (data) {

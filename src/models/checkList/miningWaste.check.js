@@ -24,10 +24,8 @@ module.exports = class MiningWasteCheck extends BaseCheck {
   async getMiningWastePlanLine () {
     const { miningWastePlan: plan = '' } = await this.getApplication()
 
-    const miningWastePlan = Object.keys(MiningWastePlans)
-      .filter((key) => MiningWastePlans[key].type === plan)
-      .map((key) => MiningWastePlans[key])
-      .pop()
+    const miningWastePlan = Object.values(MiningWastePlans)
+      .find(({ type }) => type === plan)
 
     const description = miningWastePlan && miningWastePlan.description ? miningWastePlan.description : 'Unknown'
 
