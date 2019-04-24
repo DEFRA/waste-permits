@@ -7,11 +7,11 @@ const { MCP_TYPES, PERMIT_HOLDER_TYPES } = require('../../dynamics')
 const { PERMIT_HOLDER_DETAILS } = require('../../routes')
 const { MOBILE_GENERATOR_0_TO_20_MW } = require('../../constants').PermitTypes.STANDARD_RULES
 
-const mcpTypes = Object.keys(MCP_TYPES).map((mcpType) => MCP_TYPES[mcpType])
+const mcpTypes = Object.values(MCP_TYPES)
 
 module.exports = class PermitHolderTypeController extends BaseController {
   static getHolderTypes (application, charityPermitHolder) {
-    const permitHolderTypes = Object.entries(PERMIT_HOLDER_TYPES).map(([key, permitHolderType]) => Object.assign({}, permitHolderType))
+    const permitHolderTypes = Object.values(PERMIT_HOLDER_TYPES)
     let selectedPermitHolderType
     if (application) {
       if (charityPermitHolder) {

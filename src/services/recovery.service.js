@@ -50,10 +50,8 @@ module.exports = class RecoveryService {
   }
 
   static getPermitHolderType (application) {
-    return Object.entries(PERMIT_HOLDER_TYPES)
-      .filter(([key, { dynamicsApplicantTypeId, dynamicsOrganisationTypeId }]) => application && dynamicsApplicantTypeId === application.applicantType && dynamicsOrganisationTypeId === application.organisationType)
-      .map(([key, permitHolderType]) => permitHolderType)
-      .pop()
+    return Object.values(PERMIT_HOLDER_TYPES)
+      .find(({ dynamicsApplicantTypeId, dynamicsOrganisationTypeId }) => application && dynamicsApplicantTypeId === application.applicantType && dynamicsOrganisationTypeId === application.organisationType)
   }
 
   static async recoverFromCookies (slug, request, options) {

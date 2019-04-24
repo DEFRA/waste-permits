@@ -21,8 +21,7 @@ module.exports = class WasteRecoveryPlanCheck extends BaseCheck {
     const evidence = await this.getWasteRecoveryPlan()
     const { recoveryPlanAssessmentStatus } = await this.getApplication()
     const answers = evidence.map((file) => file.filename)
-    const assessment = Object.entries(RecoveryPlanAssessmentStatus)
-      .map(([status, assessment]) => assessment)
+    const assessment = Object.values(RecoveryPlanAssessmentStatus)
       .find(({ TYPE }) => TYPE === recoveryPlanAssessmentStatus)
     if (assessment) {
       answers.push('Assessment:')

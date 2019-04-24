@@ -91,8 +91,7 @@ class RouteGenerator {
       default: defaultVal,
       validate: (path) => {
         if (path.match(/^(\/[a-z]([a-z-]*[a-z])?)+$/)) {
-          const routeList = Object.entries(routes)
-            .map(([routeId, route]) => route)
+          const routeList = Object.values(routes)
 
           let matchingRoute = routeList
             .find((route) => !route.params && route.path === path)

@@ -20,8 +20,7 @@ module.exports = class ConfirmMiningWastePlanController extends BaseController {
 
     const miningWastePlan = pageContext.formValues['mining-waste-plan']
 
-    const miningWastePlans = Object.entries(Merge({}, MiningWastePlans))
-      .map(([plan, miningWastePlan]) => miningWastePlan)
+    const miningWastePlans = Object.values(Merge({}, MiningWastePlans))
 
     miningWastePlans.forEach((item) => {
       item.selected = miningWastePlan === item.type
@@ -38,10 +37,8 @@ module.exports = class ConfirmMiningWastePlanController extends BaseController {
 
     const plan = parseInt(request.payload['mining-waste-plan'])
 
-    const miningWastePlan = Object.entries(Merge({}, MiningWastePlans))
-      .map(([plan, miningWastePlan]) => miningWastePlan)
-      .filter((miningWastePlan) => miningWastePlan.type === plan)
-      .pop()
+    const miningWastePlan = Object.values(Merge({}, MiningWastePlans))
+      .find((miningWastePlan) => miningWastePlan.type === plan)
 
     if (!miningWastePlan) {
       throw new Error(`Unexpected mining waste plan (${plan})`)

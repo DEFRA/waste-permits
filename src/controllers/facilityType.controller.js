@@ -8,7 +8,7 @@ const { FACILITY_TYPES } = require('../dynamics')
 const { MCP, WASTE_OPERATION } = FACILITY_TYPES
 const { FACILITY_APPLY_OFFLINE, MCP_TYPE, WASTE_ACTIVITY } = require('../routes')
 
-const facilityTypes = Object.keys(FACILITY_TYPES).map((facilityType) => FACILITY_TYPES[facilityType])
+const facilityTypes = Object.values(FACILITY_TYPES)
 
 module.exports = class FacilityTypeController extends BaseController {
   async doGet (request, h, errors) {

@@ -12,7 +12,7 @@ const featureConfig = require('../config/featureConfig')
 module.exports = class PermitCategoryController extends BaseController {
   static isOfflineCategory (categoryId) {
     // Check if the categoryId matches one of the offline categories
-    return Object.keys(OFFLINE_CATEGORIES).some((item) => OFFLINE_CATEGORIES[item].id === categoryId)
+    return Object.values(OFFLINE_CATEGORIES).some(({ id }) => id === categoryId)
   }
   static isMcpCategory (categoryName) {
     return Boolean(MCP_CATEGORY_NAMES.find((mcpCategoryName) => mcpCategoryName === categoryName))

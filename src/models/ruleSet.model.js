@@ -11,13 +11,10 @@ module.exports = class RuleSet {
     if (!context.validRuleIds) {
       const { authToken, applicationLineId } = context
       const dynamicsDal = new DynamicsDalService(authToken)
-      const ruleSetIds = []
-      Object.entries(tasks)
-        .forEach(([prop, { ruleSetId }]) => {
-          if (ruleSetId) {
-            ruleSetIds.push(ruleSetId)
-          }
-        })
+      const ruleSetIds = Object.values(tasks)
+        .map(({ ruleSetId }) => ruleSetId)
+        .filter((ruleSetId) => ruleSetId)
+
       const query = encodeURI(`defra_applicationlines(${applicationLineId})?$expand=defra_parametersId($select=${ruleSetIds.join()})`)
       try {
         const result = await dynamicsDal.search(query)
