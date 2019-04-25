@@ -16,12 +16,12 @@ const { COOKIE_RESULT } = require('../../src/constants')
 const ItemEntity = require('../../src/persistence/entities/item.entity')
 const Routes = require('../../src/routes')
 
-const routes = {}
+let routesToTest = {}
 
 for (const key in Routes) {
   let item = Routes[key]
   if (item.controller === 'bespokeApplyOffline') {
-    Object.assign(routes, { item })
+    routesToTest[key] = item
   }
 }
 
@@ -59,7 +59,7 @@ const comparisonValues = ACTIVITY_ITEMS
   .filter((item) => !item.canApplyFor || !item.canApplyOnline)
   .map(({ id }) => id)
 
-Object.entries(routes).forEach(([route, { path: routePath, pageHeading, pageDescription, nextRoute }]) => {
+Object.entries(routesToTest).forEach(([route, { path: routePath, itemType, pageHeading, pageDescription, nextRoute }]) => {
   lab.experiment(route, () => {
     let sandbox
     let mocks

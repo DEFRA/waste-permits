@@ -14,6 +14,7 @@ module.exports = class BespokeApplyOfflineController extends BaseController {
     if (itemType) {
       const context = await RecoveryService.createApplicationContext(h)
       const { facilityType, wasteActivities } = context
+
       switch (itemType) {
         case 'wasteActivity':
           const wasteActivitiesForFacilityTypes = (await ItemEntity.listWasteActivitiesForFacilityTypes(context, [facilityType.id])).filter(({ shortName }) => wasteActivities.includes(shortName))
