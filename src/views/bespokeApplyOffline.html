@@ -9,9 +9,11 @@
 
             {{> common/pageHeading pageHeading }}
 
-            {{#each items}}
-            <p>{{this}}</p>
-            {{/each}}
+            <div id="items">
+                {{#each items}}
+                <p>{{this}}</p>
+                {{/each}}
+            </div>
 
             <p>{{pageDescription}}</p>
 
