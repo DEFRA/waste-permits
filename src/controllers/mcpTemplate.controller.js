@@ -3,8 +3,7 @@
 const BaseController = require('./base.controller')
 const McpTemplate = require('../models/taskList/mcpTemplate.task')
 const RecoveryService = require('../services/recovery.service')
-const Constants = require('../constants')
-const { BESPOKE, STANDARD_RULES } = Constants.PermitTypes
+const { BESPOKE, STANDARD_RULES } = require('../constants').PermitTypes
 const { STATIONARY_MCP, STATIONARY_SG, STATIONARY_MCP_AND_SG, MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
 let templatesStandardRules = [
   { id: 'mcp-template-xls-link', name: 'Plant or generator list template (Excel XLS)', file: 'mcp-plant-generator-list-template-v0-1.xls' },
@@ -20,25 +19,25 @@ let templatesBespokeAppendix2 = [
 ]
 
 module.exports = class McpTemplateController extends BaseController {
-  async getTemplates ({ permitType, mcpType = {} }) {
+  async getTemplates ({ taskDeterminants: { mcpType, permitType } }) {
     // There are different templates, so show the template downloads relevant to this application
     switch (permitType) {
-      case STANDARD_RULES.id:
+      case STANDARD_RULES:
         return templatesStandardRules
-      case BESPOKE.id:
-        switch (mcpType.id) {
-          case STATIONARY_MCP.id:
-          case STATIONARY_MCP_AND_SG.id:
-          case MOBILE_SG_AND_MCP.id:
+      case BESPOKE:
+        switch (mcpType) {
+          case STATIONARY_MCP:
+          case STATIONARY_MCP_AND_SG:
+          case MOBILE_SG_AND_MCP:
             return templatesBespokeAppendix1
-          case STATIONARY_SG.id:
-          case MOBILE_SG.id:
+          case STATIONARY_SG:
+          case MOBILE_SG:
             return templatesBespokeAppendix2
           default:
             throw new Error(`Unexpected mcpType: ${mcpType.id}`)
         }
       default:
-        throw new Error(`Unexpected permitType: ${permitType}`)
+        throw new Error(`Unexpected permitType: ${permitType.id}`)
     }
   }
 

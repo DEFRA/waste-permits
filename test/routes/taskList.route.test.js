@@ -248,7 +248,7 @@ lab.experiment('Task List page tests:', () => {
     mocks.context.isBespoke = true
     mocks.context.permitType = BESPOKE.id
     mocks.dataStore.data.airDispersionModellingRequired = true
-    Object.assign(mocks.mcpType, STATIONARY_MCP)
+    mocks.taskDeterminants.mcpType = STATIONARY_MCP
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
     // Check the existence of the page title and Bespoke info
@@ -262,7 +262,7 @@ lab.experiment('Task List page tests:', () => {
     mocks.context.isBespoke = true
     mocks.context.permitType = BESPOKE.id
     mocks.dataStore.data.airDispersionModellingRequired = false
-    Object.assign(mocks.mcpType, STATIONARY_MCP)
+    mocks.taskDeterminants.mcpType = STATIONARY_MCP
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
     // Check the existence of the page title and Bespoke info

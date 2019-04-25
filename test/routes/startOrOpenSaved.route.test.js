@@ -8,7 +8,6 @@ const server = require('../../server')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/persistence/entities/application.entity')
-const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
 
 const CookieService = require('../../src/services/cookie.service')

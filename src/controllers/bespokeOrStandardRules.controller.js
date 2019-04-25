@@ -3,7 +3,6 @@
 const BaseController = require('./base.controller')
 const featureConfig = require('../config/featureConfig')
 const RecoveryService = require('../services/recovery.service')
-const DataStore = require('../models/dataStore.model')
 const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = require('../constants').PermitTypes
 
 module.exports = class BespokeOrStandardRulesController extends BaseController {
@@ -26,14 +25,14 @@ module.exports = class BespokeOrStandardRulesController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h)
+    const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
     // Save the permit type in the Data store
     const permitType = request.payload['permit-type']
 
     if (![BESPOKE, STANDARD_RULES].includes(permitType)) {
       throw new Error(`Unexpected permitType: ${permitType}`)
     } else {
-      await DataStore.save(context, { permitType })
+      await taskDeterminants.save({ permitType })
 
       if (permitType === BESPOKE) {
         // Enter the triage steps for bespoke

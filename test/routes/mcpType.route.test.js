@@ -9,7 +9,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
-const McpType = require('../../src/models/mcpType.model')
+const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -35,8 +35,8 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
-  sandbox.stub(McpType.prototype, 'save').value(() => undefined)
-  sandbox.stub(McpType, 'get').value(() => mocks.mcpType)
+  sandbox.stub(TaskDeterminants.prototype, 'save').value(() => undefined)
+  sandbox.stub(TaskDeterminants, 'get').value(() => mocks.taskDeterminants)
 })
 
 lab.afterEach(() => {

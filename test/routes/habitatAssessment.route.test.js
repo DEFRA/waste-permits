@@ -13,7 +13,7 @@ const StandardRule = require('../../src/persistence/entities/standardRule.entity
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
-const DataStore = require('../../src/models/dataStore.model')
+const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const { MOBILE_SG } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp-check/habitat-assessment'
@@ -21,7 +21,7 @@ const nextRoutePath = '/maintain-application-lines'
 
 let sandbox
 let mocks
-let dataStoreStub
+let taskDeterminantsStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
@@ -34,8 +34,8 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
-  sandbox.stub(DataStore, 'get').value(() => mocks.dataStore)
-  dataStoreStub = sandbox.stub(DataStore, 'save')
+  sandbox.stub(TaskDeterminants, 'get').value(() => mocks.taskDeterminants)
+  taskDeterminantsStub = sandbox.stub(TaskDeterminants.prototype, 'save')
 })
 
 lab.afterEach(() => {
@@ -74,12 +74,12 @@ lab.experiment('Habitat assessment page tests:', () => {
       })
 
       lab.test('Check the page is not displayed for certain mcp types', async () => {
-        Object.assign(mocks.mcpType, MOBILE_SG) // Set the mock mcp type so the screen does NOT display
+        mocks.taskDeterminants.mcpType = MOBILE_SG // Set the mock mcp type so the screen does NOT display
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].habitatAssessmentRequired).to.equal(false)
+        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+        Code.expect(taskDeterminantsStub.args[0][0].habitatAssessmentRequired).to.equal(false)
       })
     })
   })
@@ -102,8 +102,8 @@ lab.experiment('Habitat assessment page tests:', () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
-      Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].habitatAssessmentRequired).to.equal(true)
+      Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+      Code.expect(taskDeterminantsStub.args[0][0].habitatAssessmentRequired).to.equal(true)
     })
 
     lab.test('Success - no', async () => {
@@ -112,8 +112,8 @@ lab.experiment('Habitat assessment page tests:', () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
-      Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].habitatAssessmentRequired).to.equal(false)
+      Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+      Code.expect(taskDeterminantsStub.args[0][0].habitatAssessmentRequired).to.equal(false)
     })
 
     lab.test('Invalid input', async () => {

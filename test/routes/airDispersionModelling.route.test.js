@@ -13,7 +13,7 @@ const StandardRule = require('../../src/persistence/entities/standardRule.entity
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
-const DataStore = require('../../src/models/dataStore.model')
+const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const { STATIONARY_MCP, STATIONARY_SG, MOBILE_SG } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp-check/air-dispersion-modelling-report'
@@ -21,11 +21,11 @@ const nextRoutePath = '/mcp-check/energy-report'
 
 let sandbox
 let mocks
-let dataStoreStub
+let taskDeterminantsStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-  mocks.dataStore.data.mcpType = STATIONARY_SG.id // Set the mock mcp type so the screen displays
+  mocks.taskDeterminants.mcpType = STATIONARY_SG.id // Set the mock mcp type so the screen displays
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -35,8 +35,8 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
-  sandbox.stub(DataStore, 'get').value(() => mocks.dataStore)
-  dataStoreStub = sandbox.stub(DataStore, 'save')
+  sandbox.stub(TaskDeterminants, 'get').value(() => mocks.taskDeterminants)
+  taskDeterminantsStub = sandbox.stub(TaskDeterminants.prototype, 'save')
 })
 
 lab.afterEach(() => {
@@ -70,25 +70,25 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       })
 
       lab.test('Check the links are correct when the type is a stationary mcp', async () => {
-        Object.assign(mocks.mcpType, STATIONARY_MCP)
+        mocks.taskDeterminants.mcpType = STATIONARY_MCP
         const doc = await GeneralTestHelper.getDoc(getRequest)
         Code.expect(doc.getElementById('stationary-mcp-risk-assessment-tool-link').getAttribute('href')).to.equal('https://www.gov.uk/government/collections/risk-assessments-for-specific-activities-environmental-permits#H1-software-tool')
       })
 
       lab.test('Check the links are correct when the type is a stationary sg', async () => {
-        Object.assign(mocks.mcpType, STATIONARY_SG)
+        mocks.taskDeterminants.mcpType = STATIONARY_SG
         const doc = await GeneralTestHelper.getDoc(getRequest)
         Code.expect(doc.getElementById('stationary-sg-risk-assessment-tool-link').getAttribute('href')).to.equal('https://www.gov.uk/government/collections/risk-assessments-for-specific-activities-environmental-permits#H1-software-tool')
         Code.expect(doc.getElementById('specified-screening-tool-link').getAttribute('href')).to.equal('')
       })
 
       lab.test('Check the page is not displayed for certain mcp types', async () => {
-        Object.assign(mocks.mcpType, MOBILE_SG) // Set the mock mcp type so the screen does NOT display
+        mocks.taskDeterminants.mcpType = MOBILE_SG
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        Code.expect(dataStoreStub.callCount).to.equal(1)
-        Code.expect(dataStoreStub.args[0][1].airDispersionModellingRequired).to.equal(false)
+        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+        Code.expect(taskDeterminantsStub.args[0][0].airDispersionModellingRequired).to.equal(false)
       })
     })
   })
@@ -111,8 +111,8 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
-      Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].airDispersionModellingRequired).to.equal(true)
+      Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+      Code.expect(taskDeterminantsStub.args[0][0].airDispersionModellingRequired).to.equal(true)
     })
 
     lab.test('Success - no', async () => {
@@ -121,8 +121,8 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
-      Code.expect(dataStoreStub.callCount).to.equal(1)
-      Code.expect(dataStoreStub.args[0][1].airDispersionModellingRequired).to.equal(false)
+      Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+      Code.expect(taskDeterminantsStub.args[0][0].airDispersionModellingRequired).to.equal(false)
     })
 
     lab.test('Invalid input', async () => {
