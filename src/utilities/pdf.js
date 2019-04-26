@@ -1,8 +1,8 @@
 'use strict'
 
-const pdfMakePrinter = require('pdfmake')
+const PdfMakePrinter = require('pdfmake')
 
-const printer = new pdfMakePrinter()
+const printer = new PdfMakePrinter()
 
 console.log(printer)
 
