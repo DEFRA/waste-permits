@@ -1,8 +1,8 @@
 'use strict'
 
 const Dynamics = require('../../dynamics')
-const { MCP, WASTE } = require('../../constants').PAYMENT_CONFIGURATION_PREFIX
-const { WASTE_OPERATION } = Dynamics.FACILITY_TYPES
+const { MCP_PREFIX, WASTE_PREFIX } = require('../../constants').PAYMENT_CONFIGURATION_PREFIX
+const { MCP } = Dynamics.FACILITY_TYPES
 const { APPLICATION_RECEIVED, CARD_PROBLEM } = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
@@ -12,7 +12,7 @@ module.exports = class PaymentResultController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h, { applicationReturn: true, cardPayment: true })
     const { cardPayment, slug, taskDeterminants } = context
     const { facilityType } = taskDeterminants
-    const paymentConfigurationPrefix = facilityType === WASTE_OPERATION ? WASTE : MCP
+    const paymentConfigurationPrefix = facilityType === MCP ? MCP_PREFIX : WASTE_PREFIX
 
     const paymentStatus = await cardPayment.getCardPaymentResult(context, paymentConfigurationPrefix)
     let path = `${APPLICATION_RECEIVED.path}/${slug}`

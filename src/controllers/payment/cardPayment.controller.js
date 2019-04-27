@@ -1,8 +1,8 @@
 'use strict'
 
 const Dynamics = require('../../dynamics')
-const { MCP, WASTE } = require('../../constants').PAYMENT_CONFIGURATION_PREFIX
-const { WASTE_OPERATION } = Dynamics.FACILITY_TYPES
+const { MCP_PREFIX, WASTE_PREFIX } = require('../../constants').PAYMENT_CONFIGURATION_PREFIX
+const { MCP } = Dynamics.FACILITY_TYPES
 const { CARD_PROBLEM } = require('../../routes')
 const BaseController = require('../base.controller')
 const Payment = require('../../persistence/entities/payment.entity')
@@ -14,7 +14,7 @@ module.exports = class CardPaymentController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h, { applicationLine: true, standardRule: true })
     const { application, applicationLine, standardRule, slug, taskDeterminants } = context
     const { facilityType } = taskDeterminants
-    const paymentConfigurationPrefix = facilityType === WASTE_OPERATION ? WASTE : MCP
+    const paymentConfigurationPrefix = facilityType === MCP ? MCP_PREFIX : WASTE_PREFIX
 
     let { returnUrl } = request.query
 

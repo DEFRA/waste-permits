@@ -68,8 +68,8 @@ Constants.MCP_CATEGORY_NAMES.forEach((mcpCategoryName) => {
 })
 
 Constants.PAYMENT_CONFIGURATION_PREFIX = {
-  WASTE: 'WastePermits.ECOM.',
-  MCP: 'MCP.ECOM.'
+  WASTE_PREFIX: 'WastePermits.ECOM.',
+  MCP_PREFIX: 'MCP.ECOM.'
 }
 
 Constants.DEFRA_COOKIE_KEY = 'DefraSession'
