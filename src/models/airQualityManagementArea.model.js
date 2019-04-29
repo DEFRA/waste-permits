@@ -1,12 +1,15 @@
 'use strict'
 
 const ApplicationAnswer = require('../persistence/entities/applicationAnswer.entity')
-
-const IS_IN_AQMA = 'aqma-is-in-aqma'
-const AQMA_NAME = 'aqma-name'
-const NO2_LEVEL = 'aqma-nitrogen-dioxide-level'
-const AUTH_NAME = 'aqma-local-authority-name'
-const answerIds = [IS_IN_AQMA, AQMA_NAME, NO2_LEVEL, AUTH_NAME]
+const { ApplicationQuestions } = require('../dynamics')
+const { AQMA } = ApplicationQuestions
+const { IS_IN_AQMA, AQMA_NAME, NO2_LEVEL, AUTH_NAME } = AQMA
+const answerIds = [
+  IS_IN_AQMA.questionCode,
+  AQMA_NAME.questionCode,
+  NO2_LEVEL.questionCode,
+  AUTH_NAME.questionCode
+]
 const YES = 'yes'
 const NO = 'no'
 
@@ -21,22 +24,18 @@ module.exports = class AirQualityManagementArea {
     let applicationAnswers
 
     applicationAnswers = [{
-      questionCode: IS_IN_AQMA,
+      questionCode: IS_IN_AQMA.questionCode,
       answerText: this.isInAqma ? YES : NO
+    }, {
+      questionCode: AQMA_NAME.questionCode,
+      answerText: this.name
+    }, {
+      questionCode: NO2_LEVEL.questionCode,
+      answerText: this.nitrogenDioxideLevel
+    }, {
+      questionCode: AUTH_NAME.questionCode,
+      answerText: this.localAuthorityName
     }]
-
-    if (this.isInAqma) {
-      applicationAnswers.push({
-        questionCode: AQMA_NAME,
-        answerText: this.name
-      }, {
-        questionCode: NO2_LEVEL,
-        answerText: this.nitrogenDioxideLevel
-      }, {
-        questionCode: AUTH_NAME,
-        answerText: this.localAuthorityName
-      })
-    }
 
     applicationAnswers.forEach(async (item) => {
       const applicationAnswer = new ApplicationAnswer(item)
@@ -48,10 +47,10 @@ module.exports = class AirQualityManagementArea {
 
   static async get (context) {
     const applicationAnswers = await ApplicationAnswer.listByMultipleQuestionCodes(context, answerIds)
-    const isInAqmaAnswer = applicationAnswers.find(({ questionCode }) => questionCode === IS_IN_AQMA)
-    const nameAnswer = applicationAnswers.find(({ questionCode }) => questionCode === AQMA_NAME)
-    const nitrogenDioxideLevelAnswer = applicationAnswers.find(({ questionCode }) => questionCode === NO2_LEVEL)
-    const localAuthorityNameAnswer = applicationAnswers.find(({ questionCode }) => questionCode === AUTH_NAME)
+    const isInAqmaAnswer = applicationAnswers.find(({ questionCode }) => questionCode === IS_IN_AQMA.questionCode)
+    const nameAnswer = applicationAnswers.find(({ questionCode }) => questionCode === AQMA_NAME.questionCode)
+    const nitrogenDioxideLevelAnswer = applicationAnswers.find(({ questionCode }) => questionCode === NO2_LEVEL.questionCode)
+    const localAuthorityNameAnswer = applicationAnswers.find(({ questionCode }) => questionCode === AUTH_NAME.questionCode)
 
     const aqma = {
       isInAqma: isInAqmaAnswer && isInAqmaAnswer.answerText === YES,
