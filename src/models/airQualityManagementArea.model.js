@@ -38,7 +38,6 @@ module.exports = class AirQualityManagementArea {
     }]
 
     applicationAnswers.forEach(async (item) => {
-      console.log(item)
       const applicationAnswer = new ApplicationAnswer(item)
       await applicationAnswer.save(context)
     })
