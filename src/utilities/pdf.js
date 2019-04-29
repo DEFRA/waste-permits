@@ -3,24 +3,24 @@
 const PdfMake = require('pdfmake')
 const fs = require('fs')
 
-const vfs_fonts = require('pdfmake/build/vfs_fonts.js')
+const vfsFonts = require('pdfmake/build/vfs_fonts.js')
 
 const printer = new PdfMake({
   Roboto: {
     normal: Buffer.from(
-      vfs_fonts.pdfMake.vfs['Roboto-Regular.ttf'],
+      vfsFonts.pdfMake.vfs['Roboto-Regular.ttf'],
       'base64'
     ),
     bold: Buffer.from(
-      vfs_fonts.pdfMake.vfs['Roboto-Medium.ttf'],
+      vfsFonts.pdfMake.vfs['Roboto-Medium.ttf'],
       'base64'
     ),
     italic: Buffer.from(
-      vfs_fonts.pdfMake.vfs['Roboto-Italic.ttf'],
+      vfsFonts.pdfMake.vfs['Roboto-Italic.ttf'],
       'base64'
     ),
     bolditalics: Buffer.from(
-      vfs_fonts.pdfMake.vfs['Roboto-MediumItalic.ttf'],
+      vfsFonts.pdfMake.vfs['Roboto-MediumItalic.ttf'],
       'base64'
     )
   },
