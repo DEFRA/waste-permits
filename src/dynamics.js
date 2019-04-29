@@ -56,6 +56,20 @@ const Dynamics = {
     }
   },
   ApplicationQuestions: {
+    AQMA: {
+      IS_IN_AQMA: {
+        questionCode: 'aqma-is-in-aqma'
+      },
+      AQMA_NAME: {
+        questionCode: 'aqma-name'
+      },
+      NO2_LEVEL: {
+        questionCode: 'aqma-nitrogen-dioxide-level'
+      },
+      AUTH_NAME: {
+        questionCode: 'aqma-local-authority-name'
+      }
+    },
     CHARITY_DETAILS: {
       NAME: {
         questionCode: 'general-charity-name'
