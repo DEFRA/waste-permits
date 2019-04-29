@@ -15,7 +15,7 @@ const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
-const DataStore = require('../../src/models/dataStore.model')
+const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const { BESPOKE, STANDARD_RULES } = require('../../src/constants').PermitTypes
 const { STATIONARY_MCP, MOBILE_SG } = require('../../src/dynamics').MCP_TYPES
 
@@ -39,7 +39,7 @@ lab.beforeEach(() => {
   sandbox.stub(McpTemplate, 'updateCompleteness').value(() => {})
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
-  sandbox.stub(DataStore, 'get').value(async () => mocks.dataStore)
+  sandbox.stub(TaskDeterminants, 'get').value(async () => mocks.taskDeterminants)
 })
 
 lab.afterEach(() => {
@@ -80,7 +80,7 @@ lab.experiment('MCP template download page tests:', () => {
       })
 
       lab.test('download links are correct for standard rules application', async () => {
-        mocks.context.permitType = STANDARD_RULES.id // Set the mock permit type
+        mocks.taskDeterminants.permitType = STANDARD_RULES // Set the mock permit type
         McpTemplate.isComplete = () => true
         const doc = await GeneralTestHelper.getDoc(request)
         Code.expect(doc.getElementById('mcp-template-xls-link-text').textContent).to.equal('Plant or generator list template (Excel XLS)')
@@ -91,8 +91,8 @@ lab.experiment('MCP template download page tests:', () => {
 
       // TODO: Set the correct download links once the files have been created
       lab.test('download links are correct for bespoke applications with mcp types that get APPENDIX 1', async () => {
-        mocks.context.permitType = BESPOKE.id // Set the mock permit type
-        Object.assign(mocks.mcpType, STATIONARY_MCP) // Set the mock mcp type to
+        mocks.taskDeterminants.permitType = BESPOKE // Set the mock permit type
+        mocks.taskDeterminants.mcpType = STATIONARY_MCP // Set the mock mcp type to
         McpTemplate.isComplete = () => true
         const doc = await GeneralTestHelper.getDoc(request)
         Code.expect(doc.getElementById('mcp-template-xls-link-text').textContent).to.equal('Plant or generator list template APPENDIX 1 (Excel XLS)')
@@ -103,8 +103,8 @@ lab.experiment('MCP template download page tests:', () => {
 
       // TODO: Set the correct download links once the files have been created
       lab.test('download links are correct for bespoke applications with mcp types that get APPENDIX 2', async () => {
-        mocks.context.permitType = BESPOKE.id // Set the mock permit type
-        Object.assign(mocks.mcpType, MOBILE_SG) // Set the mock mcp type to
+        mocks.taskDeterminants.permitType = BESPOKE // Set the mock permit type
+        mocks.taskDeterminants.mcpType = MOBILE_SG // Set the mock mcp type to
         McpTemplate.isComplete = () => true
         const doc = await GeneralTestHelper.getDoc(request)
         Code.expect(doc.getElementById('mcp-template-xls-link-text').textContent).to.equal('Plant or generator list template APPENDIX 2 (Excel XLS)')

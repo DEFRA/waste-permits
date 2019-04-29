@@ -9,7 +9,6 @@ const { firstCharToLowercase } = require('../utilities/utilities')
 const StandardRule = require('../persistence/entities/standardRule.entity')
 const StandardRuleType = require('../persistence/entities/standardRuleType.entity')
 const ApplicationLine = require('../persistence/entities/applicationLine.entity')
-const DataStore = require('../models/dataStore.model')
 const { PermitTypes } = require('../dynamics')
 const { STANDARD_RULES: { id: STANDARD_RULES } } = Constants.PermitTypes
 
@@ -32,7 +31,7 @@ module.exports = class PermitSelectController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { applicationLine: true })
-    let { application, applicationLine } = context
+    let { application, applicationLine, taskDeterminants } = context
 
     // Look up the Standard Rule based on the chosen permit type
     const standardRule = await StandardRule.getByCryptoId(context, request.payload['chosen-permit'])
@@ -63,7 +62,7 @@ module.exports = class PermitSelectController extends BaseController {
     CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)
 
     // Save the permit type in the Data store
-    await DataStore.save(context, { permitType: STANDARD_RULES })
+    await taskDeterminants.save({ permitType: STANDARD_RULES })
 
     if (isMcp) {
       return this.redirect({ h, route: Routes.MCP_EXISTING_PERMIT })

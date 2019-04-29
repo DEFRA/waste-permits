@@ -1,6 +1,5 @@
 'use strict'
 
-const DataStore = require('../models/dataStore.model')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const { MOBILE_SG, STATIONARY_MCP } = require('../dynamics').MCP_TYPES
@@ -8,13 +7,12 @@ const { MOBILE_SG, STATIONARY_MCP } = require('../dynamics').MCP_TYPES
 module.exports = class BestAvailableTechniquesRequiredSgController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const context = await RecoveryService.createApplicationContext(h)
+    const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
 
-    const { mcpType = {} } = context
-    switch (mcpType.id) {
-      case MOBILE_SG.id:
-      case STATIONARY_MCP.id:
-        await DataStore.save(context, { bestAvailableTechniquesAssessment: false })
+    switch (taskDeterminants.mcpType) {
+      case MOBILE_SG:
+      case STATIONARY_MCP:
+        await taskDeterminants.save({ bestAvailableTechniquesAssessment: false })
         return this.redirect({ h })
     }
 
@@ -26,7 +24,7 @@ module.exports = class BestAvailableTechniquesRequiredSgController extends BaseC
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h)
+    const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
 
     const {
       'thermal-rating': thermalRating,
@@ -35,7 +33,7 @@ module.exports = class BestAvailableTechniquesRequiredSgController extends BaseC
 
     const bestAvailableTechniquesAssessment = thermalRating === '20 to 50' && engineType === 'boiler etc'
 
-    await DataStore.save(context, { bestAvailableTechniquesAssessment })
+    await taskDeterminants.save({ bestAvailableTechniquesAssessment })
     return this.redirect({ h })
   }
 }

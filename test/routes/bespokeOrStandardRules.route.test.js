@@ -9,7 +9,7 @@ const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/persistence/entities/application.entity')
-const DataStore = require('../../src/models/dataStore.model')
+const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const featureConfig = require('../../src/config/featureConfig')
@@ -66,7 +66,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
-  sandbox.stub(DataStore, 'save').value(async () => mocks.dataStore.id)
+  sandbox.stub(TaskDeterminants.prototype, 'save').value(async () => undefined)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   // Todo: Remove hasBespokeFeature syub when bespoke is live

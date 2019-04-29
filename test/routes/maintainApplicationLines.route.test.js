@@ -23,14 +23,15 @@ let mocks
 let deleteSpy
 let saveSpy
 
-const wasteActivities = [
+const allActivities = [
   { id: 'act-1', shortName: '1-10-2' },
-  { id: 'act-2', shortName: '2-4-5' },
-  { id: 'act-3', shortName: '44-5-6' },
-  { id: 'act-4', shortName: 'ABC-D' }
+  { id: 'act-2', shortName: '1-10-3' },
+  { id: 'act-3', shortName: '2-4-5' },
+  { id: 'act-4', shortName: '44-5-6' },
+  { id: 'act-5', shortName: 'ABC-D' }
 ]
 
-const wasteAssessments = [
+const allAssessments = [
   { id: 'ass-1', shortName: 'MCP-EER' },
   { id: 'ass-2', shortName: 'MCP-BAT' },
   { id: 'ass-3', shortName: '1-19-2' }
@@ -41,12 +42,8 @@ lab.beforeEach(() => {
   mocks.context.isBespoke = true
   mocks.applicationLines = []
 
-  wasteActivities.forEach(({ id, shortName }) => {
-    mocks.wasteActivities.push(new Item({ id, shortName }))
-  })
-  wasteAssessments.forEach(({ id, shortName }) => {
-    mocks.wasteAssessments.push(new Item({ id, shortName }))
-  })
+  mocks.taskDeterminants.allActivities = allActivities.map(({ id, shortName }) => new Item({ id, shortName }))
+  mocks.taskDeterminants.allAssessments = allAssessments.map(({ id, shortName }) => new Item({ id, shortName }))
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -92,8 +89,8 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
         })
 
         lab.test('when there are application lines but none to delete and none to add', async () => {
-          mocks.dataStore.wasteActivities = wasteActivities.map(({ shortName }) => shortName).join(',')
-          wasteActivities.forEach(({ id }) => mocks.applicationLines.push(new ApplicationLine(Object.assign({}, mocks.applicationLine, { itemId: id }))))
+          mocks.taskDeterminants.wasteActivities = [...allActivities]
+          allActivities.forEach(({ id }) => mocks.applicationLines.push(new ApplicationLine(Object.assign({}, mocks.applicationLine, { itemId: id }))))
 
           const res = await server.inject(getRequest)
           Code.expect(saveSpy.callCount).to.equal(0)
@@ -103,9 +100,9 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
         })
 
         lab.test('when there are application lines to delete and some to add', async () => {
-          const itemsToDelete = [wasteActivities[0], wasteActivities[1]]
-          const itemsToAdd = [wasteActivities[2], wasteActivities[3]]
-          mocks.dataStore.wasteActivities = itemsToAdd.map(({ shortName }) => shortName).join(',')
+          const itemsToDelete = [allActivities[0], allActivities[1]]
+          const itemsToAdd = [allActivities[2], allActivities[3]]
+          mocks.taskDeterminants.wasteActivities = [...itemsToAdd]
           itemsToDelete.forEach(({ id }) => mocks.applicationLines.push(new ApplicationLine(Object.assign({}, mocks.applicationLine, { itemId: id }))))
 
           const res = await server.inject(getRequest)
@@ -116,7 +113,7 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
         })
 
         lab.test('when the facility type is mcp and all flags have been set to true', async () => {
-          Object.assign(mocks.dataStore, {
+          Object.assign(mocks.taskDeterminants, {
             facilityType: 'mcp',
             airDispersionModellingRequired: true,
             energyEfficiencyReportRequired: true,
@@ -132,7 +129,7 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
         })
 
         lab.test('when the facility type is mcp and all flags have been set to false', async () => {
-          Object.assign(mocks.dataStore, {
+          Object.assign(mocks.taskDeterminants, {
             facilityType: 'mcp',
             airDispersionModellingRequired: false,
             energyEfficiencyReportRequired: false,
@@ -140,11 +137,14 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
             habitatAssessmentRequired: false
           })
 
-          wasteActivities.forEach(({ id }) => mocks.applicationLines.push(new ApplicationLine(Object.assign({}, mocks.applicationLine, { itemId: id }))))
-          wasteAssessments.forEach(({ id }) => mocks.applicationLines.push(new ApplicationLine(Object.assign({}, mocks.applicationLine, { itemId: id }))))
+          allActivities
+            .filter(({ shortName }) => shortName !== '1-10-3') // This is to test this activity will be added and the other 7 will be deleted
+            .forEach(({ id }) => mocks.applicationLines.push(new ApplicationLine(Object.assign({}, mocks.applicationLine, { itemId: id }))))
+          allAssessments
+            .forEach(({ id }) => mocks.applicationLines.push(new ApplicationLine(Object.assign({}, mocks.applicationLine, { itemId: id }))))
 
           const res = await server.inject(getRequest)
-          Code.expect(saveSpy.callCount).to.equal(0)
+          Code.expect(saveSpy.callCount).to.equal(1)
           Code.expect(deleteSpy.callCount).to.equal(7)
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(nextPath)

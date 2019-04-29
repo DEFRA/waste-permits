@@ -2,7 +2,6 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const DataStore = require('../models/dataStore.model')
 const { MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
 
 module.exports = class HabitatAssessmentController extends BaseController {
@@ -11,12 +10,12 @@ module.exports = class HabitatAssessmentController extends BaseController {
 
     // Do not show the page for some MCP types
     const context = await RecoveryService.createApplicationContext(h)
-    const { mcpType = {} } = context
-    switch (mcpType.id) {
-      case MOBILE_SG.id:
-      case MOBILE_SG_AND_MCP.id:
+    const { taskDeterminants } = context
+    switch (taskDeterminants.mcpType) {
+      case MOBILE_SG:
+      case MOBILE_SG_AND_MCP:
       // Set the habitatAssessmentRequired to false and redirect to the next page
-        await DataStore.save(context, { habitatAssessmentRequired: false })
+        await taskDeterminants.save({ habitatAssessmentRequired: false })
         return this.redirect({ h })
     }
 
@@ -25,9 +24,9 @@ module.exports = class HabitatAssessmentController extends BaseController {
 
   async doPost (request, h) {
     // Store the true/false answer and redirect to the next page
-    const context = await RecoveryService.createApplicationContext(h)
+    const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
     const habitatAssessmentRequired = request.payload['habitat-assessment'] === 'yes'
-    await DataStore.save(context, { habitatAssessmentRequired: habitatAssessmentRequired })
+    await taskDeterminants.save({ habitatAssessmentRequired })
 
     return this.redirect({ h })
   }

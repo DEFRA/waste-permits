@@ -7,12 +7,12 @@ const { MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
 
 module.exports = class ExistingPermitController extends BaseController {
   async doGet (request, h, errors) {
-    const { mcpType = {}, isBespoke } = await RecoveryService.createApplicationContext(h)
+    const { taskDeterminants: { mcpType }, isBespoke } = await RecoveryService.createApplicationContext(h)
 
     if (isBespoke) {
-      switch (mcpType.id) {
-        case MOBILE_SG.id:
-        case MOBILE_SG_AND_MCP.id:
+      switch (mcpType) {
+        case MOBILE_SG:
+        case MOBILE_SG_AND_MCP:
           return this.redirect({ h, route: MCP_AIR_DISPERSION_MODELLING })
       }
     }

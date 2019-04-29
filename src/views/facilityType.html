@@ -21,7 +21,7 @@
             {{> common/fieldError fieldId='facility-type-error' message=errors.facility-type }}
             {{#each facilityTypes}}
             <div class="multiple-choice">
-              <input id="facility-type-{{this.id}}-input" type="radio" name="facility-type" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
+              <input id="facility-type-{{this.id}}-input" type="radio" name="facility-type" value="{{this.id}}" {{#if this.selected}}checked="checked"{{/if}}>
               <label id="facility-type-{{this.id}}-label" class="selection-button-radio" for="facility-type-{{this.id}}-input">
                 <span id="facility-type-{{this.id}}-text">{{this.text}}</span>
                 {{#if this.description}}<span id="facility-type-{{this.id}}-hint" class="form-hint">{{this.description}}</span>{{/if}}

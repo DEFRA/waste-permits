@@ -19,10 +19,7 @@ const StandardRuleType = require('../../src/persistence/entities/standardRuleTyp
 
 const ContactDetail = require('../../src/models/contactDetail.model')
 const CharityDetail = require('../../src/models/charityDetail.model')
-const FacilityType = require('../../src/models/facilityType.model')
-const WasteActivities = require('../../src/models/wasteActivities.model')
-const WasteAssessments = require('../../src/models/wasteAssessments.model')
-const McpType = require('../../src/models/mcpType.model')
+const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const DataStore = require('../../src/models/dataStore.model')
 const McpBusinessType = require('../../src/models/mcpBusinessType.model')
 
@@ -453,9 +450,7 @@ class Mocks {
       const dataStore = this.dataStore
       const standardRule = this.standardRule
       const permitHolderType = this.permitHolderType
-      const mcpType = this.mcpType
-      const facilityType = this.facilityType
-      const wasteActivities = this.wasteActivities
+      const taskDeterminants = this.taskDeterminants
       this._context = {
         authToken: 'AUTH_TOKEN',
         account,
@@ -469,9 +464,7 @@ class Mocks {
         dataStore,
         permitHolderType,
         standardRule,
-        mcpType,
-        facilityType,
-        wasteActivities,
+        taskDeterminants,
         permitType: Constants.PermitTypes.STANDARD_RULES.id,
         isBespoke: false
       }
@@ -482,11 +475,6 @@ class Mocks {
   get dataStore () {
     const { dataStore } = this.mockData
     return this._dataStore || (this._dataStore = new DataStore(dataStore))
-  }
-
-  get facilityType () {
-    const { facilityType } = this.mockData
-    return this._facilityType || (this._facilityType = new FacilityType(facilityType))
   }
 
   get location () {
@@ -506,11 +494,6 @@ class Mocks {
   get mcpMainBusinessTypesList () {
     const { mcpMainBusinessTypesList } = this.mockData
     return this._mcpMainBusinessTypesList || (this._mcpMainBusinessTypesList = mcpMainBusinessTypesList.map((item) => Object.assign({}, item)))
-  }
-
-  get mcpType () {
-    const { mcpType } = this.mockData
-    return this._mcpType || (this._mcpType = new McpType(mcpType))
   }
 
   get needToConsult () {
@@ -568,14 +551,20 @@ class Mocks {
     return this._standardRuleTypeForMcp || (this._standardRuleTypeForMcp = new StandardRuleType(standardRuleTypeForMcp))
   }
 
+  get taskDeterminants () {
+    const { mcpType, facilityType, wasteActivities, wasteAssessments } = this.mockData
+    const permitType = Constants.PermitTypes.STANDARD_RULES
+    return this._taskDeterminants || (this._taskDeterminants = new TaskDeterminants({ context: {}, mcpType, permitType, facilityType, wasteActivities, wasteAssessments }))
+  }
+
   get wasteActivities () {
     const { wasteActivities } = this.mockData
-    return this._wasteActivities || (this._wasteActivities = new WasteActivities(wasteActivities))
+    return this._wasteActivities || (this._wasteActivities = [...wasteActivities])
   }
 
   get wasteAssessments () {
     const { wasteAssessments } = this.mockData
-    return this._wasteAssessments || (this._wasteAssessments = new WasteAssessments(wasteAssessments))
+    return this._wasteAssessments || (this._wasteAssessments = [...wasteAssessments])
   }
 }
 
