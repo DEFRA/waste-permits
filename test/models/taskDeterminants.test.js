@@ -101,14 +101,25 @@ lab.experiment('TaskDeterminants Model tests:', () => {
 
     lab.test('wasteActivities', async () => {
       const taskDeterminants = await TaskDeterminants.get(context)
-      await taskDeterminants.save({ wasteActivities: [allActivities[3].shortName, allAssessments[2].shortName] })
-      Code.expect(taskDeterminants.wasteAssessments).to.equal([allActivities[3], allActivities[2]])
+      await taskDeterminants.save({ wasteActivities: [allActivities[3].shortName, allActivities[2].shortName] })
+      Code.expect(taskDeterminants.wasteActivities).to.equal([allActivities[3], allActivities[2]])
+    })
+    lab.test('no wasteActivities', async () => {
+      const taskDeterminants = await TaskDeterminants.get(context)
+      await taskDeterminants.save({ wasteActivities: '' })
+      Code.expect(taskDeterminants.wasteActivities).to.equal([])
     })
 
     lab.test('wasteAssessments', async () => {
       const taskDeterminants = await TaskDeterminants.get(context)
       await taskDeterminants.save({ wasteAssessments: [allAssessments[0].shortName, allAssessments[1].shortName] })
       Code.expect(taskDeterminants.wasteAssessments).to.equal([allAssessments[0], allAssessments[1]])
+    })
+
+    lab.test('no wasteAssessments', async () => {
+      const taskDeterminants = await TaskDeterminants.get(context)
+      await taskDeterminants.save({ wasteAssessments: '' })
+      Code.expect(taskDeterminants.wasteAssessments).to.equal([])
     })
   })
 })
