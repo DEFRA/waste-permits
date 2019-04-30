@@ -57,20 +57,26 @@ module.exports = class MaintainApplicationLinesController extends BaseController
 
     // Delete application lines that are no longer required
     const itemIds = new Set(items.map(({ id }) => id))
-    const toDelete = applicationLines.filter(({ itemId }) => itemId && !itemIds.has(itemId))
-    await Promise.all(toDelete.map((applicationLine) => applicationLine.delete(context)))
+    for (let index = 0; index < applicationLines.length; index++) {
+      const applicationLine = applicationLines[index]
+      if (applicationLine.itemId && !itemIds.has(applicationLine.itemId)) {
+        await applicationLine.delete(context)
+      }
+    }
 
     // Add missing application lines that are required
     const applicationLineItemIds = new Set(applicationLines.map(({ itemId }) => itemId))
-    const toAdd = items.filter(({ id }) => !applicationLineItemIds.has(id))
-    await Promise.all(toAdd.map((item) => {
-      const applicationLine = new ApplicationLine({
-        applicationId,
-        itemId: item.id,
-        permitType: isBespoke ? BESPOKE : STANDARD
-      })
-      return applicationLine.save(context)
-    }))
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index]
+      if (!applicationLineItemIds.has(item.id)) {
+        const applicationLine = new ApplicationLine({
+          applicationId,
+          itemId: item.id,
+          permitType: isBespoke ? BESPOKE : STANDARD
+        })
+        await applicationLine.save(context)
+      }
+    }
 
     return this.redirect({ h })
   }
