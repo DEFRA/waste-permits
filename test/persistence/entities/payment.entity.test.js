@@ -150,7 +150,7 @@ lab.experiment('Payment Entity tests:', () => {
       Code.expect(actionDataObject).to.equal(expectedActionDataObject)
       return { Status: true }
     })
-    Code.expect(await testPayment.getCardPaymentResult(context)).to.equal(true)
+    Code.expect(await testPayment.getCardPaymentResult(context, CONFIGURATION_PREFIX)).to.equal(true)
   })
 
   lab.test(`makeCardPayment() method is successful`, async () => {
@@ -174,7 +174,7 @@ lab.experiment('Payment Entity tests:', () => {
       Code.expect(actionDataObject).to.equal(expectedActionDataObject)
       return actionResult
     })
-    Code.expect(await testPayment.makeCardPayment(context, description, returnUrl)).to.equal(actionResult)
+    Code.expect(await testPayment.makeCardPayment(context, description, returnUrl, CONFIGURATION_PREFIX)).to.equal(actionResult)
   })
 
   lab.test('save() method saves a new Payment object', async () => {
