@@ -12,6 +12,7 @@ module.exports = class TaskDeterminants {
     Object.entries(data).forEach(([prop, val]) => {
       this[prop] = val
     })
+    this.__originalVals = {}
   }
 
   _extendItemArray (array, all) {
@@ -92,13 +93,13 @@ module.exports = class TaskDeterminants {
       await TaskDeterminants._getAnswer(context, MCP_PERMIT_TYPES) || {}
     ])
 
-    // Save original values so that when we save the data, we don't bother to save unchanged values.
-    const __originalVals = {
-      mcpType
-    }
-
     const determinants = Object.assign({ mcpType, allActivities, allAssessments }, data)
-    return new TaskDeterminants({ context, __originalVals, ...determinants })
+    const taskDeterminants = new TaskDeterminants({ context, ...determinants })
+
+    // Save original values so that when we save the data, we don't bother to save unchanged values.
+    taskDeterminants.__originalVals = determinants
+
+    return taskDeterminants
   }
 
   /// facilityType ///
