@@ -63,8 +63,8 @@ module.exports = class TaskDeterminants {
     const data = {
       permitType: _permitType.id,
       facilityType: _facilityType.id,
-      wasteActivities: _wasteActivities,
-      wasteAssessments: _wasteAssessments,
+      wasteActivities: _wasteActivities.filter((activity) => typeof activity === 'object').map(({ shortName }) => shortName).join(','),
+      wasteAssessments: _wasteAssessments.filter((assessment) => typeof assessment === 'object').map(({ shortName }) => shortName).join(','),
       airDispersionModellingRequired,
       energyEfficiencyReportRequired,
       bestAvailableTechniquesAssessment,
@@ -81,8 +81,8 @@ module.exports = class TaskDeterminants {
       await TaskDeterminants._getAnswer(context, MCP_PERMIT_TYPES) || {}
     ])
 
-    Object.assign(data, { mcpType, allActivities, allAssessments })
-    return new TaskDeterminants({ context, ...data })
+    const determinants = Object.assign({ mcpType, allActivities, allAssessments }, data)
+    return new TaskDeterminants({ context, ...determinants })
   }
 
   /// facilityType ///
@@ -127,6 +127,9 @@ module.exports = class TaskDeterminants {
   /// wasteActivities ///
 
   set wasteActivities (wasteActivities) {
+    if (typeof wasteActivities === 'string') {
+      wasteActivities = wasteActivities.split(',').filter((item) => item)
+    }
     this._wasteActivities = this._extendItemArray(wasteActivities, 'allActivities')
   }
 
@@ -137,6 +140,9 @@ module.exports = class TaskDeterminants {
   /// wasteAssessments ///
 
   set wasteAssessments (wasteAssessments) {
+    if (typeof wasteAssessments === 'string') {
+      wasteAssessments = wasteAssessments.split(',').filter((item) => item)
+    }
     this._wasteAssessments = this._extendItemArray(wasteAssessments, 'allAssessments')
   }
 
