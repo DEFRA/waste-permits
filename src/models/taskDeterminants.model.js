@@ -40,6 +40,10 @@ module.exports = class TaskDeterminants {
     return ApplicationAnswer.getByQuestionCode(context, questionCode) || {}
   }
 
+  _hasChanged (prop) {
+    return this.__originalVals[prop] !== this[prop]
+  }
+
   async save (params) {
     if (params) {
       Object.entries(params).forEach(([prop, val]) => {
@@ -58,7 +62,9 @@ module.exports = class TaskDeterminants {
       habitatAssessmentRequired = false
     } = this
 
-    await this._saveAnswer(MCP_PERMIT_TYPES, { answerCode: _mcpType.id })
+    if (this._hasChanged('mcpType')) {
+      await this._saveAnswer(MCP_PERMIT_TYPES, { answerCode: _mcpType.id })
+    }
 
     const data = {
       permitType: _permitType.id,
@@ -74,15 +80,25 @@ module.exports = class TaskDeterminants {
   }
 
   static async get (context) {
-    const [{ data = {} }, allActivities, allAssessments, { answerCode: mcpType }] = await Promise.all([
+    let [
+      { data = {} },
+      allActivities,
+      allAssessments,
+      { answerCode: mcpType }
+    ] = await Promise.all([
       await DataStore.get(context),
       Item.listWasteActivities(context),
       Item.listWasteAssessments(context),
       await TaskDeterminants._getAnswer(context, MCP_PERMIT_TYPES) || {}
     ])
 
+    // Save original values so that when we save the data, we don't bother to save unchanged values.
+    const __originalVals = {
+      mcpType
+    }
+
     const determinants = Object.assign({ mcpType, allActivities, allAssessments }, data)
-    return new TaskDeterminants({ context, ...determinants })
+    return new TaskDeterminants({ context, __originalVals, ...determinants })
   }
 
   /// facilityType ///
