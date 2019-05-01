@@ -8,6 +8,7 @@ const Mocks = require('../helpers/mocks')
 
 const ApplicationAnswer = require('../../src/persistence/entities/applicationAnswer.entity')
 const Item = require('../../src/persistence/entities/item.entity')
+const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
 const DataStore = require('../../src/models/dataStore.model')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const { STATIONARY_SG, MOBILE_SG } = require('../../src/dynamics').MCP_TYPES
@@ -50,6 +51,7 @@ lab.beforeEach(() => {
   applicationAnswerSaveStub = sandbox.stub(ApplicationAnswer.prototype, 'save').callsFake(() => undefined)
   sandbox.stub(Item, 'listWasteActivities').callsFake(() => mocks.wasteActivities)
   sandbox.stub(Item, 'listWasteAssessments').callsFake(() => mocks.wasteAssessments)
+  sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(DataStore, 'get').callsFake(() => mocks.dataStore)
   dataSourceSaveStub = sandbox.stub(DataStore.prototype, 'save').callsFake(() => undefined)
 })

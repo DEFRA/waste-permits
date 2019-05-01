@@ -102,7 +102,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
         route = Routes.PERMIT_CATEGORY
       }
 
-      const taskDeterminants = new TaskDeterminants({ context: cookie, permitType, facilityType })
+      const taskDeterminants = new TaskDeterminants({ context: cookie, permitType, permitCategory: category, facilityType })
       await taskDeterminants.save()
     }
 

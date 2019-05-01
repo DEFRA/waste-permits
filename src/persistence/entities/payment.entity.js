@@ -1,6 +1,8 @@
 'use strict'
 
-const { PaymentTypes } = require('../../dynamics')
+const { PAYMENT_CONFIGURATION_PREFIX, MCP_CATEGORY_NAMES } = require('../../constants')
+const { MCP_PREFIX, WASTE_PREFIX } = PAYMENT_CONFIGURATION_PREFIX
+const { PaymentTypes, MCP } = require('../../dynamics')
 const Utilities = require('../../utilities/utilities')
 const DynamicsDalService = require('../../services/dynamicsDal.service')
 const BaseEntity = require('./base.entity')
@@ -30,6 +32,16 @@ class Payment extends BaseEntity {
     ]
   }
 
+  static getPermitCategory ({ taskDeterminants }) {
+    const { facilityType, permitCategory } = taskDeterminants
+    if (facilityType) {
+      return facilityType === MCP ? MCP_PREFIX : WASTE_PREFIX
+    } else {
+      const isMcp = MCP_CATEGORY_NAMES.find((mcpCategoryName) => mcpCategoryName === permitCategory.categoryName)
+      return isMcp ? MCP_PREFIX : WASTE_PREFIX
+    }
+  }
+
   static async getBacsPayment (context) {
     return this.getByApplicationLineIdAndType(context, BACS_PAYMENT)
   }
@@ -55,10 +67,10 @@ class Payment extends BaseEntity {
     return (await Payment.getByApplicationLineIdAndType(context, CARD_PAYMENT)) || new Payment({ applicationLineId, type: CARD_PAYMENT })
   }
 
-  async makeCardPayment (context, description, returnUrl, configurationPrefix) {
+  async makeCardPayment (context, description, returnUrl) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
-      ConfigurationPrefix: configurationPrefix,
+      ConfigurationPrefix: Payment.getPermitCategory(context),
       Amount: this.value,
       ReturnUrl: returnUrl,
       Description: description,
@@ -77,10 +89,10 @@ class Payment extends BaseEntity {
     }
   }
 
-  async getCardPaymentResult (context, configurationPrefix) {
+  async getCardPaymentResult (context) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
-      ConfigurationPrefix: configurationPrefix,
+      ConfigurationPrefix: Payment.getPermitCategory(context),
       LookupByPaymentReference: this.referenceNumber
     }
     try {

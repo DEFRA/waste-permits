@@ -1,8 +1,6 @@
 'use strict'
 
 const Dynamics = require('../../dynamics')
-const { MCP_PREFIX, WASTE_PREFIX } = require('../../constants').PAYMENT_CONFIGURATION_PREFIX
-const { MCP } = Dynamics.FACILITY_TYPES
 const { CARD_PROBLEM } = require('../../routes')
 const BaseController = require('../base.controller')
 const Payment = require('../../persistence/entities/payment.entity')
@@ -12,9 +10,7 @@ const RecoveryService = require('../../services/recovery.service')
 module.exports = class CardPaymentController extends BaseController {
   async doGet (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { applicationLine: true, standardRule: true })
-    const { application, applicationLine, standardRule, slug, taskDeterminants } = context
-    const { facilityType } = taskDeterminants
-    const paymentConfigurationPrefix = facilityType === MCP ? MCP_PREFIX : WASTE_PREFIX
+    const { application, applicationLine, standardRule, slug } = context
 
     let { returnUrl } = request.query
 
@@ -31,7 +27,7 @@ module.exports = class CardPaymentController extends BaseController {
     // Note - Gov Pay needs an https address to redirect to, otherwise it throws a runtime error
     LoggingService.logDebug(`Making Gov.UK Pay card payment for Application "${this.applicationNumber}. Will redirect back to: ${returnUrl}`)
 
-    const result = await payment.makeCardPayment(context, payment.description, returnUrl, paymentConfigurationPrefix)
+    const result = await payment.makeCardPayment(context, payment.description, returnUrl)
 
     const paymentStatus = result ? result.PaymentStatus : 'error'
 
