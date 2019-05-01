@@ -2,6 +2,7 @@
 
 const config = require('../../config/config')
 const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = require('../../constants').PermitTypes
+const { MCP } = require('../../dynamics').FACILITY_TYPES
 
 class BaseTaskList {
   constructor (context) {
@@ -18,6 +19,11 @@ class BaseTaskList {
   }
 
   static async getTaskListClass (context) {
+    const { taskDeterminants } = context
+    const { facilityType } = taskDeterminants
+    if (facilityType === MCP) {
+      return require('./mcpBespoke.taskList')
+    }
     switch (context.permitType) {
       case undefined: // Default to standard rules for missing values as these will pre-date the introduction of bespoke
       case STANDARD_RULES: return require('./standardRules.taskList')
