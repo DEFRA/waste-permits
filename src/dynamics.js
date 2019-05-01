@@ -260,10 +260,10 @@ const Dynamics = {
       isMobile: true,
       canApplyOnline: true
     },
-    MOBILE_SG_AND_MCP: {
-      id: 'mobile-sg-mcp',
+    MOBILE_MCP: {
+      id: 'mobile-mcp',
       key: '05',
-      text: 'Mobile SG which is also an MCP',
+      text: 'Mobile MCP',
       isMobile: true,
       canApplyOnline: true
     }

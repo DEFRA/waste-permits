@@ -14,7 +14,7 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 const { MCP_TYPES } = require('../../src/dynamics')
-const { MOBILE_SG, MOBILE_SG_AND_MCP, STATIONARY_MCP, STATIONARY_MCP_AND_SG, STATIONARY_SG } = MCP_TYPES
+const { MOBILE_SG, MOBILE_MCP, STATIONARY_MCP, STATIONARY_MCP_AND_SG, STATIONARY_SG } = MCP_TYPES
 
 const routePath = '/mcp-type'
 const nextRoutePath = '/select/bespoke'
@@ -95,7 +95,7 @@ lab.experiment('Mcp Type page tests:', () => {
             case MOBILE_SG.id:
               Code.expect(res.headers['location']).to.equal(maintainApplicationLinesPath)
               break
-            case MOBILE_SG_AND_MCP.id:
+            case MOBILE_MCP.id:
               Code.expect(res.headers['location']).to.equal(requiresEnergyReportPath)
               break
           }
