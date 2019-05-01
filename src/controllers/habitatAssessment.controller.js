@@ -2,7 +2,7 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const { MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
+const { MOBILE_SG, MOBILE_MCP } = require('../dynamics').MCP_TYPES
 
 module.exports = class HabitatAssessmentController extends BaseController {
   async doGet (request, h, errors) {
@@ -13,7 +13,7 @@ module.exports = class HabitatAssessmentController extends BaseController {
     const { taskDeterminants } = context
     switch (taskDeterminants.mcpType) {
       case MOBILE_SG:
-      case MOBILE_SG_AND_MCP:
+      case MOBILE_MCP:
       // Set the habitatAssessmentRequired to false and redirect to the next page
         await taskDeterminants.save({ habitatAssessmentRequired: false })
         return this.redirect({ h })
