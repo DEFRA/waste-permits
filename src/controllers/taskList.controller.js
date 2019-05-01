@@ -7,7 +7,6 @@ const BaseController = require('./base.controller')
 const BaseTaskList = require('../models/taskList/base.taskList')
 const StandardRule = require('../persistence/entities/standardRule.entity')
 const RecoveryService = require('../services/recovery.service')
-const DataStore = require('../models/dataStore.model')
 const ApplicationCostItem = require('../models/applicationCostItem.model')
 
 module.exports = class TaskListController extends BaseController {
@@ -31,9 +30,7 @@ module.exports = class TaskListController extends BaseController {
       pageContext.standardRule = await StandardRule.getByApplicationLineId(context, context.applicationLineId)
       pageContext.permitCategoryRoute = Routes.PERMIT_CATEGORY.path
     } else {
-      const dataStore = await DataStore.get(context)
-
-      const { airDispersionModellingRequired } = dataStore.data
+      const { airDispersionModellingRequired } = context.taskDeterminants
 
       pageContext.activityName = airDispersionModellingRequired
         ? 'Medium combustion plant site - requires dispersion modelling'
