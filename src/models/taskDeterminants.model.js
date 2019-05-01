@@ -62,7 +62,8 @@ module.exports = class TaskDeterminants {
       airDispersionModellingRequired = false,
       energyEfficiencyReportRequired = false,
       bestAvailableTechniquesAssessment = false,
-      habitatAssessmentRequired = false
+      habitatAssessmentRequired = false,
+      aqmaRequired = false
     } = this
 
     if (this._hasChanged('mcpType')) {
@@ -78,7 +79,8 @@ module.exports = class TaskDeterminants {
       airDispersionModellingRequired,
       energyEfficiencyReportRequired,
       bestAvailableTechniquesAssessment,
-      habitatAssessmentRequired
+      habitatAssessmentRequired,
+      aqmaRequired
     }
     await DataStore.save(this.context, data)
   }

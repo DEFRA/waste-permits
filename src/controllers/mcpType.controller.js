@@ -22,7 +22,28 @@ module.exports = class McpTypeController extends BaseController {
     const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
     const { 'mcp-type': mcpType } = request.payload
 
-    await taskDeterminants.save({ mcpType })
+    let aqmaRequired
+
+    // set determinants based on mcpType
+    switch (mcpType) {
+      case STATIONARY_MCP.id:
+        aqmaRequired = true
+        break
+      case STATIONARY_SG.id:
+        aqmaRequired = true
+        break
+      case STATIONARY_MCP_AND_SG.id:
+        aqmaRequired = true
+        break
+      case MOBILE_SG.id:
+        aqmaRequired = false
+        break
+      case MOBILE_SG_AND_MCP.id:
+        aqmaRequired = false
+        break
+    }
+
+    await taskDeterminants.save({ mcpType, aqmaRequired })
 
     switch (mcpType) {
       case STATIONARY_MCP.id:

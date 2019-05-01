@@ -5,6 +5,7 @@ const tasks = {
     id: 'air-quality-management',
     label: 'Give Air Quality Management Area details',
     route: Routes.AIR_QUALITY_MANAGEMENT_AREA,
+    determinants: [ 'aqmaRequired' ],
     completedLabelId: 'air-quality-management-completed',
     shortName: 'aqma',
     taskListModel: 'airQualityManagementArea'
@@ -469,6 +470,61 @@ const bespoke = [
   }
 ]
 
+const mcpBespoke = [
+  {
+    id: 'get-a-save-link-section',
+    label: 'Get a save link',
+    tasks: [
+      tasks.SAVE_AND_RETURN_EMAIL
+    ]
+  },
+  {
+    id: 'about-the-application-section',
+    label: 'About the application',
+    tasks: [
+      tasks.CONTACT_DETAILS,
+      tasks.PERMIT_HOLDER_DETAILS,
+      tasks.CONFIRM_CONFIDENTIALLY,
+      tasks.INVOICING_DETAILS
+    ]
+  },
+  {
+    id: 'operations-section',
+    label: 'Operations',
+    tasks: [
+      tasks.SITE_NAME_LOCATION,
+      tasks.AIR_QUALITY_MANAGEMENT_AREA,
+      tasks.NON_TECHNICAL_SUMMARY
+    ]
+  },
+  {
+    id: 'activities-section',
+    label: 'Activities',
+    tasks: [
+      tasks.MCP_TEMPLATE,
+      tasks.MCP_DETAILS,
+      tasks.MCP_BUSINESS_ACTIVITY
+    ]
+  },
+  {
+    id: 'evidence-section',
+    label: 'Evidence',
+    tasks: [
+      tasks.AIR_DISPERSION_MODELLING_REPORT,
+      tasks.SCREENING_TOOL,
+      tasks.ENERGY_EFFICENCY_REPORT,
+      tasks.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT
+    ]
+  },
+  {
+    id: 'send-and-pay-section',
+    label: 'Apply',
+    tasks: [
+      tasks.SUBMIT_PAY
+    ]
+  }
+]
+
 module.exports = class Tasks {
   static get tasks () {
     return tasks
@@ -480,5 +536,9 @@ module.exports = class Tasks {
 
   static get bespoke () {
     return bespoke
+  }
+
+  static get mcpBespoke () {
+    return mcpBespoke
   }
 }
