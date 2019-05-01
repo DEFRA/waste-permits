@@ -3,6 +3,9 @@
 const { OFFLINE_CATEGORIES } = require('../../constants')
 const BaseEntity = require('./base.entity')
 
+// cached results to be loaded on demand
+const cache = {}
+
 const convertOfflineCategory = (offlineCategoryEntry) => {
   const { id, category, name: categoryName, hint = '' } = offlineCategoryEntry
   return { id, categoryName, category, hint }
@@ -30,23 +33,32 @@ class StandardRuleType extends BaseEntity {
     ]
   }
 
-  static async getCategories (context) {
-    const offlineCategories = Object.values(OFFLINE_CATEGORIES).map((offlineCategory) => convertOfflineCategory(offlineCategory))
-    const standardRuleTypeEntities = await StandardRuleType.listBy(context)
-    const standardRuleTypes = standardRuleTypeEntities.map((standardRuleType) => convertStandardRuleType(standardRuleType))
-    const categories = offlineCategories.concat(standardRuleTypes)
-
-    categories.sort((a, b) => {
-      const categoryA = a.category.toLowerCase() // ignore upper and lowercase
-      const categoryB = b.category.toLowerCase() // ignore upper and lowercase
-      if (categoryA < categoryB) {
-        return -1
-      } else {
-        return 1
-      }
+  static clearCache () {
+    Object.keys(cache).forEach((key) => {
+      delete cache[key]
     })
+  }
 
-    return categories
+  static async getCategories (context) {
+    if (!cache.permitCategories) {
+      const offlineCategories = Object.values(OFFLINE_CATEGORIES).map((offlineCategory) => convertOfflineCategory(offlineCategory))
+      const standardRuleTypeEntities = await StandardRuleType.listBy(context)
+      const standardRuleTypes = standardRuleTypeEntities.map((standardRuleType) => convertStandardRuleType(standardRuleType))
+      const categories = offlineCategories.concat(standardRuleTypes)
+
+      categories.sort((a, b) => {
+        const categoryA = a.category.toLowerCase() // ignore upper and lowercase
+        const categoryB = b.category.toLowerCase() // ignore upper and lowercase
+        if (categoryA < categoryB) {
+          return -1
+        } else {
+          return 1
+        }
+      })
+
+      cache.permitCategories = categories
+    }
+    return cache.permitCategories
   }
 
   static async getById (context, categoryId) {

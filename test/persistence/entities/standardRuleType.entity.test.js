@@ -43,6 +43,9 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore the sandbox to make sure the stubs are removed correctly
   sandbox.restore()
+
+  // Clear the cache
+  StandardRuleType.clearCache()
 })
 
 lab.experiment('StandardRuleType Entity tests:', () => {

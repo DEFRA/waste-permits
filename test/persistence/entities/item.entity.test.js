@@ -51,6 +51,9 @@ lab.beforeEach(() => {
 lab.afterEach(() => {
   // Restore the sandbox to make sure the stubs are removed correctly
   sandbox.restore()
+
+  // Clear the cache
+  Item.clearCache()
 })
 
 lab.experiment('Item Entity tests:', () => {
@@ -67,18 +70,18 @@ lab.experiment('Item Entity tests:', () => {
 
   lab.test('listWasteAssessments() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001')] }
+      return { value: [fakeDynamicsRecord('test-1')] }
     })
-    const expectedItems = [fakeItem('00001')]
+    const expectedItems = [fakeItem('test-1')]
     const items = await Item.listWasteAssessments(entityContext)
     Code.expect(items).to.exist()
     Code.expect(items).to.equal(expectedItems)
   })
 
   lab.test('getAllWasteActivitiesAndAssessments() returns correct values', async () => {
-    stub.onFirstCall().resolves({ value: [fakeDynamicsRecord('00001')] })
-    stub.onSecondCall().resolves({ value: [fakeDynamicsRecord('00002')] })
-    const expectedItems = { wasteActivities: [fakeItem('00001')], wasteAssessments: [fakeItem('00002')] }
+    stub.onFirstCall().resolves({ value: [fakeDynamicsRecord('test-2-activities')] })
+    stub.onSecondCall().resolves({ value: [fakeDynamicsRecord('test-2-assessments')] })
+    const expectedItems = { wasteActivities: [fakeItem('test-2-activities')], wasteAssessments: [fakeItem('test-2-assessments')] }
     const items = await Item.getAllWasteActivitiesAndAssessments(entityContext)
     Code.expect(items).to.exist()
     Code.expect(items).to.equal(expectedItems)
@@ -86,9 +89,9 @@ lab.experiment('Item Entity tests:', () => {
 
   lab.test('getWasteActivity() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001')] }
+      return { value: [fakeDynamicsRecord('test-3')] }
     })
-    const expectedItem = fakeItem('00001')
+    const expectedItem = fakeItem('test-3')
     const item = await Item.getWasteActivity(entityContext, expectedItem.shortName)
     Code.expect(item).to.exist()
     Code.expect(item).to.equal(expectedItem)
@@ -96,9 +99,9 @@ lab.experiment('Item Entity tests:', () => {
 
   lab.test('getWasteAssessment() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001')] }
+      return { value: [fakeDynamicsRecord('test-4')] }
     })
-    const expectedItem = fakeItem('00001')
+    const expectedItem = fakeItem('test-4')
     const item = await Item.getWasteAssessment(entityContext, expectedItem.shortName)
     Code.expect(item).to.exist()
     Code.expect(item).to.equal(expectedItem)
@@ -106,9 +109,9 @@ lab.experiment('Item Entity tests:', () => {
 
   lab.test('listWasteActivitiesForFacilityTypes() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001')] }
+      return { value: [fakeDynamicsRecord('test-5')] }
     })
-    const expectedItems = [fakeItem('00001')]
+    const expectedItems = [fakeItem('test-5')]
     const items = await Item.listWasteActivitiesForFacilityTypes(entityContext, ['DUMMY'])
     Code.expect(items).to.equal(expectedItems)
   })
@@ -117,9 +120,9 @@ lab.experiment('Item Entity tests:', () => {
 
   lab.test('getMcpType() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001')] }
+      return { value: [fakeDynamicsRecord('test-6')] }
     })
-    const expectedItem = fakeItem('00001')
+    const expectedItem = fakeItem('test-6')
     const item = await Item.getMcpType(entityContext, expectedItem.shortName)
     Code.expect(item).to.exist()
     Code.expect(item).to.equal(expectedItem)
@@ -127,9 +130,9 @@ lab.experiment('Item Entity tests:', () => {
 
   lab.test('getMcpAssessment() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001')] }
+      return { value: [fakeDynamicsRecord('test-7')] }
     })
-    const expectedItem = fakeItem('00001')
+    const expectedItem = fakeItem('test-7')
     const item = await Item.getMcpAssessment(entityContext, expectedItem.shortName)
     Code.expect(item).to.exist()
     Code.expect(item).to.equal(expectedItem)
@@ -137,9 +140,9 @@ lab.experiment('Item Entity tests:', () => {
 
   lab.test('listMcpTypesForFacilityTypes() returns correct values', async () => {
     stub.callsFake(async () => {
-      return { value: [fakeDynamicsRecord('00001')] }
+      return { value: [fakeDynamicsRecord('test-9')] }
     })
-    const expectedItems = [fakeItem('00001')]
+    const expectedItems = [fakeItem('test-9')]
     const items = await Item.listMcpTypesForFacilityTypes(entityContext, ['DUMMY'])
     Code.expect(items).to.equal(expectedItems)
   })
