@@ -2,6 +2,7 @@
 
 const ApplicationAnswer = require('../persistence/entities/applicationAnswer.entity')
 const Item = require('../persistence/entities/item.entity')
+const StandardRuleType = require('../persistence/entities/standardRuleType.entity')
 const DataStore = require('../models/dataStore.model')
 const { PermitTypes } = require('../constants')
 const { FACILITY_TYPES, MCP_TYPES, ApplicationQuestions } = require('../dynamics')
@@ -52,6 +53,7 @@ module.exports = class TaskDeterminants {
       })
     }
     const {
+      _permitCategory = {},
       _permitType = {},
       _mcpType = {},
       _facilityType = {},
@@ -68,6 +70,7 @@ module.exports = class TaskDeterminants {
     }
 
     const data = {
+      permitCategory: _permitCategory.id,
       permitType: _permitType.id,
       facilityType: _facilityType.id,
       wasteActivities: _wasteActivities.filter((activity) => typeof activity === 'object').map(({ shortName }) => shortName).join(','),
@@ -85,15 +88,17 @@ module.exports = class TaskDeterminants {
       { data = {} },
       allActivities,
       allAssessments,
+      allCategories,
       { answerCode: mcpType }
     ] = await Promise.all([
       await DataStore.get(context),
       Item.listWasteActivities(context),
       Item.listWasteAssessments(context),
+      StandardRuleType.getCategories(context),
       await TaskDeterminants._getAnswer(context, MCP_PERMIT_TYPES) || {}
     ])
 
-    const determinants = Object.assign({ mcpType, allActivities, allAssessments }, data)
+    const determinants = Object.assign({ mcpType, allActivities, allAssessments, allCategories }, data)
     const taskDeterminants = new TaskDeterminants({ context, ...determinants })
 
     // Save original values so that when we save the data, we don't bother to save unchanged values.
@@ -102,7 +107,20 @@ module.exports = class TaskDeterminants {
     return taskDeterminants
   }
 
-  /// facilityType ///
+  /// permitCategory ///
+
+  set permitCategory (permitCategory) {
+    if (typeof permitCategory === 'string') {
+      permitCategory = this.allCategories.find(({ id }) => id === permitCategory)
+    }
+    this._permitCategory = permitCategory
+  }
+
+  get permitCategory () {
+    return this._permitCategory
+  }
+
+  /// permitType ///
 
   set permitType (permitType) {
     if (typeof permitType === 'string') {
