@@ -28,7 +28,10 @@ module.exports = class AirDispersionModellingController extends BaseController {
   async doPost (request, h) {
     const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
     const airDispersionModellingRequired = request.payload['air-dispersion-modelling'] === 'yes'
-    await taskDeterminants.save({ airDispersionModellingRequired })
+    await taskDeterminants.save({
+      airDispersionModellingRequired,
+      screeningToolRequired: !airDispersionModellingRequired
+    })
 
     return this.redirect({ h })
   }

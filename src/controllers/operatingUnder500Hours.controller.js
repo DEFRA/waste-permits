@@ -53,7 +53,8 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
       airDispersionModellingRequired: !operatingUnder500Hours,
       energyEfficiencyReportRequired: !operatingUnder500Hours,
       bestAvailableTechniquesAssessment: !operatingUnder500Hours,
-      habitatAssessmentRequired: !operatingUnder500Hours
+      habitatAssessmentRequired: !operatingUnder500Hours,
+      screeningToolRequired: !operatingUnder500Hours
     })
 
     if (operatingUnder500Hours) {
