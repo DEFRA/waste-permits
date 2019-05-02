@@ -48,11 +48,16 @@ class BaseTaskList {
   }
 
   async getSections () {
-    return Promise.all(this.taskListTemplate.map(async ({ id, label: sectionName, tasks }, index) => {
-      const availableTasks = await this.getAvailableTasks(tasks)
-      const sectionNumber = index + 1
-      return { id, sectionNumber, sectionName, sectionItems: availableTasks.filter(({ available }) => available) }
-    }))
+    const sections = (await Promise.all(this.taskListTemplate.map(async ({ id, label: sectionName, tasks }) => {
+      const sectionItems = (await this.getAvailableTasks(tasks)).filter(({ available }) => available)
+      return { id, sectionName, sectionItems }
+    }))).filter(({ sectionItems }) => sectionItems.length)
+
+    sections.forEach((section, index) => {
+      section.sectionNumber = index + 1
+    })
+
+    return sections
   }
 
   static async buildTaskList (context) {
