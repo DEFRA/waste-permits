@@ -1,7 +1,7 @@
 'use strict'
 
 const PdfMake = require('pdfmake')
-const fs = require('fs')
+//const fs = require('fs')
 
 const vfsFonts = require('pdfmake/build/vfs_fonts.js')
 
