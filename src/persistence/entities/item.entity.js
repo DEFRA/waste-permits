@@ -8,6 +8,9 @@ const FACILITY_TYPE = 'facilitytype'
 const MCP_TYPE = 'mcptype'
 const MCP_ASSESSMENT = 'mcpassessment'
 
+// cached results to be loaded on demand
+const cache = {}
+
 const mapping = [
   { field: 'id', dynamics: 'defra_itemid' },
   { field: 'itemName', dynamics: 'defra_name' },
@@ -89,12 +92,20 @@ class Item extends BaseEntity {
     return mapping
   }
 
+  static clearCache () {
+    Object.keys(cache).forEach((key) => {
+      delete cache[key]
+    })
+  }
+
   static async listWasteAssessments (context) {
-    return this.listUsingFetchXml(context, listItemsQuery(WASTE_ASSESSMENT))
+    cache.wasteAssessments = cache.wasteAssessments || await this.listUsingFetchXml(context, listItemsQuery(WASTE_ASSESSMENT))
+    return cache.wasteAssessments
   }
 
   static async listWasteActivities (context) {
-    return this.listUsingFetchXml(context, listItemsQuery(WASTE_ACTIVITY))
+    cache.wasteActivities = cache.wasteActivities || await this.listUsingFetchXml(context, listItemsQuery(WASTE_ACTIVITY))
+    return cache.wasteActivities
   }
 
   static async listWasteActivitiesForFacilityTypes (context, facilityTypes) {
@@ -115,14 +126,16 @@ class Item extends BaseEntity {
   }
 
   static async getAllWasteActivitiesAndAssessments (context) {
-    return {
-      wasteActivities: await this.listUsingFetchXml(context, listItemsQuery(WASTE_ACTIVITY)),
-      wasteAssessments: await this.listUsingFetchXml(context, listItemsQuery(WASTE_ASSESSMENT))
-    }
+    const [wasteActivities, wasteAssessments] = await Promise.all([
+      Item.listWasteActivities(context),
+      Item.listWasteAssessments(context)
+    ])
+    return { wasteActivities, wasteAssessments }
   }
 
   static async getAllMcpTypes (context) {
-    return this.listUsingFetchXml(context, listItemsQuery(MCP_TYPE))
+    cache.mcpItems = cache.mcpItems || await this.listUsingFetchXml(context, listItemsQuery(MCP_TYPE))
+    return cache.mcpItems
   }
 
   static async listMcpTypesForFacilityTypes (context, facilityTypes) {

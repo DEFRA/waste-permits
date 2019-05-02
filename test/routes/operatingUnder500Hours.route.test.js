@@ -23,7 +23,7 @@ const {
   STATIONARY_SG,
   STATIONARY_MCP_AND_SG,
   MOBILE_SG,
-  MOBILE_SG_AND_MCP
+  MOBILE_MCP
 } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp-check/under-500-hours'
@@ -94,7 +94,7 @@ lab.experiment('Operating under 500 hours page tests:', () => {
       const mcpTypes = [
         MOBILE_SG,
         STATIONARY_SG,
-        MOBILE_SG_AND_MCP
+        MOBILE_MCP
       ]
 
       mcpTypes.forEach((mcpType) => {

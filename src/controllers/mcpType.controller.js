@@ -6,7 +6,7 @@ const RecoveryService = require('../services/recovery.service')
 const Dynamics = require('../dynamics')
 const { MAINTAIN_APPLICATION_LINES, MCP_EXISTING_PERMIT, MCP_REQUIRES_ENERGY_REPORT } = require('../routes')
 const { MCP_TYPES } = Dynamics
-const { MOBILE_SG, MOBILE_SG_AND_MCP, STATIONARY_MCP, STATIONARY_MCP_AND_SG, STATIONARY_SG } = MCP_TYPES
+const { MOBILE_SG, MOBILE_MCP, STATIONARY_MCP, STATIONARY_MCP_AND_SG, STATIONARY_SG } = MCP_TYPES
 
 module.exports = class McpTypeController extends BaseController {
   async doGet (request, h, errors) {
@@ -44,7 +44,7 @@ module.exports = class McpTypeController extends BaseController {
         break
       case MOBILE_SG.id:
         break
-      case MOBILE_SG_AND_MCP.id:
+      case MOBILE_MCP.id:
         businessActivityRequired = true
         break
     }
@@ -63,7 +63,7 @@ module.exports = class McpTypeController extends BaseController {
         return this.redirect({ h, route: MCP_EXISTING_PERMIT })
       case MOBILE_SG.id:
         return this.redirect({ h, route: MAINTAIN_APPLICATION_LINES })
-      case MOBILE_SG_AND_MCP.id:
+      case MOBILE_MCP.id:
         return this.redirect({ h, route: MCP_REQUIRES_ENERGY_REPORT })
     }
   }

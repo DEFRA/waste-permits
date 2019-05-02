@@ -5,7 +5,7 @@ const { MAINTAIN_APPLICATION_LINES } = require('../routes')
 const RecoveryService = require('../services/recovery.service')
 const OperatingUnder500HoursModel = require('../models/operatingUnder500Hours.model')
 
-const { STATIONARY_SG, MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
+const { STATIONARY_SG, MOBILE_SG, MOBILE_MCP } = require('../dynamics').MCP_TYPES
 const YES = 'yes'
 
 module.exports = class OperatingUnder500HoursController extends BaseController {
@@ -18,7 +18,7 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
     switch (taskDeterminants.mcpType) {
       case STATIONARY_SG:
       case MOBILE_SG:
-      case MOBILE_SG_AND_MCP:
+      case MOBILE_MCP:
         return this.redirect({ h })
     }
 

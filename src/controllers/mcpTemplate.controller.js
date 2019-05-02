@@ -4,7 +4,7 @@ const BaseController = require('./base.controller')
 const McpTemplate = require('../models/taskList/mcpTemplate.task')
 const RecoveryService = require('../services/recovery.service')
 const { BESPOKE, STANDARD_RULES } = require('../constants').PermitTypes
-const { STATIONARY_MCP, STATIONARY_SG, STATIONARY_MCP_AND_SG, MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
+const { STATIONARY_MCP, STATIONARY_SG, STATIONARY_MCP_AND_SG, MOBILE_SG, MOBILE_MCP } = require('../dynamics').MCP_TYPES
 let templatesStandardRules = [
   { id: 'mcp-template-xls-link', name: 'Plant or generator list template (Excel XLS)', file: 'mcp-plant-generator-list-template-v0-1.xls' },
   { id: 'mcp-template-ods-link', name: 'Plant or generator list template (Open Document ODS)', file: 'mcp-plant-generator-list-template-v0-1.ods' }
@@ -28,7 +28,7 @@ module.exports = class McpTemplateController extends BaseController {
         switch (mcpType) {
           case STATIONARY_MCP:
           case STATIONARY_MCP_AND_SG:
-          case MOBILE_SG_AND_MCP:
+          case MOBILE_MCP:
             return templatesBespokeAppendix1
           case STATIONARY_SG:
           case MOBILE_SG:

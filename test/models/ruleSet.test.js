@@ -9,7 +9,6 @@ const Mocks = require('../helpers/mocks')
 const featureConfig = require('../../src/config/featureConfig')
 const Application = require('../../src/persistence/entities/application.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
-const DataStore = require('../../src/models/dataStore.model')
 const RuleSet = require('../../src/models/ruleSet.model')
 const DynamicsDalService = require('../../src/services/dynamicsDal.service')
 
@@ -50,7 +49,6 @@ lab.beforeEach(() => {
   sandbox.stub(featureConfig, 'hasBespokeFeature').value(true)
   sandbox.stub(DynamicsDalService.prototype, 'search').value(() => searchResult)
   sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
-  sandbox.stub(DataStore, 'get').callsFake(() => mocks.dataStore)
 })
 
 lab.afterEach(() => {
