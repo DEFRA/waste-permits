@@ -14,6 +14,7 @@ const tasks = {
     id: 'upload-air-dispersion-modelling-report',
     label: 'Upload air dispersion modelling report',
     route: Routes.AIR_DISPERSION_MODELLING_REPORT,
+    determinants: [ 'airDispersionModellingRequired' ],
     completedLabelId: 'upload-air-dispersion-modelling-report-completed',
     shortName: 'airreport',
     taskListModel: 'airDispersionModellingReport'
@@ -38,6 +39,7 @@ const tasks = {
     id: 'upload-best-available-techniques-assessment',
     label: 'Upload the best available techniques assessment',
     route: Routes.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
+    determinants: [ 'bestAvailableTechniquesAssessment' ],
     completedLabelId: 'upload-best-available-techniques-assessment-completed',
     shortName: 'batassessment',
     taskListModel: 'bestAvailableTechniquesAssessment'
@@ -90,6 +92,7 @@ const tasks = {
     id: 'upload-energy-efficiency-report',
     label: 'Upload the energy efficiency report',
     route: Routes.ENERGY_EFFICIENCY_REPORT,
+    determinants: [ 'energyEfficiencyReportRequired' ],
     completedLabelId: 'upload-energy-efficiency-report-completed',
     shortName: 'energyefficiency',
     taskListModel: 'energyEfficiencyReport'
@@ -145,6 +148,7 @@ const tasks = {
     id: 'mcp-business-activity',
     label: 'Choose business or activity type',
     route: Routes.MCP_BUSINESS_ACTIVITY,
+    determinants: [ 'businessActivityRequired' ],
     completedLabelId: 'business-activity-completed',
     ruleSetId: 'defra_mcp_businesstype',
     shortName: 'nacecode',
@@ -250,6 +254,7 @@ const tasks = {
     id: 'upload-screening-tool',
     label: 'Upload screening tool',
     route: Routes.SCREENING_TOOL,
+    determinants: [ 'screeningToolRequired' ],
     completedLabelId: 'screening-tool-completed',
     shortName: 'screeningtool',
     taskListModel: 'screeningTool'
@@ -278,6 +283,7 @@ const tasks = {
     id: 'give-site-name-and-location',
     label: 'Give site name and location',
     route: Routes.SITE_NAME,
+    determinants: [ 'siteNameRequired' ],
     completedLabelId: 'site-name-completed',
     ruleSetId: 'defra_locationrequired',
     shortName: 'sitename',

@@ -148,6 +148,7 @@ lab.experiment('Operating under 500 hours page tests:', () => {
       Code.expect(taskDeterminantsStub.args[0][0].energyEfficiencyReportRequired).to.equal(false)
       Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(false)
       Code.expect(taskDeterminantsStub.args[0][0].habitatAssessmentRequired).to.equal(false)
+      Code.expect(taskDeterminantsStub.args[0][0].screeningToolRequired).to.equal(false)
     })
 
     lab.test('Success - no', async () => {

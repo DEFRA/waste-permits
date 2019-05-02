@@ -23,27 +23,38 @@ module.exports = class McpTypeController extends BaseController {
     const { 'mcp-type': mcpType } = request.payload
 
     let aqmaRequired
+    let siteNameRequired
+    let businessActivityRequired
 
     // set determinants based on mcpType
     switch (mcpType) {
       case STATIONARY_MCP.id:
         aqmaRequired = true
+        siteNameRequired = true
+        businessActivityRequired = true
         break
       case STATIONARY_SG.id:
         aqmaRequired = true
+        siteNameRequired = true
         break
       case STATIONARY_MCP_AND_SG.id:
         aqmaRequired = true
+        siteNameRequired = true
+        businessActivityRequired = true
         break
       case MOBILE_SG.id:
-        aqmaRequired = false
         break
       case MOBILE_MCP.id:
-        aqmaRequired = false
+        businessActivityRequired = true
         break
     }
 
-    await taskDeterminants.save({ mcpType, aqmaRequired })
+    await taskDeterminants.save({
+      mcpType,
+      aqmaRequired,
+      siteNameRequired,
+      businessActivityRequired
+    })
 
     switch (mcpType) {
       case STATIONARY_MCP.id:
