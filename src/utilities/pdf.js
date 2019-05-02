@@ -154,7 +154,7 @@ const docDefinition = {
   ]
 }
 
-const pdfDoc = printer.createPdfKitDocument(docDefinition)
+// const pdfDoc = printer.createPdfKitDocument(docDefinition)
 
 /*
 let chunks = []
@@ -174,7 +174,12 @@ pdfDoc.on('end', function () {
 
 // pdfDoc.pipe(process.stdout)
 */
-pdfDoc.pipe(fs.createWriteStream('myFile.pdf'))
-pdfDoc.end()
+// pdfDoc.pipe(fs.createWriteStream('myFile.pdf'))
+// pdfDoc.end()
 
-module.exports = printer
+module.exports = {
+  docDefinition,
+  createPDF: () => {
+    return printer.createPdfKitDocument(docDefinition)
+  }
+}

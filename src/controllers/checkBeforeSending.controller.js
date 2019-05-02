@@ -1,5 +1,6 @@
 'use strict'
 
+const pdf = require('../utilities/pdf')
 const RecoveryService = require('../services/recovery.service')
 const BaseController = require('./base.controller')
 const BaseTaskList = require('../models/taskList/base.taskList')
@@ -88,12 +89,24 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
   async doGet (request, h) {
     const pageContext = this.createPageContext(h)
+    const { pdfAction } = request.params
+    if (pdfAction === 'pdf-download') {
+      const doc = pdf.createPDF()
+      /*
+      stream.end()
+      return h.response(stream)
+        .type('application/pdf')
+        .header('Content-type', 'application/pdf')
+        .header('Content-length', stream.length)
+        */
+    }
     pageContext.sections = await this._buildSections(request.app.data)
 
     return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
+    console.log('\n!!!!!!\n\n')
     const { application } = await RecoveryService.createApplicationContext(h, { application: true })
 
     application.declaration = true

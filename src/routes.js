@@ -781,6 +781,7 @@ const Routes = {
   },
   CHECK_BEFORE_SENDING: {
     path: '/check-before-sending',
+    params: ['pdfAction?'],
     view: 'checkBeforeSending',
     pageHeading: 'Check your answers',
     controller: 'checkBeforeSending',
