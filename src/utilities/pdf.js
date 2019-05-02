@@ -1,7 +1,6 @@
 'use strict'
 
 const PdfMake = require('pdfmake')
-//const fs = require('fs')
 
 const vfsFonts = require('pdfmake/build/vfs_fonts.js')
 
@@ -154,32 +153,27 @@ const docDefinition = {
   ]
 }
 
-// const pdfDoc = printer.createPdfKitDocument(docDefinition)
-
-/*
-let chunks = []
-
-let result
-
-pdfDoc.on('readable', function () {
-  let chunk
-  while ((chunk = pdfDoc.read(9007199254740991)) !== null) {
-    chunks.push(chunk)
-  }
-})
-pdfDoc.on('end', function () {
-  result = Buffer.concat(chunks)
-  console.log(result)
-})
-
-// pdfDoc.pipe(process.stdout)
-*/
-// pdfDoc.pipe(fs.createWriteStream('myFile.pdf'))
-// pdfDoc.end()
-
 module.exports = {
   docDefinition,
-  createPDF: () => {
-    return printer.createPdfKitDocument(docDefinition)
+  createPDF: async () => {
+    const doc = printer.createPdfKitDocument(docDefinition)
+    let chunks = []
+
+    doc.on('readable', function () {
+      let chunk
+      while ((chunk = doc.read(9007199254740991)) !== null) {
+        console.log('\nchunk\n')
+        chunks.push(chunk)
+      }
+    })
+
+    const end = new Promise(function (resolve, reject) {
+      doc.on('end', () => resolve(Buffer.concat(chunks)))
+      doc.on('error', reject)
+    })
+
+    doc.end()
+
+    return end
   }
 }

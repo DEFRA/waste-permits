@@ -91,12 +91,11 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     const pageContext = this.createPageContext(h)
     const { pdfAction } = request.params
     if (pdfAction === 'pdf-download') {
-      const doc = pdf.createPDF()
-      //doc.end()
-      return h.response(doc)
+      const result = await pdf.createPDF()
+
+      return h.response(result)
         .type('application/pdf')
         .header('Content-type', 'application/pdf')
-        .header('Content-length', stream.length)
     }
     pageContext.sections = await this._buildSections(request.app.data)
 
