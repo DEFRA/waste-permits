@@ -1,28 +1,56 @@
 'use strict'
 
 const PdfMake = require('pdfmake')
+const moment = require('moment')
 
-const vfsFonts = require('pdfmake/build/vfs_fonts.js')
+const createPdfDocDefinition = () => {
+  return {
+    pageSize: 'A4',
+    pageOrientation: 'portrait',
+    pageMargins: [ 25, 25, 25, 25 ],
+    defaultStyle: {
+      font: 'helvetica',
+      fontSize: 12,
+      margin: [0, 0, 0, 6]
+    },
+    styles: {
+      h1: {
+        fontSize: 24,
+        bold: true,
+        margin: [0, 0, 0, 12]
+      },
+      h2: {
+        fontSize: 14,
+        bold: true,
+        margin: [0, 12, 0, 6]
+      },
+      tableApplication: {
+        margin: [0, 12, 0, 12]
+      },
+      th: {
+        bold: true,
+        margin: [0, 3, 0, 3]
+      }
+    },
+    info: {
+      title: 'Application for standard rules permit EPR/WE1234AB/A001',
+      author: 'Southern Star Power Plc',
+      subject: 'Application for an Environmental Permit',
+      keywords: 'keywords for document',
+      creator: 'GOV.UK',
+      producer: 'GOV.UK',
+      creationDate: moment().format('DD/MM/YYYY')
+    },
+    content: [
+      { text: 'Application for standard rules permit', style: 'h1' },
+      { text: 'SR2008-4 Waste transfer station', style: 'h1' },
+      'Application reference: EPR/WE1234AB/A001',
+      'Submitted on ' + moment().format('Do MMM YYYY')
+    ]
+  }
+}
 
 const printer = new PdfMake({
-  Roboto: {
-    normal: Buffer.from(
-      vfsFonts.pdfMake.vfs['Roboto-Regular.ttf'],
-      'base64'
-    ),
-    bold: Buffer.from(
-      vfsFonts.pdfMake.vfs['Roboto-Medium.ttf'],
-      'base64'
-    ),
-    italic: Buffer.from(
-      vfsFonts.pdfMake.vfs['Roboto-Italic.ttf'],
-      'base64'
-    ),
-    bolditalics: Buffer.from(
-      vfsFonts.pdfMake.vfs['Roboto-MediumItalic.ttf'],
-      'base64'
-    )
-  },
   helvetica: {
     normal: 'Helvetica',
     bold: 'Helvetica-Bold',
@@ -155,14 +183,14 @@ const docDefinition = {
 
 module.exports = {
   docDefinition,
-  createPDF: async () => {
-    const doc = printer.createPdfKitDocument(docDefinition)
+  createPDF: async (sections) => {
+    const doc = printer.createPdfKitDocument(createPdfDocDefinition(sections))
+
     let chunks = []
 
     doc.on('readable', function () {
       let chunk
       while ((chunk = doc.read(9007199254740991)) !== null) {
-        console.log('\nchunk\n')
         chunks.push(chunk)
       }
     })

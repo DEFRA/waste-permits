@@ -90,20 +90,20 @@ module.exports = class CheckBeforeSendingController extends BaseController {
   async doGet (request, h) {
     const pageContext = this.createPageContext(h)
     const { pdfAction } = request.params
+    pageContext.sections = await this._buildSections(request.app.data)
+
     if (pdfAction === 'pdf-download') {
-      const result = await pdf.createPDF()
+      const result = await pdf.createPDF(pageContext.sections)
 
       return h.response(result)
         .type('application/pdf')
         .header('Content-type', 'application/pdf')
     }
-    pageContext.sections = await this._buildSections(request.app.data)
 
     return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
-    console.log('\n!!!!!!\n\n')
     const { application } = await RecoveryService.createApplicationContext(h, { application: true })
 
     application.declaration = true
