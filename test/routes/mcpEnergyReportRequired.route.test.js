@@ -12,17 +12,20 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const { COOKIE_RESULT } = require('../../src/constants')
-const { MOBILE_SG, STATIONARY_MCP, STATIONARY_SG } = require('../../src/dynamics').MCP_TYPES
+const { STATIONARY_MCP, STATIONARY_MCP_AND_SG, MOBILE_MCP } = require('../../src/dynamics').MCP_TYPES
 const routePath = '/mcp-check/energy-report'
 
 const nextRoutePath = '/mcp-check/best-available-techniques/sg'
+const stationaryMcpRoutePath = '/mcp-check/best-available-techniques/mcp'
+const confirmCostRoutePath = '/confirm-cost'
+
 let sandbox
 let mocks
 let taskDeterminantsStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-  mocks.taskDeterminants.mcpType = STATIONARY_MCP // Set the mock permit to one that this screen displays for
+  mocks.taskDeterminants.mcpType = STATIONARY_MCP_AND_SG // Set the mock permit to one that this screen displays for
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -62,28 +65,19 @@ lab.experiment('Energy efficiency report page tests:', () => {
         Code.expect(doc.getElementById('new-or-refurbished-yes')).to.exist()
         Code.expect(doc.getElementById('new-or-refurbished-no')).to.exist()
       })
-
-      lab.test('Check we don\'t display this page for mobile sg', async () => {
-        mocks.taskDeterminants.mcpType = MOBILE_SG
-        const res = await server.inject(request)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].energyEfficiencyReportRequired).to.equal(false)
-      })
-      lab.test('Check we don\'t display this page for stationary sg', async () => {
-        mocks.taskDeterminants.mcpType = STATIONARY_SG
-        const res = await server.inject(request)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].energyEfficiencyReportRequired).to.equal(false)
-      })
     })
   })
 
   lab.experiment(`POST ${routePath}`, () => {
     let postRequest
+
+    const checkTaskDeterminants = ({ energyEfficiencyReportRequired }) => {
+      Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+      const determinants = taskDeterminantsStub.args[0][0]
+      Code.expect(determinants.energyEfficiencyReportRequired).to.equal(energyEfficiencyReportRequired)
+      Code.expect(determinants.bestAvailableTechniquesAssessment).to.equal(false)
+      Code.expect(determinants.habitatAssessmentRequired).to.equal(false)
+    }
 
     lab.beforeEach(() => {
       postRequest = {
@@ -95,7 +89,8 @@ lab.experiment('Energy efficiency report page tests:', () => {
     })
 
     lab.experiment('Success', async () => {
-      lab.test('Redirects correctly', async () => {
+      lab.test(`Redirects correctly to ${nextRoutePath} when ${STATIONARY_MCP_AND_SG.id}`, async () => {
+        mocks.taskDeterminants.mcpType = STATIONARY_MCP_AND_SG
         // Make selections and click 'Continue'
         postRequest.payload['new-or-refurbished'] = 'yes'
         const res = await server.inject(postRequest)
@@ -103,11 +98,34 @@ lab.experiment('Energy efficiency report page tests:', () => {
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
+      lab.test(`Redirects correctly to ${stationaryMcpRoutePath} when ${STATIONARY_MCP.id}`, async () => {
+        mocks.taskDeterminants.mcpType = STATIONARY_MCP
+        // Make selections and click 'Continue'
+        postRequest.payload['new-or-refurbished'] = 'yes'
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(stationaryMcpRoutePath)
+      })
+
+      lab.test(`Redirects correctly to ${confirmCostRoutePath} when ${MOBILE_MCP.id}`, async () => {
+        mocks.taskDeterminants.mcpType = MOBILE_MCP
+        // Make selections and click 'Continue'
+        postRequest.payload['new-or-refurbished'] = 'yes'
+        const res = await server.inject(postRequest)
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(confirmCostRoutePath)
+      })
+
       lab.test('New or refurbished, thermal input over 20MW, boiler', async () => {
         postRequest.payload['new-or-refurbished'] = 'yes'
         await server.inject(postRequest)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].energyEfficiencyReportRequired).to.equal(true)
+        checkTaskDeterminants({ energyEfficiencyReportRequired: true })
+      })
+
+      lab.test('Not New or refurbished, thermal input over 20MW, boiler', async () => {
+        postRequest.payload['new-or-refurbished'] = 'no'
+        await server.inject(postRequest)
+        checkTaskDeterminants({ energyEfficiencyReportRequired: false })
       })
     })
     lab.experiment('Invalid input', async () => {

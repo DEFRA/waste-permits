@@ -14,7 +14,6 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
-const { MOBILE_SG } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp-check/habitat-assessment'
 const nextRoutePath = '/maintain-application-lines'
@@ -71,15 +70,6 @@ lab.experiment('Habitat assessment page tests:', () => {
       lab.test('Check the url link is correct', async () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         Code.expect(doc.getElementById('habitat-assessment-guidance-link').getAttribute('href')).to.equal('https://www.gov.uk/government/publications/environmental-permit-pre-application-advice-form')
-      })
-
-      lab.test('Check the page is not displayed for certain mcp types', async () => {
-        mocks.taskDeterminants.mcpType = MOBILE_SG // Set the mock mcp type so the screen does NOT display
-        const res = await server.inject(getRequest)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].habitatAssessmentRequired).to.equal(false)
       })
     })
   })

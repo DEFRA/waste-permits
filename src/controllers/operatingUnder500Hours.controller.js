@@ -5,7 +5,6 @@ const { MAINTAIN_APPLICATION_LINES } = require('../routes')
 const RecoveryService = require('../services/recovery.service')
 const OperatingUnder500HoursModel = require('../models/operatingUnder500Hours.model')
 
-const { STATIONARY_SG, MOBILE_SG, MOBILE_MCP } = require('../dynamics').MCP_TYPES
 const YES = 'yes'
 
 module.exports = class OperatingUnder500HoursController extends BaseController {
@@ -14,13 +13,6 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
 
     // Do not show the page for some MCP types
     const context = await RecoveryService.createApplicationContext(h)
-    const { taskDeterminants } = context
-    switch (taskDeterminants.mcpType) {
-      case STATIONARY_SG:
-      case MOBILE_SG:
-      case MOBILE_MCP:
-        return this.redirect({ h })
-    }
 
     const under500Hours = await OperatingUnder500HoursModel.get(context)
 
@@ -48,13 +40,12 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
     const operatingUnder500HoursModel = new OperatingUnder500HoursModel(under500Hours)
     await operatingUnder500HoursModel.save(context)
 
-    // If they are operating for under 500 hours then these are set to false, otherwise they're set true
     await taskDeterminants.save({
-      airDispersionModellingRequired: !operatingUnder500Hours,
-      energyEfficiencyReportRequired: !operatingUnder500Hours,
-      bestAvailableTechniquesAssessment: !operatingUnder500Hours,
-      habitatAssessmentRequired: !operatingUnder500Hours,
-      screeningToolRequired: !operatingUnder500Hours
+      airDispersionModellingRequired: false,
+      energyEfficiencyReportRequired: false,
+      bestAvailableTechniquesAssessment: false,
+      habitatAssessmentRequired: false,
+      screeningToolRequired: false
     })
 
     if (operatingUnder500Hours) {

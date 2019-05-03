@@ -1070,21 +1070,21 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
-  MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_SG: {
+  THERMAL_INPUT_20MW_TO_50MW: {
     path: '/mcp-check/best-available-techniques/sg',
-    view: 'mcpBestAvailableTechniquesRequiredSg',
+    view: 'thermalInput20To50Mw',
     pageHeading: 'Does any single generator unit have a rated thermal input between 20MW and 50MW?',
-    controller: 'mcpBestAvailableTechniquesRequiredSg',
-    validator: 'mcpBestAvailableTechniquesRequiredSg',
-    nextRoute: 'MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_MCP',
+    controller: 'thermalInput20To50Mw',
+    validator: 'thermalInput20To50Mw',
+    nextRoute: 'MCP_HABITAT_ASSESSMENT',
     types: 'GET, POST'
   },
-  MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_MCP: {
+  BURNING_WASTE_BIOMASS: {
     path: '/mcp-check/best-available-techniques/mcp',
-    view: 'mcpBestAvailableTechniquesRequiredMcp',
+    view: 'burningWasteBiomass',
     pageHeading: 'Are you burning waste biomass?',
-    controller: 'mcpBestAvailableTechniquesRequiredMcp',
-    validator: 'mcpBestAvailableTechniquesRequiredMcp',
+    controller: 'burningWasteBiomass',
+    validator: 'burningWasteBiomass',
     nextRoute: 'MCP_HABITAT_ASSESSMENT',
     types: 'GET, POST'
   },
@@ -1094,7 +1094,7 @@ const Routes = {
     pageHeading: 'Do you need to provide an energy efficiency report?',
     controller: 'mcpEnergyReportRequired',
     validator: 'mcpEnergyReportRequired',
-    nextRoute: 'MCP_REQUIRES_BEST_AVAILABLE_TECHNIQUES_SG',
+    nextRoute: 'THERMAL_INPUT_20MW_TO_50MW',
     types: 'GET, POST'
   },
   MCP_TYPE: {

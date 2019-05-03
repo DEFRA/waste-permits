@@ -20,10 +20,7 @@ const OperatingUnder500Hours = require('../../src/models/operatingUnder500Hours.
 
 const {
   STATIONARY_MCP,
-  STATIONARY_SG,
-  STATIONARY_MCP_AND_SG,
-  MOBILE_SG,
-  MOBILE_MCP
+  STATIONARY_MCP_AND_SG
 } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp-check/under-500-hours'
@@ -90,22 +87,6 @@ lab.experiment('Operating under 500 hours page tests:', () => {
           Code.expect(doc.getElementById('operating-under-500-hours-no-label')).to.exist()
         }
       })
-
-      const mcpTypes = [
-        MOBILE_SG,
-        STATIONARY_SG,
-        MOBILE_MCP
-      ]
-
-      mcpTypes.forEach((mcpType) => {
-        const { id } = mcpType
-        lab.test(`Check the page is not displayed for MCP type ${id}`, async () => {
-          mocks.taskDeterminants.mcpType = mcpType // Set the mock mcp type so the screen does NOT display
-          const res = await server.inject(getRequest)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(noRoutePath)
-        })
-      })
     })
 
     lab.experiment('Failure', () => {
@@ -126,6 +107,16 @@ lab.experiment('Operating under 500 hours page tests:', () => {
   lab.experiment(`POST ${routePath}`, () => {
     let postRequest
 
+    const checkTaskDeterminants = () => {
+      Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+      const determinants = taskDeterminantsStub.args[0][0]
+      Code.expect(determinants.airDispersionModellingRequired).to.equal(false)
+      Code.expect(determinants.screeningToolRequired).to.equal(false)
+      Code.expect(determinants.energyEfficiencyReportRequired).to.equal(false)
+      Code.expect(determinants.bestAvailableTechniquesAssessment).to.equal(false)
+      Code.expect(determinants.habitatAssessmentRequired).to.equal(false)
+    }
+
     lab.beforeEach(() => {
       postRequest = {
         method: 'POST',
@@ -143,12 +134,7 @@ lab.experiment('Operating under 500 hours page tests:', () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(yesRoutePath)
-      Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-      Code.expect(taskDeterminantsStub.args[0][0].airDispersionModellingRequired).to.equal(false)
-      Code.expect(taskDeterminantsStub.args[0][0].energyEfficiencyReportRequired).to.equal(false)
-      Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(false)
-      Code.expect(taskDeterminantsStub.args[0][0].habitatAssessmentRequired).to.equal(false)
-      Code.expect(taskDeterminantsStub.args[0][0].screeningToolRequired).to.equal(false)
+      checkTaskDeterminants()
     })
 
     lab.test('Success - no', async () => {

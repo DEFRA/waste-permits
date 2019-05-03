@@ -2,7 +2,8 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const { STATIONARY_MCP, MOBILE_SG, MOBILE_MCP } = require('../dynamics').MCP_TYPES
+const { STATIONARY_MCP, STATIONARY_SG } = require('../dynamics').MCP_TYPES
+const { THERMAL_INPUT_20MW_TO_50MW } = require('../routes')
 
 module.exports = class AirDispersionModellingController extends BaseController {
   async doGet (request, h, errors) {
@@ -12,14 +13,8 @@ module.exports = class AirDispersionModellingController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
     const { taskDeterminants } = context
 
-    switch (taskDeterminants.mcpType) {
-      case MOBILE_SG:
-      case MOBILE_MCP:
-        // Set the airDispersionModellingRequired to false and redirect to the next page
-        await taskDeterminants.save({ airDispersionModellingRequired: false })
-        return this.redirect({ h })
-      case STATIONARY_MCP:
-        pageContext.isStationaryMCP = true
+    if (taskDeterminants.mcpType === STATIONARY_MCP) {
+      pageContext.isStationaryMCP = true
     }
 
     return this.showView({ h, pageContext })
@@ -29,9 +24,16 @@ module.exports = class AirDispersionModellingController extends BaseController {
     const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
     const airDispersionModellingRequired = request.payload['air-dispersion-modelling'] === 'yes'
     await taskDeterminants.save({
+      energyEfficiencyReportRequired: false,
+      bestAvailableTechniquesAssessment: false,
+      habitatAssessmentRequired: false,
       airDispersionModellingRequired,
       screeningToolRequired: !airDispersionModellingRequired
     })
+
+    if (taskDeterminants.mcpType === STATIONARY_SG) {
+      return this.redirect({ h, route: THERMAL_INPUT_20MW_TO_50MW })
+    }
 
     return this.redirect({ h })
   }

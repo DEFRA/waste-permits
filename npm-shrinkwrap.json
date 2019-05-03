@@ -6177,6 +6177,16 @@
         "boom": "^7.3.0",
         "hoek": "^6.1.2",
         "joi": "^14.3.1"
+      },
+      "dependencies": {
+        "boom": {
+          "version": "7.3.0",
+          "resolved": "https://registry.npmjs.org/boom/-/boom-7.3.0.tgz",
+          "integrity": "sha512-Swpoyi2t5+GhOEGw8rEsKvTxFLIDiiKoUc2gsoV6Lyr43LHBIzch3k2MvYUs8RTROrIkVJ3Al0TkaOGjnb+B6A==",
+          "requires": {
+            "hoek": "6.x.x"
+          }
+        }
       }
     },
     "hapi-capitalize-modules": {

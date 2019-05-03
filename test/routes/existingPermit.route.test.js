@@ -11,17 +11,20 @@ const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
+const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const { COOKIE_RESULT } = require('../../src/constants')
-const { MOBILE_SG, MOBILE_MCP } = require('../../src/dynamics').MCP_TYPES
+const { STATIONARY_SG } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/existing-permit'
 const nextRoutePathYes = '/existing-permit/yes'
 const nextRoutePathNoSr = '/task-list'
 const nextRoutePathNoBespoke = '/mcp-check/under-500-hours'
+const nextRoutePathNoBespokeStationarySg = '/mcp-check/air-dispersion-modelling-report'
 
 lab.experiment('Existing permit page tests:', () => {
   let mocks
   let sandbox
+  let taskDeterminantsStub
 
   lab.beforeEach(() => {
     mocks = new Mocks()
@@ -31,6 +34,8 @@ lab.experiment('Existing permit page tests:', () => {
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
+    sandbox.stub(TaskDeterminants, 'get').value(() => mocks.taskDeterminants)
+    taskDeterminantsStub = sandbox.stub(TaskDeterminants.prototype, 'save')
   })
 
   lab.afterEach(() => {
@@ -49,28 +54,6 @@ lab.experiment('Existing permit page tests:', () => {
       }
     })
 
-    lab.experiment('redirect if mobile', () => {
-      lab.test('page redirects to correct location dependant on Moble SG type', async () => {
-        mocks.context.isBespoke = true
-        mocks.taskDeterminants.mcpType = MOBILE_SG
-        const res = await server.inject(request)
-        Code.expect(res.statusCode).to.equal(302)
-        Code
-          .expect(res.headers['location'])
-          .to
-          .equal('/mcp-check/air-dispersion-modelling-report')
-      })
-      lab.test('page redirects to correct location dependant on Moble SG also MCP type', async () => {
-        mocks.context.isBespoke = true
-        mocks.taskDeterminants.mcpType = MOBILE_MCP
-        const res = await server.inject(request)
-        Code.expect(res.statusCode).to.equal(302)
-        Code
-          .expect(res.headers['location'])
-          .to
-          .equal('/mcp-check/air-dispersion-modelling-report')
-      })
-    })
     lab.experiment('success', () => {
       lab.test('page displays correct details', async () => {
         const doc = await GeneralTestHelper.getDoc(request)
@@ -90,6 +73,16 @@ lab.experiment('Existing permit page tests:', () => {
   lab.experiment(`POST ${routePath}`, () => {
     let postRequest
 
+    const checkTaskDeterminants = () => {
+      Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+      const determinants = taskDeterminantsStub.args[0][0]
+      Code.expect(determinants.bestAvailableTechniquesAssessment).to.equal(false)
+      Code.expect(determinants.habitatAssessmentRequired).to.equal(false)
+      Code.expect(determinants.screeningToolRequired).to.equal(false)
+      Code.expect(determinants.airDispersionModellingRequired).to.equal(false)
+      Code.expect(determinants.energyEfficiencyReportRequired).to.equal(false)
+    }
+
     lab.beforeEach(() => {
       postRequest = { method: 'POST', url: routePath, headers: {}, payload: {} }
     })
@@ -98,6 +91,7 @@ lab.experiment('Existing permit page tests:', () => {
       lab.test('when yes selected', async () => {
         postRequest.payload['existing-permit'] = 'yes'
         const res = await server.inject(postRequest)
+        checkTaskDeterminants()
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePathYes)
       })
@@ -105,6 +99,7 @@ lab.experiment('Existing permit page tests:', () => {
         mocks.context.isBespoke = false
         postRequest.payload['existing-permit'] = 'no'
         const res = await server.inject(postRequest)
+        checkTaskDeterminants()
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePathNoSr)
       })
@@ -112,8 +107,18 @@ lab.experiment('Existing permit page tests:', () => {
         mocks.context.isBespoke = true
         postRequest.payload['existing-permit'] = 'no'
         const res = await server.inject(postRequest)
+        checkTaskDeterminants()
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePathNoBespoke)
+      })
+      lab.test('when bespoke and stationary-sg and no selected', async () => {
+        mocks.context.isBespoke = true
+        mocks.taskDeterminants.mcpType = STATIONARY_SG
+        postRequest.payload['existing-permit'] = 'no'
+        const res = await server.inject(postRequest)
+        checkTaskDeterminants()
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePathNoBespokeStationarySg)
       })
     })
 

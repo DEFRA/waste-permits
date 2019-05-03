@@ -12,17 +12,18 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const { COOKIE_RESULT } = require('../../src/constants')
-const { MOBILE_SG, STATIONARY_SG } = require('../../src/dynamics').MCP_TYPES
+const { STATIONARY_MCP_AND_SG, STATIONARY_SG } = require('../../src/dynamics').MCP_TYPES
 const routePath = '/mcp-check/best-available-techniques/sg'
 
-const nextRoutePath = '/mcp-check/best-available-techniques/mcp'
+const nextRoutePath = '/mcp-check/habitat-assessment'
+const burningWasteBiomassRoutePath = '/mcp-check/best-available-techniques/mcp'
 let sandbox
 let mocks
 let taskDeterminantsStub
 
 lab.beforeEach(() => {
   mocks = new Mocks()
-  mocks.taskDeterminants.mcpType = STATIONARY_SG // Set the mock permit to one that this screen displays for
+  mocks.taskDeterminants.mcpType = STATIONARY_MCP_AND_SG // Set the mock permit to one that this screen displays for
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -62,20 +63,18 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
         Code.expect(doc.getElementById('engine-type-boiler-etc')).to.exist()
         Code.expect(doc.getElementById('engine-type-spark')).to.exist()
       })
-
-      lab.test('Check we don\'t display this page for certain permit types', async () => {
-        mocks.taskDeterminants.mcpType = MOBILE_SG // Set the mock permit to one that this screen doesn't display for
-        const res = await server.inject(request)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(false)
-      })
     })
   })
 
   lab.experiment(`POST ${routePath}`, () => {
     let postRequest
+
+    const checkTaskDeterminants = ({ bestAvailableTechniquesAssessment }) => {
+      Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+      const determinants = taskDeterminantsStub.args[0][0]
+      Code.expect(determinants.bestAvailableTechniquesAssessment).to.equal(bestAvailableTechniquesAssessment)
+      Code.expect(determinants.habitatAssessmentRequired).to.equal(false)
+    }
 
     lab.beforeEach(() => {
       postRequest = {
@@ -99,33 +98,47 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
       lab.test('Thermal rating 20MW to 50MW, boiler', async () => {
         postRequest.payload['thermal-rating'] = '20 to 50'
         postRequest.payload['engine-type'] = 'boiler etc'
-        await server.inject(postRequest)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(true)
+        const res = await server.inject(postRequest)
+        checkTaskDeterminants({ bestAvailableTechniquesAssessment: true })
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
       lab.test('Thermal rating 20MW to 50MW, spark ignition', async () => {
         postRequest.payload['thermal-rating'] = '20 to 50'
         postRequest.payload['engine-type'] = 'spark ignition'
-        await server.inject(postRequest)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(false)
+        const res = await server.inject(postRequest)
+        checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(burningWasteBiomassRoutePath)
       })
 
       lab.test('Thermal rating not 20MW to 50MW, boiler', async () => {
         postRequest.payload['thermal-rating'] = 'not 20 to 50'
         postRequest.payload['engine-type'] = 'boiler etc'
-        await server.inject(postRequest)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(false)
+        const res = await server.inject(postRequest)
+        checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(burningWasteBiomassRoutePath)
+      })
+
+      lab.test('Thermal rating not 20MW to 50MW, boiler and stationary sg', async () => {
+        postRequest.payload['thermal-rating'] = 'not 20 to 50'
+        postRequest.payload['engine-type'] = 'boiler etc'
+        mocks.taskDeterminants.mcpType = STATIONARY_SG
+        const res = await server.inject(postRequest)
+        checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(nextRoutePath)
       })
 
       lab.test('Thermal rating not 20MW to 50MW, spark ignition', async () => {
         postRequest.payload['thermal-rating'] = 'not 20 to 50'
         postRequest.payload['engine-type'] = 'spark ignition'
-        await server.inject(postRequest)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(false)
+        const res = await server.inject(postRequest)
+        checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
+        Code.expect(res.statusCode).to.equal(302)
+        Code.expect(res.headers['location']).to.equal(burningWasteBiomassRoutePath)
       })
     })
 
