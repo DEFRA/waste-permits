@@ -1,9 +1,9 @@
 'use strict'
 
 const ApplicationCostItem = require('./applicationCostItem.model')
-const ApplicationEntity = require('../persistence/entities/application.entity')
-const ApplicationLineEntity = require('../persistence/entities/applicationLine.entity')
-const ItemEntity = require('../persistence/entities/item.entity')
+const Application = require('../persistence/entities/application.entity')
+const ApplicationLine = require('../persistence/entities/applicationLine.entity')
+const Item = require('../persistence/entities/item.entity')
 
 module.exports = class ApplicationCost {
   constructor ({ applicationCostItems, totalCostItem }) {
@@ -21,11 +21,11 @@ module.exports = class ApplicationCost {
 
   static async getApplicationCostForApplicationId (entityContextToUse) {
     const { applicationId } = entityContextToUse
-    const itemEntities = await ItemEntity.getAllWasteActivitiesAndAssessments(entityContextToUse)
-    const wasteActivityItemEntities = itemEntities.wasteActivities
-    const wasteAssessmentItemEntities = itemEntities.wasteAssessments
+    const items = await Item.getAllWasteActivitiesAndAssessments(entityContextToUse)
+    const wasteActivityItemEntities = items.wasteActivities
+    const wasteAssessmentItemEntities = items.wasteAssessments
 
-    const applicationLineEntities = await ApplicationLineEntity.listBy(entityContextToUse, { applicationId })
+    const applicationLineEntities = await ApplicationLine.listBy(entityContextToUse, { applicationId })
     const wasteActivityLineEntities = applicationLineEntities.filter(({ itemId }) => wasteActivityItemEntities.find(({ id }) => id === itemId))
     const wasteAssessmentLineEntities = applicationLineEntities.filter(({ itemId }) => wasteAssessmentItemEntities.find(({ id }) => id === itemId))
 
@@ -43,7 +43,7 @@ module.exports = class ApplicationCost {
     })
     const applicationCostItems = wasteActivityApplicationCostItems.concat(wasteAssessmentApplicationCostItems)
 
-    const applicationEntity = await ApplicationEntity.getById(entityContextToUse, applicationId)
+    const applicationEntity = await Application.getById(entityContextToUse, applicationId)
     const totalCost = applicationEntity.lineItemsTotalAmount
     const totalCostItem = new ApplicationCostItem({ description: 'Total', cost: totalCost })
 

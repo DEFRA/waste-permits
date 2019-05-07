@@ -44,7 +44,9 @@ lab.experiment('AirQualityManagementArea test:', () => {
     lab.test('AQMA is set as no', async () => {
       mocks.applicationAnswers[0].questionCode = 'aqma-is-in-aqma'
       mocks.applicationAnswers[0].answerText = NO
+
       const airQualityManagementArea = await AirQualityManagementArea.get(context)
+
       Code.expect(airQualityManagementArea.isInAqma).to.be.false()
       Code.expect(airQualityManagementArea.name).to.not.exist()
       Code.expect(airQualityManagementArea.nitrogenDioxideLevel).to.not.exist()
@@ -75,7 +77,7 @@ lab.experiment('AirQualityManagementArea test:', () => {
       const airQualityManagementArea = new AirQualityManagementArea()
       airQualityManagementArea.isInAqma = false
       await airQualityManagementArea.save(context)
-      Code.expect(saveSpy.callCount).to.equal(1)
+      Code.expect(saveSpy.callCount).to.equal(4)
     })
 
     lab.test('with AQMA set to Yes', async () => {

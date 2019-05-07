@@ -52,7 +52,10 @@ lab.beforeEach(() => {
   context = {
     authToken: 'AUTH_TOKEN',
     applicationId: fakePaymentData.applicationId,
-    applicationLineId: fakePaymentData.applicationLineId
+    applicationLineId: fakePaymentData.applicationLineId,
+    taskDeterminants: {
+      facilityType: {}
+    }
   }
 
   dynamicsSearchStub = DynamicsDalService.prototype.search

@@ -13,7 +13,6 @@ const { STATIONARY_MCP } = require('../../src/dynamics').MCP_TYPES
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const Application = require('../../src/persistence/entities/application.entity')
-const DataStore = require('../../src/models/dataStore.model')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 const StandardRulesTaskList = require('../../src/models/taskList/standardRules.taskList')
 const BespokeTaskList = require('../../src/models/taskList/bespoke.taskList')
@@ -194,7 +193,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
-  sandbox.stub(DataStore, 'get').value(async () => mocks.dataStore)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
   sandbox.stub(StandardRule, 'getByCode').value(() => mocks.standardRule)
   sandbox.stub(StandardRulesTaskList, 'buildTaskList').value(() => fakeTaskList)
@@ -247,8 +245,8 @@ lab.experiment('Task List page tests:', () => {
   lab.test('Task list page contains the correct heading and Bespoke info when dispersion modelling is required', async () => {
     mocks.context.isBespoke = true
     mocks.context.permitType = BESPOKE.id
-    mocks.dataStore.data.airDispersionModellingRequired = true
-    Object.assign(mocks.mcpType, STATIONARY_MCP)
+    mocks.taskDeterminants.airDispersionModellingRequired = true
+    mocks.taskDeterminants.mcpType = STATIONARY_MCP
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
     // Check the existence of the page title and Bespoke info
@@ -261,8 +259,8 @@ lab.experiment('Task List page tests:', () => {
   lab.test('Task list page contains the correct heading and Bespoke info when dispersion modelling is not required', async () => {
     mocks.context.isBespoke = true
     mocks.context.permitType = BESPOKE.id
-    mocks.dataStore.data.airDispersionModellingRequired = false
-    Object.assign(mocks.mcpType, STATIONARY_MCP)
+    mocks.taskDeterminants.airDispersionModellingRequired = false
+    mocks.taskDeterminants.mcpType = STATIONARY_MCP
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
     // Check the existence of the page title and Bespoke info

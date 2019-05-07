@@ -67,7 +67,10 @@ Constants.MCP_CATEGORY_NAMES.forEach((mcpCategoryName) => {
   Constants.PROCESSING_TIME[mcpCategoryName] = '9 weeks'
 })
 
-Constants.PAYMENT_CONFIGURATION_PREFIX = 'WastePermits.ECOM.'
+Constants.PAYMENT_CONFIGURATION_PREFIX = {
+  WASTE_PREFIX: 'WastePermits.ECOM.',
+  MCP_PREFIX: 'MCP.ECOM.'
+}
 
 Constants.DEFRA_COOKIE_KEY = 'DefraSession'
 

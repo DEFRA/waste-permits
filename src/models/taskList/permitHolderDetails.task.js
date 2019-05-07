@@ -1,7 +1,12 @@
 'use strict'
 
 const { AddressTypes, PERMIT_HOLDER_TYPES } = require('../../dynamics')
-const { RESPONSIBLE_CONTACT_DETAILS, PARTNER_CONTACT_DETAILS, INDIVIDUAL_PERMIT_HOLDER } = AddressTypes
+const {
+  RESPONSIBLE_CONTACT_DETAILS,
+  PARTNER_CONTACT_DETAILS,
+  INDIVIDUAL_PERMIT_HOLDER,
+  COMPANY_SECRETARY_EMAIL
+} = AddressTypes
 
 const BaseTask = require('./base.task')
 const LoggingService = require('../../services/logging.service')
@@ -123,9 +128,23 @@ module.exports = class PermitHolderDetails extends BaseTask {
 
   static async checkComplete (context) {
     const { application } = context
-    const { permitHolderOrganisationId } = application
+    const {
+      bankruptcy,
+      bankruptcyDetails,
+      permitHolderOrganisationId,
+      relevantOffences,
+      relevantOffencesDetails
+    } = application
 
     const permitHolderType = await this.getPermitHolderType(context)
+
+    if (bankruptcy === undefined || (bankruptcy && !bankruptcyDetails)) {
+      return false
+    }
+
+    if (relevantOffences === undefined || (relevantOffences && !relevantOffencesDetails)) {
+      return false
+    }
 
     switch (permitHolderType) {
       case INDIVIDUAL:
@@ -139,6 +158,16 @@ module.exports = class PermitHolderDetails extends BaseTask {
         const type = RESPONSIBLE_CONTACT_DETAILS.TYPE
         const { firstName, lastName, email, jobTitle } = await ContactDetail.get(context, { type }) || {}
         return Boolean(firstName && lastName && email && jobTitle)
+      }
+      case LIMITED_COMPANY: {
+        const type = COMPANY_SECRETARY_EMAIL.TYPE
+        const { email } = await ContactDetail.get(context, { type }) || {}
+        // if company secretary email not entered then return false
+        // otherwise continue to perform further checks
+        if (!email) {
+          return false
+        }
+        break
       }
     }
 

@@ -42,10 +42,13 @@ module.exports = class PermitCategoryController extends BaseController {
   }
 
   async doPost (request, h) {
+    const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
     CookieService.remove(request, Constants.COOKIE_KEY.STANDARD_RULE_ID)
     // Set the standard rule type ID in the cookie
     const standardRuleTypeId = request.payload['chosen-category']
     CookieService.set(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID, standardRuleTypeId)
+
+    await taskDeterminants.save({ permitCategory: standardRuleTypeId })
 
     if (PermitCategoryController.isOfflineCategory(standardRuleTypeId)) {
       return this.redirect({ h, route: Routes.APPLY_OFFLINE })

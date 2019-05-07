@@ -8,12 +8,10 @@ const server = require('../../server')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/persistence/entities/application.entity')
-const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
 
 const CookieService = require('../../src/services/cookie.service')
-const DataStore = require('../../src/models/dataStore.model')
-const Mocks = require('../helpers/mocks')
+const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 
 const { COOKIE_RESULT } = require('../../src/constants')
 
@@ -34,15 +32,16 @@ const shortcutPathGeneratorsNext = '/permit/select'
 
 const permitTypeQuery = '?permit-type='
 const bespokeQuery = `${permitTypeQuery}bespoke`
+const bespokeQueryNext = '/facility-type'
 const standardRulesQuery = `${permitTypeQuery}standard-rules`
+const standardRulesQueryNext = '/permit/category'
 const invalidValueQuery = `${permitTypeQuery}invalid-value`
 const invalidParameterQuery = '?invalid-parameter=invalid-value'
 
 let getRequest
 let postRequest
-let mocks
 let cookeServiceSet
-let dataStoreSave
+let taskDeterminantsSave
 
 const fakeCookie = {
   applicationId: 'my_application_id',
@@ -61,8 +60,6 @@ lab.beforeEach(() => {
     headers: {}
   }
 
-  mocks = new Mocks()
-
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
@@ -71,8 +68,8 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   cookeServiceSet = sandbox.stub(CookieService, 'set')
   cookeServiceSet.callsFake(async () => true)
-  dataStoreSave = sandbox.stub(DataStore, 'save')
-  dataStoreSave.callsFake(async () => mocks.dataStore.id)
+  taskDeterminantsSave = sandbox.stub(TaskDeterminants.prototype, 'save')
+  taskDeterminantsSave.callsFake(async () => undefined)
   sandbox.stub(Application.prototype, 'save').value(async () => undefined)
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [
     { categoryName: 'mcpd-mcp', id: 123 },
@@ -180,7 +177,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
       }
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(`${nextRoutePath}${bespokeQuery}`)
+      Code.expect(res.headers['location']).to.equal(bespokeQueryNext)
     })
 
     lab.test('POST Start or Open Saved page passes on standard rules parameter', async () => {
@@ -190,7 +187,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
       }
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(`${nextRoutePath}${standardRulesQuery}`)
+      Code.expect(res.headers['location']).to.equal(standardRulesQueryNext)
     })
 
     lab.test('POST Start or Open Saved does not pass on invalid parameter value', async () => {
@@ -224,7 +221,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(shortcutPathMCPNext)
       Code.expect(cookeServiceSet.calledOnce).to.be.true()
-      Code.expect(dataStoreSave.calledOnce).to.be.true()
+      Code.expect(taskDeterminantsSave.calledOnce).to.be.true()
     })
     lab.test('POST on Start or Open Saved page (with optional permitCategory == generators)', async () => {
       postRequest.payload = {
@@ -235,7 +232,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(shortcutPathGeneratorsNext)
       Code.expect(cookeServiceSet.calledOnce).to.be.true()
-      Code.expect(dataStoreSave.calledOnce).to.be.true()
+      Code.expect(taskDeterminantsSave.calledOnce).to.be.true()
     })
     lab.test('POST on Start or Open Saved page (with optional permitCategory == mcp-bespoke)', async () => {
       postRequest.payload = {
@@ -246,7 +243,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(shortcutPathMCPBespokeNext)
       Code.expect(cookeServiceSet.calledOnce).to.be.false()
-      Code.expect(dataStoreSave.calledOnce).to.be.true()
+      Code.expect(taskDeterminantsSave.calledOnce).to.be.true()
     })
   })
 })

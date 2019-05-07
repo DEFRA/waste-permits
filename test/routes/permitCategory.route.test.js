@@ -10,6 +10,7 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
+const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
 const RecoveryService = require('../../src/services/recovery.service')
@@ -53,6 +54,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
+  sandbox.stub(TaskDeterminants.prototype, 'save').value(() => undefined)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   // Todo: Remove useMcpFeature stub when MCP is live

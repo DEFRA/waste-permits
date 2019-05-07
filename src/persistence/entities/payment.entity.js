@@ -1,7 +1,8 @@
 'use strict'
 
-const { PAYMENT_CONFIGURATION_PREFIX } = require('../../constants')
-const { PaymentTypes } = require('../../dynamics')
+const { PAYMENT_CONFIGURATION_PREFIX, MCP_CATEGORY_NAMES } = require('../../constants')
+const { MCP_PREFIX, WASTE_PREFIX } = PAYMENT_CONFIGURATION_PREFIX
+const { PaymentTypes, MCP } = require('../../dynamics')
 const Utilities = require('../../utilities/utilities')
 const DynamicsDalService = require('../../services/dynamicsDal.service')
 const BaseEntity = require('./base.entity')
@@ -29,6 +30,16 @@ class Payment extends BaseEntity {
       { field: 'customerPaymentAmount', dynamics: 'defra_customer_payment_amount' },
       { field: 'customerPaymentDate', dynamics: 'defra_customer_payment_date', isDate: true }
     ]
+  }
+
+  static getPermitCategory ({ taskDeterminants }) {
+    const { facilityType, permitCategory } = taskDeterminants
+    if (facilityType) {
+      return facilityType === MCP ? MCP_PREFIX : WASTE_PREFIX
+    } else {
+      const isMcp = MCP_CATEGORY_NAMES.find((mcpCategoryName) => mcpCategoryName === permitCategory.categoryName)
+      return isMcp ? MCP_PREFIX : WASTE_PREFIX
+    }
   }
 
   static async getBacsPayment (context) {
@@ -59,7 +70,7 @@ class Payment extends BaseEntity {
   async makeCardPayment (context, description, returnUrl) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
-      ConfigurationPrefix: PAYMENT_CONFIGURATION_PREFIX,
+      ConfigurationPrefix: Payment.getPermitCategory(context),
       Amount: this.value,
       ReturnUrl: returnUrl,
       Description: description,
@@ -81,7 +92,7 @@ class Payment extends BaseEntity {
   async getCardPaymentResult (context) {
     const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
-      ConfigurationPrefix: PAYMENT_CONFIGURATION_PREFIX,
+      ConfigurationPrefix: Payment.getPermitCategory(context),
       LookupByPaymentReference: this.referenceNumber
     }
     try {

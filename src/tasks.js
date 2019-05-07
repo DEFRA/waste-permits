@@ -5,6 +5,7 @@ const tasks = {
     id: 'air-quality-management',
     label: 'Give Air Quality Management Area details',
     route: Routes.AIR_QUALITY_MANAGEMENT_AREA,
+    determinants: [ 'aqmaRequired' ],
     completedLabelId: 'air-quality-management-completed',
     shortName: 'aqma',
     taskListModel: 'airQualityManagementArea'
@@ -13,6 +14,7 @@ const tasks = {
     id: 'upload-air-dispersion-modelling-report',
     label: 'Upload air dispersion modelling report',
     route: Routes.AIR_DISPERSION_MODELLING_REPORT,
+    determinants: [ 'airDispersionModellingRequired' ],
     completedLabelId: 'upload-air-dispersion-modelling-report-completed',
     shortName: 'airreport',
     taskListModel: 'airDispersionModellingReport'
@@ -37,6 +39,7 @@ const tasks = {
     id: 'upload-best-available-techniques-assessment',
     label: 'Upload the best available techniques assessment',
     route: Routes.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
+    determinants: [ 'bestAvailableTechniquesAssessment' ],
     completedLabelId: 'upload-best-available-techniques-assessment-completed',
     shortName: 'batassessment',
     taskListModel: 'bestAvailableTechniquesAssessment'
@@ -89,6 +92,7 @@ const tasks = {
     id: 'upload-energy-efficiency-report',
     label: 'Upload the energy efficiency report',
     route: Routes.ENERGY_EFFICIENCY_REPORT,
+    determinants: [ 'energyEfficiencyReportRequired' ],
     completedLabelId: 'upload-energy-efficiency-report-completed',
     shortName: 'energyefficiency',
     taskListModel: 'energyEfficiencyReport'
@@ -144,6 +148,7 @@ const tasks = {
     id: 'mcp-business-activity',
     label: 'Choose business or activity type',
     route: Routes.MCP_BUSINESS_ACTIVITY,
+    determinants: [ 'businessActivityRequired' ],
     completedLabelId: 'business-activity-completed',
     ruleSetId: 'defra_mcp_businesstype',
     shortName: 'nacecode',
@@ -249,6 +254,7 @@ const tasks = {
     id: 'upload-screening-tool',
     label: 'Upload screening tool',
     route: Routes.SCREENING_TOOL,
+    determinants: [ 'screeningToolRequired' ],
     completedLabelId: 'screening-tool-completed',
     shortName: 'screeningtool',
     taskListModel: 'screeningTool'
@@ -277,6 +283,7 @@ const tasks = {
     id: 'give-site-name-and-location',
     label: 'Give site name and location',
     route: Routes.SITE_NAME,
+    determinants: [ 'siteNameRequired' ],
     completedLabelId: 'site-name-completed',
     ruleSetId: 'defra_locationrequired',
     shortName: 'sitename',
@@ -469,6 +476,61 @@ const bespoke = [
   }
 ]
 
+const mcpBespoke = [
+  {
+    id: 'get-a-save-link-section',
+    label: 'Get a save link',
+    tasks: [
+      tasks.SAVE_AND_RETURN_EMAIL
+    ]
+  },
+  {
+    id: 'about-the-application-section',
+    label: 'About the application',
+    tasks: [
+      tasks.CONTACT_DETAILS,
+      tasks.PERMIT_HOLDER_DETAILS,
+      tasks.CONFIRM_CONFIDENTIALLY,
+      tasks.INVOICING_DETAILS
+    ]
+  },
+  {
+    id: 'operations-section',
+    label: 'Operations',
+    tasks: [
+      tasks.SITE_NAME_LOCATION,
+      tasks.AIR_QUALITY_MANAGEMENT_AREA,
+      tasks.NON_TECHNICAL_SUMMARY
+    ]
+  },
+  {
+    id: 'activities-section',
+    label: 'Activities',
+    tasks: [
+      tasks.MCP_TEMPLATE,
+      tasks.MCP_DETAILS,
+      tasks.MCP_BUSINESS_ACTIVITY
+    ]
+  },
+  {
+    id: 'evidence-section',
+    label: 'Evidence',
+    tasks: [
+      tasks.AIR_DISPERSION_MODELLING_REPORT,
+      tasks.SCREENING_TOOL,
+      tasks.ENERGY_EFFICENCY_REPORT,
+      tasks.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT
+    ]
+  },
+  {
+    id: 'send-and-pay-section',
+    label: 'Apply',
+    tasks: [
+      tasks.SUBMIT_PAY
+    ]
+  }
+]
+
 module.exports = class Tasks {
   static get tasks () {
     return tasks
@@ -480,5 +542,9 @@ module.exports = class Tasks {
 
   static get bespoke () {
     return bespoke
+  }
+
+  static get mcpBespoke () {
+    return mcpBespoke
   }
 }

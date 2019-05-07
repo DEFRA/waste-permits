@@ -12,7 +12,7 @@ const Application = require('../../src/persistence/entities/application.entity')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
-const { MOBILE_SG, MOBILE_SG_AND_MCP } = require('../../src/dynamics').MCP_TYPES
+const { MOBILE_SG, MOBILE_MCP } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/existing-permit'
 const nextRoutePathYes = '/existing-permit/yes'
@@ -52,7 +52,7 @@ lab.experiment('Existing permit page tests:', () => {
     lab.experiment('redirect if mobile', () => {
       lab.test('page redirects to correct location dependant on Moble SG type', async () => {
         mocks.context.isBespoke = true
-        Object.assign(mocks.mcpType, MOBILE_SG)
+        mocks.taskDeterminants.mcpType = MOBILE_SG
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code
@@ -62,7 +62,7 @@ lab.experiment('Existing permit page tests:', () => {
       })
       lab.test('page redirects to correct location dependant on Moble SG also MCP type', async () => {
         mocks.context.isBespoke = true
-        Object.assign(mocks.mcpType, MOBILE_SG_AND_MCP)
+        mocks.taskDeterminants.mcpType = MOBILE_MCP
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
         Code

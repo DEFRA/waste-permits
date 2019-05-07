@@ -9,11 +9,8 @@ const Contact = require('../persistence/entities/contact.entity')
 const Payment = require('../persistence/entities/payment.entity')
 const StandardRule = require('../persistence/entities/standardRule.entity')
 const DataStore = require('../models/dataStore.model')
-const FacilityType = require('../models/facilityType.model')
-const McpType = require('../models/mcpType.model')
 const CharityDetail = require('../models/charityDetail.model')
-const WasteActivities = require('../models/wasteActivities.model')
-const WasteAssessments = require('../models/wasteAssessments.model')
+const TaskDeterminants = require('../models/taskDeterminants.model')
 
 const { STANDARD_RULES, BESPOKE } = require('../constants').PermitTypes
 const { COOKIE_KEY: { AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID } } = require('../constants')
@@ -24,12 +21,11 @@ module.exports = class RecoveryService {
     // Get data from the data store
     const { data } = await DataStore.get(context)
 
+    // Get task determinants
+    context.taskDeterminants = await TaskDeterminants.get(context)
+
     context.dataStore = data
     context.permitType = data.permitType
-    context.mcpType = await McpType.get(context)
-    context.facilityType = await FacilityType.get(context)
-    context.wasteActivities = await WasteActivities.get(context) || new WasteActivities()
-    context.wasteAssessments = await WasteAssessments.get(context) || new WasteAssessments()
     context.isStandardRule = context.permitType === STANDARD_RULES.id
     context.isBespoke = context.permitType === BESPOKE.id
 

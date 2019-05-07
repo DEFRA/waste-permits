@@ -4,7 +4,6 @@
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const ApplicationLine = require('../persistence/entities/applicationLine.entity')
-const Item = require('../persistence/entities/item.entity')
 const { FACILITY_TYPES, PermitTypes } = require('../dynamics')
 const { MCP } = FACILITY_TYPES
 const { BESPOKE, STANDARD } = PermitTypes
@@ -18,71 +17,66 @@ const REQUIRES_HABITATS_ASSESSMENT = '1-19-2'
 module.exports = class MaintainApplicationLinesController extends BaseController {
   async doGet (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const { applicationId, dataStore, isBespoke } = context
+    const { applicationId, isBespoke, taskDeterminants } = context
     const {
+      facilityType,
       wasteActivities,
-      wasteAssessments,
-      facilityType
-    } = dataStore
+      wasteAssessments
+    } = taskDeterminants
 
-    const [applicationLines, allActivities, allAssessments] = await Promise.all([
-      ApplicationLine.listBy(context, { applicationId }),
-      Item.listWasteActivities(context),
-      Item.listWasteAssessments(context)
-    ])
+    const applicationLines = await ApplicationLine.listBy(context, { applicationId })
 
-    const activities = wasteActivities ? wasteActivities.split(',').map((activity) => activity.trim()) : []
-    const assessments = wasteAssessments ? wasteAssessments.split(',').map((assessment) => assessment.trim()) : []
-
-    if (facilityType === MCP.id) {
+    if (facilityType === MCP) {
       const {
         airDispersionModellingRequired,
         energyEfficiencyReportRequired,
         bestAvailableTechniquesAssessment,
         habitatAssessmentRequired
-      } = dataStore
+      } = taskDeterminants
       if (airDispersionModellingRequired) {
-        activities.push(REQUIRES_DISPERSION_MODELLING)
+        wasteActivities.push(REQUIRES_DISPERSION_MODELLING)
       } else {
-        activities.push(DOES_NOT_REQUIRE_DISPERSION_MODELLING)
+        wasteActivities.push(DOES_NOT_REQUIRE_DISPERSION_MODELLING)
       }
 
       if (energyEfficiencyReportRequired) {
-        assessments.push(REQUIRES_ENERGY_EFFICIENCY_REPORT)
+        wasteAssessments.push(REQUIRES_ENERGY_EFFICIENCY_REPORT)
       }
 
       if (bestAvailableTechniquesAssessment) {
-        assessments.push(REQUIRES_BEST_AVAILABLE_TECHNIQUES_ASSESSMENT)
+        wasteAssessments.push(REQUIRES_BEST_AVAILABLE_TECHNIQUES_ASSESSMENT)
       }
 
       if (habitatAssessmentRequired) {
-        assessments.push(REQUIRES_HABITATS_ASSESSMENT)
+        wasteAssessments.push(REQUIRES_HABITATS_ASSESSMENT)
       }
     }
 
-    // Obtain the activity and assessment data for those activities and assessments that have been selected.
-    const filteredActivities = activities.map((activity) => allActivities.find(({ shortName }) => shortName === activity))
-    const filteredAssessments = assessments.map((assessment) => allAssessments.find(({ shortName }) => shortName === assessment))
-
     // Combine the activities and assessments
-    const items = [...filteredActivities, ...filteredAssessments].filter((item) => item !== undefined) // Only items that are defined
+    const items = [...wasteActivities, ...wasteAssessments].filter((item) => item !== undefined) // Only items that are defined
 
     // Delete application lines that are no longer required
     const itemIds = new Set(items.map(({ id }) => id))
-    const toDelete = applicationLines.filter(({ itemId }) => itemId && !itemIds.has(itemId))
-    await Promise.all(toDelete.map((applicationLine) => applicationLine.delete(context)))
+    for (let index = 0; index < applicationLines.length; index++) {
+      const applicationLine = applicationLines[index]
+      if (applicationLine.itemId && !itemIds.has(applicationLine.itemId)) {
+        await applicationLine.delete(context)
+      }
+    }
 
     // Add missing application lines that are required
     const applicationLineItemIds = new Set(applicationLines.map(({ itemId }) => itemId))
-    const toAdd = items.filter(({ id }) => !applicationLineItemIds.has(id))
-    await Promise.all(toAdd.map((item) => {
-      const applicationLine = new ApplicationLine({
-        applicationId,
-        itemId: item.id,
-        permitType: isBespoke ? BESPOKE : STANDARD
-      })
-      return applicationLine.save(context)
-    }))
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index]
+      if (!applicationLineItemIds.has(item.id)) {
+        const applicationLine = new ApplicationLine({
+          applicationId,
+          itemId: item.id,
+          permitType: isBespoke ? BESPOKE : STANDARD
+        })
+        await applicationLine.save(context)
+      }
+    }
 
     return this.redirect({ h })
   }

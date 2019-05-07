@@ -56,6 +56,20 @@ const Dynamics = {
     }
   },
   ApplicationQuestions: {
+    AQMA: {
+      IS_IN_AQMA: {
+        questionCode: 'aqma-is-in-aqma'
+      },
+      AQMA_NAME: {
+        questionCode: 'aqma-name'
+      },
+      NO2_LEVEL: {
+        questionCode: 'aqma-nitrogen-dioxide-level'
+      },
+      AUTH_NAME: {
+        questionCode: 'aqma-local-authority-name'
+      }
+    },
     CHARITY_DETAILS: {
       NAME: {
         questionCode: 'general-charity-name'
@@ -246,10 +260,10 @@ const Dynamics = {
       isMobile: true,
       canApplyOnline: true
     },
-    MOBILE_SG_AND_MCP: {
-      id: 'mobile-sg-mcp',
+    MOBILE_MCP: {
+      id: 'mobile-mcp',
       key: '05',
-      text: 'Mobile SG which is also an MCP',
+      text: 'Mobile MCP',
       isMobile: true,
       canApplyOnline: true
     }

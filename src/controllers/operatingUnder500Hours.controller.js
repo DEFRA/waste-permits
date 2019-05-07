@@ -3,10 +3,9 @@
 const BaseController = require('./base.controller')
 const { MAINTAIN_APPLICATION_LINES } = require('../routes')
 const RecoveryService = require('../services/recovery.service')
-const DataStore = require('../models/dataStore.model')
 const OperatingUnder500HoursModel = require('../models/operatingUnder500Hours.model')
 
-const { STATIONARY_SG, MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
+const { STATIONARY_SG, MOBILE_SG, MOBILE_MCP } = require('../dynamics').MCP_TYPES
 const YES = 'yes'
 
 module.exports = class OperatingUnder500HoursController extends BaseController {
@@ -15,11 +14,11 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
 
     // Do not show the page for some MCP types
     const context = await RecoveryService.createApplicationContext(h)
-    const { mcpType = {} } = context
-    switch (mcpType.id) {
-      case STATIONARY_SG.id:
-      case MOBILE_SG.id:
-      case MOBILE_SG_AND_MCP.id:
+    const { taskDeterminants } = context
+    switch (taskDeterminants.mcpType) {
+      case STATIONARY_SG:
+      case MOBILE_SG:
+      case MOBILE_MCP:
         return this.redirect({ h })
     }
 
@@ -38,6 +37,7 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
+    const { taskDeterminants } = context
 
     const operatingUnder500Hours = request.payload['operating-under-500-hours'] === YES
 
@@ -49,11 +49,12 @@ module.exports = class OperatingUnder500HoursController extends BaseController {
     await operatingUnder500HoursModel.save(context)
 
     // If they are operating for under 500 hours then these are set to false, otherwise they're set true
-    await DataStore.save(context, {
+    await taskDeterminants.save({
       airDispersionModellingRequired: !operatingUnder500Hours,
       energyEfficiencyReportRequired: !operatingUnder500Hours,
       bestAvailableTechniquesAssessment: !operatingUnder500Hours,
-      habitatAssessmentRequired: !operatingUnder500Hours
+      habitatAssessmentRequired: !operatingUnder500Hours,
+      screeningToolRequired: !operatingUnder500Hours
     })
 
     if (operatingUnder500Hours) {

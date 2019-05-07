@@ -47,11 +47,6 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-const testCompleteness = async (expectedResult) => {
-  const result = await PermitHolderDetails.isComplete(mocks.context)
-  Code.expect(result).to.equal(expectedResult)
-}
-
 lab.experiment('Model persistence methods:', () => {
   lab.test('getAddress() method correctly retrieves an Address', async () => {
     const address = await PermitHolderDetails.getAddress(request)
@@ -84,23 +79,41 @@ lab.experiment('Model persistence methods:', () => {
 lab.experiment('Task List: Permit Holder Details Model tests:', () => {
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete for a company', async () => {
     mocks.context.permitHolderType = LIMITED_COMPANY
-    testCompleteness(true)
+    const result = await PermitHolderDetails.isComplete(mocks.context)
+    Code.expect(result).to.equal(true)
   })
 
   lab.test('isComplete() method correctly returns TRUE when the task list item is complete for an individual', async () => {
     mocks.context.permitHolderType = INDIVIDUAL
-    testCompleteness(true)
+    const result = await PermitHolderDetails.isComplete(mocks.context)
+    Code.expect(result).to.equal(true)
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete for a company', async () => {
     mocks.context.permitHolderType = LIMITED_COMPANY
     delete mocks.account.accountName
-    testCompleteness(false)
+    const result = await PermitHolderDetails.isComplete(mocks.context)
+    Code.expect(result).to.equal(false)
   })
 
   lab.test('isComplete() method correctly returns FALSE when the task list item is not complete for an individual', async () => {
     mocks.context.permitHolderType = INDIVIDUAL
     delete mocks.contactDetail.firstName
-    testCompleteness(false)
+    const result = await PermitHolderDetails.isComplete(mocks.context)
+    Code.expect(result).to.equal(false)
+  })
+
+  lab.test('isComplete() method correctly returns FALSE when relevant offences have not been completed', async () => {
+    mocks.context.permitHolderType = LIMITED_COMPANY
+    delete mocks.application.relevantOffences
+    const result = await PermitHolderDetails.isComplete(mocks.context)
+    Code.expect(result).to.equal(false)
+  })
+
+  lab.test('isComplete() method correctly returns FALSE when bankruptcy details have not been completed', async () => {
+    mocks.context.permitHolderType = LIMITED_COMPANY
+    delete mocks.application.bankruptcy
+    const result = await PermitHolderDetails.isComplete(mocks.context)
+    Code.expect(result).to.equal(false)
   })
 })

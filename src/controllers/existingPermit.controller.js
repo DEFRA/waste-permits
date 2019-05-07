@@ -3,16 +3,16 @@
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const { MCP_AIR_DISPERSION_MODELLING, MCP_HAS_EXISTING_PERMIT, MCP_UNDER_500_HOURS, TASK_LIST } = require('../routes')
-const { MOBILE_SG, MOBILE_SG_AND_MCP } = require('../dynamics').MCP_TYPES
+const { MOBILE_SG, MOBILE_MCP } = require('../dynamics').MCP_TYPES
 
 module.exports = class ExistingPermitController extends BaseController {
   async doGet (request, h, errors) {
-    const { mcpType = {}, isBespoke } = await RecoveryService.createApplicationContext(h)
+    const { taskDeterminants: { mcpType }, isBespoke } = await RecoveryService.createApplicationContext(h)
 
     if (isBespoke) {
-      switch (mcpType.id) {
-        case MOBILE_SG.id:
-        case MOBILE_SG_AND_MCP.id:
+      switch (mcpType) {
+        case MOBILE_SG:
+        case MOBILE_MCP:
           return this.redirect({ h, route: MCP_AIR_DISPERSION_MODELLING })
       }
     }
