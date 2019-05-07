@@ -93,7 +93,8 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     pageContext.sections = await this._buildSections(request.app.data)
 
     if (pdfAction === 'pdf-download') {
-      const result = await pdf.createPDF(pageContext.sections)
+      const { application } = await RecoveryService.createApplicationContext(h, { application: true })
+      const result = await pdf.createPDF(pageContext.sections, application)
 
       return h.response(result)
         .type('application/pdf')

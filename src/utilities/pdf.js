@@ -3,7 +3,12 @@
 const PdfMake = require('pdfmake')
 const moment = require('moment')
 
-const createPdfDocDefinition = () => {
+const createPdfDocDefinition = (sections, application) => {
+  const permitHeading = sections.find(({ headingId }) => headingId === 'section-permit-heading')
+  const permitAuthor = sections.find(({ headingId }) => headingId === 'section-contact-name-heading')
+  const permitHolder = sections.find(({ headingId }) => headingId === 'section-permit-holder-individual-heading')
+  console.log(permitHolder.answers.filter(a => typeof a.answer !== 'string'))
+  const title = 'Application for ' + permitHeading.answers.map(a => a.answer).join(' ')
   return {
     pageSize: 'A4',
     pageOrientation: 'portrait',
@@ -33,19 +38,35 @@ const createPdfDocDefinition = () => {
       }
     },
     info: {
-      title: 'Application for standard rules permit EPR/WE1234AB/A001',
-      author: 'Southern Star Power Plc',
+      title,
+      author: permitAuthor.answers.map(a => a.answer).join(' '),
       subject: 'Application for an Environmental Permit',
-      keywords: 'keywords for document',
+      // keywords: 'keywords for document',
       creator: 'GOV.UK',
       producer: 'GOV.UK',
       creationDate: moment().format('DD/MM/YYYY')
     },
     content: [
-      { text: 'Application for standard rules permit', style: 'h1' },
-      { text: 'SR2008-4 Waste transfer station', style: 'h1' },
-      'Application reference: EPR/WE1234AB/A001',
-      'Submitted on ' + moment().format('Do MMM YYYY')
+      { text: title, style: 'h1' },
+      'Application reference: ' + application.applicationNumber,
+      'Submitted on ' + moment().format('Do MMM YYYY'),
+      {
+        table: {
+          headerRows: 0,
+          body: sections.map(section => {
+            return [
+              {
+                text: section.heading,
+                style: 'th'
+              },
+              // section.answers.map(a => a.answer).join(' '),
+              section.answers.filter(a => typeof a.answer === 'string').map(a => a.answer)
+            ]
+          })
+        },
+        style: 'tableApplication',
+        layout: 'lightHorizontalLines'
+      }
     ]
   }
 }
@@ -183,8 +204,9 @@ const docDefinition = {
 
 module.exports = {
   docDefinition,
-  createPDF: async (sections) => {
-    const doc = printer.createPdfKitDocument(createPdfDocDefinition(sections))
+  createPDF: async (sections, application) => {
+    const doc = printer
+      .createPdfKitDocument(createPdfDocDefinition(sections, application))
 
     let chunks = []
 
