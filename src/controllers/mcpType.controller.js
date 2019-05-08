@@ -22,9 +22,15 @@ module.exports = class McpTypeController extends BaseController {
     const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
     const { 'mcp-type': mcpType } = request.payload
 
-    let aqmaRequired
-    let siteNameRequired
-    let businessActivityRequired
+    // Clear task determinants
+    let aqmaRequired = false
+    let siteNameRequired = false
+    let businessActivityRequired = false
+    let bestAvailableTechniquesAssessment = false
+    let airDispersionModellingRequired = false
+    let screeningToolRequired = false
+    let habitatAssessmentRequired = false
+    let energyEfficiencyReportRequired = false
 
     // set determinants based on mcpType
     switch (mcpType) {
@@ -53,7 +59,12 @@ module.exports = class McpTypeController extends BaseController {
       mcpType,
       aqmaRequired,
       siteNameRequired,
-      businessActivityRequired
+      businessActivityRequired,
+      bestAvailableTechniquesAssessment,
+      airDispersionModellingRequired,
+      screeningToolRequired,
+      habitatAssessmentRequired,
+      energyEfficiencyReportRequired
     })
 
     switch (mcpType) {

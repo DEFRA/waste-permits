@@ -3,16 +3,16 @@
 const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
-module.exports = class BestAvailableTechniquesRequiredMcpValidator extends BaseValidator {
+module.exports = class ThermalInput20To50MwValidator extends BaseValidator {
   get errorMessages () {
     return {
       'thermal-rating': {
         'any.empty': 'Select yes or no',
         'any.required': 'Select yes or no'
       },
-      'meets-criteria': {
-        'any.empty': 'Select yes or no',
-        'any.required': 'Select yes or no'
+      'engine-type': {
+        'any.empty': 'Select where it get its energy from',
+        'any.required': 'Select where it get its energy from'
       }
     }
   }
@@ -21,9 +21,9 @@ module.exports = class BestAvailableTechniquesRequiredMcpValidator extends BaseV
     return {
       'thermal-rating': Joi
         .required(),
-      'meets-criteria': Joi
+      'engine-type': Joi
         .when('thermal-rating', {
-          is: 'over 20',
+          is: '20 to 50',
           then: Joi.required() })
     }
   }

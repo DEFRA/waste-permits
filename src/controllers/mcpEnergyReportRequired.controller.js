@@ -2,19 +2,12 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const { MOBILE_SG, STATIONARY_SG } = require('../dynamics').MCP_TYPES
+const { STATIONARY_MCP, MOBILE_MCP } = require('../dynamics').MCP_TYPES
+const { BURNING_WASTE_BIOMASS, CONFIRM_COST } = require('../routes')
 
 module.exports = class EnergyReportRequiredController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
-    const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
-
-    switch (taskDeterminants.mcpType) {
-      case MOBILE_SG:
-      case STATIONARY_SG:
-        await taskDeterminants.save({ energyEfficiencyReportRequired: false })
-        return this.redirect({ h })
-    }
 
     if (request.payload) {
       pageContext.newOrRefurbished = request.payload['new-or-refurbished'] === 'yes'
@@ -27,7 +20,19 @@ module.exports = class EnergyReportRequiredController extends BaseController {
     const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
     const energyEfficiencyReportRequired = request.payload['new-or-refurbished'] === 'yes'
 
-    await taskDeterminants.save({ energyEfficiencyReportRequired })
+    await taskDeterminants.save({
+      bestAvailableTechniquesAssessment: false,
+      habitatAssessmentRequired: false,
+      energyEfficiencyReportRequired
+    })
+
+    switch (taskDeterminants.mcpType) {
+      case STATIONARY_MCP:
+        return this.redirect({ h, route: BURNING_WASTE_BIOMASS })
+      case MOBILE_MCP:
+        return this.redirect({ h, route: CONFIRM_COST })
+    }
+
     return this.redirect({ h })
   }
 }

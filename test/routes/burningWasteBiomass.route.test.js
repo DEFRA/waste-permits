@@ -12,7 +12,7 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const { COOKIE_RESULT } = require('../../src/constants')
-const { MOBILE_SG, STATIONARY_MCP } = require('../../src/dynamics').MCP_TYPES
+const { STATIONARY_MCP } = require('../../src/dynamics').MCP_TYPES
 const routePath = '/mcp-check/best-available-techniques/mcp'
 
 const nextRoutePath = '/mcp-check/habitat-assessment'
@@ -63,28 +63,18 @@ lab.experiment('Best available techniques report required for MCP tests:', () =>
         Code.expect(doc.getElementById('meets-criteria-yes')).to.exist()
         Code.expect(doc.getElementById('meets-criteria-no')).to.exist()
       })
-
-      lab.test('Check we don\'t display this page if we\'ve already selected best available techniques assessment', async () => {
-        mocks.taskDeterminants.bestAvailableTechniquesAssessment = true
-        const res = await server.inject(request)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(0)
-      })
-
-      lab.test('Check we don\'t display this page for certain permit types', async () => {
-        mocks.taskDeterminants.mcpType = MOBILE_SG // Set the mock permit to one that this screen doesn't display for
-        const res = await server.inject(request)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(false)
-      })
     })
   })
 
   lab.experiment(`POST ${routePath}`, () => {
     let postRequest
+
+    const checkTaskDeterminants = ({ bestAvailableTechniquesAssessment }) => {
+      Code.expect(taskDeterminantsStub.callCount).to.equal(1)
+      const determinants = taskDeterminantsStub.args[0][0]
+      Code.expect(determinants.bestAvailableTechniquesAssessment).to.equal(bestAvailableTechniquesAssessment)
+      Code.expect(determinants.habitatAssessmentRequired).to.equal(false)
+    }
 
     lab.beforeEach(() => {
       postRequest = {
@@ -109,16 +99,14 @@ lab.experiment('Best available techniques report required for MCP tests:', () =>
         postRequest.payload['thermal-rating'] = 'over 20'
         postRequest.payload['meets-criteria'] = 'yes'
         await server.inject(postRequest)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(true)
+        checkTaskDeterminants({ bestAvailableTechniquesAssessment: true })
       })
 
       lab.test('Thermal rating over 20MW, does not meet criteria', async () => {
         postRequest.payload['thermal-rating'] = 'over 20'
         postRequest.payload['meets-criteria'] = 'no'
         await server.inject(postRequest)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(false)
+        checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
       })
 
       lab.test('Thermal rating not over 20MW, meets criteria', async () => {
@@ -126,15 +114,14 @@ lab.experiment('Best available techniques report required for MCP tests:', () =>
         postRequest.payload['meets-criteria'] = 'yes'
         await server.inject(postRequest)
         Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(false)
+        checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
       })
 
       lab.test('Thermal rating not over 20MW, does not meet criteria', async () => {
         postRequest.payload['thermal-rating'] = 'not over 20'
         postRequest.payload['meets-criteria'] = 'no'
         await server.inject(postRequest)
-        Code.expect(taskDeterminantsStub.callCount).to.equal(1)
-        Code.expect(taskDeterminantsStub.args[0][0].bestAvailableTechniquesAssessment).to.equal(false)
+        checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
       })
     })
 
