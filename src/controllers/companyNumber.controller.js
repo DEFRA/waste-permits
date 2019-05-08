@@ -27,23 +27,22 @@ module.exports = class CompanyNumberController extends BaseController {
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h)
-    const { application } = context
+    const context = await RecoveryService.createApplicationContext(h, { account: true })
+    const { application, account = {} } = context
 
     const companyNumber = Utilities.stripWhitespace(request.payload['company-number'])
 
-    // See if there is an existing account with this company number. If not, create one.
-    const account = (await Account.getByCompanyNumber(context, companyNumber)) || new Account()
+    if (companyNumber !== account.companyNumber) {
+      // See if there is an existing account with this company number. If not, create one.
+      const account = (await Account.getByCompanyNumber(context, companyNumber)) || new Account()
 
-    if (account.isNew()) {
-      account.companyNumber = companyNumber
-      account.organisationType = application.organisationType
-      account.isDraft = true
-      await account.save(context)
-    }
+      if (account.isNew()) {
+        account.companyNumber = companyNumber
+        account.organisationType = application.organisationType
+        account.isDraft = true
+        await account.save(context)
+      }
 
-    // Update the Application with the Account (if it has changed)
-    if (application && application.permitHolderOrganisationId !== account.id) {
       application.permitHolderOrganisationId = account.id
       await application.save(context)
     }

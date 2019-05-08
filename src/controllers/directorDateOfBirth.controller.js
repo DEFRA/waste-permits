@@ -27,6 +27,23 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     }
   }
 
+  getRelevantContactData ({ firstName, lastName, dob, dateOfBirth = '' }) {
+    let [year, month] = dateOfBirth.split('-')
+    if (dob) {
+      year = dob.year
+      month = dob.month
+    }
+    return { firstName, lastName, year, month: Utilities._leftPad(month, 2) }
+  }
+
+  getMatchingContact (contactDetails, director) {
+    return contactDetails.find((contactDetail) => {
+      const contactData = this.getRelevantContactData(contactDetail)
+      const directorData = this.getRelevantContactData(director)
+      return JSON.stringify(contactData) === JSON.stringify(directorData)
+    })
+  }
+
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h, { account: true })
     const { applicationId, account, permitHolderType } = context
@@ -45,7 +62,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     // Add the day of birth to each Director's date of birth from the ContactDetail (if we have it)
     directors.forEach((director) => {
-      const contactDetail = contactDetails.find(({ customerId }) => customerId === director.id)
+      const contactDetail = this.getMatchingContact(contactDetails, director)
       if (contactDetail && contactDetail.dateOfBirth) {
         director.dob.day = Utilities.extractDayFromDate(contactDetail.dateOfBirth)
       }
@@ -100,8 +117,9 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       const contactDetails = await ContactDetail.list(context, { type })
 
       // Add the day of birth to each Director's date of birth from the ContactDetail (if we have it)
-      await Promise.all(directors.map(async ({ dob, id, firstName, lastName }, index) => {
-        const contactDetail = contactDetails.find(({ customerId }) => customerId === id) || new ContactDetail({
+      await Promise.all(directors.map(async (director, index) => {
+        const { dob, id, firstName, lastName } = director
+        const contactDetail = this.getMatchingContact(contactDetails, director) || new ContactDetail({
           applicationId,
           customerId: id,
           type

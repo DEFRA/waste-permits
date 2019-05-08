@@ -183,6 +183,10 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
         })
 
         lab.experiment('failure', () => {
+          lab.beforeEach(() => {
+            delete mocks.account.companyNumber
+          })
+
           lab.test('redirects to error screen when failing to get the account by the company number', async () => {
             const spy = sandbox.spy(LoggingService, 'logError')
             Account.getByCompanyNumber = () => {

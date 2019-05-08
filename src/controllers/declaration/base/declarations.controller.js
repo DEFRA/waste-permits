@@ -59,6 +59,10 @@ module.exports = class DeclarationsController extends BaseController {
     Object.assign(application, this.getRequestData(request))
     await application.save(context)
 
+    if (this.updateCompleteness) {
+      await this.updateCompleteness(context)
+    }
+
     return this.redirect({ h })
   }
 
