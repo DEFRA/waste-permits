@@ -1,6 +1,6 @@
 'use strict'
 
-const pdf = require('../utilities/pdf')
+const pdf = require('../services/pdf')
 const RecoveryService = require('../services/recovery.service')
 const BaseController = require('./base.controller')
 const BaseTaskList = require('../models/taskList/base.taskList')
