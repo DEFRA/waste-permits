@@ -14,6 +14,7 @@ const RecoveryService = require('../../../src/services/recovery.service')
 const CryptoService = require('../../../src/services/crypto.service')
 const ContactDetail = require('../../../src/models/contactDetail.model')
 const Application = require('../../../src/persistence/entities/application.entity')
+const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.task')
 const { capitalizeFirstLetter } = require('../../../src/utilities/utilities')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
@@ -75,6 +76,7 @@ Object.entries(routes).forEach(([member, { includesJobTitle, heading, routePath,
       sandbox.stub(ContactDetail, 'list').value(() => mocks.contactDetailList)
       sandbox.stub(ContactDetail.prototype, 'save').value(() => mocks.contactDetail.id)
       sandbox.stub(ContactDetail.prototype, 'delete').value(() => true)
+      sandbox.stub(PermitHolderDetails, 'clearCompleteness').value(() => true)
     })
 
     lab.afterEach(() => {

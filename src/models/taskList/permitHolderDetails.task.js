@@ -1,31 +1,22 @@
 'use strict'
 
 const { AddressTypes, PERMIT_HOLDER_TYPES } = require('../../dynamics')
-const {
-  RESPONSIBLE_CONTACT_DETAILS,
-  PARTNER_CONTACT_DETAILS,
-  INDIVIDUAL_PERMIT_HOLDER,
-  COMPANY_SECRETARY_EMAIL
-} = AddressTypes
+const { INDIVIDUAL_PERMIT_HOLDER } = AddressTypes
 
 const BaseTask = require('./base.task')
 const LoggingService = require('../../services/logging.service')
 const ContactDetail = require('../contactDetail.model')
 const CharityDetail = require('../charityDetail.model')
-const Account = require('../../persistence/entities/account.entity')
+// const Account = require('../../persistence/entities/account.entity')
 const Address = require('../../persistence/entities/address.entity')
 
 const {
   INDIVIDUAL,
   LIMITED_COMPANY,
-  PUBLIC_BODY,
-  PARTNERSHIP,
-  SOLE_TRADER
+  PUBLIC_BODY
 } = PERMIT_HOLDER_TYPES
 
 const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
-
-const minPartners = 2
 
 module.exports = class PermitHolderDetails extends BaseTask {
   static async getAddress (request) {
@@ -124,70 +115,6 @@ module.exports = class PermitHolderDetails extends BaseTask {
       default:
         return permitHolderType
     }
-  }
-
-  static async checkComplete (context) {
-    const { application } = context
-    const {
-      bankruptcy,
-      bankruptcyDetails,
-      permitHolderOrganisationId,
-      relevantOffences,
-      relevantOffencesDetails
-    } = application
-
-    const permitHolderType = await this.getPermitHolderType(context)
-
-    if (bankruptcy === undefined || (bankruptcy && !bankruptcyDetails)) {
-      return false
-    }
-
-    if (relevantOffences === undefined || (relevantOffences && !relevantOffencesDetails)) {
-      return false
-    }
-
-    switch (permitHolderType) {
-      case INDIVIDUAL:
-      case SOLE_TRADER: {
-        // Get the Contact for this application
-        const type = INDIVIDUAL_PERMIT_HOLDER.TYPE
-        const { firstName, lastName, telephone, email } = await ContactDetail.get(context, { type }) || {}
-        return Boolean(firstName && lastName && telephone && email)
-      }
-      case PUBLIC_BODY: {
-        const type = RESPONSIBLE_CONTACT_DETAILS.TYPE
-        const { firstName, lastName, email, jobTitle } = await ContactDetail.get(context, { type }) || {}
-        return Boolean(firstName && lastName && email && jobTitle)
-      }
-      case LIMITED_COMPANY: {
-        const type = COMPANY_SECRETARY_EMAIL.TYPE
-        const { email } = await ContactDetail.get(context, { type }) || {}
-        // if company secretary email not entered then return false
-        // otherwise continue to perform further checks
-        if (!email) {
-          return false
-        }
-        break
-      }
-    }
-
-    // Get the Account for this application
-    const account = await Account.getById(context, permitHolderOrganisationId)
-
-    if (permitHolderType === PARTNERSHIP) {
-      const type = PARTNER_CONTACT_DETAILS.TYPE
-      const list = await ContactDetail.list(context, { type })
-      if (list.length < minPartners) {
-        return false
-      }
-
-      // return true if no incomplete contacts are found
-      const incompleteContact = list.find(({ firstName, lastName, dateOfBirth, telephone }) => !firstName || !lastName || !dateOfBirth || !telephone)
-      return !incompleteContact
-    }
-
-    // When other organisation types
-    return Boolean(account && account.accountName)
   }
 
   static isCharity (request) {

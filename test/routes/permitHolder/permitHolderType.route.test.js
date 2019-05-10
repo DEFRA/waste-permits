@@ -14,6 +14,7 @@ const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const PermitHolderTypeController = require('../../../src/controllers/permitHolder/permitHolderType.controller')
+const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDetails.task')
 const { COOKIE_RESULT } = require('../../../src/constants')
 const { MCP_TYPES } = require('../../../src/dynamics')
 
@@ -35,6 +36,7 @@ lab.beforeEach(() => {
   sandbox.stub(CharityDetail.prototype, 'delete').value(() => undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  sandbox.stub(PermitHolderDetails, 'clearCompleteness').value(() => true)
 })
 
 lab.afterEach(() => {
@@ -123,8 +125,10 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
   lab.experiment(`POST ${routePath}`, () => {
     let postRequest
+    let prevPermitHolderType
 
     lab.beforeEach(() => {
+      prevPermitHolderType = Object.assign({}, mocks.permitHolderType, { id: 'prev-permit-holder-type' })
       postRequest = {
         method: 'POST',
         url: routePath,
@@ -144,7 +148,8 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
       }
 
       lab.beforeEach(() => {
-        sandbox.stub(PermitHolderTypeController, 'getHolderTypes').value(() => [mocks.permitHolderType])
+        mocks.recovery.permitHolderType = prevPermitHolderType
+        sandbox.stub(PermitHolderTypeController, 'getHolderTypes').value(() => [mocks.permitHolderType, prevPermitHolderType])
       })
 
       lab.test('when holder type can apply online and is an individual', async () => {

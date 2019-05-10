@@ -4,6 +4,7 @@ const BaseController = require('../../base.controller')
 const RecoveryService = require('../../../services/recovery.service')
 const CryptoService = require('../../../services/crypto.service')
 const ContactDetail = require('../../../models/contactDetail.model')
+const PermitHolderDetails = require('../../../models/taskList/permitHolderDetails.task')
 const Utilities = require('../../../utilities/utilities')
 const Routes = require('../../../routes')
 
@@ -72,6 +73,9 @@ module.exports = class MemberListController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
     const list = await ContactDetail.list(context, { type: this.task.contactType })
     if (list.length < this.route.list.min) {
+      // Make sure the permitHolderDetails task is set to incomplete as not enough members have been added
+      await PermitHolderDetails.clearCompleteness(context)
+
       // In this case the submit button would have been labeled "Add another Member"
       const memberId = await this.createMember(context)
       return this.redirect({ h, path: `${Routes[holderRoute].path}/${memberId}` })

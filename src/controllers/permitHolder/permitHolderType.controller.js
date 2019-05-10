@@ -2,6 +2,7 @@
 
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
+const PermitHolderDetails = require('../../models/taskList/permitHolderDetails.task')
 
 const { MCP_TYPES, PERMIT_HOLDER_TYPES } = require('../../dynamics')
 const { PERMIT_HOLDER_DETAILS } = require('../../routes')
@@ -45,13 +46,22 @@ module.exports = class PermitHolderTypeController extends BaseController {
 
     const permitHolder = holderTypes.find(({ id }) => request.payload['chosen-holder-type'] === id)
 
-    application.applicantType = permitHolder.dynamicsApplicantTypeId
-    application.organisationType = permitHolder.dynamicsOrganisationTypeId
-    application.permitHolderOrganisationId = undefined
-    application.permitHolderIndividualId = undefined
-    await application.save(context)
-    if (charityDetail.charityPermitHolder) {
-      await charityDetail.delete(context)
+    // only do the following if we have changed the permit holder type
+    // context.permitHolderType is the saved type, permitHolder is the submitted type
+    if (context.permitHolderType !== permitHolder) {
+      application.applicantType = permitHolder.dynamicsApplicantTypeId
+      application.organisationType = permitHolder.dynamicsOrganisationTypeId
+
+      application.permitHolderOrganisationId = undefined
+      application.permitHolderIndividualId = undefined
+
+      await application.save(context)
+      if (charityDetail.charityPermitHolder) {
+        await charityDetail.delete(context)
+      }
+
+      // Make sure the completeness flag is reset because the permit holder type has changed
+      await PermitHolderDetails.clearCompleteness(context)
     }
 
     return this.redirect({ h, route: PERMIT_HOLDER_DETAILS })
