@@ -82,6 +82,7 @@
     "moment": "^2.24.0",
     "object-path": "^0.11.4",
     "path": "^0.12.7",
+    "pdfmake": "^0.1.54",
     "request-promise": "^4.2.4",
     "scooter": "^5.0.2",
     "vision": "^5.4.4"
