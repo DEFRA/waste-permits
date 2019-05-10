@@ -88,25 +88,29 @@ const printer = new PdfMake({
 module.exports = {
   createPdfDocDefinition: createPdfDocDefinition,
   createPDF: async (sections, application) => {
-    const doc = printer
-      .createPdfKitDocument(createPdfDocDefinition(sections, application))
+    try {
+      const doc = printer
+        .createPdfKitDocument(createPdfDocDefinition(sections, application))
 
-    let chunks = []
+      let chunks = []
 
-    doc.on('readable', function () {
-      let chunk
-      while ((chunk = doc.read(9007199254740991)) !== null) {
-        chunks.push(chunk)
-      }
-    })
+      doc.on('readable', function () {
+        let chunk
+        while ((chunk = doc.read(9007199254740991)) !== null) {
+          chunks.push(chunk)
+        }
+      })
 
-    const end = new Promise(function (resolve, reject) {
-      doc.on('end', () => resolve(Buffer.concat(chunks)))
-      doc.on('error', reject)
-    })
+      const end = new Promise(function (resolve, reject) {
+        doc.on('end', () => resolve(Buffer.concat(chunks)))
+        doc.on('error', reject)
+      })
 
-    doc.end()
+      doc.end()
 
-    return end
+      return end
+    } catch (err) {
+      throw Error('PDF render failed', err)
+    }
   }
 }
