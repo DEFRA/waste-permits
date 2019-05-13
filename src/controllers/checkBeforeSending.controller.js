@@ -99,12 +99,13 @@ module.exports = class CheckBeforeSendingController extends BaseController {
       const context = await RecoveryService.createApplicationContext(h)
       const { application } = context
       let pdfStream = pdf.createPDFStream(pageContext.sections, application)
-      console.log('\n===\n%s\n===\n', pdfStream instanceof Stream)
+      const name = `${application.applicationNumber}-summary`.replace(/\//g, '_')
+      console.log('\n===\n%s\n===\n', name)
       try {
         Object.assign(pdfStream, {
           hapi: {
-            filename: 'test.pdf',
-            name: 'test',
+            filename: `${name}.pdf`,
+            name,
             headers: 'application/pdf'
           }
         })
@@ -115,7 +116,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
           pdfStream,
           UploadSubject.APPLICATION_PDF
         )
-        console.log('\n\nPDF UPLOADED\n\n')
+        console.log(`\n\n${name} PDF UPLOADED\n\n`)
       } catch (err) {
         console.log('\n\n!!!\n\n')
         console.error(err)
