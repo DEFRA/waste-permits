@@ -11,7 +11,6 @@ const StandardRule = require('../../src/persistence/entities/standardRule.entity
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
-const BestAvailableTechniquesAssessment = require('../../src/models/taskList/bestAvailableTechniquesAssessment.task')
 const { COOKIE_RESULT } = require('../../src/constants')
 const { STATIONARY_MCP_AND_SG, STATIONARY_SG } = require('../../src/dynamics').MCP_TYPES
 const routePath = '/mcp-check/best-available-techniques/sg'
@@ -33,8 +32,6 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => mocks.standardRule)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
-  sandbox.stub(BestAvailableTechniquesAssessment, 'clearCompleteness').value(() => {})
-  sandbox.stub(BestAvailableTechniquesAssessment, 'updateCompleteness').value(() => {})
   sandbox.stub(TaskDeterminants, 'get').value(() => mocks.taskDeterminants)
   taskDeterminantsStub = sandbox.stub(TaskDeterminants.prototype, 'save')
 })
