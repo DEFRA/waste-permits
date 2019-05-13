@@ -1,6 +1,5 @@
 'use strict'
 
-const Stream = require('stream')
 const pdf = require('../services/pdf')
 const UploadService = require('../services/upload.service')
 const { UploadSubject } = require('../constants')
