@@ -98,17 +98,23 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     if (pdfAction === 'pdf-download') {
       const context = await RecoveryService.createApplicationContext(h)
       const { application } = context
-      const pdfStream = pdf.createPDFStream(pageContext.sections, application)
+      let pdfStream = pdf.createPDFStream(pageContext.sections, application)
       console.log('\n===\n%s\n===\n', pdfStream instanceof Stream)
       try {
-        await UploadService.upload(context, application, {
-          pipe: pdfStream.pipe,
+        Object.assign(pdfStream, {
           hapi: {
             filename: 'test.pdf',
             name: 'test',
             headers: 'application/pdf'
           }
-        }, UploadSubject.APPLICATION_PDF)
+        })
+        pdfStream.end()
+        await UploadService.upload(
+          context,
+          application,
+          pdfStream,
+          UploadSubject.APPLICATION_PDF
+        )
         console.log('\n\nPDF UPLOADED\n\n')
       } catch (err) {
         console.log('\n\n!!!\n\n')
