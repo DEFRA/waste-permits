@@ -4,6 +4,7 @@ const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const { STATIONARY_MCP_AND_SG } = require('../dynamics').MCP_TYPES
 const { BURNING_WASTE_BIOMASS } = require('../routes')
+const BestAvailableTechniquesAssessment = require('../models/taskList/bestAvailableTechniquesAssessment.task')
 
 module.exports = class ThermalInput20To50MwController extends BaseController {
   async doGet (request, h, errors) {
@@ -17,7 +18,8 @@ module.exports = class ThermalInput20To50MwController extends BaseController {
   }
 
   async doPost (request, h) {
-    const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
+    const context = await RecoveryService.createApplicationContext(h)
+    const { taskDeterminants } = context
 
     const { mcpType } = taskDeterminants
     const {
@@ -33,8 +35,11 @@ module.exports = class ThermalInput20To50MwController extends BaseController {
     })
 
     if (!bestAvailableTechniquesAssessment && mcpType === STATIONARY_MCP_AND_SG) {
+      await BestAvailableTechniquesAssessment.clearCompleteness(context)
       return this.redirect({ h, route: BURNING_WASTE_BIOMASS })
     }
+
+    await BestAvailableTechniquesAssessment.updateCompleteness(context)
 
     return this.redirect({ h })
   }

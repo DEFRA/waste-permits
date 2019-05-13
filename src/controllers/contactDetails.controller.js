@@ -1,9 +1,9 @@
 'use strict'
 
-const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const Account = require('../persistence/entities/account.entity')
 const ContactDetail = require('../models/contactDetail.model')
+const ContactDetailsTask = require('../models/taskList/contactDetails.task')
 const RecoveryService = require('../services/recovery.service')
 const { PRIMARY_CONTACT_DETAILS } = require('../dynamics').AddressTypes
 
@@ -67,6 +67,8 @@ module.exports = class ContactDetailsController extends BaseController {
     application.contactId = contactDetail.customerId
     await application.save(context)
 
-    return this.redirect({ h, route: Routes.TASK_LIST })
+    await ContactDetailsTask.updateCompleteness(context)
+
+    return this.redirect({ h })
   }
 }

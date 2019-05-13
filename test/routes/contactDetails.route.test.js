@@ -13,7 +13,7 @@ const Application = require('../../src/persistence/entities/application.entity')
 const Account = require('../../src/persistence/entities/account.entity')
 const ContactDetail = require('../../src/models/contactDetail.model')
 const RecoveryService = require('../../src/services/recovery.service')
-const ContactDetails = require('../../src/models/taskList/contactDetails.task')
+const ContactDetailsTask = require('../../src/models/taskList/contactDetails.task')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
@@ -37,7 +37,7 @@ lab.beforeEach(() => {
   sandbox.stub(Account, 'getById').value(() => mocks.account)
   sandbox.stub(ContactDetail, 'get').value(() => mocks.contactDetail)
   sandbox.stub(ContactDetail.prototype, 'save').value(() => undefined)
-  sandbox.stub(ContactDetails, 'updateCompleteness').value(() => {})
+  sandbox.stub(ContactDetailsTask, 'updateCompleteness').value(() => {})
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 

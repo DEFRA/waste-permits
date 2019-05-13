@@ -3,6 +3,7 @@
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const AirQualityManagementAreaModel = require('../models/airQualityManagementArea.model')
+const AirQualityManagementArea = require('../models/taskList/airQualityManagementArea.task')
 
 const YES = 'yes'
 
@@ -52,6 +53,8 @@ module.exports = class AirQualityManagementAreaController extends BaseController
 
     const aqmaModel = new AirQualityManagementAreaModel(aqma)
     await aqmaModel.save(context)
+
+    await AirQualityManagementArea.updateCompleteness(context)
 
     return this.redirect({ h })
   }

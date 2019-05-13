@@ -1,6 +1,7 @@
 'use strict'
 
 const DeclarationsController = require('../base/declarations.controller')
+const Confidentiality = require('../../../models/taskList/confidentiality.task')
 
 module.exports = class ConfidentialityController extends DeclarationsController {
   getFormData (data) {
@@ -19,5 +20,9 @@ module.exports = class ConfidentialityController extends DeclarationsController 
       declarationDetailsLabel: 'What information do you think is confidential, and why?',
       declarationDetailsHint: 'Check the guidance first to check you qualify'
     }
+  }
+
+  async updateCompleteness (context) {
+    return Confidentiality.updateCompleteness(context)
   }
 }

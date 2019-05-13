@@ -15,6 +15,7 @@ const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const AirQualityManagementArea = require('../../src/models/airQualityManagementArea.model')
+const AirQualityManagementAreaTask = require('../../src/models/taskList/airQualityManagementArea.task')
 
 const routePath = '/mcp/aqma/name'
 const nextRoutePath = '/task-list'
@@ -56,6 +57,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(AirQualityManagementArea, 'get').callsFake(async () => mocks.airQualityManagementArea)
   sandbox.stub(AirQualityManagementArea.prototype, 'save').callsFake(async () => undefined)
+  sandbox.stub(AirQualityManagementAreaTask, 'updateCompleteness').callsFake(async () => {})
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
