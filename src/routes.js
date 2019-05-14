@@ -1,4 +1,5 @@
 const { AccountRoleCodes } = require('./dynamics')
+const { CSV, DOC, DOCX, JPG, ODS, ODT, PDF, XLS, XLSX } = require('./constants').FILE_TYPES
 
 const Routes = {
   ROOT: {
@@ -721,12 +722,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'AIR_DISPERSION_MODELLING_REPORT',
     validatorOptions: {
-      fileTypes: [
-        { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
-        { type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
-        { type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet' },
-        { type: 'PDF', mimeType: 'application/pdf' }
-      ]
+      fileTypes: [ XLS, XLSX, ODS, PDF ]
     }
   },
   APPLICATION_RECEIVED: {
@@ -770,13 +766,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'BEST_AVAILABLE_TECHNIQUES_ASSESSMENT',
     validatorOptions: {
-      fileTypes: [
-        { type: 'PDF', mimeType: 'application/pdf' },
-        { type: 'DOC', mimeType: 'application/msword' },
-        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' },
-        { type: 'JPG', mimeType: 'image/jpeg' }
-      ]
+      fileTypes: [ PDF, DOC, DOCX, ODT, JPG ]
     }
   },
   CHECK_BEFORE_SENDING: {
@@ -889,12 +879,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'ENERGY_EFFICIENCY_REPORT',
     validatorOptions: {
-      fileTypes: [
-        { type: 'PDF', mimeType: 'application/pdf' },
-        { type: 'DOC', mimeType: 'application/msword' },
-        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
-      ]
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
     }
   },
   ENVIRONMENTAL_RISK_ASSESSMENT: {
@@ -908,12 +893,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'ENVIRONMENTAL_RISK_ASSESSMENT',
     validatorOptions: {
-      fileTypes: [
-        { type: 'PDF', mimeType: 'application/pdf' },
-        { type: 'DOC', mimeType: 'application/msword' },
-        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
-      ]
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
     }
   },
   FACILITY_TYPE: {
@@ -944,7 +924,10 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
-    subject: 'FIRE_PREVENTION_PLAN'
+    subject: 'FIRE_PREVENTION_PLAN',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+    }
   },
   HEALTH: {
     path: '/health',
@@ -976,12 +959,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'MANAGEMENT_SYSTEM_SUMMARY',
     validatorOptions: {
-      fileTypes: [
-        { type: 'PDF', mimeType: 'application/pdf' },
-        { type: 'DOC', mimeType: 'application/msword' },
-        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
-      ]
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
     }
   },
   MCP_BUSINESS_ACTIVITY: {
@@ -1004,12 +982,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'MCP_DETAILS',
     validatorOptions: {
-      fileTypes: [
-        { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
-        { type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
-        { type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet' },
-        { type: 'CSV', mimeType: 'text/csv' }
-      ]
+      fileTypes: [ XLS, XLSX, ODS, CSV ]
     }
   },
   MCP_UNDER_500_HOURS: {
@@ -1138,12 +1111,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'NON_TECHNICAL_SUMMARY',
     validatorOptions: {
-      fileTypes: [
-        { type: 'PDF', mimeType: 'application/pdf' },
-        { type: 'DOC', mimeType: 'application/msword' },
-        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
-      ]
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
     }
   },
   PERMIT_CATEGORY: {
@@ -1238,12 +1206,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'SCREENING_TOOL',
     validatorOptions: {
-      fileTypes: [
-        { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
-        { type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
-        { type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet' },
-        { type: 'PDF', mimeType: 'application/pdf' }
-      ]
+      fileTypes: [ XLS, XLSX, ODS, PDF ]
     }
   },
   SEARCH_YOUR_EMAIL: {
@@ -1274,7 +1237,10 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
-    subject: 'SITE_PLAN'
+    subject: 'SITE_PLAN',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+    }
   },
   SITE_NAME: {
     path: '/site/site-name',
@@ -1323,12 +1289,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_MANAGERS',
     validatorOptions: {
-      fileTypes: [
-        { type: 'DOC', mimeType: 'application/msword' },
-        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-        { type: 'PDF', mimeType: 'application/pdf' },
-        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
-      ]
+      fileTypes: [ DOC, DOCX, PDF, ODT ]
     }
   },
   UPLOAD_COURSE_REGISTRATION: {
@@ -1340,7 +1301,10 @@ const Routes = {
     nextRoute: 'TECHNICAL_MANAGERS',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
-    subject: 'TECHNICAL_QUALIFICATION'
+    subject: 'TECHNICAL_QUALIFICATION',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+    }
   },
   UPLOAD_DEEMED_EVIDENCE: {
     path: '/technical-competence/upload-deemed-evidence',
@@ -1351,7 +1315,10 @@ const Routes = {
     nextRoute: 'TECHNICAL_MANAGERS',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
-    subject: 'TECHNICAL_QUALIFICATION'
+    subject: 'TECHNICAL_QUALIFICATION',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+    }
   },
   UPLOAD_ESA_EU_SKILLS: {
     path: '/technical-competence/upload-esa-eu-skills',
@@ -1362,7 +1329,10 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
-    subject: 'TECHNICAL_QUALIFICATION'
+    subject: 'TECHNICAL_QUALIFICATION',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+    }
   },
   UPLOAD_WAMITAB_QUALIFICATION: {
     path: '/technical-competence/upload-wamitab-qualification',
@@ -1373,7 +1343,10 @@ const Routes = {
     nextRoute: 'TECHNICAL_MANAGERS',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
-    subject: 'TECHNICAL_QUALIFICATION'
+    subject: 'TECHNICAL_QUALIFICATION',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+    }
   },
   VERSION: {
     path: '/version',
@@ -1444,12 +1417,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'WASTE_RECOVERY_PLAN',
     validatorOptions: {
-      fileTypes: [
-        { type: 'PDF', mimeType: 'application/pdf' },
-        { type: 'DOC', mimeType: 'application/msword' },
-        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' }
-      ]
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
     }
   },
   WASTE_TYPES_LIST: {
@@ -1463,15 +1431,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'WASTE_TYPES_LIST',
     validatorOptions: {
-      fileTypes: [
-        { type: 'PDF', mimeType: 'application/pdf' },
-        { type: 'DOC', mimeType: 'application/msword' },
-        { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-        { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
-        { type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
-        { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' },
-        { type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet' }
-      ]
+      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, ODT, ODS ]
     }
   }
 }

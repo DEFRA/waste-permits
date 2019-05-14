@@ -13,18 +13,25 @@ Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
 Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 Constants.MAX_FILE_SIZE = 31457280 // 30MB
 
+Constants.FILE_TYPES = {
+  CSV: { mimeType: 'text/csv' },
+  DOC: { mimeType: 'application/msword' },
+  DOCX: { mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+  JPG: { mimeType: 'image/jpeg' },
+  ODS: { mimeType: 'application/vnd.oasis.opendocument.spreadsheet' },
+  ODT: { mimeType: 'application/vnd.oasis.opendocument.text' },
+  PDF: { mimeType: 'application/pdf' },
+  XLS: { mimeType: 'application/vnd.ms-excel' },
+  XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+}
+
+// Add the type property to the file types
+Object.entries(Constants.FILE_TYPES).forEach(([type, data]) => {
+  data.type = type
+})
+
 Constants.DEFAULT_UPLOAD_OPTIONS = {
-  maxSize: '30MB',
-  fileTypes: [
-    { type: 'PDF', mimeType: 'application/pdf' },
-    { type: 'DOC', mimeType: 'application/msword' },
-    { type: 'DOCX', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-    { type: 'XLS', mimeType: 'application/vnd.ms-excel' },
-    { type: 'XLSX', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
-    { type: 'JPG', mimeType: 'image/jpeg' },
-    { type: 'ODT', mimeType: 'application/vnd.oasis.opendocument.text' },
-    { type: 'ODS', mimeType: 'application/vnd.oasis.opendocument.spreadsheet' }
-  ]
+  maxSize: '30MB'
 }
 
 Constants.Errors = {
