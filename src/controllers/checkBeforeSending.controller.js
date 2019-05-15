@@ -4,6 +4,7 @@ const pdf = require('../services/pdf')
 const moment = require('moment')
 const UploadService = require('../services/upload.service')
 const { UploadSubject } = require('../constants')
+const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
 const BaseController = require('./base.controller')
 const BaseTaskList = require('../models/taskList/base.taskList')
@@ -116,20 +117,24 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     let pdfStream = pdf.createPDFStream(pageContext.sections, application)
     const dateStr = moment().format('YYYY-MM-DD-HH-mm-ss')
     const name = `${application.applicationNumber}-application-form-${dateStr}`.replace(/\//g, '_')
-    Object.assign(pdfStream, {
-      hapi: {
-        filename: `${name}.pdf`,
-        name,
-        headers: 'application/pdf'
-      }
-    })
-    pdfStream.end()
-    await UploadService.upload(
-      context,
-      application,
-      pdfStream,
-      UploadSubject.ARBITRARY_UPLOADS
-    )
+    try {
+      Object.assign(pdfStream, {
+        hapi: {
+          filename: `${name}.pdf`,
+          name,
+          headers: 'application/pdf'
+        }
+      })
+      pdfStream.end()
+      await UploadService.upload(
+        context,
+        application,
+        pdfStream,
+        UploadSubject.ARBITRARY_UPLOADS
+      )
+    } catch (err) {
+      LoggingService.logError(`Unable to send ${name} application pdf to dynamics`, err)
+    }
 
     application.declaration = true
 
