@@ -100,8 +100,8 @@ class Application extends BaseEntity {
       // Call Dynamics save and return email action
       let action = `${this.constructor.dynamicsEntity}(${this.id})/Microsoft.Dynamics.CRM.defra_saveandreturnemail`
       await dynamicsDal.callAction(action, actionDataObject)
-      const applicationReturn = await ApplicationReturn.getByApplicationId(context)
-      LoggingService.logDebug(`Save and Return Url for Application "${this.applicationNumber}": ${origin}${SAVE_AND_RETURN_RECOVER.path}/${applicationReturn.slug}`)
+      const applicationReturn = await ApplicationReturn.getByApplicationId(context, this.id)
+      LoggingService.logInfo(`Save and Return Url for Application "${this.applicationNumber}": ${origin}${SAVE_AND_RETURN_RECOVER.path}/${applicationReturn.slug}`)
     } catch (error) {
       LoggingService.logError(`Unable to call Dynamics Save and Return Email action: ${error}`)
       throw error

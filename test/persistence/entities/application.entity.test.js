@@ -163,7 +163,7 @@ lab.experiment('Application Entity tests:', () => {
 
   lab.test('sendSaveAndReturnEmail() method correctly initiates an email call action', async () => {
     const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
-    const logSpy = sandbox.spy(LoggingService, 'logDebug')
+    const logSpy = sandbox.spy(LoggingService, 'logInfo')
     await testApplication.sendSaveAndReturnEmail(context, fakeOrigin)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(logSpy.callCount).to.equal(1)
