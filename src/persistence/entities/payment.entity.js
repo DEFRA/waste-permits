@@ -33,7 +33,7 @@ class Payment extends BaseEntity {
   }
 
   static getPermitCategory ({ taskDeterminants }) {
-    const { facilityType, permitCategory } = taskDeterminants
+    const { facilityType, permitCategory = {} } = taskDeterminants
     if (facilityType) {
       return facilityType === MCP ? MCP_PREFIX : WASTE_PREFIX
     } else {

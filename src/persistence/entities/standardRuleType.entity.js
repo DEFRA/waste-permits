@@ -10,7 +10,7 @@ const convertOfflineCategory = (offlineCategoryEntry) => {
   const { id, category, name: categoryName, hint = '' } = offlineCategoryEntry
   return { id, categoryName, category, hint }
 }
-const convertStandardRuleType = (standardRuleTypeEntity) => {
+const convertStandardRuleType = (standardRuleTypeEntity = {}) => {
   const { id = '', categoryName = '', category = '', hint = '' } = standardRuleTypeEntity
   return { id, categoryName: categoryName.toLowerCase(), category, hint }
 }
