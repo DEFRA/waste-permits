@@ -19,6 +19,8 @@ const RecoveryService = require('../../src/services/recovery.service')
 let fakeValidRuleSetId
 let fakeInvalidRuleSetId
 let fakeLineData
+let fakePermitHeadingLine
+let fakeContactHeadingLine
 
 const routePath = '/check-before-sending'
 const nextRoutePath = '/pay/type'
@@ -39,6 +41,19 @@ lab.beforeEach(() => {
       { path: '/test-2', type: 'test details 2' }
     ]
   }
+  fakePermitHeadingLine = {
+    heading: 'TESTB',
+    headingId: 'section-permit-heading',
+    answers: [],
+    links: []
+  }
+  fakeContactHeadingLine = {
+    heading: 'TESTC',
+    heading: 'Contact',
+    headingId: 'section-contact-name-heading',
+    answers: [],
+    links: []
+  }
 
   class TaskList extends BaseTaskList {
     async isAvailable (task = {}) {
@@ -57,7 +72,11 @@ lab.beforeEach(() => {
     }
 
     async buildLines () {
-      return [this.buildLine(fakeLineData)]
+      return [
+        this.buildLine(fakeLineData),
+        fakePermitHeadingLine,
+        fakeContactHeadingLine
+      ]
     }
   }
 
@@ -149,24 +168,23 @@ lab.experiment('Check your answers before sending your application page tests:',
       })
     })
   })
+})
+lab.experiment(`POST ${routePath}`, () => {
+  let request
+  lab.beforeEach(() => {
+    request = {
+      method: 'POST',
+      url: routePath,
+      headers: {},
+      payload: {}
+    }
+  })
 
-  lab.experiment(`POST ${routePath}`, () => {
-    let request
-    lab.beforeEach(() => {
-      request = {
-        method: 'POST',
-        url: routePath,
-        headers: {},
-        payload: {}
-      }
-    })
-
-    lab.experiment('success', () => {
-      lab.test('redirects to the Application Received route after an UPDATE', async () => {
-        const res = await server.inject(request)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
-      })
+  lab.experiment('success', () => {
+    lab.test('redirects to the Application Received route after an UPDATE', async () => {
+      const res = await server.inject(request)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(nextRoutePath)
     })
   })
 })

@@ -87,6 +87,12 @@ const printer = new PdfMake({
 
 module.exports = {
   createPdfDocDefinition: createPdfDocDefinition,
+  createPDFStream: (sections, application) => {
+    return printer
+      .createPdfKitDocument(
+        createPdfDocDefinition(sections, application)
+      )
+  },
   createPDF: async (sections, application) => {
     try {
       const doc = printer

@@ -1,6 +1,10 @@
 'use strict'
 
 const pdf = require('../services/pdf')
+const moment = require('moment')
+const UploadService = require('../services/upload.service')
+const { UploadSubject } = require('../constants')
+const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
 const BaseController = require('./base.controller')
 const BaseTaskList = require('../models/taskList/base.taskList')
@@ -89,11 +93,12 @@ module.exports = class CheckBeforeSendingController extends BaseController {
 
   async doGet (request, h) {
     const pageContext = this.createPageContext(h)
+    const context = await RecoveryService.createApplicationContext(h)
+    const { application } = context
     const { pdfAction } = request.params
     pageContext.sections = await this._buildSections(request.app.data)
 
     if (pdfAction === 'pdf-download') {
-      const { application } = await RecoveryService.createApplicationContext(h, { application: true })
       const result = await pdf.createPDF(pageContext.sections, application)
 
       return h.response(result)
@@ -105,7 +110,31 @@ module.exports = class CheckBeforeSendingController extends BaseController {
   }
 
   async doPost (request, h) {
-    const { application } = await RecoveryService.createApplicationContext(h, { application: true })
+    const pageContext = this.createPageContext(h)
+    pageContext.sections = await this._buildSections(request.app.data)
+    const context = await RecoveryService.createApplicationContext(h, { application: true })
+    const { application } = context
+    let pdfStream = pdf.createPDFStream(pageContext.sections, application)
+    const dateStr = moment().format('YYYY-MM-DD-HH-mm-ss')
+    const name = `${application.applicationNumber}-application-form-${dateStr}`.replace(/\//g, '_')
+    try {
+      Object.assign(pdfStream, {
+        hapi: {
+          filename: `${name}.pdf`,
+          name,
+          headers: 'application/pdf'
+        }
+      })
+      pdfStream.end()
+      await UploadService.upload(
+        context,
+        application,
+        pdfStream,
+        UploadSubject.ARBITRARY_UPLOADS
+      )
+    } catch (err) {
+      LoggingService.logError(`Unable to send ${name} application pdf to dynamics`, err)
+    }
 
     application.declaration = true
 
