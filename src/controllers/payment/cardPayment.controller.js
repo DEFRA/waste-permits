@@ -10,7 +10,7 @@ const RecoveryService = require('../../services/recovery.service')
 module.exports = class CardPaymentController extends BaseController {
   async doGet (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { applicationLine: true, standardRule: true })
-    const { application, applicationLine, standardRule, slug } = context
+    const { application, applicationLine, standardRule = {}, slug } = context
 
     let { returnUrl } = request.query
 
