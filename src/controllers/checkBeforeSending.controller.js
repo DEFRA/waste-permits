@@ -1,6 +1,5 @@
 'use strict'
 
-const Stream = require('stream')
 const pdf = require('../services/pdf')
 const moment = require('moment')
 const UploadService = require('../services/upload.service')
