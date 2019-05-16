@@ -20,13 +20,13 @@ module.exports = class VirusScan {
     const { file, is_infected: isInfected, viruses } = await clamscan.is_infected(path)
 
     // If `is_infected` is TRUE, file is a virus!
-    if (isInfected === true) {
-      LoggingService.logError(`You've downloaded a virus (${viruses.join('')})!`)
+    if (isInfected === false) {
+      LoggingService.logDebug(`The file (${file}) you downloaded was just fine... Carry on...`)
     } else {
       if (isInfected === null) {
         LoggingService.logError('Virus scan failed')
-      } else if (isInfected === false) {
-        LoggingService.logDebug(`The file (${file}) you downloaded was just fine... Carry on...`)
+      } else if (isInfected === true) {
+        LoggingService.logError(`You've downloaded a virus (${viruses.join('')})!`)
       }
 
       // Remove the file (for good measure)
