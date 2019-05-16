@@ -58,7 +58,7 @@
     "adal-node": "^0.1.28",
     "airbrake-js": "^1.6.7",
     "blipp": "^4.0.0",
-    "clamscan": "^0.8.5",
+    "clamscan": "^1.0.3",
     "cross-fetch": "^3.0.2",
     "crumb": "^7.2.3",
     "dateformat": "^3.0.3",

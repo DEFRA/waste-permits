@@ -8,7 +8,7 @@ const { Stream } = require('stream')
 const UPLOAD_PATH = path.resolve(`${process.cwd()}/temp`)
 const Annotation = require('../persistence/entities/annotation.entity')
 const LoggingService = require('./logging.service')
-const ClamWrapper = require('../utilities/clamWrapper')
+const VirusScan = require('../services/virusScan')
 
 module.exports = class UploadService {
   static get DUPLICATE () {
@@ -104,7 +104,7 @@ module.exports = class UploadService {
   }
 
   static async _scanFiles (fileData) {
-    const isInfectedPromises = fileData.map(async ({ path }) => ClamWrapper.isInfected(path).then((results) => {
+    const isInfectedPromises = fileData.map(async ({ path }) => VirusScan.isInfected(path).then((results) => {
       LoggingService.logInfo(`Scanned ${path} and found that it is ${results.isInfected ? 'infected' : 'not infected'}`)
       return Promise.resolve(results.isInfected)
     }).catch(error => {
