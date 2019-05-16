@@ -13,7 +13,7 @@ const CookieService = require('../../src/services/cookie.service')
 const LoggingService = require('../../src/services/logging.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const UploadService = require('../../src/services/upload.service')
-const ClamWrapper = require('../../src/utilities/clamWrapper')
+const VirusScan = require('../../src/services/virusScan')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const defaultFileTypes = 'PDF,DOC,DOCX,XLS,XLSX,JPG,ODT,ODS'
@@ -72,7 +72,7 @@ module.exports = class UploadTestHelper {
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(Application, 'getById').value(() => mocks.application)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(ClamWrapper, 'isInfected').value(() => Promise.resolve({ isInfected: false }))
+    sandbox.stub(VirusScan, 'isInfected').value(() => Promise.resolve({ isInfected: false }))
     sandbox.stub(LoggingService, 'logError').value(() => {})
     sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 
@@ -204,7 +204,7 @@ module.exports = class UploadTestHelper {
     const { lab, routePath } = this
     lab.experiment('success', () => {
       lab.test('when annotation is saved', async () => {
-        const spy = sinon.spy(ClamWrapper, 'isInfected')
+        const spy = sinon.spy(VirusScan, 'isInfected')
         const req = this._uploadRequest({ contentType })
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(1)
@@ -214,7 +214,7 @@ module.exports = class UploadTestHelper {
       })
 
       lab.test('when annotation is saved and virus scan is bypassed', async () => {
-        const spy = sinon.spy(ClamWrapper, 'isInfected')
+        const spy = sinon.spy(VirusScan, 'isInfected')
         const stub = sinon.stub(config, 'bypassVirusScan').value(true)
         const req = this._uploadRequest({ contentType })
         const res = await server.inject(req)
@@ -263,7 +263,7 @@ module.exports = class UploadTestHelper {
       })
 
       lab.test('when the file has a virus', async () => {
-        ClamWrapper.isInfected = () => Promise.resolve({ isInfected: true })
+        VirusScan.isInfected = () => Promise.resolve({ isInfected: true })
         const req = this._uploadRequest({ filename: `virus.pdf`, contentType })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `Our scanner detected a virus in that file. It has not been uploaded. Please use your own virus scanner to check and clean the file. You should either upload a clean copy of the file or contact us if you think that the file does not have a virus.`)

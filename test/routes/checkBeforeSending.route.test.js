@@ -15,6 +15,7 @@ const BaseCheck = require('../../src/models/checkList/base.check')
 const CheckBeforeSendingController = require('../../src/controllers/checkBeforeSending.controller')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
+const UploadService = require('../../src/services/upload.service')
 
 let fakeValidRuleSetId
 let fakeInvalidRuleSetId
@@ -48,7 +49,6 @@ lab.beforeEach(() => {
     links: []
   }
   fakeContactHeadingLine = {
-    heading: 'TESTC',
     heading: 'Contact',
     headingId: 'section-contact-name-heading',
     answers: [],
@@ -94,6 +94,7 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => true)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(UploadService, 'upload').value(() => undefined)
   sandbox.stub(CheckBeforeSendingController.prototype, 'Checks').get(() => [ValidCheck, InvalidCheck])
   sandbox.stub(BaseTaskList, 'getTaskListClass').value(() => TaskList)
   sandbox.stub(BaseTaskList, 'buildTaskList').value(() => new TaskList())
