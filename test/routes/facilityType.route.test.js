@@ -12,6 +12,7 @@ const Application = require('../../src/persistence/entities/application.entity')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
+const featureConfig = require('../../src/config/featureConfig')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/facility-type'
@@ -34,6 +35,8 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(TaskDeterminants.prototype, 'save').value(() => undefined)
+  // Todo: Remove hasBespokeFeature stub when bespoke is live
+  sandbox.stub(featureConfig, 'hasBespokeFeature').value(() => true)
 })
 
 lab.afterEach(() => {

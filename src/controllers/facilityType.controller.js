@@ -2,6 +2,7 @@
 'use strict'
 
 const BaseController = require('./base.controller')
+const featureConfig = require('../config/featureConfig')
 const RecoveryService = require('../services/recovery.service')
 const { FACILITY_TYPES } = require('../dynamics')
 const { MCP, WASTE_OPERATION } = FACILITY_TYPES
@@ -13,7 +14,8 @@ module.exports = class FacilityTypeController extends BaseController {
     const { facilityType } = taskDeterminants
     const pageContext = this.createPageContext(h, errors)
 
-    pageContext.facilityTypes = Object.values(FACILITY_TYPES).map((type) => Object.assign({ selected: type === facilityType }, type))
+    pageContext.facilityTypes = Object.values(FACILITY_TYPES)
+      .map((type) => Object.assign({ selected: type === facilityType }, type))
 
     return this.showView({ h, pageContext })
   }
@@ -28,6 +30,10 @@ module.exports = class FacilityTypeController extends BaseController {
       case MCP.id:
         return this.redirect({ h, route: MCP_TYPE })
       case WASTE_OPERATION.id:
+        // Todo: Remove this redirect when Bespoke is live
+        if (!featureConfig.hasBespokeFeature) {
+          return this.redirect({ h, route: FACILITY_APPLY_OFFLINE })
+        }
         return this.redirect({ h, route: WASTE_ACTIVITY })
       default:
         return this.redirect({ h, route: FACILITY_APPLY_OFFLINE })

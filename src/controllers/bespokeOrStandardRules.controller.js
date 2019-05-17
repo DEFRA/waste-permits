@@ -8,7 +8,7 @@ const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = req
 module.exports = class BespokeOrStandardRulesController extends BaseController {
   async doGet (request, h, errors) {
     // Todo: Remove this redirect when Bespoke is live
-    if (!featureConfig.hasBespokeFeature) {
+    if (!featureConfig.hasBespokeFeature && !featureConfig.hasMcpBespokeFeature) {
       return this.redirect({ h })
     }
 
