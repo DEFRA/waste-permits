@@ -6373,9 +6373,9 @@
       "dev": true
     },
     "hapi-dev-errors": {
-      "version": "3.2.4",
-      "resolved": "https://registry.npmjs.org/hapi-dev-errors/-/hapi-dev-errors-3.2.4.tgz",
-      "integrity": "sha512-sPYWIo/e48/bn29rdigYF0ym96EhoHs7QYnr+kNKnKzF0Vgkjd+fKNrSPWQWIPqGP0p9sS0J9gM/wKd4bhr8jQ==",
+      "version": "3.2.5",
+      "resolved": "https://registry.npmjs.org/hapi-dev-errors/-/hapi-dev-errors-3.2.5.tgz",
+      "integrity": "sha512-Ae9JNSRG6QvKHxil/CKbj3lrUAabbMAT319VQCXOIJAls0hhw4EUUsJdJanmPzeLrTDjlnPFtOpjMlvRGikChA==",
       "requires": {
         "youch": "~2.0.10",
         "youch-terminal": "~1.0.0"

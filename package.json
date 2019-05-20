@@ -73,7 +73,7 @@
     "handlebars": "^4.1.2",
     "hapi": "18.1.0",
     "hapi-alive": "^2.0.1",
-    "hapi-dev-errors": "^3.2.4",
+    "hapi-dev-errors": "^3.2.5",
     "hapi-robots": "^3.2.0",
     "hapi-router": "^5.0.0",
     "hapi-sanitize-payload": "^2.0.0",
