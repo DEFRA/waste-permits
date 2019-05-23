@@ -4,10 +4,44 @@ const PdfMake = require('pdfmake')
 const moment = require('moment')
 
 const createPdfDocDefinition = (sections, application) => {
-  sections.forEach(section => { console.log(section.headingId) })
   const permitHeading = sections.find(({ headingId }) => headingId === 'section-permit-heading')
   const permitAuthor = sections.find(({ headingId }) => headingId === 'section-contact-name-heading')
   const title = 'Application for ' + permitHeading.answers.map(a => a.answer).join(' ')
+  const declaration = [
+    {
+      text: 'Declaration',
+      style: 'th'
+    },
+    [
+      {
+        text: 'The operator confirmed that:',
+        style: 'td'
+      },
+      {
+        'ul': [
+          'their operation meets the standard rules',
+          'a written management system will be in place before they start operating',
+          'they were authorised to apply for the permit by the organisation or individual responsible',
+          'the information they gave was true'
+        ]
+      }
+    ]
+  ]
+  const body = sections.map(section => {
+    return [
+      {
+        text: section.heading,
+        style: 'th'
+      },
+      {
+        text: section
+          .answers
+          .filter(a => typeof a.answer === 'string')
+          .map(a => a.answer).join('\n'),
+        style: 'td'
+      }
+    ]
+  }).concat([declaration])
   return {
     pageSize: 'A4',
     pageOrientation: 'portrait',
@@ -57,41 +91,7 @@ const createPdfDocDefinition = (sections, application) => {
       {
         table: {
           headerRows: 0,
-          body: sections.map(section => {
-            return [
-              {
-                text: section.heading,
-                style: 'th'
-              },
-              {
-                text: section
-                  .answers
-                  .filter(a => typeof a.answer === 'string')
-                  .map(a => a.answer).join('\n'),
-                style: 'td'
-              }
-            ]
-          }).concat([
-            {
-              text: 'Declaration',
-              style: 'th'
-            }, [
-              {
-                text: [
-                  'The operator confirmed that:'
-                ],
-                style: 'td'
-              },
-              {
-                'ul': [
-                  'their operation meets the standard rules',
-                  'a written management system will be in place before they start operating',
-                  'they were authorised to apply for the permit by the organisation or individual responsible',
-                  'the information they gave was true'
-                ]
-              }
-            ]
-          ])
+          body: body
         },
         style: 'tableApplication',
         layout: 'lightHorizontalLines'
