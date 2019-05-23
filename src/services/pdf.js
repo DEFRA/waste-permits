@@ -61,7 +61,19 @@ const createPdfDocDefinition = (sections, application) => {
                 .filter(a => typeof a.answer === 'string')
                 .map(a => a.answer)
             ]
-          })
+          }).concat([
+            [{
+              text: 'Declaration',
+              style: 'th'
+            },
+            ['The operator confirmed that:', {
+              'ul': [
+                'their operation meets the standard rules',
+                'they were authorised to apply for the permit by the organisation or individual responsible',
+                'the information they gave was true'
+              ]
+            }]]
+          ])
         },
         style: 'tableApplication',
         layout: 'lightHorizontalLines'
