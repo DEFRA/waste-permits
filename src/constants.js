@@ -169,6 +169,7 @@ Constants.UploadSubject = {
   NON_TECHNICAL_SUMMARY: 'non-technical summary',
   MANAGEMENT_SYSTEM_SUMMARY: 'management system summary',
   MCP_DETAILS: 'mcp details',
+  APPLICATION_STANDARD_RULES_FORM: 'application standard rules forms',
   ARBITRARY_UPLOADS: 'arbitrary uploads'
 }
 

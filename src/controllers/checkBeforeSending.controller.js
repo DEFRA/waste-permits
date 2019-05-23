@@ -130,7 +130,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
         context,
         application,
         pdfStream,
-        UploadSubject.ARBITRARY_UPLOADS
+        UploadSubject.APPLICATION_STANDARD_RULES_FORM
       )
     } catch (err) {
       LoggingService.logError(`Unable to send ${name} application pdf to dynamics`, err)
