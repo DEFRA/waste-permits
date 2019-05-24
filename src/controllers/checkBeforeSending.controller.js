@@ -116,7 +116,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
     const { application } = context
     let pdfStream = pdf.createPDFStream(pageContext.sections, application)
     const dateStr = moment().format('YYYY-MM-DD-HH-mm-ss')
-    const name = `${application.applicationNumber}-application-form-${dateStr}`.replace(/\//g, '_')
+    const name = `_Application-${dateStr}`.replace(/\//g, '_')
     try {
       Object.assign(pdfStream, {
         hapi: {
@@ -130,7 +130,7 @@ module.exports = class CheckBeforeSendingController extends BaseController {
         context,
         application,
         pdfStream,
-        UploadSubject.ARBITRARY_UPLOADS
+        UploadSubject.APPLICATION_STANDARD_RULES_FORM
       )
     } catch (err) {
       LoggingService.logError(`Unable to send ${name} application pdf to dynamics`, err)
