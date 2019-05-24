@@ -1337,7 +1337,7 @@ const Routes = {
   UPLOAD_WAMITAB_QUALIFICATION: {
     path: '/technical-competence/upload-wamitab-qualification',
     view: 'upload/technicalQualification/wamitabQualification',
-    pageHeading: 'WAMITAB or EPOC: upload your evidence',
+    pageHeading: 'WAMITAB or EPOC: check what you need to upload',
     controller: 'upload',
     validator: 'upload',
     nextRoute: 'TECHNICAL_MANAGERS',

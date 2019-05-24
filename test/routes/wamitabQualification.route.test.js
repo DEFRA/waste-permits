@@ -44,7 +44,7 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'wamitab-qualification-description',
-      pageHeading: 'WAMITAB or EPOC: upload your evidence',
+      pageHeading: 'WAMITAB or EPOC: check what you need to upload',
       submitButton: 'Continue'
     }
 
@@ -54,9 +54,6 @@ lab.experiment('Company Declare Upload Wamitab tests:', () => {
       {
         title: 'displays expected static content',
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'wamitab-qualification-description-paragraph-1',
-          'wamitab-qualification-description-paragraph-2',
-          'wamitab-qualification-description-paragraph-3',
           'wamitab-qualification-operator-competence-link',
           'wamitab-qualification-operator-competence-link',
           'wamitab-qualification-operator-competence-link-abbr',
