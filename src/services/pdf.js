@@ -7,6 +7,7 @@ const createPdfDocDefinition = (sections, application) => {
   const permitHeading = sections.find(({ headingId }) => headingId === 'section-permit-heading')
   const permitAuthor = sections.find(({ headingId }) => headingId === 'section-contact-name-heading')
   const title = 'Application for ' + permitHeading.answers.map(a => a.answer).join(' ')
+  const timestamp = moment()
   const declaration = [
     {
       text: 'Declaration',
@@ -81,12 +82,12 @@ const createPdfDocDefinition = (sections, application) => {
       keywords: 'environmental permit, environment agency, application',
       creator: 'Environment Agency',
       producer: 'GOV.UK',
-      creationDate: moment().format('DD/MM/YYYY')
+      creationDate: timestamp.format('DD/MM/YYYY')
     },
     content: [
       { text: title, style: 'h1' },
       'Application reference: ' + application.applicationNumber,
-      'Submitted on ' + moment().format('DD MMM YYYY'),
+      `Submitted on ${timestamp.format('DD MMM YYYY')} at ${timestamp.format('h:mma')}`,
       'This is the information submitted by the applicant. It has not been checked or duly made.',
       {
         table: {

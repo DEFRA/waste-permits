@@ -1,13 +1,47 @@
 'use strict'
 
+const pdf = require('../services/pdf')
+const moment = require('moment')
+const UploadService = require('../services/upload.service')
+const { APPLICATION_STANDARD_RULES_FORM } = require('../constants').UploadSubject
 const { PRIMARY_CONTACT_DETAILS } = require('../dynamics').AddressTypes
 const BaseController = require('./base.controller')
 const Payment = require('../persistence/entities/payment.entity')
 const ContactDetail = require('../models/contactDetail.model')
 const RecoveryService = require('../services/recovery.service')
 const LoggingService = require('../services/logging.service')
+const CheckList = require('../models/checkList/checkList')
 
 module.exports = class ApplicationReceivedController extends BaseController {
+  async saveApplicationPdf (context) {
+    const { application } = context
+
+    const checkList = new CheckList()
+    const sections = await checkList.buildSections(context)
+
+    let pdfStream = pdf.createPDFStream(sections, application)
+    const dateStr = moment().format('YYYY-MM-DD-HH-mm-ss')
+    const name = `_Application-${dateStr}`.replace(/\//g, '_')
+    try {
+      Object.assign(pdfStream, {
+        hapi: {
+          filename: `${name}.pdf`,
+          name,
+          headers: 'application/pdf'
+        }
+      })
+      pdfStream.end()
+      await UploadService.upload(
+        context,
+        application,
+        pdfStream,
+        APPLICATION_STANDARD_RULES_FORM
+      )
+    } catch (err) {
+      LoggingService.logError(`Unable to send ${name} application pdf to dynamics`, err)
+    }
+  }
+
   async doGet (request, h) {
     const pageContext = this.createPageContext(h)
     const context = await RecoveryService.createApplicationContext(h)
@@ -35,6 +69,8 @@ module.exports = class ApplicationReceivedController extends BaseController {
         amount: cardPayment.value.toLocaleString()
       }
     }
+
+    await this.saveApplicationPdf(context)
 
     return this.showView({ h, pageContext })
   }
