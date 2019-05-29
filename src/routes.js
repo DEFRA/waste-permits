@@ -702,6 +702,15 @@ const Routes = {
 
   // OTHER
   // *****
+  ACCESSIBILITY: {
+    path: '/information/accessibility',
+    view: 'accessibility',
+    pageHeading: 'Accessibility statement',
+    controller: 'accessibility',
+    types: 'GET',
+    cookieValidationRequired: false,
+    applicationRequired: false
+  },
   AIR_QUALITY_MANAGEMENT_AREA: {
     path: '/mcp/aqma/name',
     view: 'airQualityManagementArea',
