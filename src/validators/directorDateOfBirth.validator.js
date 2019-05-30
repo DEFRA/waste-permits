@@ -1,7 +1,7 @@
 'use strict'
 
 const moment = require('moment')
-const Joi = require('joi')
+const Joi = require('@hapi/joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class DirectorDateOfBirthValidator extends BaseValidator {
