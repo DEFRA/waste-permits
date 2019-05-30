@@ -13,6 +13,8 @@ const ContactDetail = require('../../src/models/contactDetail.model')
 const Configuration = require('../../src/persistence/entities/configuration.entity')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
+const CheckList = require('../../src/models/checkList/checkList')
+const pdf = require('../../src/services/pdf')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = `/done/slug`
@@ -39,6 +41,8 @@ lab.beforeEach(() => {
   sandbox.stub(Payment, 'getBacsPayment').value(() => bacsPayment)
   sandbox.stub(Payment, 'getCardPayment').value(() => cardPayment)
   sandbox.stub(Configuration, 'getValue').value(() => mocks.configuration.paymentsEmail)
+  sandbox.stub(CheckList.prototype, 'buildSections').value(() => [])
+  sandbox.stub(pdf, 'createPDFStream').value(() => [])
 })
 
 lab.afterEach(() => {
