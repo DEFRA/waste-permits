@@ -88,11 +88,18 @@ module.exports = class UploadService {
 
   static async _saveFilesToDisk (fileData) {
     // Save each file as an attachment to an annotation
-    const fileSavePromises = fileData.map(async ({ file, path }) => {
+    const fileSavePromises = fileData.map(async (data) => {
+      const { file, path } = data
       return new Promise((resolve, reject) => {
-        const filename = Path.basename(path)
+        const filename = Path
+          .basename(path)
+          .split(' ')
+          .join('_')
+          .split(',')
+          .join('_')
         const dirname = Path.dirname(path)
-        const fileStream = fs.createWriteStream(Path.join(dirname, filename.split(' ').join('_').split(',').join('_')))
+        data.path = Path.join(dirname, filename)
+        const fileStream = fs.createWriteStream(data.path)
         fileStream.on('error', (err) => reject(err))
         fileStream.on('finish', () => resolve('ok'))
 
