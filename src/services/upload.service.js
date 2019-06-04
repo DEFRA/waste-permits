@@ -1,11 +1,10 @@
 'use strict'
-
 const fs = require('fs')
-const path = require('path')
+const Path = require('path')
 const config = require('../config/config')
 
 const { Stream } = require('stream')
-const UPLOAD_PATH = path.resolve(`${process.cwd()}/temp`)
+const UPLOAD_PATH = Path.resolve(`${process.cwd()}/temp`)
 const Annotation = require('../persistence/entities/annotation.entity')
 const LoggingService = require('./logging.service')
 const VirusScan = require('../services/virusScan')
@@ -27,7 +26,7 @@ module.exports = class UploadService {
     const annotationsList = await Annotation.listByApplicationIdAndSubject(context, subject)
 
     // create temporary uploads directory
-    const uploadPath = path.resolve(UPLOAD_PATH, UploadService._buildUploadDir(application.applicationNumber))
+    const uploadPath = Path.resolve(UPLOAD_PATH, UploadService._buildUploadDir(application.applicationNumber))
     UploadService._createTempUploadDirectory(uploadPath)
 
     const fileData = UploadService._getFileData(file, uploadPath)
@@ -64,7 +63,7 @@ module.exports = class UploadService {
     const files = file.hapi ? [file] : file
     return files.map((file) => {
       const filename = file.hapi.filename
-      const savedFileName = path.resolve(uploadPath, filename)
+      const savedFileName = Path.resolve(uploadPath, filename)
       return {
         fieldname: file.hapi.name,
         filename,
@@ -91,7 +90,9 @@ module.exports = class UploadService {
     // Save each file as an attachment to an annotation
     const fileSavePromises = fileData.map(async ({ file, path }) => {
       return new Promise((resolve, reject) => {
-        const fileStream = fs.createWriteStream(path)
+        const filename = Path.basename(path)
+        const dirname = Path.dirname(path)
+        const fileStream = fs.createWriteStream(Path.join(dirname, filename.split(' ').join('_').split(',').join('_')))
         fileStream.on('error', (err) => reject(err))
         fileStream.on('finish', () => resolve('ok'))
 
@@ -104,9 +105,9 @@ module.exports = class UploadService {
   }
 
   static async _scanFiles (fileData) {
-    const isInfectedPromises = fileData.map(async ({ path }) => VirusScan.isInfected(path).then((results) => {
-      LoggingService.logInfo(`Scanned ${path} and found that it is ${results.isInfected ? 'infected' : 'not infected'}`)
-      return Promise.resolve(results.isInfected)
+    const isInfectedPromises = fileData.map(async ({ path }) => VirusScan.isInfected(path).then((isInfected) => {
+      LoggingService.logInfo(`Scanned ${path} and found that it is ${isInfected ? 'infected' : 'not infected'}`)
+      return Promise.resolve(isInfected)
     }).catch(error => {
       LoggingService.logError(`Error while scanning: ${error}`)
       return Promise.resolve(this.VIRUS_SCAN_ERROR)

@@ -72,7 +72,7 @@ module.exports = class UploadTestHelper {
     sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
     sandbox.stub(Application, 'getById').value(() => mocks.application)
     sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-    sandbox.stub(VirusScan, 'isInfected').value(() => Promise.resolve({ isInfected: false }))
+    sandbox.stub(VirusScan, 'isInfected').value(() => Promise.resolve(false))
     sandbox.stub(LoggingService, 'logError').value(() => {})
     sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 
@@ -263,7 +263,7 @@ module.exports = class UploadTestHelper {
       })
 
       lab.test('when the file has a virus', async () => {
-        VirusScan.isInfected = () => Promise.resolve({ isInfected: true })
+        VirusScan.isInfected = () => Promise.resolve(true)
         const req = this._uploadRequest({ filename: `virus.pdf`, contentType })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `Our scanner detected a virus in that file. It has not been uploaded. Please use your own virus scanner to check and clean the file. You should either upload a clean copy of the file or contact us if you think that the file does not have a virus.`)
