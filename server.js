@@ -23,7 +23,7 @@ const HapiAlive = require('hapi-alive')
 const Good = require('@hapi/good')
 const Scooter = require('@hapi/scooter')
 const HapiDevErrors = require('hapi-dev-errors')
-const Crumb = require('crumb')
+const Crumb = require('@hapi/crumb')
 
 let serverOptions = {
   port: config.port,
