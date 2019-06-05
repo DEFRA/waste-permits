@@ -1,6 +1,6 @@
 'use strict'
 
-const Code = require('code')
+const Code = require('@hapi/code')
 const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 const GeneralTestHelper = require('../generalTestHelper.test')

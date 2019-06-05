@@ -1,8 +1,8 @@
 'use strict'
 
-const Lab = require('lab')
+const Lab = require('@hapi/lab')
 const lab = exports.lab = Lab.script()
-const Code = require('code')
+const Code = require('@hapi/code')
 const sinon = require('sinon')
 
 const Configuration = require('../../../src/persistence/entities/configuration.entity')

@@ -1,4 +1,4 @@
-const Lab = require('lab')
+const Lab = require('@hapi/lab')
 const lab = exports.lab = Lab.script()
 const postcodeTests = require('../postcodeTests')
 const { PERMIT_HOLDER_TYPES: { CHARITY_OR_TRUST } } = require('../../../../src/dynamics')

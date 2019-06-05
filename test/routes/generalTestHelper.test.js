@@ -1,6 +1,6 @@
 'use strict'
 
-const Code = require('code')
+const Code = require('@hapi/code')
 const DOMParser = require('xmldom').DOMParser
 const server = require('../../server')
 
@@ -17,7 +17,7 @@ const incompleteTaskListRoutePath = '/task-list?showError=true'
 let getRequest, postRequest
 
 module.exports = class GeneralTestHelper {
-  constructor ({ lab, routePath, routeParams = [] }) {
+  constructor ({ lab, routePath }) {
     this.lab = lab
     this.routePath = routePath
   }

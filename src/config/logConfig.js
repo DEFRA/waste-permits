@@ -19,11 +19,11 @@ if (config.nodeEnvironment !== 'test') {
     reporters: {
       // Output to console
       consoleReporter: [{
-        module: 'good-squeeze',
+        module: '@hapi/good-squeeze',
         name: 'Squeeze',
         args: squeezeConfig
       }, {
-        module: 'good-console',
+        module: '@hapi/good-console',
         args: [{
           'format': 'YYYY-MM-DD HH:mm:ss',
           'utc': false
@@ -32,11 +32,11 @@ if (config.nodeEnvironment !== 'test') {
 
       // Output to file
       fileReporter: [{
-        module: 'good-squeeze',
+        module: '@hapi/good-squeeze',
         name: 'Squeeze',
         args: squeezeConfig
       }, {
-        module: 'good-squeeze',
+        module: '@hapi/good-squeeze',
         name: 'SafeJson'
       }, {
         module: 'good-file',
