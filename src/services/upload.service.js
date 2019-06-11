@@ -64,6 +64,7 @@ module.exports = class UploadService {
     return files.map((file) => {
       const filename = file.hapi.filename
       const savedFileName = Path.resolve(uploadPath, filename)
+      // console.log(`📄  ${filename} - ${file.hapi.headers['content-type']}`)
       return {
         fieldname: file.hapi.name,
         filename,

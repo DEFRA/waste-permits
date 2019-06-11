@@ -245,7 +245,7 @@ module.exports = class UploadTestHelper {
     const lastFileType = options.fileTypes.pop()
     lab.experiment('invalid', () => {
       lab.test('when invalid content type', async () => {
-        const req = this._uploadRequest({ contentType: 'application/octet-stream' })
+        const req = this._uploadRequest({ contentType: 'audio/wav' })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `You can only upload ${options.fileTypes.join(', ')} or ${lastFileType} files`)
       })
