@@ -49,7 +49,7 @@ lab.experiment('Air dispersion modelling report upload tests:', () => {
     const options = {
       pageHeading: 'Upload the air dispersion modelling report and screening tool',
       submitButton: 'Continue',
-      fileTypes: ['XLS', 'XLSX', 'ODS', 'PDF']
+      fileTypes: ['AAI', 'ADI', 'AMI', 'APL', 'BPI', 'DEM', 'DIN', 'EMI', 'FAC', 'HRL', 'MET', 'ODS', 'PDF', 'PFL', 'ROU', 'RUF', 'SFC', 'TER', 'VAR', 'XLS', 'XLSX']
     }
 
     // Perform general get tests
@@ -65,7 +65,7 @@ lab.experiment('Air dispersion modelling report upload tests:', () => {
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
     helper.uploadSuccess('application/vnd.ms-excel')
-    helper.uploadInvalid({ fileTypes: ['XLS', 'XLSX', 'ODS', 'PDF'] }, 'application/vnd.ms-excel')
+    helper.uploadInvalid({ fileTypes: ['AAI', 'ADI', 'AMI', 'APL', 'BPI', 'DEM', 'DIN', 'EMI', 'FAC', 'HRL', 'MET', 'ODS', 'PDF', 'PFL', 'ROU', 'RUF', 'SFC', 'TER', 'VAR', 'XLS', 'XLSX'] }, 'application/vnd.ms-excel')
     helper.uploadFailure('application/vnd.ms-excel')
   })
 

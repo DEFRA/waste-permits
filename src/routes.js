@@ -1,5 +1,5 @@
 const { AccountRoleCodes } = require('./dynamics')
-const { CSV, DOC, DOCX, JPG, ODS, ODT, PDF, XLS, XLSX } = require('./constants').FILE_TYPES
+const { CSV, DOC, DOCX, JPG, ODS, ODT, PDF, XLS, XLSX, AAI, ADI, AMI, APL, BPI, DEM, DIN, EMI, FAC, HRL, MET, PFL, ROU, RUF, SFC, TER, VAR } = require('./constants').FILE_TYPES
 
 const Routes = {
   ROOT: {
@@ -731,7 +731,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'AIR_DISPERSION_MODELLING_REPORT',
     validatorOptions: {
-      fileTypes: [ XLS, XLSX, ODS, PDF ]
+      fileTypes: [ AAI, ADI, AMI, APL, BPI, DEM, DIN, EMI, FAC, HRL, MET, ODS, PDF, PFL, ROU, RUF, SFC, TER, VAR, XLS, XLSX ]
     }
   },
   APPLICATION_RECEIVED: {

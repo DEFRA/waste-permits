@@ -22,7 +22,24 @@ Constants.FILE_TYPES = {
   ODT: { mimeType: 'application/vnd.oasis.opendocument.text' },
   PDF: { mimeType: 'application/pdf' },
   XLS: { mimeType: 'application/vnd.ms-excel' },
-  XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+  XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+  AAI: { mimeType: 'application/octet-stream' },
+  ADI: { mimeType: 'application/octet-stream' },
+  AMI: { mimeType: 'application/octet-stream' },
+  APL: { mimeType: 'application/octet-stream' },
+  BPI: { mimeType: 'application/octet-stream' },
+  DEM: { mimeType: 'application/octet-stream' },
+  DIN: { mimeType: 'application/octet-stream' },
+  EMI: { mimeType: 'application/octet-stream' },
+  FAC: { mimeType: 'application/octet-stream' },
+  HRL: { mimeType: 'application/octet-stream' },
+  MET: { mimeType: 'application/octet-stream' },
+  PFL: { mimeType: 'application/octet-stream' },
+  ROU: { mimeType: 'application/octet-stream' },
+  RUF: { mimeType: 'application/octet-stream' },
+  SFC: { mimeType: 'application/octet-stream' },
+  TER: { mimeType: 'application/octet-stream' },
+  VAR: { mimeType: 'application/octet-stream' }
 }
 
 // Add the type property to the file types
