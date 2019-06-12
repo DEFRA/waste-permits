@@ -27,7 +27,6 @@ Constants.FILE_TYPES = {
   ADI: { mimeType: 'application/octet-stream' },
   AMI: { mimeType: 'application/octet-stream' },
   APL: { mimeType: 'application/octet-stream' },
-  ASP: { mimeType: 'application/octet-stream' },
   BPI: { mimeType: 'application/octet-stream' },
   DEM: { mimeType: 'application/octet-stream' },
   DIN: { mimeType: 'application/octet-stream' },
