@@ -31,6 +31,7 @@ module.exports = class UploadController extends BaseController {
       pageContext.formValues = request.payload
     }
 
+    pageContext.uploadFormAction = `${this.path}/upload`
     pageContext.annotations = list.map(({ filename, id }) => ({ filename, removeAction: `${this.path}/remove/${id}` }))
     pageContext.fileTypes = this.validator.formatValidTypes()
     pageContext.maxSize = this.validator.getMaxSize()
