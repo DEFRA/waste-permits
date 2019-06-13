@@ -49,6 +49,7 @@
     "htmlhint": "^0.11.0",
     "inquirer": "^6.3.1",
     "nock": "^10.0.6",
+    "node-sass": "^4.12.0",
     "run-sequence": "^2.2.1",
     "sinon": "^7.3.2",
     "standard": "^12.0.1",
