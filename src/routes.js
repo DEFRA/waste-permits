@@ -730,6 +730,7 @@ const Routes = {
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
     subject: 'AIR_DISPERSION_MODELLING_REPORT',
+    pageFileWarning: 'ASP files must be converted to CSV',
     validatorOptions: {
       fileTypes: [ AAI, ADI, AMI, APL, BPI, DEM, DIN, EMI, FAC, HRL, MET, ODS, PDF, PFL, ROU, RUF, SFC, TER, VAR, XLS, XLSX ]
     }
