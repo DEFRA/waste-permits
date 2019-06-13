@@ -25,15 +25,17 @@ module.exports = class UploadController extends BaseController {
 
     const list = await Annotation.listByApplicationIdAndSubject(context, this.subject)
 
+    const { pageFileWarning } = this.route
+
     if (request.payload) {
       pageContext.formValues = request.payload
     }
 
-    pageContext.uploadFormAction = `${this.path}/upload`
     pageContext.annotations = list.map(({ filename, id }) => ({ filename, removeAction: `${this.path}/remove/${id}` }))
     pageContext.fileTypes = this.validator.formatValidTypes()
     pageContext.maxSize = this.validator.getMaxSize()
     pageContext.subject = this.subject
+    pageContext.pageFileWarning = pageFileWarning
 
     if (this.getSpecificPageContext) {
       Object.assign(pageContext, await this.getSpecificPageContext(h, pageContext))
