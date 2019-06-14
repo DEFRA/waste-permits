@@ -730,7 +730,7 @@ const Routes = {
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
     subject: 'AIR_DISPERSION_MODELLING_REPORT',
-    pageFileWarning: 'ADMS APS receptor files must be converted to CSV',
+    pageFileWarning: 'ADMS ASP receptor files must be converted to CSV',
     validatorOptions: {
       fileTypes: [ AAI, ADI, AMI, APL, BPI, CSV, DEM, DIN, EMI, FAC, HRL, MET, ODS, PDF, PFL, ROU, RUF, SFC, TER, VAR, XLS, XLSX ]
     }
