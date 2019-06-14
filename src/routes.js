@@ -732,7 +732,7 @@ const Routes = {
     subject: 'AIR_DISPERSION_MODELLING_REPORT',
     pageFileWarning: 'ASP files must be converted to CSV',
     validatorOptions: {
-      fileTypes: [ AAI, ADI, AMI, APL, BPI, DEM, DIN, EMI, FAC, HRL, MET, ODS, PDF, PFL, ROU, RUF, SFC, TER, VAR, XLS, XLSX ]
+      fileTypes: [ AAI, ADI, AMI, APL, BPI, CSV, DEM, DIN, EMI, FAC, HRL, MET, ODS, PDF, PFL, ROU, RUF, SFC, TER, VAR, XLS, XLSX ]
     }
   },
   APPLICATION_RECEIVED: {
