@@ -1265,7 +1265,7 @@ const Routes = {
     path: '/start/start-or-open-saved',
     params: ['permitCategory?'],
     view: 'startOrOpenSaved',
-    pageHeading: 'Apply for a standard rules environmental permit',
+    pageHeading: 'Apply for an environmental permit',
     controller: 'startOrOpenSaved',
     validator: 'startOrOpenSaved',
     types: 'GET, POST',

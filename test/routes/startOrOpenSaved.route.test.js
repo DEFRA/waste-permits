@@ -90,7 +90,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
   })
 
   const checkCommonElements = async (doc) => {
-    Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for a standard rules environmental permit')
+    Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Apply for an environmental permit')
     Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
     Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
     Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
