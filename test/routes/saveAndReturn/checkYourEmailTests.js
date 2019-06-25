@@ -43,7 +43,7 @@ module.exports = (lab, { routePath, nextPath, errorPath, pageHeading, excludeAlr
     sandbox.restore()
   })
 
-  lab.experiment(`Check your email: Search for 'standard rules permit application' in your email page tests:`, () => {
+  lab.experiment(`Check your email: Search for 'environmental permit application' in your email page tests:`, () => {
     new GeneralTestHelper({ lab, routePath }).test({
       excludeCookieGetTests: true,
       excludeCookiePostTests: true,
