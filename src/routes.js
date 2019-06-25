@@ -1222,7 +1222,7 @@ const Routes = {
   SEARCH_YOUR_EMAIL: {
     path: '/save-return/search-your-email',
     view: 'saveAndReturn/checkYourEmail',
-    pageHeading: 'Search for ’standard rules permit application’ in your emails',
+    pageHeading: 'Search for ‘environmental permit application’ in your emails',
     controller: 'saveAndReturn/checkYourEmail',
     validator: 'saveAndReturn',
     types: 'GET, POST',
