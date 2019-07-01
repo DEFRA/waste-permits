@@ -1232,7 +1232,7 @@ const Routes = {
   SITE_GRID_REFERENCE: {
     path: '/site/grid-reference',
     view: 'siteGridReference',
-    pageHeading: 'What is the grid reference for the centre of the site?',
+    pageHeading: 'What is the grid reference for the site\'s main emissions point?',
     controller: 'siteGridReference',
     validator: 'siteGridReference',
     nextRoute: 'POSTCODE_SITE',
