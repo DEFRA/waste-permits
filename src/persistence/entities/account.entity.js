@@ -1,6 +1,6 @@
 'use strict'
 
-const DynamicsDalService = require('../../services/dynamicsDal.service')
+const dynamicsDal = require('../../services/dynamicsDal.service')
 const BaseEntity = require('./base.entity')
 const Application = require('./application.entity')
 const LoggingService = require('../../services/logging.service')
@@ -50,7 +50,6 @@ class Account extends BaseEntity {
   }
 
   async confirm (context) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
       CompanyRegistrationNumber: this.companyNumber
     }

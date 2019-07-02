@@ -1,6 +1,6 @@
 'use strict'
 
-const DynamicsDalService = require('../../services/dynamicsDal.service')
+const dynamicsDal = require('../../services/dynamicsDal.service')
 const BaseEntity = require('./base.entity')
 const ApplicationReturn = require('./applicationReturn.entity')
 const LoggingService = require('../../services/logging.service')
@@ -92,7 +92,6 @@ class Application extends BaseEntity {
   }
 
   async sendSaveAndReturnEmail (context, origin) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
       saveAndReturnUrl: `${origin}${SAVE_AND_RETURN_RECOVER.path}`
     }

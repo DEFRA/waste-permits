@@ -4,7 +4,7 @@ const { PAYMENT_CONFIGURATION_PREFIX, MCP_CATEGORY_NAMES } = require('../../cons
 const { MCP_PREFIX, WASTE_PREFIX } = PAYMENT_CONFIGURATION_PREFIX
 const { PaymentTypes, MCP } = require('../../dynamics')
 const Utilities = require('../../utilities/utilities')
-const DynamicsDalService = require('../../services/dynamicsDal.service')
+const dynamicsDal = require('../../services/dynamicsDal.service')
 const BaseEntity = require('./base.entity')
 const LoggingService = require('../../services/logging.service')
 const { BACS_PAYMENT, CARD_PAYMENT } = PaymentTypes
@@ -68,7 +68,6 @@ class Payment extends BaseEntity {
   }
 
   async makeCardPayment (context, description, returnUrl) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
       ConfigurationPrefix: Payment.getPermitCategory(context),
       Amount: this.value,
@@ -90,7 +89,6 @@ class Payment extends BaseEntity {
   }
 
   async getCardPaymentResult (context) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
       ConfigurationPrefix: Payment.getPermitCategory(context),
       LookupByPaymentReference: this.referenceNumber

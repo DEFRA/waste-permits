@@ -1,6 +1,6 @@
 'use strict'
 
-const DynamicsDalService = require('../../services/dynamicsDal.service')
+const dynamicsDal = require('../../services/dynamicsDal.service')
 const BaseEntity = require('./base.entity')
 const LoggingService = require('../../services/logging.service')
 
@@ -29,7 +29,6 @@ class Address extends BaseEntity {
 
   static async listByPostcode (context, postcode) {
     let addresses
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const actionDataObject = {
       postcode: postcode
     }

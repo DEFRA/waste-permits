@@ -1,6 +1,6 @@
 'use strict'
 
-const DynamicsDalService = require('../../services/dynamicsDal.service')
+const dynamicsDal = require('../../services/dynamicsDal.service')
 const BaseEntity = require('./base.entity')
 const LoggingService = require('../../services/logging.service')
 
@@ -9,9 +9,7 @@ class DynamicsSolution extends BaseEntity {
     return 'solutions'
   }
 
-  static async get (context) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-
+  static async get () {
     // The three solutions we are interested in are:
     // - Core
     // - Licensing and Permitting
