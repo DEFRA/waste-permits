@@ -7,7 +7,7 @@ const sinon = require('sinon')
 
 const StandardRule = require('../../../src/persistence/entities/standardRule.entity')
 const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
 const context = { authToken: 'AUTH_TOKEN' }
@@ -54,7 +54,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
+  sandbox.stub(dynamicsDal, 'search').value(() => {})
   sandbox.stub(ApplicationLine, 'getById').value(() => new ApplicationLine(fakeApplicationLine))
 })
 
@@ -66,7 +66,7 @@ lab.afterEach(() => {
 lab.experiment('StandardRule Entity tests:', () => {
   lab.test('list() method returns a list of StandardRule objects', async () => {
     const codes = ['SR2015 No 18', 'SR2015 No 10', 'SR2015 No 4']
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       return {
         value: [
           fakeDynamicsRecord({ code: codes[0] }),
@@ -75,7 +75,7 @@ lab.experiment('StandardRule Entity tests:', () => {
       }
     }
 
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const standardRuleList = await StandardRule.list(context)
     Code.expect(Array.isArray(standardRuleList)).to.be.true()
     Code.expect(standardRuleList.length).to.equal(3)
@@ -84,22 +84,22 @@ lab.experiment('StandardRule Entity tests:', () => {
   })
 
   lab.test('getByCode() method returns a StandardRule object', async () => {
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       return {
         value: [fakeDynamicsRecord()]
       }
     }
 
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const standardRule = await StandardRule.getByCode(context)
     Code.expect(standardRule).to.equal(fakeStandardRule)
     Code.expect(spy.callCount).to.equal(1)
   })
 
   lab.test('getByApplicationId() method returns a single StandardRule object', async () => {
-    DynamicsDalService.prototype.search = () => fakeDynamicsRecord()
+    dynamicsDal.search = () => fakeDynamicsRecord()
 
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const standardRule = await StandardRule.getByApplicationLineId(context)
     Code.expect(standardRule).to.equal(fakeStandardRule)
     Code.expect(spy.callCount).to.equal(1)

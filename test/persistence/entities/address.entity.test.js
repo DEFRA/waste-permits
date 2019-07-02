@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const sinon = require('sinon')
 
 const Address = require('../../../src/persistence/entities/address.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
 
@@ -94,10 +94,10 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => testAddressId)
-  sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
-  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => searchResult)
-  sandbox.stub(DynamicsDalService.prototype, 'callAction').value(() => postcodeLookupResult)
+  sandbox.stub(dynamicsDal, 'create').value(() => testAddressId)
+  sandbox.stub(dynamicsDal, 'update').value((dataObject) => dataObject.id)
+  sandbox.stub(dynamicsDal, 'search').value(() => searchResult)
+  sandbox.stub(dynamicsDal, 'callAction').value(() => postcodeLookupResult)
 })
 
 lab.afterEach(() => {
@@ -115,7 +115,7 @@ lab.experiment('Address Entity tests:', () => {
   })
 
   lab.test('getById() method returns a single Address object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const address = await Address.getById(context, testAddressId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(address.postcode).to.equal(fakeAddressData.postcode)
@@ -137,33 +137,33 @@ lab.experiment('Address Entity tests:', () => {
         defra_fromaddresslookup: true
       }]
     }
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       // Dynamics Address object
       return responseData
     }
 
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const address = await Address.getByUprn(context, fakeAddressData.uprn)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(address.uprn).to.equal(fakeAddressData.uprn)
   })
 
   lab.test('listByPostcode() method returns a collection of Address objects', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
+    const spy = sinon.spy(dynamicsDal, 'callAction')
     const addresses = await Address.listByPostcode(context, fakeAddressData.postcode)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(addresses.length).to.equal(3)
   })
 
   lab.test('save() method saves a new Address object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    const spy = sinon.spy(dynamicsDal, 'create')
     await testAddress.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddress.id).to.equal(testAddressId)
   })
 
   lab.test('save() method updates an existing Address object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    const spy = sinon.spy(dynamicsDal, 'update')
     testAddress.id = testAddressId
     await testAddress.save(context)
     Code.expect(spy.callCount).to.equal(1)

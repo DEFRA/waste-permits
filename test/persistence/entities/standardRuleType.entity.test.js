@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const sinon = require('sinon')
 
 const StandardRuleType = require('../../../src/persistence/entities/standardRuleType.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
 const context = { authToken: 'AUTH_TOKEN' }
@@ -37,7 +37,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  dynamicsSearchStub = sandbox.stub(DynamicsDalService.prototype, 'search').callsFake(async () => fakeDynamicsResult)
+  dynamicsSearchStub = sandbox.stub(dynamicsDal, 'search').callsFake(async () => fakeDynamicsResult)
 })
 
 lab.afterEach(() => {

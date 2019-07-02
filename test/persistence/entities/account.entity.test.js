@@ -7,7 +7,7 @@ const sinon = require('sinon')
 
 const Account = require('../../../src/persistence/entities/account.entity')
 const Application = require('../../../src/persistence/entities/application.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
 
@@ -38,10 +38,10 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'callAction').value(() => {})
-  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => fakeApplicationData.permitHolderOrganisationId)
-  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => fakeApplicationData.permitHolderOrganisationId)
+  sandbox.stub(dynamicsDal, 'callAction').value(() => {})
+  sandbox.stub(dynamicsDal, 'search').value(() => {})
+  sandbox.stub(dynamicsDal, 'create').value(() => fakeApplicationData.permitHolderOrganisationId)
+  sandbox.stub(dynamicsDal, 'update').value(() => fakeApplicationData.permitHolderOrganisationId)
   sandbox.stub(Application, 'getById').value(() => new Application(fakeApplicationData))
 })
 
@@ -52,7 +52,7 @@ lab.afterEach(() => {
 
 lab.experiment('Account Entity tests:', () => {
   lab.test('Constructor creates a Account object correctly', () => {
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       // Dynamics Account object
       return {
         '@odata.etag': 'W/"1039178"',
@@ -76,7 +76,7 @@ lab.experiment('Account Entity tests:', () => {
   })
 
   lab.test('getByApplicationId() method returns a single Account object', async () => {
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       // Dynamics Account object
       return {
         '@odata.etag': 'W/"1039178"',
@@ -88,7 +88,7 @@ lab.experiment('Account Entity tests:', () => {
       }
     }
 
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const account = await Account.getByApplicationId(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
@@ -96,7 +96,7 @@ lab.experiment('Account Entity tests:', () => {
   })
 
   lab.test('getByCompanyNumber() method returns a single Account object', async () => {
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       // Object containing an array of Dynamics Account objects
       return {
         value: [{
@@ -110,7 +110,7 @@ lab.experiment('Account Entity tests:', () => {
       }
     }
 
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const account = await Account.getByCompanyNumber(context, fakeAccountData.companyNumber)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(account.companyNumber).to.equal(fakeAccountData.companyNumber)
@@ -118,14 +118,14 @@ lab.experiment('Account Entity tests:', () => {
   })
 
   lab.test('save() method saves a new Account object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    const spy = sinon.spy(dynamicsDal, 'create')
     await testAccount.save(context, false)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAccount.id).to.equal(fakeApplicationData.permitHolderOrganisationId)
   })
 
   lab.test('save() method updates an existing Account object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    const spy = sinon.spy(dynamicsDal, 'update')
     testAccount.id = fakeApplicationData.permitHolderOrganisationId
     await testAccount.save(context, false)
     Code.expect(spy.callCount).to.equal(1)
@@ -133,7 +133,7 @@ lab.experiment('Account Entity tests:', () => {
   })
 
   lab.test('confirm() method confirms an Account object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
+    const spy = sinon.spy(dynamicsDal, 'callAction')
     await testAccount.confirm(context)
     Code.expect(spy.callCount).to.equal(1)
   })

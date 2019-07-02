@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const sinon = require('sinon')
 
 const Item = require('../../../src/persistence/entities/item.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
 let stub
@@ -45,7 +45,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  stub = sandbox.stub(DynamicsDalService.prototype, 'search')
+  stub = sandbox.stub(dynamicsDal, 'search')
 })
 
 lab.afterEach(() => {

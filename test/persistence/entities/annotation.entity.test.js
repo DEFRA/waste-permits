@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const sinon = require('sinon')
 
 const Annotation = require('../../../src/persistence/entities/annotation.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
 
@@ -43,10 +43,10 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => testAnnotationId)
-  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => testAnnotationId)
-  sandbox.stub(DynamicsDalService.prototype, 'delete').value(() => testAnnotationId)
-  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {})
+  sandbox.stub(dynamicsDal, 'create').value(() => testAnnotationId)
+  sandbox.stub(dynamicsDal, 'update').value(() => testAnnotationId)
+  sandbox.stub(dynamicsDal, 'delete').value(() => testAnnotationId)
+  sandbox.stub(dynamicsDal, 'search').value(() => {})
 })
 
 lab.afterEach(() => {
@@ -56,8 +56,8 @@ lab.afterEach(() => {
 
 lab.experiment('Annotation Entity tests:', () => {
   lab.test('getById() method correctly retrieves an Annotation object', async () => {
-    DynamicsDalService.prototype.search = () => fakeDynamicsRecord()
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    dynamicsDal.search = () => fakeDynamicsRecord()
+    const spy = sinon.spy(dynamicsDal, 'search')
     const annotation = await Annotation.getById(context, testAnnotationId)
     Code.expect(spy.callCount).to.equal(1)
     testAnnotation.id = testAnnotationId
@@ -66,7 +66,7 @@ lab.experiment('Annotation Entity tests:', () => {
 
   lab.test('listByApplicationIdAndSubject() method returns a list of Annotation objects', async () => {
     const ids = ['ANNOTATION_ID_1', 'ANNOTATION_ID_2', 'ANNOTATION_ID_3']
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       return {
         value: [
           fakeDynamicsRecord({ id: ids[0] }),
@@ -75,7 +75,7 @@ lab.experiment('Annotation Entity tests:', () => {
       }
     }
 
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const annotationList = await Annotation.listByApplicationIdAndSubject(context, fakeApplication.id)
     Code.expect(Array.isArray(annotationList)).to.be.true()
     Code.expect(annotationList.length).to.equal(3)
@@ -86,14 +86,14 @@ lab.experiment('Annotation Entity tests:', () => {
   })
 
   lab.test('save() method saves a new Annotation object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    const spy = sinon.spy(dynamicsDal, 'create')
     await testAnnotation.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAnnotation.id).to.equal(testAnnotationId)
   })
 
   lab.test('save() method updates an existing Annotation object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    const spy = sinon.spy(dynamicsDal, 'update')
     testAnnotation.id = testAnnotationId
     await testAnnotation.save(context)
     Code.expect(spy.callCount).to.equal(1)
@@ -101,7 +101,7 @@ lab.experiment('Annotation Entity tests:', () => {
   })
 
   lab.test('delete() method removes an existing Annotation object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'delete')
+    const spy = sinon.spy(dynamicsDal, 'delete')
     testAnnotation.id = testAnnotationId
     await testAnnotation.delete(context)
     Code.expect(spy.callCount).to.equal(1)

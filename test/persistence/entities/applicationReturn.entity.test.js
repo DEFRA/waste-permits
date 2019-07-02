@@ -7,7 +7,7 @@ const sinon = require('sinon')
 
 const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
 const ApplicationReturn = require('../../../src/persistence/entities/applicationReturn.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 const context = { authToken: 'AUTH_TOKEN' }
 let fakeApplicationLine
@@ -36,7 +36,7 @@ lab.beforeEach(() => {
   // Create a sinon sandbox
   sandbox = sinon.createSandbox()
   // Stub the asynchronous model methods
-  sandbox.stub(DynamicsDalService.prototype, 'search').value((dataObject) => dataObject.id)
+  sandbox.stub(dynamicsDal, 'search').value((dataObject) => dataObject.id)
   sandbox.stub(ApplicationLine, 'getById').value(() => fakeApplicationLine)
 })
 
@@ -47,26 +47,26 @@ lab.afterEach(() => {
 
 lab.experiment('ApplicationReturn Entity tests:', () => {
   lab.test('getBySlug() method returns an ApplicationReturn object', async () => {
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       return {
         value: [fakeDynamicsRecord()]
       }
     }
 
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const applicationReturn = await ApplicationReturn.getBySlug(context)
     Code.expect(applicationReturn).to.equal(fakeApplicationReturn)
     Code.expect(spy.callCount).to.equal(1)
   })
 
   lab.test('getByApplicationId() method returns an ApplicationReturn object', async () => {
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       return {
         value: [fakeDynamicsRecord()]
       }
     }
 
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const applicationReturn = await ApplicationReturn.getByApplicationId(context)
     Code.expect(applicationReturn).to.equal(fakeApplicationReturn)
     Code.expect(spy.callCount).to.equal(1)

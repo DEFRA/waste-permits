@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const sinon = require('sinon')
 
 const BaseEntity = require('../../../src/persistence/entities/base.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 const context = { authToken: 'AUTH_TOKEN' }
 
 // Create fake Entity class for tests
@@ -79,8 +79,8 @@ lab.experiment('Base Entity tests:', () => {
     sandbox = sinon.createSandbox()
 
     // Stub methods
-    sandbox.stub(DynamicsDalService.prototype, 'search').value(() => dynamicsReplyData)
-    sandbox.stub(DynamicsDalService.prototype, 'update').value(() => dynamicsReplyData)
+    sandbox.stub(dynamicsDal, 'search').value(() => dynamicsReplyData)
+    sandbox.stub(dynamicsDal, 'update').value(() => dynamicsReplyData)
   })
 
   lab.afterEach(() => {
@@ -150,7 +150,7 @@ lab.experiment('Base Entity tests:', () => {
   lab.test('listUsingFetchXml() method retrieves a list of entities from the result of the fetchXml query', async () => {
     entityData.secret = undefined
     const dynamicsData = { value: [dynamicsReplyData, dynamicsReplyData] }
-    sinon.stub(DynamicsDalService.prototype, 'search').value(() => dynamicsData)
+    sinon.stub(dynamicsDal, 'search').value(() => dynamicsData)
     let list = await Entity.listUsingFetchXml(context)
     Code.expect(list.length).to.equal(dynamicsData.value.length)
     Code.expect(list[0]).to.equal(entityData)
@@ -224,7 +224,7 @@ lab.experiment('Base Entity tests:', () => {
 
   lab.test('save() method updates a Entity object', async () => {
     let dataObject = {}
-    sinon.stub(DynamicsDalService.prototype, 'update').value((key, data) => {
+    sinon.stub(dynamicsDal, 'update').value((key, data) => {
       dataObject = data
     })
     const testEntity = new Entity(entityData)
@@ -236,7 +236,7 @@ lab.experiment('Base Entity tests:', () => {
 
   lab.test('save() method updates a Entity object with only the specified fields', async () => {
     let dataObject = {}
-    sinon.stub(DynamicsDalService.prototype, 'update').value((key, data) => {
+    sinon.stub(dynamicsDal, 'update').value((key, data) => {
       dataObject = data
     })
     entityData.optionalData = 'OPTIONAL_DATA'

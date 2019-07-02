@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 const Location = require('../../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../../src/persistence/entities/locationDetail.entity')
 const Address = require('../../../src/persistence/entities/address.entity')
@@ -25,8 +25,8 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(async () => mocks.address.id)
-  sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
+  sandbox.stub(dynamicsDal, 'create').value(async () => mocks.address.id)
+  sandbox.stub(dynamicsDal, 'update').value((dataObject) => dataObject.id)
   sandbox.stub(Location, 'getByApplicationId').value(async () => mocks.location)
   sandbox.stub(Location.prototype, 'save').value(async () => undefined)
   sandbox.stub(LocationDetail, 'getByLocationId').value(async () => mocks.locationDetail)

@@ -7,7 +7,7 @@ const sinon = require('sinon')
 
 const ApplicationAnswer = require('../../../src/persistence/entities/applicationAnswer.entity')
 const BaseEntity = require('../../../src/persistence/entities/base.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
 let applicationId
@@ -26,7 +26,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'callAction').value(() => {})
+  sandbox.stub(dynamicsDal, 'callAction').value(() => {})
   sandbox.stub(BaseEntity, 'listUsingFetchXml').value(async () => [new ApplicationAnswer(fakeApplicationAnswer)])
 })
 
@@ -61,7 +61,7 @@ lab.experiment('Application Answer Entity tests:', () => {
   })
 
   lab.test('save() method should save the applicationAnswer correctly', async () => {
-    const callActionSpy = sinon.spy(DynamicsDalService.prototype, 'callAction')
+    const callActionSpy = sinon.spy(dynamicsDal, 'callAction')
     const applicationAnswer = new ApplicationAnswer({ questionCode, answerCode: 'ANSWER_CODE', answerDescription: 'ANSWER_DESCRIPTION', answerText: 'ANSWER_TEXT' })
     await applicationAnswer.save(context)
     let action = `defra_applications(${applicationId})/Microsoft.Dynamics.CRM.defra_set_application_answer`

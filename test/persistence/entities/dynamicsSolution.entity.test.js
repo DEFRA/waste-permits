@@ -6,15 +6,15 @@ const Code = require('@hapi/code')
 const sinon = require('sinon')
 
 const DynamicsSolution = require('../../../src/persistence/entities/dynamicsSolution.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 const context = { authToken: 'AUTH_TOKEN' }
 
 let dynamicsSearchStub
 
 lab.beforeEach(() => {
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = () => {
+  dynamicsSearchStub = dynamicsDal.search
+  dynamicsDal.search = () => {
     // Dynamics DynamicsSolution objects
     return {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
@@ -43,12 +43,12 @@ lab.beforeEach(() => {
 
 lab.afterEach(() => {
   // Restore stubbed methods
-  DynamicsDalService.prototype.search = dynamicsSearchStub
+  dynamicsDal.search = dynamicsSearchStub
 })
 
 lab.experiment('DynamicsSolution Entity tests:', () => {
   lab.test('get() method returns the correct DynamicsSolution objects', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const dynamicsVersionInfo = await DynamicsSolution.get(context)
     Code.expect(spy.callCount).to.equal(1)
 
