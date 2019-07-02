@@ -34,6 +34,9 @@ class DynamicsDalService {
   async getAuthToken () {
     if (!this._authToken) {
       this._authToken = await authService.getToken()
+      setTimeout(() => {
+        delete this._authToken
+      }, 30 * 60 * 1000)
     }
     return this._authToken
   }
