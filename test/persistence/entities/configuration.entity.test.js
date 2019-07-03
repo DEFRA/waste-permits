@@ -11,7 +11,7 @@ let sandbox
 
 let fakeConfigurationData
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 lab.beforeEach(() => {
   fakeConfigurationData = {

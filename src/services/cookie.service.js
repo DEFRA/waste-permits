@@ -3,8 +3,6 @@
 const config = require('../config/config')
 const Constants = require('../constants')
 const LoggingService = require('../services/logging.service')
-const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
-const authService = new ActiveDirectoryAuthService()
 const { COOKIE_RESULT } = require('../constants')
 
 module.exports = class CookieService {
@@ -14,12 +12,10 @@ module.exports = class CookieService {
 
   static async generateCookie () {
     // Generate a CRM token
-    const authToken = await authService.getToken()
 
     // Create the cookie and set the cookie Time to Live (TTL)
     return {
       [Constants.COOKIE_KEY.APPLICATION_ID]: undefined,
-      [Constants.COOKIE_KEY.AUTH_TOKEN]: authToken,
       [Constants.COOKIE_KEY.EXPIRY]: this._calculateExpiryDate()
     }
   }
@@ -57,7 +53,6 @@ module.exports = class CookieService {
       result = COOKIE_RESULT.VALID_COOKIE
 
       // Update the cookie TTL and generate a new CRM token
-      CookieService.set(request, Constants.COOKIE_KEY.AUTH_TOKEN, await authService.getToken())
       CookieService.set(request, Constants.COOKIE_KEY.EXPIRY, await CookieService._calculateExpiryDate())
     }
 

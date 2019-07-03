@@ -452,7 +452,6 @@ class Mocks {
       const permitHolderType = this.permitHolderType
       const taskDeterminants = this.taskDeterminants
       this._context = {
-        authToken: 'AUTH_TOKEN',
         account,
         applicationId: application.id,
         applicationLineId: applicationLine.id,

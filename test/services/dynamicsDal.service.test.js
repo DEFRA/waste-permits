@@ -8,17 +8,14 @@ const sinon = require('sinon')
 const nock = require('nock')
 
 const config = require('../../src/config/config')
-const DynamicsDalService = require('../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../src/services/dynamicsDal.service')
 const LoggingService = require('../../src/services/logging.service')
 
-let dynamicsDal
 let sandbox
 let dynamicsCallSpy
 let loggingSpy
 
 lab.beforeEach(() => {
-  dynamicsDal = new DynamicsDalService('__CRM_TOKEN__')
-
   // Mock the CRM token endpoints
   nock(`https://${config.dynamicsWebApiHost}`)
     .get(`${config.dynamicsWebApiPath}__DYNAMICS_LIST_QUERY__`)
@@ -106,8 +103,9 @@ lab.beforeEach(() => {
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
-  dynamicsCallSpy = sandbox.spy(DynamicsDalService.prototype, '_call')
+  dynamicsCallSpy = sandbox.spy(dynamicsDal, '_call')
   loggingSpy = sandbox.spy(LoggingService, 'logError')
+  sandbox.stub(dynamicsDal, 'getAuthToken').value(() => ({ authToken: 'AUTH_TOKEN' }))
 })
 
 lab.afterEach(() => {
@@ -117,16 +115,6 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Dynamics Service tests:', () => {
-  lab.test('Instantiating a DynamicsDalService() fails when no token passed', async () => {
-    let message
-    try {
-      dynamicsDal = new DynamicsDalService()
-    } catch (error) {
-      message = error.message
-    }
-    Code.expect(message).to.equal('Auth Token not supplied')
-  })
-
   lab.test('create() can create a new record in Dynamics', async () => {
     const response = await dynamicsDal.create('__DYNAMICS_INSERT_QUERY__', {})
     Code.expect(dynamicsCallSpy.callCount).to.equal(1)

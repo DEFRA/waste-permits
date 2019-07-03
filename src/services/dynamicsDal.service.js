@@ -8,6 +8,8 @@ const HttpsProxyAgent = require('https-proxy-agent')
 const config = require('../config/config')
 const LoggingService = require('../services/logging.service')
 const Utilities = require('../utilities/utilities')
+const ActiveDirectoryAuthService = require('../services/activeDirectoryAuth.service')
+const authService = new ActiveDirectoryAuthService()
 
 class DalError extends Error {
   constructor (message = '', query = '', dataObject, dynamicsStack, ...params) {
@@ -28,12 +30,15 @@ class DalError extends Error {
   }
 }
 
-module.exports = class DynamicsDalService {
-  constructor (authToken) {
-    if (!authToken) {
-      throw new Error(`Auth Token not supplied`)
+class DynamicsDalService {
+  async getAuthToken () {
+    if (!this._authToken) {
+      this._authToken = await authService.getToken()
+      setTimeout(() => {
+        delete this._authToken
+      }, 30 * 60 * 1000)
     }
-    this.authToken = authToken
+    return this._authToken
   }
 
   get dynamicsPath () {
@@ -48,7 +53,7 @@ module.exports = class DynamicsDalService {
       json: true,
       body: dataObject,
       headers: {
-        'Authorization': `Bearer ${this.authToken}`
+        'Authorization': `Bearer ${await this.getAuthToken()}`
       }
     }
     LoggingService.logDebug('Dynamics Call Action POST options', options)
@@ -64,14 +69,14 @@ module.exports = class DynamicsDalService {
   }
 
   async link (query, association) {
-    const options = this._requestOptions(this.authToken, query, 'POST', association)
+    const options = this._requestOptions(await this.getAuthToken(), query, 'POST', association)
     LoggingService.logDebug('Dynamics POST options', options)
     return this._call(options, association)
   }
 
   async create (query, dataObject) {
     Utilities.convertToDynamics(dataObject)
-    const options = this._requestOptions(this.authToken, query, 'POST', dataObject)
+    const options = this._requestOptions(await this.getAuthToken(), query, 'POST', dataObject)
     LoggingService.logDebug('Dynamics POST options', options)
     const result = await this._call(options, dataObject)
     const id = this._extractId(result)
@@ -80,21 +85,21 @@ module.exports = class DynamicsDalService {
 
   async update (query, dataObject) {
     Utilities.convertToDynamics(dataObject)
-    const options = this._requestOptions(this.authToken, query, 'PATCH', dataObject)
+    const options = this._requestOptions(await this.getAuthToken(), query, 'PATCH', dataObject)
     LoggingService.logDebug('Dynamics PATCH options', options)
     LoggingService.logDebug('Dynamics PATCH body', dataObject)
     await this._call(options, dataObject)
   }
 
   async delete (query) {
-    const options = this._requestOptions(this.authToken, query, 'DELETE')
+    const options = this._requestOptions(await this.getAuthToken(), query, 'DELETE')
     LoggingService.logDebug('Dynamics DELETE options', options)
     const result = await this._call(options)
     return result
   }
 
   async search (query) {
-    const options = this._requestOptions(this.authToken, query, 'GET')
+    const options = this._requestOptions(await this.getAuthToken(), query, 'GET')
     LoggingService.logDebug('Dynamics GET options', options)
     const result = await this._call(options)
     return result
@@ -220,3 +225,5 @@ module.exports = class DynamicsDalService {
     return id
   }
 }
+
+module.exports = new DynamicsDalService()

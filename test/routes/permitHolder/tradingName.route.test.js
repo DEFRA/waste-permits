@@ -37,7 +37,6 @@ lab.beforeEach(() => {
   }
 
   fakeRecovery = () => ({
-    authToken: 'AUTH_TOKEN',
     applicationId: fakeApplication.id,
     application: new Application(fakeApplication),
     account: new Account(fakeAccount)

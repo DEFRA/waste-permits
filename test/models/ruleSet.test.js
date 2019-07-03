@@ -10,7 +10,7 @@ const featureConfig = require('../../src/config/featureConfig')
 const Application = require('../../src/persistence/entities/application.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
 const RuleSet = require('../../src/models/ruleSet.model')
-const DynamicsDalService = require('../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../src/services/dynamicsDal.service')
 
 let fakeApplicationLine
 let fakeParametersId
@@ -47,7 +47,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(featureConfig, 'hasBespokeFeature').value(true)
-  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => searchResult)
+  sandbox.stub(dynamicsDal, 'search').value(() => searchResult)
   sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
 })
 
@@ -58,7 +58,7 @@ lab.afterEach(() => {
 
 lab.experiment('RuleSet Model tests:', () => {
   lab.test('getValidRuleSetIds() method correctly retrieves the completed flag from the ApplicationLine object for the specified parameter', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const ruleSetIds = await RuleSet.getValidRuleSetIds(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(ruleSetIds).to.include(Object.keys(fakeParametersId))

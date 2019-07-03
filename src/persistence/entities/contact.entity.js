@@ -1,6 +1,6 @@
 'use strict'
 
-const DynamicsDalService = require('../../services/dynamicsDal.service')
+const dynamicsDal = require('../../services/dynamicsDal.service')
 const BaseEntity = require('./base.entity')
 const Application = require('./application.entity')
 const LoggingService = require('../../services/logging.service')
@@ -28,8 +28,6 @@ class Contact extends BaseEntity {
   }
 
   static async list (context, permitHolderOrganisationId = undefined, contactType) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
-
     let filter = `accountrolecode eq ${contactType} and defra_resignedoncompanieshouse eq null`
     if (permitHolderOrganisationId) {
       filter += ` and parentcustomerid_account/accountid eq ${permitHolderOrganisationId}`

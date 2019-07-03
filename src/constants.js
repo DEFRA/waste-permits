@@ -108,7 +108,6 @@ Constants.COOKIE_RESULT = {
 }
 
 Constants.COOKIE_KEY = {
-  AUTH_TOKEN: 'authToken',
   APPLICATION_ID: 'applicationId',
   APPLICATION_LINE_ID: 'applicationLineId',
   PERMIT_HOLDER_TYPE: 'permitHolderType',

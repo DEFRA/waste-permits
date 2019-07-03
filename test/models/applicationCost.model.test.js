@@ -10,7 +10,7 @@ const ItemEntity = require('../../src/persistence/entities/item.entity')
 const ApplicationEntity = require('../../src/persistence/entities/application.entity')
 const ApplicationLineEntity = require('../../src/persistence/entities/applicationLine.entity')
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 const ACTIVITY_ITEM_TYPE_ID = 'ACTIVITY_ITEM_TYPE_ID'
 const ASSESSMENT_ITEM_TYPE_ID = 'ASSESSMENT_ITEM_TYPE_ID'
 

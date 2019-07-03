@@ -9,7 +9,7 @@ const Mocks = require('../helpers/mocks')
 const ApplicationData = require('../../src/persistence/entities/applicationData.entity')
 const DataStore = require('../../src/models/dataStore.model')
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 let mocks
 

@@ -5,7 +5,7 @@ const lab = exports.lab = Lab.script()
 const Code = require('@hapi/code')
 const sinon = require('sinon')
 const AddressDetail = require('../../../src/persistence/entities/addressDetail.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let dynamicsCreateStub
 let dynamicsSearchStub
@@ -26,13 +26,13 @@ const fakeAddressDetailData = {
 }
 const testAddressDetailId = 'ADDRESS_DETAIL_ID'
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 lab.beforeEach(() => {
   testAddressDetail = new AddressDetail(fakeAddressDetailData)
 
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = () => {
+  dynamicsSearchStub = dynamicsDal.search
+  dynamicsDal.search = () => {
     // Dynamics AddressDetail object
     return {
       value: [{
@@ -50,11 +50,11 @@ lab.beforeEach(() => {
     }
   }
 
-  dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = () => testAddressDetailId
+  dynamicsCreateStub = dynamicsDal.create
+  dynamicsDal.create = () => testAddressDetailId
 
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject) => dataObject.id
+  dynamicsUpdateStub = dynamicsDal.update
+  dynamicsDal.update = (dataObject) => dataObject.id
 
   // Create a sinon sandbox to prevent the "spy already wrapped errors" when a "spy.calledWith" fails
   sandbox = sinon.createSandbox()
@@ -65,9 +65,9 @@ lab.afterEach(() => {
   sandbox.restore()
 
   // Restore stubbed methods
-  DynamicsDalService.prototype.create = dynamicsCreateStub
-  DynamicsDalService.prototype.search = dynamicsSearchStub
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
+  dynamicsDal.create = dynamicsCreateStub
+  dynamicsDal.search = dynamicsSearchStub
+  dynamicsDal.update = dynamicsUpdateStub
 })
 
 lab.experiment('AddressDetail Entity tests:', () => {
@@ -87,14 +87,14 @@ lab.experiment('AddressDetail Entity tests:', () => {
   })
 
   lab.test('save() method saves a new AddressDetail object', async () => {
-    const spy = sandbox.spy(DynamicsDalService.prototype, 'create')
+    const spy = sandbox.spy(dynamicsDal, 'create')
     await testAddressDetail.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testAddressDetail.id).to.equal(testAddressDetailId)
   })
 
   lab.test('save() method updates an existing AddressDetail object', async () => {
-    const spy = sandbox.spy(DynamicsDalService.prototype, 'update')
+    const spy = sandbox.spy(dynamicsDal, 'update')
     testAddressDetail.id = testAddressDetailId
     await testAddressDetail.save(context)
     Code.expect(spy.callCount).to.equal(1)

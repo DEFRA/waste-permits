@@ -8,7 +8,7 @@ const sinon = require('sinon')
 const Application = require('../../../src/persistence/entities/application.entity')
 const ApplicationReturn = require('../../../src/persistence/entities/applicationReturn.entity')
 const LoggingService = require('../../../src/services/logging.service')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 const fakeOrigin = 'http://test.app.com'
 const fakeSlug = 'SLUG'
@@ -110,7 +110,7 @@ const dynamicsApplicationList = [
   fakeApplicationDynamicsRecord(listData[2])]
 
 lab.beforeEach(() => {
-  context = { authToken: 'AUTH_TOKEN' }
+  context = { }
   testApplication = new Application(fakeApplicationData)
   testApplication.delay = 0
 
@@ -118,17 +118,17 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => testApplicationId)
-  sandbox.stub(DynamicsDalService.prototype, 'delete').value(() => {})
-  sandbox.stub(DynamicsDalService.prototype, 'update').value(() => testApplicationId)
-  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {
+  sandbox.stub(dynamicsDal, 'create').value(() => testApplicationId)
+  sandbox.stub(dynamicsDal, 'delete').value(() => {})
+  sandbox.stub(dynamicsDal, 'update').value(() => testApplicationId)
+  sandbox.stub(dynamicsDal, 'search').value(() => {
     // Dynamics Application object
     return {
       '@odata.etag': 'W/"1039198"',
       _defra_customerid_value: fakeApplicationData.permitHolderOrganisationId
     }
   })
-  sandbox.stub(DynamicsDalService.prototype, 'callAction').value(() => {})
+  sandbox.stub(dynamicsDal, 'callAction').value(() => {})
   sandbox.stub(ApplicationReturn, 'getByApplicationId').value(() => new ApplicationReturn(fakeApplicationReturnData))
 })
 
@@ -139,7 +139,7 @@ lab.afterEach(() => {
 
 lab.experiment('Application Entity tests:', () => {
   lab.test('getById() method correctly retrieves an Application object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const application = await Application.getById(context, testApplicationId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(application.permitHolderOrganisationId).to.equal(fakeApplicationData.permitHolderOrganisationId)
@@ -147,7 +147,7 @@ lab.experiment('Application Entity tests:', () => {
   })
 
   lab.test('listBySaveAndReturnEmail() method correctly retrieves a list of unsubmitted applications Application objects filtered by ', async () => {
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       return {
         value: dynamicsApplicationList
       }
@@ -162,7 +162,7 @@ lab.experiment('Application Entity tests:', () => {
   })
 
   lab.test('sendSaveAndReturnEmail() method correctly initiates an email call action', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
+    const spy = sinon.spy(dynamicsDal, 'callAction')
     const logSpy = sandbox.spy(LoggingService, 'logInfo')
     await testApplication.sendSaveAndReturnEmail(context, fakeOrigin)
     Code.expect(spy.callCount).to.equal(1)
@@ -171,18 +171,18 @@ lab.experiment('Application Entity tests:', () => {
   })
 
   lab.test('sendAllRecoveryEmails() method correctly initiates an email call action for each application', async () => {
-    DynamicsDalService.prototype.search = () => {
+    dynamicsDal.search = () => {
       return {
         value: dynamicsApplicationList
       }
     }
-    const spy = sinon.spy(DynamicsDalService.prototype, 'callAction')
+    const spy = sinon.spy(dynamicsDal, 'callAction')
     await Application.sendAllRecoveryEmails(context, fakeOrigin, fakeApplicationData.saveAndReturnEmail)
     Code.expect(spy.callCount).to.equal(dynamicsApplicationList.length)
   })
 
   lab.test('save() method saves a new Application object for a company', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    const spy = sinon.spy(dynamicsDal, 'create')
     testApplication.id = undefined
     testApplication.permitHolderIndividualId = undefined
     testApplication.applicantType = ORGANISATION
@@ -192,7 +192,7 @@ lab.experiment('Application Entity tests:', () => {
   })
 
   lab.test('save() method saves a new Application object for an individual', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    const spy = sinon.spy(dynamicsDal, 'create')
     testApplication.id = undefined
     testApplication.permitHolderOrganisationId = undefined
     testApplication.applicantType = INDIVIDUAL
@@ -202,7 +202,7 @@ lab.experiment('Application Entity tests:', () => {
   })
 
   lab.test('save() method updates an existing Application object for a company', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    const spy = sinon.spy(dynamicsDal, 'update')
     testApplication.permitHolderIndividualId = undefined
     testApplication.applicantType = ORGANISATION
     await testApplication.save(context)
@@ -211,7 +211,7 @@ lab.experiment('Application Entity tests:', () => {
   })
 
   lab.test('save() method updates an existing Application object for an individual', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    const spy = sinon.spy(dynamicsDal, 'update')
     testApplication.permitHolderOrganisationId = undefined
     testApplication.applicantType = INDIVIDUAL
     await testApplication.save(context)

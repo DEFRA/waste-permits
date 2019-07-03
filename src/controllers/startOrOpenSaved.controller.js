@@ -42,8 +42,6 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       return this.redirect({ h, route: Routes.SAVE_AND_RETURN_COMPLETE, error })
     }
 
-    const { authToken } = cookie
-
     let route = Routes.SEARCH_YOUR_EMAIL
     let params = {}
 
@@ -51,7 +49,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
       // Create new application in Dynamics and set the applicationId in the cookie
       const application = new Application()
       application.statusCode = Dynamics.StatusCode.DRAFT
-      await application.save({ authToken })
+      await application.save({ })
 
       // Set the application ID in the cookie
       cookie.applicationId = application.id
@@ -66,7 +64,7 @@ module.exports = class StartOrOpenSavedController extends BaseController {
 
       // If there is a permit category parameter then set up the next steps accordingly
       const { permitCategory } = request.params
-      let categories = await StandardRuleType.getCategories({ authToken })
+      let categories = await StandardRuleType.getCategories({ })
       let category
       switch (permitCategory) {
         case 'mcp':

@@ -2,7 +2,7 @@
 
 const ObjectPath = require('object-path')
 const LoggingService = require('../../services/logging.service')
-const DynamicsDalService = require('../../services/dynamicsDal.service')
+const dynamicsDal = require('../../services/dynamicsDal.service')
 const Utilities = require('../../utilities/utilities')
 
 module.exports = class BaseEntity {
@@ -259,7 +259,6 @@ module.exports = class BaseEntity {
       if (cachedData && cachedData.id === id) {
         return cachedData
       }
-      const dynamicsDal = new DynamicsDalService(context.authToken)
       const query = `${this.dynamicsEntity}(${id})`
       try {
         const result = await dynamicsDal.search(query)
@@ -326,7 +325,6 @@ module.exports = class BaseEntity {
   }
 
   static async listBy (context = {}, filterData = {}, orderByFields = '') {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const query = `${this.dynamicsEntity}?${this._buildQuerySelect(filterData, orderByFields)}`
     try {
       const response = await dynamicsDal.search(query)
@@ -340,7 +338,6 @@ module.exports = class BaseEntity {
   async listLinked (context = {}, linked = this, filterData = {}, orderByFields = '') {
     const { dynamicsEntity, relationships } = this.constructor
     const { name: linkedModel } = linked.constructor
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const query = `${dynamicsEntity}(${this.id})/${relationships[linkedModel]}?${linked.constructor._buildQuerySelect(filterData, orderByFields)}`
     try {
       const response = await dynamicsDal.search(query)
@@ -352,7 +349,6 @@ module.exports = class BaseEntity {
   }
 
   static async listUsingFetchXml (context, query) {
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     try {
       const response = await dynamicsDal.search(`${this.dynamicsEntity}?fetchXml=${encodeURIComponent(query)}`)
       return response.value.map((item) => this.dynamicsToEntity(item))
@@ -427,7 +423,6 @@ module.exports = class BaseEntity {
       throw new Error(errorMessage)
     }
 
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     try {
       let query
       if (this.isNew()) {
@@ -453,7 +448,6 @@ module.exports = class BaseEntity {
       LoggingService.logError(errorMessage)
       throw new Error(errorMessage)
     }
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     try {
       let query = `${dynamicsEntity}(${id})`
       await dynamicsDal.delete(query)
@@ -465,7 +459,6 @@ module.exports = class BaseEntity {
 
   async link (context = {}, linked) {
     const { dynamicsEntity, relationships } = this.constructor
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const { dynamicsEntity: linkedEntity, name: linkedModel } = linked.constructor
     const association = {
       '@odata.id': `${dynamicsDal.dynamicsPath}${linkedEntity}(${linked.id})`
@@ -476,7 +469,6 @@ module.exports = class BaseEntity {
 
   async unLink (context = {}, linked) {
     const { dynamicsEntity, relationships } = this.constructor
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     const { name: linkedModel } = linked.constructor
     const query = `${dynamicsEntity}(${this.id})/${relationships[linkedModel]}(${linked.id})/$ref`
     return dynamicsDal.delete(query)

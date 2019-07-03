@@ -8,7 +8,7 @@ const BACS_PAYMENT = 910400005
 const CARD_PAYMENT = 910400000
 
 const Payment = require('../../../src/persistence/entities/payment.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let dynamicsCreateStub
 let dynamicsSearchStub
@@ -50,7 +50,6 @@ lab.beforeEach(() => {
   }
 
   context = {
-    authToken: 'AUTH_TOKEN',
     applicationId: fakePaymentData.applicationId,
     applicationLineId: fakePaymentData.applicationLineId,
     taskDeterminants: {
@@ -58,14 +57,14 @@ lab.beforeEach(() => {
     }
   }
 
-  dynamicsSearchStub = DynamicsDalService.prototype.search
-  DynamicsDalService.prototype.search = () => searchResult
+  dynamicsSearchStub = dynamicsDal.search
+  dynamicsDal.search = () => searchResult
 
-  dynamicsCreateStub = DynamicsDalService.prototype.create
-  DynamicsDalService.prototype.create = () => testPaymentId
+  dynamicsCreateStub = dynamicsDal.create
+  dynamicsDal.create = () => testPaymentId
 
-  dynamicsUpdateStub = DynamicsDalService.prototype.update
-  DynamicsDalService.prototype.update = (dataObject) => dataObject.id
+  dynamicsUpdateStub = dynamicsDal.update
+  dynamicsDal.update = (dataObject) => dataObject.id
 
   // Create a sinon sandbox to prevent the "spy already wrapped errors" when a "spy.calledWith" fails
   sandbox = sinon.createSandbox()
@@ -76,9 +75,9 @@ lab.afterEach(() => {
   sandbox.restore()
 
   // Restore stubbed methods
-  DynamicsDalService.prototype.create = dynamicsCreateStub
-  DynamicsDalService.prototype.search = dynamicsSearchStub
-  DynamicsDalService.prototype.update = dynamicsUpdateStub
+  dynamicsDal.create = dynamicsCreateStub
+  dynamicsDal.search = dynamicsSearchStub
+  dynamicsDal.update = dynamicsUpdateStub
 })
 
 lab.experiment('Payment Entity tests:', () => {
@@ -92,7 +91,7 @@ lab.experiment('Payment Entity tests:', () => {
   })
 
   lab.test('getByApplicationLineIdAndType() method returns a single Payment object', async () => {
-    const spy = sandbox.spy(DynamicsDalService.prototype, 'search')
+    const spy = sandbox.spy(dynamicsDal, 'search')
     const { applicationLineId, type } = fakePaymentData
     const payment = await Payment.getByApplicationLineIdAndType(context, type)
     Code.expect(spy.callCount).to.equal(1)
@@ -148,7 +147,7 @@ lab.experiment('Payment Entity tests:', () => {
       ConfigurationPrefix: CONFIGURATION_PREFIX,
       LookupByPaymentReference: fakePaymentData.referenceNumber
     }
-    sandbox.stub(DynamicsDalService.prototype, 'callAction').callsFake(async (action, actionDataObject) => {
+    sandbox.stub(dynamicsDal, 'callAction').callsFake(async (action, actionDataObject) => {
       Code.expect(action).to.equal('defra_get_payment_status')
       Code.expect(actionDataObject).to.equal(expectedActionDataObject)
       return { Status: true }
@@ -172,7 +171,7 @@ lab.experiment('Payment Entity tests:', () => {
 
     const actionResult = { PaymentNextUrlHref: returnUrl }
 
-    sandbox.stub(DynamicsDalService.prototype, 'callAction').callsFake(async (action, actionDataObject) => {
+    sandbox.stub(dynamicsDal, 'callAction').callsFake(async (action, actionDataObject) => {
       Code.expect(action).to.equal('defra_create_payment_transaction')
       Code.expect(actionDataObject).to.equal(expectedActionDataObject)
       return actionResult
@@ -181,7 +180,7 @@ lab.experiment('Payment Entity tests:', () => {
   })
 
   lab.test('save() method saves a new Payment object', async () => {
-    const spy = sandbox.spy(DynamicsDalService.prototype, 'create')
+    const spy = sandbox.spy(dynamicsDal, 'create')
     delete testPayment.id
     await testPayment.save(context)
     Code.expect(spy.callCount).to.equal(1)
@@ -189,7 +188,7 @@ lab.experiment('Payment Entity tests:', () => {
   })
 
   lab.test('save() method updates an existing Payment object', async () => {
-    const spy = sandbox.spy(DynamicsDalService.prototype, 'update')
+    const spy = sandbox.spy(dynamicsDal, 'update')
     testPayment.id = testPaymentId
     await testPayment.save(context)
     Code.expect(spy.callCount).to.equal(1)

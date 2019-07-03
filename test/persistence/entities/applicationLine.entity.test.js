@@ -6,14 +6,14 @@ const Code = require('@hapi/code')
 const sinon = require('sinon')
 
 const ApplicationLine = require('../../../src/persistence/entities/applicationLine.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let fakeApplicationLine
 let fakeParameterId
 let fakeRulesId
 let sandbox
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 const applicationLineId = 'APPLICATION_LINE_ID'
 
 lab.beforeEach(() => {
@@ -32,8 +32,8 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => applicationLineId)
-  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {
+  sandbox.stub(dynamicsDal, 'create').value(() => applicationLineId)
+  sandbox.stub(dynamicsDal, 'search').value(() => {
     // Dynamics ApplicationLine objects
     return {
       _defra_standardruleid_value: fakeApplicationLine.standardRuleId,
@@ -51,7 +51,7 @@ lab.afterEach(() => {
 
 lab.experiment('ApplicationLine Entity tests:', () => {
   lab.test('getById() method correctly retrieves an ApplicationLine object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const applicationLine = await ApplicationLine.getById(context, applicationLineId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(applicationLine.applicationId).to.equal(fakeApplicationLine.applicationId)
@@ -61,7 +61,7 @@ lab.experiment('ApplicationLine Entity tests:', () => {
   })
 
   lab.test('save() method saves a new ApplicationLine object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    const spy = sinon.spy(dynamicsDal, 'create')
     await fakeApplicationLine.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(fakeApplicationLine.id).to.equal(applicationLineId)

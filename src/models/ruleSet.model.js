@@ -1,6 +1,6 @@
 const { tasks } = require('../tasks')
 const LoggingService = require('../services/logging.service')
-const DynamicsDalService = require('../services/dynamicsDal.service')
+const dynamicsDal = require('../services/dynamicsDal.service')
 
 module.exports = class RuleSet {
   static find (id) {
@@ -9,8 +9,7 @@ module.exports = class RuleSet {
 
   static async getValidRuleSetIds (context) {
     if (!context.validRuleIds) {
-      const { authToken, applicationLineId } = context
-      const dynamicsDal = new DynamicsDalService(authToken)
+      const { applicationLineId } = context
       const ruleSetIds = Object.values(tasks)
         .map(({ ruleSetId }) => ruleSetId)
         .filter((ruleSetId) => ruleSetId)

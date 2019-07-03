@@ -1,6 +1,6 @@
 'use strict'
 
-const DynamicsDalService = require('../../services/dynamicsDal.service')
+const dynamicsDal = require('../../services/dynamicsDal.service')
 const BaseEntity = require('./base.entity')
 const LoggingService = require('../../services/logging.service')
 
@@ -27,7 +27,6 @@ class ApplicationAnswer extends BaseEntity {
     }
 
     const { applicationId } = context
-    const dynamicsDal = new DynamicsDalService(context.authToken)
     try {
       // Call Dynamics save and return email action
       let action = `defra_applications(${applicationId})/Microsoft.Dynamics.CRM.defra_set_application_answer`

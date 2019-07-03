@@ -13,7 +13,7 @@ const CharityDetail = require('../models/charityDetail.model')
 const TaskDeterminants = require('../models/taskDeterminants.model')
 
 const { STANDARD_RULES, BESPOKE } = require('../constants').PermitTypes
-const { COOKIE_KEY: { AUTH_TOKEN, APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID } } = require('../constants')
+const { COOKIE_KEY: { APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID } } = require('../constants')
 const { PERMIT_HOLDER_TYPES } = require('../dynamics')
 
 module.exports = class RecoveryService {
@@ -54,7 +54,6 @@ module.exports = class RecoveryService {
     const context = request.app.data
 
     context.slug = slug
-    context.authToken = CookieService.get(request, AUTH_TOKEN)
     context.applicationId = CookieService.get(request, APPLICATION_ID)
     if (context.applicationId) {
       context.application = await Application.getById(context, context.applicationId)
@@ -69,9 +68,8 @@ module.exports = class RecoveryService {
     return context
   }
 
-  static setUpCookies ({ authToken, cookie, applicationId, applicationLineId, standardRuleId, standardRuleTypeId }) {
+  static setUpCookies ({ cookie, applicationId, applicationLineId, standardRuleId, standardRuleTypeId }) {
     // Setup all the cookies as if the user hadn't left
-    cookie[AUTH_TOKEN] = authToken
     cookie[APPLICATION_ID] = applicationId
     cookie[APPLICATION_LINE_ID] = applicationLineId
     if (standardRuleTypeId) {
@@ -85,7 +83,6 @@ module.exports = class RecoveryService {
   static async recoverFromSlug (slug, h, options) {
     const context = h.request.app.data
     context.cookie = await CookieService.generateCookie(h)
-    context.authToken = context.cookie.authToken
     context.applicationReturn = await ApplicationReturn.getBySlug(context, slug)
     if (context.applicationReturn) {
       context.applicationId = context.applicationReturn.applicationId

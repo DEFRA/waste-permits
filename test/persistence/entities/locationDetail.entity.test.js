@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const sinon = require('sinon')
 
 const LocationDetail = require('../../../src/persistence/entities/locationDetail.entity')
-const DynamicsDalService = require('../../../src/services/dynamicsDal.service')
+const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
 
@@ -18,7 +18,7 @@ const fakeLocationDetailData = {
 }
 const testLocationDetailId = 'LOCATION_DETAIL_ID'
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 lab.beforeEach(() => {
   testLocationDetail = new LocationDetail(fakeLocationDetailData)
@@ -27,9 +27,9 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(DynamicsDalService.prototype, 'create').value(() => testLocationDetailId)
-  sandbox.stub(DynamicsDalService.prototype, 'update').value((dataObject) => dataObject.id)
-  sandbox.stub(DynamicsDalService.prototype, 'search').value(() => {
+  sandbox.stub(dynamicsDal, 'create').value(() => testLocationDetailId)
+  sandbox.stub(dynamicsDal, 'update').value((dataObject) => dataObject.id)
+  sandbox.stub(dynamicsDal, 'search').value(() => {
     // Dynamics LocationDetail object
     return {
       '@odata.context': 'THE_ODATA_ENDPOINT_AND_QUERY',
@@ -58,21 +58,21 @@ lab.experiment('LocationDetail Entity tests:', () => {
   })
 
   lab.test('getByLocationId() method returns a single LocationDetail object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'search')
+    const spy = sinon.spy(dynamicsDal, 'search')
     const locationDetail = await LocationDetail.getByLocationId(context, fakeLocationDetailData.locationId)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(locationDetail.gridReference).to.equal(fakeLocationDetailData.gridReference)
   })
 
   lab.test('save() method saves a new LocationDetail object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'create')
+    const spy = sinon.spy(dynamicsDal, 'create')
     await testLocationDetail.save(context)
     Code.expect(spy.callCount).to.equal(1)
     Code.expect(testLocationDetail.id).to.equal(testLocationDetailId)
   })
 
   lab.test('save() method updates an existing LocationDetail object', async () => {
-    const spy = sinon.spy(DynamicsDalService.prototype, 'update')
+    const spy = sinon.spy(dynamicsDal, 'update')
     testLocationDetail.id = testLocationDetailId
     await testLocationDetail.save(context)
     Code.expect(spy.callCount).to.equal(1)
