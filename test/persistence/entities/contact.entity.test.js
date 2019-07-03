@@ -10,7 +10,7 @@ const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let testContact
 let sandbox
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 lab.beforeEach(() => {
   testContact = new Contact({

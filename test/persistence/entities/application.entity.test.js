@@ -110,7 +110,7 @@ const dynamicsApplicationList = [
   fakeApplicationDynamicsRecord(listData[2])]
 
 lab.beforeEach(() => {
-  context = { authToken: 'AUTH_TOKEN' }
+  context = { }
   testApplication = new Application(fakeApplicationData)
   testApplication.delay = 0
 

@@ -27,7 +27,6 @@ const fakeApplicationData = {
 }
 
 const context = {
-  authToken: 'AUTH_TOKEN',
   applicationId: fakeApplicationData.id
 }
 

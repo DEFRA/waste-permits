@@ -26,7 +26,7 @@ const fakeAddressDetailData = {
 }
 const testAddressDetailId = 'ADDRESS_DETAIL_ID'
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 lab.beforeEach(() => {
   testAddressDetail = new AddressDetail(fakeAddressDetailData)

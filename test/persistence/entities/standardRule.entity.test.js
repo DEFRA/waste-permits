@@ -10,7 +10,7 @@ const ApplicationLine = require('../../../src/persistence/entities/applicationLi
 const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 const fakeApplicationLine = {
   id: 'APPLICATION_LINE_ID',

@@ -7,7 +7,7 @@ const sinon = require('sinon')
 
 const BaseEntity = require('../../../src/persistence/entities/base.entity')
 const dynamicsDal = require('../../../src/services/dynamicsDal.service')
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 // Create fake Entity class for tests
 // ---------------------------------

@@ -25,7 +25,6 @@ lab.beforeEach(() => {
   testLocation = new Location(fakeLocationData)
 
   context = {
-    authToken: 'AUTH_TOKEN',
     applicationId,
     applicationLineId
   }

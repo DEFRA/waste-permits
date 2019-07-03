@@ -105,6 +105,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
   dynamicsCallSpy = sandbox.spy(dynamicsDal, '_call')
   loggingSpy = sandbox.spy(LoggingService, 'logError')
+  sandbox.stub(dynamicsDal, 'getAuthToken').value(() => ({ authToken: 'AUTH_TOKEN' }))
 })
 
 lab.afterEach(() => {

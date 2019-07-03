@@ -50,7 +50,6 @@ lab.beforeEach(() => {
   }
 
   context = {
-    authToken: 'AUTH_TOKEN',
     applicationId: fakePaymentData.applicationId,
     applicationLineId: fakePaymentData.applicationLineId,
     taskDeterminants: {

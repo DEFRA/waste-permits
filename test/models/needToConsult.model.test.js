@@ -9,7 +9,7 @@ const Mocks = require('../helpers/mocks')
 const ApplicationAnswer = require('../../src/persistence/entities/applicationAnswer.entity')
 const NeedToConsult = require('../../src/models/needToConsult.model')
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 let mocks
 let saveSpy

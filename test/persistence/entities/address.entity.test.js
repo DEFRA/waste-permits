@@ -33,7 +33,7 @@ const fakeFullAddress = (address) => {
 
 const testAddressId = 'ADDRESS_ID'
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 lab.beforeEach(() => {
   testAddress = new Address(fakeAddressData)

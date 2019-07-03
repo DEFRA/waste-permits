@@ -9,7 +9,7 @@ const Mocks = require('../helpers/mocks')
 const ApplicationAnswer = require('../../src/persistence/entities/applicationAnswer.entity')
 const AirQualityManagementArea = require('../../src/models/airQualityManagementArea.model')
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 const YES = 'yes'
 const NO = 'no'

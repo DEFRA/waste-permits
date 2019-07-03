@@ -10,7 +10,7 @@ const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
 let stub
-const entityContext = { authToken: 'AUTH_TOKEN' }
+const entityContext = { }
 
 const ACTIVITY_TYPE = {
   id: 'DUMMY-GUID-ACTIVITY-TYPE-00000',

@@ -9,7 +9,7 @@ const ApplicationLine = require('../../../src/persistence/entities/applicationLi
 const ApplicationReturn = require('../../../src/persistence/entities/applicationReturn.entity')
 const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 let fakeApplicationLine
 let fakeApplicationReturn
 

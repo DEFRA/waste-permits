@@ -34,7 +34,7 @@ const fakeDynamicsRecord = (options = {}) => {
   }
 }
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 lab.beforeEach(() => {
   testAnnotation = new Annotation(fakeAnnotation)

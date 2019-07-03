@@ -9,7 +9,7 @@ const StandardRuleType = require('../../../src/persistence/entities/standardRule
 const dynamicsDal = require('../../../src/services/dynamicsDal.service')
 
 let sandbox
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 const fakeStandardRuleType = {
   id: 'STANDARD_RULE_TYPE_ID',

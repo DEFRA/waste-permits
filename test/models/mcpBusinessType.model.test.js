@@ -9,7 +9,7 @@ const Mocks = require('../helpers/mocks')
 const ApplicationAnswer = require('../../src/persistence/entities/applicationAnswer.entity')
 const McpBusinessType = require('../../src/models/mcpBusinessType.model')
 
-const context = { authToken: 'AUTH_TOKEN' }
+const context = { }
 
 const expectedItems = [
   { code: '35.11', description: 'Production of electricity 35.11' },
