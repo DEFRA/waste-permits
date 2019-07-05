@@ -15,7 +15,7 @@
         {{> common/csrfToken token=DefraCsrfToken}}
 
         <div class="form-group {{#getFormErrorGroupClass errors.site-grid-reference}}{{/getFormErrorGroupClass}}">
-          <label id="site-grid-reference-label" class="form-label" for="site-grid-reference">National Grid reference for the site's main emissions point
+          <label id="site-grid-reference-label" class="form-label" for="site-grid-reference">National Grid reference for the {{ pageGridRefText }}
             <span id="site-grid-reference-hint" class="form-hint text">Enter 2 letters and 10 digits. For example, ST 58132 72695.</span>
           </label>
           {{> common/fieldError fieldId='site-grid-reference-error' message=errors.site-grid-reference }}
