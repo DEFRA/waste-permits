@@ -35,4 +35,8 @@ module.exports = class mcpBespokeTaskList extends BaseTaskList {
 
     return task.required || (task.route && available)
   }
+
+  static get isMcpBespoke () {
+    return true
+  }
 }

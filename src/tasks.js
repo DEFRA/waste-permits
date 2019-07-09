@@ -88,7 +88,7 @@ const tasks = {
     completedLabelId: 'emissions-management-plan-completed',
     shortName: 'emissionsplan'
   },
-  ENERGY_EFFICENCY_REPORT: {
+  ENERGY_EFFICIENCY_REPORT: {
     id: 'upload-energy-efficiency-report',
     label: 'Upload the energy efficiency report',
     route: Routes.ENERGY_EFFICIENCY_REPORT,
@@ -448,7 +448,7 @@ const bespoke = [
     tasks: [
       tasks.AIR_DISPERSION_MODELLING_REPORT,
       tasks.SCREENING_TOOL,
-      tasks.ENERGY_EFFICENCY_REPORT,
+      tasks.ENERGY_EFFICIENCY_REPORT,
       tasks.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
       tasks.TECHNICAL_QUALIFICATION,
       tasks.MANAGEMENT_SYSTEM,
@@ -518,7 +518,7 @@ const mcpBespoke = [
     tasks: [
       tasks.AIR_DISPERSION_MODELLING_REPORT,
       tasks.SCREENING_TOOL,
-      tasks.ENERGY_EFFICENCY_REPORT,
+      tasks.ENERGY_EFFICIENCY_REPORT,
       tasks.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT
     ]
   },
