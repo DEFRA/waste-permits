@@ -115,7 +115,7 @@ class MockData {
   get applicationCostItemModel () {
     return {
       description: 'APPLICATION_COST_ITEM_DESCRIPTION',
-      cost: 234.56
+      cost: 1234.56
     }
   }
 
