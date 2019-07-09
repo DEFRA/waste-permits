@@ -48,7 +48,7 @@ const checkPageElements = async (getRequest, expectedValue) => {
   const doc = await GeneralTestHelper.getDoc(getRequest)
 
   let element = doc.getElementById('page-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`What is the grid reference for the site’s main emissions point?`)
+  Code.expect(element.nodeValue).to.equal(`What is the grid reference for the centre of the site?`)
 
   // Test for the existence of expected static content
   GeneralTestHelper.checkElementsExist(doc, [
