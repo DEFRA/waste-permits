@@ -25,10 +25,10 @@ module.exports = class TaskListController extends BaseController {
     }
 
     pageContext.taskList = await TaskList.buildTaskList(context)
+    pageContext.permitCategoryRoute = Routes.BESPOKE_OR_STANDARD_RULES.path
 
     if (TaskList.isStandardRules) {
       pageContext.standardRule = await StandardRule.getByApplicationLineId(context, context.applicationLineId)
-      pageContext.permitCategoryRoute = Routes.PERMIT_CATEGORY.path
     } else {
       const { airDispersionModellingRequired } = context.taskDeterminants
 
@@ -42,8 +42,6 @@ module.exports = class TaskListController extends BaseController {
         description: 'Total',
         cost: context.application.lineItemsTotalAmount
       })
-
-      pageContext.permitCategoryRoute = Routes.BESPOKE_OR_STANDARD_RULES.path
     }
 
     pageContext.formValues = request.payload

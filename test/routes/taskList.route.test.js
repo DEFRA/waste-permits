@@ -254,6 +254,10 @@ lab.experiment('Task List page tests:', () => {
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
     checkElement(doc.getElementById('activity-name'), `Medium combustion plant site - requires dispersion modelling`)
     checkElement(doc.getElementById('select-a-different-permit'))
+    code.expect(doc.getElementById('select-a-different-permit')
+      .getAttribute('href'))
+      .to
+      .equal('/bespoke-or-standard-rules')
   })
 
   lab.test('Task list page contains the correct heading and Bespoke info when dispersion modelling is not required', async () => {
@@ -268,6 +272,10 @@ lab.experiment('Task List page tests:', () => {
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
     checkElement(doc.getElementById('activity-name'), `Medium combustion plant site - does not require dispersion modelling`)
     checkElement(doc.getElementById('select-a-different-permit'))
+    code.expect(doc.getElementById('select-a-different-permit')
+      .getAttribute('href'))
+      .to
+      .equal('/bespoke-or-standard-rules')
   })
 
   lab.test(`GET ${routePath} redirects to the Already Submitted route ${alreadySubmittedRoutePath} if the application has been submitted`, async () => {
