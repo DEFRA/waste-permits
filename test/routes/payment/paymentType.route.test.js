@@ -90,7 +90,7 @@ lab.experiment(`How do you want to pay?:`, () => {
         Code.expect(doc.getElementById('payment-cost').firstChild.nodeValue).to.equal('10,000.25')
       })
 
-      lab.test('value is formated without pence', async () => {
+      lab.test('value is formatted without pence', async () => {
         // TODO: mock this in a tidier way
         mocks.applicationCostModel.totalCostItem.cost = 1000
         const doc = await GeneralTestHelper.getDoc(getRequest)
