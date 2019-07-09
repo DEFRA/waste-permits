@@ -34,7 +34,7 @@ lab.experiment('Health page tests:', () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
     let element = doc.getElementById('page-heading').firstChild
-    Code.expect(element.nodeValue).to.equal('Apply for a standard rules environmental permit')
+    Code.expect(element.nodeValue).to.equal('Apply for an environmental permit')
 
     element = doc.getElementById('health-application-version').firstChild
     Code.expect(element).to.exist()
