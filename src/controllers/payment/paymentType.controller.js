@@ -5,12 +5,13 @@ const Dynamics = require('../../dynamics')
 const Routes = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
+const ApplicationCost = require('../../models/applicationCost.model')
 const { CARD_PAYMENT, BACS_PAYMENT } = Dynamics.PaymentTypes
 
 module.exports = class PaymentTypeController extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h, { applicationLine: true, applicationReturn: true })
-    const { applicationLine, applicationReturn } = context
+    const { applicationReturn } = context
 
     this.path = this.path.replace('{slug?}', applicationReturn ? applicationReturn.slug : '')
     const pageContext = this.createPageContext(h, errors)
@@ -31,8 +32,10 @@ module.exports = class PaymentTypeController extends BaseController {
       'bacs-payment': BACS_PAYMENT
     })
 
-    // Default to 0 when the balance hasn't been set
-    const { value = 0 } = applicationLine || {}
+    const applicationCost = await ApplicationCost.getApplicationCostForApplicationId(context)
+
+    // Default to 0 when the cost hasn't been set
+    const value = applicationCost.total.cost ? applicationCost.total.cost : 0
 
     pageContext.cost = value.toLocaleString()
 

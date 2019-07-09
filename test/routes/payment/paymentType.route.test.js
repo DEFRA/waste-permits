@@ -9,6 +9,7 @@ const GeneralTestHelper = require('../generalTestHelper.test')
 
 const server = require('../../../server')
 const Application = require('../../../src/persistence/entities/application.entity')
+const ApplicationCost = require('../../../src/models/applicationCost.model')
 const TaskList = require('../../../src/models/taskList/base.taskList')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
@@ -38,6 +39,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(ApplicationCost, 'getApplicationCostForApplicationId').callsFake(async () => mocks.applicationCostModel)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => mocks.recovery)
   sandbox.stub(TaskList, 'getTaskListClass').value(async () => TaskList)
@@ -79,8 +81,9 @@ lab.experiment(`How do you want to pay?:`, () => {
     })
 
     lab.experiment('success', () => {
-      lab.test('value is formated correctly including pence', async () => {
-        mocks.applicationLine.value = 10000.25
+      lab.test('value is formatted correctly including pence', async () => {
+        // TODO: mock this in a tidier way
+        mocks.applicationCostModel.totalCostItem.cost = 10000.25
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
@@ -88,7 +91,8 @@ lab.experiment(`How do you want to pay?:`, () => {
       })
 
       lab.test('value is formated without pence', async () => {
-        mocks.applicationLine.value = 1000
+        // TODO: mock this in a tidier way
+        mocks.applicationCostModel.totalCostItem.cost = 1000
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
 
