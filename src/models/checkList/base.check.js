@@ -151,7 +151,7 @@ module.exports = class BaseCheck {
       this.data.taskDeterminants = await TaskDeterminants.get(this.data)
     }
 
-    return this.data.taskDeterminants || {}
+    return this.data.taskDeterminants.mcpType || {}
   }
 
   async getLocation () {

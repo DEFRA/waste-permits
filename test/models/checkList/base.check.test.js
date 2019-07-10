@@ -310,6 +310,13 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(context.managementSystemSummary).to.equal(await check.getManagementSystemSummary())
   })
 
+  lab.test('getMcpType works correctly', async () => {
+    const check = new BaseCheck(context)
+    const mcpType = await check.getMcpType()
+    Code.expect(mcpType).to.equal(mocks.taskDeterminants.mcpType)
+    Code.expect(context.taskDeterminants.mcpType).to.equal(await check.getMcpType())
+  })
+
   lab.test('getNeedToConsult works correctly', async () => {
     delete context.needToConsult
     const check = new BaseCheck(context)

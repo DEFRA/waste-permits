@@ -12,7 +12,7 @@ module.exports = class McpBespokeTypeCheck extends BaseCheck {
   }
 
   async getMcpBespokeTypeLine () {
-    const { mcpType = '' } = await this.getMcpType()
+    const mcpType = await this.getMcpType()
 
     return this.buildLine({
       heading: 'Permit',
