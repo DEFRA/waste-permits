@@ -2,6 +2,7 @@
 const BaseTaskList = require('../../models/taskList/base.taskList')
 
 const PermitCheck = require('../../models/checkList/permit.check')
+const McpBespokeTypeCheck = require('../../models/checkList/mcpBespokeType.check')
 const DrainageCheck = require('../../models/checkList/drainage.check')
 const SiteCheck = require('../../models/checkList/site.check')
 const SitePlanCheck = require('../../models/checkList/sitePlan.check')
@@ -32,6 +33,7 @@ module.exports = class CheckList {
     // Please note order is display order.
     this._checks = [
       PermitCheck,
+      McpBespokeTypeCheck,
       DrainageCheck,
       ContactCheck,
       PermitHolderCheck,
@@ -66,8 +68,12 @@ module.exports = class CheckList {
     const TaskList = await BaseTaskList.getTaskListClass(context)
     const taskList = new TaskList(context)
 
-    // Only include the permit check and those checks that are available for this application
-    const availableFlags = await Promise.all(this.Checks.map((Check) => (TaskList.isStandardRules && Check.name === 'PermitCheck') || taskList.isAvailable(Check.task)))
+    // Only include the permit/MCP bespoke type check and those checks that are available for this application
+    const availableFlags = await Promise.all(this.Checks.map((Check) => {
+      return (TaskList.isStandardRules && Check.name === 'PermitCheck') ||
+      (TaskList.isMcpBespoke && Check.name === 'McpBespokeTypeCheck') ||
+      taskList.isAvailable(Check.task)
+    }))
     const availableChecks = this.Checks.filter((Check, index) => availableFlags[index])
 
     // Map the checks into sections

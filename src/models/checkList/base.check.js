@@ -12,6 +12,7 @@ const CharityDetail = require('../charityDetail.model')
 const NeedToConsult = require('../needToConsult.model')
 const McpBusinessType = require('../mcpBusinessType.model')
 const AirQualityManagementArea = require('../airQualityManagementArea.model')
+const TaskDeterminants = require('../taskDeterminants.model')
 
 const {
   BILLING_INVOICING,
@@ -142,6 +143,15 @@ module.exports = class BaseCheck {
       this.data.standardRule = await StandardRule.getByApplicationLineId(this.data)
     }
     return this.data.standardRule || {}
+  }
+
+  async getMcpType () {
+    const { taskDeterminants } = this.data
+    if (!taskDeterminants) {
+      this.data.taskDeterminants = await TaskDeterminants.get(this.data)
+    }
+
+    return this.data.taskDeterminants.mcpType || {}
   }
 
   async getLocation () {
