@@ -13,8 +13,8 @@ const CharityDetail = require('../models/charityDetail.model')
 const TaskDeterminants = require('../models/taskDeterminants.model')
 
 const { STANDARD_RULES, BESPOKE } = require('../constants').PermitTypes
-const { COOKIE_KEY: { APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID } } = require('../constants')
-const { PERMIT_HOLDER_TYPES } = require('../dynamics')
+const { COOKIE_KEY: { APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID }, MCP_CATEGORY_NAMES } = require('../constants')
+const { FACILITY_TYPES, PERMIT_HOLDER_TYPES } = require('../dynamics')
 
 module.exports = class RecoveryService {
   static async recoverOptionalData (context, options) {
@@ -28,6 +28,7 @@ module.exports = class RecoveryService {
     context.permitType = data.permitType
     context.isStandardRule = context.permitType === STANDARD_RULES.id
     context.isBespoke = context.permitType === BESPOKE.id
+    context.isMcp = checkMcp(context)
 
     // Add the charity details to the context
     context.charityDetail = await CharityDetail.get(context)
@@ -123,5 +124,18 @@ module.exports = class RecoveryService {
     }
 
     return request.app.data
+  }
+}
+
+function checkMcp (context) {
+  const { taskDeterminants } = context
+
+  if (context.isStandardRule && taskDeterminants.permitCategory) {
+    const { categoryName } = taskDeterminants.permitCategory
+    return MCP_CATEGORY_NAMES.includes(categoryName)
+  }
+
+  if (context.isBespoke && taskDeterminants.facilityType) {
+    return taskDeterminants.facilityType === FACILITY_TYPES.MCP
   }
 }
