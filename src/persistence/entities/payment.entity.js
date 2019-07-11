@@ -1,8 +1,8 @@
 'use strict'
 
-const { PAYMENT_CONFIGURATION_PREFIX, MCP_CATEGORY_NAMES } = require('../../constants')
+const { PAYMENT_CONFIGURATION_PREFIX } = require('../../constants')
 const { MCP_PREFIX, WASTE_PREFIX } = PAYMENT_CONFIGURATION_PREFIX
-const { PaymentTypes, MCP } = require('../../dynamics')
+const { PaymentTypes } = require('../../dynamics')
 const Utilities = require('../../utilities/utilities')
 const dynamicsDal = require('../../services/dynamicsDal.service')
 const BaseEntity = require('./base.entity')
@@ -32,16 +32,10 @@ class Payment extends BaseEntity {
     ]
   }
 
-  static getPermitCategory ({ taskDeterminants }) {
-    const { facilityType, permitCategory = {} } = taskDeterminants
-    if (facilityType) {
-      return facilityType === MCP ? MCP_PREFIX : WASTE_PREFIX
-    } else {
-      const isMcp = MCP_CATEGORY_NAMES.find((mcpCategoryName) => mcpCategoryName === permitCategory.categoryName)
-      return isMcp ? MCP_PREFIX : WASTE_PREFIX
-    }
+  static getPermitCategory (context) {
+    const { isMcp } = context
+    return isMcp ? MCP_PREFIX : WASTE_PREFIX
   }
-
   static async getBacsPayment (context) {
     return this.getByApplicationLineIdAndType(context, BACS_PAYMENT)
   }

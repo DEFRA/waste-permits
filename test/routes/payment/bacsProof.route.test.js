@@ -94,7 +94,16 @@ lab.experiment(`Give proof of your Bacs payment:`, () => {
       Code.expect(doc.getElementById('swift-number').firstChild.nodeValue).to.equal(mocks.configuration.swiftNumber)
     })
 
-    lab.test('success for MCP', async () => {
+    lab.test('success for standard rules MCP', async () => {
+      mocks.context.isMcp = true
+      getStandardRuleTypeStub.resolves(mocks.standardRuleTypeForMcp)
+      doc = await GeneralTestHelper.getDoc(getRequest)
+      Code.expect(doc.getElementById('bacs-payment-reference').firstChild.nodeValue).to.equal(mocks.configurationForMcp.paymentReference)
+    })
+
+    lab.test('success for bespoke MCP', async () => {
+      mocks.context.isMcp = true
+      mocks.context.isBespoke = true
       getStandardRuleTypeStub.resolves(mocks.standardRuleTypeForMcp)
       doc = await GeneralTestHelper.getDoc(getRequest)
       Code.expect(doc.getElementById('bacs-payment-reference').firstChild.nodeValue).to.equal(mocks.configurationForMcp.paymentReference)

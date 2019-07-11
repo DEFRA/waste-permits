@@ -9,7 +9,7 @@ const Mocks = require('../../helpers/mocks')
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const McpBespokeTypeCheck = require('../../../src/models/checkList/mcpBespokeType.check')
 
-const prefix = 'section-mcp-bespoke-type'
+const prefix = 'section-permit'
 
 let sandbox
 let mocks

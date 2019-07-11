@@ -16,6 +16,8 @@ const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
+const ApplicationCost = require('../../../src/models/applicationCost.model')
+
 const fakeSlug = 'SLUG'
 
 const routePath = '/pay/bacs'
@@ -46,6 +48,7 @@ lab.beforeEach(() => {
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(TaskList, 'getTaskListClass').value(async () => TaskList)
   sandbox.stub(TaskList, 'isComplete').value(async () => true)
+  sandbox.stub(ApplicationCost, 'getApplicationCostForApplicationId').callsFake(async () => mocks.applicationCostModel)
 })
 
 lab.afterEach(() => {

@@ -17,7 +17,7 @@ module.exports = class CardPaymentController extends BaseController {
     let payment = await Payment.getCardPaymentDetails(context, applicationLine.id)
 
     const { value = 0 } = applicationLine
-    payment.description = `Application charge for a standard rules waste permit: ${standardRule.permitName} ${standardRule.code}`
+    payment.description = `Application charge for an environmental waste permit: ${standardRule.permitName} ${standardRule.code}`
     payment.value = value
     payment.category = Dynamics.PAYMENT_CATEGORY
     payment.applicationId = application.id
