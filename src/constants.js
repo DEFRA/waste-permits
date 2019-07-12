@@ -88,7 +88,7 @@ Constants.PROCESSING_TIME = {
   default: '13 weeks'
 }
 Constants.MCP_CATEGORY_NAMES.forEach((mcpCategoryName) => {
-  Constants.PROCESSING_TIME[mcpCategoryName] = '9 weeks'
+  Constants.PROCESSING_TIME[mcpCategoryName] = Constants.PROCESSING_TIME.default
 })
 
 Constants.PAYMENT_CONFIGURATION_PREFIX = {

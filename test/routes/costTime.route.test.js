@@ -94,7 +94,7 @@ lab.experiment('Cost and time for this permit page tests:', () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('includes-waste-recovery-plan')).to.not.exist()
-        Code.expect(GeneralTestHelper.getText(doc.getElementById('length-of-time-text'))).to.equal('up to 9 weeks')
+        Code.expect(GeneralTestHelper.getText(doc.getElementById('length-of-time-text'))).to.equal('up to 13 weeks')
       })
     })
   })
