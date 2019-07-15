@@ -5,7 +5,6 @@ const Dynamics = require('../../dynamics')
 const BaseController = require('../base.controller')
 const Configuration = require('../../persistence/entities/configuration.entity')
 const Payment = require('../../persistence/entities/payment.entity')
-const StandardRuleType = require('../../persistence/entities/standardRuleType.entity')
 const RecoveryService = require('../../services/recovery.service')
 
 const parseAmount = (amount) => {
@@ -18,16 +17,12 @@ module.exports = class BacsProofController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h, { standardRule: true })
-    const { application, standardRule } = context
+    const { application, isMcp } = context
 
     const bacsPayment = await Payment.getBacsPayment(context)
     if (!bacsPayment) {
       throw new Error('Bacs payment details not found')
     }
-
-    // Check if this an MCP permit as this changes the payment reference
-    const { categoryName } = await StandardRuleType.getById(context, standardRule.standardRuleTypeId)
-    const isMcp = Constants.MCP_CATEGORY_NAMES.find((mcpCategoryName) => mcpCategoryName === categoryName)
 
     pageContext.bacs = {
       paymentReference: `${isMcp ? 'MCP' : 'WP'}-${application.applicationNumber}`,

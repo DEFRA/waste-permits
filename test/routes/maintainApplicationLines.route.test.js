@@ -50,6 +50,7 @@ lab.beforeEach(() => {
 
   // Stub methods
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(ApplicationLine, 'getByApplicationId').value(() => mocks.applicationLine)
   sandbox.stub(ApplicationLine, 'listBy').value(async () => mocks.applicationLines)
   deleteSpy = sandbox.stub(ApplicationLine.prototype, 'delete').callsFake(() => false)
   saveSpy = sandbox.stub(ApplicationLine.prototype, 'save').callsFake(() => false)

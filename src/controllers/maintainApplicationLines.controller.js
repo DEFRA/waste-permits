@@ -1,7 +1,7 @@
 
 'use strict'
 
-const Constants = require('../constants')
+const { APPLICATION_LINE_ID } = require('../constants').COOKIE_KEY
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const RecoveryService = require('../services/recovery.service')
@@ -81,9 +81,9 @@ module.exports = class MaintainApplicationLinesController extends BaseController
     }
 
     // Set the application ID in the cookie if not already set
-    if (!Constants.COOKIE_KEY.APPLICATION_LINE_ID) {
+    if (!context.APPLICATION_LINE_ID) {
       const applicationLine = await ApplicationLine.getByApplicationId(context)
-      CookieService.set(request, Constants.COOKIE_KEY.APPLICATION_LINE_ID, applicationLine.id)
+      CookieService.set(request, APPLICATION_LINE_ID, applicationLine.id)
     }
 
     return this.redirect({ h })

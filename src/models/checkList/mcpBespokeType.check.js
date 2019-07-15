@@ -4,7 +4,7 @@ const { path } = require('../../routes').MCP_TYPE
 
 module.exports = class McpBespokeTypeCheck extends BaseCheck {
   get prefix () {
-    return `${super.prefix}-mcp-bespoke-type`
+    return `${super.prefix}-permit`
   }
 
   async buildLines () {
