@@ -1,17 +1,11 @@
 'use strict'
 
 const BaseController = require('./base.controller')
-const featureConfig = require('../config/featureConfig')
 const RecoveryService = require('../services/recovery.service')
 const { BESPOKE: { id: BESPOKE }, STANDARD_RULES: { id: STANDARD_RULES } } = require('../constants').PermitTypes
 
 module.exports = class BespokeOrStandardRulesController extends BaseController {
   async doGet (request, h, errors) {
-    // Todo: Remove this redirect when Bespoke is live
-    if (!featureConfig.hasBespokeFeature && !featureConfig.hasMcpBespokeFeature) {
-      return this.redirect({ h })
-    }
-
     const pageContext = this.createPageContext(h, errors)
 
     pageContext.formValues = request.payload || request.query
