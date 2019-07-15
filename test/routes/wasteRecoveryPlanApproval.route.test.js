@@ -64,7 +64,7 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
           'defra-csrf-token',
           'recovery-plan-paragraph-1',
           'recovery-plan-paragraph-2',
-          'recovery-plan-guidence-link',
+          'recovery-plan-guidance-link',
           'selection-hint-text',
           'selection',
           'selection-yes-input',
