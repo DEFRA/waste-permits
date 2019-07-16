@@ -14,6 +14,7 @@ const TaskList = require('../../../src/models/taskList/base.taskList')
 const CookieService = require('../../../src/services/cookie.service')
 const LoggingService = require('../../../src/services/logging.service')
 const RecoveryService = require('../../../src/services/recovery.service')
+const ApplicationCost = require('../../../src/models/applicationCost.model')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 const slug = 'SLUG'
@@ -43,6 +44,7 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => mocks.application.submitted)
   sandbox.stub(Payment.prototype, 'save').value(async () => undefined)
   sandbox.stub(Payment.prototype, 'makeCardPayment').value(async () => mocks.paymentResult)
+  sandbox.stub(ApplicationCost, 'getApplicationCostForApplicationId').callsFake(async () => mocks.applicationCostModel)
   sandbox.stub(Payment, 'getCardPaymentDetails').value(async () => mocks.payment)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => mocks.recovery)
