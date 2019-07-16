@@ -16,6 +16,11 @@ module.exports = class CostTimeController extends BaseController {
     const { categoryName } = await StandardRuleType.getById(context, standardRule.standardRuleTypeId)
 
     // Default to 0 when the balance hasn't been set
+
+    // TODO: confirm whether this would be better using:
+    //   const applicationCost = await ApplicationCost.getApplicationCostForApplicationId(context)
+    //   const value = applicationCost.total.cost
+
     const { value = 0 } = applicationLine
 
     pageContext.cost = value.toLocaleString()

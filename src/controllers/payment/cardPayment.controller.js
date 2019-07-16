@@ -6,17 +6,19 @@ const BaseController = require('../base.controller')
 const Payment = require('../../persistence/entities/payment.entity')
 const LoggingService = require('../../services/logging.service')
 const RecoveryService = require('../../services/recovery.service')
+const ApplicationCost = require('../../models/applicationCost.model')
 
 module.exports = class CardPaymentController extends BaseController {
   async doGet (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { applicationLine: true, standardRule: true })
     const { application, applicationLine, standardRule = {}, slug } = context
 
-    let { returnUrl } = request.query
+    const { returnUrl } = request.query
 
-    let payment = await Payment.getCardPaymentDetails(context, applicationLine.id)
+    const payment = await Payment.getCardPaymentDetails(context, applicationLine.id)
 
-    const { value = 0 } = applicationLine
+    const applicationCost = await ApplicationCost.getApplicationCostForApplicationId(context)
+    const value = applicationCost.total.cost
     payment.description = `Application charge for an environmental waste permit: ${standardRule.permitName} ${standardRule.code}`
     payment.value = value
     payment.category = Dynamics.PAYMENT_CATEGORY
