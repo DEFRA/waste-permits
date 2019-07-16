@@ -8,19 +8,20 @@ const LoggingService = require('../../services/logging.service')
 const RecoveryService = require('../../services/recovery.service')
 const ApplicationCost = require('../../models/applicationCost.model')
 
+const DESCRIPTION_TEXT = 'Application charge for an environmental waste permit'
+
 module.exports = class CardPaymentController extends BaseController {
   async doGet (request, h) {
     const context = await RecoveryService.createApplicationContext(h, { applicationLine: true, standardRule: true })
-    const { application, applicationLine, standardRule = {}, slug } = context
+    const { application, applicationLine, slug } = context
 
     const { returnUrl } = request.query
 
     const payment = await Payment.getCardPaymentDetails(context, applicationLine.id)
 
     const applicationCost = await ApplicationCost.getApplicationCostForApplicationId(context)
-    const value = applicationCost.total.cost
-    payment.description = `Application charge for an environmental waste permit: ${standardRule.permitName} ${standardRule.code}`
-    payment.value = value
+    payment.value = applicationCost.total.cost
+    payment.description = getDescription(context)
     payment.category = Dynamics.PAYMENT_CATEGORY
     payment.applicationId = application.id
     payment.title = `${Dynamics.PaymentTitle.CARD_PAYMENT} ${application.applicationNumber}`
@@ -42,5 +43,19 @@ module.exports = class CardPaymentController extends BaseController {
 
     // Re-direct off to Gov.UK Pay to take the payment
     return this.redirect({ h, path: result.PaymentNextUrlHref })
+  }
+}
+
+function getDescription (context) {
+  const { isBespoke, isMcp, isStandardRule } = context
+
+  if (isStandardRule) {
+    const { standardRule } = context
+    return `${DESCRIPTION_TEXT}: ${standardRule.permitName} ${standardRule.code}`
+  }
+
+  if (isBespoke && isMcp) {
+    const { taskDeterminants: { mcpType } } = context
+    return `${DESCRIPTION_TEXT}: ${mcpType.text}`
   }
 }
