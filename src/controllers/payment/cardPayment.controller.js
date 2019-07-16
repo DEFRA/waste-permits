@@ -8,7 +8,7 @@ const LoggingService = require('../../services/logging.service')
 const RecoveryService = require('../../services/recovery.service')
 const ApplicationCost = require('../../models/applicationCost.model')
 
-const DESCRIPTION_TEXT = 'Application charge for an environmental waste permit'
+const DESCRIPTION_TEXT = 'Application charge for an environmental permit'
 
 module.exports = class CardPaymentController extends BaseController {
   async doGet (request, h) {
