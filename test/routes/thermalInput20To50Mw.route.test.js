@@ -56,7 +56,7 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
     lab.experiment('Success', () => {
       lab.test('Check the basics', async () => {
         const doc = await GeneralTestHelper.getDoc(request)
-        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Does any single generator unit have a rated thermal input between 20MW and 50MW?')
+        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Does any single generator unit have a net rated thermal input between 20MW and 50MW?')
         Code.expect(doc.getElementById('back-link')).to.exist()
         Code.expect(doc.getElementById('thermal-rating-20-to-50')).to.exist()
         Code.expect(doc.getElementById('thermal-rating-not-20-to-50')).to.exist()

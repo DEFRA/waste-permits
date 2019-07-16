@@ -18,7 +18,6 @@
         <div class="form-group {{#getFormErrorGroupClass errors.thermal-rating}}{{/getFormErrorGroupClass}}">
           <fieldset id="thermal-rating">
             <legend class="visuallyhidden">{{ pageHeading }}</legend>
-            
             {{> common/fieldError fieldId='thermal-rating-error' message=errors.thermal-rating }}
 
             <div class="multiple-choice" data-target="engine-type">
@@ -36,7 +35,7 @@
             <div class="panel panel-border-narrow js-hidden" id="engine-type">  
               <div class="form-group {{#getFormErrorGroupClass errors.engine-type}}{{/getFormErrorGroupClass}}">
                 <fieldset id="engine-type-form">
-                  <legend id="engine-type-legend">What does that generator get its energy from?</legend>
+                  <legend id="engine-type-legend">What type of appliance are you using?</legend>
 
                   {{> common/fieldError fieldId='engine-type-error' message=errors.engine-type }}
 

@@ -1057,7 +1057,7 @@ const Routes = {
   THERMAL_INPUT_20MW_TO_50MW: {
     path: '/mcp-check/best-available-techniques/sg',
     view: 'thermalInput20To50Mw',
-    pageHeading: 'Does any single generator unit have a rated thermal input between 20MW and 50MW?',
+    pageHeading: 'Does any single generator unit have a net rated thermal input between 20MW and 50MW?',
     controller: 'thermalInput20To50Mw',
     validator: 'thermalInput20To50Mw',
     nextRoute: 'MCP_HABITAT_ASSESSMENT',
