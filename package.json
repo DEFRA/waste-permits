@@ -1,6 +1,6 @@
 {
   "name": "waste-permits",
-  "version": "1.20.2",
+  "version": "1.20.3",
   "description": "GOV.UK front end service built using Node.js for the Waste Permits service",
   "author": "Department for Environment, Food & Rural Affairs",
   "license": "SEE LICENSE IN LICENSE",
