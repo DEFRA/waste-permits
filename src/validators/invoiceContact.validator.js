@@ -9,7 +9,7 @@ const Contact = require('../persistence/entities/contact.entity')
 const {
   EMAIL_VALID_REGEX,
   LEADING_AND_TRAILING_DASHES_REGEX,
-  LETTERS_HYPHENS_AND_APOSTROPHES_REGEX,
+  LETTERS_HYPHENS_SPACES_AND_APOSTROPHES_REGEX,
   PLUSES_AND_SPACES_REGEX,
   PLUSES_CANNOT_PRECEDE_ZERO,
   PLUSES_SPACES_AND_NUMBERS_REGEX
@@ -22,7 +22,7 @@ module.exports = class InvoiceContactValidator extends BaseValidator {
         'any.empty': `Enter a first name`,
         'any.required': `Enter a first name`,
         'string.min': `First name must have at least two letters - if you entered an initial please enter a name`,
-        'custom.invalid': `First name can only include letters, hyphens and apostrophes - delete any other characters`,
+        'custom.invalid': `First name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters`,
         'custom.no-leading-and-trailing-dashes': `First name cannot start or end with a dash - delete the dash`,
         'string.max': `Enter a shorter first name with no more than ${Contact.firstName.length.max} characters`
       },
@@ -30,7 +30,7 @@ module.exports = class InvoiceContactValidator extends BaseValidator {
         'any.empty': `Enter a last name`,
         'any.required': `Enter a last name`,
         'string.min': `Last name must have at least two letters - if you entered an initial please enter a name`,
-        'custom.invalid': `Last name can only include letters, hyphens and apostrophes - delete any other characters`,
+        'custom.invalid': `Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters`,
         'custom.no-leading-and-trailing-dashes': `Last name cannot start or end with a dash - delete the dash`,
         'string.max': `Enter a shorter last name with no more than ${Contact.lastName.length.max} characters`
       },
@@ -79,11 +79,11 @@ module.exports = class InvoiceContactValidator extends BaseValidator {
   get customValidators () {
     return {
       'first-name': {
-        'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value),
+        'custom.invalid': (value) => !(LETTERS_HYPHENS_SPACES_AND_APOSTROPHES_REGEX).test(value),
         'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value)
       },
       'last-name': {
-        'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value),
+        'custom.invalid': (value) => !(LETTERS_HYPHENS_SPACES_AND_APOSTROPHES_REGEX).test(value),
         'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value)
       },
       'telephone': {

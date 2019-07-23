@@ -156,8 +156,8 @@ class MockData {
   get contact () {
     return {
       id: 'CONTACT_ID',
-      firstName: 'FIRSTNAME',
-      lastName: 'LASTNAME'
+      firstName: 'TEST FIRST NAME',
+      lastName: 'TEST LAST NAME'
     }
   }
 

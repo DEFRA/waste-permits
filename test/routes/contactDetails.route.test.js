@@ -152,7 +152,7 @@ lab.experiment('Contact details page tests:', () => {
           field: 'first-name',
           value: 'fred@james-',
           messages: [
-            'First name can only include letters, hyphens and apostrophes - delete any other characters',
+            'First name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters',
             'First name cannot start or end with a dash - delete the dash']
         },
         {
@@ -160,14 +160,17 @@ lab.experiment('Contact details page tests:', () => {
           value: '7',
           messages: [
             'First name must have at least two letters - if you entered an initial please enter a name',
-            'First name can only include letters, hyphens and apostrophes - delete any other characters']
+            'First name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters']
         },
         {
           field: 'first-name',
-          value: `_${'a'.repeat(50)}`,
-          messages: [
-            'Enter a shorter first name with no more than 50 characters',
-            'First name can only include letters, hyphens and apostrophes - delete any other characters']
+          value: `first ${'a'.repeat(50)} last`,
+          messages: ['Enter a shorter first name with no more than 50 characters']
+        },
+        {
+          field: 'first-name',
+          value: 'Bouvier Terwilliger Hutz McClure',
+          messages: ['First name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters']
         },
         {
           field: 'last-name',
@@ -178,20 +181,25 @@ lab.experiment('Contact details page tests:', () => {
           field: 'last-name',
           value: 'fred!james-',
           messages: [
-            'Last name can only include letters, hyphens and apostrophes - delete any other characters',
+            'Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters',
             'Last name cannot start or end with a dash - delete the dash']
         },
         {
           field: 'last-name',
           value: '723423gjhg4jkhjk3t378i3qgfiukhkufhf4',
-          messages: ['Last name can only include letters, hyphens and apostrophes - delete any other characters']
+          messages: ['Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters']
         },
         {
           field: 'last-name',
           value: '+'.repeat(51),
           messages: [
             'Enter a shorter last name with no more than 50 characters',
-            'Last name can only include letters, hyphens and apostrophes - delete any other characters']
+            'Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters']
+        },
+        {
+          field: 'last-name',
+          value: 'Bouvier Terwilliger Hutz McClure',
+          messages: ['Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters']
         },
         {
           field: 'telephone',

@@ -3,11 +3,15 @@
 const moment = require('moment')
 const Joi = require('@hapi/joi')
 const BaseValidator = require('../base.validator')
+const Constants = require('../../constants')
 const AddressDetail = require('../../persistence/entities/addressDetail.entity')
 const Contact = require('../../persistence/entities/contact.entity')
 
-const LEADING_AND_TRAILING_DASHES_REGEX = /(^-.*$|^.*-$)/
-const LETTERS_HYPHENS_AND_APOSTROPHES_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+$/
+const {
+  LEADING_AND_TRAILING_DASHES_REGEX,
+  LETTERS_HYPHENS_SPACES_AND_APOSTROPHES_REGEX
+} = Constants.Validation
+
 const MAX_AGE = 120
 const MIN_AGE = 16
 
@@ -27,7 +31,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         'any.empty': `Enter a first name`,
         'any.required': `Enter a first name`,
         'string.min': `First name must have at least two letters - if you entered an initial please enter a name`,
-        'custom.invalid': `First name can only include letters, hyphens and apostrophes - delete any other characters`,
+        'custom.invalid': `First name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters`,
         'custom.no-leading-and-trailing-dashes': `First name cannot start or end with a dash - delete the dash`,
         'string.max': `Enter a shorter first name with no more than ${Contact.firstName.length.max} characters`
       },
@@ -35,7 +39,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         'any.empty': `Enter a last name`,
         'any.required': `Enter a last name`,
         'string.min': `Last name must have at least two letters - if you entered an initial please enter a name`,
-        'custom.invalid': `Last name can only include letters, hyphens and apostrophes - delete any other characters`,
+        'custom.invalid': `Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters`,
         'custom.no-leading-and-trailing-dashes': `Last name cannot start or end with a dash - delete the dash`,
         'string.max': `Enter a shorter last name with no more than ${Contact.lastName.length.max} characters`
       },
@@ -68,11 +72,11 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
   get customValidators () {
     return {
       'first-name': {
-        'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value),
+        'custom.invalid': (value) => !(LETTERS_HYPHENS_SPACES_AND_APOSTROPHES_REGEX).test(value),
         'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value)
       },
       'last-name': {
-        'custom.invalid': (value) => !(LETTERS_HYPHENS_AND_APOSTROPHES_REGEX).test(value),
+        'custom.invalid': (value) => !(LETTERS_HYPHENS_SPACES_AND_APOSTROPHES_REGEX).test(value),
         'custom.no-leading-and-trailing-dashes': (value) => (LEADING_AND_TRAILING_DASHES_REGEX).test(value)
       },
       'job-title': {

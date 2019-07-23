@@ -197,14 +197,14 @@ lab.experiment('Permit Holder Name page tests:', () => {
 
       lab.test(`POST ${routePath} shows an error message when the first name contains invalid characters`, async () => {
         postRequest.payload['first-name'] = '___INVALID_FIRST_NAME___'
-        await checkValidationErrors('first-name', ['First name can only include letters, hyphens and apostrophes - delete any other characters'])
+        await checkValidationErrors('first-name', ['First name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters'])
       })
 
       lab.test(`POST ${routePath} shows multiple error messages on the first name field`, async () => {
         postRequest.payload['first-name'] = '_01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
         const expectedErrors = [
           'Enter a shorter first name with no more than 50 characters',
-          'First name can only include letters, hyphens and apostrophes - delete any other characters'
+          'First name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters'
         ]
         await checkValidationErrors('first-name', expectedErrors)
       })
@@ -216,14 +216,14 @@ lab.experiment('Permit Holder Name page tests:', () => {
 
       lab.test(`POST ${routePath} shows an error message when the last name contains invalid characters`, async () => {
         postRequest.payload['last-name'] = '___INVALID_LAST_NAME___'
-        await checkValidationErrors('last-name', ['Last name can only include letters, hyphens and apostrophes - delete any other characters'])
+        await checkValidationErrors('last-name', ['Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters'])
       })
 
       lab.test(`POST ${routePath} shows multiple error messages on the last name field`, async () => {
         postRequest.payload['last-name'] = '_01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
         const expectedErrors = [
           'Enter a shorter last name with no more than 50 characters',
-          'Last name can only include letters, hyphens and apostrophes - delete any other characters'
+          'Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters'
         ]
         await checkValidationErrors('last-name', expectedErrors)
       })
