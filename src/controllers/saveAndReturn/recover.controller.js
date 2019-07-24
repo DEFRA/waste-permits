@@ -1,8 +1,9 @@
 'use strict'
 
-const { RECOVERY_FAILED, TASK_LIST, BACS_PROOF } = require('../../routes')
+const { RECOVERY_FAILED, TASK_LIST, BACS_PROOF, BESPOKE_OR_STANDARD_RULES } = require('../../routes')
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
+const ApplicationLine = require('../../persistence/entities/applicationLine.entity')
 const Payment = require('../../persistence/entities/payment.entity')
 
 module.exports = class RecoverController extends BaseController {
@@ -22,12 +23,18 @@ module.exports = class RecoverController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const { cookie } = context
+    const { applicationId, cookie } = context
 
     // If there is an outstanding BACS payment then redirect to that rather than the task list
     const bacsPayment = await Payment.getBacsPayment(context)
     if (bacsPayment) {
       return this.redirect({ h, route: BACS_PROOF, cookie })
+    }
+
+    // If no application lines exist then redirect to the start of the pre-tasklist process
+    const applicationLines = await ApplicationLine.listBy(context, { applicationId })
+    if (!applicationLines.length) {
+      return this.redirect({ h, route: BESPOKE_OR_STANDARD_RULES, cookie })
     }
 
     // Now redirect to the tasklist

@@ -40,7 +40,7 @@ module.exports = class RecoveryService {
       options.account && !context.charityDetail.isIndividual ? Account.getByApplicationId(context) : Promise.resolve(undefined),
       options.contact && context.charityDetail.isIndividual ? Contact.getByApplicationId(context) : Promise.resolve(undefined),
       options.cardPayment ? Payment.getCardPaymentDetails(context, context.applicationLineId) : Promise.resolve(undefined),
-      options.standardRule && context.isStandardRule ? StandardRule.getByApplicationLineId(context, context.applicationLineId) : Promise.resolve(undefined)
+      options.standardRule && context.isStandardRule && context.applicationLineId ? StandardRule.getByApplicationLineId(context, context.applicationLineId) : Promise.resolve(undefined)
     ])
 
     return { applicationLine, applicationReturn, account, contact, cardPayment, standardRule }
@@ -89,7 +89,9 @@ module.exports = class RecoveryService {
       context.applicationId = context.applicationReturn.applicationId
       context.application = await Application.getById(context, context.applicationId)
       context.applicationLine = await ApplicationLine.getByApplicationId(context)
-      context.applicationLineId = context.applicationLine.id
+      if (context.applicationLine) {
+        context.applicationLineId = context.applicationLine.id
+      }
       context.permitHolderType = RecoveryService.getPermitHolderType(context.application)
 
       // Don't attempt to get the applicationLine and applicationReturn again
