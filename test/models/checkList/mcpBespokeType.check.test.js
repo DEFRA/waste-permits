@@ -44,7 +44,7 @@ lab.experiment('MCP Bespoke Type Check tests:', () => {
     Code.expect(answerId).to.equal(`${prefix}-answer`)
 
     const { link, linkId, linkType } = links.pop()
-    Code.expect(link).to.equal('/mcp-type')
+    Code.expect(link).to.equal('/bespoke-or-standard-rules')
     Code.expect(linkType).to.equal('contact details')
     Code.expect(linkId).to.equal(`${prefix}-link`)
   })

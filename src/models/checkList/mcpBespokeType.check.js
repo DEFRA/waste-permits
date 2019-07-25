@@ -1,6 +1,6 @@
 const BaseCheck = require('./base.check')
 
-const { path } = require('../../routes').MCP_TYPE
+const { path } = require('../../routes').BESPOKE_OR_STANDARD_RULES
 
 module.exports = class McpBespokeTypeCheck extends BaseCheck {
   get prefix () {
