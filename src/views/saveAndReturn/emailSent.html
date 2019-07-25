@@ -33,12 +33,12 @@
               {{> common/fieldError fieldId='got-email-error' message=errors.got-email }}
 
               <div class="multiple-choice">
-                <input id="got-email" type="radio" name="got-email" value="true" {{#if gotEmail}}checked{{/if}}>
+                <input id="got-email" type="radio" name="got-email" value="true">
                 <label id="got-email-label" for="got-email">I got the email</label>
               </div>
 
               <div class="multiple-choice" data-target="gotEmailD">
-                <input id="not-got-email" type="radio" name="got-email" value="false" {{#if notGotEmail}}checked{{/if}}>
+                <input id="not-got-email" type="radio" name="got-email" value="false">
                 <label id="not-got-email-label" for="not-got-email">I checked spam and junk and cannot find the email - resend it</label>
               </div>
 

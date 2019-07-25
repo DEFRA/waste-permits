@@ -101,7 +101,6 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
           const doc = await GeneralTestHelper.getDoc(getRequest)
           await checkCommonElements(doc)
           Code.expect(doc.getElementById('recovery-link')).to.not.exist()
-          Code.expect(doc.getElementById('got-email').getAttribute('checked')).to.equal('checked')
         })
 
         lab.test('when complete and display recovery link feature is true', async () => {
@@ -110,7 +109,6 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
           const doc = await GeneralTestHelper.getDoc(getRequest)
           await checkCommonElements(doc)
           Code.expect(doc.getElementById('recovery-link').getAttribute('href')).to.equal(fakeRecoveryLink)
-          Code.expect(doc.getElementById('got-email').getAttribute('checked')).to.equal('checked')
         })
 
         lab.test('when not complete', async () => {

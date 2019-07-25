@@ -22,16 +22,6 @@ module.exports = class EmailSentController extends BaseController {
       }
     }
     pageContext.isComplete = await SaveAndReturn.isComplete(context)
-    if (pageContext.isComplete) {
-      pageContext.gotEmail = true
-    }
-    if (pageContext.formValues['got-email']) {
-      if (pageContext.formValues['got-email'] === 'true') {
-        pageContext.gotEmail = true
-      } else {
-        pageContext.notGotEmail = true
-      }
-    }
 
     if (this.path === SAVE_AND_RETURN_SENT_CHECK.path) {
       pageContext.firstTime = true
