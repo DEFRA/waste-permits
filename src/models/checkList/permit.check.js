@@ -1,6 +1,6 @@
 const BaseCheck = require('./base.check')
 
-const { path } = require('../../routes').PERMIT_CATEGORY
+const { path } = require('../../routes').BESPOKE_OR_STANDARD_RULES
 
 module.exports = class PermitCheck extends BaseCheck {
   get prefix () {

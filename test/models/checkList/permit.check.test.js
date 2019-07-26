@@ -41,7 +41,7 @@ lab.experiment('Permit Check tests:', () => {
     Code.expect(answerId).to.equal(`${prefix}-answer`)
 
     const { link, linkId, linkType } = links.pop()
-    Code.expect(link).to.equal('/permit/category')
+    Code.expect(link).to.equal('/bespoke-or-standard-rules')
     Code.expect(linkType).to.equal('contact details')
     Code.expect(linkId).to.equal(`${prefix}-link`)
   })
