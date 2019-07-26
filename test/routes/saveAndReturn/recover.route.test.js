@@ -26,6 +26,7 @@ const slug = 'SLUG'
 
 const routePath = `/r/${slug}`
 const nextRoutePath = '/task-list'
+const nextRouteNoLinesPath = '/bespoke-or-standard-rules'
 const nextPathForBacs = '/pay/bacs-proof'
 const recoveryFailedPath = '/errors/recovery-failed'
 const errorPath = '/errors/technical-problem'
@@ -34,8 +35,18 @@ let sandbox
 let mocks
 let bacsPaymentStub
 
+const allActivities = [
+  { id: 'act-1', shortName: '1-10-2' },
+  { id: 'act-2', shortName: '1-10-3' },
+  { id: 'act-3', shortName: '2-4-5' },
+  { id: 'act-4', shortName: '44-5-6' },
+  { id: 'act-5', shortName: 'ABC-D' }
+]
+
 lab.beforeEach(() => {
   mocks = new Mocks()
+
+  mocks.applicationLines = []
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -45,6 +56,7 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'generateCookie').value(() => ({ authToken: 'AUTH_TOKEN' }))
   sandbox.stub(Application, 'getById').value(() => mocks.application)
   sandbox.stub(ApplicationLine, 'getByApplicationId').value(() => mocks.applicationLine)
+  sandbox.stub(ApplicationLine, 'listBy').value(async () => mocks.applicationLines)
   sandbox.stub(ApplicationReturn, 'getBySlug').value(() => mocks.applicationReturn)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Contact, 'getByApplicationId').value(() => mocks.contact)
@@ -85,7 +97,8 @@ lab.experiment('We found your application:', () => {
         GeneralTestHelper.checkElementsExist(doc, [
           'submit-button',
           'reference-number',
-          'permit-name-and-code'
+          'permit-name-and-code',
+          'pre-application-notice'
         ])
         Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('We found your application')
         Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Go to your application')
@@ -117,10 +130,19 @@ lab.experiment('We found your application:', () => {
       }
     })
 
-    lab.test('success', async () => {
+    lab.test('success when there are application lines', async () => {
+      mocks.taskDeterminants.wasteActivities = [...allActivities]
+      allActivities.forEach(({ id }) => mocks.applicationLines.push(new ApplicationLine(Object.assign({}, mocks.applicationLine, { itemId: id }))))
+
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextRoutePath)
+    })
+
+    lab.test('success when there are no application lines', async () => {
+      const res = await server.inject(postRequest)
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers['location']).to.equal(nextRouteNoLinesPath)
     })
 
     lab.test('success when outstanding BACS payment', async () => {

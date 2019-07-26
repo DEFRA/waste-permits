@@ -9,6 +9,7 @@ const Mocks = require('../helpers/mocks')
 const GeneralTestHelper = require('./generalTestHelper.test')
 
 const Application = require('../../src/persistence/entities/application.entity')
+const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
@@ -49,6 +50,7 @@ let mocks
 
 lab.beforeEach(() => {
   mocks = new Mocks()
+  mocks.applicationLines = []
 
   getRequest = {
     method: 'GET',
@@ -69,6 +71,7 @@ lab.beforeEach(() => {
   sandbox.stub(TaskDeterminants.prototype, 'save').value(async () => undefined)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
+  sandbox.stub(ApplicationLine, 'listBy').value(async () => mocks.applicationLines)
   // Todo: Remove hasBespokeFeature syub when bespoke is live
   sandbox.stub(featureConfig, 'hasBespokeFeature').value(() => true)
 })
