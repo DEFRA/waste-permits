@@ -30,13 +30,13 @@ module.exports = class TaskListController extends BaseController {
     if (TaskList.isStandardRules) {
       pageContext.standardRule = await StandardRule.getByApplicationLineId(context, context.applicationLineId)
     } else {
-      const { airDispersionModellingRequired } = context.taskDeterminants
+      const { airDispersionModellingRequired, mcpType } = context.taskDeterminants
 
       pageContext.activityName = airDispersionModellingRequired
         ? 'Medium combustion plant site - requires dispersion modelling'
         : 'Medium combustion plant site - does not require dispersion modelling'
 
-      pageContext.mcpType = context.mcpType
+      pageContext.mcpType = mcpType
 
       pageContext.totalCostIem = new ApplicationCostItem({
         description: 'Total',

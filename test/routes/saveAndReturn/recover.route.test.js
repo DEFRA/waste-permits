@@ -92,7 +92,7 @@ lab.experiment('We found your application:', () => {
     })
 
     lab.experiment('success', () => {
-      lab.test('when found', async () => {
+      lab.test('when found and standard rules', async () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         GeneralTestHelper.checkElementsExist(doc, [
           'submit-button',
@@ -106,6 +106,8 @@ lab.experiment('We found your application:', () => {
         Code.expect(doc.getElementById('permit-name').firstChild.nodeValue).to.equal(mocks.standardRule.permitName)
         Code.expect(doc.getElementById('code').firstChild.nodeValue).to.equal(mocks.standardRule.code)
       })
+
+      // TODO: complete test for when found and MCP bespoke
 
       lab.test('when not found', async () => {
         ApplicationReturn.getBySlug = () => undefined
