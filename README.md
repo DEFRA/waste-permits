@@ -111,6 +111,10 @@ that can then be edited.
 ```bash
 npm run add-route
 ```
+
+## Release procedure
+Information on the release procedure can be found [here](docs/release.md).
+
 ## Contributing to this project
 
 If you have an idea you'd like to contribute please log an issue.
