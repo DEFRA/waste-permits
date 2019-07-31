@@ -1,6 +1,6 @@
 {
   "name": "waste-permits",
-  "version": "1.21.1",
+  "version": "1.21.0",
   "description": "GOV.UK front end service built using Node.js for the Waste Permits service",
   "author": "Department for Environment, Food & Rural Affairs",
   "license": "SEE LICENSE IN LICENSE",
@@ -20,7 +20,10 @@
     "postinstall": "gulp build",
     "add-route": "node cli",
     "test": "lab -t 90",
-    "test-cov-html": "lab -r html -o coverage.html"
+    "test-cov-html": "lab -r html -o coverage.html",
+    "version": "git checkout -b update-to-v$npm_package_version",
+    "postversion": "git add --all && git commit --message=\"Update version to v$npm_package_version\" && git push --set-upstream origin HEAD",
+    "version-tag": "git tag --annotate --message=\"Update version to v$npm_package_version\" v$npm_package_version && git push origin v$npm_package_version"
   },
   "devDependencies": {
     "@hapi/code": "^5.3.1",
