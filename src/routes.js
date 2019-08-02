@@ -918,8 +918,8 @@ const Routes = {
   FACILITY_APPLY_OFFLINE: {
     path: '/facility-type/apply-offline',
     view: 'bespokeApplyOffline',
-    pageHeading: 'Apply for a bespoke permit for an installation, landfill, mine, waste or water discharge',
-    pageDescription: 'You cannot apply online yet for that type of facility. We hope to add them soon.',
+    pageHeading: 'Apply for a bespoke permit for an installation, landfill, mine or water discharge',
+    pageDescription: 'You cannot apply for that type of facility online yet. We hope to add them soon.',
     controller: 'bespokeApplyOffline',
     nextRoute: 'FACILITY_TYPE',
     types: 'GET',
