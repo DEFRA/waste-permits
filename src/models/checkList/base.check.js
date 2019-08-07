@@ -37,7 +37,8 @@ const {
   NON_TECHNICAL_SUMMARY,
   MANAGEMENT_SYSTEM_SUMMARY,
   TECHNICAL_MANAGERS,
-  MCP_DETAILS
+  MCP_DETAILS,
+  ODOUR_MANAGEMENT_PLAN
 } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -331,5 +332,13 @@ module.exports = class BaseCheck {
       this.data.airQualityManagementArea = await AirQualityManagementArea.get(this.data)
     }
     return this.data.airQualityManagementArea || {}
+  }
+
+  async getOdourManagementPlan () {
+    const { odourManagementPlan } = this.data
+    if (!odourManagementPlan) {
+      this.data.odourManagementPlan = await Annotation.listByApplicationIdAndSubject(this.data, ODOUR_MANAGEMENT_PLAN)
+    }
+    return this.data.odourManagementPlan || {}
   }
 }

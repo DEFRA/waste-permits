@@ -1,0 +1,34 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+      <div id="has-no-annotations" class="form-group">
+        <div id="odour-management-plan-description">
+          Sample text.
+          <a href=""
+            target="_blank" rel="noopener noreferrer">Sample link (opens new tab)</a>.
+        </div>
+      </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

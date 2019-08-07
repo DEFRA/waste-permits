@@ -1124,6 +1124,20 @@ const Routes = {
       fileTypes: [ PDF, DOC, DOCX, ODT ]
     }
   },
+  ODOUR_MANAGEMENT_PLAN: {
+    path: '/odour-management-plan/upload',
+    view: 'upload/odourManagementPlan/odourManagementPlan',
+    pageHeading: 'Odour management plan',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'ODOUR_MANAGEMENT_PLAN',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
+    }
+  },
   PERMIT_CATEGORY: {
     path: '/permit/category',
     view: 'permitCategory',
