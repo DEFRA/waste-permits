@@ -53,7 +53,7 @@ lab.experiment('EmissionsManagementPlan Check tests:', () => {
       })
 
       const { link, linkId, linkType } = links.pop()
-      Code.expect(link).to.equal('/emissions-management-plan')
+      Code.expect(link).to.equal('/emissions-management-plan/upload')
       Code.expect(linkType).to.equal('emissions management plan')
       Code.expect(linkId).to.equal(`${prefix}-link`)
     })

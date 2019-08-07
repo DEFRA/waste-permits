@@ -879,7 +879,7 @@ const Routes = {
     types: 'GET, POST'
   },
   EMISSIONS_MANAGEMENT_PLAN: {
-    path: '/emissions-management-plan',
+    path: '/emissions-management-plan/upload',
     view: 'upload/emissionsManagementPlan/emissionsManagementPlan',
     pageHeading: 'Upload the emissions management plan',
     controller: 'upload',
