@@ -878,6 +878,20 @@ const Routes = {
     validator: 'drainageTypeDrain',
     types: 'GET, POST'
   },
+  EMISSIONS_MANAGEMENT_PLAN: {
+    path: '/emissions-management-plan',
+    view: 'upload/emissionsManagementPlan/emissionsManagementPlan',
+    pageHeading: 'Upload the emissions management plan',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'EMISSIONS_MANAGEMENT_PLAN',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
+    }
+  },
   ENERGY_EFFICIENCY_REPORT: {
     path: '/mcp/energy-efficiency/upload',
     view: 'upload/mcp/energyEfficiencyReport',
