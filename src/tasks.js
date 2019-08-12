@@ -218,8 +218,11 @@ const tasks = {
   ODOUR_MANAGEMENT_PLAN: {
     id: 'odour-management-plan',
     label: 'Upload the odour management plan',
+    route: Routes.ODOUR_MANAGEMENT_PLAN,
+    determinants: [ 'odourManagementPlanRequired' ],
     completedLabelId: 'odour-management-plan-completed',
-    shortName: 'odourplan'
+    shortName: 'odourplan',
+    taskListModel: 'odourManagementPlan'
   },
   PERMIT_HOLDER_DETAILS: {
     id: 'give-permit-holder-details',
