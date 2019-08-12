@@ -187,7 +187,8 @@ Constants.UploadSubject = {
   MCP_DETAILS: 'mcp details',
   APPLICATION_STANDARD_RULES_FORM: 'application standard rules forms',
   ODOUR_MANAGEMENT_PLAN: 'odour management plan',
-  ARBITRARY_UPLOADS: 'arbitrary uploads'
+  ARBITRARY_UPLOADS: 'arbitrary uploads',
+  EMISSIONS_MANAGEMENT_PLAN: 'emissions management plan'
 }
 
 Constants.CookieValue = {

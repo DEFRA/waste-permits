@@ -878,6 +878,20 @@ const Routes = {
     validator: 'drainageTypeDrain',
     types: 'GET, POST'
   },
+  EMISSIONS_MANAGEMENT_PLAN: {
+    path: '/emissions-management-plan/upload',
+    view: 'upload/emissionsManagementPlan/emissionsManagementPlan',
+    pageHeading: 'Upload the emissions management plan',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'EMISSIONS_MANAGEMENT_PLAN',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
+    }
+  },
   ENERGY_EFFICIENCY_REPORT: {
     path: '/mcp/energy-efficiency/upload',
     view: 'upload/mcp/energyEfficiencyReport',
@@ -918,8 +932,8 @@ const Routes = {
   FACILITY_APPLY_OFFLINE: {
     path: '/facility-type/apply-offline',
     view: 'bespokeApplyOffline',
-    pageHeading: 'Apply for a bespoke permit for an installation, landfill, mine, waste or water discharge',
-    pageDescription: 'You cannot apply online yet for that type of facility. We hope to add them soon.',
+    pageHeading: 'Apply for a bespoke permit for an installation, landfill, mine or water discharge',
+    pageDescription: 'You cannot apply for that type of facility online yet. We hope to add them soon.',
     controller: 'bespokeApplyOffline',
     nextRoute: 'FACILITY_TYPE',
     types: 'GET',

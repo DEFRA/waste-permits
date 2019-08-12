@@ -85,8 +85,11 @@ const tasks = {
   EMISSIONS_MANAGEMENT_PLAN: {
     id: 'emissions-management-plan',
     label: 'Upload the emissions management plan',
+    route: Routes.EMISSIONS_MANAGEMENT_PLAN,
+    determinants: [ 'emissionsManagementPlanRequired' ],
     completedLabelId: 'emissions-management-plan-completed',
-    shortName: 'emissionsplan'
+    shortName: 'emissionsplan',
+    taskListModel: 'emissionsManagementPlan'
   },
   ENERGY_EFFICIENCY_REPORT: {
     id: 'upload-energy-efficiency-report',

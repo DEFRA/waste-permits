@@ -38,7 +38,8 @@ const {
   MANAGEMENT_SYSTEM_SUMMARY,
   TECHNICAL_MANAGERS,
   MCP_DETAILS,
-  ODOUR_MANAGEMENT_PLAN
+  ODOUR_MANAGEMENT_PLAN,
+  EMISSIONS_MANAGEMENT_PLAN
 } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -212,6 +213,14 @@ module.exports = class BaseCheck {
       this.data.energyEfficiencyReport = await Annotation.listByApplicationIdAndSubject(this.data, ENERGY_EFFICIENCY_REPORT)
     }
     return this.data.energyEfficiencyReport || {}
+  }
+
+  async getEmissionsManagementPlan () {
+    const { emissionsManagementPlan } = this.data
+    if (!emissionsManagementPlan) {
+      this.data.emissionsManagementPlan = await Annotation.listByApplicationIdAndSubject(this.data, EMISSIONS_MANAGEMENT_PLAN)
+    }
+    return this.data.emissionsManagementPlan || {}
   }
 
   async getAirDispersionModellingReport () {

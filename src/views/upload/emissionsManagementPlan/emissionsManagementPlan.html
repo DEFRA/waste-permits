@@ -1,0 +1,40 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+        <div id="has-no-annotations" class="form-group">
+          <div id="emissions-management-plan-description">
+            <p>
+              Use your risk assessment to help you identify emissions from your site.
+              You must show how you will control your emissions in your management system.
+              Read <a href=""
+                    target="_blank"
+                    rel="noopener noreferrer">
+                      guidance about how to control and monitor emissions for your environmental permit (opens new tab)
+                   </a> to find out what to do if you need to write a plan for emissions.
+            </p>
+          </div>
+        </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>
