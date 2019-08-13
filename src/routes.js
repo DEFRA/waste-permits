@@ -1361,7 +1361,7 @@ const Routes = {
   UPLOAD_ESA_EU_SKILLS: {
     path: '/technical-competence/upload-esa-eu-skills',
     view: 'upload/technicalQualification/esaEuSkills',
-    pageHeading: 'Energy & Utility Skills / ESA: upload your evidence',
+    pageHeading: 'Energy & Utility Skills / ESA Competence Management System: upload your evidence',
     controller: 'upload',
     validator: 'upload',
     nextRoute: 'TASK_LIST',
