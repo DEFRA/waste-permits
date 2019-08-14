@@ -14,8 +14,8 @@ let templatesBespokeAppendix1 = [
   { id: 'mcp-template-ods-link', name: 'Plant or generator list template APPENDIX 1 (Open Document ODS)', file: 'plant-generator-list-template-app1-v1-0.ods' }
 ]
 let templatesBespokeAppendix2 = [
-  { id: 'mcp-template-xls-link', name: 'Plant or generator list template APPENDIX 2 (Excel XLS)', file: 'plant-generator-list-template-app1-v2-0.xls' },
-  { id: 'mcp-template-ods-link', name: 'Plant or generator list template APPENDIX 2 (Open Document ODS)', file: 'plant-generator-list-template-app1-v2-0.ods' }
+  { id: 'mcp-template-xls-link', name: 'Plant or generator list template APPENDIX 2 (Excel XLS)', file: 'plant-generator-list-template-app2-v1-0.xls' },
+  { id: 'mcp-template-ods-link', name: 'Plant or generator list template APPENDIX 2 (Open Document ODS)', file: 'plant-generator-list-template-app2-v1-0.ods' }
 ]
 
 module.exports = class McpTemplateController extends BaseController {
