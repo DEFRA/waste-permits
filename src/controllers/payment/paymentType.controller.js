@@ -44,12 +44,18 @@ module.exports = class PaymentTypeController extends BaseController {
 
   async doPost (request, h) {
     let path
-    const { cookie, applicationReturn } = await RecoveryService.createApplicationContext(h, { applicationReturn: true })
+    const { cookie, applicationReturn, slug } =
+      await RecoveryService.createApplicationContext(h, { applicationLine: true, applicationReturn: true })
+
+    // try to find a slug, otherwise make it an empty string
+    const finalSlug = applicationReturn
+      ? applicationReturn.slug : slug || ''
+
     const paymentType = parseInt(request.payload['payment-type'])
     switch (paymentType) {
       case CARD_PAYMENT:
         const origin = config.wastePermitsAppUrl || request.headers.origin
-        const returnUrl = `${origin}${Routes.PAYMENT_RESULT.path}/${applicationReturn.slug}`
+        const returnUrl = `${origin}${Routes.PAYMENT_RESULT.path}/${finalSlug}`
         path = `${Routes.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
         break
       case BACS_PAYMENT:
