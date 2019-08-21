@@ -1141,7 +1141,7 @@ const Routes = {
   ODOUR_MANAGEMENT_PLAN: {
     path: '/odour-management-plan/upload',
     view: 'upload/odourManagementPlan/odourManagementPlan',
-    pageHeading: 'Odour management plan',
+    pageHeading: 'Upload the odour management plan',
     controller: 'upload',
     validator: 'upload',
     nextRoute: 'TASK_LIST',
