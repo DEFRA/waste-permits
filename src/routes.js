@@ -1257,6 +1257,20 @@ const Routes = {
     cookieValidationRequired: false,
     applicationRequired: false
   },
+  SITE_CONDITION_REPORT: {
+    path: '/site-condition-report/upload',
+    view: 'upload/siteConditionReport/siteConditionReport',
+    pageHeading: 'Complete and upload a site condition report',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'SITE_CONDITION_REPORT',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, JPG ] // TODO: Check this is correct. Should the JPG not be an ODT?
+    }
+  },
   SITE_GRID_REFERENCE: {
     path: '/site/grid-reference',
     view: 'siteGridReference',

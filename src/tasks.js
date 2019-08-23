@@ -279,11 +279,13 @@ const tasks = {
     ruleSetId: 'defra_showcostandtime',
     taskListModel: 'costTime'
   },
-  SITE_CONDITION_REPORT: {
+  SITE_CONDITION_REPORT: { // TODO: Check that this doesn't require a 'determinants' field
     id: 'site-condition-report',
     label: 'Upload the site condition report',
+    route: Routes.SITE_CONDITION_REPORT,
     completedLabelId: 'site-condition-completed',
-    shortName: 'sitecondition'
+    shortName: 'sitecondition',
+    taskListModel: 'siteConditionReport'
   },
   SITE_NAME_LOCATION: {
     id: 'give-site-name-and-location',

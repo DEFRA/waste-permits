@@ -188,7 +188,8 @@ Constants.UploadSubject = {
   APPLICATION_STANDARD_RULES_FORM: 'application standard rules forms',
   ODOUR_MANAGEMENT_PLAN: 'odour management plan',
   ARBITRARY_UPLOADS: 'arbitrary uploads',
-  EMISSIONS_MANAGEMENT_PLAN: 'emissions management plan'
+  EMISSIONS_MANAGEMENT_PLAN: 'emissions management plan',
+  SITE_CONDITION_REPORT: 'site condition report'
 }
 
 Constants.CookieValue = {
