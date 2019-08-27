@@ -756,7 +756,7 @@ const Routes = {
   BESPOKE_OR_STANDARD_RULES: {
     path: '/bespoke-or-standard-rules',
     view: 'bespokeOrStandardRules',
-    pageHeading: 'Confirm the type of permit you want',
+    pageHeading: 'Choose the type of permit you want',
     controller: 'bespokeOrStandardRules',
     validator: 'bespokeOrStandardRules',
     nextRoute: 'PERMIT_CATEGORY',
@@ -989,7 +989,7 @@ const Routes = {
   MCP_BUSINESS_ACTIVITY: {
     path: '/mcp/business-activity',
     view: 'mcpBusinessActivity',
-    pageHeading: 'What is the NACE code for the main business activity that the plant or generator is used for?',
+    pageHeading: 'What is the NACE code for the main business activity that the plant is used for?',
     controller: 'mcpBusinessActivity',
     validator: 'mcpBusinessActivity',
     nextRoute: 'TASK_LIST',
