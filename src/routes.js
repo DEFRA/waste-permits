@@ -887,6 +887,29 @@ const Routes = {
     validator: 'drainageTypeDrain',
     types: 'GET, POST'
   },
+  EMISSIONS_AND_MONITORING_CHECK: {
+    path: '/emissions/check',
+    view: 'emissionsAndMonitoringCheck',
+    pageHeading: 'Does the operation make any point source emissions to air or water?',
+    controller: 'emissionsAndMonitoringCheck',
+    validator: 'emissionsAndMonitoringCheck',
+    nextRoute: 'EMISSIONS_AND_MONITORING_UPLOAD',
+    types: 'GET, POST'
+  },
+  EMISSIONS_AND_MONITORING_UPLOAD: {
+    path: '/emissions/upload',
+    view: 'upload/emissionsAndMonitoring/emissionsAndMonitoring',
+    pageHeading: 'Upload details about the emissions',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'EMISSIONS_AND_MONITORING_DETAILS',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
+    }
+  },
   EMISSIONS_MANAGEMENT_PLAN: {
     path: '/emissions-management-plan/upload',
     view: 'upload/emissionsManagementPlan/emissionsManagementPlan',
