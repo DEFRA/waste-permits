@@ -352,7 +352,7 @@ module.exports = class BaseCheck {
     return this.data.odourManagementPlan || {}
   }
 
-  async getSiteConditionRepot () {
+  async getSiteConditionReport () {
     const { siteConditionReport } = this.data
     if (!siteConditionReport) {
       this.data.siteConditionReport = await Annotation.listByApplicationIdAndSubject(this.data, SITE_CONDITION_REPORT)
