@@ -32,7 +32,7 @@ let getRequest
 let postRequest
 
 const checkCommonElements = async (doc) => {
-  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Confirm the type of permit you want')
+  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Choose the type of permit you want')
   Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
   Code.expect(doc.getElementById('form').getAttribute('action')).to.equal(routePath)
 

@@ -24,7 +24,7 @@ let sandbox
 let mocks
 
 const checkCommonElements = async (doc) => {
-  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What is the NACE code for the main business activity that the plant or generator is used for?')
+  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('What is the NACE code for the main business activity that the plant is used for?')
   Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
 
   // Test for the existence of expected entries
