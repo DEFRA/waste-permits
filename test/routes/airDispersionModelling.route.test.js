@@ -80,7 +80,7 @@ lab.experiment('Dispersion modelling report page tests:', () => {
         mocks.taskDeterminants.mcpType = STATIONARY_SG
         const doc = await GeneralTestHelper.getDoc(getRequest)
         Code.expect(doc.getElementById('stationary-sg-risk-assessment-tool-link').getAttribute('href')).to.equal('https://www.gov.uk/government/collections/risk-assessments-for-specific-activities-environmental-permits#H1-software-tool')
-        Code.expect(doc.getElementById('specified-screening-tool-link').getAttribute('href')).to.equal('')
+        Code.expect(doc.getElementById('specified-screening-tool-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/specified-generator-apply-for-an-environmental-permit#bespoke-permits')
       })
     })
   })
