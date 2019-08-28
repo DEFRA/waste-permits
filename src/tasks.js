@@ -81,7 +81,8 @@ const tasks = {
     label: 'Tell us about emissions and monitoring',
     route: Routes.EMISSIONS_AND_MONITORING_CHECK,
     completedLabelId: 'emissions-and-monitoring-completed',
-    shortName: 'emissionsmonitoring'
+    shortName: 'emissionsmonitoring',
+    taskListModel: 'emissionsAndMonitoring'
   },
   EMISSIONS_MANAGEMENT_PLAN: {
     id: 'emissions-management-plan',
