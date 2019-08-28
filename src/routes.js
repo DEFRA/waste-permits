@@ -1268,7 +1268,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'SITE_CONDITION_REPORT',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, JPG ] // TODO: Check this is correct. Should the JPG not be an ODT?
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
     }
   },
   SITE_GRID_REFERENCE: {
