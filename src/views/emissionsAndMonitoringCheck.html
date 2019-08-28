@@ -19,12 +19,12 @@
 
             {{> common/fieldError fieldId='habitat-assessment-error' message=errors.habitat-assessment }}
             <div class="multiple-choice">
-              <input id="emissions-made-yes" type="radio" name="emissions-made" value="yes">
+              <input id="emissions-made-yes" type="radio" name="emissions-made" value="yes" {{#if formValues.emissions-made-yes}}checked="checked"{{/if}}>
               <label id="emissions-made-yes-label" for="emissions-made-yes">Yes</label>
             </div>
 
             <div class="multiple-choice">
-              <input id="emissions-made-no" type="radio" name="emissions-made" value="no">
+              <input id="emissions-made-no" type="radio" name="emissions-made" value="no" {{#if formValues.emissions-made-no}}checked="checked"{{/if}}>
               <label id="emissions-made-no-label" for="emissions-made-no">No</label>
             </div>
 
