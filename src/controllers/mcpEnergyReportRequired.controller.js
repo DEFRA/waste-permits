@@ -3,7 +3,7 @@
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const { STATIONARY_MCP, MOBILE_MCP } = require('../dynamics').MCP_TYPES
-const { BURNING_WASTE_BIOMASS, CONFIRM_COST } = require('../routes')
+const { BURNING_WASTE_BIOMASS, MAINTAIN_APPLICATION_LINES } = require('../routes')
 
 module.exports = class EnergyReportRequiredController extends BaseController {
   async doGet (request, h, errors) {
@@ -30,7 +30,7 @@ module.exports = class EnergyReportRequiredController extends BaseController {
       case STATIONARY_MCP:
         return this.redirect({ h, route: BURNING_WASTE_BIOMASS })
       case MOBILE_MCP:
-        return this.redirect({ h, route: CONFIRM_COST })
+        return this.redirect({ h, route: MAINTAIN_APPLICATION_LINES })
     }
 
     return this.redirect({ h })
