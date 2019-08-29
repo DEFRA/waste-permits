@@ -17,7 +17,7 @@ const routePath = '/mcp-check/energy-report'
 
 const nextRoutePath = '/mcp-check/best-available-techniques/sg'
 const stationaryMcpRoutePath = '/mcp-check/best-available-techniques/mcp'
-const confirmCostRoutePath = '/confirm-cost'
+const maintainApplicationLinesRoutePath = '/maintain-application-lines'
 
 let sandbox
 let mocks
@@ -107,13 +107,13 @@ lab.experiment('Energy efficiency report page tests:', () => {
         Code.expect(res.headers['location']).to.equal(stationaryMcpRoutePath)
       })
 
-      lab.test(`Redirects correctly to ${confirmCostRoutePath} when ${MOBILE_MCP.id}`, async () => {
+      lab.test(`Redirects correctly to ${maintainApplicationLinesRoutePath} when ${MOBILE_MCP.id}`, async () => {
         mocks.taskDeterminants.mcpType = MOBILE_MCP
         // Make selections and click 'Continue'
         postRequest.payload['new-or-refurbished'] = 'yes'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(confirmCostRoutePath)
+        Code.expect(res.headers['location']).to.equal(maintainApplicationLinesRoutePath)
       })
 
       lab.test('New or refurbished, thermal input over 20MW, boiler', async () => {
