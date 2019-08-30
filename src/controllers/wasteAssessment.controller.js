@@ -30,7 +30,7 @@ module.exports = class WasteAssessmentController extends BaseController {
 
     const { assessment: assessments } = request.payload
 
-    const wasteAssessments = assessments.split(',')
+    const wasteAssessments = assessments ? assessments.split(',') : []
     await taskDeterminants.save({ wasteAssessments })
 
     const items = (await ItemEntity.listWasteAssessments(context)).filter((assessment) => taskDeterminants.wasteAssessments.includes(assessment))
