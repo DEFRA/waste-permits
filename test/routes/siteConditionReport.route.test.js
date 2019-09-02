@@ -49,7 +49,7 @@ lab.experiment('Site condition report upload tests:', () => {
     const options = {
       pageHeading: 'Complete and upload a site condition report',
       submitButton: 'Continue',
-      fileTypes: ['PDF', 'DOC', 'DOCX', 'JPG']
+      fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
     }
 
     // Perform general get tests
@@ -65,7 +65,7 @@ lab.experiment('Site condition report upload tests:', () => {
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
     helper.uploadSuccess('application/msword')
-    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'JPG'] }, 'application/msword')
+    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT'] }, 'application/msword')
     helper.uploadFailure('application/msword')
   })
 
