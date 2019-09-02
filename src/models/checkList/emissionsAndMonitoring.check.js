@@ -1,7 +1,7 @@
 const BaseCheck = require('./base.check')
 
 const { EMISSIONS_AND_MONITORING } = require('../../tasks').tasks
-const { EMISSIONS_AND_MONITORING: { path } } = require('../../routes')
+const { EMISSIONS_AND_MONITORING_CHECK: { path } } = require('../../routes')
 
 module.exports = class EmissionsAndMonitoringCheck extends BaseCheck {
   static get task () {
@@ -16,9 +16,9 @@ module.exports = class EmissionsAndMonitoringCheck extends BaseCheck {
     return Promise.all([this.getEmissionsAndMonitoringLine()])
   }
 
-  async getEmissionsManagementPlanLine () {
-    const evidence = await this.getEmissionsManagementPlan()
-    const answers = evidence.map((file) => file.filename)
+  async getEmissionsAndMonitoringLine () {
+    const evidence = await this.getEmissionsAndMonitoringDetails()
+    const answers = evidence.emissionsAndMonitoringDetailsRequired ? evidence.files.map((file) => file.filename) : ['Not required']
     return this.buildLine({
       heading: 'Emissions and monitoring',
       answers,

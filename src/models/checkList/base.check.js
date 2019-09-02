@@ -12,6 +12,7 @@ const CharityDetail = require('../charityDetail.model')
 const NeedToConsult = require('../needToConsult.model')
 const McpBusinessType = require('../mcpBusinessType.model')
 const AirQualityManagementArea = require('../airQualityManagementArea.model')
+const DataStore = require('../dataStore.model')
 const TaskDeterminants = require('../taskDeterminants.model')
 
 const {
@@ -28,6 +29,7 @@ const {
   AIR_DISPERSION_MODELLING_REPORT,
   BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
   ENERGY_EFFICIENCY_REPORT,
+  EMISSIONS_AND_MONITORING_DETAILS,
   TECHNICAL_QUALIFICATION,
   SITE_PLAN,
   FIRE_PREVENTION_PLAN,
@@ -278,6 +280,24 @@ module.exports = class BaseCheck {
       this.data.environmentalRiskAssessment = await Annotation.listByApplicationIdAndSubject(this.data, ENVIRONMENTAL_RISK_ASSESSMENT)
     }
     return this.data.environmentalRiskAssessment || {}
+  }
+
+  async getEmissionsAndMonitoringDetails () {
+    const { emissionsAndMonitoringDetails } = this.data
+    if (!emissionsAndMonitoringDetails) {
+      const { data: { emissionsAndMonitoringDetailsRequired } } = await DataStore.get(this.data)
+      if (emissionsAndMonitoringDetailsRequired) {
+        this.data.emissionsAndMonitoringDetails = {
+          emissionsAndMonitoringDetailsRequired: emissionsAndMonitoringDetailsRequired,
+          files: await Annotation.listByApplicationIdAndSubject(this.data, EMISSIONS_AND_MONITORING_DETAILS)
+        }
+      } else {
+        this.data.emissionsAndMonitoringDetails = {
+          emissionsAndMonitoringDetailsRequired: false
+        }
+      }
+    }
+    return this.data.emissionsAndMonitoringDetails || {}
   }
 
   async getNonTechnicalSummary () {
