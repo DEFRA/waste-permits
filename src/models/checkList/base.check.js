@@ -39,7 +39,8 @@ const {
   TECHNICAL_MANAGERS,
   MCP_DETAILS,
   ODOUR_MANAGEMENT_PLAN,
-  EMISSIONS_MANAGEMENT_PLAN
+  EMISSIONS_MANAGEMENT_PLAN,
+  SITE_CONDITION_REPORT
 } = Constants.UploadSubject
 
 module.exports = class BaseCheck {
@@ -349,5 +350,13 @@ module.exports = class BaseCheck {
       this.data.odourManagementPlan = await Annotation.listByApplicationIdAndSubject(this.data, ODOUR_MANAGEMENT_PLAN)
     }
     return this.data.odourManagementPlan || {}
+  }
+
+  async getSiteConditionReport () {
+    const { siteConditionReport } = this.data
+    if (!siteConditionReport) {
+      this.data.siteConditionReport = await Annotation.listByApplicationIdAndSubject(this.data, SITE_CONDITION_REPORT)
+    }
+    return this.data.siteConditionReport || {}
   }
 }

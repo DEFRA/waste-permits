@@ -282,8 +282,10 @@ const tasks = {
   SITE_CONDITION_REPORT: {
     id: 'site-condition-report',
     label: 'Upload the site condition report',
+    route: Routes.SITE_CONDITION_REPORT,
     completedLabelId: 'site-condition-completed',
-    shortName: 'sitecondition'
+    shortName: 'sitecondition',
+    taskListModel: 'siteConditionReport'
   },
   SITE_NAME_LOCATION: {
     id: 'give-site-name-and-location',
