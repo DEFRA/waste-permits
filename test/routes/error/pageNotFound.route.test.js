@@ -84,7 +84,6 @@ lab.experiment('Page Not Found (404) page tests:', () => {
   lab.test('GET /an-invalid-route shows the 404 page when the user has a valid cookie', async () => {
     getRequest.url = '/an-invalid-route'
     const res = await server.inject(getRequest)
-    Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal(routePath)
+    Code.expect(res.statusCode).to.equal(404)
   })
 })
