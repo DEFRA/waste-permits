@@ -17,7 +17,7 @@
 
             <legend id="emissions-made-legend" class="visually-hidden">{{pageHeading}}</legend>
 
-            {{> common/fieldError fieldId='habitat-assessment-error' message=errors.habitat-assessment }}
+            {{> common/fieldError fieldId='emissions-made-error' message=errors.emissions-made }}
             <div class="multiple-choice">
               <input id="emissions-made-yes" type="radio" name="emissions-made" value="yes" {{#if formValues.emissions-made-yes}}checked="checked"{{/if}}>
               <label id="emissions-made-yes-label" for="emissions-made-yes">Yes</label>

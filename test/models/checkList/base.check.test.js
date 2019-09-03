@@ -15,6 +15,7 @@ const Location = require('../../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../../src/persistence/entities/locationDetail.entity')
 const StandardRule = require('../../../src/persistence/entities/standardRule.entity')
 
+const DataStore = require('../../../src/models/dataStore.model')
 const ContactDetail = require('../../../src/models/contactDetail.model')
 const CharityDetail = require('../../../src/models/charityDetail.model')
 const NeedToConsult = require('../../../src/models/needToConsult.model')
