@@ -180,7 +180,7 @@ const start = async () => {
       return h
         .view('error/pageNotFound', {
           pageHeading: 'We cannot find that page',
-          pageTitle: 'We cannot find that page'
+          pageTitle: 'Problem: We cannot find that page'
         })
         .code(404)
     } else if (response.isBoom && response.output.statusCode === 403) {
