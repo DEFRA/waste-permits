@@ -11,7 +11,7 @@ const UploadTestHelper = require('./uploadHelper')
 
 let fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/environmental-risk-assessment'
+const routePath = '/environmental-risk-assessment/upload'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,

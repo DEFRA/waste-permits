@@ -54,7 +54,7 @@ lab.experiment('Environmental Risk Assessment Check tests:', () => {
       })
 
       const { link, linkId, linkType } = links.pop()
-      Code.expect(link).to.equal('/environmental-risk-assessment')
+      Code.expect(link).to.equal('/environmental-risk-assessment/upload')
       Code.expect(linkType).to.equal('environmental risk assessment')
       Code.expect(linkId).to.equal(`${prefix}-link`)
     })
