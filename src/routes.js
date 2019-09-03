@@ -907,7 +907,7 @@ const Routes = {
     }
   },
   ENVIRONMENTAL_RISK_ASSESSMENT: {
-    path: '/environmental-risk-assessment',
+    path: '/environmental-risk-assessment/upload',
     view: 'upload/environmentalRiskAssessment/environmentalRiskAssessment',
     pageHeading: 'Upload the environmental risk assessment',
     controller: 'upload',
