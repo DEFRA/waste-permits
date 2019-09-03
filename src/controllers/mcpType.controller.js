@@ -49,9 +49,11 @@ module.exports = class McpTypeController extends BaseController {
         businessActivityRequired = true
         break
       case MOBILE_SG.id:
+        screeningToolRequired = true
         break
       case MOBILE_MCP.id:
         businessActivityRequired = true
+        screeningToolRequired = true
         break
     }
 

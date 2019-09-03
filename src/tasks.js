@@ -258,7 +258,7 @@ const tasks = {
   },
   SCREENING_TOOL: {
     id: 'upload-screening-tool',
-    label: 'Upload screening tool',
+    label: 'Upload the completed screening tool',
     route: Routes.SCREENING_TOOL,
     determinants: [ 'screeningToolRequired' ],
     completedLabelId: 'screening-tool-completed',
