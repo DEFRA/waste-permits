@@ -176,15 +176,20 @@ const start = async () => {
 
     // if the response is a Boom error object and the status code is 404
     if (response.isBoom && response.output.statusCode === 404) {
-      // return h.redirect(Routes.PAGE_NOT_FOUND.path)
       return h
         .view('error/pageNotFound', {
           pageHeading: 'We cannot find that page',
           pageTitle: 'Problem: We cannot find that page'
         })
-        .code(404)
+        .code(response.output.statusCode)
     } else if (response.isBoom && response.output.statusCode === 403) {
-      return h.redirect(Routes.COOKIES_DISABLED.path)
+      // return h.redirect(Routes.COOKIES_DISABLED.path)
+      return h
+        .view('error/cookiesDisabled', {
+          pageHeading: 'You must switch on cookies to use this service',
+          pageTitle: 'You must switch on cookies to use this service'
+        })
+        .code(response.output.statusCode)
     } else {
       return h.continue
     }
