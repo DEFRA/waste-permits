@@ -63,4 +63,10 @@ lab.experiment('Default page tests:', () => {
     Code.expect(res.statusCode).to.equal(302)
     Code.expect(res.headers['location']).to.equal(firstPageRoutePath)
   })
+
+  lab.test(`Get ${routePath} provides a content security policy`, async () => {
+    const res = await server.inject(getRequest)
+    Code.expect(res.statusCode).to.equal(302)
+    Code.expect(res.headers['content-security-policy']).to.exist()
+  })
 })

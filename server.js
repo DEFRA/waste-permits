@@ -164,6 +164,21 @@ const registerPlugins = async () => server.register([
   {
     plugin: Crumb,
     options: crumbConfig.options
+  },
+
+  // Plugin for applying content security protection
+  // See https://www.npmjs.com/package/blankie
+  {
+    plugin: require('blankie'),
+    options: {
+      generateNonces: false,
+      defaultSrc: 'self',
+      scriptSrc: [ 'self', 'unsafe-inline', 'unsafe-eval', 'www.googletagmanager.com', 'www.google-analytics.com' , 'ajax.googleapis.com'],
+      imgSrc: [ 'self', 'www.google-analytics.com' ],
+      fontSrc: [ 'self', 'data:' ],
+      connectSrc: [ 'self', 'www.google-analytics.com' ],
+      objectSrc: ['none']
+    }
   }
 ])
 

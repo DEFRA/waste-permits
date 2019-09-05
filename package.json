@@ -67,6 +67,7 @@
     "@hapi/vision": "^5.5.2",
     "adal-node": "^0.1.28",
     "airbrake-js": "^1.6.8",
+    "blankie": "^4.1.1",
     "blipp": "^4.0.0",
     "clamscan": "^1.0.3",
     "cross-fetch": "^3.0.4",
