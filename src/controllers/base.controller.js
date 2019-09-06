@@ -206,7 +206,13 @@ module.exports = class BaseController {
         }
       } catch (error) {
         LoggingService.logError(error, request)
-        return this.redirect({ h, route: TECHNICAL_PROBLEM, error })
+        return h
+          .view('error/technicalProblem', {
+            pageHeading: 'Something went wrong',
+            pageTitle: 'Something went wrong: ',
+            error: error
+          })
+          .code(500)
       }
     }
 

@@ -146,8 +146,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
 
             const res = await server.inject(getRequest)
             Code.expect(spy.callCount).to.equal(1)
-            Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(errorPath)
+            Code.expect(res.statusCode).to.equal(500)
           })
         })
       })

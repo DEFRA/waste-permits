@@ -141,8 +141,7 @@ module.exports = class UploadTestHelper {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(this.errorPath)
+        Code.expect(res.statusCode).to.equal(500)
         spy.restore()
       })
     })

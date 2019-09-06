@@ -135,8 +135,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
       lab.test('redirects to start screen when cookie does not contain an offline category id and the permit holder can apply online', async () => {

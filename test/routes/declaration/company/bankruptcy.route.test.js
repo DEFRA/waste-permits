@@ -156,8 +156,7 @@ Object.entries(routes).forEach(([operator, {
 
           const res = await server.inject(getRequest)
           Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
+          Code.expect(res.statusCode).to.equal(500)
         })
       })
     })
@@ -225,8 +224,7 @@ Object.entries(routes).forEach(([operator, {
 
           const res = await server.inject(postRequest)
           Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
+          Code.expect(res.statusCode).to.equal(500)
         })
 
         lab.test('redirects to error screen when save fails', async () => {
@@ -235,8 +233,7 @@ Object.entries(routes).forEach(([operator, {
 
           const res = await server.inject(postRequest)
           Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
+          Code.expect(res.statusCode).to.equal(500)
         })
       })
     })
