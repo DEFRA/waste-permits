@@ -22,7 +22,6 @@ const fakeSlug = 'SLUG'
 
 const routePath = '/pay/bacs-proof'
 const nextRoutePath = `/done/${fakeSlug}`
-const errorPath = '/errors/technical-problem'
 
 let mocks
 let sandbox
@@ -115,8 +114,7 @@ lab.experiment(`Give proof of your Bacs payment:`, () => {
 
       const res = await server.inject(getRequest)
       Code.expect(spy.callCount).to.equal(1)
-      Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(errorPath)
+      Code.expect(res.statusCode).to.equal(500)
     })
   })
 
@@ -145,34 +143,31 @@ lab.experiment(`Give proof of your Bacs payment:`, () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the payment details', async () => {
+      lab.test('error screen when failing to get the payment details', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         getBacsPaymentStub.rejects(new Error('read failed'))
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
-      lab.test('redirects to error screen when no payment details', async () => {
+      lab.test('error screen when no payment details', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         getBacsPaymentStub.resolves(undefined)
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
-      lab.test('redirects to error screen when save fails', async () => {
+      lab.test('error screen when save fails', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         saveBacsPaymentStub.rejects(new Error('save failed'))
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
 

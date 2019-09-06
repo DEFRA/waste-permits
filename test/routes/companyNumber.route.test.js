@@ -20,7 +20,6 @@ const routes = {
     pageHeading: 'What is the UK company registration number?',
     routePath: '/permit-holder/company/number',
     nextPath: '/permit-holder/company/wrong-type',
-    errorPath: '/errors/technical-problem',
     validCompanyNumber: '01234567',
     invalidCompanyNumberMessage: 'Enter a valid company registration number with either 8 digits or 2 letters and 6 digits'
   },
@@ -29,7 +28,6 @@ const routes = {
     pageHeading: `What is the company or Charitable Incorporated Organisation registration number?`,
     routePath: '/permit-holder/company/number',
     nextPath: '/permit-holder/company/wrong-type',
-    errorPath: '/errors/technical-problem',
     validCompanyNumber: '01234567',
     invalidCompanyNumberMessage: 'Enter a valid company registration number with either 8 digits or 2 letters and 6 digits'
   },
@@ -37,13 +35,12 @@ const routes = {
     pageHeading: 'What is the company number for the  limited liability partnership?',
     routePath: '/permit-holder/limited-liability-partnership/number',
     nextPath: '/permit-holder/limited-liability-partnership/status-not-active',
-    errorPath: '/errors/technical-problem',
     validCompanyNumber: 'OC234567',
     invalidCompanyNumberMessage: 'Enter a valid company registration number with 2 letters and 6 digits'
   }
 }
 
-Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder, routePath, nextPath, errorPath, validCompanyNumber, invalidCompanyNumberMessage }]) => {
+Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder, routePath, nextPath, validCompanyNumber, invalidCompanyNumberMessage }]) => {
   lab.experiment(companyType, () => {
     let sandbox
     let mocks
@@ -105,7 +102,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
         })
 
         lab.experiment('failure', () => {
-          lab.test('redirects to error screen when failing to recover the application', async () => {
+          lab.test('error screen when failing to recover the application', async () => {
             const spy = sandbox.spy(LoggingService, 'logError')
             RecoveryService.createApplicationContext = () => {
               throw new Error('recovery failed')
@@ -113,8 +110,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
 
             const res = await server.inject(getRequest)
             Code.expect(spy.callCount).to.equal(1)
-            Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(errorPath)
+            Code.expect(res.statusCode).to.equal(500)
           })
         })
       })
@@ -187,7 +183,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
             delete mocks.account.companyNumber
           })
 
-          lab.test('redirects to error screen when failing to get the account by the company number', async () => {
+          lab.test('error screen when failing to get the account by the company number', async () => {
             const spy = sandbox.spy(LoggingService, 'logError')
             Account.getByCompanyNumber = () => {
               throw new Error('read failed')
@@ -197,11 +193,10 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
             delete mocks.account.id
             const res = await server.inject(postRequest)
             Code.expect(spy.callCount).to.equal(1)
-            Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(errorPath)
+            Code.expect(res.statusCode).to.equal(500)
           })
 
-          lab.test('redirects to error screen when save fails', async () => {
+          lab.test('error screen when save fails', async () => {
             const spy = sandbox.spy(LoggingService, 'logError')
             Account.prototype.save = () => Promise.reject(new Error('save failed'))
 
@@ -209,8 +204,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
 
             const res = await server.inject(postRequest)
             Code.expect(spy.callCount).to.equal(1)
-            Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(errorPath)
+            Code.expect(res.statusCode).to.equal(500)
           })
         })
       })

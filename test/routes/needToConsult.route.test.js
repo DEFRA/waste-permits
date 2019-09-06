@@ -18,7 +18,6 @@ const NeedToConsult = require('../../src/models/needToConsult.model')
 
 const routePath = '/consultation/names'
 const nextRoutePath = '/task-list'
-const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks
@@ -104,7 +103,7 @@ lab.experiment('Consultees page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to recover the application', async () => {
+      lab.test('error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         RecoveryService.createApplicationContext = () => {
           throw new Error('application recovery failed')
@@ -112,8 +111,7 @@ lab.experiment('Consultees page tests:', () => {
 
         const res = await server.inject(request)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

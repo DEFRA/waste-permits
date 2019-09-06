@@ -21,7 +21,6 @@ const { STATIONARY_MCP, MOBILE_SG } = require('../../src/dynamics').MCP_TYPES
 
 const routePath = '/mcp/template/download'
 const nextRoutePath = '/task-list'
-const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks
@@ -123,8 +122,7 @@ lab.experiment('MCP template download page tests:', () => {
 
         const res = await server.inject(request)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })
@@ -156,8 +154,7 @@ lab.experiment('MCP template download page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

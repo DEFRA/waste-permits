@@ -17,7 +17,6 @@ const { COOKIE_RESULT } = require('../../../../src/constants')
 
 const routePath = '/confidentiality'
 const nextRoutePath = '/task-list'
-const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks
@@ -78,7 +77,7 @@ lab.experiment('Is part of your application commercially confidential? page test
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to recover the application', async () => {
+      lab.test('error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         RecoveryService.createApplicationContext = () => {
           throw new Error('recovery failed')
@@ -86,8 +85,7 @@ lab.experiment('Is part of your application commercially confidential? page test
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })
@@ -147,7 +145,7 @@ lab.experiment('Is part of your application commercially confidential? page test
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to recover the application', async () => {
+      lab.test('error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         RecoveryService.createApplicationContext = () => {
           throw new Error('recovery failed')
@@ -155,18 +153,16 @@ lab.experiment('Is part of your application commercially confidential? page test
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
-      lab.test('redirects to error screen when save fails', async () => {
+      lab.test('error screen when save fails', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         Application.prototype.save = () => Promise.reject(new Error('save failed'))
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

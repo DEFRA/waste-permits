@@ -26,7 +26,6 @@ const {
 const routePath = '/mcp-check/under-500-hours'
 const yesRoutePath = '/maintain-application-lines'
 const noRoutePath = '/mcp-check/air-dispersion-modelling-report'
-const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks
@@ -98,8 +97,7 @@ lab.experiment('Operating under 500 hours page tests:', () => {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

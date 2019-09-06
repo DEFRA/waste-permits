@@ -16,7 +16,6 @@ const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/mining-waste/plan'
 const nextRoutePath = '/mining-waste/weight'
-const errorPath = '/errors/technical-problem'
 
 const checkCommonElements = async (doc) => {
   Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Which mining waste plan will you use?')
@@ -77,7 +76,7 @@ lab.experiment('Which mining waste plan will you use? page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to recover the application', async () => {
+      lab.test('error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         RecoveryService.createApplicationContext = () => {
           throw new Error('recovery failed')
@@ -85,8 +84,7 @@ lab.experiment('Which mining waste plan will you use? page tests:', () => {
 
         const res = await server.inject(request)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

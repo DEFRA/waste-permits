@@ -71,7 +71,6 @@ Object.entries(routes).forEach(([operator, {
   permitHolderType,
   routePath = '/permit-holder/company/declare-offences',
   nextPath = '/permit-holder/company/bankruptcy-insolvency',
-  errorPath = '/errors/technical-problem'
 }]) => {
   lab.experiment(`${operator} Declare Offences tests:`, () => {
     new GeneralTestHelper({ lab, routePath }).test()
@@ -144,7 +143,7 @@ Object.entries(routes).forEach(([operator, {
       })
 
       lab.experiment('failure', () => {
-        lab.test('redirects to error screen when failing to recover the application', async () => {
+        lab.test('error screen when failing to recover the application', async () => {
           const spy = sandbox.spy(LoggingService, 'logError')
           RecoveryService.createApplicationContext = () => {
             throw new Error('recovery failed')
@@ -152,8 +151,7 @@ Object.entries(routes).forEach(([operator, {
 
           const res = await server.inject(getRequest)
           Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
+          Code.expect(res.statusCode).to.equal(500)
         })
       })
     })
@@ -213,7 +211,7 @@ Object.entries(routes).forEach(([operator, {
       })
 
       lab.experiment('failure', () => {
-        lab.test('redirects to error screen when failing to recover the application', async () => {
+        lab.test('error screen when failing to recover the application', async () => {
           const spy = sandbox.spy(LoggingService, 'logError')
           RecoveryService.createApplicationContext = () => {
             throw new Error('recovery failed')
@@ -221,18 +219,16 @@ Object.entries(routes).forEach(([operator, {
 
           const res = await server.inject(postRequest)
           Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
+          Code.expect(res.statusCode).to.equal(500)
         })
 
-        lab.test('redirects to error screen when save fails', async () => {
+        lab.test('error screen when save fails', async () => {
           const spy = sandbox.spy(LoggingService, 'logError')
           Application.prototype.save = () => Promise.reject(new Error('save failed'))
 
           const res = await server.inject(postRequest)
           Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
+          Code.expect(res.statusCode).to.equal(500)
         })
       })
     })
