@@ -1817,6 +1817,15 @@
         "safe-buffer": "^5.1.1"
       }
     },
+    "blankie": {
+      "version": "4.1.1",
+      "resolved": "https://registry.npmjs.org/blankie/-/blankie-4.1.1.tgz",
+      "integrity": "sha512-rV8BLrR5T7UkkSf27mPiRWGn8/peJs2FrcGodbXfxsg9R9fuOITih+balI6c7f2HmitR0Fe3MU5C6YpcUYsWwA==",
+      "requires": {
+        "@hapi/hoek": "^6.2.1",
+        "@hapi/joi": "^15.0.0"
+      }
+    },
     "blipp": {
       "version": "4.0.0",
       "resolved": "https://registry.npmjs.org/blipp/-/blipp-4.0.0.tgz",
