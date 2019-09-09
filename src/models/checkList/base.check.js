@@ -62,6 +62,14 @@ module.exports = class BaseCheck {
     }
   }
 
+  async getUploadedFileDetails (fileSubject, propertyName) {
+    const fileDetails = this.data[propertyName]
+    if (!fileDetails) {
+      this.data[propertyName] = await Annotation.listByApplicationIdAndSubject(this.data, fileSubject)
+    }
+    return this.data[propertyName] || {}
+  }
+
   async getApplication () {
     const { applicationId, application } = this.data
     if (!application) {
@@ -193,11 +201,7 @@ module.exports = class BaseCheck {
   }
 
   async getTechnicalCompetenceEvidence () {
-    const { technicalCompetenceEvidence } = this.data
-    if (!technicalCompetenceEvidence) {
-      this.data.technicalCompetenceEvidence = await Annotation.listByApplicationIdAndSubject(this.data, TECHNICAL_QUALIFICATION)
-    }
-    return this.data.technicalCompetenceEvidence || {}
+    return this.getUploadedFileDetails(TECHNICAL_QUALIFICATION, 'technicalCompetenceEvidence')
   }
 
   async getSitePlan () {
@@ -209,83 +213,43 @@ module.exports = class BaseCheck {
   }
 
   async getEnergyEfficiencyReport () {
-    const { energyEfficiencyReport } = this.data
-    if (!energyEfficiencyReport) {
-      this.data.energyEfficiencyReport = await Annotation.listByApplicationIdAndSubject(this.data, ENERGY_EFFICIENCY_REPORT)
-    }
-    return this.data.energyEfficiencyReport || {}
+    return this.getUploadedFileDetails(ENERGY_EFFICIENCY_REPORT, 'energyEfficiencyReport')
   }
 
   async getEmissionsManagementPlan () {
-    const { emissionsManagementPlan } = this.data
-    if (!emissionsManagementPlan) {
-      this.data.emissionsManagementPlan = await Annotation.listByApplicationIdAndSubject(this.data, EMISSIONS_MANAGEMENT_PLAN)
-    }
-    return this.data.emissionsManagementPlan || {}
+    return this.getUploadedFileDetails(EMISSIONS_MANAGEMENT_PLAN, 'emissionsManagementPlan')
   }
 
   async getAirDispersionModellingReport () {
-    const { airDispersionModellingReport } = this.data
-    if (!airDispersionModellingReport) {
-      this.data.airDispersionModellingReport = await Annotation.listByApplicationIdAndSubject(this.data, AIR_DISPERSION_MODELLING_REPORT)
-    }
-    return this.data.airDispersionModellingReport || {}
+    return this.getUploadedFileDetails(AIR_DISPERSION_MODELLING_REPORT, 'airDispersionModellingReport')
   }
 
   async getScreeningTool () {
-    const { screeningTool } = this.data
-    if (!screeningTool) {
-      this.data.screeningTool = await Annotation.listByApplicationIdAndSubject(this.data, AIR_DISPERSION_MODELLING_REPORT)
-    }
-    return this.data.screeningTool || {}
+    return this.getUploadedFileDetails(AIR_DISPERSION_MODELLING_REPORT, 'screeningTool')
   }
 
   async getBestAvailableTechniquesAssessment () {
-    const { bestAvailableTechniquesAssessment } = this.data
-    if (!bestAvailableTechniquesAssessment) {
-      this.data.bestAvailableTechniquesAssessment = await Annotation.listByApplicationIdAndSubject(this.data, BEST_AVAILABLE_TECHNIQUES_ASSESSMENT)
-    }
-    return this.data.bestAvailableTechniquesAssessment || {}
+    return this.getUploadedFileDetails(BEST_AVAILABLE_TECHNIQUES_ASSESSMENT, 'bestAvailableTechniquesAssessment')
   }
 
   async getWasteRecoveryPlan () {
-    const { wasteRecoveryPlan } = this.data
-    if (!wasteRecoveryPlan) {
-      this.data.wasteRecoveryPlan = await Annotation.listByApplicationIdAndSubject(this.data, WASTE_RECOVERY_PLAN)
-    }
-    return this.data.wasteRecoveryPlan || {}
+    return this.getUploadedFileDetails(WASTE_RECOVERY_PLAN, 'wasteRecoveryPlan')
   }
 
   async getFirePreventionPlan () {
-    const { firePreventionPlan } = this.data
-    if (!firePreventionPlan) {
-      this.data.firePreventionPlan = await Annotation.listByApplicationIdAndSubject(this.data, FIRE_PREVENTION_PLAN)
-    }
-    return this.data.firePreventionPlan || {}
+    return this.getUploadedFileDetails(FIRE_PREVENTION_PLAN, 'firePreventionPlan')
   }
 
   async getWasteTypesList () {
-    const { wasteTypesList } = this.data
-    if (!wasteTypesList) {
-      this.data.wasteTypesList = await Annotation.listByApplicationIdAndSubject(this.data, WASTE_TYPES_LIST)
-    }
-    return this.data.wasteTypesList || {}
+    return this.getUploadedFileDetails(WASTE_TYPES_LIST, 'wasteTypesList')
   }
 
   async getEnvironmentalRiskAssessment () {
-    const { environmentalRiskAssessment } = this.data
-    if (!environmentalRiskAssessment) {
-      this.data.environmentalRiskAssessment = await Annotation.listByApplicationIdAndSubject(this.data, ENVIRONMENTAL_RISK_ASSESSMENT)
-    }
-    return this.data.environmentalRiskAssessment || {}
+    return this.getUploadedFileDetails(ENVIRONMENTAL_RISK_ASSESSMENT, 'environmentalRiskAssessment')
   }
 
   async getNonTechnicalSummary () {
-    const { nonTechnicalSummary } = this.data
-    if (!nonTechnicalSummary) {
-      this.data.nonTechnicalSummary = await Annotation.listByApplicationIdAndSubject(this.data, NON_TECHNICAL_SUMMARY)
-    }
-    return this.data.nonTechnicalSummary || {}
+    return this.getUploadedFileDetails(NON_TECHNICAL_SUMMARY, 'nonTechnicalSummary')
   }
 
   async getManagementSystem () {
@@ -297,11 +261,7 @@ module.exports = class BaseCheck {
   }
 
   async getManagementSystemSummary () {
-    const { managementSystemSummary } = this.data
-    if (!managementSystemSummary) {
-      this.data.managementSystemSummary = await Annotation.listByApplicationIdAndSubject(this.data, MANAGEMENT_SYSTEM_SUMMARY)
-    }
-    return this.data.managementSystemSummary || []
+    return this.getUploadedFileDetails(MANAGEMENT_SYSTEM_SUMMARY, 'managementSystemSummary')
   }
 
   async getNeedToConsult () {
@@ -313,19 +273,11 @@ module.exports = class BaseCheck {
   }
 
   async getTechnicalManagers () {
-    const { technicalManagers } = this.data
-    if (!technicalManagers) {
-      this.data.technicalManagers = await Annotation.listByApplicationIdAndSubject(this.data, TECHNICAL_MANAGERS)
-    }
-    return this.data.technicalManagers || {}
+    return this.getUploadedFileDetails(TECHNICAL_MANAGERS, 'technicalManagers')
   }
 
   async getMcpDetails () {
-    const { mcpDetails } = this.data
-    if (!mcpDetails) {
-      this.data.mcpDetails = await Annotation.listByApplicationIdAndSubject(this.data, MCP_DETAILS)
-    }
-    return this.data.mcpDetails || {}
+    return this.getUploadedFileDetails(MCP_DETAILS, 'mcpDetails')
   }
 
   async getMcpBusinessType () {
@@ -345,18 +297,10 @@ module.exports = class BaseCheck {
   }
 
   async getOdourManagementPlan () {
-    const { odourManagementPlan } = this.data
-    if (!odourManagementPlan) {
-      this.data.odourManagementPlan = await Annotation.listByApplicationIdAndSubject(this.data, ODOUR_MANAGEMENT_PLAN)
-    }
-    return this.data.odourManagementPlan || {}
+    return this.getUploadedFileDetails(ODOUR_MANAGEMENT_PLAN, 'odourManagementPlan')
   }
 
   async getSiteConditionReport () {
-    const { siteConditionReport } = this.data
-    if (!siteConditionReport) {
-      this.data.siteConditionReport = await Annotation.listByApplicationIdAndSubject(this.data, SITE_CONDITION_REPORT)
-    }
-    return this.data.siteConditionReport || {}
+    return this.getUploadedFileDetails(SITE_CONDITION_REPORT, 'siteConditionReport')
   }
 }
