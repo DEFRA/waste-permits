@@ -22,7 +22,6 @@ const fakeSlug = 'SLUG'
 
 const routePath = '/pay/bacs'
 const nextRoutePath = '/pay/bacs-proof'
-const errorPath = '/errors/technical-problem'
 
 let mocks
 let sandbox
@@ -110,8 +109,7 @@ lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
       lab.test('redirects to error screen when save fails', async () => {
@@ -120,8 +118,7 @@ lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

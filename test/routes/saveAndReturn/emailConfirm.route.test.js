@@ -18,7 +18,6 @@ const { COOKIE_RESULT } = require('../../../src/constants')
 
 const routePath = '/save-return/confirm'
 const nextRoutePath = '/save-return/email-sent-check'
-const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks
@@ -133,8 +132,7 @@ lab.experiment('Save and return confirm page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
       lab.test('redirects to error screen when save fails', async () => {
@@ -143,8 +141,7 @@ lab.experiment('Save and return confirm page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

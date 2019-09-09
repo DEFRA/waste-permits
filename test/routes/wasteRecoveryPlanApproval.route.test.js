@@ -16,7 +16,6 @@ const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/waste-recovery-plan/approval'
 const nextRoutePath = '/waste-recovery-plan'
-const errorPath = '/errors/technical-problem'
 
 const ALREADY_ASSESSED = 910400000
 const PLAN_HAS_CHANGED = 910400001
@@ -126,8 +125,7 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })
@@ -169,8 +167,7 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
       lab.test('redirects to error screen when save fails', async () => {
@@ -179,8 +176,7 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

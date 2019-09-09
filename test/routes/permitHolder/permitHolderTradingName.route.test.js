@@ -18,7 +18,6 @@ let sandbox
 let mocks
 
 const routePath = '/permit-holder/trading-name'
-const errorPath = '/errors/technical-problem'
 const nextRoutePath = '/permit-holder/contact-details'
 
 // Trading name used
@@ -122,8 +121,7 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })
@@ -181,8 +179,7 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

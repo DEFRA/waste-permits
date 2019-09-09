@@ -20,18 +20,16 @@ const routes = {
   'partner': {
     routePath: `/permit-holder/partners/details/${memberId}`,
     nextPath: `/permit-holder/partners/address/postcode/${memberId}`,
-    errorPath: '/errors/technical-problem',
     PermitHolderTask: require('../../../src/models/taskList/partnerDetails.task')
   },
   'postholder': {
     routePath: `/permit-holder/group/post-holder/contact-details/${memberId}`,
     nextPath: `/permit-holder/group/post-holder/address/postcode/${memberId}`,
-    errorPath: '/errors/technical-problem',
     PermitHolderTask: require('../../../src/models/taskList/postholderDetails.task')
   }
 }
 
-Object.entries(routes).forEach(([member, { routePath, nextPath, errorPath, PermitHolderTask }]) => {
+Object.entries(routes).forEach(([member, { routePath, nextPath, PermitHolderTask }]) => {
   lab.experiment(capitalizeFirstLetter(member), () => {
     let mocks
     let sandbox
@@ -132,8 +130,7 @@ Object.entries(routes).forEach(([member, { routePath, nextPath, errorPath, Permi
             const stub = sinon.stub(PermitHolderTask, 'getContactDetail').value(() => undefined)
             const res = await server.inject(getRequest)
             stub.restore()
-            Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(errorPath)
+            Code.expect(res.statusCode).to.equal(500)
           })
         })
       })
@@ -152,8 +149,7 @@ Object.entries(routes).forEach(([member, { routePath, nextPath, errorPath, Permi
             const stub = sinon.stub(PermitHolderTask, 'getContactDetail').value(() => undefined)
             const res = await server.inject(postRequest)
             stub.restore()
-            Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(errorPath)
+            Code.expect(res.statusCode).to.equal(500)
           })
         })
 
