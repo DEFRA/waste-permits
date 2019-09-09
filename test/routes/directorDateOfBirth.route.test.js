@@ -24,7 +24,6 @@ const routes = {
     permitHolderType: LIMITED_COMPANY,
     routePath: '/permit-holder/company/director-date-of-birth',
     nextPath: '/permit-holder/company/director-email',
-    errorPath: '/errors/technical-problem'
   },
   'Limited Liability Partnership': {
     singleDirectorPageHeading: `What is the member's date of birth?`,
@@ -33,7 +32,6 @@ const routes = {
     pageHeading: 'What is the company number for the  limited liability partnership?',
     routePath: '/permit-holder/limited-liability-partnership/member-date-of-birth',
     nextPath: '/permit-holder/limited-liability-partnership/designated-member-email',
-    errorPath: '/errors/technical-problem'
   }
 }
 

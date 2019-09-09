@@ -25,8 +25,6 @@ for (const key in Routes) {
   }
 }
 
-const errorPath = '/errors/technical-problem'
-
 const ACTIVITY_ITEMS = [
   {
     id: 'ITEM_1',

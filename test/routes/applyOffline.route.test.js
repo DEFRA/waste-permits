@@ -47,7 +47,6 @@ const offlineStandardRule = {
 }
 
 const routePath = '/start/apply-offline'
-const errorPath = '/errors/technical-problem'
 const startPath = '/errors/order/start-at-beginning'
 
 let mocks

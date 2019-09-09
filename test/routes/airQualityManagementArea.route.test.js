@@ -19,7 +19,6 @@ const AirQualityManagementAreaTask = require('../../src/models/taskList/airQuali
 
 const routePath = '/mcp/aqma/name'
 const nextRoutePath = '/task-list'
-const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks

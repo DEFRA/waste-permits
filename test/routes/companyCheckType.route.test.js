@@ -24,7 +24,6 @@ const VALID_TYPE = 'valid type'
 
 const routePath = '/permit-holder/company/wrong-type'
 const nextRoutePath = '/permit-holder/company/status-not-active'
-const errorPath = '/errors/technical-problem'
 
 let mocks
 let sandbox

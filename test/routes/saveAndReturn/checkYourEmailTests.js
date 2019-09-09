@@ -14,7 +14,7 @@ const { COOKIE_RESULT } = require('../../../src/constants')
 
 let numberOfMatchingEmails
 
-module.exports = (lab, { routePath, nextPath, errorPath, pageHeading, excludeAlreadySubmittedTest }) => {
+module.exports = (lab, { routePath, nextPath, pageHeading, excludeAlreadySubmittedTest }) => {
   let mocks
   let sandbox
 
