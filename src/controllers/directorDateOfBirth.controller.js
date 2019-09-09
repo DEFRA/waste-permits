@@ -2,7 +2,6 @@
 
 const moment = require('moment')
 const Constants = require('../constants')
-const Routes = require('../routes')
 const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
 const LoggingService = require('../services/logging.service')
@@ -51,7 +50,13 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
       LoggingService.logError(message, request)
-      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
+      return h
+        .view('error/technicalProblem', {
+          pageHeading: { message },
+          pageTitle: 'Something went wrong: ',
+          error: errors
+        })
+        .code(500)
     }
 
     // Get the directors that relate to this application
@@ -101,7 +106,13 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
       LoggingService.logError(message, request)
-      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
+      return h
+        .view('error/technicalProblem', {
+          pageHeading: { message },
+          pageTitle: 'Something went wrong: ',
+          error: errors
+        })
+        .code(500)
     }
 
     const directors = await this._getDirectors(context, account.id)

@@ -2,7 +2,6 @@
 
 const Constants = require('../constants')
 const { UploadSubject } = Constants
-const Routes = require('../routes')
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const LoggingService = require('../services/logging.service')
@@ -61,7 +60,13 @@ module.exports = class UploadController extends BaseController {
       if (!CookieService.validateCookie(request)) {
         const message = 'Upload failed validating cookie'
         LoggingService.logError(message, request)
-        return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
+        return h
+          .view('error/technicalProblem', {
+            pageHeading: message,
+            pageTitle: 'Something went wrong: ',
+            error: errors
+          })
+          .code(500)
       }
 
       // Post if it's not an attempt to upload a file
@@ -100,7 +105,13 @@ module.exports = class UploadController extends BaseController {
       return this.redirect({ h, path: this.path })
     } catch (error) {
       LoggingService.logError(error, request)
-      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error })
+      return h
+        .view('error/technicalProblem', {
+          pageHeading: 'Something went wrong',
+          pageTitle: 'Something went wrong: ',
+          error: error
+        })
+        .code(500)
     }
   }
 
@@ -109,7 +120,13 @@ module.exports = class UploadController extends BaseController {
     if (!CookieService.validateCookie(request)) {
       const message = 'Remove failed validating cookie'
       LoggingService.logError(message, request)
-      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
+      return h
+        .view('error/technicalProblem', {
+          pageHeading: message,
+          pageTitle: 'Something went wrong: ',
+          error: { message }
+        })
+        .code(500)
     }
 
     const context = await RecoveryService.createApplicationContext(h)
@@ -121,7 +138,13 @@ module.exports = class UploadController extends BaseController {
     if (annotation.applicationId !== applicationId) {
       const message = 'Annotation and application mismatch'
       LoggingService.logError(message, request)
-      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
+      return h
+        .view('error/technicalProblem', {
+          pageHeading: message,
+          pageTitle: 'Something went wrong: ',
+          error: { message }
+        })
+        .code(500)
     }
     await annotation.delete(context, annotationId)
     return this.redirect({ h, path: this.path })
