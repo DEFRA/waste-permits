@@ -4,8 +4,6 @@ const { SCREENING_TOOL } = require('../../tasks').tasks
 const { SCREENING_TOOL: { path } } = require('../../routes')
 const Constants = require('../../constants')
 
-const { AIR_DISPERSION_MODELLING_REPORT } = Constants.UploadSubject
-
 module.exports = class ScreeningToolCheck extends BaseCheck {
   static get task () {
     return SCREENING_TOOL
@@ -20,7 +18,7 @@ module.exports = class ScreeningToolCheck extends BaseCheck {
   }
 
   async getScreeningToolLine () {
-    const evidence = await this.getUploadedFileDetails(AIR_DISPERSION_MODELLING_REPORT, 'screeningTool')
+    const evidence = await this.getUploadedFileDetails(Constants.UploadSubject.SCREENING_TOOL, 'screeningTool')
     const answers = evidence.map((file) => file.filename)
     return this.buildLine({
       heading: 'Screening tool',
