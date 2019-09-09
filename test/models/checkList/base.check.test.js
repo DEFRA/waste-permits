@@ -207,92 +207,12 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(context.standardRule).to.equal(await check.getStandardRule())
   })
 
-  lab.test('getTechnicalCompetenceEvidence works correctly', async () => {
-    delete context.technicalCompetenceEvidence
+  lab.test('getUploadedFileDetails works correctly', async () => {
+    delete context['testFileDetails']
     const check = new BaseCheck(context)
-    const technicalCompetenceEvidence = await check.getTechnicalCompetenceEvidence()
-    Code.expect(technicalCompetenceEvidence).to.equal([mocks.annotation])
-    Code.expect(context.technicalCompetenceEvidence).to.equal(await check.getTechnicalCompetenceEvidence())
-  })
-
-  lab.test('getSitePlan works correctly', async () => {
-    delete context.sitePlan
-    const check = new BaseCheck(context)
-    const sitePlan = await check.getSitePlan()
-    Code.expect(sitePlan).to.equal([mocks.annotation])
-    Code.expect(context.sitePlan).to.equal(await check.getSitePlan())
-  })
-
-  lab.test('getFirePreventionPlan works correctly', async () => {
-    delete context.firePreventionPlan
-    const check = new BaseCheck(context)
-    const firePreventionPlan = await check.getFirePreventionPlan()
-    Code.expect(firePreventionPlan).to.equal([mocks.annotation])
-    Code.expect(context.firePreventionPlan).to.equal(await check.getFirePreventionPlan())
-  })
-
-  lab.test('getWasteRecoveryPlan works correctly', async () => {
-    delete context.wasteRecoveryPlan
-    const check = new BaseCheck(context)
-    const wasteRecoveryPlan = await check.getWasteRecoveryPlan()
-    Code.expect(wasteRecoveryPlan).to.equal([mocks.annotation])
-    Code.expect(context.wasteRecoveryPlan).to.equal(await check.getWasteRecoveryPlan())
-  })
-
-  lab.test('getEnergyEfficiencyReport works correctly', async () => {
-    delete context.energyEfficiencyReport
-    const check = new BaseCheck(context)
-    const energyEfficiencyReport = await check.getEnergyEfficiencyReport()
-    Code.expect(energyEfficiencyReport).to.equal([mocks.annotation])
-    Code.expect(context.energyEfficiencyReport).to.equal(await check.getEnergyEfficiencyReport())
-  })
-
-  lab.test('getAirDispersionModellingReport works correctly', async () => {
-    delete context.airDispersionModellingReport
-    const check = new BaseCheck(context)
-    const airDispersionModellingReport = await check.getAirDispersionModellingReport()
-    Code.expect(airDispersionModellingReport).to.equal([mocks.annotation])
-    Code.expect(context.airDispersionModellingReport).to.equal(await check.getAirDispersionModellingReport())
-  })
-
-  lab.test('getScreeningTool works correctly', async () => {
-    delete context.screeningTool
-    const check = new BaseCheck(context)
-    const screeningTool = await check.getScreeningTool()
-    Code.expect(screeningTool).to.equal([mocks.annotation])
-    Code.expect(context.screeningTool).to.equal(await check.getScreeningTool())
-  })
-
-  lab.test('getBestAvailableTechniquesAssessment works correctly', async () => {
-    delete context.bestAvailableTechniquesAssessment
-    const check = new BaseCheck(context)
-    const bestAvailableTechniquesAssessment = await check.getBestAvailableTechniquesAssessment()
-    Code.expect(bestAvailableTechniquesAssessment).to.equal([mocks.annotation])
-    Code.expect(context.bestAvailableTechniquesAssessment).to.equal(await check.getBestAvailableTechniquesAssessment())
-  })
-
-  lab.test('getWasteTypesList works correctly', async () => {
-    delete context.wasteTypesList
-    const check = new BaseCheck(context)
-    const wasteTypesList = await check.getWasteTypesList()
-    Code.expect(wasteTypesList).to.equal([mocks.annotation])
-    Code.expect(context.wasteTypesList).to.equal(await check.getWasteTypesList())
-  })
-
-  lab.test('getEnvironmentalRiskAssessment works correctly', async () => {
-    delete context.environmentalRiskAssessment
-    const check = new BaseCheck(context)
-    const environmentalRiskAssessment = await check.getEnvironmentalRiskAssessment()
-    Code.expect(environmentalRiskAssessment).to.equal([mocks.annotation])
-    Code.expect(context.environmentalRiskAssessment).to.equal(await check.getEnvironmentalRiskAssessment())
-  })
-
-  lab.test('getNonTechnicalSummary works correctly', async () => {
-    delete context.nonTechnicalSummary
-    const check = new BaseCheck(context)
-    const nonTechnicalSummary = await check.getNonTechnicalSummary()
-    Code.expect(nonTechnicalSummary).to.equal([mocks.annotation])
-    Code.expect(context.nonTechnicalSummary).to.equal(await check.getNonTechnicalSummary())
+    const fileDetails = await check.getUploadedFileDetails('fileSubject', 'testFileDetails')
+    Code.expect(fileDetails).to.equal([mocks.annotation])
+    Code.expect(context['testFileDetails']).to.equal(await check.getUploadedFileDetails('fileSubject', 'testFileDetails'))
   })
 
   lab.test('getManagementSystem works correctly', async () => {
@@ -300,14 +220,6 @@ lab.experiment('Base Check tests:', () => {
     const managementSystem = await check.getManagementSystem()
     Code.expect(managementSystem).to.equal(mocks.applicationAnswers[0])
     Code.expect(context.managementSystem).to.equal(await check.getManagementSystem())
-  })
-
-  lab.test('getManagementSystemSummary works correctly', async () => {
-    delete context.managementSystemSummary
-    const check = new BaseCheck(context)
-    const managementSystemSummary = await check.getManagementSystemSummary()
-    Code.expect(managementSystemSummary).to.equal([mocks.annotation])
-    Code.expect(context.managementSystemSummary).to.equal(await check.getManagementSystemSummary())
   })
 
   lab.test('getMcpType works correctly', async () => {
@@ -341,27 +253,11 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(context.charityDetails).to.equal(await check.getCharityDetails())
   })
 
-  lab.test('getMcpDetails works correctly', async () => {
-    delete context.mcpDetails
-    const check = new BaseCheck(context)
-    const mcpDetails = await check.getMcpDetails()
-    Code.expect(mcpDetails).to.equal([mocks.annotation])
-    Code.expect(context.mcpDetails).to.equal(await check.getMcpDetails())
-  })
-
   lab.test('getMcpBusinessType works correctly', async () => {
     delete context.mcpBusinessType
     const check = new BaseCheck(context)
     const mcpBusinessType = await check.getMcpBusinessType()
     Code.expect(mcpBusinessType).to.equal(mocks.mcpBusinessType)
     Code.expect(context.mcpBusinessType).to.equal(await check.getMcpBusinessType())
-  })
-
-  lab.test('getTechnicalManagers works correctly', async () => {
-    delete context.technicalManagers
-    const check = new BaseCheck(context)
-    const technicalManagers = await check.getTechnicalManagers()
-    Code.expect(technicalManagers).to.equal([mocks.annotation])
-    Code.expect(context.technicalManagers).to.equal(await check.getTechnicalManagers())
   })
 })

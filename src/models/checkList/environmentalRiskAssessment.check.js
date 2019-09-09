@@ -1,4 +1,5 @@
 const BaseCheck = require('./base.check')
+const Constants = require('../../constants')
 
 const { ENVIRONMENTAL_RISK_ASSESSMENT } = require('../../tasks').tasks
 const { ENVIRONMENTAL_RISK_ASSESSMENT: { path } } = require('../../routes')
@@ -17,7 +18,7 @@ module.exports = class EnvironmentalRiskAssessmentCheck extends BaseCheck {
   }
 
   async getEnvironmentalRiskAssessmentLine () {
-    const evidence = await this.getEnvironmentalRiskAssessment()
+    const evidence = await this.getUploadedFileDetails(Constants.UploadSubject.ENVIRONMENTAL_RISK_ASSESSMENT, 'environmentalRiskAssessment')
     return this.buildLine({
       heading: 'Environmental risk assessment',
       answers: evidence.map((file) => file.filename),

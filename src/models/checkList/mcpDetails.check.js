@@ -1,4 +1,5 @@
 const BaseCheck = require('./base.check')
+const Constants = require('../../constants')
 
 const { MCP_DETAILS } = require('../../tasks').tasks
 const { MCP_DETAILS: { path } } = require('../../routes')
@@ -17,7 +18,7 @@ module.exports = class McpDetailsCheck extends BaseCheck {
   }
 
   async getMcpDetailsLine () {
-    const evidence = await this.getMcpDetails()
+    const evidence = await this.getUploadedFileDetails(Constants.UploadSubject.MCP_DETAILS, 'mcpDetails')
     return this.buildLine({
       heading: 'Plant or generator list',
       answers: evidence.map((file) => file.filename),

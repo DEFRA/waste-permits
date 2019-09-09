@@ -1,5 +1,6 @@
 const Dynamics = require('../../dynamics')
 const BaseCheck = require('./base.check')
+const Constants = require('../../constants')
 
 const { TECHNICAL_QUALIFICATION } = require('../../tasks').tasks
 const { TECHNICAL_QUALIFICATION: { path: qualificationPath } } = require('../../routes')
@@ -41,7 +42,7 @@ module.exports = class TechnicalCheck extends BaseCheck {
   async getQualificationLine () {
     const { technicalQualification = '' } = await this.getApplication()
     const { NAME: technicalQualificationName = '' } = TechnicalCheck._getDetails(technicalQualification) || {}
-    const evidence = await this.getTechnicalCompetenceEvidence()
+    const evidence = await this.getUploadedFileDetails(Constants.UploadSubject.TECHNICAL_QUALIFICATION, 'technicalCompetenceEvidence')
     return this.buildLine({
       heading: 'Technical competence evidence',
       prefix: 'evidence',
@@ -53,7 +54,7 @@ module.exports = class TechnicalCheck extends BaseCheck {
   }
 
   async getTechnicalManagersLine () {
-    const evidence = await this.getTechnicalManagers()
+    const evidence = await this.getUploadedFileDetails(Constants.UploadSubject.TECHNICAL_MANAGERS, 'technicalManagers')
     return this.buildLine({
       heading: 'Technically competent manager',
       prefix: 'managers',

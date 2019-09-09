@@ -17,7 +17,7 @@ module.exports = class AirDispersionModellingReportCheck extends BaseCheck {
   }
 
   async getAirDispersionModellingReportLine () {
-    const evidence = await this.getAirDispersionModellingReport()
+    const evidence = await this.getUploadedFileDetails(AIR_DISPERSION_MODELLING_REPORT, 'airDispersionModellingReport')
     const answers = evidence.map((file) => file.filename)
     return this.buildLine({
       heading: 'Air dispersion modelling report',

@@ -1,4 +1,3 @@
-const Constants = require('../../constants')
 const Account = require('../../persistence/entities/account.entity')
 const Address = require('../../persistence/entities/address.entity')
 const Annotation = require('../../persistence/entities/annotation.entity')
@@ -23,25 +22,6 @@ const {
 const {
   MANAGEMENT_SYSTEM
 } = require('../../dynamics').ApplicationQuestions
-
-const {
-  AIR_DISPERSION_MODELLING_REPORT,
-  BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
-  ENERGY_EFFICIENCY_REPORT,
-  TECHNICAL_QUALIFICATION,
-  SITE_PLAN,
-  FIRE_PREVENTION_PLAN,
-  WASTE_RECOVERY_PLAN,
-  WASTE_TYPES_LIST,
-  ENVIRONMENTAL_RISK_ASSESSMENT,
-  NON_TECHNICAL_SUMMARY,
-  MANAGEMENT_SYSTEM_SUMMARY,
-  TECHNICAL_MANAGERS,
-  MCP_DETAILS,
-  ODOUR_MANAGEMENT_PLAN,
-  EMISSIONS_MANAGEMENT_PLAN,
-  SITE_CONDITION_REPORT
-} = Constants.UploadSubject
 
 module.exports = class BaseCheck {
   constructor (data) {
@@ -200,58 +180,6 @@ module.exports = class BaseCheck {
     return this.data.invoiceAddress || {}
   }
 
-  async getTechnicalCompetenceEvidence () {
-    return this.getUploadedFileDetails(TECHNICAL_QUALIFICATION, 'technicalCompetenceEvidence')
-  }
-
-  async getSitePlan () {
-    const { sitePlan } = this.data
-    if (!sitePlan) {
-      this.data.sitePlan = await Annotation.listByApplicationIdAndSubject(this.data, SITE_PLAN)
-    }
-    return this.data.sitePlan || {}
-  }
-
-  async getEnergyEfficiencyReport () {
-    return this.getUploadedFileDetails(ENERGY_EFFICIENCY_REPORT, 'energyEfficiencyReport')
-  }
-
-  async getEmissionsManagementPlan () {
-    return this.getUploadedFileDetails(EMISSIONS_MANAGEMENT_PLAN, 'emissionsManagementPlan')
-  }
-
-  async getAirDispersionModellingReport () {
-    return this.getUploadedFileDetails(AIR_DISPERSION_MODELLING_REPORT, 'airDispersionModellingReport')
-  }
-
-  async getScreeningTool () {
-    return this.getUploadedFileDetails(AIR_DISPERSION_MODELLING_REPORT, 'screeningTool')
-  }
-
-  async getBestAvailableTechniquesAssessment () {
-    return this.getUploadedFileDetails(BEST_AVAILABLE_TECHNIQUES_ASSESSMENT, 'bestAvailableTechniquesAssessment')
-  }
-
-  async getWasteRecoveryPlan () {
-    return this.getUploadedFileDetails(WASTE_RECOVERY_PLAN, 'wasteRecoveryPlan')
-  }
-
-  async getFirePreventionPlan () {
-    return this.getUploadedFileDetails(FIRE_PREVENTION_PLAN, 'firePreventionPlan')
-  }
-
-  async getWasteTypesList () {
-    return this.getUploadedFileDetails(WASTE_TYPES_LIST, 'wasteTypesList')
-  }
-
-  async getEnvironmentalRiskAssessment () {
-    return this.getUploadedFileDetails(ENVIRONMENTAL_RISK_ASSESSMENT, 'environmentalRiskAssessment')
-  }
-
-  async getNonTechnicalSummary () {
-    return this.getUploadedFileDetails(NON_TECHNICAL_SUMMARY, 'nonTechnicalSummary')
-  }
-
   async getManagementSystem () {
     const { managementSystem } = this.data
     if (!managementSystem) {
@@ -260,24 +188,12 @@ module.exports = class BaseCheck {
     return this.data.managementSystem || {}
   }
 
-  async getManagementSystemSummary () {
-    return this.getUploadedFileDetails(MANAGEMENT_SYSTEM_SUMMARY, 'managementSystemSummary')
-  }
-
   async getNeedToConsult () {
     const { needToConsult } = this.data
     if (!needToConsult) {
       this.data.needToConsult = await NeedToConsult.get(this.data)
     }
     return this.data.needToConsult || {}
-  }
-
-  async getTechnicalManagers () {
-    return this.getUploadedFileDetails(TECHNICAL_MANAGERS, 'technicalManagers')
-  }
-
-  async getMcpDetails () {
-    return this.getUploadedFileDetails(MCP_DETAILS, 'mcpDetails')
   }
 
   async getMcpBusinessType () {
@@ -294,13 +210,5 @@ module.exports = class BaseCheck {
       this.data.airQualityManagementArea = await AirQualityManagementArea.get(this.data)
     }
     return this.data.airQualityManagementArea || {}
-  }
-
-  async getOdourManagementPlan () {
-    return this.getUploadedFileDetails(ODOUR_MANAGEMENT_PLAN, 'odourManagementPlan')
-  }
-
-  async getSiteConditionReport () {
-    return this.getUploadedFileDetails(SITE_CONDITION_REPORT, 'siteConditionReport')
   }
 }

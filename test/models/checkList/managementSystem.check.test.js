@@ -29,7 +29,7 @@ lab.beforeEach(() => {
 
   // Stub the asynchronous base methods
   sandbox.stub(BaseCheck.prototype, 'getManagementSystem').value(() => fakeManagementSystem)
-  sandbox.stub(BaseCheck.prototype, 'getManagementSystemSummary').value(() => fakeManagementSystemSummaries)
+  sandbox.stub(BaseCheck.prototype, 'getUploadedFileDetails').value(() => fakeManagementSystemSummaries)
 })
 
 lab.afterEach(() => {
