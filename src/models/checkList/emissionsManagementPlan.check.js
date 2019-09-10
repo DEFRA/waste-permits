@@ -1,5 +1,5 @@
 const BaseCheck = require('./base.check')
-const Constants = require('../../constants')
+const { UploadSubject } = require('../../constants')
 
 const { EMISSIONS_MANAGEMENT_PLAN } = require('../../tasks').tasks
 const { EMISSIONS_MANAGEMENT_PLAN: { path } } = require('../../routes')
@@ -18,7 +18,7 @@ module.exports = class EmissionsManagementPlanCheck extends BaseCheck {
   }
 
   async getEmissionsManagementPlanLine () {
-    const evidence = await this.getUploadedFileDetails(Constants.UploadSubject.EMISSIONS_MANAGEMENT_PLAN, 'emissionsManagementPlan')
+    const evidence = await this.getUploadedFileDetails(UploadSubject.EMISSIONS_MANAGEMENT_PLAN, 'emissionsManagementPlan')
     const answers = evidence.map((file) => file.filename)
     return this.buildLine({
       heading: 'Emissions management plan',
