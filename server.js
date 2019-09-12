@@ -183,7 +183,6 @@ const start = async () => {
         })
         .code(response.output.statusCode)
     } else if (response.isBoom && response.output.statusCode === 403) {
-      // return h.redirect(Routes.COOKIES_DISABLED.path)
       return h
         .view('error/cookiesDisabled', {
           pageHeading: 'You must switch on cookies to use this service',

@@ -68,6 +68,17 @@ module.exports = class BaseController {
     return pageContext
   }
 
+  handleInternalError (error, request, h, message) {
+    LoggingService.logError(error, request)
+    return h
+      .view('error/technicalProblem', {
+        pageTitle: 'Something went wrong',
+        pageHeading: message || 'Something went wrong',
+        error: error
+      })
+      .code(500)
+  }
+
   async checkRouteAccess (context) {
     const { ALREADY_SUBMITTED, NOT_SUBMITTED, RECOVERY_FAILED, TASK_LIST } = Routes
     const { slug, application } = context
@@ -202,14 +213,7 @@ module.exports = class BaseController {
           return this.redirect({ h, path })
         }
       } catch (error) {
-        LoggingService.logError(error, request)
-        return h
-          .view('error/technicalProblem', {
-            pageHeading: 'Something went wrong',
-            pageTitle: 'Something went wrong: ',
-            error: error
-          })
-          .code(500)
+        return this.handleInternalError(error, request, h)
       }
     }
 
@@ -222,14 +226,7 @@ module.exports = class BaseController {
           const response = await this._handler(request, h, errors)
           return response
         } catch (error) {
-          LoggingService.logError(error, request)
-          return h
-            .view('error/technicalProblem', {
-              pageHeading: 'Something went wrong',
-              pageTitle: 'Something went wrong: ',
-              error: error
-            })
-            .code(500)
+          return this.handleInternalError(error, request, h)
         }
     }
   }

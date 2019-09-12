@@ -4,7 +4,6 @@ const Constants = require('../constants')
 const { UploadSubject } = Constants
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
-const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
 const UploadService = require('../services/upload.service')
 const Annotation = require('../persistence/entities/annotation.entity')
@@ -59,14 +58,7 @@ module.exports = class UploadController extends BaseController {
       // Validate the cookie
       if (!CookieService.validateCookie(request)) {
         const message = 'Upload failed validating cookie'
-        LoggingService.logError(message, request)
-        return h
-          .view('error/technicalProblem', {
-            pageHeading: message,
-            pageTitle: 'Something went wrong: ',
-            error: errors
-          })
-          .code(500)
+        return this.handleInternalError(errors, request, h, message)
       }
 
       // Post if it's not an attempt to upload a file
@@ -104,14 +96,7 @@ module.exports = class UploadController extends BaseController {
 
       return this.redirect({ h, path: this.path })
     } catch (error) {
-      LoggingService.logError(error, request)
-      return h
-        .view('error/technicalProblem', {
-          pageHeading: 'Something went wrong',
-          pageTitle: 'Something went wrong: ',
-          error: error
-        })
-        .code(500)
+      return this.handleInternalError(error, request, h)
     }
   }
 
@@ -119,14 +104,7 @@ module.exports = class UploadController extends BaseController {
     // Validate the cookie
     if (!CookieService.validateCookie(request)) {
       const message = 'Remove failed validating cookie'
-      LoggingService.logError(message, request)
-      return h
-        .view('error/technicalProblem', {
-          pageHeading: message,
-          pageTitle: 'Something went wrong: ',
-          error: { message }
-        })
-        .code(500)
+      return this.handleInternalError({ message }, request, h, message)
     }
 
     const context = await RecoveryService.createApplicationContext(h)
@@ -137,14 +115,7 @@ module.exports = class UploadController extends BaseController {
     // make sure this annotation belongs to this application
     if (annotation.applicationId !== applicationId) {
       const message = 'Annotation and application mismatch'
-      LoggingService.logError(message, request)
-      return h
-        .view('error/technicalProblem', {
-          pageHeading: message,
-          pageTitle: 'Something went wrong: ',
-          error: { message }
-        })
-        .code(500)
+      return this.handleInternalError({ message }, request, h, message)
     }
     await annotation.delete(context, annotationId)
     return this.redirect({ h, path: this.path })
