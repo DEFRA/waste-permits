@@ -19,19 +19,34 @@
 
       <div id="has-no-annotations" class="form-group">
         <div id="course-registration-description">
-          <p id="course-registration-description-heading" class="bold-small">Upload the {{> abbreviations/WAMITAB id="course-registration-description-heading-abbr-1"}} or {{> abbreviations/EPOC id="course-registration-description-heading-abbr-2"}} course registration email or letter.</p>
           {{#if wamitabRiskIsMediumOrHigh}}
+          <p id="course-registration-description-heading" class="bold-small">
+            Upload the {{> abbreviations/WAMITAB id="course-registration-description-heading-abbr-1"}} or
+            {{> abbreviations/EPOC id="course-registration-description-heading-abbr-2"}} course registration email or
+            letter, or both if required.
+          </p>
           <div id="wamitab-risk-is-medium-or-high">
-            <p>You must complete the EPOC course or 4 units of the {{> abbreviations/WAMITAB id="wamitab-risk-is-medium-or-high-abbr"}} qualification within 4 weeks of starting operations.</p>
-            <p>You must then get a full qualification within 12 months of starting operations.</p>
+            <p>
+              You must complete the EPOC course or 4 units (relevant to this permit) of the WAMITAB qualification
+              within 4 weeks of starting operations.
+              You must then get the full qualification within 12 months.
           </div>
           {{else}}
+          <p id="course-registration-description-heading" class="bold-small">
+            Upload the {{> abbreviations/WAMITAB id="course-registration-description-heading-abbr-1"}} or
+            {{> abbreviations/EPOC id="course-registration-description-heading-abbr-2"}} course registration email or
+            letter.
+          </p>
           <p id="wamitab-risk-is-low">
-            You must complete the qualification within 4 weeks of starting operating.
+            You must complete the qualification within 4 weeks of starting operations.
           </p>
           {{/if}}
           <p id="operator-competence-paragraph">
-            Check the <a id="operator-competence-link" target="_blank" rel="noopener noreferrer" href="https://wamitab.org.uk/competence/operator-competence/">{{> abbreviations/WAMITAB id="operator-competence-link-abbr"}} risk tables (opens new tab)</a> to find the qualifications needed for this permit.
+            Check the
+            <a id="operator-competence-link" target="_blank" rel="noopener noreferrer" href="https://wamitab.org.uk/competence/operator-competence/">
+              WAMITAB risk tables (opens new tab)
+            </a>
+            to find the qualifications needed for this permit.
           </p>
         </div>
       </div>
