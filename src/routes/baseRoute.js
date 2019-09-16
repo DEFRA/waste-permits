@@ -44,6 +44,12 @@ class Route {
         failAction: controller.failAction
       }
     }
+    if (controller.route.allowEmptyParametersInPayload) {
+      route.options.plugins = route.options.plugins || {}
+      route.options.plugins.sanitize = { enabled: false }
+      route.options.plugins.disinfect = route.options.plugins.disinfect || {}
+      route.options.plugins.disinfect.deleteEmpty = false
+    }
     return route
   }
 

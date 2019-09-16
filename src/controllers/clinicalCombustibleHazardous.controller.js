@@ -3,6 +3,7 @@
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const DataStore = require('../models/dataStore.model')
+const WasteActivities = require('../models/wasteActivities.model')
 
 module.exports = class NeedToConsultController extends BaseController {
   async doGet (request, h, errors) {
@@ -12,9 +13,9 @@ module.exports = class NeedToConsultController extends BaseController {
       pageContext.formValues = request.payload
     } else {
       const context = await RecoveryService.createApplicationContext(h)
-      let { data: { acceptsClinicalWaste, acceptsCombustibleWaste, acceptsHazardousWaste, doesntAcceptClinicalCombustibleOrHazardousWaste, wasteActivities } } = await DataStore.get(context)
-
-      wasteActivities = wasteActivities.split(',')
+      let { data: { acceptsClinicalWaste, acceptsCombustibleWaste, acceptsHazardousWaste, doesntAcceptClinicalCombustibleOrHazardousWaste } } = await DataStore.get(context)
+      const wasteActivitiesModel = await WasteActivities.get(context)
+      const wasteActivities = wasteActivitiesModel.wasteActivitiesValues.map(({ id }) => id)
 
       if (acceptsClinicalWaste === undefined &&
           wasteActivities.includes('1-16-7')) {

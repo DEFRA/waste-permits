@@ -1,0 +1,41 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <dl class="govuk-check-your-answers cya-questions-short">
+          {{#each activities}}
+          <div>
+            <dt id="activity-{{index}}-desc" class="cya-answer">
+              {{item.itemName}}
+            </dt>
+            <dd id="activity-{{index}}-delete" class="cya-change">
+              <button id="activity-{{index}}-delete-submit" type="submit" class="link link-button" name="delete-activity" value="{{index}}">Delete</button>
+            </dd>
+          </div>
+          {{/each}}
+        </dl>
+
+        {{#if canAddMore}}
+        <div class="form-group">
+          <button id="add-activity-submit" type="submit" class="button-secondary" name="add-activity" value="add-activity">Add another activity</button>
+        </div>
+        {{/if}}
+
+        {{> common/submitButton }}
+
+      </form>
+    </div>
+  </div>
+</main>
