@@ -37,7 +37,14 @@ module.exports = class UploadValidator extends BaseValidator {
           'headers': Joi.object().keys({
             'content-type': Joi.string(),
             'content-disposition': Joi.string().required()
-          }).required().when('filename', { is: Joi.string().required(), then: Joi.object({ 'content-type': Joi.valid(this.listValidMimeTypes()) }) })
+          })
+            .required()
+            .when('filename', {
+              is: Joi.string().required(),
+              then: Joi.object({
+                'content-type': Joi.valid(this.listValidMimeTypes())
+              })
+            })
         })
       }).optional()
     return {
@@ -76,6 +83,8 @@ module.exports = class UploadValidator extends BaseValidator {
       return this._validatorOptions
         .fileTypes
         .map(({ mimeType }) => mimeType)
+        // exception for browsers that can't detect appropriate mime-type
+        .concat('application/octet-stream')
     } else {
       return ''
     }
