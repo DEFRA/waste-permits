@@ -83,8 +83,8 @@ module.exports = class UploadValidator extends BaseValidator {
       return this._validatorOptions
         .fileTypes
         .map(({ mimeType }) => mimeType)
-        // allow empty string for browsers that do not report mime-type
-        .concat('')
+        // exception for browsers that can't detect appropriate mime-type
+        .concat('application/octet-stream')
     } else {
       return ''
     }
