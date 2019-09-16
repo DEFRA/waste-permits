@@ -65,8 +65,7 @@ lab.experiment('Company Declare Upload Course registration tests:', () => {
         title: 'displays WAMITAB medium or high risk information',
         stubs: () => (mocks.standardRule.wamitabRiskLevel = WamitabRiskLevel.MEDIUM),
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'wamitab-risk-is-medium-or-high',
-          'wamitab-risk-is-medium-or-high-abbr'])
+          'wamitab-risk-is-medium-or-high'])
       },
       {
         title: 'displays WAMITAB low risk information',
@@ -75,14 +74,19 @@ lab.experiment('Company Declare Upload Course registration tests:', () => {
           'wamitab-risk-is-low'])
       },
       {
+        title: 'displays WAMITAB medium or high risk information for bespoke',
+        stubs: () => (mocks.context.isBespoke = true),
+        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
+          'wamitab-risk-is-medium-or-high'])
+      },
+      {
         title: 'displays expected static content',
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
           'course-registration-description-heading',
           'course-registration-description-heading-abbr-1',
           'course-registration-description-heading-abbr-2',
           'operator-competence-paragraph',
-          'operator-competence-link',
-          'operator-competence-link-abbr'])
+          'operator-competence-link'])
       }
     ])
     helper.getFailure()
