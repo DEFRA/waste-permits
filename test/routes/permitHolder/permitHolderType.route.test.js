@@ -20,7 +20,6 @@ const { MCP_TYPES } = require('../../../src/dynamics')
 
 const routePath = '/permit-holder/type'
 const nextRoutePath = '/permit-holder/details'
-const errorPath = '/errors/technical-problem'
 let sandbox
 let mocks
 
@@ -117,8 +116,7 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

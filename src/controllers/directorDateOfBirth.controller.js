@@ -2,10 +2,8 @@
 
 const moment = require('moment')
 const Constants = require('../constants')
-const Routes = require('../routes')
 const Utilities = require('../utilities/utilities')
 const BaseController = require('./base.controller')
-const LoggingService = require('../services/logging.service')
 const RecoveryService = require('../services/recovery.service')
 const ContactDetail = require('../models/contactDetail.model')
 const Contact = require('../persistence/entities/contact.entity')
@@ -50,8 +48,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
 
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
-      LoggingService.logError(message, request)
-      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
+      return this.handleInternalError(errors, request, h, message)
     }
 
     // Get the directors that relate to this application
@@ -100,8 +97,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
     const { applicationId, account, permitHolderType } = context
     if (!account) {
       const message = `Application ${applicationId} does not have an Account`
-      LoggingService.logError(message, request)
-      return this.redirect({ h, route: Routes.TECHNICAL_PROBLEM, error: { message } })
+      return this.handleInternalError(errors, request, h, message)
     }
 
     const directors = await this._getDirectors(context, account.id)

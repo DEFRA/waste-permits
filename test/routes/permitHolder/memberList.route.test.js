@@ -26,7 +26,6 @@ const routes = {
     heading: 'Business partners you have added to this application',
     routePath: `/permit-holder/partners/list`,
     nextPath: '/permit-holder/company/declare-offences',
-    errorPath: '/errors/technical-problem',
     editMemberPath: `/permit-holder/partners/name/${memberId}`,
     deleteMemberPath: `/permit-holder/partners/delete/${memberId}`
   },
@@ -35,13 +34,12 @@ const routes = {
     heading: 'Postholders you have added',
     routePath: `/permit-holder/group/list`,
     nextPath: '/permit-holder/group/post-holder/declare-offences',
-    errorPath: '/errors/technical-problem',
     editMemberPath: `/permit-holder/group/post-holder/name/${memberId}`,
     deleteMemberPath: `/permit-holder/group/post-holder/delete/${memberId}`
   }
 }
 
-Object.entries(routes).forEach(([member, { includesJobTitle, heading, routePath, nextPath, errorPath, editMemberPath, deleteMemberPath }]) => {
+Object.entries(routes).forEach(([member, { includesJobTitle, heading, routePath, nextPath, editMemberPath, deleteMemberPath }]) => {
   lab.experiment(capitalizeFirstLetter(member), () => {
     let mocks
     let sandbox
@@ -171,8 +169,7 @@ Object.entries(routes).forEach(([member, { includesJobTitle, heading, routePath,
 
             const res = await server.inject(getRequest)
             Code.expect(spy.callCount).to.equal(1)
-            Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(errorPath)
+            Code.expect(res.statusCode).to.equal(500)
           })
         })
       })
@@ -212,8 +209,7 @@ Object.entries(routes).forEach(([member, { includesJobTitle, heading, routePath,
 
             const res = await server.inject(postRequest)
             Code.expect(spy.callCount).to.equal(1)
-            Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(errorPath)
+            Code.expect(res.statusCode).to.equal(500)
           })
         })
       })

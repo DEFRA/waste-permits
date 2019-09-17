@@ -21,7 +21,6 @@ const slug = 'SLUG'
 const paymentErrorStatus = 'error'
 
 const routePath = `/pay/card`
-const errorPath = '/errors/technical-problem'
 const cardProblemPath = `/pay/card-problem/${slug}?status=${paymentErrorStatus}`
 const returnFromGovPayUrl = '/return/from/govr/pay/url'
 
@@ -93,7 +92,7 @@ lab.experiment(`How do you want to pay?:`, () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to get the applicationContext', async () => {
+      lab.test('500 error screen when failing to get the applicationContext', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         RecoveryService.createApplicationContext = () => {
           throw new Error('recovery failed')
@@ -101,8 +100,7 @@ lab.experiment(`How do you want to pay?:`, () => {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

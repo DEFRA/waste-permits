@@ -6,6 +6,5 @@ emailSentTests(lab, {
   pageHeading: 'You have saved your application',
   routePath: '/save-return/email-sent-task-check',
   nextRoutePath: '/task-list',
-  resentPath: '/save-return/email-sent-resent',
-  errorPath: '/errors/technical-problem'
+  resentPath: '/save-return/email-sent-resent'
 })

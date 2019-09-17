@@ -21,7 +21,6 @@ const nextRoutePath = {
   DEEMED_COMPETENCE: '/technical-competence/upload-deemed-evidence',
   ESA_EU_SKILLS: '/technical-competence/upload-esa-eu-skills'
 }
-const errorPath = '/errors/technical-problem'
 
 const Qualification = {
   WAMITAB_QUALIFICATION: {
@@ -153,8 +152,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })
@@ -207,8 +205,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
       lab.test('redirects to error screen when save fails', async () => {
@@ -217,8 +214,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
       lab.test('redirects to error screen when an unexpected qualification is selected', async () => {
@@ -227,8 +223,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

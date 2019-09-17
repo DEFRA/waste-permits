@@ -21,7 +21,7 @@ let fakeAppUrl
 let fakeRecoveryLink
 let origin
 
-module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHeading, firstTime }) => {
+module.exports = (lab, { routePath, nextRoutePath, resentPath, pageHeading, firstTime }) => {
   let sandbox
   let mocks
 
@@ -200,8 +200,7 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
 
           const res = await server.inject(postRequest)
           Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
+          Code.expect(res.statusCode).to.equal(500)
         })
 
         lab.test('redirects to error screen when save fails', async () => {
@@ -216,8 +215,7 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, errorPath, pageHe
 
           const res = await server.inject(postRequest)
           Code.expect(spy.callCount).to.equal(1)
-          Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(errorPath)
+          Code.expect(res.statusCode).to.equal(500)
         })
       })
     })

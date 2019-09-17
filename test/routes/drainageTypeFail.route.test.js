@@ -27,7 +27,6 @@ const DRAINAGE_FAIL_PERMIT = 'SR2015 No 13'
 
 const routePath = '/drainage-type/contact-us'
 const redirectPath = '/task-list'
-const errorPath = '/errors/technical-problem'
 
 const checkCommonElements = async (doc) => {
   const pageHeading = 'Your drainage system is not suitable - please contact us'
@@ -133,8 +132,7 @@ lab.experiment('Your drainage system is not suitable - please contact us page te
 
         const res = await server.inject(request)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
       lab.test('redirects to error screen when unknown drainage-type is selected', async () => {
@@ -142,8 +140,7 @@ lab.experiment('Your drainage system is not suitable - please contact us page te
         const spy = sandbox.spy(LoggingService, 'logError')
         const res = await server.inject(request)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

@@ -29,7 +29,6 @@ const nextRoutePath = '/task-list'
 const nextRouteNoLinesPath = '/bespoke-or-standard-rules'
 const nextPathForBacs = '/pay/bacs-proof'
 const recoveryFailedPath = '/errors/recovery-failed'
-const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks
@@ -163,8 +162,7 @@ lab.experiment('We found your application:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

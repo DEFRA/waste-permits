@@ -68,6 +68,17 @@ module.exports = class BaseController {
     return pageContext
   }
 
+  handleInternalError (error, request, h, message) {
+    LoggingService.logError(error, request)
+    return h
+      .view('error/technicalProblem', {
+        pageTitle: 'Something went wrong',
+        pageHeading: message || 'Something went wrong',
+        error: error
+      })
+      .code(500)
+  }
+
   async checkRouteAccess (context) {
     const { ALREADY_SUBMITTED, NOT_SUBMITTED, RECOVERY_FAILED, TASK_LIST } = Routes
     const { slug, application } = context
@@ -174,7 +185,7 @@ module.exports = class BaseController {
   }
 
   async handler (request, h, errors) {
-    const { START_AT_BEGINNING, TECHNICAL_PROBLEM, TIMEOUT } = Routes
+    const { START_AT_BEGINNING, TIMEOUT } = Routes
     if (this.cookieValidationRequired) {
       // Validate the cookie
       const cookieValidationResult = await CookieService.validateCookie(request)
@@ -186,9 +197,6 @@ module.exports = class BaseController {
           break
         case COOKIE_RESULT.COOKIE_EXPIRED:
           path = TIMEOUT.path
-          break
-        case COOKIE_RESULT.APPLICATION_NOT_FOUND:
-          path = TECHNICAL_PROBLEM.path
           break
       }
 
@@ -205,8 +213,7 @@ module.exports = class BaseController {
           return this.redirect({ h, path })
         }
       } catch (error) {
-        LoggingService.logError(error, request)
-        return this.redirect({ h, route: TECHNICAL_PROBLEM, error })
+        return this.handleInternalError(error, request, h)
       }
     }
 
@@ -219,8 +226,7 @@ module.exports = class BaseController {
           const response = await this._handler(request, h, errors)
           return response
         } catch (error) {
-          LoggingService.logError(error, request)
-          return this.redirect({ h, route: TECHNICAL_PROBLEM, error })
+          return this.handleInternalError(error, request, h)
         }
     }
   }

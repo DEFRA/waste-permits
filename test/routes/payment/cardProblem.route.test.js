@@ -27,7 +27,6 @@ let sandbox
 const fakeSlug = 'SLUG'
 
 const routePath = `/pay/card-problem/${fakeSlug}`
-const errorPath = '/errors/technical-problem'
 
 lab.beforeEach(() => {
   mocks = new Mocks()
@@ -107,8 +106,7 @@ lab.experiment(`Your card payment failed:`, () => {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })
@@ -156,8 +154,7 @@ lab.experiment(`Your card payment failed:`, () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

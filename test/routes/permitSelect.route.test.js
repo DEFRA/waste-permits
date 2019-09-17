@@ -24,7 +24,6 @@ const routePath = '/permit/select'
 const nextRoutePath = '/task-list'
 const offlineRoutePath = '/start/apply-offline'
 const existingPermitRoutePath = '/existing-permit'
-const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks
@@ -141,8 +140,7 @@ lab.experiment('Select a permit page tests:', () => {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
       lab.test('redirects to error screen when failing to get the permits', async () => {
@@ -153,8 +151,7 @@ lab.experiment('Select a permit page tests:', () => {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
       lab.test('redirects to error screen when failing to get the category', async () => {
@@ -165,8 +162,7 @@ lab.experiment('Select a permit page tests:', () => {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

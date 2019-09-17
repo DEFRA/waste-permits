@@ -7,6 +7,5 @@ emailSentTests(lab, {
   routePath: '/save-return/search-your-email',
   nextPath: '/save-return/check-your-email',
   resentPath: '/save-return/email-sent-resent',
-  errorPath: '/errors/technical-problem',
   excludeAlreadySubmittedTest: true
 })

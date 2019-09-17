@@ -19,7 +19,6 @@ const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/costs-times'
 const nextRoutePath = '/task-list'
-const errorPath = '/errors/technical-problem'
 
 let mocks
 let sandbox
@@ -118,7 +117,7 @@ lab.experiment('Cost and time for this permit page tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when updateCompleteness fails', async () => {
+      lab.test('error screen when updateCompleteness fails', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         CostTime.updateCompleteness = () => {
           throw new Error('update failed')
@@ -126,8 +125,7 @@ lab.experiment('Cost and time for this permit page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

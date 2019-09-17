@@ -32,19 +32,17 @@ const routes = {
     pageHeading: 'We cannot issue a permit to that company because it',
     routePath: '/permit-holder/company/status-not-active',
     nextPath: '/permit-holder/company/check-name',
-    errorPath: '/errors/technical-problem',
     requiredOfficers: 'directors'
   },
   'Limited Liability Partnership': {
     pageHeading: 'We cannot issue a permit to that limited liability partnership (LLP) because it',
     routePath: '/permit-holder/limited-liability-partnership/status-not-active',
     nextPath: '/permit-holder/limited-liability-partnership/check-name',
-    errorPath: '/errors/technical-problem',
     requiredOfficers: 'designated members'
   }
 }
 
-Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath, errorPath, requiredOfficers }]) => {
+Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath, requiredOfficers }]) => {
   lab.experiment(companyType, () => {
     let mocks
     let sandbox
@@ -146,8 +144,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
 
             const res = await server.inject(getRequest)
             Code.expect(spy.callCount).to.equal(1)
-            Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(errorPath)
+            Code.expect(res.statusCode).to.equal(500)
           })
         })
       })

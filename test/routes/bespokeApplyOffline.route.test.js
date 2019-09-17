@@ -25,8 +25,6 @@ for (const key in Routes) {
   }
 }
 
-const errorPath = '/errors/technical-problem'
-
 const ACTIVITY_ITEMS = [
   {
     id: 'ITEM_1',
@@ -123,8 +121,7 @@ Object.entries(routesToTest).forEach(([route, { path: routePath, itemType, pageH
 
             const res = await server.inject(getRequest)
             Code.expect(spy.callCount).to.equal(1)
-            Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(errorPath)
+            Code.expect(res.statusCode).to.equal(500)
           })
         })
 

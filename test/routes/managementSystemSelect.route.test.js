@@ -22,7 +22,6 @@ const { questionCode } = MANAGEMENT_SYSTEM
 
 const routePath = '/management-system/select'
 const nextRoutePath = '/management-system/upload'
-const errorPath = '/errors/technical-problem'
 
 let sandbox
 let mocks
@@ -118,14 +117,13 @@ lab.experiment('Management system select tests:', () => {
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when an unknown management system is selected', async () => {
+      lab.test('error screen when an unknown management system is selected', async () => {
         postRequest.payload[questionCode] = 'UNKNOWN'
         const spy = sandbox.spy(LoggingService, 'logError')
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

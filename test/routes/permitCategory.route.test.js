@@ -21,7 +21,6 @@ const PermitCategoryController = require('../../src/controllers/permitCategory.c
 const routePath = '/permit/category'
 const nextRoutePath = '/permit/select'
 const offlineRoutePath = '/start/apply-offline'
-const errorPath = '/errors/technical-problem'
 
 const offlineCategories = [
   {
@@ -160,8 +159,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
       lab.test('redirects to error screen when failing to get the list of categories', async () => {
@@ -172,8 +170,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

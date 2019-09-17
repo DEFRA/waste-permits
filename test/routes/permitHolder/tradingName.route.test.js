@@ -17,7 +17,6 @@ const { COOKIE_RESULT } = require('../../../src/constants')
 let sandbox
 
 const routePath = '/permit-holder/public-body/name'
-const errorPath = '/errors/technical-problem'
 const nextRoutePath = '/permit-holder/public-body/address/postcode'
 
 let fakeRecovery
@@ -114,8 +113,7 @@ lab.experiment('Partnership Trading Name page tests:', () => {
 
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })
@@ -159,8 +157,7 @@ lab.experiment('Partnership Trading Name page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })

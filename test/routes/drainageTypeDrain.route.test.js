@@ -27,7 +27,6 @@ const DRAINAGE_FAIL_PERMIT = 'SR2015 No 13'
 const routePath = '/drainage-type/drain'
 const nextRoutePath = '/task-list'
 const failRoutePath = '/drainage-type/contact-us'
-const errorPath = '/errors/technical-problem'
 
 const checkCommonElements = async (doc) => {
   const pageHeading = 'Where does the vehicle storage area drain to?'
@@ -101,7 +100,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when failing to recover the application', async () => {
+      lab.test('error screen when failing to recover the application', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         RecoveryService.createApplicationContext = () => {
           throw new Error('recovery failed')
@@ -109,8 +108,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
 
         const res = await server.inject(request)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })
@@ -187,7 +185,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
     })
 
     lab.experiment('failure', () => {
-      lab.test('redirects to error screen when save fails', async () => {
+      lab.test('error screen when save fails', async () => {
         const spy = sandbox.spy(LoggingService, 'logError')
         DrainageTypeDrain.updateCompleteness = () => {
           throw new Error('update failed')
@@ -195,18 +193,16 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
 
-      lab.test('redirects to error screen when unknown drainage-type is selected', async () => {
+      lab.test('error screen when unknown drainage-type is selected', async () => {
         postRequest.payload['drainage-type'] = '999999999'
         const spy = sandbox.spy(LoggingService, 'logError')
 
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
-        Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(errorPath)
+        Code.expect(res.statusCode).to.equal(500)
       })
     })
   })
