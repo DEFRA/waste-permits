@@ -1,4 +1,5 @@
 const BaseCheck = require('./base.check')
+const { UploadSubject } = require('../../constants')
 
 const { SCREENING_TOOL } = require('../../tasks').tasks
 const { SCREENING_TOOL: { path } } = require('../../routes')
@@ -17,7 +18,7 @@ module.exports = class ScreeningToolCheck extends BaseCheck {
   }
 
   async getScreeningToolLine () {
-    const evidence = await this.getScreeningTool()
+    const evidence = await this.getUploadedFileDetails(UploadSubject.SCREENING_TOOL, 'screeningTool')
     const answers = evidence.map((file) => file.filename)
     return this.buildLine({
       heading: 'Screening tool',

@@ -1,4 +1,5 @@
 const BaseCheck = require('./base.check')
+const { UploadSubject } = require('../../constants')
 
 const { WASTE_RECOVERY_PLAN } = require('../../tasks').tasks
 const { WASTE_RECOVERY_PLAN_APPROVAL } = require('../../routes')
@@ -18,7 +19,7 @@ module.exports = class WasteRecoveryPlanCheck extends BaseCheck {
   }
 
   async getWasteRecoveryPlanLine () {
-    const evidence = await this.getWasteRecoveryPlan()
+    const evidence = await this.getUploadedFileDetails(UploadSubject.WASTE_RECOVERY_PLAN, 'wasteRecoveryPlan')
     const { recoveryPlanAssessmentStatus } = await this.getApplication()
     const answers = evidence.map((file) => file.filename)
     const assessment = Object.values(RecoveryPlanAssessmentStatus)

@@ -4,6 +4,7 @@ const Lab = require('@hapi/lab')
 const lab = exports.lab = Lab.script()
 const Code = require('@hapi/code')
 const sinon = require('sinon')
+const { UploadSubject } = require('../../../src/constants')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
 const TechnicalCompetenceCheck = require('../../../src/models/checkList/technicalCompetence.check')
@@ -49,8 +50,6 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
-  sandbox.stub(BaseCheck.prototype, 'getTechnicalCompetenceEvidence').value(() => fakeTechnicalCompetenceEvidence)
-  sandbox.stub(BaseCheck.prototype, 'getTechnicalManagers').value(() => fakeTechnicalManagersEvidence)
 })
 
 lab.afterEach(() => {
@@ -71,6 +70,9 @@ lab.experiment('TechnicalCompetence Check tests:', () => {
 
       lab.beforeEach(async () => {
         sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => ({ technicalQualification }))
+        let getUploadedFileDetails = sandbox.stub(BaseCheck.prototype, 'getUploadedFileDetails')
+        getUploadedFileDetails.withArgs(UploadSubject.TECHNICAL_QUALIFICATION, 'technicalCompetenceEvidence').returns(fakeTechnicalCompetenceEvidence)
+        getUploadedFileDetails.withArgs(UploadSubject.TECHNICAL_MANAGERS, 'technicalManagers').returns(fakeTechnicalManagersEvidence)
         check = new TechnicalCompetenceCheck()
         lines = await check.buildLines()
       })

@@ -1,4 +1,6 @@
 const BaseCheck = require('./base.check')
+const { UploadSubject } = require('../../constants')
+
 const { ApplicationQuestions: { MANAGEMENT_SYSTEM: { answers: possibleAnswers } } } = require('../../dynamics')
 
 const { MANAGEMENT_SYSTEM } = require('../../tasks').tasks
@@ -22,7 +24,7 @@ module.exports = class ManagementSystemCheck extends BaseCheck {
     const foundAnswer = possibleAnswers.find(({ id }) => id === answerCode)
     const answerText = foundAnswer && (foundAnswer.plainText || foundAnswer.description)
 
-    const evidence = await this.getManagementSystemSummary()
+    const evidence = await this.getUploadedFileDetails(UploadSubject.MANAGEMENT_SYSTEM_SUMMARY, 'managementSystemSummary')
     const files = evidence.map(({ filename }) => filename)
     let answers = [answerText, 'Summary:', ...files]
     return this.buildLine({

@@ -1,4 +1,5 @@
 const BaseCheck = require('./base.check')
+const { UploadSubject } = require('../../constants')
 
 const { BEST_AVAILABLE_TECHNIQUES_ASSESSMENT } = require('../../tasks').tasks
 const { BEST_AVAILABLE_TECHNIQUES_ASSESSMENT: { path } } = require('../../routes')
@@ -17,7 +18,7 @@ module.exports = class BestAvailableTechniquesAssessmentCheck extends BaseCheck 
   }
 
   async getBestAvailableTechniquesAssessmentLine () {
-    const evidence = await this.getBestAvailableTechniquesAssessment()
+    const evidence = await this.getUploadedFileDetails(UploadSubject.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT, 'bestAvailableTechniquesAssessment')
     const answers = evidence.map((file) => file.filename)
     return this.buildLine({
       heading: 'Best available techniques assessment',

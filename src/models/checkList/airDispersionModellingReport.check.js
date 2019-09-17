@@ -1,4 +1,5 @@
 const BaseCheck = require('./base.check')
+const { UploadSubject } = require('../../constants')
 
 const { AIR_DISPERSION_MODELLING_REPORT } = require('../../tasks').tasks
 const { AIR_DISPERSION_MODELLING_REPORT: { path } } = require('../../routes')
@@ -17,7 +18,7 @@ module.exports = class AirDispersionModellingReportCheck extends BaseCheck {
   }
 
   async getAirDispersionModellingReportLine () {
-    const evidence = await this.getAirDispersionModellingReport()
+    const evidence = await this.getUploadedFileDetails(UploadSubject.AIR_DISPERSION_MODELLING_REPORT, 'airDispersionModellingReport')
     const answers = evidence.map((file) => file.filename)
     return this.buildLine({
       heading: 'Air dispersion modelling report',

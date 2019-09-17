@@ -1,4 +1,5 @@
 const BaseCheck = require('./base.check')
+const { UploadSubject } = require('../../constants')
 
 const { FIRE_PREVENTION_PLAN } = require('../../tasks').tasks
 const { FIRE_PREVENTION_PLAN: { path } } = require('../../routes')
@@ -17,7 +18,7 @@ module.exports = class FirePreventionPlanCheck extends BaseCheck {
   }
 
   async getFirePreventionPlanLine () {
-    const evidence = await this.getFirePreventionPlan()
+    const evidence = await this.getUploadedFileDetails(UploadSubject.FIRE_PREVENTION_PLAN, 'firePreventionPlan')
     return this.buildLine({
       heading: 'Fire prevention plan',
       answers: evidence.map((file) => file.filename),

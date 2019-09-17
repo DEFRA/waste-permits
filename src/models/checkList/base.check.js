@@ -1,4 +1,3 @@
-const Constants = require('../../constants')
 const Account = require('../../persistence/entities/account.entity')
 const Address = require('../../persistence/entities/address.entity')
 const Annotation = require('../../persistence/entities/annotation.entity')
@@ -24,25 +23,6 @@ const {
   MANAGEMENT_SYSTEM
 } = require('../../dynamics').ApplicationQuestions
 
-const {
-  AIR_DISPERSION_MODELLING_REPORT,
-  BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
-  ENERGY_EFFICIENCY_REPORT,
-  TECHNICAL_QUALIFICATION,
-  SITE_PLAN,
-  FIRE_PREVENTION_PLAN,
-  WASTE_RECOVERY_PLAN,
-  WASTE_TYPES_LIST,
-  ENVIRONMENTAL_RISK_ASSESSMENT,
-  NON_TECHNICAL_SUMMARY,
-  MANAGEMENT_SYSTEM_SUMMARY,
-  TECHNICAL_MANAGERS,
-  MCP_DETAILS,
-  ODOUR_MANAGEMENT_PLAN,
-  EMISSIONS_MANAGEMENT_PLAN,
-  SITE_CONDITION_REPORT
-} = Constants.UploadSubject
-
 module.exports = class BaseCheck {
   constructor (data) {
     this.data = data
@@ -60,6 +40,14 @@ module.exports = class BaseCheck {
       answers: answers.map((answer, index) => ({ answerId: `${prefix}-answer${answers.length > 1 ? `-${index + 1}` : ''}`, answer })),
       links: links.map(({ path, type }, index) => ({ linkId: `${prefix}-link${links.length > 1 ? `-${index + 1}` : ''}`, link: path, linkType: type }))
     }
+  }
+
+  async getUploadedFileDetails (fileSubject, propertyName) {
+    const fileDetails = this.data[propertyName]
+    if (!fileDetails) {
+      this.data[propertyName] = await Annotation.listByApplicationIdAndSubject(this.data, fileSubject)
+    }
+    return this.data[propertyName] || {}
   }
 
   async getApplication () {
@@ -192,102 +180,6 @@ module.exports = class BaseCheck {
     return this.data.invoiceAddress || {}
   }
 
-  async getTechnicalCompetenceEvidence () {
-    const { technicalCompetenceEvidence } = this.data
-    if (!technicalCompetenceEvidence) {
-      this.data.technicalCompetenceEvidence = await Annotation.listByApplicationIdAndSubject(this.data, TECHNICAL_QUALIFICATION)
-    }
-    return this.data.technicalCompetenceEvidence || {}
-  }
-
-  async getSitePlan () {
-    const { sitePlan } = this.data
-    if (!sitePlan) {
-      this.data.sitePlan = await Annotation.listByApplicationIdAndSubject(this.data, SITE_PLAN)
-    }
-    return this.data.sitePlan || {}
-  }
-
-  async getEnergyEfficiencyReport () {
-    const { energyEfficiencyReport } = this.data
-    if (!energyEfficiencyReport) {
-      this.data.energyEfficiencyReport = await Annotation.listByApplicationIdAndSubject(this.data, ENERGY_EFFICIENCY_REPORT)
-    }
-    return this.data.energyEfficiencyReport || {}
-  }
-
-  async getEmissionsManagementPlan () {
-    const { emissionsManagementPlan } = this.data
-    if (!emissionsManagementPlan) {
-      this.data.emissionsManagementPlan = await Annotation.listByApplicationIdAndSubject(this.data, EMISSIONS_MANAGEMENT_PLAN)
-    }
-    return this.data.emissionsManagementPlan || {}
-  }
-
-  async getAirDispersionModellingReport () {
-    const { airDispersionModellingReport } = this.data
-    if (!airDispersionModellingReport) {
-      this.data.airDispersionModellingReport = await Annotation.listByApplicationIdAndSubject(this.data, AIR_DISPERSION_MODELLING_REPORT)
-    }
-    return this.data.airDispersionModellingReport || {}
-  }
-
-  async getScreeningTool () {
-    const { screeningTool } = this.data
-    if (!screeningTool) {
-      this.data.screeningTool = await Annotation.listByApplicationIdAndSubject(this.data, AIR_DISPERSION_MODELLING_REPORT)
-    }
-    return this.data.screeningTool || {}
-  }
-
-  async getBestAvailableTechniquesAssessment () {
-    const { bestAvailableTechniquesAssessment } = this.data
-    if (!bestAvailableTechniquesAssessment) {
-      this.data.bestAvailableTechniquesAssessment = await Annotation.listByApplicationIdAndSubject(this.data, BEST_AVAILABLE_TECHNIQUES_ASSESSMENT)
-    }
-    return this.data.bestAvailableTechniquesAssessment || {}
-  }
-
-  async getWasteRecoveryPlan () {
-    const { wasteRecoveryPlan } = this.data
-    if (!wasteRecoveryPlan) {
-      this.data.wasteRecoveryPlan = await Annotation.listByApplicationIdAndSubject(this.data, WASTE_RECOVERY_PLAN)
-    }
-    return this.data.wasteRecoveryPlan || {}
-  }
-
-  async getFirePreventionPlan () {
-    const { firePreventionPlan } = this.data
-    if (!firePreventionPlan) {
-      this.data.firePreventionPlan = await Annotation.listByApplicationIdAndSubject(this.data, FIRE_PREVENTION_PLAN)
-    }
-    return this.data.firePreventionPlan || {}
-  }
-
-  async getWasteTypesList () {
-    const { wasteTypesList } = this.data
-    if (!wasteTypesList) {
-      this.data.wasteTypesList = await Annotation.listByApplicationIdAndSubject(this.data, WASTE_TYPES_LIST)
-    }
-    return this.data.wasteTypesList || {}
-  }
-
-  async getEnvironmentalRiskAssessment () {
-    const { environmentalRiskAssessment } = this.data
-    if (!environmentalRiskAssessment) {
-      this.data.environmentalRiskAssessment = await Annotation.listByApplicationIdAndSubject(this.data, ENVIRONMENTAL_RISK_ASSESSMENT)
-    }
-    return this.data.environmentalRiskAssessment || {}
-  }
-
-  async getNonTechnicalSummary () {
-    const { nonTechnicalSummary } = this.data
-    if (!nonTechnicalSummary) {
-      this.data.nonTechnicalSummary = await Annotation.listByApplicationIdAndSubject(this.data, NON_TECHNICAL_SUMMARY)
-    }
-    return this.data.nonTechnicalSummary || {}
-  }
-
   async getManagementSystem () {
     const { managementSystem } = this.data
     if (!managementSystem) {
@@ -296,36 +188,12 @@ module.exports = class BaseCheck {
     return this.data.managementSystem || {}
   }
 
-  async getManagementSystemSummary () {
-    const { managementSystemSummary } = this.data
-    if (!managementSystemSummary) {
-      this.data.managementSystemSummary = await Annotation.listByApplicationIdAndSubject(this.data, MANAGEMENT_SYSTEM_SUMMARY)
-    }
-    return this.data.managementSystemSummary || []
-  }
-
   async getNeedToConsult () {
     const { needToConsult } = this.data
     if (!needToConsult) {
       this.data.needToConsult = await NeedToConsult.get(this.data)
     }
     return this.data.needToConsult || {}
-  }
-
-  async getTechnicalManagers () {
-    const { technicalManagers } = this.data
-    if (!technicalManagers) {
-      this.data.technicalManagers = await Annotation.listByApplicationIdAndSubject(this.data, TECHNICAL_MANAGERS)
-    }
-    return this.data.technicalManagers || {}
-  }
-
-  async getMcpDetails () {
-    const { mcpDetails } = this.data
-    if (!mcpDetails) {
-      this.data.mcpDetails = await Annotation.listByApplicationIdAndSubject(this.data, MCP_DETAILS)
-    }
-    return this.data.mcpDetails || {}
   }
 
   async getMcpBusinessType () {
@@ -342,21 +210,5 @@ module.exports = class BaseCheck {
       this.data.airQualityManagementArea = await AirQualityManagementArea.get(this.data)
     }
     return this.data.airQualityManagementArea || {}
-  }
-
-  async getOdourManagementPlan () {
-    const { odourManagementPlan } = this.data
-    if (!odourManagementPlan) {
-      this.data.odourManagementPlan = await Annotation.listByApplicationIdAndSubject(this.data, ODOUR_MANAGEMENT_PLAN)
-    }
-    return this.data.odourManagementPlan || {}
-  }
-
-  async getSiteConditionReport () {
-    const { siteConditionReport } = this.data
-    if (!siteConditionReport) {
-      this.data.siteConditionReport = await Annotation.listByApplicationIdAndSubject(this.data, SITE_CONDITION_REPORT)
-    }
-    return this.data.siteConditionReport || {}
   }
 }

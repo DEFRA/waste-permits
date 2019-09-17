@@ -1,4 +1,5 @@
 const BaseCheck = require('./base.check')
+const { UploadSubject } = require('../../constants')
 
 const { SITE_CONDITION_REPORT } = require('../../tasks').tasks
 const { SITE_CONDITION_REPORT: { path } } = require('../../routes')
@@ -17,7 +18,7 @@ module.exports = class SiteConditionReportCheck extends BaseCheck {
   }
 
   async getSiteConditionReportLine () {
-    const evidence = await this.getSiteConditionReport()
+    const evidence = await this.getUploadedFileDetails(UploadSubject.SITE_CONDITION_REPORT, 'siteConditionReport')
     return this.buildLine({
       heading: 'Site condition report',
       answers: evidence.map((file) => file.filename),

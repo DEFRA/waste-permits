@@ -23,7 +23,7 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub the asynchronous base methods
-  sandbox.stub(BaseCheck.prototype, 'getSitePlan').value(() => fakeSitePlans)
+  sandbox.stub(BaseCheck.prototype, 'getUploadedFileDetails').value(() => fakeSitePlans)
 })
 
 lab.afterEach(() => {

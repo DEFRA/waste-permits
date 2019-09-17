@@ -3,6 +3,8 @@ const BaseCheck = require('./base.check')
 const { ENERGY_EFFICIENCY_REPORT } = require('../../tasks').tasks
 const { ENERGY_EFFICIENCY_REPORT: { path } } = require('../../routes')
 
+const Constants = require('../../constants')
+
 module.exports = class EnergyEfficiencyReportCheck extends BaseCheck {
   static get task () {
     return ENERGY_EFFICIENCY_REPORT
@@ -17,7 +19,7 @@ module.exports = class EnergyEfficiencyReportCheck extends BaseCheck {
   }
 
   async getEnergyEfficiencyReportLine () {
-    const evidence = await this.getEnergyEfficiencyReport()
+    const evidence = await this.getUploadedFileDetails(Constants.UploadSubject.ENERGY_EFFICIENCY_REPORT, 'energyEfficiencyReport')
     const answers = evidence.map((file) => file.filename)
     return this.buildLine({
       heading: 'Energy efficiency report',
