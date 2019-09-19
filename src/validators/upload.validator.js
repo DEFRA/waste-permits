@@ -25,8 +25,7 @@ module.exports = class UploadValidator extends BaseValidator {
         'virusFile': `Our scanner detected a virus in that file. It has not been uploaded. Please use your own virus scanner to check and clean the file. You should either upload a clean copy of the file or contact us if you think that the file does not have a virus.`,
         'noFilesUploaded': `You must upload at least one file. Choose a file then press the 'Upload chosen file' button.`,
         'array.base': ' ',
-        'object.base': ' ',
-        'file.filename': 'dfdfdf'
+        'object.base': ' '
       },
       'content-type': {
         'any.allowOnly': `You can only upload ${this.formatValidTypes()} files`
