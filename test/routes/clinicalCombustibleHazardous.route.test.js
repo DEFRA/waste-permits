@@ -36,6 +36,7 @@ lab.beforeEach(() => {
 
   mockWasteTypes = {
     data: {
+      wasteActivities: ""
     }
   }
 
@@ -71,12 +72,68 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
       lab.test('when first time', async () => {
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
+        Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('combustible').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('hazardous').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('none-required').getAttribute('checked')).to.equal('')
       })
 
       lab.test('when value already selected', async () => {
-        mockWasteTypes.acceptsClinicalWaste = true
+        mockWasteTypes.data.acceptsClinicalWaste = true
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
+        Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('checked')
+        Code.expect(doc.getElementById('combustible').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('hazardous').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('none-required').getAttribute('checked')).to.equal('')
+      })
+
+      lab.test('when hazardous activity selected', async () => {
+        mockWasteTypes.data.wasteActivities = '1-16-5'
+        const doc = await GeneralTestHelper.getDoc(request)
+        await checkCommonElements(doc)
+        Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('combustible').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('hazardous').getAttribute('checked')).to.equal('checked')
+        Code.expect(doc.getElementById('none-required').getAttribute('checked')).to.equal('')
+      })
+
+      lab.test('when clinical activity selected', async () => {
+        mockWasteTypes.data.wasteActivities = '1-16-7'
+        const doc = await GeneralTestHelper.getDoc(request)
+        await checkCommonElements(doc)
+        Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('checked')
+        Code.expect(doc.getElementById('combustible').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('hazardous').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('none-required').getAttribute('checked')).to.equal('')
+      })
+
+      lab.test('when multiple activities selected', async () => {
+        mockWasteTypes.data.wasteActivities = '1-16-7,1-16-5,1-16-0'
+        const doc = await GeneralTestHelper.getDoc(request)
+        await checkCommonElements(doc)
+        Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('checked')
+        Code.expect(doc.getElementById('combustible').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('hazardous').getAttribute('checked')).to.equal('checked')
+        Code.expect(doc.getElementById('none-required').getAttribute('checked')).to.equal('')
+      })
+
+      lab.test('when no relevant activity selected', async () => {
+        mockWasteTypes.data.wasteActivities = '1-16-0'
+        const doc = await GeneralTestHelper.getDoc(request)
+        await checkCommonElements(doc)
+        Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('combustible').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('hazardous').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('none-required').getAttribute('checked')).to.equal('')
+      })
+
+      lab.test('previous selections should override activity', async () => {
+        mockWasteTypes.data.wasteActivities = '1-16-7'
+        mockWasteTypes.data.acceptsClinicalWaste = false
+        const doc = await GeneralTestHelper.getDoc(request)
+        await checkCommonElements(doc)
+        Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('')
       })
     })
 

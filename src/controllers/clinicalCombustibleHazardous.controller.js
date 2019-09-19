@@ -12,7 +12,21 @@ module.exports = class NeedToConsultController extends BaseController {
       pageContext.formValues = request.payload
     } else {
       const context = await RecoveryService.createApplicationContext(h)
-      const { data: { acceptsClinicalWaste, acceptsCombustibleWaste, acceptsHazardousWaste, doesntAcceptClinicalCombustibleOrHazardousWaste } } = await DataStore.get(context)
+      let { data: { acceptsClinicalWaste, acceptsCombustibleWaste, acceptsHazardousWaste, doesntAcceptClinicalCombustibleOrHazardousWaste, wasteActivities } } = await DataStore.get(context)
+
+      wasteActivities = wasteActivities.split(',')
+
+      if (acceptsClinicalWaste === undefined &&
+          wasteActivities.includes('1-16-7')) {
+        acceptsClinicalWaste = true
+      }
+
+      if (acceptsHazardousWaste === undefined &&
+            (wasteActivities.includes('1-16-4') ||
+             wasteActivities.includes('1-16-5') ||
+             wasteActivities.includes('1-16-9'))) {
+        acceptsHazardousWaste = true
+      }
 
       pageContext.formValues = {
         'clinical': acceptsClinicalWaste,
