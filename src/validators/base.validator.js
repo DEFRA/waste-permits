@@ -62,7 +62,6 @@ module.exports = class BaseValidator {
   addErrorsToPageContext (validationErrors, pageContext) {
     pageContext.errors = {}
     pageContext.errorList = []
-
     validationErrors.details.forEach((error) => {
       // The error path leads from the field to the descendant property of that field that has the error.
       // Usually there is only one item in the path as field values are not typically objects however in the case of an input of type file
