@@ -237,7 +237,7 @@ module.exports = class UploadTestHelper {
     })
   }
 
-  uploadInvalid (options = {}, contentType = 'image/jpeg', filename = 'test.jpg') {
+  uploadInvalid (options = {}, contentType = 'image/jpeg', filename) {
     const { lab } = this
     options = Object.assign({}, { fileTypes: defaultFileTypes.split(',') }, options)
     const lastFileType = options.fileTypes.pop()
@@ -255,7 +255,10 @@ module.exports = class UploadTestHelper {
       })
 
       lab.test('when the filename is too long', async () => {
-        const req = this._uploadRequest({ filename: `${'a'.repeat(252)}.docx`, contentType })
+        const req = this._uploadRequest({
+          filename: filename ? `${'a'.repeat(252)}${filename}` : `${'a'.repeat(252)}.docx`,
+          contentType
+        })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
       })
