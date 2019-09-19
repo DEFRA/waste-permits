@@ -1,0 +1,69 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>
+        Read the guidance on GOV.UK to ensure you select the correct types of waste:
+        <ul class="list list-bullet">
+            <li><a rel="noopener noreferrer" target="_blank" href="https://www.gov.uk/government/publications/clinical-waste-additional-guidance">Clinical waste (opens new tab)</a></li>
+            <li><a rel="noopener noreferrer" target="_blank" href="https://www.gov.uk/government/publications/fire-prevention-plans-environmental-permits/fire-prevention-plans-environmental-permits#types-of-combustible-waste">Combustible waste (opens new tab)</a></li>
+            <li><a rel="noopener noreferrer" target="_blank" href="https://www.gov.uk/dispose-hazardous-waste">Hazardous waste (opens new tab)</a></li>
+          </ul>
+      </p>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.select}}{{/getFormErrorGroupClass}}">
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">{{pageHeading}}</legend>
+
+          <h2 id="select" class="heading-small">Select all types your operation accepts:</h2>
+          {{> common/fieldError fieldId='select-error' message=errors.select }}
+
+          <div class="multiple-choice">
+            <input id="clinical" name="clinical" type="checkbox" value="yes" {{#if formValues.clinical}}checked{{/if}}>
+            <label for="clinical">
+              Clinical waste
+            </label>
+          </div>
+
+          <div class="multiple-choice">
+            <input id="combustible" name="combustible" type="checkbox" value="yes" {{#if formValues.combustible}}checked{{/if}}>
+            <label for="combustible">
+              Combustible waste
+            </label>
+          </div>
+
+          <div class="multiple-choice">
+            <input id="hazardous" name="hazardous" type="checkbox" value="yes" {{#if formValues.hazardous}}checked{{/if}}>
+            <label for="hazardous">
+              Hazardous waste
+            </label>
+          </div>
+
+          <div class="multiple-choice">
+            <input id="none-required" name="none-required" type="checkbox" value="yes" {{#if formValues.none-required}}checked{{/if}}>
+            <label for="none-required">
+              None of these
+            </label>
+          </div>
+
+        </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>

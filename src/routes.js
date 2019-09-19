@@ -800,6 +800,15 @@ const Routes = {
     cookieValidationRequired: false,
     applicationRequired: false
   },
+  CLINICAL_COMBUSTIBLE_HAZARDOUS: {
+    path: '/select/bespoke/clinical-combustible-hazardous',
+    view: 'clinicalCombustibleHazardous',
+    pageHeading: 'Do you accept any of these types of waste?',
+    controller: 'clinicalCombustibleHazardous',
+    validator: 'clinicalCombustibleHazardous',
+    nextRoute: 'WASTE_ASSESSMENT',
+    types: 'GET, POST'
+  },
   CONFIDENTIALITY: {
     path: '/confidentiality',
     view: 'declaration/confidentiality/confidentiality',
@@ -1415,7 +1424,7 @@ const Routes = {
     pageHeading: 'Select all the activities you want the permit to cover',
     controller: 'wasteActivity',
     validator: 'wasteActivity',
-    nextRoute: 'WASTE_ASSESSMENT',
+    nextRoute: 'CLINICAL_COMBUSTIBLE_HAZARDOUS',
     previousRoute: 'FACILITY_TYPE',
     types: 'GET, POST'
   },

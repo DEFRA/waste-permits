@@ -2,7 +2,6 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-// const DataStore = require('../models/dataStore.model')
 const NeedToConsultModel = require('../models/needToConsult.model')
 
 module.exports = class NeedToConsultController extends BaseController {
