@@ -81,9 +81,9 @@ lab.experiment('Upload details for all technically competent managers tests:', (
 
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
-    helper.uploadSuccess('application/msword')
+    helper.uploadSuccess('application/msword', 'test.docx')
     helper.uploadInvalid({ fileTypes: ['DOC', 'DOCX', 'PDF', 'ODT'] }, 'application/msword')
-    helper.uploadFailure('application/msword')
+    helper.uploadFailure('application/msword', 'test.docx')
   })
 
   lab.experiment(`POST ${routePath}`, () => {
