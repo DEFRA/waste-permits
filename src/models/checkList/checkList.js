@@ -16,6 +16,7 @@ const InvoiceCheck = require('../../models/checkList/invoice.check')
 const MiningWasteCheck = require('../../models/checkList/miningWaste.check')
 const WasteTypesListCheck = require('../../models/checkList/wasteTypesList.check')
 const EnvironmentalRiskAssessmentCheck = require('../../models/checkList/environmentalRiskAssessment.check')
+const EmissionsAndMonitoringCheck = require('../../models/checkList/emissionsAndMonitoring.check')
 const NonTechnicalSummaryCheck = require('../../models/checkList/nonTechnicalSummary.check')
 const BestAvailableTechniquesAssessmentCheck = require('../../models/checkList/bestAvailableTechniquesAssessment.check')
 const EnergyEfficiencyReportCheck = require('../../models/checkList/energyEfficiencyReport.check')
@@ -53,6 +54,7 @@ module.exports = class CheckList {
       FirePreventionPlanCheck,
       WasteRecoveryPlanCheck,
       EnvironmentalRiskAssessmentCheck,
+      EmissionsAndMonitoringCheck,
       ManagementSystemCheck,
       MiningWasteCheck,
       ConfidentialityCheck,

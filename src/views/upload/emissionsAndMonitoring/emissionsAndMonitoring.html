@@ -1,0 +1,55 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+      <ol class="list list-number bold-small">
+        <li>
+          <p>
+            <span class="bold-small">Download this template and save it on your computer</span>
+            <br>
+            <span><a href="/public/images/pointSourceEmissionsTemplate/Point source emissions template WORD.docx" download="Point source emissions template.docx">Point source emissions template (Word doc)</a>
+             | 
+            <a href="/public/images/pointSourceEmissionsTemplate/Point source emissions template ODT.odt" download="Point source emissions template.odt">Open Document Text</a></span>
+          </p>
+        </li>
+        <li>
+          <span class="bold-small">Tell us about the emissions</span>
+          <br>
+          <span class="normal-weight">
+            You have 2 options:
+            <ol class="list list-bullet">
+              <li>complete the table in the template - you must create one table for each waste operation</li>
+              <li>reference another document you’ve uploaded that contains the information we need - you can also upload that document here</li>
+            </ol>
+          </span>
+        </li>
+        <li>
+          <p>
+            <span class="bold-small">Upload your documents</span>
+            <br>
+            <span>You must always upload the completed template - you can also upload any other documents you’ve referenced.</span>
+          </p>
+        </li>
+      </ol>
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

@@ -191,7 +191,8 @@ Constants.UploadSubject = {
   ODOUR_MANAGEMENT_PLAN: 'odour management plan',
   ARBITRARY_UPLOADS: 'arbitrary uploads',
   EMISSIONS_MANAGEMENT_PLAN: 'emissions management plan',
-  SITE_CONDITION_REPORT: 'site condition report'
+  SITE_CONDITION_REPORT: 'site condition report',
+  EMISSIONS_AND_MONITORING_DETAILS: 'Point source emissions'
 }
 
 Constants.CookieValue = {

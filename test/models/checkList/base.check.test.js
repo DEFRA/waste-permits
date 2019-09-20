@@ -15,6 +15,7 @@ const Location = require('../../../src/persistence/entities/location.entity')
 const LocationDetail = require('../../../src/persistence/entities/locationDetail.entity')
 const StandardRule = require('../../../src/persistence/entities/standardRule.entity')
 
+const DataStore = require('../../../src/models/dataStore.model')
 const ContactDetail = require('../../../src/models/contactDetail.model')
 const CharityDetail = require('../../../src/models/charityDetail.model')
 const NeedToConsult = require('../../../src/models/needToConsult.model')
@@ -205,6 +206,27 @@ lab.experiment('Base Check tests:', () => {
     const standardRule = await check.getStandardRule()
     Code.expect(standardRule).to.equal(mocks.standardRule)
     Code.expect(context.standardRule).to.equal(await check.getStandardRule())
+  })
+  
+  lab.test('getEmissionsAndMonitoringDetails works correctly if no details provided', async () => {
+    sandbox.stub(DataStore, 'get').value(() => { return { data: { emissionsAndMonitoringDetailsRequired: false } } })
+
+    delete context.emissionsAndMonitoringDetails
+    const check = new BaseCheck(context)
+    const emissionsAndMonitoringDetails = await check.getEmissionsAndMonitoringDetails()
+    Code.expect(emissionsAndMonitoringDetails).to.equal({ emissionsAndMonitoringDetailsRequired: false })
+    Code.expect(context.emissionsAndMonitoringDetails).to.equal(await check.getEmissionsAndMonitoringDetails())
+  })
+
+  lab.test('getEmissionsAndMonitoringDetails works correctly if details provided', async () => {
+    sandbox.stub(DataStore, 'get').value(() => { return { data: { emissionsAndMonitoringDetailsRequired: true } } })
+
+    delete context.emissionsAndMonitoringDetails
+    const check = new BaseCheck(context)
+    const emissionsAndMonitoringDetails = await check.getEmissionsAndMonitoringDetails()
+    Code.expect(emissionsAndMonitoringDetails.files).to.equal([mocks.annotation])
+    Code.expect(emissionsAndMonitoringDetails.emissionsAndMonitoringDetailsRequired).to.equal(true)
+    Code.expect(context.emissionsAndMonitoringDetails).to.equal(await check.getEmissionsAndMonitoringDetails())
   })
 
   lab.test('getUploadedFileDetails works correctly', async () => {

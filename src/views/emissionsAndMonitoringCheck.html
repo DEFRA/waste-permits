@@ -1,0 +1,39 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+      {{> common/pageHeading pageHeading }}
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.emissions-made}}{{/getFormErrorGroupClass}}">
+          <fieldset>
+
+            <legend id="emissions-made-legend" class="visually-hidden">{{pageHeading}}</legend>
+
+            {{> common/fieldError fieldId='emissions-made-error' message=errors.emissions-made }}
+            <div class="multiple-choice">
+              <input id="emissions-made-yes" type="radio" name="emissions-made" value="yes" {{#if formValues.emissions-made-yes}}checked="checked"{{/if}}>
+              <label id="emissions-made-yes-label" for="emissions-made-yes">Yes</label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="emissions-made-no" type="radio" name="emissions-made" value="no" {{#if formValues.emissions-made-no}}checked="checked"{{/if}}>
+              <label id="emissions-made-no-label" for="emissions-made-no">No</label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+    </div>
+  </div>
+
+</main>
