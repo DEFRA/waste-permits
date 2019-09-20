@@ -22,6 +22,7 @@ const nextRoutePath = '/waste-assessment'
 let sandbox
 let mocks
 let mockWasteTypes
+let dataStoreSaveFake
 
 const checkCommonElements = async (doc) => {
   Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Do you accept any of these types of waste?')
@@ -44,7 +45,8 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(DataStore, 'get').callsFake(async () => mockWasteTypes)
-  sandbox.stub(DataStore, 'save').callsFake(async () => undefined)
+  dataStoreSaveFake = sandbox.stub(DataStore, 'save')
+  dataStoreSaveFake.callsFake(async () => undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
@@ -113,15 +115,29 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
         postRequest.payload['combustible'] = 'yes'
         postRequest.payload['hazardous'] = 'yes'
         const res = await server.inject(postRequest)
+
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(dataStoreSaveFake.calledWith(mocks.recovery, {
+          acceptsClinicalWaste: true,
+          acceptsCombustibleWaste: true,
+          acceptsHazardousWaste: true,
+          doesntAcceptClinicalCombustibleOrHazardousWaste: false
+        })).to.be.true()
       })
 
       lab.test('when none selected', async () => {
         postRequest.payload['none-required'] = 'yes'
         const res = await server.inject(postRequest)
+
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(dataStoreSaveFake.calledWith(mocks.recovery, {
+          acceptsClinicalWaste: false,
+          acceptsCombustibleWaste: false,
+          acceptsHazardousWaste: false,
+          doesntAcceptClinicalCombustibleOrHazardousWaste: true
+        })).to.be.true()
       })
 
       lab.test('when each selected', async () => {
@@ -130,14 +146,34 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(dataStoreSaveFake.calledWith(mocks.recovery, {
+          acceptsClinicalWaste: true,
+          acceptsCombustibleWaste: false,
+          acceptsHazardousWaste: false,
+          doesntAcceptClinicalCombustibleOrHazardousWaste: false
+        })).to.be.true()
+
         postRequest.payload = { 'combustible': 'yes' }
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(dataStoreSaveFake.calledWith(mocks.recovery, {
+          acceptsClinicalWaste: false,
+          acceptsCombustibleWaste: true,
+          acceptsHazardousWaste: false,
+          doesntAcceptClinicalCombustibleOrHazardousWaste: false
+        })).to.be.true()
+
         postRequest.payload = { 'hazardous': 'yes' }
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(dataStoreSaveFake.calledWith(mocks.recovery, {
+          acceptsClinicalWaste: false,
+          acceptsCombustibleWaste: false,
+          acceptsHazardousWaste: true,
+          doesntAcceptClinicalCombustibleOrHazardousWaste: false
+        })).to.be.true()
       })
     })
 
