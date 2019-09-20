@@ -83,11 +83,21 @@ lab.experiment('Consultees page tests:', () => {
       lab.test('when first time', async () => {
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
+
+        Code.expect(doc.getElementById('consult-sewer-required').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('consult-harbour-required').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('consult-fisheries-required').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('consult-none-required').getAttribute('checked')).to.equal('')
       })
       lab.test('when value already selected', async () => {
         mocks.needToConsult.none = true
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
+
+        Code.expect(doc.getElementById('consult-sewer-required').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('consult-harbour-required').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('consult-fisheries-required').getAttribute('checked')).to.equal('')
+        Code.expect(doc.getElementById('consult-none-required').getAttribute('checked')).to.equal('checked')
       })
       lab.test('when all data already entered', async () => {
         mocks.needToConsult.sewer = true
@@ -99,6 +109,14 @@ lab.experiment('Consultees page tests:', () => {
         mocks.needToConsult.none = false
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
+
+        Code.expect(doc.getElementById('consult-sewer-required').getAttribute('checked')).to.equal('checked')
+        Code.expect(doc.getElementById('consult-sewerage-undertaker').getAttribute('value')).to.equal('SEWERAGE UNDERTAKER')
+        Code.expect(doc.getElementById('consult-harbour-required').getAttribute('checked')).to.equal('checked')
+        Code.expect(doc.getElementById('consult-harbour-authority').getAttribute('value')).to.equal('HARBOUR AUTHORITY')
+        Code.expect(doc.getElementById('consult-fisheries-required').getAttribute('checked')).to.equal('checked')
+        Code.expect(doc.getElementById('consult-fisheries-committee').getAttribute('value')).to.equal('FISHERIES COMMITTEE')
+        Code.expect(doc.getElementById('consult-none-required').getAttribute('checked')).to.equal('')
       })
     })
 
@@ -155,10 +173,12 @@ lab.experiment('Consultees page tests:', () => {
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
+
         postRequest.payload = { 'consult-harbour-required': 'yes', 'consult-harbour-authority': 'HARBOUR AUTHORITY' }
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(nextRoutePath)
+
         postRequest.payload = { 'consult-fisheries-required': 'yes', 'consult-fisheries-committee': 'FISHERIES COMMITTEE' }
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
