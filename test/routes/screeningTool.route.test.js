@@ -62,10 +62,10 @@ lab.experiment('Screening tool upload tests:', () => {
     helper.removeSuccess()
   })
 
-  lab.experiment.only(`POST ${uploadPath}`, () => {
+  lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
     helper.uploadSuccess('application/vnd.ms-excel', 'test.xls')
-    helper.uploadInvalid({ fileTypes: ['XLS', 'XLSX', 'ODS', 'PDF'] }, 'application/vnd.ms-excel', 'test.xls')
+    helper.uploadInvalid({ fileTypes: ['XLS', 'XLSX', 'ODS', 'PDF'] }, 'application/vnd.ms-excel', 'test.xls', false)
     helper.uploadFailure('application/vnd.ms-excel', 'test.xls')
   })
 

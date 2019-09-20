@@ -237,7 +237,7 @@ module.exports = class UploadTestHelper {
     })
   }
 
-  uploadInvalid (options = {}, contentType = 'image/jpeg', filename) {
+  uploadInvalid (options = {}, contentType = 'image/jpeg', filename, runDuplicate = true) {
     const { lab } = this
     options = Object.assign({}, { fileTypes: defaultFileTypes.split(',') }, options)
     const lastFileType = options.fileTypes.pop()
@@ -248,11 +248,13 @@ module.exports = class UploadTestHelper {
         checkExpectedErrors(doc, `You can only upload ${options.fileTypes.join(', ')} or ${lastFileType} files`)
       })
 
-      lab.test('when duplicate file', async () => {
-        const req = this._uploadRequest({ filename: mocks.annotation.filename, contentType })
-        const doc = await GeneralTestHelper.getDoc(req)
-        checkExpectedErrors(doc, 'That file has the same name as one you have already uploaded. Choose another file or rename the file before uploading it again.')
-      })
+      if (runDuplicate) {
+        lab.test('when duplicate file', async () => {
+          const req = this._uploadRequest({ filename: mocks.annotation.filename, contentType })
+          const doc = await GeneralTestHelper.getDoc(req)
+          checkExpectedErrors(doc, 'That file has the same name as one you have already uploaded. Choose another file or rename the file before uploading it again.')
+        })
+      }
 
       lab.test('when the filename is too long', async () => {
         const req = this._uploadRequest({
@@ -265,7 +267,7 @@ module.exports = class UploadTestHelper {
 
       lab.test('when the file has a virus', async () => {
         VirusScan.isInfected = () => Promise.resolve(true)
-        const req = this._uploadRequest({ filename: `virus.pdf`, contentType })
+        const req = this._uploadRequest({ filename: filename || `virus.pdf`, contentType })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `Our scanner detected a virus in that file. It has not been uploaded. Please use your own virus scanner to check and clean the file. You should either upload a clean copy of the file or contact us if you think that the file does not have a virus.`)
       })
