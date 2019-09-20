@@ -198,12 +198,12 @@ module.exports = class UploadTestHelper {
     }
   }
 
-  uploadSuccess (contentType = 'image/jpeg') {
+  uploadSuccess (contentType = 'image/jpeg', filename = 'test.jpg') {
     const { lab, routePath } = this
     lab.experiment('success', () => {
       lab.test('when annotation is saved', async () => {
         const spy = sinon.spy(VirusScan, 'isInfected')
-        const req = this._uploadRequest({ contentType })
+        const req = this._uploadRequest({ contentType, filename })
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
@@ -214,7 +214,7 @@ module.exports = class UploadTestHelper {
       lab.test('when annotation is saved and virus scan is bypassed', async () => {
         const spy = sinon.spy(VirusScan, 'isInfected')
         const stub = sinon.stub(config, 'bypassVirusScan').value(true)
-        const req = this._uploadRequest({ contentType })
+        const req = this._uploadRequest({ contentType, filename })
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(0)
         Code.expect(res.statusCode).to.equal(302)
@@ -237,39 +237,44 @@ module.exports = class UploadTestHelper {
     })
   }
 
-  uploadInvalid (options = {}, contentType = 'image/jpeg') {
+  uploadInvalid (options = {}, contentType = 'image/jpeg', filename, runDuplicate = true) {
     const { lab } = this
     options = Object.assign({}, { fileTypes: defaultFileTypes.split(',') }, options)
     const lastFileType = options.fileTypes.pop()
     lab.experiment('invalid', () => {
       lab.test('when invalid content type', async () => {
-        const req = this._uploadRequest({ contentType: 'audio/wav' })
+        const req = this._uploadRequest({ contentType: 'audio/wav', filename: 'test.wav' })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `You can only upload ${options.fileTypes.join(', ')} or ${lastFileType} files`)
       })
 
-      lab.test('when duplicate file', async () => {
-        const req = this._uploadRequest({ filename: mocks.annotation.filename, contentType })
-        const doc = await GeneralTestHelper.getDoc(req)
-        checkExpectedErrors(doc, 'That file has the same name as one you have already uploaded. Choose another file or rename the file before uploading it again.')
-      })
+      if (runDuplicate) {
+        lab.test('when duplicate file', async () => {
+          const req = this._uploadRequest({ filename: mocks.annotation.filename, contentType })
+          const doc = await GeneralTestHelper.getDoc(req)
+          checkExpectedErrors(doc, 'That file has the same name as one you have already uploaded. Choose another file or rename the file before uploading it again.')
+        })
+      }
 
       lab.test('when the filename is too long', async () => {
-        const req = this._uploadRequest({ filename: `${'a'.repeat(252)}.jpg`, contentType })
+        const req = this._uploadRequest({
+          filename: filename ? `${'a'.repeat(252)}${filename}` : `${'a'.repeat(252)}.docx`,
+          contentType
+        })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
       })
 
       lab.test('when the file has a virus', async () => {
         VirusScan.isInfected = () => Promise.resolve(true)
-        const req = this._uploadRequest({ filename: `virus.pdf`, contentType })
+        const req = this._uploadRequest({ filename: filename || `virus.pdf`, contentType })
         const doc = await GeneralTestHelper.getDoc(req)
         checkExpectedErrors(doc, `Our scanner detected a virus in that file. It has not been uploaded. Please use your own virus scanner to check and clean the file. You should either upload a clean copy of the file or contact us if you think that the file does not have a virus.`)
       })
     })
   }
 
-  uploadFailure (contentType = 'image/jpeg') {
+  uploadFailure (contentType = 'image/jpeg', filename = 'test.jpg') {
     const { lab } = this
     lab.experiment('failure', () => {
       lab.test('redirects to error screen when save fails', async () => {
@@ -277,7 +282,7 @@ module.exports = class UploadTestHelper {
         Annotation.prototype.save = () => {
           throw new Error('save failed')
         }
-        const req = this._uploadRequest({ contentType })
+        const req = this._uploadRequest({ contentType, filename })
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(500)

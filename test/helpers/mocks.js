@@ -76,7 +76,7 @@ class MockData {
       id: 'ANNOTATION_ID',
       applicationId: application.id,
       subject: 'ANNOTATION_NAME',
-      filename: 'ANNOTATION_FILENAME'
+      filename: 'ANNOTATION_FILENAME.DOCX'
     }
   }
 

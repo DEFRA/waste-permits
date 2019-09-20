@@ -21,7 +21,9 @@ Constants.FILE_TYPES = {
   ODS: { mimeType: 'application/vnd.oasis.opendocument.spreadsheet' },
   ODT: { mimeType: 'application/vnd.oasis.opendocument.text' },
   PDF: { mimeType: 'application/pdf' },
-  XLS: { mimeType: 'application/vnd.ms-excel' },
+  XLS: {
+    mimeType: ['application/vnd.ms-excel', 'application/octet-stream']
+  },
   XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
   AAI: { mimeType: 'application/octet-stream' },
   ADI: { mimeType: 'application/octet-stream' },
