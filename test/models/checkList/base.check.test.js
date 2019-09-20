@@ -207,6 +207,27 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(standardRule).to.equal(mocks.standardRule)
     Code.expect(context.standardRule).to.equal(await check.getStandardRule())
   })
+  
+  lab.test('getEmissionsAndMonitoringDetails works correctly if no details provided', async () => {
+    sandbox.stub(DataStore, 'get').value(() => { return { data: { emissionsAndMonitoringDetailsRequired: false } } })
+
+    delete context.emissionsAndMonitoringDetails
+    const check = new BaseCheck(context)
+    const emissionsAndMonitoringDetails = await check.getEmissionsAndMonitoringDetails()
+    Code.expect(emissionsAndMonitoringDetails).to.equal({ emissionsAndMonitoringDetailsRequired: false })
+    Code.expect(context.emissionsAndMonitoringDetails).to.equal(await check.getEmissionsAndMonitoringDetails())
+  })
+
+  lab.test('getEmissionsAndMonitoringDetails works correctly if details provided', async () => {
+    sandbox.stub(DataStore, 'get').value(() => { return { data: { emissionsAndMonitoringDetailsRequired: true } } })
+
+    delete context.emissionsAndMonitoringDetails
+    const check = new BaseCheck(context)
+    const emissionsAndMonitoringDetails = await check.getEmissionsAndMonitoringDetails()
+    Code.expect(emissionsAndMonitoringDetails.files).to.equal([mocks.annotation])
+    Code.expect(emissionsAndMonitoringDetails.emissionsAndMonitoringDetailsRequired).to.equal(true)
+    Code.expect(context.emissionsAndMonitoringDetails).to.equal(await check.getEmissionsAndMonitoringDetails())
+  })
 
   lab.test('getUploadedFileDetails works correctly', async () => {
     delete context['testFileDetails']

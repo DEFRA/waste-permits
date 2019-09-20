@@ -24,6 +24,10 @@ const {
   MANAGEMENT_SYSTEM
 } = require('../../dynamics').ApplicationQuestions
 
+const {
+  EMISSIONS_AND_MONITORING_DETAILS
+} = require('../../constants').UploadSubject
+
 module.exports = class BaseCheck {
   constructor (data) {
     this.data = data
@@ -119,6 +123,24 @@ module.exports = class BaseCheck {
     const list = await this.listContactDetails(addressType)
     // return the first found
     return list.pop() || {}
+  }
+
+  async getEmissionsAndMonitoringDetails () {
+    const { emissionsAndMonitoringDetails } = this.data
+    if (!emissionsAndMonitoringDetails) {
+      const { data: { emissionsAndMonitoringDetailsRequired } } = await DataStore.get(this.data)
+      if (emissionsAndMonitoringDetailsRequired) {
+        this.data.emissionsAndMonitoringDetails = {
+          emissionsAndMonitoringDetailsRequired: emissionsAndMonitoringDetailsRequired,
+          files: await Annotation.listByApplicationIdAndSubject(this.data, EMISSIONS_AND_MONITORING_DETAILS)
+        }
+      } else {
+        this.data.emissionsAndMonitoringDetails = {
+          emissionsAndMonitoringDetailsRequired: false
+        }
+      }
+    }
+    return this.data.emissionsAndMonitoringDetails || {}
   }
 
   async getPermitHolderType () {
