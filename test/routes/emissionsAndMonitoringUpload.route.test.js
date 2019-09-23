@@ -65,7 +65,9 @@ lab.experiment('Emissions and monitoring upload tests:', () => {
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
     helper.uploadSuccess('application/msword', 'test.docx')
+
     helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT'] }, 'application/msword', 'test.docx')
+
     helper.uploadFailure('application/msword', 'test.docx')
   })
 
