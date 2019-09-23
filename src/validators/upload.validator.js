@@ -1,6 +1,5 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
 const BaseValidator = require('./base.validator')
 const Annotation = require('../persistence/entities/annotation.entity')
 const Constants = require('../constants')
@@ -14,9 +13,6 @@ module.exports = class UploadValidator extends BaseValidator {
 
   get errorMessages () {
     return {
-      'filename': {
-        'string.regex.name': `You can only upload ${this.formatValidTypes()} files`
-      },
       'file': {
         'custom.max.filename': `That file’s name is greater than ${Annotation.filename.length.max} characters - please rename the file with a shorter name before uploading it again.`,
         'custom.empty': 'Choose and upload a file',
@@ -25,37 +21,9 @@ module.exports = class UploadValidator extends BaseValidator {
         'virusFile': `Our scanner detected a virus in that file. It has not been uploaded. Please use your own virus scanner to check and clean the file. You should either upload a clean copy of the file or contact us if you think that the file does not have a virus.`,
         'noFilesUploaded': `You must upload at least one file. Choose a file then press the 'Upload chosen file' button.`,
         'array.base': ' ',
-        'object.base': ' '
-      },
-      'content-type': {
-        'any.allowOnly': `You can only upload ${this.formatValidTypes()} files`
+        'object.base': ' ',
+        'custom.extension.filename': `You can only upload ${this.formatValidTypes()} files`
       }
-    }
-  }
-
-  get formValidators () {
-    const fileSchema =
-      Joi.object().keys({
-        'hapi': Joi.object().keys({
-          'filename': Joi.string().regex(
-            new RegExp(this.listValidFileTypeExtensions().join('|\\.')),
-            'file extension'
-          ),
-          'headers': Joi.object().keys({
-            'content-type': Joi.string(),
-            'content-disposition': Joi.string().required()
-          })
-            .required()
-            .when('filename', {
-              is: Joi.string().required(),
-              then: Joi.object({
-                'content-type': Joi.valid(this.listValidMimeTypes())
-              })
-            })
-        })
-      }).optional()
-    return {
-      'file': Joi.alternatives([Joi.array().items(fileSchema), fileSchema])
     }
   }
 
@@ -65,6 +33,26 @@ module.exports = class UploadValidator extends BaseValidator {
         'custom.max.filename': ({ hapi: { filename } }) => filename.length > Annotation.filename.length.max,
         'custom.empty': ({ hapi: { filename } }, { 'is-upload-file': isUpload }) => {
           return isUpload && !filename
+        },
+        'custom.extension.filename': ({
+          hapi: {
+            filename,
+            headers
+          }
+        }) => {
+          const regexPattern = '\\.' + this.listValidFileTypeExtensions().join('|\\.')
+          const re = new RegExp(regexPattern)
+          if (re.test(filename)) {
+            if (
+              typeof headers['content-type'] === 'string' &&
+              typeof headers['content-disposition'] === 'string'
+            ) {
+              return !this.listValidMimeTypes().includes(headers['content-type'])
+            }
+          }
+          // none of the above matched
+          // report the validation failure
+          return true
         }
       }
     }
