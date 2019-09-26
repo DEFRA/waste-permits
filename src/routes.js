@@ -1156,6 +1156,20 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
+  NOISE_VIBRATION_DOCUMENTS: {
+    path: '/noise-vibration-docs/upload',
+    view: 'upload/noiseVibrationDocuments/noiseVibrationDocuments',
+    pageHeading: 'Upload noise and vibration emissions documents',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'NOISE_VIBRATION_DOCUMENTS',
+    validatorOptions: {
+      fileTypes: [ XLS, XLSX, ODS, PDF ]
+    }
+  },
   NON_TECHNICAL_SUMMARY: {
     path: '/non-technical-summary',
     view: 'upload/nonTechnicalSummary/nonTechnicalSummary',
