@@ -192,7 +192,8 @@ Constants.UploadSubject = {
   ARBITRARY_UPLOADS: 'arbitrary uploads',
   EMISSIONS_MANAGEMENT_PLAN: 'emissions management plan',
   SITE_CONDITION_REPORT: 'site condition report',
-  EMISSIONS_AND_MONITORING_DETAILS: 'Point source emissions'
+  EMISSIONS_AND_MONITORING_DETAILS: 'Point source emissions',
+  NOISE_VIBRATION_DOCUMENTS: 'noise and vibration emissions documents'
 }
 
 Constants.CookieValue = {
