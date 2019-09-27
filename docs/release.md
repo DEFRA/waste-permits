@@ -10,9 +10,17 @@ Most releases will be a minor update (ie. 1.20.0 to 1.21.0). If a change is made
 
 First ensure you are on the latest version of `dev`:
 
+
+
 ```bash
 git checkout dev
 git pull
+
+# update the version number in package.json
+
+# ensure shrinkwrap it upto date
+rm -fr node_modules
+npm i
 ```
 
 Bump the version number. For a minor version:
