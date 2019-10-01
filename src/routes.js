@@ -1444,12 +1444,30 @@ const Routes = {
   WASTE_ACTIVITY: {
     path: '/waste-activity',
     view: 'wasteActivity',
-    pageHeading: 'Select all the activities you want the permit to cover',
+    pageHeading: 'Add an activity to the permit',
     controller: 'wasteActivity',
     validator: 'wasteActivity',
-    nextRoute: 'CLINICAL_COMBUSTIBLE_HAZARDOUS',
+    nextRoute: 'WASTE_ACTIVITY_CONTINUE',
     previousRoute: 'FACILITY_TYPE',
     types: 'GET, POST'
+  },
+  WASTE_ACTIVITY_CONTINUE: {
+    path: '/waste-activity-continue',
+    view: 'wasteActivityContinue',
+    pageHeading: 'Add another activity or continue',
+    controller: 'wasteActivityContinue',
+    nextRoute: 'CLINICAL_COMBUSTIBLE_HAZARDOUS',
+    types: 'GET, POST'
+  },
+  WASTE_ACTIVITY_NAME: {
+    path: '/waste-activity-name',
+    view: 'wasteActivityName',
+    pageHeading: 'Name these activities',
+    controller: 'wasteActivityName',
+    validator: 'wasteActivityName',
+    nextRoute: 'CLINICAL_COMBUSTIBLE_HAZARDOUS',
+    types: 'GET, POST',
+    allowEmptyParametersInPayload: true
   },
   WASTE_ACTIVITY_APPLY_OFFLINE: {
     path: '/waste-activity/apply-offline',

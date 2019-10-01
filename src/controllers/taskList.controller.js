@@ -8,6 +8,7 @@ const BaseTaskList = require('../models/taskList/base.taskList')
 const StandardRule = require('../persistence/entities/standardRule.entity')
 const RecoveryService = require('../services/recovery.service')
 const ApplicationCostItem = require('../models/applicationCostItem.model')
+const { FACILITY_TYPES: { MCP } } = require('../dynamics')
 
 module.exports = class TaskListController extends BaseController {
   async doGet (request, h, errors, firstTimeIn = true) {
@@ -30,13 +31,18 @@ module.exports = class TaskListController extends BaseController {
     if (TaskList.isStandardRules) {
       pageContext.standardRule = await StandardRule.getByApplicationLineId(context, context.applicationLineId)
     } else {
-      const { airDispersionModellingRequired, mcpType } = context.taskDeterminants
+      const { facilityType, airDispersionModellingRequired, mcpType } = context.taskDeterminants
 
-      pageContext.activityName = airDispersionModellingRequired
-        ? 'Medium combustion plant site - requires dispersion modelling'
-        : 'Medium combustion plant site - does not require dispersion modelling'
+      if (facilityType === MCP) {
+        pageContext.activityName = airDispersionModellingRequired
+          ? 'Medium combustion plant site - requires dispersion modelling'
+          : 'Medium combustion plant site - does not require dispersion modelling'
 
-      pageContext.mcpType = mcpType
+        pageContext.mcpType = mcpType
+      } else {
+        pageContext.activityName = 'Waste operation'
+        pageContext.mcpType = ''
+      }
 
       pageContext.totalCostIem = new ApplicationCostItem({
         description: 'Total',

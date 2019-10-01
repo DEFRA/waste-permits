@@ -57,7 +57,6 @@ module.exports = class TaskDeterminants {
       _permitType = {},
       _mcpType = {},
       _facilityType = {},
-      _wasteActivities = [],
       _wasteAssessments = [],
       airDispersionModellingRequired = false,
       energyEfficiencyReportRequired = false,
@@ -77,7 +76,6 @@ module.exports = class TaskDeterminants {
       permitCategory: _permitCategory.id,
       permitType: _permitType.id,
       facilityType: _facilityType.id,
-      wasteActivities: _wasteActivities.filter((activity) => typeof activity === 'object').map(({ shortName }) => shortName).join(','),
       wasteAssessments: _wasteAssessments.filter((assessment) => typeof assessment === 'object').map(({ shortName }) => shortName).join(','),
       airDispersionModellingRequired,
       energyEfficiencyReportRequired,
@@ -94,19 +92,17 @@ module.exports = class TaskDeterminants {
   static async get (context) {
     let [
       { data = {} },
-      allActivities,
       allAssessments,
       allCategories,
       { answerCode: mcpType }
     ] = await Promise.all([
       await DataStore.get(context),
-      Item.listWasteActivities(context),
       Item.listWasteAssessments(context),
       StandardRuleType.getCategories(context),
       await TaskDeterminants._getAnswer(context, MCP_PERMIT_TYPES) || {}
     ])
 
-    const determinants = Object.assign({ mcpType, allActivities, allAssessments, allCategories }, data)
+    const determinants = Object.assign({ mcpType, allAssessments, allCategories }, data)
     const taskDeterminants = new TaskDeterminants({ context, ...determinants })
 
     // Save original values so that when we save the data, we don't bother to save unchanged values.
@@ -165,19 +161,6 @@ module.exports = class TaskDeterminants {
 
   get mcpType () {
     return this._mcpType
-  }
-
-  /// wasteActivities ///
-
-  set wasteActivities (wasteActivities) {
-    if (typeof wasteActivities === 'string') {
-      wasteActivities = wasteActivities.split(',').filter((item) => item)
-    }
-    this._wasteActivities = this._extendItemArray(wasteActivities, 'allActivities')
-  }
-
-  get wasteActivities () {
-    return this._wasteActivities
   }
 
   /// wasteAssessments ///

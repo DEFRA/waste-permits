@@ -11,6 +11,7 @@ const server = require('../../server')
 const Application = require('../../src/persistence/entities/application.entity')
 const ApplicationLine = require('../../src/persistence/entities/applicationLine.entity')
 const Item = require('../../src/persistence/entities/item.entity')
+const WasteActivities = require('../../src/models/wasteActivities.model')
 const RecoveryService = require('../../src/services/recovery.service')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
@@ -42,7 +43,6 @@ lab.beforeEach(() => {
   mocks.context.isBespoke = true
   mocks.applicationLines = []
 
-  mocks.taskDeterminants.allActivities = allActivities.map(({ id, shortName }) => new Item({ id, shortName }))
   mocks.taskDeterminants.allAssessments = allAssessments.map(({ id, shortName }) => new Item({ id, shortName }))
 
   // Create a sinon sandbox to stub methods
@@ -56,6 +56,7 @@ lab.beforeEach(() => {
   saveSpy = sandbox.stub(ApplicationLine.prototype, 'save').callsFake(() => false)
   sandbox.stub(Item, 'listWasteActivities').value(async () => mocks.wasteActivities)
   sandbox.stub(Item, 'listWasteAssessments').value(async () => mocks.wasteAssessments)
+  sandbox.stub(WasteActivities, 'get').resolves(new WasteActivities(allActivities.map(({ id, shortName }) => new Item({ id, shortName })), mocks.wasteActivities))
   sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => mocks.recovery)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
 })
@@ -65,7 +66,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Permit holder details: Redirect to correct details flow', () => {
+lab.experiment('Maintain application lines: Redirect to confirm costs', () => {
   new GeneralTestHelper({ lab, routePath }).test({ excludeCookiePostTests: true, excludeHtmlTests: true })
 
   lab.experiment(`GET ${routePath}`, () => {
@@ -89,21 +90,22 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
           Code.expect(res.headers['location']).to.equal(nextPath)
         })
 
-        lab.test('when there are application lines but none to delete and none to add', async () => {
-          mocks.taskDeterminants.wasteActivities = [...allActivities]
+        lab.test('when there are application lines but no changes', async () => {
+          const preSelectedActivities = allActivities.map(({ shortName }) => ({ id: shortName, name: '' }))
+          mocks.wasteActivities.push(...preSelectedActivities)
           allActivities.forEach(({ id }) => mocks.applicationLines.push(new ApplicationLine(Object.assign({}, mocks.applicationLine, { itemId: id }))))
 
           const res = await server.inject(getRequest)
-          Code.expect(saveSpy.callCount).to.equal(0)
-          Code.expect(deleteSpy.callCount).to.equal(0)
+          Code.expect(saveSpy.callCount).to.equal(allActivities.length)
+          Code.expect(deleteSpy.callCount).to.equal(allActivities.length)
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(nextPath)
         })
 
         lab.test('when there are application lines to delete and some to add', async () => {
           const itemsToDelete = [allActivities[0], allActivities[1]]
-          const itemsToAdd = [allActivities[2], allActivities[3]]
-          mocks.taskDeterminants.wasteActivities = [...itemsToAdd]
+          const itemsToAdd = [allActivities[2], allActivities[3]].map(({ shortName }) => ({ id: shortName, name: '' }))
+          mocks.wasteActivities.push(...itemsToAdd)
           itemsToDelete.forEach(({ id }) => mocks.applicationLines.push(new ApplicationLine(Object.assign({}, mocks.applicationLine, { itemId: id }))))
 
           const res = await server.inject(getRequest)

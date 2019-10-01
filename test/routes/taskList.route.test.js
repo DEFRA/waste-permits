@@ -9,13 +9,14 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const { BESPOKE } = require('../../src/constants').PermitTypes
-const { STATIONARY_MCP } = require('../../src/dynamics').MCP_TYPES
+const { MCP_TYPES: { STATIONARY_MCP }, FACILITY_TYPES: { MCP, WASTE_OPERATION } } = require('../../src/dynamics')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const Application = require('../../src/persistence/entities/application.entity')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 const StandardRulesTaskList = require('../../src/models/taskList/standardRules.taskList')
 const BespokeTaskList = require('../../src/models/taskList/bespoke.taskList')
+const McpBespokeTaskList = require('../../src/models/taskList/mcpBespoke.taskList')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/task-list'
@@ -197,6 +198,7 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRule, 'getByCode').value(() => mocks.standardRule)
   sandbox.stub(StandardRulesTaskList, 'buildTaskList').value(() => fakeTaskList)
   sandbox.stub(BespokeTaskList, 'buildTaskList').value(() => fakeTaskList)
+  sandbox.stub(McpBespokeTaskList, 'buildTaskList').value(() => fakeTaskList)
 })
 
 lab.afterEach(() => {
@@ -242,9 +244,10 @@ lab.experiment('Task List page tests:', () => {
     checkElement(doc.getElementById('select-a-different-permit'))
   })
 
-  lab.test('Task list page contains the correct heading and Bespoke info when dispersion modelling is required', async () => {
+  lab.test('Task list page contains the correct heading and Bespoke MCP info when dispersion modelling is required', async () => {
     mocks.context.isBespoke = true
     mocks.context.permitType = BESPOKE.id
+    mocks.taskDeterminants.facilityType = MCP
     mocks.taskDeterminants.airDispersionModellingRequired = true
     mocks.taskDeterminants.mcpType = STATIONARY_MCP
     const doc = await GeneralTestHelper.getDoc(getRequest)
@@ -260,9 +263,10 @@ lab.experiment('Task List page tests:', () => {
       .equal('/bespoke-or-standard-rules')
   })
 
-  lab.test('Task list page contains the correct heading and Bespoke info when dispersion modelling is not required', async () => {
+  lab.test('Task list page contains the correct heading and Bespoke MCP info when dispersion modelling is not required', async () => {
     mocks.context.isBespoke = true
     mocks.context.permitType = BESPOKE.id
+    mocks.taskDeterminants.facilityType = MCP
     mocks.taskDeterminants.airDispersionModellingRequired = false
     mocks.taskDeterminants.mcpType = STATIONARY_MCP
     const doc = await GeneralTestHelper.getDoc(getRequest)
@@ -271,6 +275,24 @@ lab.experiment('Task List page tests:', () => {
     checkElement(doc.getElementById('page-heading'), 'Apply for a bespoke environmental permit')
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
     checkElement(doc.getElementById('activity-name'), `Medium combustion plant site - does not require dispersion modelling`)
+    checkElement(doc.getElementById('select-a-different-permit'))
+    Code.expect(doc.getElementById('select-a-different-permit')
+      .getAttribute('href'))
+      .to
+      .equal('/bespoke-or-standard-rules')
+  })
+
+  lab.test('Task list page contains the correct heading and Bespoke info for waste operations', async () => {
+    mocks.context.isBespoke = true
+    mocks.context.permitType = BESPOKE.id
+    mocks.taskDeterminants.facilityType = WASTE_OPERATION
+    mocks.taskDeterminants.airDispersionModellingRequired = false
+    const doc = await GeneralTestHelper.getDoc(getRequest)
+
+    // Check the existence of the page title and Bespoke info
+    checkElement(doc.getElementById('page-heading'), 'Apply for a bespoke environmental permit')
+    checkElement(doc.getElementById('task-list-heading-visually-hidden'))
+    checkElement(doc.getElementById('activity-name'), `Waste operation`)
     checkElement(doc.getElementById('select-a-different-permit'))
     Code.expect(doc.getElementById('select-a-different-permit')
       .getAttribute('href'))

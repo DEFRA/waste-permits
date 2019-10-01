@@ -1,5 +1,5 @@
 'use strict'
-const { WASTE_ACTIVITY } = require('../routes.js')
+const { WASTE_ACTIVITY_CONTINUE } = require('../routes.js')
 const { MCP } = require('../dynamics').FACILITY_TYPES
 
 const BaseController = require('./base.controller')
@@ -15,7 +15,7 @@ module.exports = class ConfirmCostController extends BaseController {
     pageContext.calculatedCosts = await ApplicationCost.getApplicationCostForApplicationId(context)
 
     if (facilityType !== MCP) {
-      pageContext.wasteActivitiesLink = WASTE_ACTIVITY.path
+      pageContext.wasteActivitiesLink = WASTE_ACTIVITY_CONTINUE.path
     }
 
     return this.showView({ h, pageContext })

@@ -12,7 +12,7 @@
       {{> common/pageHeading pageHeading }}
 
       <p>
-        Showing activities for waste operations.
+        These activities are for waste operations.
         <a id="change-facility" href="{{previousLink}}">Change facility type</a>.
       </p>
 
@@ -25,10 +25,19 @@
           <div id="activity" class="form-group {{#getFormErrorGroupClass errors.activity}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='activity-error' message=errors.activity }}
             {{#each activities}}
-            <div class="multiple-choice">
-              <input id="activity-{{this.id}}-input" type="checkbox" name="activity" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
-              <label id="activity-{{this.id}}-label" for="activity-{{this.id}}-input">
+            <div class="multiple-choice" data-target="activity-{{this.id}}-hint">
+              <input id="activity-{{this.id}}-input" type="radio" name="activity" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
+              <label id="activity-{{this.id}}-label" for="activity-{{this.id}}-input" class="selection-button-radio">
                 <span id="activity-{{this.id}}-text">{{this.text}}</span>
+                {{#if this.couldBeAnInstallation}}
+                  <span id="activity-{{this.id}}-hint" class="panel panel-border-narrow js-hidden">
+                    This activity could be an installation. To check you’re applying for the correct type of permit,
+                    <a id="activity-{{this.id}}-link" target="_blank" rel="noopener noreferrer"
+                       href="https://www.gov.uk/guidance/check-if-you-need-an-environmental-permit#what-you-need-a-permit-for">
+                      read the guidance on installations (opens new tab)
+                    </a>
+                  </span>
+                {{/if}}
               </label>
             </div>
             {{/each}}

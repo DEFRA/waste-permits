@@ -6,3 +6,21 @@
 .button-secondary:active {
   outline: 3px solid $yellow;
 }
+
+.link-button {
+  background-color: inherit;
+  border-style: none;
+  box-sizing: content-box;
+  cursor: pointer;
+  font: inherit;
+  height: auto;
+  padding: 0;
+  perspective-origin: 0 0;
+  text-align: start;
+  transform-origin: 0 0;
+  width: auto;
+}
+
+.link-button:focus {
+  background-color: $yellow;
+}
