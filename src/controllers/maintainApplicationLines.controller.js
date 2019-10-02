@@ -31,6 +31,7 @@ module.exports = class MaintainApplicationLinesController extends BaseController
     const applicationLines = await ApplicationLine.listBy(context, { applicationId })
 
     if (facilityType === MCP) {
+      wasteActivities.selectedWasteActivities = []
       const {
         airDispersionModellingRequired,
         energyEfficiencyReportRequired,

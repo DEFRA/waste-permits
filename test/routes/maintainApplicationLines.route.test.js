@@ -152,6 +152,21 @@ lab.experiment('Maintain application lines: Redirect to confirm costs', () => {
           Code.expect(res.statusCode).to.equal(302)
           Code.expect(res.headers['location']).to.equal(nextPath)
         })
+
+        lab.test('mcp facility does not add waste activities', async () => {
+          Object.assign(mocks.taskDeterminants, {
+            facilityType: 'mcp',
+            airDispersionModellingRequired: false,
+            energyEfficiencyReportRequired: false,
+            bestAvailableTechniquesAssessment: false,
+            habitatAssessmentRequired: false
+          })
+          mocks.wasteActivities.push({ id: 'xxx' }, { id: 'xxx' })
+          const res = await server.inject(getRequest)
+          Code.expect(saveSpy.callCount).to.equal(1)
+          Code.expect(res.statusCode).to.equal(302)
+          Code.expect(res.headers['location']).to.equal(nextPath)
+        })
       })
     })
   })
