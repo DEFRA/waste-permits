@@ -23,7 +23,9 @@
     "test-cov-html": "lab -r html -o coverage.html",
     "version": "git checkout -b update-to-v$npm_package_version",
     "postversion": "git add --all && git commit --message=\"Update version to v$npm_package_version\" && git push --set-upstream origin HEAD",
-    "version-tag": "git tag --annotate --message=\"Update version to v$npm_package_version\" v$npm_package_version && git push origin v$npm_package_version"
+    "version-tag": "git tag --annotate --message=\"Update version to v$npm_package_version\" v$npm_package_version && git push origin v$npm_package_version",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "devDependencies": {
     "@hapi/code": "^5.3.1",
@@ -91,12 +93,14 @@
     "object-path": "^0.11.4",
     "path": "^0.12.7",
     "pdfmake": "^0.1.57",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "snyk": "^1.230.5"
   },
   "standard": {
     "ignore": [
       "node_modules/",
       "public/"
     ]
-  }
+  },
+  "snyk": true
 }
