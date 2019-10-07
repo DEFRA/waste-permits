@@ -78,6 +78,14 @@ const Dynamics = {
         questionCode: 'general-charity-number'
       }
     },
+    MANAGE_HAZARDOUS_WASTE: {
+      MEET_STANDARDS: {
+        questionCode: 'meet-hazardous-waste-standards'
+      },
+      LIST_PROCEDURES: {
+        questionCode: 'hazardous-waste-procedures'
+      }
+    },
     MANAGEMENT_SYSTEM: {
       questionCode: 'environmental-management-system',
       answers: [

@@ -1,0 +1,40 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form id="form" method="POST" action="{{formAction}}{{formActionQueryString}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <p>
+          You only need to list the the procedure references from
+          <a id="hazardous-waste-guidance-link"
+             href="https://www.gov.uk/government/publications/sector-guidance-note-s506-recovery-and-disposal-of-hazardous-and-non-hazardous-waste"
+             target="_blank"
+             rel="noopener noreferrer">
+            <span>EPR 5.06 (opens new tab)</span>
+          </a>
+          if you will meet all the standards.
+        </p>
+
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">{{pageHeading}}</legend>
+          <div class="form-group {{#getFormErrorGroupClass errors.errors.procedures-list}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='procedures-list-error' message=errors.procedures-list}}
+            <textarea class="form-control form-control-full {{#if errors.procedures-list}}form-control-error{{/if}}" name="procedures-list" rows="10" type="text"
+                      id="procedures-list">{{formValues.procedures-list}}</textarea>
+          </div>
+        </fieldset>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>

@@ -192,7 +192,10 @@ Constants.UploadSubject = {
   ARBITRARY_UPLOADS: 'arbitrary uploads',
   EMISSIONS_MANAGEMENT_PLAN: 'emissions management plan',
   SITE_CONDITION_REPORT: 'site condition report',
-  EMISSIONS_AND_MONITORING_DETAILS: 'Point source emissions'
+  EMISSIONS_AND_MONITORING_DETAILS: 'Point source emissions',
+  HAZARDOUS_WASTE_PROPOSAL: 'hazardous waste management proposal',
+  HAZARDOUS_WASTE_TREATMENT_SUMMARY: 'hazardous waste treatment summary',
+  HAZARDOUS_WASTE_PLANS: 'hazardous waste layout plans and process flows'
 }
 
 Constants.CookieValue = {
