@@ -53,6 +53,18 @@ lab.experiment('WasteActivities test:', () => {
     Code.expect(wasteActivities.wasteActivitiesLength).to.equal(1)
   })
 
+  lab.test('get textForNumberOfWasteActivities', async () => {
+    const dummyActivity = { id: 'FAKE_ACTIVITY_ID', referenceName: 'Fake name' }
+    const allWasteActivities = await WasteActivities.getAllWasteActivities()
+    let wasteActivities
+    wasteActivities = new WasteActivities(allWasteActivities)
+    Code.expect(wasteActivities.textForNumberOfWasteActivities).to.equal('no activities')
+    wasteActivities = new WasteActivities(allWasteActivities, [dummyActivity])
+    Code.expect(wasteActivities.textForNumberOfWasteActivities).to.equal('1 activity')
+    wasteActivities = new WasteActivities(allWasteActivities, [dummyActivity, dummyActivity])
+    Code.expect(wasteActivities.textForNumberOfWasteActivities).to.equal('2 activities')
+  })
+
   lab.test('get wasteActivitiesValues', async () => {
     const allWasteActivities = await WasteActivities.getAllWasteActivities()
     const wasteActivities = new WasteActivities(allWasteActivities, [{ id: 'FAKE_ACTIVITY_ID', referenceName: 'Fake name' }])
@@ -255,6 +267,7 @@ lab.experiment('WasteActivities test:', () => {
     lab.test(`Deletes existing activity`, async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       const wasteActivity = wasteActivities.deleteWasteActivity(1)
+      Code.expect(wasteActivity).to.exist()
       Code.expect(wasteActivity.referenceName).to.equal('Fake 2')
       Code.expect(wasteActivities.wasteActivitiesLength).to.equal(2)
     })
@@ -264,6 +277,22 @@ lab.experiment('WasteActivities test:', () => {
       const wasteActivity = wasteActivities.deleteWasteActivity('not-an-index')
       Code.expect(wasteActivity).to.not.exist()
       Code.expect(wasteActivities.wasteActivitiesLength).to.equal(3)
+    })
+
+    lab.test(`Keeps referenceName for entries that are still duplicates`, async () => {
+      const wasteActivities = await WasteActivities.get(mocks.context)
+      wasteActivities.deleteWasteActivity(0)
+      Code.expect(wasteActivities.wasteActivitiesLength).to.equal(2)
+      Code.expect(wasteActivities.selectedWasteActivities[0].referenceName).to.equal('Fake 2')
+      Code.expect(wasteActivities.selectedWasteActivities[1].referenceName).to.equal('Fake 3')
+    })
+
+    lab.test(`Clears referenceName for entry that is no longer a duplicate`, async () => {
+      const wasteActivities = await WasteActivities.get(mocks.context)
+      wasteActivities.deleteWasteActivity(0)
+      wasteActivities.deleteWasteActivity(0)
+      Code.expect(wasteActivities.wasteActivitiesLength).to.equal(1)
+      Code.expect(wasteActivities.selectedWasteActivities[0].referenceName).to.not.exist()
     })
   })
 
@@ -292,7 +321,7 @@ lab.experiment('WasteActivities test:', () => {
       Code.expect(wasteActivities.selectedWasteActivities[1].referenceName).to.equal('New name')
     })
 
-    lab.test(`Sets non-existant value`, async () => {
+    lab.test(`Sets non-existent value`, async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       const wasteActivity = wasteActivities.setWasteActivityReferenceName(2, 'New name')
       Code.expect(wasteActivity).to.exist()
