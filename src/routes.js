@@ -809,14 +809,14 @@ const Routes = {
     nextRoute: 'WASTE_ASSESSMENT',
     types: 'GET, POST'
   },
-  // CLINICAL_WASTE_DOCUMENTS_MEET_STANDARDS: {
-  //   path: '/clinical-waste-documents/meet-standards',
-  //   view: 'clinicalWasteDocuments/meetStandards', // TODO
-  //   pageHeading: 'Will you meet the standards for managing clinical waste?',
-  //   controller: 'clinicalWasteDocuments/meetStandards', // TODO
-  //   validator: 'clinicalWasteDocuments/meetStandards', // TODO
-  //   types: 'GET, POST'
-  // },
+  CLINICAL_WASTE_DOCUMENTS_MEET_STANDARDS: {
+    path: '/clinical-waste-documents/meet-standards',
+    view: 'clinicalWasteDocuments/meetStandards', // TODO
+    pageHeading: 'Will you meet the standards for managing clinical waste?',
+    controller: 'clinicalWasteDocuments/meetStandards', // TODO
+    validator: 'clinicalWasteDocuments/meetStandards', // TODO
+    types: 'GET, POST'
+  },
   // CLINICAL_WASTE_DOCUMENTS_DIFFERENT_PROCEDURES_UPLOAD: {
   //   path: '/clinical-waste-documents/different-procedures/upload',
   //   view: 'upload/clinicalWasteDocuments/differentProcedures', // TODO
@@ -858,9 +858,9 @@ const Routes = {
   //   nextRoute: '',
   //   types: 'GET, POST, UPLOAD'
   // },
-  CLINICAL_WASTE_DOCUMENTS_LAYOUT_PLANS_INFORMATION: { // TODO: Check for a better view path?
+  CLINICAL_WASTE_DOCUMENTS_LAYOUT_PLANS_INFORMATION: { // TODO: Write tests?
     path: '/information/clinical-layout-plans',
-    view: 'clinicalWasteDocuments/clinicalLayoutPlansInformation', // TODO
+    view: 'clinicalWasteDocuments/clinicalLayoutPlansInformation',
     pageHeading: 'Guide for creating clinical waste site layout plans and process flows',
     controller: 'clinicalWasteDocuments/clinicalLayoutPlansInformation',
     types: 'GET',

@@ -78,6 +78,14 @@ const Dynamics = {
         questionCode: 'general-charity-number'
       }
     },
+    CLINICAL_WASTE_DOCUMENTS: {
+      MEET_STANDARDS: {
+        questionCode: 'clinical-waste-meet-standards'
+      },
+      ACCEPT_TYPE_NOT_INCLUDED: {
+        questionCode: 'clinical-waste-accept-type-not-included'
+      }
+    },
     MANAGEMENT_SYSTEM: {
       questionCode: 'environmental-management-system',
       answers: [
