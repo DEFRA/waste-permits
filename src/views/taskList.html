@@ -12,20 +12,66 @@
         {{ pageHeading }}
       </h1>
 
+      {{#if standardRule}}
       <p class="text">
-        {{#if standardRule}}
-          <span id="standard-rule-name-and-code">{{standardRule.permitName}} - {{standardRule.code}}</span><br>
-        {{else}}
+        <span id="standard-rule-name-and-code">{{standardRule.permitName}} - {{standardRule.code}}</span><br>
+        <a id="select-a-different-permit" class="font-small" href="{{ permitCategoryRoute }}">
+          Select a different permit
+        </a>
+      </p>
+      {{else}}
+        {{#if isMCP}}
           <ul id="bespoke-name-type-and-cost">
             <li id="activity-name">{{activityName}}</li>
             <li id="mcp-type">{{mcpType.text}}</li>
             <li id="cost">{{totalCostIem.costText}}</li>
           </ul>
+          <p class="text">
+            <a id="select-a-different-permit" class="font-small" href="{{ permitCategoryRoute }}">
+              Select a different permit
+            </a>
+          </p>
         {{/if}}
-        <a id="select-a-different-permit" class="font-small" href="{{ permitCategoryRoute }}">
-          Select a different permit
-        </a>
-      </p>
+        {{#if isWaste}}
+          <p id="waste-details-line" class="text">You’ve selected {{ activitiesNumberText }} and {{ assessmentsNumberText }} for this permit application.</p>
+          {{#if activities}}
+            <div class="form-group">
+              <details role="group">
+                <summary role="button" aria-controls="waste-activities-content" aria-expanded="false">
+                  <span id="waste-activities-summary" class="summary">View activities</span>
+                </summary>
+                <div class="panel panel-border-narrow" id="waste-activities-content" aria-hidden="true">
+                  <ul id="waste-activities-list">
+                  {{#each activities}}
+                    <li>{{item.itemName}} {{referenceName}}</li>
+                  {{/each}}
+                  </ul>
+                </div>
+              </details>
+            </div>
+          {{/if}}
+          {{#if assessments}}
+            <div class="form-group">
+              <details role="group">
+                <summary role="button" aria-controls="waste-assessments-content" aria-expanded="false">
+                  <span id="waste-activities-summary" class="summary">View assessments</span>
+                </summary>
+                <div class="panel panel-border-narrow" id="waste-assessments-content" aria-hidden="true">
+                  <ul id="waste-assessments-list">
+                    {{#each assessments}}
+                      <li>{{itemName}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </details>
+            </div>
+          {{/if}}
+          <p class="bold">Total cost {{totalCostIem.costText}}</p>
+          <p>
+            <a id="change-activities" href="{{ activitiesRoute }}">Change activities or assessments</a>
+          </p>
+        {{/if}}
+      {{/if}}
 
       <form method="POST" action="{{formAction}}" novalidate="novalidate" name="tasklist">
         {{> common/csrfToken token=DefraCsrfToken}}

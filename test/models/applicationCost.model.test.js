@@ -20,32 +20,44 @@ const ITEMS = {
   wasteActivities: [{
     id: 'ACTIVITY_ITEM_ID_1',
     shortName: 'activity-1',
+    itemName: 'Activity 1',
     canApplyOnline: true,
     itemTypeId: ACTIVITY_ITEM_TYPE_ID
   }, {
     id: 'ACTIVITY_ITEM_ID_2',
     shortName: 'activity-2',
+    itemName: 'Activity 2',
     canApplyOnline: true,
     itemTypeId: ACTIVITY_ITEM_TYPE_ID
   }, {
     id: 'ACTIVITY_ITEM_ID_3',
     shortName: 'activity-3',
+    itemName: 'Activity 3',
+    canApplyOnline: true,
+    itemTypeId: ACTIVITY_ITEM_TYPE_ID
+  }, {
+    id: 'ACTIVITY_ITEM_ID_4',
+    shortName: 'activity-4',
+    itemName: 'Activity 4',
     canApplyOnline: true,
     itemTypeId: ACTIVITY_ITEM_TYPE_ID
   }],
   wasteAssessments: [{
     id: 'ASSESSMENT_ITEM_ID_1',
     shortName: 'assessment-1',
+    itemName: 'Assessment 1',
     canApplyOnline: true,
     itemTypeId: ASSESSMENT_ITEM_TYPE_ID
   }, {
     id: 'ASSESSMENT_ITEM_ID_2',
     shortName: 'assessment-2',
+    itemName: 'Assessment 2',
     canApplyOnline: true,
     itemTypeId: ASSESSMENT_ITEM_TYPE_ID
   }, {
     id: 'ASSESSMENT_ITEM_ID_3',
     shortName: 'assessment-3',
+    itemName: 'Assessment 3',
     canApplyOnline: true,
     itemTypeId: ASSESSMENT_ITEM_TYPE_ID
   }]
@@ -82,9 +94,22 @@ const FAKE_APPLICATION_LINES = [{
   applicationId: FAKE_APPLICATION_ID,
   itemId: 'ASSESSMENT_ITEM_ID_3',
   value: 0
+}, {
+  id: 'FAKE_APPLICATION_LINE_ID_DUP_A',
+  applicationId: FAKE_APPLICATION_ID,
+  itemId: 'ACTIVITY_ITEM_ID_4',
+  lineName: 'A',
+  value: 400.01
+}, {
+  id: 'FAKE_APPLICATION_LINE_ID_DUP_B',
+  applicationId: FAKE_APPLICATION_ID,
+  itemId: 'ACTIVITY_ITEM_ID_4',
+  lineName: 'B',
+  value: 400.01
 }]
-const TOTAL_COST = 3300.04
-const COST_TEXT = ['£1,000.01', '£2,000.01', undefined, '£100.01', '£200.01', 'Cost included in application']
+const TOTAL_COST = 4100.06
+const COST_TEXT = ['£1,000.01', '£2,000.01', undefined, '£400.01', '£400.01', '£100.01', '£200.01', 'Cost included in application']
+const DESCRIPTION_TEXT = ['Activity 1', 'Activity 2', 'Activity 3', 'Activity 4 A', 'Activity 4 B', 'Assessment 1', 'Assessment 2', 'Assessment 3']
 
 let fakeApplicationEntity
 let fakeApplicationLineEntities
@@ -121,7 +146,7 @@ lab.experiment('Application Cost Model test:', () => {
   lab.experiment('Get values:', () => {
     lab.test('getApplicationCostForApplicationId', async () => {
       const applicationCost = await ApplicationCostModel.getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
-      Code.expect(applicationCost.items.length).to.equal(6)
+      Code.expect(applicationCost.items.length).to.equal(8)
     })
     lab.test('correct costs', async () => {
       const applicationCost = await ApplicationCostModel.getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
@@ -133,6 +158,11 @@ lab.experiment('Application Cost Model test:', () => {
       const applicationCost = await ApplicationCostModel.getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
       const allCostText = applicationCost.items.map(({ costText }) => costText)
       Code.expect(allCostText).to.equal(COST_TEXT)
+    })
+    lab.test('correct description text in order', async () => {
+      const applicationCost = await ApplicationCostModel.getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
+      const allDescriptionText = applicationCost.items.map(({ description }) => description)
+      Code.expect(allDescriptionText).to.equal(DESCRIPTION_TEXT)
     })
   })
 })

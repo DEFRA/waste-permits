@@ -14,6 +14,7 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const Application = require('../../src/persistence/entities/application.entity')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
+const WasteActivities = require('../../src/models/wasteActivities.model')
 const StandardRulesTaskList = require('../../src/models/taskList/standardRules.taskList')
 const BespokeTaskList = require('../../src/models/taskList/bespoke.taskList')
 const McpBespokeTaskList = require('../../src/models/taskList/mcpBespoke.taskList')
@@ -282,22 +283,43 @@ lab.experiment('Task List page tests:', () => {
       .equal('/bespoke-or-standard-rules')
   })
 
-  lab.test('Task list page contains the correct heading and Bespoke info for waste operations', async () => {
-    mocks.context.isBespoke = true
-    mocks.context.permitType = BESPOKE.id
-    mocks.taskDeterminants.facilityType = WASTE_OPERATION
-    mocks.taskDeterminants.airDispersionModellingRequired = false
-    const doc = await GeneralTestHelper.getDoc(getRequest)
-
-    // Check the existence of the page title and Bespoke info
-    checkElement(doc.getElementById('page-heading'), 'Apply for a bespoke environmental permit')
-    checkElement(doc.getElementById('task-list-heading-visually-hidden'))
-    checkElement(doc.getElementById('activity-name'), `Waste operation`)
-    checkElement(doc.getElementById('select-a-different-permit'))
-    Code.expect(doc.getElementById('select-a-different-permit')
-      .getAttribute('href'))
-      .to
-      .equal('/bespoke-or-standard-rules')
+  lab.experiment('Task list page contains the correct heading and Bespoke info for waste operations', () => {
+    let getWasteActivitiesStub
+    lab.beforeEach(() => {
+      getWasteActivitiesStub = sandbox.stub(WasteActivities, 'get')
+      mocks.context.isBespoke = true
+      mocks.context.permitType = BESPOKE.id
+      mocks.taskDeterminants.facilityType = WASTE_OPERATION
+      mocks.taskDeterminants.airDispersionModellingRequired = false
+    })
+    lab.test('page heading and link', async () => {
+      getWasteActivitiesStub.resolves(new WasteActivities([], []))
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      checkElement(doc.getElementById('page-heading'), 'Apply for a bespoke environmental permit')
+      checkElement(doc.getElementById('task-list-heading-visually-hidden'))
+      Code.expect(doc.getElementById('change-activities')
+        .getAttribute('href'))
+        .to
+        .equal('/waste-activity-continue')
+    })
+    lab.test('no activities or assessments', async () => {
+      getWasteActivitiesStub.resolves(new WasteActivities([], []))
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      checkElement(doc.getElementById('waste-details-line'), 'You’ve selected no activities and no assessments for this permit application.')
+    })
+    lab.test('1 activity and assessment', async () => {
+      getWasteActivitiesStub.resolves(new WasteActivities([], [{ id: 'a' }]))
+      mocks.taskDeterminants.wasteAssessments.push({})
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      checkElement(doc.getElementById('waste-details-line'), 'You’ve selected 1 activity and 1 assessment for this permit application.')
+    })
+    lab.test('multiple activities and assessments', async () => {
+      getWasteActivitiesStub.resolves(new WasteActivities([], [{ id: 'a' }, { id: 'b' }]))
+      mocks.taskDeterminants.wasteAssessments.push({})
+      mocks.taskDeterminants.wasteAssessments.push({})
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      checkElement(doc.getElementById('waste-details-line'), 'You’ve selected 2 activities and 2 assessments for this permit application.')
+    })
   })
 
   lab.test(`GET ${routePath} redirects to the Already Submitted route ${alreadySubmittedRoutePath} if the application has been submitted`, async () => {
