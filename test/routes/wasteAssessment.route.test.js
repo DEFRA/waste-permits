@@ -27,7 +27,7 @@ const viewableAssessments = [
   { id: 'ass-1', shortName: '1-19-1', itemName: 'Section 1.19.1', canApplyFor: true, canApplyOnline: true },
   { id: 'ass-2', shortName: '1-19-2', itemName: 'Section 1.19.2', canApplyFor: true, canApplyOnline: false }
 ]
-const nonViewableAssessment = { id: 'ass-3', shortName: '1-19-3', itemName: 'Section 1.19.3', canApplyFor: false, canApplyOnline: false }
+const nonViewableAssessment = { id: 'ass-3', shortName: '1-19-99', itemName: 'Section 1.19.99', canApplyFor: false, canApplyOnline: false }
 const allAssessments = [ ...viewableAssessments, nonViewableAssessment]
 
 lab.beforeEach(() => {

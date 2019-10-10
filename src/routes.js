@@ -1548,7 +1548,7 @@ const Routes = {
   WASTE_ASSESSMENT: {
     path: '/waste-assessment',
     view: 'wasteAssessment',
-    pageHeading: 'What plans do we need to assess?',
+    pageHeading: 'Choose your assessments',
     controller: 'wasteAssessment',
     nextRoute: 'MAINTAIN_APPLICATION_LINES',
     types: 'GET, POST'
