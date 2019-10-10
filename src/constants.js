@@ -15,16 +15,31 @@ Constants.MAX_FILE_SIZE = 31457280 // 30MB
 
 Constants.FILE_TYPES = {
   CSV: { mimeType: 'text/csv' },
-  DOC: { mimeType: 'application/msword' },
-  DOCX: { mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+  DOC: {
+    mimeType: ['application/msword', 'application/octet-stream']
+  },
+  DOCX: {
+    mimeType: [
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/octet-stream'
+    ]
+  },
   JPG: { mimeType: 'image/jpeg' },
   ODS: { mimeType: 'application/vnd.oasis.opendocument.spreadsheet' },
   ODT: { mimeType: 'application/vnd.oasis.opendocument.text' },
   PDF: { mimeType: 'application/pdf' },
   XLS: {
-    mimeType: ['application/vnd.ms-excel', 'application/octet-stream']
+    mimeType: [
+      'application/vnd.ms-excel',
+      'application/octet-stream'
+    ]
   },
-  XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+  XLSX: {
+    mimeType: [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/octet-stream'
+    ]
+  },
   AAI: { mimeType: 'application/octet-stream' },
   ADI: { mimeType: 'application/octet-stream' },
   AMI: { mimeType: 'application/octet-stream' },
