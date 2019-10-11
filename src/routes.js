@@ -1582,6 +1582,30 @@ const Routes = {
     types: 'GET',
     cookieValidationRequired: true
   },
+  WASTE_RD: {
+    path: '/recovery-disposal',
+    controller: 'wasteDisposalAndRecoveryCodes',
+    types: 'GET'
+  },
+  WASTE_RD_DISPOSAL: {
+    path: '/recovery-disposal/disposal',
+    params: ['activityIndex'],
+    view: 'wasteDisposalCodes',
+    pageHeading: 'Select the disposal codes for activity',
+    controller: 'wasteDisposalCodes',
+    nextRoute: 'WASTE_RD_RECOVERY',
+    types: 'GET, POST'
+  },
+  WASTE_RD_RECOVERY: {
+    path: '/recovery-disposal/recovery',
+    params: ['activityIndex'],
+    view: 'wasteRecoveryCodes',
+    pageHeading: 'Select the recovery codes for activity',
+    controller: 'wasteRecoveryCodes',
+    validator: 'wasteRecoveryCodes',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   WASTE_RECOVERY_PLAN_APPROVAL: {
     path: '/waste-recovery-plan/approval',
     view: 'wasteRecoveryPlanApproval',

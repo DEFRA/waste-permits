@@ -71,4 +71,20 @@ lab.experiment('Application Answer Entity tests:', () => {
       AnswerText: applicationAnswer.answerText
     })).to.be.true()
   })
+
+  lab.test('save() method should save the applicationAnswer correctly for application line', async () => {
+    const callActionSpy = sinon.spy(dynamicsDal, 'callAction')
+    const applicationAnswer = new ApplicationAnswer({ questionCode, answerCode: 'ANSWER_CODE', answerDescription: 'ANSWER_DESCRIPTION', answerText: 'ANSWER_TEXT', applicationLineId: 'LINE_ID' })
+    await applicationAnswer.save(context)
+    let action = `defra_applications(${applicationId})/Microsoft.Dynamics.CRM.defra_set_application_answer`
+    Code.expect(callActionSpy.calledWith(action, {
+      QuestionCode: questionCode,
+      AnswerCode: applicationAnswer.answerCode,
+      AnswerText: applicationAnswer.answerText,
+      ApplicationLine : {
+        '@odata.type': 'Microsoft.Dynamics.CRM.defra_applicationline',
+        'defra_applicationlineid': 'LINE_ID'
+      }
+    })).to.be.true()
+  })
 })

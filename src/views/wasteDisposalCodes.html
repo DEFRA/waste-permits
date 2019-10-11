@@ -1,0 +1,50 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>
+        Select all the disposal codes for this activity.
+      </p>
+
+      <p>
+        See
+        <a href="https://www.gov.uk/government/publications/environmental-permitting-guidance-the-waste-framework-directive"
+           target="_blank" rel="noopener noreferrer">The Waste Framework Directive (opens new tab)</a>
+        for more information.
+      </p>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div id="codes" class="form-group {{#getFormErrorGroupClass errors.code}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='code-error' message=errors.code }}
+            {{#each codeList}}
+            <div class="multiple-choice">
+              <input id="code-{{this.id}}-input" type="checkbox" name="code" value="{{this.id}}" {{#if this.selected}}checked="checked"{{/if}}>
+              <label id="code-{{this.id}}-label" for="code-{{this.id}}-input">
+                <span id="code-{{this.id}}-text">{{this.code}} &mdash; {{this.description}}</span>
+              </label>
+            </div>
+            {{/each}}
+          </div>
+
+        </fieldset>
+
+        {{> common/submitButton }}
+
+      </form>
+    </div>
+  </div>
+</main>
