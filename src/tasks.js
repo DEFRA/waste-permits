@@ -205,11 +205,14 @@ const tasks = {
     ruleSetId: 'defra_nhscreeningrequired',
     completedLabelId: 'nhs-screening-completed'
   },
-  NOISE_MANAGEMENT_PLAN: {
-    id: 'noise-management-plan',
-    label: 'Upload the noise and vibration management plan',
-    completedLabelId: 'noise-management-plan-completed',
-    shortName: 'noiseplan'
+  NOISE_VIBRATION_DOCUMENTS: {
+    id: 'noise-vibration-documents',
+    label: 'Upload noise and vibration emissions documents',
+    route: Routes.NOISE_VIBRATION_DOCUMENTS,
+    determinants: [ 'noiseVibrationDocumentsRequired' ],
+    completedLabelId: 'noise-vibration-documents-completed',
+    shortName: 'noisevibrationdocs',
+    taskListModel: 'noiseVibrationDocuments'
   },
   NON_TECHNICAL_SUMMARY: {
     id: 'non-technical-summary',
@@ -472,7 +475,7 @@ const bespoke = [
       tasks.CLINICAL_WASTE_TEMPLATE,
       tasks.MANAGE_HAZARDOUS_WASTE,
       tasks.EMISSIONS_MANAGEMENT_PLAN,
-      tasks.NOISE_MANAGEMENT_PLAN,
+      tasks.NOISE_VIBRATION_DOCUMENTS,
       tasks.ODOUR_MANAGEMENT_PLAN,
       tasks.HABITATS_ASSESSMENT,
       tasks.BATTERY_PROCESSING,
