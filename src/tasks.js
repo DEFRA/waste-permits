@@ -209,7 +209,7 @@ const tasks = {
     route: Routes.NOISE_VIBRATION_DOCUMENTS,
     determinants: [ 'noiseVibrationDocumentsRequired' ],
     completedLabelId: 'noise-vibration-documents-completed',
-    shortName: 'noiseplan',
+    shortName: 'noisevibrationdocs',
     taskListModel: 'noiseVibrationDocuments'
   },
   NON_TECHNICAL_SUMMARY: {
