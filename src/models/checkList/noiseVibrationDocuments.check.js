@@ -18,7 +18,7 @@ module.exports = class NoiseVibrationDocumentsCheck extends BaseCheck {
   }
 
   async getNoiseVibrationDocumentsLine () {
-    const evidence = await this.getNoiseVibrationDocuments(UploadSubject.NOISE_VIBRATION_DOCUMENTS, 'noiseVibrationDocuments')
+    const evidence = await this.getUploadedFileDetails(UploadSubject.NOISE_VIBRATION_DOCUMENTS, 'noiseVibrationDocuments')
     return this.buildLine({
       heading: 'Noise and vibration emissions documents',
       answers: evidence.map((file) => file.filename),
