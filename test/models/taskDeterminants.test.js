@@ -21,14 +21,6 @@ let mocks
 let applicationAnswerSaveStub
 let dataSourceSaveStub
 
-const allActivities = [
-  { id: 'act-1', shortName: '1-10-2' },
-  { id: 'act-2', shortName: '1-10-3' },
-  { id: 'act-3', shortName: '2-4-5' },
-  { id: 'act-4', shortName: '44-5-6' },
-  { id: 'act-5', shortName: 'ABC-D' }
-]
-
 const allAssessments = [
   { id: 'ass-1', shortName: 'MCP-EER' },
   { id: 'ass-2', shortName: 'MCP-BAT' },
@@ -40,7 +32,6 @@ lab.beforeEach(() => {
 
   context = mocks.context
 
-  Object.assign(mocks.wasteActivities, allActivities.map(({ id, shortName }) => new Item({ id, shortName })))
   Object.assign(mocks.wasteAssessments, allAssessments.map(({ id, shortName }) => new Item({ id, shortName })))
 
   // Create a sinon sandbox to stub methods
@@ -49,7 +40,6 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(ApplicationAnswer, 'getByQuestionCode').callsFake(() => mocks.applicationAnswer)
   applicationAnswerSaveStub = sandbox.stub(ApplicationAnswer.prototype, 'save').callsFake(() => undefined)
-  sandbox.stub(Item, 'listWasteActivities').callsFake(() => mocks.wasteActivities)
   sandbox.stub(Item, 'listWasteAssessments').callsFake(() => mocks.wasteAssessments)
   sandbox.stub(StandardRuleType, 'getCategories').value(() => [])
   sandbox.stub(DataStore, 'get').callsFake(() => mocks.dataStore)
@@ -68,10 +58,9 @@ lab.experiment('TaskDeterminants Model tests:', () => {
       Code.expect(taskDeterminants.context).to.equal(context)
     })
 
-    lab.test('allAssessments and allActivities', async () => {
+    lab.test('allAssessments', async () => {
       const taskDeterminants = await TaskDeterminants.get(context)
       Code.expect(taskDeterminants.allAssessments).to.equal(mocks.wasteAssessments)
-      Code.expect(taskDeterminants.allActivities).to.equal(mocks.wasteActivities)
     })
 
     lab.test('mcpType', async () => {
@@ -99,17 +88,6 @@ lab.experiment('TaskDeterminants Model tests:', () => {
       await taskDeterminants.save({ permitType: BESPOKE.id })
       Code.expect(taskDeterminants.permitType).to.equal(BESPOKE)
       Code.expect(dataSourceSaveStub.callCount).to.equal(1)
-    })
-
-    lab.test('wasteActivities', async () => {
-      const taskDeterminants = await TaskDeterminants.get(context)
-      await taskDeterminants.save({ wasteActivities: [allActivities[3].shortName, allActivities[2].shortName] })
-      Code.expect(taskDeterminants.wasteActivities).to.equal([allActivities[3], allActivities[2]])
-    })
-    lab.test('no wasteActivities', async () => {
-      const taskDeterminants = await TaskDeterminants.get(context)
-      await taskDeterminants.save({ wasteActivities: '' })
-      Code.expect(taskDeterminants.wasteActivities).to.equal([])
     })
 
     lab.test('wasteAssessments', async () => {

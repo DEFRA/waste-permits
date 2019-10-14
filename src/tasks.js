@@ -125,12 +125,6 @@ const tasks = {
     completedLabelId: 'habitats-assessment-completed',
     shortName: 'habitats'
   },
-  HAZARDOUS_WASTE_TEMPLATE: {
-    id: 'hazardous-waste-template',
-    label: 'Complete and upload the hazardous waste template and supporting documents',
-    completedLabelId: 'hazardous-waste-template-completed',
-    shortName: 'hazwaste'
-  },
   INVOICING_DETAILS: {
     id: 'invoicing-details',
     label: 'Give invoicing details',
@@ -139,6 +133,14 @@ const tasks = {
     ruleSetId: 'defra_invoicingdetailsrequired',
     shortName: 'invoicing',
     taskListModel: 'invoiceAddress'
+  },
+  MANAGE_HAZARDOUS_WASTE: {
+    id: 'hazardous-waste',
+    label: 'Tell us how you will manage hazardous waste',
+    route: Routes.HAZARDOUS_WASTE_MEET_STANDARDS,
+    completedLabelId: 'hazardous-waste-completed',
+    shortName: 'hazwaste',
+    taskListModel: 'manageHazardousWaste'
   },
   MANAGEMENT_SYSTEM: {
     id: 'management-system',
@@ -471,7 +473,7 @@ const bespoke = [
       tasks.EMISSIONS_AND_MONITORING,
       tasks.TECHNICAL_STANDARDS,
       tasks.CLINICAL_WASTE_TEMPLATE,
-      tasks.HAZARDOUS_WASTE_TEMPLATE,
+      tasks.MANAGE_HAZARDOUS_WASTE,
       tasks.EMISSIONS_MANAGEMENT_PLAN,
       tasks.NOISE_VIBRATION_DOCUMENTS,
       tasks.ODOUR_MANAGEMENT_PLAN,

@@ -1,0 +1,40 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+        <div id="has-no-annotations" class="form-group">
+          <div id="hazardous-waste-proposal-description">
+            <p>
+              You must write a proposal that explains how your procedures are good substitutes to those described in
+              the guidance
+              <a href="https://www.gov.uk/government/publications/sector-guidance-note-s506-recovery-and-disposal-of-hazardous-and-non-hazardous-waste"
+                 target="_blank"
+                 rel="noopener noreferrer">EPR 5.06 (opens new tab)</a>,
+              if you do not meet one or more of the standards.
+            </p>
+
+          </div>
+        </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

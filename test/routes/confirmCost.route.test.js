@@ -14,7 +14,7 @@ const { COOKIE_RESULT } = require('../../src/constants')
 const ApplicationCost = require('../../src/models/applicationCost.model')
 
 const routePath = '/confirm-cost'
-const expectedWasteActivitiesPath = '/waste-activity'
+const expectedWasteActivitiesPath = '/waste-activity-continue'
 const nextRoutePath = '/task-list'
 
 let getRequest

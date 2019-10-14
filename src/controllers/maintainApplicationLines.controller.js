@@ -5,6 +5,7 @@ const { APPLICATION_LINE_ID } = require('../constants').COOKIE_KEY
 const BaseController = require('./base.controller')
 const CookieService = require('../services/cookie.service')
 const RecoveryService = require('../services/recovery.service')
+const WasteActivities = require('../models/wasteActivities.model')
 const ApplicationLine = require('../persistence/entities/applicationLine.entity')
 const { FACILITY_TYPES, PermitTypes } = require('../dynamics')
 const { MCP } = FACILITY_TYPES
@@ -22,13 +23,15 @@ module.exports = class MaintainApplicationLinesController extends BaseController
     const { applicationId, isBespoke, taskDeterminants } = context
     const {
       facilityType,
-      wasteActivities,
       wasteAssessments
     } = taskDeterminants
+
+    const wasteActivities = await WasteActivities.get(context)
 
     const applicationLines = await ApplicationLine.listBy(context, { applicationId })
 
     if (facilityType === MCP) {
+      wasteActivities.selectedWasteActivities = []
       const {
         airDispersionModellingRequired,
         energyEfficiencyReportRequired,
@@ -36,9 +39,9 @@ module.exports = class MaintainApplicationLinesController extends BaseController
         habitatAssessmentRequired
       } = taskDeterminants
       if (airDispersionModellingRequired) {
-        wasteActivities.push(REQUIRES_DISPERSION_MODELLING)
+        wasteActivities.addWasteActivity(REQUIRES_DISPERSION_MODELLING)
       } else {
-        wasteActivities.push(DOES_NOT_REQUIRE_DISPERSION_MODELLING)
+        wasteActivities.addWasteActivity(DOES_NOT_REQUIRE_DISPERSION_MODELLING)
       }
 
       if (energyEfficiencyReportRequired) {
@@ -54,23 +57,30 @@ module.exports = class MaintainApplicationLinesController extends BaseController
       }
     }
 
-    // Combine the activities and assessments
-    const items = [...wasteActivities, ...wasteAssessments].filter((item) => item !== undefined) // Only items that are defined
-
-    // Delete application lines that are no longer required
-    const itemIds = new Set(items.map(({ id }) => id))
+    // Delete all the existing application lines
     for (let index = 0; index < applicationLines.length; index++) {
       const applicationLine = applicationLines[index]
-      if (applicationLine.itemId && !itemIds.has(applicationLine.itemId)) {
-        await applicationLine.delete(context)
+      await applicationLine.delete(context)
+    }
+
+    // Add the activities
+    const wasteActivitiesValues = wasteActivities.wasteActivitiesValues
+    for (const wasteActivity of wasteActivitiesValues) {
+      if (wasteActivity.item) {
+        const applicationLine = new ApplicationLine({
+          applicationId,
+          itemId: wasteActivity.item.id,
+          permitType: isBespoke ? BESPOKE : STANDARD,
+          lineName: wasteActivity.referenceName
+        })
+        await applicationLine.save(context)
       }
     }
 
-    // Add missing application lines that are required
-    const applicationLineItemIds = new Set(applicationLines.map(({ itemId }) => itemId))
-    for (let index = 0; index < items.length; index++) {
-      const item = items[index]
-      if (!applicationLineItemIds.has(item.id)) {
+    // Add the assessments
+    for (let index = 0; index < wasteAssessments.length; index++) {
+      const item = wasteAssessments[index]
+      if (item) {
         const applicationLine = new ApplicationLine({
           applicationId,
           itemId: item.id,

@@ -9,13 +9,15 @@ const GeneralTestHelper = require('./generalTestHelper.test')
 
 const server = require('../../server')
 const { BESPOKE } = require('../../src/constants').PermitTypes
-const { STATIONARY_MCP } = require('../../src/dynamics').MCP_TYPES
+const { MCP_TYPES: { STATIONARY_MCP }, FACILITY_TYPES: { MCP, WASTE_OPERATION } } = require('../../src/dynamics')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const Application = require('../../src/persistence/entities/application.entity')
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
+const WasteActivities = require('../../src/models/wasteActivities.model')
 const StandardRulesTaskList = require('../../src/models/taskList/standardRules.taskList')
 const BespokeTaskList = require('../../src/models/taskList/bespoke.taskList')
+const McpBespokeTaskList = require('../../src/models/taskList/mcpBespoke.taskList')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const routePath = '/task-list'
@@ -197,6 +199,7 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRule, 'getByCode').value(() => mocks.standardRule)
   sandbox.stub(StandardRulesTaskList, 'buildTaskList').value(() => fakeTaskList)
   sandbox.stub(BespokeTaskList, 'buildTaskList').value(() => fakeTaskList)
+  sandbox.stub(McpBespokeTaskList, 'buildTaskList').value(() => fakeTaskList)
 })
 
 lab.afterEach(() => {
@@ -242,9 +245,10 @@ lab.experiment('Task List page tests:', () => {
     checkElement(doc.getElementById('select-a-different-permit'))
   })
 
-  lab.test('Task list page contains the correct heading and Bespoke info when dispersion modelling is required', async () => {
+  lab.test('Task list page contains the correct heading and Bespoke MCP info when dispersion modelling is required', async () => {
     mocks.context.isBespoke = true
     mocks.context.permitType = BESPOKE.id
+    mocks.taskDeterminants.facilityType = MCP
     mocks.taskDeterminants.airDispersionModellingRequired = true
     mocks.taskDeterminants.mcpType = STATIONARY_MCP
     const doc = await GeneralTestHelper.getDoc(getRequest)
@@ -260,9 +264,10 @@ lab.experiment('Task List page tests:', () => {
       .equal('/bespoke-or-standard-rules')
   })
 
-  lab.test('Task list page contains the correct heading and Bespoke info when dispersion modelling is not required', async () => {
+  lab.test('Task list page contains the correct heading and Bespoke MCP info when dispersion modelling is not required', async () => {
     mocks.context.isBespoke = true
     mocks.context.permitType = BESPOKE.id
+    mocks.taskDeterminants.facilityType = MCP
     mocks.taskDeterminants.airDispersionModellingRequired = false
     mocks.taskDeterminants.mcpType = STATIONARY_MCP
     const doc = await GeneralTestHelper.getDoc(getRequest)
@@ -276,6 +281,45 @@ lab.experiment('Task List page tests:', () => {
       .getAttribute('href'))
       .to
       .equal('/bespoke-or-standard-rules')
+  })
+
+  lab.experiment('Task list page contains the correct heading and Bespoke info for waste operations', () => {
+    let getWasteActivitiesStub
+    lab.beforeEach(() => {
+      getWasteActivitiesStub = sandbox.stub(WasteActivities, 'get')
+      mocks.context.isBespoke = true
+      mocks.context.permitType = BESPOKE.id
+      mocks.taskDeterminants.facilityType = WASTE_OPERATION
+      mocks.taskDeterminants.airDispersionModellingRequired = false
+    })
+    lab.test('page heading and link', async () => {
+      getWasteActivitiesStub.resolves(new WasteActivities([], []))
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      checkElement(doc.getElementById('page-heading'), 'Apply for a bespoke environmental permit')
+      checkElement(doc.getElementById('task-list-heading-visually-hidden'))
+      Code.expect(doc.getElementById('change-activities')
+        .getAttribute('href'))
+        .to
+        .equal('/waste-activity-continue')
+    })
+    lab.test('no activities or assessments', async () => {
+      getWasteActivitiesStub.resolves(new WasteActivities([], []))
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      checkElement(doc.getElementById('waste-details-line'), 'You’ve selected no activities and no assessments for this permit application.')
+    })
+    lab.test('1 activity and assessment', async () => {
+      getWasteActivitiesStub.resolves(new WasteActivities([], [{ id: 'a' }]))
+      mocks.taskDeterminants.wasteAssessments.push({})
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      checkElement(doc.getElementById('waste-details-line'), 'You’ve selected 1 activity and 1 assessment for this permit application.')
+    })
+    lab.test('multiple activities and assessments', async () => {
+      getWasteActivitiesStub.resolves(new WasteActivities([], [{ id: 'a' }, { id: 'b' }]))
+      mocks.taskDeterminants.wasteAssessments.push({})
+      mocks.taskDeterminants.wasteAssessments.push({})
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      checkElement(doc.getElementById('waste-details-line'), 'You’ve selected 2 activities and 2 assessments for this permit application.')
+    })
   })
 
   lab.test(`GET ${routePath} redirects to the Already Submitted route ${alreadySubmittedRoutePath} if the application has been submitted`, async () => {

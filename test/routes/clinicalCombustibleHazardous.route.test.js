@@ -15,6 +15,7 @@ const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
 const DataStore = require('../../src/models/dataStore.model')
+const WasteActivities = require('../../src/models/wasteActivities.model')
 
 const routePath = '/select/bespoke/clinical-combustible-hazardous'
 const nextRoutePath = '/waste-assessment'
@@ -23,6 +24,7 @@ let sandbox
 let mocks
 let mockWasteTypes
 let dataStoreSaveFake
+let wasteActivitiesValuesStub
 
 const checkCommonElements = async (doc) => {
   Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Do you accept any of these types of waste?')
@@ -37,7 +39,7 @@ lab.beforeEach(() => {
 
   mockWasteTypes = {
     data: {
-      wasteActivities: ""
+      wasteActivities: []
     }
   }
 
@@ -46,6 +48,9 @@ lab.beforeEach(() => {
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
   sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(DataStore, 'get').callsFake(async () => mockWasteTypes)
+  sandbox.stub(WasteActivities, 'get').resolves(new WasteActivities([], []))
+  wasteActivitiesValuesStub = sandbox.stub(WasteActivities.prototype, 'wasteActivitiesValues')
+  wasteActivitiesValuesStub.value([])
   dataStoreSaveFake = sandbox.stub(DataStore, 'save')
   dataStoreSaveFake.callsFake(async () => undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
@@ -91,7 +96,7 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
       })
 
       lab.test('when hazardous activity selected', async () => {
-        mockWasteTypes.data.wasteActivities = '1-16-5'
+        wasteActivitiesValuesStub.value([{ id: '1-16-5' }])
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
         Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('')
@@ -101,7 +106,7 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
       })
 
       lab.test('when clinical activity selected', async () => {
-        mockWasteTypes.data.wasteActivities = '1-16-7'
+        wasteActivitiesValuesStub.value([{ id: '1-16-7' }])
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
         Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('checked')
@@ -111,7 +116,7 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
       })
 
       lab.test('when multiple activities selected', async () => {
-        mockWasteTypes.data.wasteActivities = '1-16-7,1-16-5,1-16-0'
+        wasteActivitiesValuesStub.value([{ id: '1-16-7' }, { id: '1-16-5' }, { id: '1-16-0' }])
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
         Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('checked')
@@ -121,7 +126,7 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
       })
 
       lab.test('when no relevant activity selected', async () => {
-        mockWasteTypes.data.wasteActivities = '1-16-0'
+        wasteActivitiesValuesStub.value([{ id: '1-16-0' }])
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)
         Code.expect(doc.getElementById('clinical').getAttribute('checked')).to.equal('')
@@ -131,7 +136,7 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
       })
 
       lab.test('previous selections should override activity', async () => {
-        mockWasteTypes.data.wasteActivities = '1-16-7'
+        wasteActivitiesValuesStub.value([{ id: '1-16-7' }])
         mockWasteTypes.data.acceptsClinicalWaste = false
         const doc = await GeneralTestHelper.getDoc(request)
         await checkCommonElements(doc)

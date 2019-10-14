@@ -1,0 +1,37 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>
+        Create a short name for each of these activities, so we can tell them apart:
+        <span class="form-hint">For example, wood chipping, metal shredding or soil screening</span>
+      </p>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+          {{#each activities}}
+          <div class="form-group {{#getFormErrorGroupClass formErrors}}{{/getFormErrorGroupClass}}">
+            <label id="{{formFieldId}}-label" class="form-label" for="{{formFieldId}}">
+              {{item.itemName}} ({{order}})
+            </label>
+            {{> common/fieldError fieldId=errorFormFieldId message=formErrors }}
+            <input class="form-control form-control-char-30 {{#if formErrors}}form-control-error{{/if}}" id="{{formFieldId}}" name="{{formFieldId}}" type="text" value="{{referenceName}}">
+          </div>
+          {{/each}}
+
+        {{> common/submitButton }}
+
+      </form>
+    </div>
+  </div>
+</main>

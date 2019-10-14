@@ -985,6 +985,75 @@ const Routes = {
       fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
     }
   },
+  HAZARDOUS_WASTE_MEET_STANDARDS: {
+    path: '/hazardous-waste/meet-standards',
+    view: 'meetHazWasteStandards',
+    pageHeading: 'Will you meet the standards for managing hazardous waste?',
+    controller: 'meetHazWasteStandards',
+    validator: 'meetHazWasteStandards',
+    nextRoute: 'HAZARDOUS_WASTE_PROCEDURES',
+    types: 'GET, POST'
+  },
+  HAZARDOUS_WASTE_PLANS_GUIDANCE: {
+    path: '/hazardous-waste/plans/guidance',
+    view: 'upload/hazardousWaste/hazardousWastePlansGuidance',
+    pageHeading: 'Guide for creating hazardous waste site layout plans and process flows',
+    controller: 'staticPage',
+    types: 'GET',
+    cookieValidationRequired: false,
+    applicationRequired: false
+  },
+  HAZARDOUS_WASTE_PLANS_UPLOAD: {
+    path: '/hazardous-waste/plans/upload',
+    view: 'upload/hazardousWaste/hazardousWastePlans',
+    pageHeading: 'Upload layout plans and process flows',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'HAZARDOUS_WASTE_PLANS',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
+    }
+  },
+  HAZARDOUS_WASTE_PROCEDURES: {
+    path: '/hazardous-waste/list-procedures',
+    view: 'listHazWasteProcedures',
+    pageHeading: 'List the procedures you will use',
+    controller: 'listHazWasteProcedures',
+    validator: 'listHazWasteProcedures',
+    nextRoute: 'HAZARDOUS_WASTE_TREATMENT_SUMMARY_UPLOAD',
+    types: 'GET, POST'
+  },
+  HAZARDOUS_WASTE_PROPOSAL_UPLOAD: {
+    path: '/hazardous-waste/proposal/upload',
+    view: 'upload/hazardousWaste/hazardousWasteManagementProposal',
+    pageHeading: 'Upload your proposal to use different procedures',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'HAZARDOUS_WASTE_TREATMENT_SUMMARY_UPLOAD',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'HAZARDOUS_WASTE_PROPOSAL',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
+    }
+  },
+  HAZARDOUS_WASTE_TREATMENT_SUMMARY_UPLOAD: {
+    path: '/hazardous-waste/treatment/upload',
+    view: 'upload/hazardousWaste/hazardousWasteTreatmentSummary',
+    pageHeading: 'Upload a summary of how you’ll treat hazardous waste',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'HAZARDOUS_WASTE_PLANS_UPLOAD',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'HAZARDOUS_WASTE_TREATMENT_SUMMARY',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
+    }
+  },
   HEALTH: {
     path: '/health',
     pageHeading: 'Health'
@@ -1458,12 +1527,30 @@ const Routes = {
   WASTE_ACTIVITY: {
     path: '/waste-activity',
     view: 'wasteActivity',
-    pageHeading: 'Select all the activities you want the permit to cover',
+    pageHeading: 'Add an activity to the permit',
     controller: 'wasteActivity',
     validator: 'wasteActivity',
-    nextRoute: 'CLINICAL_COMBUSTIBLE_HAZARDOUS',
+    nextRoute: 'WASTE_ACTIVITY_CONTINUE',
     previousRoute: 'FACILITY_TYPE',
     types: 'GET, POST'
+  },
+  WASTE_ACTIVITY_CONTINUE: {
+    path: '/waste-activity-continue',
+    view: 'wasteActivityContinue',
+    pageHeading: 'Add another activity or continue',
+    controller: 'wasteActivityContinue',
+    nextRoute: 'CLINICAL_COMBUSTIBLE_HAZARDOUS',
+    types: 'GET, POST'
+  },
+  WASTE_ACTIVITY_NAME: {
+    path: '/waste-activity-name',
+    view: 'wasteActivityName',
+    pageHeading: 'Name these activities',
+    controller: 'wasteActivityName',
+    validator: 'wasteActivityName',
+    nextRoute: 'CLINICAL_COMBUSTIBLE_HAZARDOUS',
+    types: 'GET, POST',
+    allowEmptyParametersInPayload: true
   },
   WASTE_ACTIVITY_APPLY_OFFLINE: {
     path: '/waste-activity/apply-offline',
