@@ -1445,6 +1445,20 @@ const Routes = {
     validator: 'technicalQualification',
     types: 'GET, POST'
   },
+  TECHNICAL_STANDARDS: {
+    path: '/technical-standards/upload',
+    view: 'upload/technicalStandards/technicalStandards',
+    pageHeading: 'List the technical standards you use',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'WASTE_TYPES_LIST',
+    validatorOptions: {
+      fileTypes: [ PDF, DOC, DOCX, ODT ]
+    }
+  },
   TECHNICAL_MANAGERS: {
     path: '/technical-competence/technical-managers',
     view: 'upload/technicalQualification/technicalManagers',

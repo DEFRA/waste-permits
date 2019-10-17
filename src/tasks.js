@@ -346,6 +346,7 @@ const tasks = {
   TECHNICAL_STANDARDS: {
     id: 'technical-standards',
     label: 'List the technical standards you use',
+    route: Routes.TECHNICAL_STANDARDS,
     completedLabelId: 'technical-standards-completed',
     shortName: 'techstandards'
   },
