@@ -1454,7 +1454,7 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
-    subject: 'WASTE_TYPES_LIST',
+    subject: 'TECHNICAL_STANDARDS',
     validatorOptions: {
       fileTypes: [ PDF, DOC, DOCX, ODT ]
     }
