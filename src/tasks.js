@@ -348,8 +348,10 @@ const tasks = {
   TECHNICAL_STANDARDS: {
     id: 'technical-standards',
     label: 'List the technical standards you use',
+    route: Routes.TECHNICAL_STANDARDS,
     completedLabelId: 'technical-standards-completed',
-    shortName: 'techstandards'
+    shortName: 'techstandards',
+    taskListModel: 'technicalStandards'
   },
   WASTE_RECOVERY_PLAN: {
     id: 'waste-recovery-plan',
