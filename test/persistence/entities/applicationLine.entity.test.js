@@ -12,6 +12,8 @@ let fakeApplicationLine
 let fakeParameterId
 let fakeRulesId
 let sandbox
+let searchSpy
+let createSpy
 
 const context = { }
 const applicationLineId = 'APPLICATION_LINE_ID'
@@ -32,15 +34,15 @@ lab.beforeEach(() => {
   sandbox = sinon.createSandbox()
 
   // Stub methods
-  sandbox.stub(dynamicsDal, 'create').value(() => applicationLineId)
-  sandbox.stub(dynamicsDal, 'search').value(() => {
+  createSpy = sandbox.stub(dynamicsDal, 'create')
+  createSpy.resolves(applicationLineId)
+  searchSpy = sandbox.stub(dynamicsDal, 'search')
+  searchSpy.resolves({
     // Dynamics ApplicationLine objects
-    return {
-      _defra_standardruleid_value: fakeApplicationLine.standardRuleId,
-      _defra_parametersid_value: fakeParameterId,
-      defra_parametersId: fakeApplicationLine.parametersId,
-      _defra_applicationid_value: fakeApplicationLine.applicationId
-    }
+    _defra_standardruleid_value: fakeApplicationLine.standardRuleId,
+    _defra_parametersid_value: fakeParameterId,
+    defra_parametersId: fakeApplicationLine.parametersId,
+    _defra_applicationid_value: fakeApplicationLine.applicationId
   })
 })
 
@@ -51,9 +53,29 @@ lab.afterEach(() => {
 
 lab.experiment('ApplicationLine Entity tests:', () => {
   lab.test('getById() method correctly retrieves an ApplicationLine object', async () => {
-    const spy = sinon.spy(dynamicsDal, 'search')
     const applicationLine = await ApplicationLine.getById(context, applicationLineId)
-    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(searchSpy.callCount).to.equal(1)
+    Code.expect(applicationLine.applicationId).to.equal(fakeApplicationLine.applicationId)
+    Code.expect(applicationLine.standardRuleId).to.equal(fakeApplicationLine.standardRuleId)
+    Code.expect(applicationLine.parametersId).to.equal(fakeParameterId)
+    Code.expect(applicationLine.id).to.equal(applicationLineId)
+  })
+
+  lab.test('listForWasteActivities() method correctly retrieves a list of ApplicationLine objects for waste activities', async () => {
+    searchSpy.resolves({
+      value: [{
+        // Dynamics ApplicationLine objects
+        defra_applicationlineid: applicationLineId,
+        _defra_standardruleid_value: fakeApplicationLine.standardRuleId,
+        _defra_parametersid_value: fakeParameterId,
+        defra_parametersId: fakeApplicationLine.parametersId,
+        _defra_applicationid_value: fakeApplicationLine.applicationId
+      }]
+    })
+    const applicationLines = await ApplicationLine.listForWasteActivities(context)
+    Code.expect(searchSpy.callCount).to.equal(1)
+    Code.expect (applicationLines.length).to.equal(1)
+    const applicationLine = applicationLines[0]
     Code.expect(applicationLine.applicationId).to.equal(fakeApplicationLine.applicationId)
     Code.expect(applicationLine.standardRuleId).to.equal(fakeApplicationLine.standardRuleId)
     Code.expect(applicationLine.parametersId).to.equal(fakeParameterId)
@@ -61,9 +83,8 @@ lab.experiment('ApplicationLine Entity tests:', () => {
   })
 
   lab.test('save() method saves a new ApplicationLine object', async () => {
-    const spy = sinon.spy(dynamicsDal, 'create')
     await fakeApplicationLine.save(context)
-    Code.expect(spy.callCount).to.equal(1)
+    Code.expect(createSpy.callCount).to.equal(1)
     Code.expect(fakeApplicationLine.id).to.equal(applicationLineId)
   })
 })
