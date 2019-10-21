@@ -137,7 +137,7 @@ const tasks = {
   MANAGE_HAZARDOUS_WASTE: {
     id: 'hazardous-waste',
     label: 'Tell us how you will manage hazardous waste',
-    route: Routes.HAZARDOUS_WASTE_MEET_STANDARDS,
+    route: Routes.HAZARDOUS_WASTE_TREATMENT_SUMMARY_UPLOAD,
     completedLabelId: 'hazardous-waste-completed',
     shortName: 'hazwaste',
     taskListModel: 'manageHazardousWaste'
