@@ -13,6 +13,7 @@ const ApplicationAnswer = require('../../src/persistence/entities/applicationAns
 
 lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
   let sandbox
+  let listStub
   let getStub
   let saveSpy
   let saveAnswerSpy
@@ -22,7 +23,8 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
     sandbox = sinon.createSandbox()
 
     // Stub methods
-    sandbox.stub(ApplicationLine, 'listForWasteActivities').resolves([{ id: 'a' }, { id: 'b', lineName: 'Line B' }, { id: 'c', lineName: 'Line C' }])
+    listStub = sandbox.stub(ApplicationLine, 'listForWasteActivities')
+    listStub.resolves([{ id: 'a' }, { id: 'b', lineName: 'Line B' }, { id: 'c', lineName: 'Line C' }])
     getStub = sandbox.stub(DataStore, 'get')
     getStub.resolves(new DataStore({ data: {} }))
     saveSpy = sandbox.stub(DataStore.prototype, 'save')
@@ -30,6 +32,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
     saveAnswerSpy = sandbox.stub(ApplicationAnswer.prototype,'save')
     saveAnswerSpy.resolves()
     sandbox.stub(Item,'getById').resolves({ itemName: 'Dummy item name' })
+    sandbox.stub(Item,'listBy').resolves([{ itemName: 'Dummy item name' }])
   })
 
   lab.afterEach(() => {
@@ -63,6 +66,38 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
     })
   })
 
+  lab.experiment('getAllForApplication', () => {
+    lab.test('returns empty when not entered', async () => {
+      const allWasteDisposalAndRecoveryCodes = await WasteDisposalAndRecoveryCodes.getAllForApplication(undefined, 0)
+      Code.expect(allWasteDisposalAndRecoveryCodes).to.exist()
+      const wasteDisposalAndRecoveryCodes = allWasteDisposalAndRecoveryCodes[0]
+      Code.expect(wasteDisposalAndRecoveryCodes).to.exist()
+      Code.expect(wasteDisposalAndRecoveryCodes.selectedWasteDisposalCodes.length).to.equal(0)
+      Code.expect(wasteDisposalAndRecoveryCodes.selectedWasteRecoveryCodes.length).to.equal(0)
+    })
+    lab.test('returns content when entered', async () => {
+      const applicationWasteDisposalAndRecoveryCodes = {
+        'b': {
+          selectedWasteDisposalCodes: ['d01', 'd02'],
+          selectedWasteRecoveryCodes: ['r01', 'r02'],
+        }
+      }
+      getStub.resolves(new DataStore({ data: { applicationWasteDisposalAndRecoveryCodes } }))
+      const allWasteDisposalAndRecoveryCodes = await WasteDisposalAndRecoveryCodes.getAllForApplication(undefined, 0)
+      Code.expect(allWasteDisposalAndRecoveryCodes).to.exist()
+      const wasteDisposalAndRecoveryCodes = allWasteDisposalAndRecoveryCodes[1]
+      Code.expect(wasteDisposalAndRecoveryCodes).to.exist()
+      Code.expect(wasteDisposalAndRecoveryCodes.selectedWasteDisposalCodes.length).to.equal(2)
+      Code.expect(wasteDisposalAndRecoveryCodes.selectedWasteRecoveryCodes.length).to.equal(2)
+    })
+    lab.test('returns empty when no lines', async () => {
+      listStub.resolves(undefined)
+      const allWasteDisposalAndRecoveryCodes = await WasteDisposalAndRecoveryCodes.getAllForApplication(undefined, 0)
+      Code.expect(allWasteDisposalAndRecoveryCodes).to.exist()
+      Code.expect(allWasteDisposalAndRecoveryCodes.length).to.equal(0)
+    })
+  })
+
   lab.test('save', async () => {
     const wasteDisposalAndRecoveryCodes = new WasteDisposalAndRecoveryCodes()
     await wasteDisposalAndRecoveryCodes.save()
@@ -88,6 +123,19 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
     Code.expect(wasteRecoveryCodeList.length).to.equal(13)
     Code.expect(wasteRecoveryCodeList[0].selected).to.be.true()
     Code.expect(wasteRecoveryCodeList[1].selected).to.be.false()
+  })
+
+  lab.test('get combinedSelectedCodesForDisplay', async () => {
+    const applicationWasteDisposalAndRecoveryCodes = {
+      'b': {
+        selectedWasteDisposalCodes: ['d01', 'd02'],
+        selectedWasteRecoveryCodes: ['r01', 'r02'],
+      }
+    }
+    getStub.resolves(new DataStore({ data: { applicationWasteDisposalAndRecoveryCodes } }))
+    const wasteDisposalAndRecoveryCodes = await WasteDisposalAndRecoveryCodes.getForActivity(undefined, 1)
+    Code.expect(wasteDisposalAndRecoveryCodes).to.exist()
+    Code.expect(wasteDisposalAndRecoveryCodes.combinedSelectedCodesForDisplay).to.equal(['D1', 'D2', 'R1', 'R2'])
   })
 
   lab.test('codesHaveBeenSelected', async () => {

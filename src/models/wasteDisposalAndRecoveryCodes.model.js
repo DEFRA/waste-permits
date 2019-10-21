@@ -82,6 +82,31 @@ module.exports = class WasteDisposalAndRecoveryCodes {
     }
   }
 
+  static async getAllForApplication (context) {
+    const wasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
+    if (!wasteActivityApplicationLines) {
+      return []
+    }
+
+    const itemIds = wasteActivityApplicationLines.map(({ itemId }) => itemId).filter((itemId, index, fullList) => fullList.indexOf(itemId) === index)
+    const items = await Item.listBy(context, { id: itemIds })
+
+    const dataStore = await DataStore.get(context)
+    const { applicationWasteDisposalAndRecoveryCodes = {} } = dataStore.data
+
+    return wasteActivityApplicationLines.map((wasteActivityApplicationLine, index, allLines) => {
+      const hasNext = Boolean(allLines[index + 1])
+      const item = items.find(({ itemId }) => itemId === wasteActivityApplicationLine.itemId) || {}
+      const itemName = item.itemName || ''
+      const definedName = wasteActivityApplicationLine.lineName || ''
+      const activityDisplayName = `${itemName} ${definedName}`.trim()
+      const codesForApplicationLine = applicationWasteDisposalAndRecoveryCodes[wasteActivityApplicationLine.id] || {}
+      const { selectedWasteDisposalCodes, selectedWasteRecoveryCodes } = codesForApplicationLine
+
+      return new WasteDisposalAndRecoveryCodes({ forActivityIndex: index, activityDisplayName, hasNext, selectedWasteDisposalCodes, selectedWasteRecoveryCodes })
+    })
+  }
+
   get wasteDisposalCodeList () {
     return WASTE_DISPOSAL_CODE_LIST.map(({ id, code, description }) => ({ id, code, description, selected: Boolean(this.selectedWasteDisposalCodes.includes(id)) }))
   }
@@ -123,6 +148,13 @@ module.exports = class WasteDisposalAndRecoveryCodes {
 
   get codesHaveBeenSelected () {
     return codesHaveBeenSelected(this)
+  }
+
+  get combinedSelectedCodesForDisplay () {
+    return [
+      ...codesForSelection(WASTE_DISPOSAL_CODE_LIST, this.selectedWasteDisposalCodes),
+      ...codesForSelection(WASTE_RECOVERY_CODE_LIST, this.selectedWasteRecoveryCodes)
+    ]
   }
 
   static async getAllCodesHaveBeenSelectedForApplication (context) {
