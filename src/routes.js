@@ -1614,7 +1614,7 @@ const Routes = {
   WASTE_TYPES_LIST: {
     path: '/waste-codes',
     view: 'upload/wasteTypesList/wasteTypesList',
-    pageHeading: 'Upload a document that lists the types of waste you want to accept',
+    pageHeading: 'Upload the waste codes for your activities',
     controller: 'upload',
     validator: 'upload',
     nextRoute: 'TASK_LIST',
@@ -1622,7 +1622,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'WASTE_TYPES_LIST',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, ODT, ODS ]
+      fileTypes: [ CSV ]
     }
   }
 }
