@@ -9,12 +9,7 @@ const StandardRule = require('../../src/persistence/entities/standardRule.entity
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-const WamitabRiskLevel = {
-  LOW: 910400001,
-  MEDIUM: 910400002
-}
-
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/technical-competence/upload-course-registration'
 const paths = {
@@ -27,7 +22,6 @@ const paths = {
 const helper = new UploadTestHelper(lab, paths)
 
 let sandbox
-let mocks
 
 lab.beforeEach(() => {
   // Stub methods
@@ -35,7 +29,7 @@ lab.beforeEach(() => {
 
   sandbox.stub(StandardRule, 'getByApplicationLineId').value(() => Promise.resolve({}))
 
-  mocks = helper.setStubs(sandbox)
+  helper.setStubs(sandbox)
 })
 
 lab.afterEach(() => {
@@ -62,27 +56,10 @@ lab.experiment('Company Declare Upload Course registration tests:', () => {
     helper.getSuccess(options, [
       // Additional tests
       {
-        title: 'displays WAMITAB medium or high risk information',
-        stubs: () => (mocks.standardRule.wamitabRiskLevel = WamitabRiskLevel.MEDIUM),
-        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'wamitab-risk-is-medium-or-high'])
-      },
-      {
-        title: 'displays WAMITAB low risk information',
-        stubs: () => (mocks.standardRule.wamitabRiskLevel = WamitabRiskLevel.LOW),
-        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'wamitab-risk-is-low'])
-      },
-      {
-        title: 'displays WAMITAB medium or high risk information for bespoke',
-        stubs: () => (mocks.context.isBespoke = true),
-        test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'wamitab-risk-is-medium-or-high'])
-      },
-      {
         title: 'displays expected static content',
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'course-registration-description-heading',
+          'operator-competence-low-risk-level',
+          'operator-competence-medium-high-risk-level',
           'course-registration-description-heading-abbr-1',
           'course-registration-description-heading-abbr-2',
           'operator-competence-paragraph',
