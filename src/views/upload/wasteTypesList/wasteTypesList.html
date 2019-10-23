@@ -19,31 +19,59 @@
 
         <div id="has-no-annotations" class="form-group">
           <div id="waste-types-list-description">
+
             <p>
-            Create a table in a document or a spreadsheet. In it, list the waste code and description for each type of waste you want to accept.
-            Use the codes and descriptions from the List of Waste or European Waste Catalogue (EWC).
-            You can find these in the
-            <a href="https://www.gov.uk/government/publications/waste-classification-technical-guidance"
-               target="_blank" rel="noopener noreferrer">waste classification technical guidance (opens new tab)</a>.
-            If the waste code ends in 99, you must give a full description of the waste.
-            To restrict the type of waste you accept, for example for safety or legal reasons, add text after the description and mark or highlight this.
+              <a href="/public/images/waste-codes-template/waste-codes-template.csv">Download our template</a>
+              and use it to create your list of codes and descriptions (do not change the CSV file type).
             </p>
 
-            <details class="form-hint-details">
-              <summary><span class="summary">Examples of restrictions</span></summary>
-              <div class="panel panel-border-narrow">
-                <p>Add text after the description to restrict:</p>
-                <ul class="list list-bullet">
-                  <li>the quantity of the waste, for example 16 06 01* lead batteries - no more than 500 tonnes</li>
-                  <li>the description of a particular waste within a code, for example 16 01 03 - bicycle tyres only</li>
-                  <li>hazardous property, for example, no corrosive waste</li>
-                  <li>physical form, for example 06 03 11* solid salts and solutions containing cyanides - no liquids</li>
-                  <li>the nature or attribute of the waste, for example no odorous wastes</li>
-                  <li>specific substances or specific concentrations, for example no chromium (VII) substances (greater than 1000 ppm)</li>
-                  <li>container type or size, for example no Intermediate Bulk Containers (IBCs)</li>
-                </ul>
-              </div>
-            </details>
+            <p>You must use this format:</p>
+
+            <table>
+              <thead>
+              <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <th scope="row">01 04 09</th>
+                <td>waste sand and clays</td>
+              </tr>
+              <tr>
+                <th scope="row">06 01 04*</th>
+                <td class="govuk-table__cell">phosphoric and phosphorous acid</td>
+              </tr>
+              </tbody>
+            </table>
+
+            <p>Use the codes and descriptions from the List of Waste or European Waste Catalogue (EWC). You can find these in the <a href="https://www.gov.uk/government/publications/waste-classification-technical-guidance">waste classification technical guidance</a> (opens new tab).</p>
+
+            <p>If a waste code ends in 99, you must write a full description of the waste. To restrict the type of waste you accept, add a note after the description..</p>
+
+            <div class="form-group">
+              <details role="group">
+                <summary role="button" aria-controls="restrictions-content" aria-expanded="false">
+                  <span id="restrictions-summary" class="summary">Examples of restrictions</span>
+                </summary>
+                <div class="panel panel-border-narrow" id="restrictions-content" aria-hidden="true">
+                  <p>Add text after the description to:</p>
+                  <ul class="list-bullet">
+                    <li>restrict the quantity of the waste, for example: 16 06 01* lead batteries - no more than 500 tonnes</li>
+                    <li>limit a particular waste within a code, for example: 16 01 03 - bicycle tyres only</li>
+                    <li>exclude a hazardous property, for example: no corrosive waste</li>
+                    <li>restrict a physical form, for example: 06 03 11* solid salts and solutions containing cyanides - no liquids</li>
+                    <li>limit an attribute of the waste, for example: no odorous wastes</li>
+                    <li>restrict specific substances or specific concentrations, for example: no chromium (VII) substances (greater than 1000 ppm)</li>
+                    <li>describe container type or size limits, for example: no Intermediate Bulk Containers (IBCs)</li>
+                  </ul>
+                </div>
+              </details>
+            </div>
+
+            <p>Upload your list of codes and descriptions (CSV files only).</p>
+
           </div>
         </div>
 

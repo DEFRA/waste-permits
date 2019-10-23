@@ -48,9 +48,9 @@ lab.experiment('Upload Waste Types List tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'waste-types-list-description',
-      pageHeading: 'Upload a document that lists the types of waste you want to accept',
+      pageHeading: 'Upload the waste codes for your activities',
       submitButton: 'Continue',
-      fileTypes: ['PDF', 'DOC', 'DOCX', 'XLS', 'XLSX', 'ODT', 'ODS']
+      fileTypes: ['CSV']
     }
 
     // Perform general get tests
@@ -65,15 +65,9 @@ lab.experiment('Upload Waste Types List tests:', () => {
 
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
-    helper.uploadSuccess('application/msword', 'test.docx')
-    helper.uploadInvalid(
-      {
-        fileTypes: ['PDF', 'DOC', 'DOCX', 'XLS', 'XLSX', 'ODT', 'ODS']
-      },
-      'application/msword',
-      'test.docx'
-    )
-    helper.uploadFailure('application/msword', 'test.docx')
+    helper.uploadSuccess('text/csv', 'test.csv')
+    helper.uploadInvalid({ fileTypes: ['CSV'] }, 'text/csv', 'test.csv', false)
+    helper.uploadFailure('text/csv', 'test.csv')
   })
 
   lab.experiment(`POST ${routePath}`, () => {
