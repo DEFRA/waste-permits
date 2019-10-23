@@ -100,7 +100,7 @@ module.exports = class UploadTestHelper {
       lab.test('when there are no annotations', async () => {
         Annotation.listByApplicationIdAndSubject = () => []
         const doc = await getDoc(options)
-        Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal(`${options.fileTypes.join(', ')} or ${lastFileType}`)
+        Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal(options.fileTypes.length === 0 ? `${lastFileType}` : `${options.fileTypes.join(', ')} or ${lastFileType}`)
         Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
         Code.expect(doc.getElementById('has-annotations')).to.not.exist()
         if (options.descriptionId) {
@@ -111,7 +111,7 @@ module.exports = class UploadTestHelper {
 
       lab.test('when there are annotations', async () => {
         const doc = await getDoc(options)
-        Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal(`${options.fileTypes.join(', ')} or ${lastFileType}`)
+        Code.expect(doc.getElementById('file-types').firstChild.nodeValue).to.equal(options.fileTypes.length === 0 ? `${lastFileType}` : `${options.fileTypes.join(', ')} or ${lastFileType}`)
         Code.expect(doc.getElementById('max-size').firstChild.nodeValue).to.equal('30MB')
         Code.expect(doc.getElementById('has-annotations')).to.exist()
         Code.expect(doc.getElementById('has-no-annotations')).to.not.exist()
@@ -245,7 +245,7 @@ module.exports = class UploadTestHelper {
       lab.test('when invalid content type', async () => {
         const req = this._uploadRequest({ contentType: 'audio/wav', filename: 'test.wav' })
         const doc = await GeneralTestHelper.getDoc(req)
-        checkExpectedErrors(doc, `You can only upload ${options.fileTypes.join(', ')} or ${lastFileType} files`)
+        checkExpectedErrors(doc, options.fileTypes.length === 0 ? `You can only upload ${lastFileType} files` : `You can only upload ${options.fileTypes.join(', ')} or ${lastFileType} files`)
       })
 
       if (runDuplicate) {
