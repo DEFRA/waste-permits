@@ -277,8 +277,8 @@ const Routes = {
   DIRECTOR_DATE_OF_BIRTH: {
     path: '/permit-holder/company/director-date-of-birth',
     view: 'directorDateOfBirth',
-    pageHeading: `What is the director's date of birth?`,
-    pageHeadingAlternate: `What are the directors' dates of birth?`,
+    pageHeading: 'What is the director\'s date of birth?',
+    pageHeadingAlternate: 'What are the directors\' dates of birth?',
     officerRole: AccountRoleCodes.COMPANY_DIRECTOR,
     controller: 'directorDateOfBirth',
     validator: 'directorDateOfBirth',
@@ -307,7 +307,7 @@ const Routes = {
   LLP_COMPANY_NUMBER: {
     path: '/permit-holder/limited-liability-partnership/number',
     view: 'companyNumber',
-    pageHeading: `What is the company number for the  limited liability partnership?`,
+    pageHeading: 'What is the company number for the  limited liability partnership?',
     controller: 'companyNumber',
     validator: 'llpCompanyNumber',
     nextRoute: 'LLP_COMPANY_CHECK_STATUS',
@@ -326,8 +326,8 @@ const Routes = {
   LLP_MEMBER_DATE_OF_BIRTH: {
     path: '/permit-holder/limited-liability-partnership/member-date-of-birth',
     view: 'directorDateOfBirth',
-    pageHeading: `What is the member's date of birth?`,
-    pageHeadingAlternate: `What are the members' dates of birth?`,
+    pageHeading: 'What is the member\'s date of birth?',
+    pageHeadingAlternate: 'What are the members\' dates of birth?',
     officerRole: AccountRoleCodes.LLP_DESIGNATED_MEMBER,
     controller: 'directorDateOfBirth',
     validator: 'directorDateOfBirth',
@@ -397,7 +397,7 @@ const Routes = {
   PERMIT_HOLDER_CONTACT_DETAILS: {
     path: '/permit-holder/contact-details',
     view: 'permitHolder/permitHolderContactDetails',
-    pageHeading: `What are the permit holder's contact details?`,
+    pageHeading: 'What are the permit holder\'s contact details?',
     controller: 'permitHolder/permitHolderContactDetails',
     validator: 'permitHolder/permitHolderContactDetails',
     nextRoute: 'POSTCODE_PERMIT_HOLDER',
@@ -732,7 +732,7 @@ const Routes = {
     subject: 'AIR_DISPERSION_MODELLING_REPORT',
     pageFileWarning: 'ADMS ASP receptor files must be converted to CSV',
     validatorOptions: {
-      fileTypes: [ AAI, ADI, AMI, APL, BPI, CSV, DEM, DIN, EMI, FAC, HRL, MET, ODS, PDF, PFL, ROU, RUF, SFC, TER, VAR, XLS, XLSX ]
+      fileTypes: [AAI, ADI, AMI, APL, BPI, CSV, DEM, DIN, EMI, FAC, HRL, MET, ODS, PDF, PFL, ROU, RUF, SFC, TER, VAR, XLS, XLSX]
     }
   },
   APPLICATION_RECEIVED: {
@@ -776,7 +776,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'BEST_AVAILABLE_TECHNIQUES_ASSESSMENT',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT, JPG ]
+      fileTypes: [PDF, DOC, DOCX, ODT, JPG]
     }
   },
   CHECK_BEFORE_SENDING: {
@@ -907,7 +907,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'EMISSIONS_AND_MONITORING_DETAILS',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   EMISSIONS_MANAGEMENT_PLAN: {
@@ -921,7 +921,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'EMISSIONS_MANAGEMENT_PLAN',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   ENERGY_EFFICIENCY_REPORT: {
@@ -935,7 +935,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'ENERGY_EFFICIENCY_REPORT',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   ENVIRONMENTAL_RISK_ASSESSMENT: {
@@ -949,7 +949,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'ENVIRONMENTAL_RISK_ASSESSMENT',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   FACILITY_TYPE: {
@@ -982,7 +982,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'FIRE_PREVENTION_PLAN',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
     }
   },
   HAZARDOUS_WASTE_PLANS_GUIDANCE: {
@@ -1005,7 +1005,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'HAZARDOUS_WASTE_PLANS',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   HAZARDOUS_WASTE_TREATMENT_SUMMARY_UPLOAD: {
@@ -1019,7 +1019,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'HAZARDOUS_WASTE_TREATMENT_SUMMARY',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   HEALTH: {
@@ -1052,7 +1052,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'MANAGEMENT_SYSTEM_SUMMARY',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   MCP_BUSINESS_ACTIVITY: {
@@ -1075,7 +1075,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'MCP_DETAILS',
     validatorOptions: {
-      fileTypes: [ XLS, XLSX, ODS, CSV ]
+      fileTypes: [XLS, XLSX, ODS, CSV]
     }
   },
   MCP_UNDER_500_HOURS: {
@@ -1204,7 +1204,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'NOISE_VIBRATION_DOCUMENTS',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   NON_TECHNICAL_SUMMARY: {
@@ -1218,7 +1218,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'NON_TECHNICAL_SUMMARY',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   ODOUR_MANAGEMENT_PLAN: {
@@ -1232,7 +1232,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'ODOUR_MANAGEMENT_PLAN',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   PERMIT_CATEGORY: {
@@ -1327,7 +1327,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'SCREENING_TOOL',
     validatorOptions: {
-      fileTypes: [ XLS, XLSX, ODS, PDF ]
+      fileTypes: [XLS, XLSX, ODS, PDF]
     }
   },
   SEARCH_YOUR_EMAIL: {
@@ -1351,13 +1351,13 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'SITE_CONDITION_REPORT',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   SITE_GRID_REFERENCE: {
     path: '/site/grid-reference',
     view: 'siteGridReference',
-    pageHeading: `What is the grid reference for the site's main emissions point?`,
+    pageHeading: 'What is the grid reference for the site\'s main emissions point?',
     controller: 'siteGridReference',
     validator: 'siteGridReference',
     nextRoute: 'POSTCODE_SITE',
@@ -1374,7 +1374,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'SITE_PLAN',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
     }
   },
   SITE_NAME: {
@@ -1424,7 +1424,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_STANDARDS',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   TECHNICAL_MANAGERS: {
@@ -1438,21 +1438,21 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_MANAGERS',
     validatorOptions: {
-      fileTypes: [ DOC, DOCX, PDF, ODT ]
+      fileTypes: [DOC, DOCX, PDF, ODT]
     }
   },
   UPLOAD_COURSE_REGISTRATION: {
     path: '/technical-competence/upload-course-registration',
     view: 'upload/technicalQualification/courseRegistration',
     pageHeading: 'Getting a qualification: upload your evidence',
-    controller: 'courseRegistration',
+    controller: 'upload',
     validator: 'upload',
     nextRoute: 'TECHNICAL_MANAGERS',
     types: 'GET, REMOVE, UPLOAD',
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_QUALIFICATION',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
     }
   },
   UPLOAD_DEEMED_EVIDENCE: {
@@ -1466,7 +1466,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_QUALIFICATION',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
     }
   },
   UPLOAD_ESA_EU_SKILLS: {
@@ -1480,7 +1480,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_QUALIFICATION',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
     }
   },
   UPLOAD_WAMITAB_QUALIFICATION: {
@@ -1494,7 +1494,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_QUALIFICATION',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS ]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
     }
   },
   VERSION: {
@@ -1608,7 +1608,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'WASTE_RECOVERY_PLAN',
     validatorOptions: {
-      fileTypes: [ PDF, DOC, DOCX, ODT ]
+      fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
   WASTE_TYPES_LIST: {
