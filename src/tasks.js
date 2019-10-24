@@ -250,7 +250,7 @@ const tasks = {
   },
   RECOVERY_AND_DISPOSAL_CODES: {
     id: 'recovery-and-disposal-codes',
-    label: 'List the recovery and disposal codes for your activities',
+    label: 'List the disposal and recovery codes for your activities',
     route: Routes.WASTE_RD,
     completedLabelId: 'recovery-and-disposal-completed',
     shortName: 'rdcode',

@@ -22,10 +22,10 @@ module.exports = class WasteDisposalAndRecoveryCodesCheck extends BaseCheck {
     const answer = allCodes.map((codes) => codes.combinedSelectedCodesForDisplay.join(', ')).join('; ')
 
     return this.buildLine({
-      heading: 'R and D codes',
+      heading: 'D and R codes',
       answers: [answer],
       links: [
-        { path, type: 'recovery and disposal codes' }
+        { path, type: 'disposal and recovery codes' }
       ]
     })
   }
