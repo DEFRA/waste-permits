@@ -32,7 +32,7 @@ lab.experiment('Waste Disposal and Recovery Codes Check tests:', () => {
 
     const { heading, headingId, answers, links } = lines.pop()
 
-    Code.expect(heading).to.equal('R and D codes')
+    Code.expect(heading).to.equal('D and R codes')
     Code.expect(headingId).to.equal(`${prefix}-heading`)
 
     const { answer, answerId } = answers.pop()
@@ -42,7 +42,7 @@ lab.experiment('Waste Disposal and Recovery Codes Check tests:', () => {
 
     const { link, linkId, linkType } = links.pop()
     Code.expect(link).to.equal('/recovery-disposal')
-    Code.expect(linkType).to.equal('recovery and disposal codes')
+    Code.expect(linkType).to.equal('disposal and recovery codes')
     Code.expect(linkId).to.equal(`${prefix}-link`)
   })
 
