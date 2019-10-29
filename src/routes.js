@@ -1624,6 +1624,21 @@ const Routes = {
     validatorOptions: {
       fileTypes: [ CSV ]
     }
+  },
+  WASTE_WEIGHTS: {
+    path: '/waste-weights',
+    controller: 'wasteWeights',
+    types: 'GET'
+  },
+  WASTE_WEIGHT: {
+    path: '/waste-weight',
+    params: ['activityIndex'],
+    view: 'wasteWeight',
+    pageHeading: 'Enter the waste weights for activity',
+    controller: 'wasteWeight',
+    validator: 'wasteWeight',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
   }
 }
 

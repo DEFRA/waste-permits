@@ -370,10 +370,13 @@ const tasks = {
     shortName: 'ewc',
     taskListModel: 'wasteTypesList'
   },
-  WASTE_WEIGHT: {
-    id: 'waste-weight',
-    ruleSetId: 'defra_extwasteweightreq',
-    completedLabelId: 'waste-weight-completed'
+  WASTE_WEIGHTS: {
+    id: 'waste-weights',
+    label: 'Provide your waste storage capacity and annual throughput',
+    route: Routes.WASTE_WEIGHTS,
+    completedLabelId: 'waste-weights-completed',
+    shortName: 'wasteweights',
+    taskListModel: 'wasteWeights'
   }
 }
 
@@ -454,9 +457,7 @@ const bespoke = [
     id: 'activities-section',
     label: 'Activities',
     tasks: [
-      tasks.MCP_TEMPLATE,
-      tasks.MCP_DETAILS,
-      tasks.MCP_BUSINESS_ACTIVITY,
+      tasks.WASTE_WEIGHTS,
       tasks.WASTE_TYPES_LIST,
       tasks.RECOVERY_AND_DISPOSAL_CODES
     ]

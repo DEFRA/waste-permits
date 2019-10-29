@@ -14,6 +14,7 @@ const AirQualityManagementArea = require('../airQualityManagementArea.model')
 const DataStore = require('../dataStore.model')
 const TaskDeterminants = require('../taskDeterminants.model')
 const WasteDisposalAndRecoveryCodes = require('../wasteDisposalAndRecoveryCodes.model')
+const WasteWeights = require('../wasteWeights.model')
 
 const {
   BILLING_INVOICING,
@@ -242,5 +243,13 @@ module.exports = class BaseCheck {
       this.data.allWasteDisposalAndRecoveryCodes = await WasteDisposalAndRecoveryCodes.getAllForApplication(this.data)
     }
     return this.data.allWasteDisposalAndRecoveryCodes || []
+  }
+
+  async getAllWasteWeights () {
+    const { allWasteWeights } = this.data
+    if (!allWasteWeights) {
+      this.data.allWasteWeights = await WasteWeights.getAllForApplication(this.data)
+    }
+    return this.data.allWasteWeights || []
   }
 }

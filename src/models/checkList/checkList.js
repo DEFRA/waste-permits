@@ -30,6 +30,7 @@ const AirQualityManagementAreaCheck = require('../../models/checkList/airQuality
 const NoiseVibrationDocumentsCheck = require('../../models/checkList/noiseVibrationDocuments.check')
 const ManageHazardousWaste = require('../../models/checkList/manageHazardousWaste.check')
 const WasteDisposalAndRecoveryCodes = require('../../models/checkList/wasteDisposalAndRecoveryCodes.check')
+const WasteWeights = require('../../models/checkList/wasteWeights.check')
 
 module.exports = class CheckList {
   constructor () {
@@ -48,6 +49,7 @@ module.exports = class CheckList {
       McpDetailsCheck,
       McpBusinessActivityCheck,
       WasteDisposalAndRecoveryCodes,
+      WasteWeights,
       WasteTypesListCheck,
       TechnicalCompetenceCheck,
       AirQualityManagementAreaCheck,

@@ -1,0 +1,66 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <h2 class="heading-medium">Non-hazardous waste</h2>
+
+        <p>Enter these weights and make sure they do not exceed the maximums allowed by your permit.</p>
+
+        <div class="form-group {{#getFormErrorGroupClass errors.non-hazardous-throughput}}{{/getFormErrorGroupClass}}">
+          <label id="non-hazardous-throughput-label" class="form-label" for="non-hazardous-throughput">Annual throughput of non-hazardous waste:</label>
+          {{> common/fieldError fieldId='non-hazardous-throughput-error' message=errors.non-hazardous-throughput}}
+          <input class="form-control form-control-char-15 {{#if errors.non-hazardous-throughput}}form-control-error{{/if}}" id="non-hazardous-throughput" name="non-hazardous-throughput" type="text" value="{{formValues.non-hazardous-throughput}}">
+          <span id="non-hazardous-throughput-unit">tonnes a year</span>
+        </div>
+
+        <div class="form-group {{#getFormErrorGroupClass errors.non-hazardous-maximum}}{{/getFormErrorGroupClass}}">
+          <label id="non-hazardous-maximum-label" class="form-label" for="non-hazardous-maximum">Maximum amount of non-hazardous waste stored on site at any one time:</label>
+          {{> common/fieldError fieldId='non-hazardous-maximum-error' message=errors.non-hazardous-maximum }}
+          <input class="form-control form-control-char-15 {{#if errors.non-hazardous-maximum}}form-control-error{{/if}}" id="non-hazardous-maximum" name="non-hazardous-maximum" type="text" value="{{formValues.non-hazardous-maximum}}">
+          <span id="non-hazardous-maximum-unit">tonnes</span>
+        </div>
+
+        {{#if hasHazardousWaste}}
+
+          <input id="has-hazardous" name="has-hazardous" type="hidden" value="true">
+
+          <h2 class="heading-medium">Hazardous waste</h2>
+
+          <p>You told us you accept hazardous waste,</p>
+
+          <p>Enter these weights and make sure they do not exceed the maximums allowed by your permit.</p>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.hazardous-throughput}}{{/getFormErrorGroupClass}}">
+            <label id="hazardous-throughput-label" class="form-label" for="hazardous-throughput">Annual throughput of hazardous waste:</label>
+            {{> common/fieldError fieldId='hazardous-throughput-error' message=errors.hazardous-throughput}}
+            <input class="form-control form-control-char-15 {{#if errors.hazardous-throughput}}form-control-error{{/if}}" id="hazardous-throughput" name="hazardous-throughput" type="text" value="{{formValues.hazardous-throughput}}">
+            <span id="hazardous-throughput-unit">tonnes a year</span>
+          </div>
+
+          <div class="form-group {{#getFormErrorGroupClass errors.hazardous-maximum}}{{/getFormErrorGroupClass}}">
+            <label id="hazardous-maximum-label" class="form-label" for="hazardous-maximum">Maximum amount of hazardous waste stored on site at any one time:</label>
+            {{> common/fieldError fieldId='hazardous-maximum-error' message=errors.hazardous-maximum }}
+            <input class="form-control form-control-char-15 {{#if errors.hazardous-maximum}}form-control-error{{/if}}" id="hazardous-maximum" name="hazardous-maximum" type="text" value="{{formValues.hazardous-maximum}}">
+            <span id="hazardous-maximum-unit">tonnes</span>
+          </div>
+
+        {{/if}}
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>
