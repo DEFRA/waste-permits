@@ -7,6 +7,8 @@ const ItemEntity = require('../persistence/entities/item.entity')
 const Routes = require('../routes')
 const { WASTE_ASSESSMENT_APPLY_OFFLINE } = Routes
 
+const WASTE_ASSESSMENTS_LIST = ['1-19-5', '1-19-3', '1-19-2', '1-19-7', '1-19-6', '1-19-4', '1-19-1']
+
 module.exports = class WasteAssessmentController extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
@@ -17,9 +19,12 @@ module.exports = class WasteAssessmentController extends BaseController {
     const pageContext = this.createPageContext(h, errors)
 
     const selected = wasteAssessments.map(({ shortName }) => shortName)
-    pageContext.assessments = assessments
-      .filter(({ canApplyFor }) => canApplyFor)
-      .map(({ shortName, itemName }) => ({ id: shortName, text: itemName, isSelected: selected.includes(shortName) }))
+
+    pageContext.assessments = WASTE_ASSESSMENTS_LIST.map((id) => {
+      const text = (assessments.find(({ shortName }) => id === shortName) || {}).itemName
+      const isSelected = selected.includes(id)
+      return { id, text, isSelected }
+    })
 
     return this.showView({ h, pageContext })
   }
