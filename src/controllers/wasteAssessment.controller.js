@@ -7,7 +7,7 @@ const ItemEntity = require('../persistence/entities/item.entity')
 const Routes = require('../routes')
 const { WASTE_ASSESSMENT_APPLY_OFFLINE } = Routes
 
-const WASTE_ASSESSMENTS_LIST = ['1-19-9', '1-19-5', '1-19-3', '1-19-2', '1-19-7', '1-19-6', '1-19-4', '1-19-1']
+const WASTE_ASSESSMENTS_LIST = ['1-19-5', '1-19-3', '1-19-2', '1-19-7', '1-19-6', '1-19-4', '1-19-1']
 
 module.exports = class WasteAssessmentController extends BaseController {
   async doGet (request, h, errors) {
