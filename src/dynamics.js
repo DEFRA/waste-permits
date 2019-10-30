@@ -86,6 +86,14 @@ const Dynamics = {
         questionCode: 'clinical-waste-accept-type-not-included'
       }
     },
+    MANAGE_HAZARDOUS_WASTE: {
+      MEET_STANDARDS: {
+        questionCode: 'meet-hazardous-waste-standards'
+      },
+      LIST_PROCEDURES: {
+        questionCode: 'hazardous-waste-procedures'
+      }
+    },
     MANAGEMENT_SYSTEM: {
       questionCode: 'environmental-management-system',
       answers: [
@@ -386,7 +394,7 @@ const Dynamics = {
     },
     REGISTERED_ON_A_COURSE: {
       TYPE: 910400001,
-      NAME: `We are getting WAMITAB or EPOC qualifications`
+      NAME: 'We are getting WAMITAB or EPOC qualifications'
     },
     DEEMED_COMPETENCE: {
       TYPE: 910400002,

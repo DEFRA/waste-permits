@@ -125,12 +125,6 @@ const tasks = {
     completedLabelId: 'habitats-assessment-completed',
     shortName: 'habitats'
   },
-  HAZARDOUS_WASTE_TEMPLATE: {
-    id: 'hazardous-waste-template',
-    label: 'Complete and upload the hazardous waste template and supporting documents',
-    completedLabelId: 'hazardous-waste-template-completed',
-    shortName: 'hazwaste'
-  },
   INVOICING_DETAILS: {
     id: 'invoicing-details',
     label: 'Give invoicing details',
@@ -139,6 +133,14 @@ const tasks = {
     ruleSetId: 'defra_invoicingdetailsrequired',
     shortName: 'invoicing',
     taskListModel: 'invoiceAddress'
+  },
+  MANAGE_HAZARDOUS_WASTE: {
+    id: 'hazardous-waste',
+    label: 'Tell us how you will manage hazardous waste',
+    route: Routes.HAZARDOUS_WASTE_TREATMENT_SUMMARY_UPLOAD,
+    completedLabelId: 'hazardous-waste-completed',
+    shortName: 'hazwaste',
+    taskListModel: 'manageHazardousWaste'
   },
   MANAGEMENT_SYSTEM: {
     id: 'management-system',
@@ -203,11 +205,14 @@ const tasks = {
     ruleSetId: 'defra_nhscreeningrequired',
     completedLabelId: 'nhs-screening-completed'
   },
-  NOISE_MANAGEMENT_PLAN: {
-    id: 'noise-management-plan',
-    label: 'Upload the noise and vibration management plan',
-    completedLabelId: 'noise-management-plan-completed',
-    shortName: 'noiseplan'
+  NOISE_VIBRATION_DOCUMENTS: {
+    id: 'noise-vibration-documents',
+    label: 'Upload noise and vibration emissions documents',
+    route: Routes.NOISE_VIBRATION_DOCUMENTS,
+    determinants: [ 'noiseVibrationDocumentsRequired' ],
+    completedLabelId: 'noise-vibration-documents-completed',
+    shortName: 'noisevibrationdocs',
+    taskListModel: 'noiseVibrationDocuments'
   },
   NON_TECHNICAL_SUMMARY: {
     id: 'non-technical-summary',
@@ -245,9 +250,11 @@ const tasks = {
   },
   RECOVERY_AND_DISPOSAL_CODES: {
     id: 'recovery-and-disposal-codes',
-    label: 'List the recovery and disposal codes for your activities',
+    label: 'List the disposal and recovery codes for your activities',
+    route: Routes.WASTE_RD,
     completedLabelId: 'recovery-and-disposal-completed',
-    shortName: 'rdcode'
+    shortName: 'rdcode',
+    taskListModel: 'wasteDisposalAndRecoveryCodes'
   },
   SAVE_AND_RETURN_EMAIL: {
     id: 'set-up-save-and-return',
@@ -341,8 +348,10 @@ const tasks = {
   TECHNICAL_STANDARDS: {
     id: 'technical-standards',
     label: 'List the technical standards you use',
+    route: Routes.TECHNICAL_STANDARDS,
     completedLabelId: 'technical-standards-completed',
-    shortName: 'techstandards'
+    shortName: 'techstandards',
+    taskListModel: 'technicalStandards'
   },
   WASTE_RECOVERY_PLAN: {
     id: 'waste-recovery-plan',
@@ -468,9 +477,9 @@ const bespoke = [
       tasks.EMISSIONS_AND_MONITORING,
       tasks.TECHNICAL_STANDARDS,
       tasks.CLINICAL_WASTE_TEMPLATE,
-      tasks.HAZARDOUS_WASTE_TEMPLATE,
+      tasks.MANAGE_HAZARDOUS_WASTE,
       tasks.EMISSIONS_MANAGEMENT_PLAN,
-      tasks.NOISE_MANAGEMENT_PLAN,
+      tasks.NOISE_VIBRATION_DOCUMENTS,
       tasks.ODOUR_MANAGEMENT_PLAN,
       tasks.HABITATS_ASSESSMENT,
       tasks.BATTERY_PROCESSING,

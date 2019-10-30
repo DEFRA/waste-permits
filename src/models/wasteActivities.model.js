@@ -77,6 +77,10 @@ module.exports = class WasteActivities {
     const selectedWasteActivity = this.selectedWasteActivities[index]
     if (selectedWasteActivity) {
       this.selectedWasteActivities.splice(index, 1)
+      const duplicates = this.selectedWasteActivities.filter(({ id }) => selectedWasteActivity.id === id)
+      if (duplicates.length === 1) {
+        delete duplicates[0].referenceName
+      }
       return selectedWasteActivity
     }
   }
@@ -102,6 +106,17 @@ module.exports = class WasteActivities {
 
   get wasteActivitiesLength () {
     return this.selectedWasteActivities.length
+  }
+
+  get textForNumberOfWasteActivities () {
+    const length = this.wasteActivitiesLength
+    if (length === 0) {
+      return 'no activities'
+    } else if (length === 1) {
+      return '1 activity'
+    } else {
+      return `${length} activities`
+    }
   }
 
   get isFull () {

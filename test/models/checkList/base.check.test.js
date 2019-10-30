@@ -21,6 +21,7 @@ const CharityDetail = require('../../../src/models/charityDetail.model')
 const NeedToConsult = require('../../../src/models/needToConsult.model')
 const McpBusinessType = require('../../../src/models/mcpBusinessType.model')
 const AirQualityManagementArea = require('../../../src/models/airQualityManagementArea.model')
+const WasteDisposalAndRecoveryCodes = require('../../../src/models/wasteDisposalAndRecoveryCodes.model')
 
 const RecoveryService = require('../../../src/services/recovery.service')
 
@@ -59,6 +60,7 @@ lab.beforeEach(() => {
   sandbox.stub(NeedToConsult, 'get').value(() => mocks.needToConsult)
   sandbox.stub(McpBusinessType, 'get').value(() => mocks.mcpBusinessType)
   sandbox.stub(AirQualityManagementArea, 'get').value(() => mocks.airQualityManagementArea)
+  sandbox.stub(WasteDisposalAndRecoveryCodes, 'getAllForApplication').resolves([])
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
@@ -281,5 +283,13 @@ lab.experiment('Base Check tests:', () => {
     const mcpBusinessType = await check.getMcpBusinessType()
     Code.expect(mcpBusinessType).to.equal(mocks.mcpBusinessType)
     Code.expect(context.mcpBusinessType).to.equal(await check.getMcpBusinessType())
+  })
+
+  lab.test('getAllWasteDisposalAndRecoveryCodes works correctly', async () => {
+    delete context.allWasteDisposalAndRecoveryCodes
+    const check = new BaseCheck(context)
+    const allWasteDisposalAndRecoveryCodes = await check.getAllWasteDisposalAndRecoveryCodes()
+    Code.expect(allWasteDisposalAndRecoveryCodes).to.equal([])
+    Code.expect(context.allWasteDisposalAndRecoveryCodes).to.equal(await check.getAllWasteDisposalAndRecoveryCodes())
   })
 })

@@ -13,6 +13,7 @@ const McpBusinessType = require('../mcpBusinessType.model')
 const AirQualityManagementArea = require('../airQualityManagementArea.model')
 const DataStore = require('../dataStore.model')
 const TaskDeterminants = require('../taskDeterminants.model')
+const WasteDisposalAndRecoveryCodes = require('../wasteDisposalAndRecoveryCodes.model')
 
 const {
   BILLING_INVOICING,
@@ -233,5 +234,13 @@ module.exports = class BaseCheck {
       this.data.airQualityManagementArea = await AirQualityManagementArea.get(this.data)
     }
     return this.data.airQualityManagementArea || {}
+  }
+
+  async getAllWasteDisposalAndRecoveryCodes () {
+    const { allWasteDisposalAndRecoveryCodes } = this.data
+    if (!allWasteDisposalAndRecoveryCodes) {
+      this.data.allWasteDisposalAndRecoveryCodes = await WasteDisposalAndRecoveryCodes.getAllForApplication(this.data)
+    }
+    return this.data.allWasteDisposalAndRecoveryCodes || []
   }
 }

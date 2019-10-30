@@ -17,11 +17,11 @@
         <dl class="govuk-check-your-answers cya-questions-short">
           {{#each activities}}
           <div>
-            <dt id="activity-{{index}}-desc" class="cya-answer">
+            <dt id="activity-{{@index}}-desc" class="cya-answer">
               {{item.itemName}}
             </dt>
-            <dd id="activity-{{index}}-delete" class="cya-change">
-              <button id="activity-{{index}}-delete-submit" type="submit" class="link link-button" name="delete-activity" value="{{index}}">Delete</button>
+            <dd id="activity-{{@index}}-delete" class="cya-change">
+              <button id="activity-{{@index}}-delete-submit" type="submit" class="link link-button" name="delete-activity" value="{{@index}}">Delete</button>
             </dd>
           </div>
           {{/each}}
