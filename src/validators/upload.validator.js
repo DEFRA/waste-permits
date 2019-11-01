@@ -34,25 +34,10 @@ module.exports = class UploadValidator extends BaseValidator {
         'custom.empty': ({ hapi: { filename } }, { 'is-upload-file': isUpload }) => {
           return isUpload && !filename
         },
-        'custom.extension.filename': ({
-          hapi: {
-            filename,
-            headers
-          }
-        }) => {
+        'custom.extension.filename': ({ hapi: { filename } }) => {
           const regexPattern = '\\.' + this.listValidFileTypeExtensions().join('|\\.')
-          const re = new RegExp(regexPattern)
-          if (re.test(filename)) {
-            if (
-              typeof headers['content-type'] === 'string' &&
-              typeof headers['content-disposition'] === 'string'
-            ) {
-              return !this.listValidMimeTypes().includes(headers['content-type'])
-            }
-          }
-          // none of the above matched
-          // report the validation failure
-          return true
+          const re = new RegExp(regexPattern, 'i')
+          return !re.test(filename)
         }
       }
     }
@@ -75,31 +60,16 @@ module.exports = class UploadValidator extends BaseValidator {
 
   listValidFileTypeExtensions () {
     if (this._validatorOptions.fileTypes) {
-      return []
-        .concat
-        .apply(
-          [],
-          this._validatorOptions
-            .fileTypes
-            .map(({ type }) => {
-              return [type, type.toLowerCase()]
-            }))
-    }
-    return []
-  }
-
-  listValidMimeTypes () {
-    if (this._validatorOptions.fileTypes) {
-      const mimeTypes = this._validatorOptions
+      const extensions = this._validatorOptions
         .fileTypes
-        .map(({ mimeType }) => {
-          // allow for mime-type arrays and strings
-          return Array.isArray(mimeType) ? mimeType : [mimeType]
+        .map(({ extension }) => {
+          // allow for extension arrays and strings
+          return Array.isArray(extension) ? extension : [extension]
         })
-      // force mime-type array to "flat" array
-      return [].concat.apply([], mimeTypes)
+      // force extensions array to "flat" array
+      return [].concat.apply([], extensions)
     } else {
-      return ''
+      return []
     }
   }
 
