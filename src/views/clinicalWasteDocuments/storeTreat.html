@@ -1,0 +1,57 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+      {{> common/pageHeading pageHeading }}
+
+      <div id="store-treat-description">
+        <p>
+          If you want to store or treat a waste type not included in Annex 5, Section 2.1 of 
+            <a href="https://www.gov.uk/government/publications/clinical-waste-additional-guidance" target="_blank" rel="noopener noreferrer">EPR 5.07 (opens new tab)</a>,
+          then you need to submit a full justification on the next page. 
+        </p>
+
+        <p>Are you proposing to:</p>
+        <ul class="list list-bullet">
+          <li>accept additional waste for thermal or chemical disinfection not included in table 2.1a?</li>
+          <li>treat a waste in tables 2.1a or 2.1c other than by the specified methods?</li>
+        </ul>
+      </div>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <div class="form-group {{#getFormErrorGroupClass errors.store-treat}}{{/getFormErrorGroupClass}}">
+          <fieldset>
+
+            <legend id="store-treat-legend" class="visually-hidden" aria-describedby="a">{{ pageHeading }}</legend>
+
+            {{> common/fieldError fieldId='store-treat-error' message=errors.store-treat }}
+            <div class="multiple-choice">
+              <input id="store-treat-no" type="radio" name="store-treat" value="no"{{#if formValues.store-treat-no}} checked="checked"{{/if}}>
+              <label id="store-treat-no-label" for="store-treat-no">
+                No
+              </label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="store-treat-yes" type="radio" name="store-treat" value="yes"{{#if formValues.store-treat}} checked="checked"{{/if}}>
+              <label id="store-treat-yes-label" for="store-treat-yes">
+                Yes - I will provide a justification on the next page
+              </label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+    </div>
+  </div>
+
+</main>

@@ -30,6 +30,8 @@ const NeedToConsult = require('../../src/models/needToConsult.model')
 const AirQualityManagementArea = require('../../src/models/airQualityManagementArea.model')
 const OperatingUnder500Hours = require('../../src/models/operatingUnder500Hours.model')
 
+const StoreTreat = require('../../src/models/clinicalWasteDocuments/storeTreat.model')
+
 // ************* Data used by exported mocks ************* //
 class MockData {
   get account () {
@@ -505,6 +507,10 @@ class Mocks {
 
   get operatingUnder500Hours () {
     return this._operatingUnder500Hours || (this._operatingUnder500Hours = new OperatingUnder500Hours())
+  }
+
+  get storeTreat () {
+    return this._storeTreat || (this._storeTreat = new StoreTreat())
   }
 
   get payment () {

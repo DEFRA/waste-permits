@@ -79,8 +79,8 @@ const Dynamics = {
       }
     },
     CLINICAL_WASTE_DOCUMENTS: {
-      MEET_STANDARDS: {
-        questionCode: 'clinical-waste-meet-standards'
+      STORE_TREAT: {
+        questionCode: 'clinical-waste-store-treat'
       },
       ACCEPT_TYPE_NOT_INCLUDED: {
         questionCode: 'clinical-waste-accept-type-not-included'

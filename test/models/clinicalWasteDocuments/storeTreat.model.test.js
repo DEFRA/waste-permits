@@ -4,23 +4,23 @@ const Lab = require('@hapi/lab')
 const lab = exports.lab = Lab.script()
 const Code = require('@hapi/code')
 const sinon = require('sinon')
-const Mocks = require('../helpers/mocks')
+const Mocks = require('../../helpers/mocks')
 
-const ApplicationAnswer = require('../../src/persistence/entities/applicationAnswer.entity')
+const ApplicationAnswer = require('../../../src/persistence/entities/applicationAnswer.entity')
 
 const context = { }
 
 const YES = 'yes'
 const NO = 'no'
 
-const TestModel = require('../../src/models/clinicalWasteDocumentsMeetStandards.model')
-const questionCode = 'clinical-waste-documents-meet-standards'
-const testItem = 'clinicalWasteDocumentsMeetStandards'
+const TestModel = require('../../../src/models/clinicalWasteDocuments/storeTreat.model')
+const questionCode = 'clinical-waste-store-treat'
+const testItem = 'storeTreat'
 
 let mocks
 let saveSpy
 
-lab.experiment('ClinicalWasteDocumentsMeetStandards test:', () => {
+lab.experiment('Clinical Waste Documents - StoreTreat test:', () => {
   let sandbox
 
   lab.beforeEach(() => {

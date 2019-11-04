@@ -809,46 +809,40 @@ const Routes = {
     nextRoute: 'WASTE_ASSESSMENT',
     types: 'GET, POST'
   },
-  CLINICAL_WASTE_DOCUMENTS_MEET_STANDARDS: {
-    path: '/clinical-waste-documents/meet-standards',
-    view: 'clinicalWasteDocuments/meetStandards', // TODO
-    pageHeading: 'Will you meet the standards for managing clinical waste?',
-    controller: 'clinicalWasteDocuments/meetStandards', // TODO
-    validator: 'clinicalWasteDocuments/meetStandards', // TODO
+  CLINICAL_WASTE_DOCUMENTS_STORE_TREAT_WASTE_TYPE: {
+    path: '/clinical-waste-documents/store-treat-waste-type',
+    view: 'clinicalWasteDocuments/storeTreat', // TODO
+    pageHeading: 'Will you store or treat a waste type not included in Section 2.1?',
+    controller: 'clinicalWasteDocuments/storeTreat', // TODO
+    validator: 'clinicalWasteDocuments/storeTreat', // TODO
     types: 'GET, POST'
   },
-  // CLINICAL_WASTE_DOCUMENTS_DIFFERENT_PROCEDURES_UPLOAD: {
-  //   path: '/clinical-waste-documents/different-procedures/upload',
-  //   view: 'upload/clinicalWasteDocuments/differentProcedures', // TODO
-  //   pageHeading: 'Will you meet the standards for managing clinical waste?',
-  //   controller: 'upload',
-  //   validator: 'upload',
-  //   types: 'GET, POST, UPLOAD'
-  // },
-  // CLINICAL_WASTE_DOCUMENTS_ACCEPT_WASTE_TYPE: { // TODO: This will be separate data + upload pages
-  //   path: '/clinical-waste-documents/accept-waste-type',
-  //   view: '/clinicalWasteDocuments/acceptWasteType', // TODO
-  //   pageHeading: 'Will you accept a waste type not included in Section 2.1?',
-  //   controller: 'clinicalWasteDocuments/acceptWasteType', // TODO
-  //   validator: 'clinicalWasteDocuments/acceptWasteType', // TODO
-  //   types: 'GET, POST'
-  // },
-  // CLINICAL_WASTE_DOCUMENTS_ACCEPT_WASTE_TYPE_UPLOAD: { // TODO: Separate page from the above
-  //   path: '/clinical-waste-documents/accept-waste-type/upload',
-  //   view: 'upload/clinicalWasteDocuments/acceptWasteType', // TODO
-  //   pageHeading: 'Upload justification',
-  //   controller: 'upload',
-  //   validator: 'upload',
-  //   types: 'GET, POST, UPLOAD'
-  // },
-  // CLINICAL_WASTE_DOCUMENTS_SUMMARY_UPLOAD: {
-  //   path: '/clinical-waste-documents/summary/upload',
-  //   view: 'upload/clinicalWasteDocuments/summary', // TODO
-  //   pageHeading: 'Upload a summary of how you’ll treat clinical waste',
-  //   controller: 'upload',
-  //   validator: 'upload',
-  //   types: 'GET, POST, UPLOAD'
-  // },
+  CLINICAL_WASTE_DOCUMENTS_STORE_TREAT_WASTE_TYPE_UPLOAD: {
+    path: '/clinical-waste-documents/store-treat-waste-type/upload',
+    view: 'upload/clinicalWasteDocuments/storeTreat', // TODO
+    pageHeading: 'Upload justification',
+    controller: 'upload',
+    validator: 'upload',
+    types: 'GET, POST, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'CLINICAL_WASTE_JUSTIFICATION',
+    validatorOptions: {
+      fileTypes: [PDF, DOC, DOCX, ODT]
+    }
+  },
+  CLINICAL_WASTE_DOCUMENTS_SUMMARY_UPLOAD: {
+    path: '/clinical-waste-documents/summary/upload',
+    view: 'upload/clinicalWasteDocuments/summary', // TODO
+    pageHeading: 'Upload a summary of how you’ll treat clinical waste',
+    controller: 'upload',
+    validator: 'upload',
+    types: 'GET, POST, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'CLINICAL_WASTE_SUMMARY',
+    validatorOptions: {
+      fileTypes: [PDF, DOC, DOCX, ODT]
+    }
+  },
   // CLINICAL_WASTE_DOCUMENTS_LAYOUT_PLANS_UPLOAD: {
   //   path: '/clinical-waste-documents/layout-plans/upload',
   //   view: 'upload/clinicalWasteDocuments/layoutPlans', // TODO
@@ -856,13 +850,18 @@ const Routes = {
   //   controller: 'upload',
   //   validator: 'upload',
   //   nextRoute: '',
-  //   types: 'GET, POST, UPLOAD'
+  //   types: 'GET, POST, UPLOAD',
+  //   baseRoute: 'uploadRoute',
+  //   subject: 'CLINICAL_WASTE_SUMMARY',
+  //   validatorOptions: {
+  //     fileTypes: [PDF, DOC, DOCX, ODT]
+  //   }
   // },
   CLINICAL_WASTE_DOCUMENTS_LAYOUT_PLANS_INFORMATION: { // TODO: Write tests?
     path: '/information/clinical-layout-plans',
-    view: 'clinicalWasteDocuments/clinicalLayoutPlansInformation',
+    view: 'clinicalWasteDocuments/layoutPlansInformation',
     pageHeading: 'Guide for creating clinical waste site layout plans and process flows',
-    controller: 'clinicalWasteDocuments/clinicalLayoutPlansInformation',
+    controller: 'clinicalWasteDocuments/layoutPlansInformation',
     types: 'GET',
     cookieValidationRequired: false,
     applicationRequired: false
@@ -1680,7 +1679,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'WASTE_TYPES_LIST',
     validatorOptions: {
-      fileTypes: [ CSV ]
+      fileTypes: [CSV]
     }
   }
 }
