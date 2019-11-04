@@ -14,7 +14,7 @@ Constants.SKIP_LINK_MESSAGE = `Skip to main content`
 Constants.MAX_FILE_SIZE = 31457280 // 30MB
 
 Constants.FILE_TYPES = {
-  CSV: { mimeType: 'text/csv' },
+  CSV: { mimeType: ['text/csv', 'application/vnd.ms-excel'] },
   DOC: {
     mimeType: ['application/msword', 'application/octet-stream']
   },
