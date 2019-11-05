@@ -4,21 +4,21 @@ const Lab = require('@hapi/lab')
 const lab = exports.lab = Lab.script()
 const Code = require('@hapi/code')
 const sinon = require('sinon')
-const Mocks = require('../helpers/mocks')
-const GeneralTestHelper = require('./generalTestHelper.test')
+const Mocks = require('../../helpers/mocks')
+const GeneralTestHelper = require('../generalTestHelper.test')
 
-const server = require('../../server')
-const Application = require('../../src/persistence/entities/application.entity')
-const StandardRule = require('../../src/persistence/entities/standardRule.entity')
-const CookieService = require('../../src/services/cookie.service')
-const RecoveryService = require('../../src/services/recovery.service')
-const { COOKIE_RESULT } = require('../../src/constants')
-const TaskDeterminants = require('../../src/models/taskDeterminants.model')
+const server = require('../../../server')
+const Application = require('../../../src/persistence/entities/application.entity')
+const StandardRule = require('../../../src/persistence/entities/standardRule.entity')
+const CookieService = require('../../../src/services/cookie.service')
+const RecoveryService = require('../../../src/services/recovery.service')
+const { COOKIE_RESULT } = require('../../../src/constants')
+const TaskDeterminants = require('../../../src/models/taskDeterminants.model')
 
-const StoreTreat = require('../../src/models/clinicalWasteDocuments/storeTreat.model')
+const StoreTreat = require('../../../src/models/clinicalWasteDocuments/storeTreat.model')
 
 const routePath = '/clinical-waste-documents/store-treat-waste-type'
-const yesRoutePath = '/clinical-waste-documents/store-treat-waste-type/upload'
+const yesRoutePath = '/clinical-waste-documents/justification/upload'
 const noRoutePath = '/clinical-waste-documents/summary/upload'
 
 let sandbox

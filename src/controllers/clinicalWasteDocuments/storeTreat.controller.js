@@ -5,7 +5,7 @@ const RecoveryService = require('../../services/recovery.service')
 const StoreTreatModel = require('../../models/clinicalWasteDocuments/storeTreat.model')
 
 const {
-  CLINICAL_WASTE_DOCUMENTS_STORE_TREAT_WASTE_TYPE_UPLOAD,
+  CLINICAL_WASTE_DOCUMENTS_JUSTIFICATION_UPLOAD,
   CLINICAL_WASTE_DOCUMENTS_SUMMARY_UPLOAD
 } = require('../../routes')
 
@@ -42,7 +42,7 @@ module.exports = class StoreTreatController extends BaseController {
     await storeTreatModel.save(context)
 
     if (storeTreat) {
-      return this.redirect({ h, route: CLINICAL_WASTE_DOCUMENTS_STORE_TREAT_WASTE_TYPE_UPLOAD })
+      return this.redirect({ h, route: CLINICAL_WASTE_DOCUMENTS_JUSTIFICATION_UPLOAD })
     } else {
       return this.redirect({ h, route: CLINICAL_WASTE_DOCUMENTS_SUMMARY_UPLOAD })
     }

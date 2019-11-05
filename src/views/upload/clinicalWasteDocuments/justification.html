@@ -1,0 +1,36 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+      <div id="has-no-annotations" class="form-group">
+        <div id="store-treat-description">
+          <p>If you want to store or treat a waste type not included in Annex 5, Section 2.1 of 
+            <a href="https://www.gov.uk/government/publications/clinical-waste-additional-guidance" target="_blank" rel="noopener noreferrer" id="clinical-waste-additional-guidance-link">
+              EPR 5.07 (opens new tab)
+            </a>,
+          then you need to submit a full justification now.</p>
+        </div>
+      </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

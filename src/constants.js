@@ -10,7 +10,7 @@ Constants.COOKIE_PATH = { path: '/' }
 Constants.GITHUB_LOCATION = 'https://github.com/DEFRA/waste-permits'
 Constants.TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 Constants.PAGE_TITLE_ERROR_PREFIX = 'Problem: '
-Constants.SKIP_LINK_MESSAGE = `Skip to main content`
+Constants.SKIP_LINK_MESSAGE = 'Skip to main content'
 Constants.MAX_FILE_SIZE = 31457280 // 30MB
 
 Constants.FILE_TYPES = {
@@ -177,10 +177,10 @@ Constants.Company = {
     VOLUNTARY_ARRANGEMENT: 'is insolvent and has a Company Voluntary Arrangement',
     CONVERTED_CLOSED: 'has been closed or converted',
     INSOLVENCY_PROCEEDINGS: 'is insolvent',
-    NOT_ACTIVE: `is not active`,
-    NO_DESIGNATED_MEMBERS: `has no designated members`,
-    NO_DIRECTORS: `has no directors`,
-    NOT_APPLICABLE_COMPANY_TYPE: `is not applicable for this company type`
+    NOT_ACTIVE: 'is not active',
+    NO_DESIGNATED_MEMBERS: 'has no designated members',
+    NO_DIRECTORS: 'has no directors',
+    NOT_APPLICABLE_COMPANY_TYPE: 'is not applicable for this company type'
   },
   Type: {
     UK_ESTABLISHMENT: 'a UK establishment company'
@@ -212,7 +212,8 @@ Constants.UploadSubject = {
   NOISE_VIBRATION_DOCUMENTS: 'noise and vibration emissions documents',
   HAZARDOUS_WASTE_PROPOSAL: 'hazardous waste management proposal',
   HAZARDOUS_WASTE_TREATMENT_SUMMARY: 'hazardous waste treatment summary',
-  HAZARDOUS_WASTE_PLANS: 'hazardous waste layout plans and process flows'
+  HAZARDOUS_WASTE_PLANS: 'hazardous waste layout plans and process flows',
+  CLINICAL_WASTE_JUSTIFICATION: 'clinical waste treatment summary'
 }
 
 Constants.CookieValue = {
@@ -254,7 +255,7 @@ Constants.getVersion = () => {
   let version
   try {
     // Read the application version number
-    let json = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+    const json = JSON.parse(fs.readFileSync('package.json', 'utf8'))
     if (json) {
       version = json.version
     } else {
