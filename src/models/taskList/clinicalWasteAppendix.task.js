@@ -1,7 +1,7 @@
 'use strict'
 
 // const { HAZARDOUS_WASTE_TREATMENT_SUMMARY, HAZARDOUS_WASTE_PLANS } = require('../../constants').UploadSubject
-const { CLINICAL_WASTE_JUSTIFICATION } = require('../../constants').UploadSubject
+const { CLINICAL_WASTE_JUSTIFICATION, CLINICAL_WASTE_TREATMENT_SUMMARY } = require('../../constants').UploadSubject
 const BaseTask = require('./base.task')
 const Annotation = require('../../persistence/entities/annotation.entity')
 
@@ -12,10 +12,10 @@ module.exports = class ClinicalWasteAppendix extends BaseTask {
       return false
     }
 
-    // const layoutPlansAndProcessFlows = await Annotation.listByApplicationIdAndSubject(context, HAZARDOUS_WASTE_PLANS)
-    // if (!layoutPlansAndProcessFlows.length) {
-    //   return false
-    // }
+    const clinicalWasteSummary = await Annotation.listByApplicationIdAndSubject(context, CLINICAL_WASTE_TREATMENT_SUMMARY)
+    if (!clinicalWasteSummary.length) {
+      return false
+    }
 
     return true
   }

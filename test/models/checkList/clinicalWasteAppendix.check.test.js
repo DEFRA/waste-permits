@@ -59,6 +59,23 @@ lab.experiment('Clinical Waste Appendix Check tests:', () => {
       Code.expect(linkId).to.equal(`${prefix}-justification-link`)
     })
 
+    lab.test('(Clinical waste treatment summary) works correctly', async () => {
+      const { heading, headingId, answers, links } = lines[1]
+      Code.expect(heading).to.equal('Clinical waste treatment summary')
+      Code.expect(headingId).to.equal(`${prefix}-summary-heading`)
+
+      answers.forEach(({ answer, answerId }, answerIndex) => {
+        Code.expect(answerId).to.equal(`${prefix}-summary-answer-${answerIndex + 1}`)
+        const { filename } = fakeFiles[answerIndex]
+        Code.expect(answer).to.equal(filename)
+      })
+
+      const { link, linkId, linkType } = links.pop()
+      Code.expect(link).to.equal('/clinical-waste-documents/summary/upload')
+      Code.expect(linkType).to.equal('clinical waste treatment summary')
+      Code.expect(linkId).to.equal(`${prefix}-summary-link`)
+    })
+
     lab.test('Provides the correct task', async () => {
       Code.expect(ClinicalWasteAppendixCheck.task.id).to.equal('clinical-waste-appendix')
     })

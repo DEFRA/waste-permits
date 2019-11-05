@@ -9,12 +9,12 @@ const UploadTestHelper = require('../uploadHelper')
 
 const fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/clinical-waste-documents/justification/upload'
+const routePath = '/clinical-waste-documents/summary/upload'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
   removePath: `${routePath}/remove/${fakeAnnotationId}`,
-  nextRoutePath: '/clinical-waste-documents/summary/upload'
+  nextRoutePath: '/clinical-waste-documents/layout-plans/upload'
 }
 
 const helper = new UploadTestHelper(lab, paths)
@@ -33,7 +33,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Justification upload tests:', () => {
+lab.experiment('Store or Treat upload tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -43,8 +43,8 @@ lab.experiment('Justification upload tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'store-treat-description',
-      pageHeading: 'Will you store or treat a waste type not included in Section 2.1?',
+      descriptionId: 'summary-description',
+      pageHeading: 'Upload a summary of how you’ll treat clinical waste',
       submitButton: 'Continue',
       fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
     }
@@ -75,6 +75,6 @@ lab.experiment('Justification upload tests:', () => {
 
   lab.experiment(`POST ${routePath}`, () => {
     // Perform general post tests
-    helper.postSuccess({ payload: { 'clinical-waste-justification': 'clinical-waste-justification' } })
+    helper.postSuccess({ payload: { 'clinical-waste-summary': 'clinical-waste-summary' } })
   })
 })

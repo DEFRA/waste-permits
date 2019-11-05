@@ -27,18 +27,18 @@ lab.afterEach(() => {
 
 lab.experiment('Task List: ClinicalWasteAppendix Model tests:', () => {
   lab.test('checkComplete() method correctly returns FALSE when no justification provided', async () => {
+    listAnnotationsStub.withArgs({}, 'clinical waste justification').resolves([])
+    const result = await ClinicalWasteAppendix.checkComplete({})
+    Code.expect(result).to.equal(false)
+  })
+
+  lab.test('checkComplete() method correctly returns FALSE when no treatment summary provided', async () => {
     listAnnotationsStub.withArgs({}, 'clinical waste treatment summary').resolves([])
     const result = await ClinicalWasteAppendix.checkComplete({})
     Code.expect(result).to.equal(false)
   })
 
-  // lab.test('checkComplete() method correctly returns FALSE when no plans provided', async () => {
-  //   listAnnotationsStub.withArgs({}, 'hazardous waste layout plans and process flows').resolves([])
-  //   const result = await ClinicalWasteAppendix.checkComplete({})
-  //   Code.expect(result).to.equal(false)
-  // })
-
-  lab.test('checkComplete() method correctly returns TRUE when justification provided', async () => {
+  lab.test('checkComplete() method correctly returns TRUE when all uploads provided', async () => {
     const result = await ClinicalWasteAppendix.checkComplete({})
     Code.expect(result).to.equal(true)
   })
