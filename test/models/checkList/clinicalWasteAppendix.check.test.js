@@ -76,6 +76,23 @@ lab.experiment('Clinical Waste Appendix Check tests:', () => {
       Code.expect(linkId).to.equal(`${prefix}-summary-link`)
     })
 
+    lab.test('(Clinical waste layout plans and process flows) works correctly', async () => {
+      const { heading, headingId, answers, links } = lines[2]
+      Code.expect(heading).to.equal('Clinical waste layout plans and process flows')
+      Code.expect(headingId).to.equal(`${prefix}-layout-heading`)
+
+      answers.forEach(({ answer, answerId }, answerIndex) => {
+        Code.expect(answerId).to.equal(`${prefix}-layout-answer-${answerIndex + 1}`)
+        const { filename } = fakeFiles[answerIndex]
+        Code.expect(answer).to.equal(filename)
+      })
+
+      const { link, linkId, linkType } = links.pop()
+      Code.expect(link).to.equal('/clinical-waste-documents/layout-plans/upload')
+      Code.expect(linkType).to.equal('clinical waste layout plans and process flows')
+      Code.expect(linkId).to.equal(`${prefix}-layout-link`)
+    })
+
     lab.test('Provides the correct task', async () => {
       Code.expect(ClinicalWasteAppendixCheck.task.id).to.equal('clinical-waste-appendix')
     })

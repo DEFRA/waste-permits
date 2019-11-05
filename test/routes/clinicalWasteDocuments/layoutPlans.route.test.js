@@ -9,12 +9,12 @@ const UploadTestHelper = require('../uploadHelper')
 
 const fakeAnnotationId = 'ANNOTATION_ID'
 
-const routePath = '/clinical-waste-documents/summary/upload'
+const routePath = '/clinical-waste-documents/layout-plans/upload'
 const paths = {
   routePath,
   uploadPath: `${routePath}/upload`,
   removePath: `${routePath}/remove/${fakeAnnotationId}`,
-  nextRoutePath: '/clinical-waste-documents/layout-plans/upload'
+  nextRoutePath: '/task-list'
 }
 
 const helper = new UploadTestHelper(lab, paths)
@@ -33,7 +33,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Clinical waste summary upload tests:', () => {
+lab.experiment('Clinical waste layout plans upload tests:', () => {
   const { routePath, nextRoutePath } = paths
   new GeneralTestHelper({ lab, routePath, nextRoutePath }).test({
     excludeCookiePostTests: true
@@ -43,8 +43,8 @@ lab.experiment('Clinical waste summary upload tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      descriptionId: 'summary-description',
-      pageHeading: 'Upload a summary of how you’ll treat clinical waste',
+      descriptionId: 'layout-plans-description',
+      pageHeading: 'Upload layout plans and process flows',
       submitButton: 'Continue',
       fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
     }
@@ -55,7 +55,7 @@ lab.experiment('Clinical waste summary upload tests:', () => {
       {
         title: 'displays expected static content',
         test: (doc) => GeneralTestHelper.checkElementsExist(doc, [
-          'clinical-waste-additional-guidance-link'])
+          'clinical-layout-plans-link'])
       }
     ])
     helper.getFailure()

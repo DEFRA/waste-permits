@@ -38,6 +38,12 @@ lab.experiment('Task List: ClinicalWasteAppendix Model tests:', () => {
     Code.expect(result).to.equal(false)
   })
 
+  lab.test('checkComplete() method correctly returns FALSE when no layout plan provided', async () => {
+    listAnnotationsStub.withArgs({}, 'clinical waste layout plans and process flows').resolves([])
+    const result = await ClinicalWasteAppendix.checkComplete({})
+    Code.expect(result).to.equal(false)
+  })
+
   lab.test('checkComplete() method correctly returns TRUE when all uploads provided', async () => {
     const result = await ClinicalWasteAppendix.checkComplete({})
     Code.expect(result).to.equal(true)

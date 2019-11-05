@@ -847,7 +847,7 @@ const Routes = {
   },
   CLINICAL_WASTE_DOCUMENTS_LAYOUT_PLANS_UPLOAD: {
     path: '/clinical-waste-documents/layout-plans/upload',
-    view: 'upload/clinicalWasteDocuments/layoutPlans', // TODO
+    view: 'upload/clinicalWasteDocuments/layoutPlans',
     pageHeading: 'Upload layout plans and process flows',
     controller: 'upload',
     validator: 'upload',

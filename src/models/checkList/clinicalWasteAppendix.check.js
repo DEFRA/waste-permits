@@ -5,7 +5,8 @@ const { CLINICAL_WASTE_APPENDIX } = require('../../tasks').tasks
 
 const {
   CLINICAL_WASTE_DOCUMENTS_JUSTIFICATION_UPLOAD: { path: justificationPath },
-  CLINICAL_WASTE_DOCUMENTS_SUMMARY_UPLOAD: { path: summaryPath }
+  CLINICAL_WASTE_DOCUMENTS_SUMMARY_UPLOAD: { path: summaryPath },
+  CLINICAL_WASTE_DOCUMENTS_LAYOUT_PLANS_UPLOAD: { path: layoutPath }
 } = require('../../routes')
 
 module.exports = class ClinicalWasteAppendixCheck extends BaseCheck {
@@ -18,7 +19,7 @@ module.exports = class ClinicalWasteAppendixCheck extends BaseCheck {
   }
 
   async buildLines () {
-    return Promise.all([this.getJustificationLine(), this.getTreatmentSummaryLine()])
+    return Promise.all([this.getJustificationLine(), this.getTreatmentSummaryLine(), this.getLayoutPlansLine()])
   }
 
   async getJustificationLine () {
@@ -41,6 +42,18 @@ module.exports = class ClinicalWasteAppendixCheck extends BaseCheck {
       answers: evidence.map((file) => file.filename),
       links: [
         { path: summaryPath, type: 'clinical waste treatment summary' }
+      ]
+    })
+  }
+
+  async getLayoutPlansLine () {
+    const evidence = await this.getUploadedFileDetails(UploadSubject.CLINICAL_WASTE_DOCUMENTS_LAYOUT_PLANS_UPLOAD, 'clinicalWasteLayoutPlans')
+    return this.buildLine({
+      prefix: 'layout',
+      heading: 'Clinical waste layout plans and process flows',
+      answers: evidence.map((file) => file.filename),
+      links: [
+        { path: layoutPath, type: 'clinical waste layout plans and process flows' }
       ]
     })
   }
