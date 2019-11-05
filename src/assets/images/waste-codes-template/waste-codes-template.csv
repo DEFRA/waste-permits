@@ -1,3 +1,4 @@
-Code,Description,,Please delete the 2 example codes and descriptions below - place your codes in column A and their descriptions in column B.
-01 04 09,waste sand and clays,,
-06 01 04*,phosphoric and phosphorous acid,,
+Code,Description,Activity,,Please delete the example codes and descriptions below - place your codes in column A with their descriptions in column B and your activity names in column C.
+20 01 08,biodegradable kitchen and canteen waste,Household waste amenity site taking hazardous waste,,
+20 01 37*,wood containing hazardous substances,Household waste amenity site taking hazardous waste,,
+20 01 31*,cytotoxic and cytostatic medicines,Clinical waste transfer station,,
