@@ -859,7 +859,7 @@ const Routes = {
       fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
-  CLINICAL_WASTE_DOCUMENTS_LAYOUT_PLANS_INFORMATION: { // TODO: Write tests?
+  CLINICAL_WASTE_DOCUMENTS_LAYOUT_PLANS_INFORMATION: {
     path: '/information/clinical-layout-plans',
     view: 'clinicalWasteDocuments/layoutPlansInformation',
     pageHeading: 'Guide for creating clinical waste site layout plans and process flows',
