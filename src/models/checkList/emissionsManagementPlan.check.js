@@ -21,10 +21,10 @@ module.exports = class EmissionsManagementPlanCheck extends BaseCheck {
     const evidence = await this.getUploadedFileDetails(UploadSubject.EMISSIONS_MANAGEMENT_PLAN, 'emissionsManagementPlan')
     const answers = evidence.map((file) => file.filename)
     return this.buildLine({
-      heading: 'Emissions management plan',
+      heading: 'Dust and emissions management plan',
       answers,
       links: [
-        { path, type: 'emissions management plan' }
+        { path, type: 'dust and emissions management plan' }
       ]
     })
   }

@@ -913,7 +913,7 @@ const Routes = {
   EMISSIONS_MANAGEMENT_PLAN: {
     path: '/emissions-management-plan/upload',
     view: 'upload/emissionsManagementPlan/emissionsManagementPlan',
-    pageHeading: 'Upload the emissions management plan',
+    pageHeading: 'Upload the dust and emissions management plan',
     controller: 'upload',
     validator: 'upload',
     nextRoute: 'TASK_LIST',

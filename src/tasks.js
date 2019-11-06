@@ -86,7 +86,7 @@ const tasks = {
   },
   EMISSIONS_MANAGEMENT_PLAN: {
     id: 'emissions-management-plan',
-    label: 'Upload the emissions management plan',
+    label: 'Upload the dust and emissions management plan',
     route: Routes.EMISSIONS_MANAGEMENT_PLAN,
     determinants: [ 'emissionsManagementPlanRequired' ],
     completedLabelId: 'emissions-management-plan-completed',
