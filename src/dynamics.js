@@ -81,9 +81,6 @@ const Dynamics = {
     CLINICAL_WASTE_DOCUMENTS: {
       STORE_TREAT: {
         questionCode: 'clinical-waste-store-treat'
-      },
-      ACCEPT_TYPE_NOT_INCLUDED: {
-        questionCode: 'clinical-waste-accept-type-not-included'
       }
     },
     MANAGE_HAZARDOUS_WASTE: {
