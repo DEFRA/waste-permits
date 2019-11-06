@@ -134,18 +134,6 @@ lab.experiment('WasteWeights test:', () => {
     })
   })
 
-  lab.test('get listOfWeights', async () => {
-    let wasteWeights
-    wasteWeights = new WasteWeights({ hasHazardousWaste: true, nonHazardousThroughput: '1', nonHazardousMaximum: '2', hazardousThroughput: '3', hazardousMaximum: '4' })
-    Code.expect(wasteWeights.listOfWeights).to.equal(['1', '2', '3', '4'])
-    wasteWeights = new WasteWeights({ hasHazardousWaste: false, nonHazardousThroughput: '1', nonHazardousMaximum: '2', hazardousThroughput: '3', hazardousMaximum: '4' })
-    Code.expect(wasteWeights.listOfWeights).to.equal(['1', '2'])
-    wasteWeights = new WasteWeights({ hasHazardousWaste: true, nonHazardousMaximum: '2', hazardousMaximum: '4' })
-    Code.expect(wasteWeights.listOfWeights).to.equal(['', '2', '', '4'])
-    wasteWeights = new WasteWeights({ hasHazardousWaste: true, nonHazardousThroughput: '1', hazardousThroughput: '3' })
-    Code.expect(wasteWeights.listOfWeights).to.equal(['1', '', '3', ''])
-  })
-
   lab.experiment('getAllWeightsHaveBeenEnteredForApplication', () => {
     let listAnswerStub
     lab.beforeEach(() => {

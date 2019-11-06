@@ -88,16 +88,6 @@ module.exports = class WasteWeights {
     })
   }
 
-  get listOfWeights () {
-    const list = [this.nonHazardousThroughput || '', this.nonHazardousMaximum || '']
-
-    if (this.hasHazardousWaste) {
-      list.push(this.hazardousThroughput || '', this.hazardousMaximum || '')
-    }
-
-    return list
-  }
-
   async save (context) {
     const wasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
     const wasteActivityApplicationLine = wasteActivityApplicationLines[this.forActivityIndex]
