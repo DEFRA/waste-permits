@@ -47,7 +47,7 @@ lab.experiment('Emissions management plan upload tests:', () => {
 
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
-      pageHeading: 'Upload the emissions management plan',
+      pageHeading: 'Upload the dust and emissions management plan',
       submitButton: 'Continue',
       fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
     }

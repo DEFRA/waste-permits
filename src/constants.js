@@ -189,7 +189,7 @@ Constants.UploadSubject = {
   APPLICATION_STANDARD_RULES_FORM: 'application standard rules forms',
   ODOUR_MANAGEMENT_PLAN: 'odour management plan',
   ARBITRARY_UPLOADS: 'arbitrary uploads',
-  EMISSIONS_MANAGEMENT_PLAN: 'emissions management plan',
+  EMISSIONS_MANAGEMENT_PLAN: 'dust and emissions management plan',
   SITE_CONDITION_REPORT: 'site condition report',
   EMISSIONS_AND_MONITORING_DETAILS: 'Point source emissions',
   NOISE_VIBRATION_DOCUMENTS: 'noise and vibration emissions documents',
