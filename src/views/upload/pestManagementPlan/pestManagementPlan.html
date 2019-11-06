@@ -1,0 +1,46 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+      <div id="has-no-annotations" class="form-group">
+        <div id="pest-management-plan-description">
+          <p>
+            You must provide a pest management plan if your risk
+            assessment shows that your operation is likely to cause
+            pests.
+          </p>
+          <p>
+            Please read the
+            <a
+              href="https://www.gov.uk/guidance/control-and-monitor-emissions-for-your-environmental-permit#pest-management-plan"
+              target="_blank"
+              rel="noopener noreferrer"
+              >pest management plan guidance (opens new tab)</a>
+            before creating your plan.
+          </p>
+
+        </div>
+      </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

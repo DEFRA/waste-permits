@@ -240,6 +240,14 @@ const tasks = {
     shortName: 'permitholder',
     taskListModel: 'permitHolderDetails'
   },
+  PEST_MANAGEMENT_PLAN: {
+    id: 'upload-pest-management-plan',
+    label: 'Complete and upload a pest management plan',
+    route: Routes.PEST_MANAGEMENT_PLAN,
+    completedLabelId: 'pest-management-completed',
+    shortName: 'pestmanagement',
+    taskListModel: 'pestManagementPlan'
+  },
   PRE_APPLICATION: {
     id: 'tell-us-if-youve-discussed-this-application-with-us',
     label: 'Tell us if you have discussed this application with us',
