@@ -68,6 +68,8 @@ module.exports = class TaskListController extends BaseController {
 
     pageContext.formValues = request.payload
 
+    console.log('!! availableTasks !!', pageContext.taskList.context.availableTasks)
+    console.log('!! evidence section!!', pageContext.taskList.sections[4])
     return this.showView({ h, pageContext })
   }
 }

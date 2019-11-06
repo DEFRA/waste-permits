@@ -492,7 +492,8 @@ const bespoke = [
       tasks.ODOUR_MANAGEMENT_PLAN,
       tasks.HABITATS_ASSESSMENT,
       tasks.BATTERY_PROCESSING,
-      tasks.SHIP_BREAKING
+      tasks.SHIP_BREAKING,
+      tasks.PEST_MANAGEMENT_PLAN
     ]
   },
   {
