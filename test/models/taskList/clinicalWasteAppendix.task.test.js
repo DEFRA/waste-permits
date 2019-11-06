@@ -27,7 +27,7 @@ lab.afterEach(() => {
 
 lab.experiment('Task List: ClinicalWasteAppendix Model tests:', () => {
   lab.test('checkComplete() method correctly returns FALSE when no justification provided', async () => {
-    listAnnotationsStub.withArgs({}, 'clinical waste justification').resolves([])
+    listAnnotationsStub.withArgs({}, 'clinical waste non-standard justification').resolves([])
     const result = await ClinicalWasteAppendix.checkComplete({})
     Code.expect(result).to.equal(false)
   })
