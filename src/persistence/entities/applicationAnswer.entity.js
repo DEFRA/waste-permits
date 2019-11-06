@@ -66,7 +66,7 @@ class ApplicationAnswer extends BaseEntity {
           <filter type="and">
             <condition attribute="defra_application" operator="eq" value="${applicationId}" />
             <condition attribute="statecode" operator="eq" value="0" />
-            ${applicationLineId ? `<condition attribute="defra_application" operator="eq" value="${applicationLineId}" />` : ''}
+            ${applicationLineId ? `<condition attribute="defra_applicationlineid" operator="eq" value="${applicationLineId}" />` : ''}
           </filter>
           <link-entity name="defra_applicationquestion" from="defra_applicationquestionid" to="defra_question" link-type="inner" alias="question">
             <attribute name="defra_shortname" />
@@ -101,7 +101,7 @@ class ApplicationAnswer extends BaseEntity {
   }
 
   static async listForApplicationLine (context, applicationLineId, questionCodes) {
-    return this.listUsingFetchXml(context, this.buildQuery(context, questionCodes))
+    return this.listUsingFetchXml(context, this.buildQuery(context, questionCodes, applicationLineId))
   }
 }
 

@@ -22,6 +22,7 @@ const NeedToConsult = require('../../../src/models/needToConsult.model')
 const McpBusinessType = require('../../../src/models/mcpBusinessType.model')
 const AirQualityManagementArea = require('../../../src/models/airQualityManagementArea.model')
 const WasteDisposalAndRecoveryCodes = require('../../../src/models/wasteDisposalAndRecoveryCodes.model')
+const WasteWeights = require('../../../src/models/wasteWeights.model')
 
 const RecoveryService = require('../../../src/services/recovery.service')
 
@@ -61,6 +62,7 @@ lab.beforeEach(() => {
   sandbox.stub(McpBusinessType, 'get').value(() => mocks.mcpBusinessType)
   sandbox.stub(AirQualityManagementArea, 'get').value(() => mocks.airQualityManagementArea)
   sandbox.stub(WasteDisposalAndRecoveryCodes, 'getAllForApplication').resolves([])
+  sandbox.stub(WasteWeights, 'getAllForApplication').resolves([])
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
@@ -291,5 +293,13 @@ lab.experiment('Base Check tests:', () => {
     const allWasteDisposalAndRecoveryCodes = await check.getAllWasteDisposalAndRecoveryCodes()
     Code.expect(allWasteDisposalAndRecoveryCodes).to.equal([])
     Code.expect(context.allWasteDisposalAndRecoveryCodes).to.equal(await check.getAllWasteDisposalAndRecoveryCodes())
+  })
+
+  lab.test('getAllWasteWeights works correctly', async () => {
+    delete context.allWasteWeights
+    const check = new BaseCheck(context)
+    const allWasteWeights = await check.getAllWasteWeights()
+    Code.expect(allWasteWeights).to.equal([])
+    Code.expect(context.allWasteWeights).to.equal(await check.getAllWasteWeights())
   })
 })
