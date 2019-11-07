@@ -88,7 +88,7 @@ const tasks = {
   },
   EMISSIONS_MANAGEMENT_PLAN: {
     id: 'emissions-management-plan',
-    label: 'Upload the emissions management plan',
+    label: 'Upload the dust and emissions management plan',
     route: Routes.EMISSIONS_MANAGEMENT_PLAN,
     determinants: ['emissionsManagementPlanRequired'],
     completedLabelId: 'emissions-management-plan-completed',
@@ -372,10 +372,13 @@ const tasks = {
     shortName: 'ewc',
     taskListModel: 'wasteTypesList'
   },
-  WASTE_WEIGHT: {
-    id: 'waste-weight',
-    ruleSetId: 'defra_extwasteweightreq',
-    completedLabelId: 'waste-weight-completed'
+  WASTE_WEIGHTS: {
+    id: 'waste-weights',
+    label: 'Provide your waste storage capacity and annual throughput',
+    route: Routes.WASTE_WEIGHTS,
+    completedLabelId: 'waste-weights-completed',
+    shortName: 'wasteweights',
+    taskListModel: 'wasteWeights'
   }
 }
 
@@ -456,9 +459,7 @@ const bespoke = [
     id: 'activities-section',
     label: 'Activities',
     tasks: [
-      tasks.MCP_TEMPLATE,
-      tasks.MCP_DETAILS,
-      tasks.MCP_BUSINESS_ACTIVITY,
+      tasks.WASTE_WEIGHTS,
       tasks.WASTE_TYPES_LIST,
       tasks.RECOVERY_AND_DISPOSAL_CODES
     ]

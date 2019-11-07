@@ -14,49 +14,32 @@ Constants.SKIP_LINK_MESSAGE = 'Skip to main content'
 Constants.MAX_FILE_SIZE = 31457280 // 30MB
 
 Constants.FILE_TYPES = {
-  CSV: { mimeType: ['text/csv', 'application/vnd.ms-excel'] },
-  DOC: {
-    mimeType: ['application/msword', 'application/octet-stream']
-  },
-  DOCX: {
-    mimeType: [
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/octet-stream'
-    ]
-  },
-  JPG: { mimeType: 'image/jpeg' },
-  ODS: { mimeType: 'application/vnd.oasis.opendocument.spreadsheet' },
-  ODT: { mimeType: 'application/vnd.oasis.opendocument.text' },
-  PDF: { mimeType: 'application/pdf' },
-  XLS: {
-    mimeType: [
-      'application/vnd.ms-excel',
-      'application/octet-stream'
-    ]
-  },
-  XLSX: {
-    mimeType: [
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/octet-stream'
-    ]
-  },
-  AAI: { mimeType: 'application/octet-stream' },
-  ADI: { mimeType: 'application/octet-stream' },
-  AMI: { mimeType: 'application/octet-stream' },
-  APL: { mimeType: 'application/octet-stream' },
-  BPI: { mimeType: 'application/octet-stream' },
-  DEM: { mimeType: 'application/octet-stream' },
-  DIN: { mimeType: 'application/octet-stream' },
-  EMI: { mimeType: 'application/octet-stream' },
-  FAC: { mimeType: 'application/octet-stream' },
-  HRL: { mimeType: 'application/octet-stream' },
-  MET: { mimeType: 'application/octet-stream' },
-  PFL: { mimeType: 'application/octet-stream' },
-  ROU: { mimeType: 'application/octet-stream' },
-  RUF: { mimeType: 'application/octet-stream' },
-  SFC: { mimeType: 'application/octet-stream' },
-  TER: { mimeType: 'application/octet-stream' },
-  VAR: { mimeType: 'application/octet-stream' }
+  CSV: { extension: 'csv' },
+  DOC: { extension: 'doc' },
+  DOCX: { extension: 'docx' },
+  JPG: { extension: ['jpg', 'jpeg'] },
+  ODS: { extension: 'ods' },
+  ODT: { extension: 'odt' },
+  PDF: { extension: 'pdf' },
+  XLS: { extension: 'xls' },
+  XLSX: { extension: 'xlsx' },
+  AAI: { extension: 'aai' },
+  ADI: { extension: 'adi' },
+  AMI: { extension: 'ami' },
+  APL: { extension: 'apl' },
+  BPI: { extension: 'bpi' },
+  DEM: { extension: 'dem' },
+  DIN: { extension: 'din' },
+  EMI: { extension: 'emi' },
+  FAC: { extension: 'fac' },
+  HRL: { extension: 'hrl' },
+  MET: { extension: 'met' },
+  PFL: { extension: 'pfl' },
+  ROU: { extension: 'rou' },
+  RUF: { extension: 'ruf' },
+  SFC: { extension: 'sfc' },
+  TER: { extension: 'ter' },
+  VAR: { extension: 'var' }
 }
 
 // Add the type property to the file types
@@ -206,7 +189,7 @@ Constants.UploadSubject = {
   APPLICATION_STANDARD_RULES_FORM: 'application standard rules forms',
   ODOUR_MANAGEMENT_PLAN: 'odour management plan',
   ARBITRARY_UPLOADS: 'arbitrary uploads',
-  EMISSIONS_MANAGEMENT_PLAN: 'emissions management plan',
+  EMISSIONS_MANAGEMENT_PLAN: 'dust and emissions management plan',
   SITE_CONDITION_REPORT: 'site condition report',
   EMISSIONS_AND_MONITORING_DETAILS: 'Point source emissions',
   NOISE_VIBRATION_DOCUMENTS: 'noise and vibration emissions documents',
