@@ -1,0 +1,37 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+      <div id="has-no-annotations" class="form-group">
+        <div id="summary-description">
+          <p>If you treat clinical waste at your site, you must write a summary that explains the treatment processes for each activity.</p>
+          <p>Tell us how your processes follow the guidance in Annex 5, Section 2.1 of 
+            <a href="https://www.gov.uk/government/publications/clinical-waste-additional-guidance" target="_blank" rel="noopener noreferrer" id="clinical-waste-additional-guidance-link">
+              EPR 5.07 (opens new tab)
+            </a>
+          for each type of waste</p>
+        </div>
+      </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

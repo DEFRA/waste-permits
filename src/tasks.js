@@ -5,7 +5,7 @@ const tasks = {
     id: 'air-quality-management',
     label: 'Give Air Quality Management Area details',
     route: Routes.AIR_QUALITY_MANAGEMENT_AREA,
-    determinants: [ 'aqmaRequired' ],
+    determinants: ['aqmaRequired'],
     completedLabelId: 'air-quality-management-completed',
     shortName: 'aqma',
     taskListModel: 'airQualityManagementArea'
@@ -14,7 +14,7 @@ const tasks = {
     id: 'upload-air-dispersion-modelling-report',
     label: 'Upload air dispersion modelling report',
     route: Routes.AIR_DISPERSION_MODELLING_REPORT,
-    determinants: [ 'airDispersionModellingRequired' ],
+    determinants: ['airDispersionModellingRequired'],
     completedLabelId: 'upload-air-dispersion-modelling-report-completed',
     shortName: 'airreport',
     taskListModel: 'airDispersionModellingReport'
@@ -39,16 +39,18 @@ const tasks = {
     id: 'upload-best-available-techniques-assessment',
     label: 'Upload the best available techniques assessment',
     route: Routes.BEST_AVAILABLE_TECHNIQUES_ASSESSMENT,
-    determinants: [ 'bestAvailableTechniquesAssessment' ],
+    determinants: ['bestAvailableTechniquesAssessment'],
     completedLabelId: 'upload-best-available-techniques-assessment-completed',
     shortName: 'batassessment',
     taskListModel: 'bestAvailableTechniquesAssessment'
   },
-  CLINICAL_WASTE_TEMPLATE: {
-    id: 'clinical-waste-template',
+  CLINICAL_WASTE_APPENDIX: {
+    id: 'clinical-waste-appendix',
     label: 'Complete and upload the clinical waste template and supporting documents',
-    completedLabelId: 'clinical-waste-template-completed',
-    shortName: 'clinical'
+    route: Routes.CLINICAL_WASTE_DOCUMENTS_STORE_TREAT_WASTE_TYPE,
+    completedLabelId: 'clinical-waste-appendix-completed',
+    shortName: 'clinical',
+    taskListModel: 'clinicalWasteAppendix'
   },
   CONFIRM_CONFIDENTIALLY: {
     id: 'confirm-confidentiality-needs',
@@ -88,7 +90,7 @@ const tasks = {
     id: 'emissions-management-plan',
     label: 'Upload the dust and emissions management plan',
     route: Routes.EMISSIONS_MANAGEMENT_PLAN,
-    determinants: [ 'emissionsManagementPlanRequired' ],
+    determinants: ['emissionsManagementPlanRequired'],
     completedLabelId: 'emissions-management-plan-completed',
     shortName: 'emissionsplan',
     taskListModel: 'emissionsManagementPlan'
@@ -97,7 +99,7 @@ const tasks = {
     id: 'upload-energy-efficiency-report',
     label: 'Upload the energy efficiency report',
     route: Routes.ENERGY_EFFICIENCY_REPORT,
-    determinants: [ 'energyEfficiencyReportRequired' ],
+    determinants: ['energyEfficiencyReportRequired'],
     completedLabelId: 'upload-energy-efficiency-report-completed',
     shortName: 'energyefficiency',
     taskListModel: 'energyEfficiencyReport'
@@ -155,7 +157,7 @@ const tasks = {
     id: 'mcp-business-activity',
     label: 'Choose business or activity type',
     route: Routes.MCP_BUSINESS_ACTIVITY,
-    determinants: [ 'businessActivityRequired' ],
+    determinants: ['businessActivityRequired'],
     completedLabelId: 'business-activity-completed',
     ruleSetId: 'defra_mcp_businesstype',
     shortName: 'nacecode',
@@ -209,7 +211,7 @@ const tasks = {
     id: 'noise-vibration-documents',
     label: 'Upload noise and vibration emissions documents',
     route: Routes.NOISE_VIBRATION_DOCUMENTS,
-    determinants: [ 'noiseVibrationDocumentsRequired' ],
+    determinants: ['noiseVibrationDocumentsRequired'],
     completedLabelId: 'noise-vibration-documents-completed',
     shortName: 'noisevibrationdocs',
     taskListModel: 'noiseVibrationDocuments'
@@ -226,7 +228,7 @@ const tasks = {
     id: 'odour-management-plan',
     label: 'Upload the odour management plan',
     route: Routes.ODOUR_MANAGEMENT_PLAN,
-    determinants: [ 'odourManagementPlanRequired' ],
+    determinants: ['odourManagementPlanRequired'],
     completedLabelId: 'odour-management-plan-completed',
     shortName: 'odourplan',
     taskListModel: 'odourManagementPlan'
@@ -269,7 +271,7 @@ const tasks = {
     id: 'upload-screening-tool',
     label: 'Upload screening tool',
     route: Routes.SCREENING_TOOL,
-    determinants: [ 'screeningToolRequired' ],
+    determinants: ['screeningToolRequired'],
     completedLabelId: 'screening-tool-completed',
     shortName: 'screeningtool',
     taskListModel: 'screeningTool'
@@ -300,7 +302,7 @@ const tasks = {
     id: 'give-site-name-and-location',
     label: 'Give site name and location',
     route: Routes.SITE_NAME,
-    determinants: [ 'siteNameRequired' ],
+    determinants: ['siteNameRequired'],
     completedLabelId: 'site-name-completed',
     ruleSetId: 'defra_locationrequired',
     shortName: 'sitename',
@@ -477,7 +479,7 @@ const bespoke = [
       tasks.ENVIRONMENTAL_RISK_ASSESSMENT,
       tasks.EMISSIONS_AND_MONITORING,
       tasks.TECHNICAL_STANDARDS,
-      tasks.CLINICAL_WASTE_TEMPLATE,
+      tasks.CLINICAL_WASTE_APPENDIX,
       tasks.MANAGE_HAZARDOUS_WASTE,
       tasks.EMISSIONS_MANAGEMENT_PLAN,
       tasks.NOISE_VIBRATION_DOCUMENTS,

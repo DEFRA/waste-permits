@@ -114,7 +114,7 @@ module.exports = class GeneralTestHelper {
 
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(startAtBeginningRoutePath)
+          Code.expect(res.headers.location).to.equal(startAtBeginningRoutePath)
         })
 
         lab.test(`GET ${routePath} redirects to timeout screen when the cookie has expired`, async () => {
@@ -122,7 +122,7 @@ module.exports = class GeneralTestHelper {
 
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(cookieTimeoutPath)
+          Code.expect(res.headers.location).to.equal(cookieTimeoutPath)
         })
       }
 
@@ -132,7 +132,7 @@ module.exports = class GeneralTestHelper {
 
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(startAtBeginningRoutePath)
+          Code.expect(res.headers.location).to.equal(startAtBeginningRoutePath)
         })
 
         lab.test(`POST ${routePath} redirects to timeout screen when the cookie has expired`, async () => {
@@ -140,7 +140,7 @@ module.exports = class GeneralTestHelper {
 
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(cookieTimeoutPath)
+          Code.expect(res.headers.location).to.equal(cookieTimeoutPath)
         })
       }
 
@@ -150,7 +150,7 @@ module.exports = class GeneralTestHelper {
 
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.contains(applicationReceivedRoutePath)
+          Code.expect(res.headers.location).to.contains(applicationReceivedRoutePath)
         })
       }
 
@@ -160,7 +160,7 @@ module.exports = class GeneralTestHelper {
 
           const res = await server.inject(getRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.contains(incompleteTaskListRoutePath)
+          Code.expect(res.headers.location).to.contains(incompleteTaskListRoutePath)
         })
       }
 
@@ -184,7 +184,7 @@ module.exports = class GeneralTestHelper {
           const parser = new DOMParser()
           const doc = parser.parseFromString(res.payload, 'text/html')
 
-          let element = doc.getElementById('content')
+          const element = doc.getElementById('content')
           Code.expect(element.getAttribute('tabindex')).to.equal('-1')
         })
 
