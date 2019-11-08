@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const sinon = require('sinon')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
-const PestManagementPlanCheck = require('../../../src/models/checkList/PestManagementPlan.check')
+const PestManagementPlanCheck = require('../../../src/models/checkList/pestManagementPlan.check')
 
 const fakePestManagementPlans = [
   { filename: 'FILENAME_1' },
