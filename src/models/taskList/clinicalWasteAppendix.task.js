@@ -9,14 +9,13 @@ const {
 
 const BaseTask = require('./base.task')
 const Annotation = require('../../persistence/entities/annotation.entity')
-const StoreTreat = require('../../models/clinicalWasteDocuments/storeTreat.model')
+const StoreTreat = require('../storeTreat.model')
 
 module.exports = class ClinicalWasteAppendix extends BaseTask {
   static async checkComplete (context) {
     const { storeTreat: justificationRequired } = await StoreTreat.get(context)
 
     if (justificationRequired === undefined) {
-      console.log('justificationRequired undefined')
       return false
     }
 

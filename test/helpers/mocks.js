@@ -30,7 +30,7 @@ const NeedToConsult = require('../../src/models/needToConsult.model')
 const AirQualityManagementArea = require('../../src/models/airQualityManagementArea.model')
 const OperatingUnder500Hours = require('../../src/models/operatingUnder500Hours.model')
 
-const StoreTreat = require('../../src/models/clinicalWasteDocuments/storeTreat.model')
+const StoreTreat = require('../../src/models/storeTreat.model')
 
 // ************* Data used by exported mocks ************* //
 class MockData {

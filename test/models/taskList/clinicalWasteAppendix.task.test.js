@@ -8,7 +8,7 @@ const Mocks = require('../../helpers/mocks')
 
 const Annotation = require('../../../src/persistence/entities/annotation.entity')
 const ClinicalWasteAppendix = require('../../../src/models/taskList/clinicalWasteAppendix.task')
-const StoreTreatModel = require('../../../src/models/clinicalWasteDocuments/storeTreat.model')
+const StoreTreatModel = require('../../../src/models/storeTreat.model')
 
 let sandbox
 let mocks

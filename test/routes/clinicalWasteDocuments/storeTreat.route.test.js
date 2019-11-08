@@ -15,7 +15,7 @@ const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 const TaskDeterminants = require('../../../src/models/taskDeterminants.model')
 
-const StoreTreat = require('../../../src/models/clinicalWasteDocuments/storeTreat.model')
+const StoreTreat = require('../../../src/models/storeTreat.model')
 
 const routePath = '/clinical-waste-documents/store-treat-waste-type'
 const yesRoutePath = '/clinical-waste-documents/justification/upload'
