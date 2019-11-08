@@ -2,7 +2,7 @@
 
 const BaseController = require('../base.controller')
 const RecoveryService = require('../../services/recovery.service')
-const StoreTreatModel = require('../../models/clinicalWasteDocuments/storeTreat.model')
+const StoreTreatModel = require('../../models/storeTreat.model')
 
 const {
   CLINICAL_WASTE_DOCUMENTS_JUSTIFICATION_UPLOAD,

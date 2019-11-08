@@ -4,16 +4,16 @@ const Lab = require('@hapi/lab')
 const lab = exports.lab = Lab.script()
 const Code = require('@hapi/code')
 const sinon = require('sinon')
-const Mocks = require('../../helpers/mocks')
+const Mocks = require('../helpers/mocks')
 
-const ApplicationAnswer = require('../../../src/persistence/entities/applicationAnswer.entity')
+const ApplicationAnswer = require('../../src/persistence/entities/applicationAnswer.entity')
 
 const context = { }
 
 const YES = 'yes'
 const NO = 'no'
 
-const TestModel = require('../../../src/models/clinicalWasteDocuments/storeTreat.model')
+const TestModel = require('../../src/models/storeTreat.model')
 const questionCode = 'clinical-waste-store-treat'
 const testItem = 'storeTreat'
 

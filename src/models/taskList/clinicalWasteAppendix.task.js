@@ -9,11 +9,19 @@ const {
 
 const BaseTask = require('./base.task')
 const Annotation = require('../../persistence/entities/annotation.entity')
+const StoreTreat = require('../storeTreat.model')
 
 module.exports = class ClinicalWasteAppendix extends BaseTask {
   static async checkComplete (context) {
+    const { storeTreat: justificationRequired } = await StoreTreat.get(context)
+
+    if (justificationRequired === undefined) {
+      return false
+    }
+
     const clinicalWasteJustification = await Annotation.listByApplicationIdAndSubject(context, CLINICAL_WASTE_JUSTIFICATION)
-    if (!clinicalWasteJustification.length) {
+
+    if (justificationRequired && !clinicalWasteJustification.length) {
       return false
     }
 
@@ -26,6 +34,7 @@ module.exports = class ClinicalWasteAppendix extends BaseTask {
     if (!clinicalWasteLayoutPlans.length) {
       return false
     }
+
     return true
   }
 }

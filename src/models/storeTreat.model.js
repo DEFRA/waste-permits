@@ -1,8 +1,8 @@
 'use strict'
 
-const ApplicationAnswer = require('../../persistence/entities/applicationAnswer.entity')
+const ApplicationAnswer = require('../persistence/entities/applicationAnswer.entity')
 
-const { CLINICAL_WASTE_DOCUMENTS } = require('../../dynamics').ApplicationQuestions
+const { CLINICAL_WASTE_DOCUMENTS } = require('../dynamics').ApplicationQuestions
 const { STORE_TREAT } = CLINICAL_WASTE_DOCUMENTS
 
 const YES = 'yes'
