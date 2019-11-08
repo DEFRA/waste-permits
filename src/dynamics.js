@@ -78,6 +78,11 @@ const Dynamics = {
         questionCode: 'general-charity-number'
       }
     },
+    CLINICAL_WASTE_DOCUMENTS: {
+      STORE_TREAT: {
+        questionCode: 'clinical-waste-store-treat'
+      }
+    },
     MANAGE_HAZARDOUS_WASTE: {
       MEET_STANDARDS: {
         questionCode: 'meet-hazardous-waste-standards'
@@ -386,7 +391,7 @@ const Dynamics = {
     },
     REGISTERED_ON_A_COURSE: {
       TYPE: 910400001,
-      NAME: `We are getting WAMITAB or EPOC qualifications`
+      NAME: 'We are getting WAMITAB or EPOC qualifications'
     },
     DEEMED_COMPETENCE: {
       TYPE: 910400002,

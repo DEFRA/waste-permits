@@ -15,6 +15,8 @@ const RecoveryService = require('../../src/services/recovery.service')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 
+const DataStore = require('../../src/models/dataStore.model')
+
 const routePath = '/waste-assessment'
 const nextPath = '/maintain-application-lines'
 const applyOfflinePath = '/waste-assessment/apply-offline'
@@ -22,12 +24,15 @@ const applyOfflinePath = '/waste-assessment/apply-offline'
 let sandbox
 let mocks
 let saveSpy
+let dataStoreStub
+let dataStoreSaveSpy
 
 const viewableAssessments = [
   { id: 'ass-1', shortName: '1-19-1', itemName: 'Section 1.19.1', canApplyFor: true, canApplyOnline: true },
-  { id: 'ass-2', shortName: '1-19-2', itemName: 'Section 1.19.2', canApplyFor: true, canApplyOnline: false }
+  { id: 'ass-2', shortName: '1-19-2', itemName: 'Section 1.19.2', canApplyFor: true, canApplyOnline: false },
+  { id: 'ass-3', shortName: '1-19-3', itemName: 'Section 1.19.3', canApplyFor: true, canApplyOnline: true }
 ]
-const nonViewableAssessment = { id: 'ass-3', shortName: '1-19-99', itemName: 'Section 1.19.99', canApplyFor: false, canApplyOnline: false }
+const nonViewableAssessment = { id: 'ass-4', shortName: '1-19-99', itemName: 'Section 1.19.99', canApplyFor: false, canApplyOnline: false }
 const allAssessments = [ ...viewableAssessments, nonViewableAssessment]
 
 lab.beforeEach(() => {
@@ -46,6 +51,10 @@ lab.beforeEach(() => {
   sandbox.stub(Item, 'listWasteAssessments').value(async () => mocks.taskDeterminants.allAssessments)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(async () => mocks.recovery)
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
+  dataStoreStub = sandbox.stub(DataStore, 'get')
+  dataStoreStub.resolves({ data: {} })
+  dataStoreSaveSpy = saveSpy = sandbox.stub(DataStore, 'save')
+  dataStoreSaveSpy.resolves()
 })
 
 lab.afterEach(() => {
@@ -91,10 +100,50 @@ lab.experiment('Waste assessments', () => {
         Code.expect(doc.getElementById(`assessment-${viewableAssessments[0].shortName}-input`).getAttribute('checked')).to.equal('checked')
       })
     })
+    lab.experiment('GET selects fire prevention plan correctly', () => {
+      lab.test('when combustible waste', async () => {
+        dataStoreStub.resolves({ data: { acceptsCombustibleWaste: true } })
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        Code.expect(doc.getElementById('assessment-1-19-3-input')).to.exist()
+        Code.expect(doc.getElementById('assessment-1-19-3-input').hasAttribute('checked')).to.be.true()
+      })
+      lab.test('when no combustible waste', async () => {
+        dataStoreStub.resolves({ data: { acceptsCombustibleWaste: false } })
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        Code.expect(doc.getElementById('assessment-1-19-3-input')).to.exist()
+        Code.expect(doc.getElementById('assessment-1-19-3-input').hasAttribute('checked')).to.be.false()
+      })
+      lab.test('when combustible waste but was previously confirmed not to', async () => {
+        dataStoreStub.resolves({ data: { acceptsCombustibleWaste: false, alreadyConfirmedWasteAssessments: true } })
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        Code.expect(doc.getElementById('assessment-1-19-3-input')).to.exist()
+        Code.expect(doc.getElementById('assessment-1-19-3-input').hasAttribute('checked')).to.be.false()
+      })
+      lab.test('when no combustible waste but was previously confirmed', async () => {
+        dataStoreStub.resolves({ data: { acceptsCombustibleWaste: false, alreadyConfirmedWasteAssessments: true } })
+        mocks.taskDeterminants.wasteAssessments = [mocks.taskDeterminants.allAssessments[2]]
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        Code.expect(doc.getElementById('assessment-1-19-3-input')).to.exist()
+        Code.expect(doc.getElementById('assessment-1-19-3-input').hasAttribute('checked')).to.be.true()
+      })
+      lab.test('when combustible waste but assessments already entered', async () => {
+        dataStoreStub.resolves({ data: { acceptsCombustibleWaste: true } })
+        mocks.taskDeterminants.wasteAssessments = [mocks.taskDeterminants.allAssessments[0]]
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        Code.expect(doc.getElementById('assessment-1-19-3-input')).to.exist()
+        Code.expect(doc.getElementById('assessment-1-19-3-input').hasAttribute('checked')).to.be.false()
+      })
+      lab.test('when no combustible waste but assessments already entered', async () => {
+        dataStoreStub.resolves({ data: { acceptsCombustibleWaste: false } })
+        mocks.taskDeterminants.wasteAssessments = [mocks.taskDeterminants.allAssessments[2]]
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        Code.expect(doc.getElementById('assessment-1-19-3-input')).to.exist()
+        Code.expect(doc.getElementById('assessment-1-19-3-input').hasAttribute('checked')).to.be.true()
+      })
+    })
   })
 
   lab.experiment('POST:', () => {
-
     let postRequest
     lab.beforeEach(() => {
         postRequest = {
@@ -108,6 +157,7 @@ lab.experiment('Waste assessments', () => {
     lab.test('POST waste assessment saves and redirects to next route', async () => {
       const res = await server.inject(postRequest)
       Code.expect(saveSpy.called).to.be.true()
+      Code.expect(dataStoreSaveSpy.called).to.be.true()
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextPath)
     })
@@ -116,6 +166,7 @@ lab.experiment('Waste assessments', () => {
       postRequest.payload = {}
       const res = await server.inject(postRequest)
       Code.expect(saveSpy.called).to.be.true()
+      Code.expect(dataStoreSaveSpy.called).to.be.true()
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(nextPath)
     })
@@ -129,8 +180,8 @@ lab.experiment('Waste assessments', () => {
     })
 
     lab.test('POST for waste assessment that cannot be applied for shows apply offline page', async () => {
-      postRequest.payload = { 'assessment': 'ass-3' }
-      mocks.taskDeterminants.wasteAssessments = [mocks.taskDeterminants.allAssessments[2]]
+      postRequest.payload = { 'assessment': 'ass-4' }
+      mocks.taskDeterminants.wasteAssessments = [mocks.taskDeterminants.allAssessments[3]]
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
       Code.expect(res.headers['location']).to.equal(applyOfflinePath)
@@ -144,5 +195,4 @@ lab.experiment('Waste assessments', () => {
       Code.expect(res.headers['location']).to.equal(applyOfflinePath)
     })
   })
-
 })

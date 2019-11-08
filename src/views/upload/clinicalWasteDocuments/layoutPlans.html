@@ -1,0 +1,44 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div id="upload-file-panel" class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      {{#if annotations.length}}
+
+      {{> upload/annotations }}
+
+      {{else}}
+
+      <div id="has-no-annotations" class="form-group">
+        <div id="layout-plans-description">
+
+          <p>You must provide layout plans showing the location of:</p>
+          <ul class="list list-bullet">
+            <li>waste storage (including areas and structures for separately storing wastes which may be dangerous to store together)</li>
+            <li>each treatment plant</li>
+            <li>main plant items</li>
+          </ul>
+
+          <p>
+            <a href="/information/clinical-layout-plans" target="_blank" rel="noopener noreferrer" id="clinical-layout-plans-link">
+              Learn how to create these plans and diagrams (opens new tab)
+            </a>
+          </p>
+        </div>
+      </div>
+
+      {{/if}}
+
+      {{> upload/uploadForm }}
+    </div>
+  </div>
+
+</main>

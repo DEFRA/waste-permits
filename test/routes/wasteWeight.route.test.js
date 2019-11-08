@@ -85,8 +85,8 @@ lab.experiment('Waste weight', () => {
     lab.test('displays errors (no values supplied)', async () => {
       postRequest.payload = {}
       const doc = await GeneralTestHelper.getDoc(postRequest)
-      GeneralTestHelper.checkValidationMessage(doc, 'non-hazardous-throughput', 'Enter a weight')
-      GeneralTestHelper.checkValidationMessage(doc, 'non-hazardous-maximum', 'Enter a weight')
+      GeneralTestHelper.checkValidationMessage(doc, 'non-hazardous-throughput', 'You must enter a number')
+      GeneralTestHelper.checkValidationMessage(doc, 'non-hazardous-maximum', 'You must enter a number')
     })
   })
 })

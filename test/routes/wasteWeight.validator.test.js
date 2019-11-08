@@ -34,15 +34,15 @@ lab.experiment('Waste weight validator tests:', () => {
   })
   lab.test('a weight is blank', async () => {
     valueToValidate['non-hazardous-throughput'] = undefined
-    checkValidation(validator.formValidators, validator.errorMessages['non-hazardous-throughput'], valueToValidate, 'Enter a weight')
+    checkValidation(validator.formValidators, validator.errorMessages['non-hazardous-throughput'], valueToValidate, 'You must enter a number')
   })
   lab.test('a weight is too long', async () => {
     valueToValidate['non-hazardous-throughput'] = '01234567890123456789X'
-    checkValidation(validator.formValidators, validator.errorMessages['non-hazardous-throughput'], valueToValidate, 'Enter the weight using no more than 20 characters')
+    checkValidation(validator.formValidators, validator.errorMessages['non-hazardous-throughput'], valueToValidate, 'You\'ve entered too many characters')
   })
   lab.test('a hazardous weight is blank', async () => {
     valueToValidate['hazardous-throughput'] = undefined
-    checkValidation(validator.formValidators, validator.errorMessages['hazardous-throughput'], valueToValidate, 'Enter a weight')
+    checkValidation(validator.formValidators, validator.errorMessages['hazardous-throughput'], valueToValidate, 'You must enter a number')
   })
   lab.test('all values are correctly provided', async () => {
     checkValidation(validator.formValidators, null, valueToValidate)
