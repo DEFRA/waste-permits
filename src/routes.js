@@ -1294,6 +1294,20 @@ const Routes = {
       fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
+  PEST_MANAGEMENT_PLAN: {
+    path: '/pest-management-plan/upload',
+    view: 'upload/pestManagementPlan/pestManagementPlan',
+    pageHeading: 'Complete and upload a pest management plan',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'PEST_MANAGEMENT_PLAN',
+    validatorOptions: {
+      fileTypes: [PDF, DOC, DOCX, ODT]
+    }
+  },
   PERMIT_CATEGORY: {
     path: '/permit/category',
     view: 'permitCategory',

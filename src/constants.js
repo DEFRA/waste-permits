@@ -196,6 +196,7 @@ Constants.UploadSubject = {
   HAZARDOUS_WASTE_PROPOSAL: 'hazardous waste management proposal',
   HAZARDOUS_WASTE_TREATMENT_SUMMARY: 'hazardous waste treatment summary',
   HAZARDOUS_WASTE_PLANS: 'hazardous waste layout plans and process flows',
+  PEST_MANAGEMENT_PLAN: 'pest management plan',
   CLINICAL_WASTE_JUSTIFICATION: 'clinical waste non-standard justification',
   CLINICAL_WASTE_TREATMENT_SUMMARY: 'clinical waste treatment summary',
   CLINICAL_WASTE_LAYOUT_PLANS: 'clinical waste layout plans and process flows'
