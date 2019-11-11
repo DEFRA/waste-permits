@@ -18,7 +18,7 @@ module.exports = class ConfidentialityController extends DeclarationsController 
       declaredLabel: 'Yes, I want to claim confidentiality for part of my application',
       noneDeclaredLabel: 'No',
       declarationDetailsLabel: 'What information do you think is confidential, and why?',
-      declarationDetailsHint: 'Check the guidance first to check you qualify'
+      declarationDetailsHint: 'Read the guidance to make sure your information qualifies'
     }
   }
 
