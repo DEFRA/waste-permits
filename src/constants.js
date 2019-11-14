@@ -66,6 +66,10 @@ Constants.MCP_CATEGORY_NAMES = [
   'mcpd-sg'
 ]
 
+Constants.WASTE_CATEGORY_NAMES = [
+  'transfer'
+]
+
 Constants.OFFLINE_CATEGORIES = {
   FLOOD_RISK_ACTIVITIES: {
     id: 'offline-category-flood',

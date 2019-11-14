@@ -47,7 +47,7 @@ module.exports = class CardPaymentController extends BaseController {
 }
 
 function getDescription (context) {
-  const { isBespoke, isMcp, isStandardRule } = context
+  const { isBespoke, isMcp, isStandardRule, isWaste } = context
 
   if (isStandardRule) {
     const { standardRule } = context
@@ -57,5 +57,10 @@ function getDescription (context) {
   if (isBespoke && isMcp) {
     const { taskDeterminants: { mcpType } } = context
     return `${DESCRIPTION_TEXT}: ${mcpType.text}`
+  }
+
+  if (isBespoke && isWaste) {
+    const { taskDeterminants: { facilityType } } = context
+    return `${DESCRIPTION_TEXT}: ${facilityType.text}`
   }
 }
