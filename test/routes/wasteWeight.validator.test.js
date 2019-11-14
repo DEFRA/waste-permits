@@ -6,6 +6,8 @@ const Code = require('@hapi/code')
 
 const Validator = require('../../src/validators/wasteWeight.validator')
 
+const MAX_LENGTH = 20
+
 const checkValidation = function (definedValidation, definedErrorMessages, valueToValidate, expectedErrorMessage) {
   const validationResult = definedValidation.validate(valueToValidate)
   if (expectedErrorMessage) {
@@ -37,8 +39,8 @@ lab.experiment('Waste weight validator tests:', () => {
     checkValidation(validator.formValidators, validator.errorMessages['non-hazardous-throughput'], valueToValidate, 'You must enter a number')
   })
   lab.test('a weight is too long', async () => {
-    valueToValidate['non-hazardous-throughput'] = '01234567890123456789X'
-    checkValidation(validator.formValidators, validator.errorMessages['non-hazardous-throughput'], valueToValidate, 'You\'ve entered too many characters')
+    valueToValidate['non-hazardous-throughput'] = 'X'.repeat(MAX_LENGTH + 1)
+    checkValidation(validator.formValidators, validator.errorMessages['non-hazardous-throughput'], valueToValidate, `You can enter up to ${MAX_LENGTH} characters`)
   })
   lab.test('a hazardous weight is blank', async () => {
     valueToValidate['hazardous-throughput'] = undefined
