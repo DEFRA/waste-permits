@@ -13,7 +13,7 @@ const CharityDetail = require('../models/charityDetail.model')
 const TaskDeterminants = require('../models/taskDeterminants.model')
 
 const { STANDARD_RULES, BESPOKE } = require('../constants').PermitTypes
-const { COOKIE_KEY: { APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID }, MCP_CATEGORY_NAMES } = require('../constants')
+const { COOKIE_KEY: { APPLICATION_ID, APPLICATION_LINE_ID, STANDARD_RULE_ID, STANDARD_RULE_TYPE_ID }, MCP_CATEGORY_NAMES, WASTE_CATEGORY_NAMES } = require('../constants')
 const { FACILITY_TYPES, PERMIT_HOLDER_TYPES } = require('../dynamics')
 
 module.exports = class RecoveryService {
@@ -29,6 +29,7 @@ module.exports = class RecoveryService {
     context.isStandardRule = context.permitType === STANDARD_RULES.id
     context.isBespoke = context.permitType === BESPOKE.id
     context.isMcp = checkMcp(context)
+    context.isWaste = checkWaste(context)
 
     // Add the charity details to the context
     context.charityDetail = await CharityDetail.get(context)
@@ -139,5 +140,18 @@ function checkMcp (context) {
 
   if (context.isBespoke && taskDeterminants.facilityType) {
     return taskDeterminants.facilityType === FACILITY_TYPES.MCP
+  }
+}
+
+function checkWaste (context) {
+  const { taskDeterminants } = context
+
+  if (context.isStandardRule && taskDeterminants.permitCategory) {
+    const { categoryName } = taskDeterminants.permitCategory
+    return WASTE_CATEGORY_NAMES.includes(categoryName)
+  }
+
+  if (context.isBespoke && taskDeterminants.facilityType) {
+    return taskDeterminants.facilityType === FACILITY_TYPES.WASTE_OPERATION
   }
 }
