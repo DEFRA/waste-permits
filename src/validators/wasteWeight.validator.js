@@ -3,11 +3,13 @@
 const Joi = require('@hapi/joi')
 const BaseValidator = require('./base.validator')
 
+const MAX_LENGTH = 20
+
 const ERROR_MESSAGES = {
   'any.required': 'You must enter a number',
-  'string.max': 'You\'ve entered too many characters'
+  'string.max': `You can enter up to ${MAX_LENGTH} characters`
 }
-const JOI_WEIGHT = Joi.string().max(20).required()
+const JOI_WEIGHT = Joi.string().max(MAX_LENGTH).required()
 
 module.exports = class WasteWeightValidator extends BaseValidator {
   get errorMessages () {
