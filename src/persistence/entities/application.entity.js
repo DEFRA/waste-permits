@@ -57,7 +57,8 @@ class Application extends BaseEntity {
   }
 
   get isIndividual () {
-    return this.applicantType === PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId || this.organisationType === PERMIT_HOLDER_TYPES.SOLE_TRADER.dynamicsOrganisationTypeId
+    return this.applicantType === PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsApplicantTypeId ||
+      this.organisationType === PERMIT_HOLDER_TYPES.SOLE_TRADER.dynamicsOrganisationTypeId
   }
 
   static async getById (...args) {
