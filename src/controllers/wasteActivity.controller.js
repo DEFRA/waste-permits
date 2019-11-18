@@ -22,7 +22,10 @@ module.exports = class WasteActivityController extends BaseController {
 
     const pageContext = this.createPageContext(h, errors)
 
-    pageContext.activities = onlyOnlineWasteActivitiesForFacilityTypes.map(({ shortName, itemName }) => ({ id: shortName, text: itemName, couldBeAnInstallation: couldBeInstallations[shortName] }))
+    pageContext.activities = onlyOnlineWasteActivitiesForFacilityTypes
+      .sort((a, b) => (a.itemName > b.itemName) ? 1 : ((b.itemName > a.itemName) ? -1 : 0))
+      .map(({ shortName, itemName }) => ({ id: shortName, text: itemName, couldBeAnInstallation: couldBeInstallations[shortName] }))
+
     pageContext.previousLink = Routes[this.route.previousRoute].path
 
     return this.showView({ h, pageContext })
