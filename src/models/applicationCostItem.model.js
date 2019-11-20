@@ -1,11 +1,12 @@
 'use strict'
 
 module.exports = class ApplicationCostItem {
-  constructor ({ wasteActivity, wasteAssessment, description, cost }) {
+  constructor ({ wasteActivity, wasteAssessment, description, cost, displayOrder }) {
     this.wasteActivity = wasteActivity
     this.wasteAssessment = wasteAssessment
     this.description = description
     this.cost = cost
+    this.displayOrder = displayOrder
   }
 
   get costValue () {

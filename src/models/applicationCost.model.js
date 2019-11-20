@@ -65,15 +65,19 @@ module.exports = class ApplicationCost {
       const wasteActivity = wasteActivityItemEntities.find(({ id }) => id === line.itemId)
       const description = wasteActivity ? wasteActivity.itemName + (line.lineName ? ` ${line.lineName}` : '') : ''
       const cost = line.value
-      return new ApplicationCostItem({ description, cost })
+      const displayOrder = line.displayOrder
+      return new ApplicationCostItem({ description, cost, displayOrder })
     })
     const wasteAssessmentApplicationCostItems = wasteAssessmentLineEntities.map((line) => {
       const wasteAssessment = wasteAssessmentItemEntities.find(({ id }) => id === line.itemId)
       const description = wasteAssessment.itemName
       const cost = line.value
-      return new ApplicationCostItem({ description, cost })
+      const displayOrder = line.displayOrder
+      return new ApplicationCostItem({ description, cost, displayOrder })
     })
-    const applicationCostItems = wasteActivityApplicationCostItems.concat(wasteAssessmentApplicationCostItems)
+    const applicationCostItems = wasteActivityApplicationCostItems
+      .concat(wasteAssessmentApplicationCostItems)
+      .sort((a, b) => a.displayOrder - b.displayOrder)
 
     const applicationEntity = await Application.getById(entityContextToUse, applicationId)
     const totalCost = applicationEntity.lineItemsTotalAmount
