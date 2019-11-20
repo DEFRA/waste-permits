@@ -11,6 +11,7 @@ const mapping = [
   { field: 'value', dynamics: 'defra_value', readOnly: true },
   { field: 'permitType', dynamics: 'defra_permittype' },
   { field: 'lineName', dynamics: 'defra_name' }
+  //{ field: 'lineType', dynamics: 'defra_linetype' }
 ]
 
 const queryFieldNames = mapping.map(({ field, dynamics, bind }) => {

@@ -24,11 +24,22 @@ module.exports = class ApplicationCost {
   static async getApplicationCostForApplicationId (entityContextToUse) {
     const { applicationId } = entityContextToUse
 
+    const actionDataObject = {
+      LineType: '910400003'
+    }
+    try {
+      const action = `defra_applications(${applicationId})/Microsoft.Dynamics.CRM.defra_ApplicationsyncDeleteAllApplicationLinesGivenLineType`
+      await dynamicsDal.callAction(action, actionDataObject)
+    } catch (error) {
+      LoggingService.logError(`Unable to call Dynamics DeleteAllApplicationLinesGivenLineType action: ${error}`)
+      throw error
+    }
+
     try {
       const action = `defra_applications(${applicationId})/Microsoft.Dynamics.CRM.defra_ApplicationsyncCreateDiscountLines`
       await dynamicsDal.callAction(action)
     } catch (error) {
-      LoggingService.logError(`Unable to call Dynamics Set Application Answer action: ${error}`)
+      LoggingService.logError(`Unable to call Dynamics CreateDiscountLines action: ${error}`)
       throw error
     }
 
@@ -37,19 +48,22 @@ module.exports = class ApplicationCost {
     const wasteAssessmentItemEntities = items.wasteAssessments
 
     const applicationLineEntities = await ApplicationLine.listBy(entityContextToUse, { applicationId })
-    console.log(applicationLineEntities)
+
     const wasteActivityLineEntities =
       applicationLineEntities
-        .filter(({ itemId }) => wasteActivityItemEntities.find(({ id }) => id === itemId))
-    console.log(wasteActivityLineEntities)
+        .filter(({ itemId, lineType }) => wasteActivityItemEntities.find(({ id }) => {
+          return id === itemId
+        }))
+
     const wasteAssessmentLineEntities =
       applicationLineEntities
-        .filter(({ itemId }) => wasteAssessmentItemEntities.find(({ id }) => id === itemId))
-    console.log(wasteAssessmentItemEntities)
+        .filter(({ itemId }) => wasteAssessmentItemEntities.find(({ id }) => {
+          return id === itemId
+        }))
 
     const wasteActivityApplicationCostItems = wasteActivityLineEntities.map((line) => {
       const wasteActivity = wasteActivityItemEntities.find(({ id }) => id === line.itemId)
-      const description = wasteActivity.itemName + (line.lineName ? ` ${line.lineName}` : '')
+      const description = wasteActivity ? wasteActivity.itemName + (line.lineName ? ` ${line.lineName}` : '') : ''
       const cost = line.value
       return new ApplicationCostItem({ description, cost })
     })
