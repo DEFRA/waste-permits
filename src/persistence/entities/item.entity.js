@@ -18,6 +18,8 @@ const mapping = [
   { field: 'code', dynamics: 'defra_code' },
   { field: 'canApplyFor', dynamics: 'defra_canapplyfor' },
   { field: 'canApplyOnline', dynamics: 'defra_canapplyonline' }
+  // { field: 'displayOrder', dynamics: 'defra_displayorder' },
+  // { field: 'defra_applicationline', dynamics: 'defra_applicationline' }
 ]
 
 const FETCH_START = `<fetch version='1.0' mapping='logical' distinct='true'><entity name='defra_item'>` + mapping.map(({ dynamics }) => `<attribute name='${dynamics}'/>`).join('')

@@ -9,6 +9,7 @@ const ApplicationCostModel = require('../../src/models/applicationCost.model')
 const ItemEntity = require('../../src/persistence/entities/item.entity')
 const ApplicationEntity = require('../../src/persistence/entities/application.entity')
 const ApplicationLineEntity = require('../../src/persistence/entities/applicationLine.entity')
+const dynamicsDal = require('../../src/services/dynamicsDal.service')
 
 const context = { }
 const ACTIVITY_ITEM_TYPE_ID = 'ACTIVITY_ITEM_TYPE_ID'
@@ -136,6 +137,7 @@ lab.experiment('Application Cost Model test:', () => {
     sandbox.stub(ApplicationEntity, 'getById').callsFake(async () => fakeApplicationEntity)
     sandbox.stub(ApplicationLineEntity, 'listBy').callsFake(async () => fakeApplicationLineEntities)
     sandbox.stub(ApplicationLineEntity, 'getById').callsFake(async () => fakeApplicationLineEntities[0])
+    sandbox.stub(dynamicsDal, 'callAction').value(() => {})
   })
 
   lab.afterEach(() => {
@@ -145,24 +147,37 @@ lab.experiment('Application Cost Model test:', () => {
 
   lab.experiment('Get values:', () => {
     lab.test('getApplicationCostForApplicationId', async () => {
-      const applicationCost = await ApplicationCostModel.getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
+      const spy = sinon.spy(dynamicsDal, 'callAction')
+      const applicationCost = await ApplicationCostModel
+        .getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
       Code.expect(applicationCost.items.length).to.equal(8)
+      Code.expect(spy.callCount).to.equal(2)
     })
     lab.test('correct costs', async () => {
-      const applicationCost = await ApplicationCostModel.getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
+      const spy = sinon.spy(dynamicsDal, 'callAction')
+      const applicationCost = await ApplicationCostModel
+        .getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
       Code.expect(applicationCost.total.cost).to.equal(TOTAL_COST)
-      const summedItemCost = applicationCost.items.reduce((acc, { costValue }) => acc + costValue, 0)
+      const summedItemCost =
+        applicationCost.items.reduce((acc, { costValue }) => acc + costValue, 0)
       Code.expect(summedItemCost).to.equal(TOTAL_COST)
+      Code.expect(spy.callCount).to.equal(2)
     })
     lab.test('correct cost text in order', async () => {
-      const applicationCost = await ApplicationCostModel.getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
+      const spy = sinon.spy(dynamicsDal, 'callAction')
+      const applicationCost = await ApplicationCostModel
+        .getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
       const allCostText = applicationCost.items.map(({ costText }) => costText)
       Code.expect(allCostText).to.equal(COST_TEXT)
+      Code.expect(spy.callCount).to.equal(2)
     })
     lab.test('correct description text in order', async () => {
-      const applicationCost = await ApplicationCostModel.getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
+      const spy = sinon.spy(dynamicsDal, 'callAction')
+      const applicationCost = await ApplicationCostModel
+        .getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
       const allDescriptionText = applicationCost.items.map(({ description }) => description)
       Code.expect(allDescriptionText).to.equal(DESCRIPTION_TEXT)
+      Code.expect(spy.callCount).to.equal(2)
     })
   })
 })
