@@ -63,7 +63,7 @@ module.exports = class ApplicationCost {
 
     const wasteActivityApplicationCostItems = wasteActivityLineEntities.map((line) => {
       const wasteActivity = wasteActivityItemEntities.find(({ id }) => id === line.itemId)
-      const description = wasteActivity ? wasteActivity.itemName + (line.lineName ? ` ${line.lineName}` : '') : ''
+      const description = wasteActivity.itemName + (line.lineName ? ` ${line.lineName}` : '')
       const cost = line.value
       const displayOrder = line.displayOrder
       return new ApplicationCostItem({ description, cost, displayOrder })
