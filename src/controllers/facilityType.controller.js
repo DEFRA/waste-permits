@@ -4,11 +4,17 @@
 const BaseController = require('./base.controller')
 const featureConfig = require('../config/featureConfig')
 const RecoveryService = require('../services/recovery.service')
-const { FACILITY_TYPES } = require('../dynamics')
-const { MCP, WASTE_OPERATION } = FACILITY_TYPES
+const { BUSINESS_TRACKS, FACILITY_TYPES, FACILITY_TYPES: { MCP, WASTE_OPERATION }, REGIMES } = require('../dynamics')
 const { FACILITY_APPLY_OFFLINE, MCP_TYPE, WASTE_ACTIVITY } = require('../routes')
 
 module.exports = class FacilityTypeController extends BaseController {
+  async setRegimeAndBusinessTrack ({ context, regime, businessTrack }) {
+    const { application } = context
+    application.regime = regime
+    application.businessTrack = businessTrack
+    await application.save(context)
+  }
+
   async doGet (request, h, errors) {
     const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
     const { facilityType } = taskDeterminants
@@ -21,20 +27,33 @@ module.exports = class FacilityTypeController extends BaseController {
   }
 
   async doPost (request, h) {
-    const { taskDeterminants } = await RecoveryService.createApplicationContext(h)
+    const context = await RecoveryService.createApplicationContext(h)
+    const { taskDeterminants } = context
     const { 'facility-type': facilityType } = request.payload
 
     await taskDeterminants.save({ facilityType })
 
     switch (facilityType) {
       case MCP.id:
+        await this.setRegimeAndBusinessTrack({
+          context,
+          regime: REGIMES.MCP.dynamicsGuid,
+          businessTrack: BUSINESS_TRACKS.MCP_BESPOKE.dynamicsGuid
+        })
         return this.redirect({ h, route: MCP_TYPE })
+
       case WASTE_OPERATION.id:
         // Todo: Remove this redirect when Bespoke is live
         if (!featureConfig.hasBespokeFeature) {
           return this.redirect({ h, route: FACILITY_APPLY_OFFLINE })
         }
+        await this.setRegimeAndBusinessTrack({
+          context,
+          regime: REGIMES.WASTE.dynamicsGuid,
+          businessTrack: BUSINESS_TRACKS.WASTE_BESPOKE.dynamicsGuid
+        })
         return this.redirect({ h, route: WASTE_ACTIVITY })
+
       default:
         return this.redirect({ h, route: FACILITY_APPLY_OFFLINE })
     }
