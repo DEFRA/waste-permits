@@ -161,6 +161,24 @@ const Dynamics = {
     }
   },
   BACS_EMAIL_CONFIG: 'PSC-BACS-EMAIL',
+  BUSINESS_TRACKS: {
+    WASTE_BESPOKE: {
+      id: 'waste bespoke',
+      dynamicsGuid: '01b282dc-e909-ea11-a811-000d3a44a5b1'
+    },
+    WASTE_STANDARD_RULES: {
+      id: 'waste standard rules',
+      dynamicsGuid: 'e563d143-162e-e911-a98d-000d3ab311f1'
+    },
+    MCP_BESPOKE: {
+      id: 'mcp bespoke',
+      dynamicsGuid: 'c994c55b-7b2f-e911-a9a2-000d3ab31ad6'
+    },
+    MCP_STANDARD_RULES: {
+      id: 'mcp standard rules',
+      dynamicsGuid: 'b724da4f-162e-e911-a98d-000d3ab311f1'
+    }
+  },
   DIGITAL_SOURCE: 910400000,
   DrainageTypes: {
     SEWER: {
@@ -378,6 +396,16 @@ const Dynamics = {
     NOT_ASSESSED: {
       TYPE: 910400002,
       DESCRIPTION: 'plan not assessed before'
+    }
+  },
+  REGIMES: {
+    WASTE: {
+      id: 'waste',
+      dynamicsGuid: '66dd36f4-eb2d-e911-a98d-000d3ab311f1'
+    },
+    MCP: {
+      id: 'mcp',
+      dynamicsGuid: '5dadbf00-ec2d-e911-a98d-000d3ab311f1'
     }
   },
   StatusCode: {

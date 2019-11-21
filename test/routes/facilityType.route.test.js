@@ -14,6 +14,7 @@ const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const featureConfig = require('../../src/config/featureConfig')
 const { COOKIE_RESULT } = require('../../src/constants')
+const { BUSINESS_TRACKS, REGIMES } = require('../../src/dynamics')
 
 const routePath = '/facility-type'
 const nextRoutePath = '/select/bespoke'
@@ -33,6 +34,7 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(TaskDeterminants.prototype, 'save').value(() => undefined)
   // Todo: Remove hasBespokeFeature stub when bespoke is live
@@ -78,6 +80,22 @@ lab.experiment('Facility Type page tests:', () => {
         headers: {},
         payload: {}
       }
+    })
+
+    lab.test('sets regime and business track for MCP bespoke', async () => {
+      request.payload['facility-type'] = 'mcp'
+      await server.inject(request)
+      const { regime, businessTrack } = mocks.application
+      Code.expect(regime).to.equal(REGIMES.MCP.dynamicsGuid)
+      Code.expect(businessTrack).to.equal(BUSINESS_TRACKS.MCP_BESPOKE.dynamicsGuid)
+    })
+
+    lab.test('sets regime and business track for Waste bespoke', async () => {
+      request.payload['facility-type'] = 'waste'
+      await server.inject(request)
+      const { regime, businessTrack } = mocks.application
+      Code.expect(regime).to.equal(REGIMES.WASTE.dynamicsGuid)
+      Code.expect(businessTrack).to.equal(BUSINESS_TRACKS.WASTE_BESPOKE.dynamicsGuid)
     })
 
     lab.experiment('success', () => {

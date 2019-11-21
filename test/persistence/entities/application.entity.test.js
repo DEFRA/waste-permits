@@ -50,7 +50,9 @@ const fakeApplicationData = {
   useTradingName: 'USE_TRADING_NAME',
   miningWastePlan: 'MINING_WASTE_PLAN',
   miningWasteWeight: 'MINING_WASTE_WEIGHT',
-  lineItemsTotalAmount: 1234.56
+  lineItemsTotalAmount: 1234.56,
+  regime: 'REGIME',
+  businessTrack: 'BUSINESS_TRACK'
 }
 const fakeApplicationReturnData = {
   applicationId: testApplicationId,
@@ -86,7 +88,9 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
     defra_tradingnameused: application.useTradingName,
     defra_miningwasteweight: application.miningWasteWeight,
     defra_miningwasteplan: application.miningWastePlan,
-    defra_balance_line_items: application.lineItemsTotalAmount
+    defra_balance_line_items: application.lineItemsTotalAmount,
+    _defra_regimeid_value: application.regime,
+    _defra_businesstrackid_value: application.businessTrack
   }
 }
 
