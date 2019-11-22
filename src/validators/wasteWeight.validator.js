@@ -7,9 +7,11 @@ const MAX_LENGTH = 20
 
 const ERROR_MESSAGES = {
   'any.required': 'You must enter a number',
-  'string.max': `You can enter up to ${MAX_LENGTH} characters`
+  'string.max': `You can enter up to ${MAX_LENGTH} characters`,
+  'number.base': 'The weight must be a number',
+  'number.unsafe': `Enter the weight between 0 and 99999999`
 }
-const JOI_WEIGHT = Joi.string().max(MAX_LENGTH).required()
+const JOI_WEIGHT = Joi.number().max(999999).required()
 
 module.exports = class WasteWeightValidator extends BaseValidator {
   get errorMessages () {
@@ -26,8 +28,8 @@ module.exports = class WasteWeightValidator extends BaseValidator {
       'non-hazardous-throughput': JOI_WEIGHT,
       'non-hazardous-maximum': JOI_WEIGHT,
       'has-hazardous': Joi.string(),
-      'hazardous-throughput': Joi.string().when('has-hazardous', { is: Joi.exist(), then: JOI_WEIGHT }),
-      'hazardous-maximum': Joi.string().when('has-hazardous', { is: Joi.exist(), then: JOI_WEIGHT })
+      'hazardous-throughput': Joi.number().when('has-hazardous', { is: Joi.exist(), then: JOI_WEIGHT }),
+      'hazardous-maximum': Joi.number().when('has-hazardous', { is: Joi.exist(), then: JOI_WEIGHT })
     })
   }
 }
