@@ -2,7 +2,6 @@
 
 const Joi = require('@hapi/joi')
 const BaseValidator = require('./base.validator')
-const Application = require('../persistence/entities/application.entity')
 
 module.exports = class MiningWasteWeightValidator extends BaseValidator {
   get errorMessages () {
@@ -19,7 +18,7 @@ module.exports = class MiningWasteWeightValidator extends BaseValidator {
     return {
       'mining-waste-weight': Joi
         .number()
-        .max(Application.miningWasteWeight.length.max)
+        .max(99999999)
         .required()
     }
   }

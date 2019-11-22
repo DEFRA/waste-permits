@@ -55,7 +55,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment.only('How much extractive waste will you produce? page tests:', () => {
+lab.experiment('How much extractive waste will you produce? page tests:', () => {
   new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
@@ -99,7 +99,7 @@ lab.experiment.only('How much extractive waste will you produce? page tests:', (
         url: routePath,
         headers: {},
         payload: {
-          'mining-waste-weight': 'one,hundred-thousand'
+          'mining-waste-weight': 99
         }
       }
     })
