@@ -62,10 +62,9 @@ module.exports = class ApplicationCost {
         }))
 
     const wasteActivityApplicationCostItems = wasteActivityLineEntities.map((line) => {
-      const wasteActivity = wasteActivityItemEntities.find(({ id }) => id === line.itemId)
       // CRM requires that the application line name is populated; it uses the waste activity name if none is supplied
       // This causes duplication of text so we check whether the line name matches the activity name when displaying it
-      const description = wasteActivity.itemName + (line.lineName && line.lineName !== wasteActivity.itemName ? ` ${line.lineName}` : '')
+      const description = line.lineName
       const cost = line.value
       const displayOrder = line.displayOrder
       return new ApplicationCostItem({ description, cost, displayOrder })
