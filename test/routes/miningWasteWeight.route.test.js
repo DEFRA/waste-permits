@@ -99,7 +99,7 @@ lab.experiment('How much extractive waste will you produce? page tests:', () => 
         url: routePath,
         headers: {},
         payload: {
-          'mining-waste-weight': 'one,hundred-thousand'
+          'mining-waste-weight': 99
         }
       }
     })
@@ -120,13 +120,13 @@ lab.experiment('How much extractive waste will you produce? page tests:', () => 
         await GeneralTestHelper.checkValidationMessage(doc, 'mining-waste-weight', 'Enter a weight')
       })
 
-      lab.test('when mining waste weight has more than 20 characters', async () => {
+      lab.test('when mining waste is not a number', async () => {
         postRequest.payload = {
-          'mining-waste-weight': 'More than 20 characters'
+          'mining-waste-weight': 'The weight must be a number'
         }
         const doc = await GeneralTestHelper.getDoc(postRequest)
         checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'mining-waste-weight', 'Enter the weight using no more than 20 characters')
+        await GeneralTestHelper.checkValidationMessage(doc, 'mining-waste-weight', 'The weight must be a number')
       })
     })
 

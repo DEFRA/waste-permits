@@ -23,7 +23,7 @@ module.exports = class MiningWasteWeightController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
-    application.miningWasteWeight = request.payload['mining-waste-weight']
+    application.miningWasteWeight = String(request.payload['mining-waste-weight'])
     await application.save(context, ['miningWasteWeight'])
 
     return this.redirect({ h })

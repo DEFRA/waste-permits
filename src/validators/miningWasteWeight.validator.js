@@ -2,14 +2,14 @@
 
 const Joi = require('@hapi/joi')
 const BaseValidator = require('./base.validator')
-const Application = require('../persistence/entities/application.entity')
 
 module.exports = class MiningWasteWeightValidator extends BaseValidator {
   get errorMessages () {
     return {
       'mining-waste-weight': {
         'any.required': `Enter a weight`,
-        'string.max': `Enter the weight using no more than ${Application.miningWasteWeight.length.max} characters`
+        'number.base': 'The weight must be a number',
+        'number.unsafe': `Enter the weight between 0 and 99999999`
       }
     }
   }
@@ -17,8 +17,8 @@ module.exports = class MiningWasteWeightValidator extends BaseValidator {
   get formValidators () {
     return {
       'mining-waste-weight': Joi
-        .string()
-        .max(Application.miningWasteWeight.length.max)
+        .number()
+        .max(99999999)
         .required()
     }
   }

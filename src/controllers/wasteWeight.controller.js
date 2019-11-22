@@ -57,9 +57,15 @@ module.exports = class WasteWeightController extends BaseController {
       'hazardous-maximum': hazardousMaximum
     } = request.payload
 
-    Object.assign(wasteWeights, { nonHazardousThroughput, nonHazardousMaximum })
+    Object.assign(wasteWeights, {
+      nonHazardousThroughput: String(nonHazardousThroughput),
+      nonHazardousMaximum: String(nonHazardousMaximum)
+    })
     if (wasteWeights.hasHazardousWaste) {
-      Object.assign(wasteWeights, { hazardousThroughput, hazardousMaximum })
+      Object.assign(wasteWeights, {
+        hazardousThroughput: String(hazardousThroughput),
+        hazardousMaximum: String(hazardousMaximum)
+      })
     }
     await wasteWeights.save(context)
 
