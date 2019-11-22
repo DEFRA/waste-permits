@@ -70,47 +70,62 @@ const FAKE_APPLICATION_LINES = [{
   id: 'FAKE_APPLICATION_LINE_ID_1',
   applicationId: FAKE_APPLICATION_ID,
   itemId: 'ACTIVITY_ITEM_ID_1',
+  lineName: 'Activity 1',
   value: 1000.01
 }, {
   id: 'FAKE_APPLICATION_LINE_ID_2',
   applicationId: FAKE_APPLICATION_ID,
   itemId: 'ACTIVITY_ITEM_ID_2',
+  lineName: 'Activity 2',
   value: 2000.01
 }, {
   id: 'FAKE_APPLICATION_LINE_ID_3',
   applicationId: FAKE_APPLICATION_ID,
   itemId: 'ASSESSMENT_ITEM_ID_1',
+  lineName: 'Activity 3',
   value: 100.01
 }, {
   id: 'FAKE_APPLICATION_LINE_ID_4',
   applicationId: FAKE_APPLICATION_ID,
   itemId: 'ASSESSMENT_ITEM_ID_2',
+  lineName: 'Activity 3',
   value: 200.01
 }, {
   id: 'FAKE_APPLICATION_LINE_ID_5',
   applicationId: FAKE_APPLICATION_ID,
+  lineName: 'Activity 3',
   itemId: 'ACTIVITY_ITEM_ID_3'
 }, {
   id: 'FAKE_APPLICATION_LINE_ID_6',
   applicationId: FAKE_APPLICATION_ID,
   itemId: 'ASSESSMENT_ITEM_ID_3',
+  lineName: 'Activity 4 A',
   value: 0
 }, {
   id: 'FAKE_APPLICATION_LINE_ID_DUP_A',
   applicationId: FAKE_APPLICATION_ID,
   itemId: 'ACTIVITY_ITEM_ID_4',
-  lineName: 'A',
+  lineName: 'Activity 4 A',
   value: 400.01
 }, {
   id: 'FAKE_APPLICATION_LINE_ID_DUP_B',
   applicationId: FAKE_APPLICATION_ID,
   itemId: 'ACTIVITY_ITEM_ID_4',
-  lineName: 'B',
+  lineName: 'Activity 4 B',
   value: 400.01
 }]
 const TOTAL_COST = 4100.06
 const COST_TEXT = ['£1,000.01', '£2,000.01', undefined, '£400.01', '£400.01', '£100.01', '£200.01', 'Cost included in application']
-const DESCRIPTION_TEXT = ['Activity 1', 'Activity 2', 'Activity 3', 'Activity 4 A', 'Activity 4 B', 'Assessment 1', 'Assessment 2', 'Assessment 3']
+const DESCRIPTION_TEXT = [
+  'Activity 1',
+  'Activity 2',
+  'Activity 3',
+  'Activity 4 A',
+  'Activity 4 B',
+  'Assessment 1',
+  'Assessment 2',
+  'Assessment 3'
+]
 
 let fakeApplicationEntity
 let fakeApplicationLineEntities
