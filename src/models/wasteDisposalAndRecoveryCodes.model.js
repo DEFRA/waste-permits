@@ -2,7 +2,6 @@
 
 const DataStore = require('../models/dataStore.model')
 const ApplicationLine = require('../persistence/entities/applicationLine.entity')
-const Item = require('../persistence/entities/item.entity')
 const ApplicationAnswer = require('../persistence/entities/applicationAnswer.entity')
 
 const DISPOSAL_CODES_APPLICATION_ANSWER = 'waste-disposal-codes'
@@ -69,10 +68,8 @@ module.exports = class WasteDisposalAndRecoveryCodes {
     const wasteActivityApplicationLine = wasteActivityApplicationLines[activityIndex]
     if (wasteActivityApplicationLine) {
       const hasNext = Boolean(wasteActivityApplicationLines[activityIndex + 1])
-      const item = await Item.getById(context, wasteActivityApplicationLine.itemId)
-      const itemName = item.itemName || ''
       const definedName = wasteActivityApplicationLine.lineName || ''
-      const activityDisplayName = `${itemName} ${definedName}`.trim()
+      const activityDisplayName = `${definedName}`.trim()
       const dataStore = await DataStore.get(context)
       const { applicationWasteDisposalAndRecoveryCodes = {} } = dataStore.data
       const codesForApplicationLine = applicationWasteDisposalAndRecoveryCodes[wasteActivityApplicationLine.id] || {}
@@ -88,18 +85,13 @@ module.exports = class WasteDisposalAndRecoveryCodes {
       return []
     }
 
-    const itemIds = wasteActivityApplicationLines.map(({ itemId }) => itemId).filter((itemId, index, fullList) => fullList.indexOf(itemId) === index)
-    const items = await Item.listBy(context, { id: itemIds })
-
     const dataStore = await DataStore.get(context)
     const { applicationWasteDisposalAndRecoveryCodes = {} } = dataStore.data
 
     return wasteActivityApplicationLines.map((wasteActivityApplicationLine, index, allLines) => {
       const hasNext = Boolean(allLines[index + 1])
-      const item = items.find(({ itemId }) => itemId === wasteActivityApplicationLine.itemId) || {}
-      const itemName = item.itemName || ''
       const definedName = wasteActivityApplicationLine.lineName || ''
-      const activityDisplayName = `${itemName} ${definedName}`.trim()
+      const activityDisplayName = `${definedName}`.trim()
       const codesForApplicationLine = applicationWasteDisposalAndRecoveryCodes[wasteActivityApplicationLine.id] || {}
       const { selectedWasteDisposalCodes, selectedWasteRecoveryCodes } = codesForApplicationLine
 

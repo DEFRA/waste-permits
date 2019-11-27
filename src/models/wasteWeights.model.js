@@ -2,7 +2,6 @@
 
 const DataStore = require('../models/dataStore.model')
 const ApplicationLine = require('../persistence/entities/applicationLine.entity')
-const Item = require('../persistence/entities/item.entity')
 const ApplicationAnswer = require('../persistence/entities/applicationAnswer.entity')
 
 const NON_HAZ_THROUGHPUT_APPLICATION_ANSWER = 'non-haz-waste-throughput-weight'
@@ -35,10 +34,8 @@ module.exports = class WasteWeights {
     const wasteActivityApplicationLine = wasteActivityApplicationLines[activityIndex]
     if (wasteActivityApplicationLine) {
       const hasNext = Boolean(wasteActivityApplicationLines[activityIndex + 1])
-      const item = await Item.getById(context, wasteActivityApplicationLine.itemId)
-      const itemName = item.itemName || ''
       const definedName = wasteActivityApplicationLine.lineName || ''
-      const activityDisplayName = `${itemName} ${definedName}`.trim()
+      const activityDisplayName = `${definedName}`.trim()
       const { data: { acceptsHazardousWaste } } = await DataStore.get(context)
       const hasHazardousWaste = Boolean(acceptsHazardousWaste)
 
@@ -60,9 +57,6 @@ module.exports = class WasteWeights {
       return []
     }
 
-    const itemIds = wasteActivityApplicationLines.map(({ itemId }) => itemId).filter((itemId, index, fullList) => fullList.indexOf(itemId) === index)
-    const items = await Item.listBy(context, { id: itemIds })
-
     const { data: { acceptsHazardousWaste } } = await DataStore.get(context)
     const hasHazardousWaste = Boolean(acceptsHazardousWaste)
 
@@ -70,10 +64,8 @@ module.exports = class WasteWeights {
 
     return wasteActivityApplicationLines.map((wasteActivityApplicationLine, index, allLines) => {
       const hasNext = Boolean(allLines[index + 1])
-      const item = items.find(({ itemId }) => itemId === wasteActivityApplicationLine.itemId) || {}
-      const itemName = item.itemName || ''
       const definedName = wasteActivityApplicationLine.lineName || ''
-      const activityDisplayName = `${itemName} ${definedName}`.trim()
+      const activityDisplayName = `${definedName}`.trim()
 
       const wasteWeightAnswers = allWasteWeightAnswers.filter(({ applicationLineId }) => applicationLineId === wasteActivityApplicationLine.id)
 
