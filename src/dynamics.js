@@ -246,9 +246,16 @@ const Dynamics = {
       typeText: 'mining waste operations',
       canApplyOnline: false
     },
+    MOBILE_PLANT: {
+      id: 'mobileplant',
+      key: '06',
+      text: 'Mobile plant – treatment of waste (other than land spreading)',
+      typeText: 'mobile plant, treatment of waste',
+      canApplyOnline: false
+    },
     WATER_DISCHARGE: {
       id: 'discharge',
-      key: '06',
+      key: '07',
       text: 'Water discharge',
       description: 'For example, sewage, industrial or trade discharge, clearing water channels',
       typeText: 'water discharges',
@@ -256,7 +263,7 @@ const Dynamics = {
     },
     GROUNDWATER: {
       id: 'groundwater',
-      key: '07',
+      key: '08',
       text: 'Groundwater activity',
       typeText: 'groundwater activities',
       canApplyOnline: false
