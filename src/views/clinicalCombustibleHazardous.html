@@ -11,14 +11,24 @@
 
       {{> common/pageHeading pageHeading }}
 
-      <p>
-        Read the guidance on GOV.UK to ensure you select the correct types of waste:
-        <ul class="list list-bullet">
-            <li><a rel="noopener noreferrer" target="_blank" href="https://www.gov.uk/government/publications/clinical-waste-additional-guidance">Clinical waste (opens new tab)</a></li>
-            <li><a rel="noopener noreferrer" target="_blank" href="https://www.gov.uk/government/publications/fire-prevention-plans-environmental-permits/fire-prevention-plans-environmental-permits#types-of-combustible-waste">Combustible waste (opens new tab)</a></li>
-            <li><a rel="noopener noreferrer" target="_blank" href="https://www.gov.uk/dispose-hazardous-waste">Hazardous waste (opens new tab)</a></li>
-          </ul>
-      </p>
+
+      <div class="form-group">
+        <details role="group" class="form-hint-details">
+          <summary role="button" aria-controls="details-content-0" aria-expanded="false">
+            <span id="summary" class="summary">Learn more about waste types</span>
+          </summary>
+          <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true">
+            <p>
+              Read this guidance to help you select the correct types of waste:
+              <ul class="list list-bullet">
+                  <li><a rel="noopener noreferrer" target="_blank" href="https://www.gov.uk/government/publications/clinical-waste-additional-guidance">Clinical waste (opens new tab)</a></li>
+                  <li><a rel="noopener noreferrer" target="_blank" href="https://www.gov.uk/government/publications/fire-prevention-plans-environmental-permits/fire-prevention-plans-environmental-permits#types-of-combustible-waste">Combustible waste (opens new tab)</a></li>
+                  <li><a rel="noopener noreferrer" target="_blank" href="https://www.gov.uk/dispose-hazardous-waste">Hazardous waste (opens new tab)</a></li>
+                </ul>
+            </p>
+          </div>
+        </details>
+      </div>
 
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
