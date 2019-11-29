@@ -117,7 +117,7 @@ const tasks = {
     label: 'Complete the climate change risk screening',
     route: Routes.CLIMATE_CHANGE_RISK_SCREENING_PERMIT_LENGTH,
     completedLabelId: 'climate-change-risk-screening-completed',
-    shortName: 'envrisk',
+    shortName: 'climaterisk',
     taskListModel: 'climateChangeRiskScreening'
   },
   FIRE_PREVENTION_PLAN: {
