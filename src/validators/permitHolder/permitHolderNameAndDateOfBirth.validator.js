@@ -76,9 +76,6 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         .min(2)
         .max(Contact.lastName.length.max)
         .required()
-      // 'dob-day': Joi.number().integer(),
-      // 'dob-month': Joi.number().integer(),
-      // 'dob-year': Joi.number().integer()
     }
   }
 
