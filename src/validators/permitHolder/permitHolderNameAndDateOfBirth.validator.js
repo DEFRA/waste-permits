@@ -15,12 +15,22 @@ const {
 const MAX_AGE = 120
 const MIN_AGE = 16
 
+function checkOnlyDigits (number) {
+  const regex = /^\d*$/
+  return !!regex.exec(number)
+}
+
 function getAge (day, month, year) {
+  if (!checkOnlyDigits(day) || !checkOnlyDigits(month) || !checkOnlyDigits(year)) {
+    return false
+  }
+
   const date = moment({
     day,
     month: parseInt(month) - 1, // Because moment 0 indexes months
     year
   })
+
   return day && month && year && date.isValid() ? -date.diff(Date.now(), 'years', true) : 0
 }
 
