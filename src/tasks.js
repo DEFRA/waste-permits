@@ -112,6 +112,14 @@ const tasks = {
     shortName: 'envrisk',
     taskListModel: 'environmentalRiskAssessment'
   },
+  CLIMATE_CHANGE_RISK_SCREENING: {
+    id: 'climate-change-risk-screening',
+    label: 'Complete the climate change risk screening',
+    route: Routes.CLIMATE_CHANGE_RISK_SCREENING_PERMIT_LENGTH,
+    completedLabelId: 'climate-change-risk-screening-completed',
+    shortName: 'envrisk',
+    taskListModel: 'climateChangeRiskScreening'
+  },
   FIRE_PREVENTION_PLAN: {
     id: 'upload-the-fire-prevention-plan',
     label: 'Upload the fire prevention plan',
@@ -485,6 +493,7 @@ const bespoke = [
       tasks.FIRE_PREVENTION_PLAN,
       tasks.WASTE_RECOVERY_PLAN,
       tasks.ENVIRONMENTAL_RISK_ASSESSMENT,
+      tasks.CLIMATE_CHANGE_RISK_SCREENING,
       tasks.EMISSIONS_AND_MONITORING,
       tasks.TECHNICAL_STANDARDS,
       tasks.CLINICAL_WASTE_APPENDIX,

@@ -158,6 +158,17 @@ const Dynamics = {
     },
     MCP_PERMIT_TYPES: {
       questionCode: 'mcp-permit-type'
+    },
+    CLIMATE_CHANGE_RISK_SCREENING: {
+      PERMIT_LENGTH: {
+        questionCode: 'climate-change-permit-length'
+      },
+      FLOOD_RISK: {
+        questionCode: 'climate-change-flood-risk'
+      },
+      WATER_SOURCE: {
+        questionCode: 'climate-change-water-source'
+      }
     }
   },
   BACS_EMAIL_CONFIG: 'PSC-BACS-EMAIL',

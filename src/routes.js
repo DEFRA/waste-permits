@@ -1011,6 +1011,54 @@ const Routes = {
       fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
+  CLIMATE_CHANGE_RISK_SCREENING_PERMIT_LENGTH: {
+    path: '/climate-change-risk-screening/permit-length',
+    view: 'climateChangeRiskScreening/permitLength',
+    pageHeading: 'Climate change risk screening',
+    controller: 'climateChangeRiskScreening/permitLength',
+    validator: 'climateChangeRiskScreening/permitLength',
+    nextRoute: 'CLIMATE_CHANGE_RISK_SCREENING_FLOOD_RISK',
+    types: 'GET, POST'
+  },
+  CLIMATE_CHANGE_RISK_SCREENING_FLOOD_RISK: {
+    path: '/climate-change-risk-screening/flood-risk',
+    view: 'climateChangeRiskScreening/floodRisk',
+    pageHeading: 'Climate change risk screening',
+    controller: 'climateChangeRiskScreening/floodRisk',
+    validator: 'climateChangeRiskScreening/floodRisk',
+    nextRoute: 'CLIMATE_CHANGE_RISK_SCREENING_WATER_SOURCE',
+    types: 'GET, POST'
+  },
+  CLIMATE_CHANGE_RISK_SCREENING_WATER_SOURCE: {
+    path: '/climate-change-risk-screening/water-source',
+    view: 'climateChangeRiskScreening/waterSource',
+    pageHeading: 'Climate change risk screening',
+    controller: 'climateChangeRiskScreening/waterSource',
+    validator: 'climateChangeRiskScreening/waterSource',
+    types: 'GET, POST'
+  },
+  CLIMATE_CHANGE_RISK_SCREENING_UPLOAD: {
+    path: '/climate-change-risk-screening/upload',
+    view: 'upload/climateChangeRiskScreening/climateChangeRiskScreening',
+    pageHeading: 'Complete a climate change risk assessment',
+    controller: 'upload',
+    validator: 'upload',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, REMOVE, UPLOAD',
+    baseRoute: 'uploadRoute',
+    subject: 'CLIMATE_CHANGE_RISK_ASSESSMENT',
+    validatorOptions: {
+      fileTypes: [PDF, DOC, DOCX, ODT]
+    }
+  },
+  CLIMATE_CHANGE_RISK_SCREENING_NO_UPLOAD: {
+    path: '/climate-change-risk-screening/no-assessment-now',
+    view: 'climateChangeRiskScreening/noAssessmentNow',
+    pageHeading: 'Climate change risk screening',
+    controller: 'climateChangeRiskScreening/noAssessmentNow',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   FACILITY_TYPE: {
     path: '/facility-type',
     view: 'facilityType',

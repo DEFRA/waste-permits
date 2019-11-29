@@ -32,6 +32,7 @@ const ManageHazardousWaste = require('../../models/checkList/manageHazardousWast
 const WasteDisposalAndRecoveryCodes = require('../../models/checkList/wasteDisposalAndRecoveryCodes.check')
 const ClinicalWasteAppendix = require('../../models/checkList/clinicalWasteAppendix.check')
 const WasteWeights = require('../../models/checkList/wasteWeights.check')
+const ClimateChangeRiskScreeningCheck = require('../../models/checkList/climateChangeRiskScreening.check')
 
 module.exports = class CheckList {
   constructor () {
@@ -68,7 +69,8 @@ module.exports = class CheckList {
       ManageHazardousWaste,
       MiningWasteCheck,
       ConfidentialityCheck,
-      InvoiceCheck
+      InvoiceCheck,
+      ClimateChangeRiskScreeningCheck
     ]
   }
 

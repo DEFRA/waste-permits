@@ -1,0 +1,82 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <div class="body-text">
+        What is your site’s risk of flooding from rivers or the sea?
+      </div>
+
+      <div class="body-text">
+        <details role="group" class="form-hint-details">
+          <summary role="button" aria-controls="details-content-0" aria-expanded="false">
+            <span id="flood-risk-summary" class="summary">How to identify your site's flood risk</span>
+          </summary>
+          <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true">
+            <ol id="grid-reference-help-list" class="list list-number">
+              <li><a href="https://flood-warning-information.service.gov.uk/long-term-flood-risk/map" target="_blank" rel="noopener noreferrer">
+                Open the ‘Learn more about flood risk’ map (opens new tab)
+              </a></li>
+              <li>Select 'Basic view' and 'Flood risk from rivers or the sea'</li>
+              <li>Zoom in to the maximum magnification that includes your whole site</li>
+              <li>Click within the boundary of your site to find your flood risk level</li>
+            </ol>
+          </div>
+        </details>
+      </div>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+        <div class="form-group {{#getFormErrorGroupClass errors.flood-risk}}{{/getFormErrorGroupClass}}">
+
+          <fieldset>
+
+            <legend id="flood-risk-visually-hidden" class="visually-hidden">{{pageHeading}}</legend>
+
+            {{> common/fieldError fieldId='flood-risk-error' message=errors.flood-risk }}
+
+            <div class="multiple-choice">
+              <input id="not-in-flood-risk-zone" name="flood-risk" type="radio" value="not-in-flood-risk-zone" {{#if formValues.not-in-flood-risk-zone}}checked="checked"{{/if}}>
+              <label id="not-in-flood-risk-zone-label" for="not-in-flood-risk-zone">
+                Site is not in a flood risk zone
+              </label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="very-low-or-low" name="flood-risk" type="radio" value="very-low-or-low" {{#if formValues.very-low-or-low}}checked="checked"{{/if}}>
+              <label id="very-low-or-low-label" for="very-low-or-low">
+                Very low or low
+              </label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="medium" name="flood-risk" type="radio" value="medium" {{#if formValues.medium}}checked="checked"{{/if}}>
+              <label id="medium-label" for="medium">
+                Medium
+              </label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="high" name="flood-risk" type="radio" value="high" {{#if formValues.high}}checked="checked"{{/if}}>
+              <label id="high-label" for="high">
+                High
+              </label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>

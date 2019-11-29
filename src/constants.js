@@ -203,7 +203,8 @@ Constants.UploadSubject = {
   PEST_MANAGEMENT_PLAN: 'pest management plan',
   CLINICAL_WASTE_JUSTIFICATION: 'clinical waste non-standard justification',
   CLINICAL_WASTE_TREATMENT_SUMMARY: 'clinical waste treatment summary',
-  CLINICAL_WASTE_LAYOUT_PLANS: 'clinical waste layout plans and process flows'
+  CLINICAL_WASTE_LAYOUT_PLANS: 'clinical waste layout plans and process flows',
+  CLIMATE_CHANGE_RISK_ASSESSMENT: 'climate change risk assessment'
 }
 
 Constants.CookieValue = {

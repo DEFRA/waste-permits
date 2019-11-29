@@ -1,6 +1,5 @@
 'use strict'
 
-// const { HAZARDOUS_WASTE_TREATMENT_SUMMARY, HAZARDOUS_WASTE_PLANS } = require('../../constants').UploadSubject
 const {
   CLINICAL_WASTE_JUSTIFICATION,
   CLINICAL_WASTE_TREATMENT_SUMMARY,
