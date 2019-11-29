@@ -15,15 +15,22 @@ const {
 const MAX_AGE = 120
 const MIN_AGE = 16
 
-const NO_DECIMAL = 'cannot be a decimal number'
+function checkOnlyDigits (number) {
+  const regex = /^\d*$/
+  return !!regex.exec(number)
+}
 
 function getAge (day, month, year) {
+  if (!checkOnlyDigits(day) || !checkOnlyDigits(month) || !checkOnlyDigits(year)) {
+    return false
+  }
+
   const date = moment({
     day,
     month: parseInt(month) - 1, // Because moment 0 indexes months
     year
   })
-  console.log(date)
+
   return day && month && year && date.isValid() ? -date.diff(Date.now(), 'years', true) : 0
 }
 
@@ -51,15 +58,8 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         'custom.max': `Enter a shorter position or job title with no more than ${AddressDetail.jobTitle.length.max} characters`
       },
       'dob-day': {
-        'number.integer': `Day ${NO_DECIMAL}`,
         'custom.invalid': 'Enter a valid date of birth',
         'custom.range': `Enter a date of birth that is older than ${MIN_AGE} and under ${MAX_AGE} years of age`
-      },
-      'dob-month': {
-        'number.integer': `Month ${NO_DECIMAL}`
-      },
-      'dob-year': {
-        'number.integer': `Year ${NO_DECIMAL}`
       }
     }
   }
@@ -75,10 +75,10 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         .string()
         .min(2)
         .max(Contact.lastName.length.max)
-        .required(),
-      'dob-day': Joi.number().integer(),
-      'dob-month': Joi.number().integer(),
-      'dob-year': Joi.number().integer()
+        .required()
+      // 'dob-day': Joi.number().integer(),
+      // 'dob-month': Joi.number().integer(),
+      // 'dob-year': Joi.number().integer()
     }
   }
 
