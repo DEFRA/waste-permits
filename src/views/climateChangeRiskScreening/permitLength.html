@@ -1,0 +1,91 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <div class="body-text">
+        We need to ask you some screening questions to decide if you need to submit a climate change risk assessment with this application.
+      </div>
+
+      <div class="body-text">
+        How long will a permit be required for this site or activity?
+      </div>
+
+      <div class="body-text">
+        <details role="group" class="form-hint-details">
+          <summary role="button" aria-controls="details-content-0" aria-expanded="false">
+            <span id="permit-length-summary" class="summary">More information about permit length</span>
+          </summary>
+          <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true">
+            <div class="body-text">
+              You must include any periods of aftercare when formal operations have ended.
+            </div>
+            <div class="body-text">
+              Landfills - you must consider the full lifetime of the permit, from when it's granted until it's surrendered,
+              including commissioning, active landfilling, closure and aftercare.
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+        <div class="form-group {{#getFormErrorGroupClass errors.permit-length}}{{/getFormErrorGroupClass}}">
+
+          <fieldset>
+
+            <legend id="permit-length-visually-hidden" class="visually-hidden">{{pageHeading}}</legend>
+
+            {{> common/fieldError fieldId='permit-length' message=errors.permit-length }}
+
+            <div class="multiple-choice" data-target="less-than-5-info">
+              <input id="less-than-5" name="permit-length" type="radio" value="less-than-5" {{#if formValues.less-than-5}}checked="checked"{{/if}}>
+              <label id="less-than-5-label" for="less-than-5">
+                Less than 5 years
+              </label>
+            </div>
+
+            <div class="panel panel-border-narrow js-hidden" id="less-than-5-info">
+              <div class="body-text">
+                You do not need to carry out a climate change risk assessment because you expect to operate for less than 5 years.
+              </div>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="between-2020-and-2040" name="permit-length" type="radio" value="between-2020-and-2040" {{#if formValues.between-2020-and-2040}}checked="checked"{{/if}}>
+              <label id="between-2020-and-2040-label" for="between-2020-and-2040">
+                Until between 2020 and 2040
+              </label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="between-2040-and-2060" name="permit-length" type="radio" value="between-2040-and-2060" {{#if formValues.between-2040-and-2060}}checked="checked"{{/if}}>
+              <label id="between-2040-and-2060-label" for="between-2040-and-2060">
+                Until between 2040 and 2060
+              </label>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="until-2060-or-beyond" name="permit-length" type="radio" value="until-2060-or-beyond" {{#if formValues.until-2060-or-beyond}}checked="checked"{{/if}}>
+              <label id="until-2060-or-beyond-label" for="until-2060-or-beyond">
+                Until 2060 or beyond
+              </label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>

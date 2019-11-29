@@ -15,6 +15,7 @@ const DataStore = require('../dataStore.model')
 const TaskDeterminants = require('../taskDeterminants.model')
 const WasteDisposalAndRecoveryCodes = require('../wasteDisposalAndRecoveryCodes.model')
 const WasteWeights = require('../wasteWeights.model')
+const ClimateChangeRiskScreening = require('../climateChangeRiskScreening.model')
 
 const {
   BILLING_INVOICING,
@@ -251,5 +252,14 @@ module.exports = class BaseCheck {
       this.data.allWasteWeights = await WasteWeights.getAllForApplication(this.data)
     }
     return this.data.allWasteWeights || []
+  }
+
+  async getClimateChangeRiskScreening () {
+    const { climateChangeRiskScreening } = this.data
+    if (!climateChangeRiskScreening) {
+      this.data.climateChangeRiskScreening = await ClimateChangeRiskScreening.get(this.data)
+      this.data.climateChangeRiskScreening.isUploadRequired = await ClimateChangeRiskScreening.isUploadRequired(this.data.climateChangeRiskScreening)
+    }
+    return this.data.climateChangeRiskScreening || []
   }
 }
