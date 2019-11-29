@@ -62,6 +62,7 @@ module.exports = class CheckList {
       FirePreventionPlanCheck,
       WasteRecoveryPlanCheck,
       EnvironmentalRiskAssessmentCheck,
+      ClimateChangeRiskScreeningCheck,
       EmissionsAndMonitoringCheck,
       ClinicalWasteAppendix,
       NoiseVibrationDocumentsCheck,
@@ -69,8 +70,7 @@ module.exports = class CheckList {
       ManageHazardousWaste,
       MiningWasteCheck,
       ConfidentialityCheck,
-      InvoiceCheck,
-      ClimateChangeRiskScreeningCheck
+      InvoiceCheck
     ]
   }
 
