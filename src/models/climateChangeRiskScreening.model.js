@@ -22,7 +22,7 @@ const floodRiskScores = {
   'not-in-flood-risk-zone': 0,
   'very-low-or-low': 1,
   'medium': 2,
-  'high': 3
+  'high': 5
 }
 
 const waterSourceScores = {
