@@ -23,7 +23,7 @@ const routes = {
     multipleDirectorPageHeading: `What are the directors' dates of birth?`,
     permitHolderType: LIMITED_COMPANY,
     routePath: '/permit-holder/company/director-date-of-birth',
-    nextPath: '/permit-holder/company/director-email',
+    nextPath: '/permit-holder/company/director-email'
   },
   'Limited Liability Partnership': {
     singleDirectorPageHeading: `What is the member's date of birth?`,
@@ -31,7 +31,7 @@ const routes = {
     permitHolderType: LIMITED_LIABILITY_PARTNERSHIP,
     pageHeading: 'What is the company number for the  limited liability partnership?',
     routePath: '/permit-holder/limited-liability-partnership/member-date-of-birth',
-    nextPath: '/permit-holder/limited-liability-partnership/designated-member-email',
+    nextPath: '/permit-holder/limited-liability-partnership/designated-member-email'
   }
 }
 
@@ -240,12 +240,21 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
             await checkValidationError('director-dob-day-1', `Enter a day between 1 and 28 for ${mocks.directors[1].firstName} ${mocks.directors[1].lastName}`)
           })
 
-          lab.test(`POST ${routePath} with a invalid integer for the day of birth ('XXX')  displays the correct error message`, async () => {
+          lab.test(`POST ${routePath} with a invalid integer for the day of birth ('XXX') displays the correct error message`, async () => {
             postRequest.payload['director-dob-day-0'] = '10'
             postRequest.payload['director-dob-day-2'] = '30'
 
             // Day is not a valid integer therefore this should trigger a validation error
             postRequest.payload['director-dob-day-1'] = 'XXX'
+            await checkValidationError('director-dob-day-1', `Enter a day between 1 and 28 for ${mocks.directors[1].firstName} ${mocks.directors[1].lastName}`)
+          })
+
+          lab.test(`POST ${routePath} with a invalid integer for the day of birth ('24.0') displays the correct error message`, async () => {
+            postRequest.payload['director-dob-day-0'] = '10'
+            postRequest.payload['director-dob-day-2'] = '30'
+
+            // Day is not a valid integer therefore this should trigger a validation error
+            postRequest.payload['director-dob-day-1'] = '24.0'
             await checkValidationError('director-dob-day-1', `Enter a day between 1 and 28 for ${mocks.directors[1].firstName} ${mocks.directors[1].lastName}`)
           })
         })

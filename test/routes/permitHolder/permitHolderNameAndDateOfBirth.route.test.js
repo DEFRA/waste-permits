@@ -248,6 +248,16 @@ lab.experiment('Permit Holder Name page tests:', () => {
         await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
       })
 
+      lab.test(`POST ${routePath} shows an error message when the date of birth is not a number`, async () => {
+        postRequest.payload['dob-day'] = 'XX'
+        await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
+      })
+
+      lab.test(`POST ${routePath} shows an error message when the date of birth is not an integer`, async () => {
+        postRequest.payload['dob-day'] = '4.4'
+        await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
+      })
+
       lab.test(`POST ${routePath} shows an error message when the age is less than 16`, async () => {
         postRequest.payload['dob-day'] = day + 1
         postRequest.payload['dob-year'] = year - 16
