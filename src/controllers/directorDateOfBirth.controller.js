@@ -14,6 +14,11 @@ const {
 } = require('../dynamics')
 
 module.exports = class DirectorDateOfBirthController extends BaseController {
+  checkOnlyDigits (number) {
+    const regex = /^\d*$/
+    return !!regex.exec(number)
+  }
+
   _getContactType (permitHolderType) {
     switch (permitHolderType.type) {
       case LIMITED_COMPANY.type:
@@ -183,11 +188,11 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
             context: { key: directorDobField, label: directorDobField }
           })
         } else {
-          let daysInBirthMonth = moment(`${director.dob.year}-${director.dob.month}`, 'YYYY-MM').daysInMonth()
-          daysInBirthMonth = isNaN(daysInBirthMonth) ? 31 : daysInBirthMonth
+          const intDay = parseInt(dobDay)
+          const birthMonth = moment(`${director.dob.year}-${director.dob.month}`, 'YYYY-MM')
+          const daysInBirthMonth = isNaN(birthMonth.daysInMonth()) ? 31 : birthMonth.daysInMonth()
 
-          dobDay = parseInt(dobDay)
-          if (isNaN(dobDay) || dobDay < 1 || dobDay > daysInBirthMonth) {
+          if (!this.checkOnlyDigits(dobDay) || isNaN(intDay) || intDay < 1 || intDay > daysInBirthMonth) {
             // DOB day is invalid
             errors.details.push({
               message: `"${directorDobField}" is invalid`,
