@@ -168,6 +168,11 @@ lab.experiment('Application Cost Model test:', () => {
       Code.expect(applicationCost.items.length).to.equal(8)
       Code.expect(spy.callCount).to.equal(2)
     })
+    lab.test('getApplicationCostForApplicationId clears cached application data', async () => {
+      context.application = fakeApplicationEntity
+      await ApplicationCostModel.getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
+      Code.expect(context.application).to.not.exist()
+    })
     lab.test('correct costs', async () => {
       const spy = sinon.spy(dynamicsDal, 'callAction')
       const applicationCost = await ApplicationCostModel
