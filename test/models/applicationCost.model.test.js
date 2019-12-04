@@ -178,6 +178,18 @@ lab.experiment('Application Cost Model test:', () => {
       Code.expect(summedItemCost).to.equal(TOTAL_COST)
       Code.expect(spy.callCount).to.equal(2)
     })
+    lab.test('retrieves current cost value', async () => {
+      const { id, applicantType, organisationType, lineItemsTotalAmount } = fakeApplicationEntity
+      context.application = new ApplicationEntity({
+        id,
+        applicantType,
+        organisationType,
+        lineItemsTotalAmount: lineItemsTotalAmount + 1
+      })
+      const applicationCost = await ApplicationCostModel
+        .getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
+      Code.expect(applicationCost.total.cost).to.equal(TOTAL_COST)
+    })
     lab.test('correct cost text in order', async () => {
       const spy = sinon.spy(dynamicsDal, 'callAction')
       const applicationCost = await ApplicationCostModel

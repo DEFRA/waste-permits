@@ -80,6 +80,9 @@ module.exports = class ApplicationCost {
       .concat(wasteAssessmentApplicationCostItems)
       .sort((a, b) => a.displayOrder - b.displayOrder)
 
+    // Remove cached application data to prevent incorrect total issue
+    delete entityContextToUse.application
+
     const applicationEntity = await Application.getById(entityContextToUse, applicationId)
     const totalCost = applicationEntity.lineItemsTotalAmount
     const totalCostItem = new ApplicationCostItem({ description: 'Total', cost: totalCost })
