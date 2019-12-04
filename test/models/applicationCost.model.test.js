@@ -168,11 +168,6 @@ lab.experiment('Application Cost Model test:', () => {
       Code.expect(applicationCost.items.length).to.equal(8)
       Code.expect(spy.callCount).to.equal(2)
     })
-    lab.test('getApplicationCostForApplicationId clears cached application data', async () => {
-      context.application = fakeApplicationEntity
-      await ApplicationCostModel.getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
-      Code.expect(context.application).to.not.exist()
-    })
     lab.test('correct costs', async () => {
       const spy = sinon.spy(dynamicsDal, 'callAction')
       const applicationCost = await ApplicationCostModel
@@ -182,6 +177,18 @@ lab.experiment('Application Cost Model test:', () => {
         applicationCost.items.reduce((acc, { costValue }) => acc + costValue, 0)
       Code.expect(summedItemCost).to.equal(TOTAL_COST)
       Code.expect(spy.callCount).to.equal(2)
+    })
+    lab.test.only('retrieves current cost value', async () => {
+      const { id, applicantType, organisationType, lineItemsTotalAmount } = fakeApplicationEntity
+      context.application = new ApplicationEntity({
+        id,
+        applicantType,
+        organisationType,
+        lineItemsTotalAmount: lineItemsTotalAmount + 1
+      })
+      const applicationCost = await ApplicationCostModel
+        .getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
+      Code.expect(applicationCost.total.cost).to.equal(TOTAL_COST)
     })
     lab.test('correct cost text in order', async () => {
       const spy = sinon.spy(dynamicsDal, 'callAction')
