@@ -178,7 +178,7 @@ lab.experiment('Application Cost Model test:', () => {
       Code.expect(summedItemCost).to.equal(TOTAL_COST)
       Code.expect(spy.callCount).to.equal(2)
     })
-    lab.test.only('retrieves current cost value', async () => {
+    lab.test('retrieves current cost value', async () => {
       const { id, applicantType, organisationType, lineItemsTotalAmount } = fakeApplicationEntity
       context.application = new ApplicationEntity({
         id,
