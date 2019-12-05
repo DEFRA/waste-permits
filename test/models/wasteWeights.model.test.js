@@ -23,13 +23,27 @@ lab.experiment('WasteWeights test:', () => {
 
     // Stub methods
     listStub = sandbox.stub(ApplicationLine, 'listForWasteActivities')
-    listStub.resolves([{ id: 'a' }, { id: 'b', lineName: 'Line B' }, { id: 'c', lineName: 'Line C' }])
+    listStub.resolves([
+      {
+        id: 'a',
+        value: 1
+      },
+      {
+        id: 'b',
+        lineName: 'Line B',
+        value: 1
+      },
+      {
+        id: 'c',
+        lineName: 'Line C',
+        value: 1
+      }])
     getDataStoreStub = sandbox.stub(DataStore, 'get')
     getDataStoreStub.resolves(new DataStore({ data: { acceptsHazardousWaste: true } }))
-    saveAnswerSpy = sandbox.stub(ApplicationAnswer.prototype,'save')
+    saveAnswerSpy = sandbox.stub(ApplicationAnswer.prototype, 'save')
     saveAnswerSpy.resolves()
-    sandbox.stub(Item,'getById').resolves({ itemName: 'Dummy item name' })
-    sandbox.stub(Item,'listBy').resolves([{ itemName: 'Dummy item name' }])
+    sandbox.stub(Item, 'getById').resolves({ itemName: 'Dummy item name' })
+    sandbox.stub(Item, 'listBy').resolves([{ itemName: 'Dummy item name' }])
   })
 
   lab.afterEach(() => {
@@ -37,7 +51,7 @@ lab.experiment('WasteWeights test:', () => {
     sandbox.restore()
   })
 
-  lab.experiment('getForActivity', () => {
+  lab.experiment.only('getForActivity', () => {
     let listAnswerStub
     lab.beforeEach(() => {
       listAnswerStub = sandbox.stub(ApplicationAnswer, 'listForApplicationLine')

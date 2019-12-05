@@ -24,7 +24,13 @@ module.exports = class WasteWeightController extends BaseController {
     const pageHeading = `Enter the waste weights for ${wasteWeights.activityDisplayName}`
     const pageTitle = Constants.buildPageTitle(pageHeading)
 
-    const { hasHazardousWaste, nonHazardousThroughput, nonHazardousMaximum, hazardousThroughput, hazardousMaximum } = wasteWeights
+    const {
+      hasHazardousWaste,
+      nonHazardousThroughput,
+      nonHazardousMaximum,
+      hazardousThroughput,
+      hazardousMaximum
+    } = wasteWeights
 
     const pageContext = this.createPageContext(h, errors)
     Object.assign(pageContext, { pageHeading, pageTitle, hasHazardousWaste })

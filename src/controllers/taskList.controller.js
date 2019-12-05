@@ -47,6 +47,7 @@ module.exports = class TaskListController extends BaseController {
         const { wasteAssessments } = context.taskDeterminants
         pageContext.isWaste = true
         pageContext.activitiesNumberText = wasteActivities.textForNumberOfWasteActivities
+        console.log(wasteAssessments)
         if (wasteActivities.wasteActivitiesLength) {
           pageContext.activities = wasteActivities.wasteActivitiesValues
         }
