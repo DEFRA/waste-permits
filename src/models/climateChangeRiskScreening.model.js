@@ -42,7 +42,7 @@ module.exports = class ClimateChangeRiskScreening {
     const { permitLength, floodRisk, waterSource } = climateChangeRiskScreening
 
     // Upload is never required if permit length is less than 5
-    if (permitLength === 'less-than-5') { return false }
+    if (await this.isPermitLengthLessThan5(climateChangeRiskScreening)) { return false }
 
     if (permitLength && floodRiskScores && waterSource) {
       const score = permitLengthScores[permitLength] +
@@ -53,6 +53,11 @@ module.exports = class ClimateChangeRiskScreening {
     }
 
     return undefined
+  }
+
+  static async isPermitLengthLessThan5 (climateChangeRiskScreening) {
+    const { permitLength } = climateChangeRiskScreening
+    return permitLength === 'less-than-5'
   }
 
   async save (context) {
