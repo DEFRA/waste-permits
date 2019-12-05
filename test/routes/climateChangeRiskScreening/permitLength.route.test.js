@@ -48,7 +48,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment.only('Climate change - permit length tests:', () => {
+lab.experiment('Climate change - permit length tests:', () => {
   new GeneralTestHelper({ lab, routePath }).test()
 
   lab.experiment(`GET ${routePath}`, () => {
