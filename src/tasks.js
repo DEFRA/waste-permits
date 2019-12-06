@@ -46,7 +46,7 @@ const tasks = {
   },
   CLINICAL_WASTE_APPENDIX: {
     id: 'clinical-waste-appendix',
-    label: 'Complete and upload the clinical waste template and supporting documents',
+    label: 'Tell us how you will manage clinical waste',
     route: Routes.CLINICAL_WASTE_DOCUMENTS_STORE_TREAT_WASTE_TYPE,
     completedLabelId: 'clinical-waste-appendix-completed',
     shortName: 'clinical',
@@ -63,7 +63,7 @@ const tasks = {
   },
   CONFIRM_RULES: {
     id: 'confirm-that-your-operation-meets-the-rules',
-    label: 'Confirm you can meet the rules',
+    label: 'Confirm you meet the rules',
     route: Routes.CONFIRM_RULES,
     completedLabelId: 'operation-rules-completed',
     ruleSetId: 'defra_confirmreadrules',
@@ -182,7 +182,7 @@ const tasks = {
   },
   MCP_TEMPLATE: {
     id: 'mcp-template',
-    label: 'Download and complete the plant or generator list template',
+    label: 'Complete the plant or generator list template',
     route: Routes.MCP_TEMPLATE,
     completedLabelId: 'mcp-template-completed',
     ruleSetId: 'defra_mcp_sr_downloadtemplate',
@@ -191,7 +191,7 @@ const tasks = {
   },
   MINING_DATA: {
     id: 'confirm-mining-data',
-    label: 'Confirm mining waste plan and weight of waste',
+    label: 'Confirm mining waste plan and waste weight',
     route: Routes.CONFIRM_MINING_WASTE_PLAN,
     completedLabelId: 'mining-data-completed',
     ruleSetId: 'defra_miningdatarequired',
@@ -252,7 +252,7 @@ const tasks = {
   },
   PEST_MANAGEMENT_PLAN: {
     id: 'upload-pest-management-plan',
-    label: 'Complete and upload a pest management plan',
+    label: 'Upload a pest management plan',
     route: Routes.PEST_MANAGEMENT_PLAN,
     completedLabelId: 'pest-management-completed',
     shortName: 'pestmanagement',
@@ -348,7 +348,7 @@ const tasks = {
   },
   SURFACE_DRAINAGE: {
     id: 'confirm-the-drainage-system-for-the-vehicle-storage-area',
-    label: 'Confirm you have a suitable vehicle storage area',
+    label: 'Confirm vehicle storage area drainage',
     route: Routes.DRAINAGE_TYPE_DRAIN,
     completedLabelId: 'confirm-drainage-completed',
     ruleSetId: 'defra_surfacedrainagereq',
@@ -356,7 +356,7 @@ const tasks = {
   },
   TECHNICAL_QUALIFICATION: {
     id: 'upload-technical-management-qualifications',
-    label: 'Prove technical competence',
+    label: 'Give us evidence of your technical competence',
     route: Routes.TECHNICAL_QUALIFICATION,
     completedLabelId: 'upload-completed',
     ruleSetId: 'defra_techcompetenceevreq',
@@ -390,7 +390,7 @@ const tasks = {
   },
   WASTE_WEIGHTS: {
     id: 'waste-weights',
-    label: 'Provide your waste storage capacity and annual throughput',
+    label: 'Provide the waste storage and throughput capacity for your activities',
     route: Routes.WASTE_WEIGHTS,
     completedLabelId: 'waste-weights-completed',
     shortName: 'wasteweights',

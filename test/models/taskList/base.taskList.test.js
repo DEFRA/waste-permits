@@ -34,7 +34,7 @@ class TestTaskList extends TaskList {
           taskListModel: 'costTime'
         }, {
           id: 'confirm-that-your-operation-meets-the-rules',
-          label: 'Confirm you can meet the rules',
+          label: 'Confirm you meet the rules',
           completedLabelId: 'operation-rules-completed',
           ruleSetId: 'defra_confirmreadrules',
           route: '/route',
