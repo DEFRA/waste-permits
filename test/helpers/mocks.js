@@ -32,6 +32,8 @@ const OperatingUnder500Hours = require('../../src/models/operatingUnder500Hours.
 
 const StoreTreat = require('../../src/models/storeTreat.model')
 
+const ClimateChangeRiskScreening = require('../../src/models/climateChangeRiskScreening.model')
+
 // ************* Data used by exported mocks ************* //
 class MockData {
   get account () {
@@ -511,6 +513,10 @@ class Mocks {
 
   get storeTreat () {
     return this._storeTreat || (this._storeTreat = new StoreTreat())
+  }
+
+  get climateChangeRiskScreening () {
+    return this._climateChangeRiskScreening || (this._climateChangeRiskScreening = new ClimateChangeRiskScreening())
   }
 
   get payment () {

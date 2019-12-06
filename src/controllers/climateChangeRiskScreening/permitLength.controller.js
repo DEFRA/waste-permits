@@ -6,9 +6,31 @@ const ClimateChangeRiskScreeningModel = require('../../models/climateChangeRiskS
 const ClimateChangeRiskScreening = require('../../models/taskList/climateChangeRiskScreening.task')
 const { TASK_LIST } = require('../../routes')
 
+const {
+  CLIMATE_CHANGE_RISK_SCREENING_UPLOAD,
+  CLIMATE_CHANGE_RISK_SCREENING_NO_UPLOAD
+} = require('../../routes')
+
 module.exports = class PermitLengthController extends BaseController {
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
+    const context = await RecoveryService.createApplicationContext(h)
+
+    const climateChangeRiskScreening = await ClimateChangeRiskScreeningModel.get(context)
+    const isUploadRequired = await ClimateChangeRiskScreeningModel.isUploadRequired(climateChangeRiskScreening)
+    const isPermitLengthLessThan5 = await ClimateChangeRiskScreeningModel.isPermitLengthLessThan5(climateChangeRiskScreening)
+
+    // Redirect to upload screen if applicant has previously answered questions leading to upload being needed
+    if (isUploadRequired) {
+      return this.redirect({ h, route: CLIMATE_CHANGE_RISK_SCREENING_UPLOAD })
+    }
+
+    // Redirect to no-upload screen if applicant has previously answered questions leading to upload not being needed
+    // isUploadRequired === false in this case. If questions haven't been answered yet, isUploadRequired === undefined
+    // Howeve if they've answered the permit length is less than 5 years then we just want to display the screen as normal
+    if (!isPermitLengthLessThan5 && isUploadRequired === false) {
+      return this.redirect({ h, route: CLIMATE_CHANGE_RISK_SCREENING_NO_UPLOAD })
+    }
 
     if (request.payload) {
       pageContext.formValues = request.payload
