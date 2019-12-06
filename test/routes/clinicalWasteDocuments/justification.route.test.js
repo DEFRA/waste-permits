@@ -44,7 +44,7 @@ lab.experiment('Justification upload tests:', () => {
   lab.experiment(`GET ${routePath}`, () => {
     const options = {
       descriptionId: 'store-treat-description',
-      pageHeading: 'Will you store or treat a waste type not included in Section 2.1?',
+      pageHeading: 'Upload your justification to store or treat a waste type not permitted in EPR 5.07',
       submitButton: 'Continue',
       fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
     }

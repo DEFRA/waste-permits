@@ -62,7 +62,7 @@ lab.experiment('Clinical waste documents - store or treat waste types:', () => {
 
     lab.test('Check the basics', async () => {
       const doc = await GeneralTestHelper.getDoc(getRequest)
-      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Will you store or treat a waste type not included in Section 2.1?')
+      Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Will you store or treat a waste type not permitted in EPR 5.07?')
       Code.expect(doc.getElementById('back-link')).to.exist()
       Code.expect(doc.getElementById('store-treat-description')).to.exist()
       Code.expect(doc.getElementById('store-treat-legend')).to.exist()
