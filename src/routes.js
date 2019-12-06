@@ -812,7 +812,7 @@ const Routes = {
   CLINICAL_WASTE_DOCUMENTS_STORE_TREAT_WASTE_TYPE: {
     path: '/clinical-waste-documents/store-treat-waste-type',
     view: 'clinicalWasteDocuments/storeTreat',
-    pageHeading: 'Will you store or treat a waste type not included in Section 2.1?',
+    pageHeading: 'Will you store or treat a waste type not permitted in EPR 5.07?',
     controller: 'clinicalWasteDocuments/storeTreat',
     validator: 'clinicalWasteDocuments/storeTreat',
     types: 'GET, POST'
@@ -820,7 +820,7 @@ const Routes = {
   CLINICAL_WASTE_DOCUMENTS_JUSTIFICATION_UPLOAD: {
     path: '/clinical-waste-documents/justification/upload',
     view: 'upload/clinicalWasteDocuments/justification',
-    pageHeading: 'Will you store or treat a waste type not included in Section 2.1?',
+    pageHeading: 'Upload your justification to store or treat a waste type not permitted in EPR 5.07',
     controller: 'upload',
     validator: 'upload',
     nextRoute: 'CLINICAL_WASTE_DOCUMENTS_SUMMARY_UPLOAD',
