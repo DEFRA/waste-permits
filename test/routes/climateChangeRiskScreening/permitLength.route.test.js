@@ -38,9 +38,12 @@ lab.beforeEach(() => {
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
+  sandbox.stub(BaseController.prototype, 'createPageContext').returns({})
   sandbox.stub(ClimateChangeRiskScreeningModel, 'get').value(() => mocks.climateChangeRiskScreening)
   sandbox.stub(ClimateChangeRiskScreening, 'updateCompleteness').value(() => {})
+  sandbox.stub(ClimateChangeRiskScreeningModel.prototype, 'save').callsFake(async () => undefined)
 })
 
 lab.afterEach(() => {
@@ -65,23 +68,29 @@ lab.experiment('Climate change - permit length tests:', () => {
     lab.test('Redirects to upload page when options leading to upload previously selected', async () => {
       sandbox.stub(ClimateChangeRiskScreeningModel, 'isUploadRequired').resolves(true)
       sandbox.stub(ClimateChangeRiskScreeningModel, 'isPermitLengthLessThan5').resolves(false)
+
       const res = await server.inject(getRequest)
+
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(CLIMATE_CHANGE_RISK_SCREENING_UPLOAD.path)
+      Code.expect(res.headers.location).to.equal(CLIMATE_CHANGE_RISK_SCREENING_UPLOAD.path)
     })
 
     lab.test('Redirects to no upload page when options leading to no upload previously selected', async () => {
       sandbox.stub(ClimateChangeRiskScreeningModel, 'isUploadRequired').resolves(false)
       sandbox.stub(ClimateChangeRiskScreeningModel, 'isPermitLengthLessThan5').resolves(false)
+
       const res = await server.inject(getRequest)
+
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(CLIMATE_CHANGE_RISK_SCREENING_NO_UPLOAD.path)
+      Code.expect(res.headers.location).to.equal(CLIMATE_CHANGE_RISK_SCREENING_NO_UPLOAD.path)
     })
 
     lab.test('Displays page when "less than 5 years" option previously selected', async () => {
       sandbox.stub(ClimateChangeRiskScreeningModel, 'isUploadRequired').resolves(undefined)
       sandbox.stub(ClimateChangeRiskScreeningModel, 'isPermitLengthLessThan5').resolves(true)
+
       const res = await server.inject(getRequest)
+
       Code.expect(res.statusCode).to.equal(200)
     })
   })
@@ -99,17 +108,21 @@ lab.experiment('Climate change - permit length tests:', () => {
     })
 
     lab.test(`When 'Less than 5 years' selected - redirects to ${TASK_LIST.path}`, async () => {
-      postRequest.payload['permit-length'] = 'less-than-5'
+      postRequest.payload = { 'permit-length': 'less-than-5' }
+
       const res = await server.inject(postRequest)
+
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(TASK_LIST.path)
+      Code.expect(res.headers.location).to.equal(TASK_LIST.path)
     })
 
     lab.test(`When any other option selected - redirects to ${nextRoutePath}`, async () => {
-      postRequest.payload['permit-length'] = 'between-2020-and-2040'
+      postRequest.payload = { 'permit-length': 'between-2020-and-2040' }
+
       const res = await server.inject(postRequest)
+
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
   })
 })
