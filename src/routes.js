@@ -891,7 +891,7 @@ const Routes = {
     path: '/mining-waste/plan',
     view: 'confirmMiningWastePlan',
     pageHeading: 'Which mining waste plan will you use?',
-    taskListHeading: 'Confirm mining waste plan and weight of waste',
+    taskListHeading: 'Confirm mining waste plan and waste weight',
     controller: 'confirmMiningWastePlan',
     validator: 'confirmMiningWastePlan',
     nextRoute: 'MINING_WASTE_WEIGHT',
@@ -1345,7 +1345,7 @@ const Routes = {
   PEST_MANAGEMENT_PLAN: {
     path: '/pest-management-plan/upload',
     view: 'upload/pestManagementPlan/pestManagementPlan',
-    pageHeading: 'Complete and upload a pest management plan',
+    pageHeading: 'Upload a pest management plan',
     controller: 'upload',
     validator: 'upload',
     nextRoute: 'TASK_LIST',
