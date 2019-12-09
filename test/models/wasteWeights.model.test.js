@@ -51,7 +51,7 @@ lab.experiment('WasteWeights test:', () => {
     sandbox.restore()
   })
 
-  lab.experiment.only('getForActivity', () => {
+  lab.experiment('getForActivity', () => {
     let listAnswerStub
     lab.beforeEach(() => {
       listAnswerStub = sandbox.stub(ApplicationAnswer, 'listForApplicationLine')
