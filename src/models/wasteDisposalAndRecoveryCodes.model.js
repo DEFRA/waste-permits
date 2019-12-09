@@ -52,6 +52,17 @@ const codesHaveBeenSelected = (codes) => {
   ))
 }
 
+async function listForWasteActivitiesMinusDiscountLines (context) {
+  let wasteActivityApplicationLines = []
+  // fetch all applikcation lines, including discounts
+  const allWasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
+  if (Array.isArray(allWasteActivityApplicationLines) && allWasteActivityApplicationLines.length > 0) {
+    // filter out the discounts, prevents them being included in task list
+    wasteActivityApplicationLines = allWasteActivityApplicationLines.filter(({ value }) => value > -1)
+  }
+  return wasteActivityApplicationLines
+}
+
 module.exports = class WasteDisposalAndRecoveryCodes {
   constructor ({ forActivityIndex = 0, activityDisplayName = '', hasNext = false, selectedWasteDisposalCodes = [], selectedWasteRecoveryCodes = [] } = {}) {
     Object.assign(this, {
@@ -64,7 +75,7 @@ module.exports = class WasteDisposalAndRecoveryCodes {
   }
 
   static async getForActivity (context, activityIndex) {
-    const wasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
+    const wasteActivityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
     const wasteActivityApplicationLine = wasteActivityApplicationLines[activityIndex]
     if (wasteActivityApplicationLine) {
       const hasNext = Boolean(wasteActivityApplicationLines[activityIndex + 1])
@@ -80,7 +91,7 @@ module.exports = class WasteDisposalAndRecoveryCodes {
   }
 
   static async getAllForApplication (context) {
-    const wasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
+    const wasteActivityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
     if (!wasteActivityApplicationLines) {
       return []
     }
@@ -116,7 +127,7 @@ module.exports = class WasteDisposalAndRecoveryCodes {
   }
 
   async save (context) {
-    const wasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
+    const wasteActivityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
     const wasteActivityApplicationLine = wasteActivityApplicationLines[this.forActivityIndex]
     if (wasteActivityApplicationLine) {
       const dataStore = await DataStore.get(context)
@@ -151,7 +162,7 @@ module.exports = class WasteDisposalAndRecoveryCodes {
 
   static async getAllCodesHaveBeenSelectedForApplication (context) {
     const dataStore = await DataStore.get(context)
-    const wasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
+    const wasteActivityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
     const { applicationWasteDisposalAndRecoveryCodes = {} } = dataStore.data
 
     return wasteActivityApplicationLines.every(({ id }) => codesHaveBeenSelected(applicationWasteDisposalAndRecoveryCodes[id]))

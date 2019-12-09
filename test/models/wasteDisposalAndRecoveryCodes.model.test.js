@@ -24,15 +24,19 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
 
     // Stub methods
     listStub = sandbox.stub(ApplicationLine, 'listForWasteActivities')
-    listStub.resolves([{ id: 'a' }, { id: 'b', lineName: 'Line B' }, { id: 'c', lineName: 'Line C' }])
+    listStub.resolves([
+      { id: 'a', value: 100 },
+      { id: 'b', lineName: 'Line B', value: 100 },
+      { id: 'c', lineName: 'Line C', value: 100 }
+    ])
     getStub = sandbox.stub(DataStore, 'get')
     getStub.resolves(new DataStore({ data: {} }))
     saveSpy = sandbox.stub(DataStore.prototype, 'save')
     saveSpy.resolves()
-    saveAnswerSpy = sandbox.stub(ApplicationAnswer.prototype,'save')
+    saveAnswerSpy = sandbox.stub(ApplicationAnswer.prototype, 'save')
     saveAnswerSpy.resolves()
-    sandbox.stub(Item,'getById').resolves({ itemName: 'Dummy item name' })
-    sandbox.stub(Item,'listBy').resolves([{ itemName: 'Dummy item name' }])
+    sandbox.stub(Item, 'getById').resolves({ itemName: 'Dummy item name' })
+    sandbox.stub(Item, 'listBy').resolves([{ itemName: 'Dummy item name' }])
   })
 
   lab.afterEach(() => {
@@ -51,7 +55,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
       const applicationWasteDisposalAndRecoveryCodes = {
         'b': {
           selectedWasteDisposalCodes: ['d01', 'd02'],
-          selectedWasteRecoveryCodes: ['r01', 'r02'],
+          selectedWasteRecoveryCodes: ['r01', 'r02']
         }
       }
       getStub.resolves(new DataStore({ data: { applicationWasteDisposalAndRecoveryCodes } }))
@@ -79,7 +83,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
       const applicationWasteDisposalAndRecoveryCodes = {
         'b': {
           selectedWasteDisposalCodes: ['d01', 'd02'],
-          selectedWasteRecoveryCodes: ['r01', 'r02'],
+          selectedWasteRecoveryCodes: ['r01', 'r02']
         }
       }
       getStub.resolves(new DataStore({ data: { applicationWasteDisposalAndRecoveryCodes } }))
@@ -129,7 +133,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
     const applicationWasteDisposalAndRecoveryCodes = {
       'b': {
         selectedWasteDisposalCodes: ['d01', 'd02'],
-        selectedWasteRecoveryCodes: ['r01', 'r02'],
+        selectedWasteRecoveryCodes: ['r01', 'r02']
       }
     }
     getStub.resolves(new DataStore({ data: { applicationWasteDisposalAndRecoveryCodes } }))
