@@ -15,6 +15,14 @@ const APPLICATION_ANSWERS = {
   [HAZ_MAXIMUM_APPLICATION_ANSWER]: 'hazardousMaximum'
 }
 
+async function listForWasteActivitiesMinusDiscountLines (context) {
+  // fetch all applikcation lines, including discounts
+  const allWasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
+  // filter out the discounts, prevents them being included in task list
+  const wasteActivityApplicationLines = allWasteActivityApplicationLines.filter(({ value }) => value > -1)
+  return wasteActivityApplicationLines
+}
+
 module.exports = class WasteWeights {
   constructor ({
     forActivityIndex = 0,
@@ -39,10 +47,7 @@ module.exports = class WasteWeights {
   }
 
   static async getForActivity (context, activityIndex) {
-    // fetch all applikcation lines, including discounts
-    const allWasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
-    // filter out the discounts, prevents them being included in task list
-    const wasteActivityApplicationLines = allWasteActivityApplicationLines.filter(({ value }) => value > -1)
+    const wasteActivityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
     const wasteActivityApplicationLine = wasteActivityApplicationLines[activityIndex]
 
     if (wasteActivityApplicationLine) {
@@ -99,10 +104,7 @@ module.exports = class WasteWeights {
   }
 
   async save (context) {
-    // fetch all applikcation lines, including discounts
-    const allWasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
-    // filter out the discounts, prevents them being included in task list
-    const wasteActivityApplicationLines = allWasteActivityApplicationLines.filter(({ value }) => value > -1)
+    const wasteActivityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
     const wasteActivityApplicationLine = wasteActivityApplicationLines[this.forActivityIndex]
     if (wasteActivityApplicationLine) {
       const applicationLineId = wasteActivityApplicationLine.id
@@ -122,14 +124,18 @@ module.exports = class WasteWeights {
   }
 
   static async getAllWeightsHaveBeenEnteredForApplication (context) {
-    const wasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
+    const wasteActivityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
     const { data: { acceptsHazardousWaste } } = await DataStore.get(context)
-    const requiredEntries = [NON_HAZ_THROUGHPUT_APPLICATION_ANSWER, NON_HAZ_MAXIMUM_APPLICATION_ANSWER]
+    const requiredEntries = [
+      NON_HAZ_THROUGHPUT_APPLICATION_ANSWER,
+      NON_HAZ_MAXIMUM_APPLICATION_ANSWER
+    ]
     if (acceptsHazardousWaste) {
       requiredEntries.push(HAZ_THROUGHPUT_APPLICATION_ANSWER, HAZ_MAXIMUM_APPLICATION_ANSWER)
     }
 
-    const wasteWeightAnswers = await ApplicationAnswer.listByMultipleQuestionCodes(context, Object.keys(APPLICATION_ANSWERS))
+    const wasteWeightAnswers = await ApplicationAnswer
+      .listByMultipleQuestionCodes(context, Object.keys(APPLICATION_ANSWERS))
 
     return wasteActivityApplicationLines
       .every(({ id }) => requiredEntries
