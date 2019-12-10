@@ -31,7 +31,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment.only('TechnicalStandards Check tests:', () => {
+lab.experiment('TechnicalStandards Check tests:', () => {
   lab.experiment('buildlines', () => {
     let check
     let lines
