@@ -45,8 +45,8 @@ module.exports = class CheckList {
     // Please note order is display order.
     this._checks = [
       DrainageCheck,
-      PermitHolderCheck,
       ContactCheck,
+      PermitHolderCheck,
       PermitCheck,
       ConfidentialityCheck,
       InvoiceCheck,
