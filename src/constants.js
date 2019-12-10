@@ -39,7 +39,21 @@ Constants.FILE_TYPES = {
   RUF: { extension: 'ruf' },
   SFC: { extension: 'sfc' },
   TER: { extension: 'ter' },
-  VAR: { extension: 'var' }
+  VAR: { extension: 'var' },
+  ABS: { extension: 'abs' },
+  BIN: { extension: 'bin' },
+  CNA: { extension: 'cna' },
+  DAT: { extension: 'dat' },
+  DBF: { extension: 'dbf' },
+  DGM: { extension: 'dgm' },
+  FIL: { extension: 'fil' },
+  FMS: { extension: 'fms' },
+  FMT: { extension: 'fmt' },
+  GEO: { extension: 'geo' },
+  GOT: { extension: 'got' },
+  GRF: { extension: 'grf' },
+  SHP: { extension: 'shp' },
+  SHX: { extension: 'shx' }
 }
 
 // Add the type property to the file types

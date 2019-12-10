@@ -49,7 +49,7 @@ lab.experiment('Noise and vibration emissions documents upload tests:', () => {
     const options = {
       pageHeading: 'Upload noise and vibration emissions documents',
       submitButton: 'Continue',
-      fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT']
+      fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT', 'ABS', 'BIN', 'CNA', 'DAT', 'DBF', 'DGM', 'FIL', 'FMS', 'FMT', 'GEO', 'GOT', 'GRF', 'SHP', 'SHX']
     }
 
     // Perform general get tests
@@ -65,7 +65,7 @@ lab.experiment('Noise and vibration emissions documents upload tests:', () => {
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
     helper.uploadSuccess('application/msword', 'test.docx')
-    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT'] }, 'application/msword', 'test.docx')
+    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT', 'ABS', 'BIN', 'CNA', 'DAT', 'DBF', 'DGM', 'FIL', 'FMS', 'FMT', 'GEO', 'GOT', 'GRF', 'SHP', 'SHX'] }, 'application/msword', 'test.docx')
     helper.uploadFailure('application/msword', 'test.docx')
   })
 

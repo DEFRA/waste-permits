@@ -1,5 +1,5 @@
 const { AccountRoleCodes } = require('./dynamics')
-const { CSV, DOC, DOCX, JPG, ODS, ODT, PDF, XLS, XLSX, AAI, ADI, AMI, APL, BPI, DEM, DIN, EMI, FAC, HRL, MET, PFL, ROU, RUF, SFC, TER, VAR } = require('./constants').FILE_TYPES
+const { AAI, ABS, ADI, AMI, APL, BIN, BPI, CNA, CSV, DAT, DBF, DEM, DGM, DIN, DOC, DOCX, EMI, FAC, FIL, FMS, FMT, GEO, GOT, GRF, HRL, JPG, MET, ODS, ODT, PDF, PFL, ROU, RUF, SFC, SHP, SHX, TER, VAR, XLS, XLSX } = require('./constants').FILE_TYPES
 
 const Routes = {
   ROOT: {
@@ -1311,7 +1311,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'NOISE_VIBRATION_DOCUMENTS',
     validatorOptions: {
-      fileTypes: [PDF, DOC, DOCX, ODT]
+      fileTypes: [PDF, DOC, DOCX, ODT, ABS, BIN, CNA, DAT, DBF, DGM, FIL, FMS, FMT, GEO, GOT, GRF, SHP, SHX]
     }
   },
   NON_TECHNICAL_SUMMARY: {
