@@ -33,44 +33,54 @@ const WasteDisposalAndRecoveryCodes = require('../../models/checkList/wasteDispo
 const ClinicalWasteAppendix = require('../../models/checkList/clinicalWasteAppendix.check')
 const WasteWeights = require('../../models/checkList/wasteWeights.check')
 const ClimateChangeRiskScreeningCheck = require('../../models/checkList/climateChangeRiskScreening.check')
+const PestManagementPlanCheck = require('./pestManagementPlan.check')
+const OdourManagementPlanCheck = require('./odourManagementPlan.check')
+const EmissionsManagementPlanCheck = require('./emissionsManagementPlan.check')
+const SiteConditionReportCheck = require('./siteConditionReport.check')
+const TechnicalStandardsCheck = require('./technicalStandards.check')
 
 module.exports = class CheckList {
   constructor () {
     // List of Checks.
     // Please note order is display order.
     this._checks = [
-      PermitCheck,
-      McpBespokeTypeCheck,
       DrainageCheck,
-      ContactCheck,
       PermitHolderCheck,
+      ContactCheck,
+      PermitCheck,
+      ConfidentialityCheck,
+      InvoiceCheck,
       NeedToConsult,
-      NonTechnicalSummaryCheck,
       SiteCheck,
       SitePlanCheck,
+      AirQualityManagementAreaCheck,
+      SiteConditionReportCheck,
+      NonTechnicalSummaryCheck,
+      McpBespokeTypeCheck,
       McpDetailsCheck,
       McpBusinessActivityCheck,
-      WasteDisposalAndRecoveryCodes,
+      MiningWasteCheck,
       WasteWeights,
       WasteTypesListCheck,
-      TechnicalCompetenceCheck,
-      AirQualityManagementAreaCheck,
+      WasteDisposalAndRecoveryCodes,
       AirDispersionModellingReportCheck,
       ScreeningToolCheck,
       EnergyEfficiencyReportCheck,
       BestAvailableTechniquesAssessmentCheck,
+      TechnicalCompetenceCheck,
+      ManagementSystemCheck,
       FirePreventionPlanCheck,
       WasteRecoveryPlanCheck,
       EnvironmentalRiskAssessmentCheck,
       ClimateChangeRiskScreeningCheck,
       EmissionsAndMonitoringCheck,
+      TechnicalStandardsCheck,
       ClinicalWasteAppendix,
-      NoiseVibrationDocumentsCheck,
-      ManagementSystemCheck,
       ManageHazardousWaste,
-      MiningWasteCheck,
-      ConfidentialityCheck,
-      InvoiceCheck
+      EmissionsManagementPlanCheck,
+      NoiseVibrationDocumentsCheck,
+      OdourManagementPlanCheck,
+      PestManagementPlanCheck
     ]
   }
 
