@@ -19,8 +19,6 @@ const ClimateChangeRiskScreeningModel = require('../../../src/models/climateChan
 const {
   CLIMATE_CHANGE_RISK_SCREENING_PERMIT_LENGTH,
   CLIMATE_CHANGE_RISK_SCREENING_FLOOD_RISK,
-  CLIMATE_CHANGE_RISK_SCREENING_UPLOAD,
-  CLIMATE_CHANGE_RISK_SCREENING_NO_UPLOAD,
   TASK_LIST } = require('../../../src/routes')
 
 const routePath = CLIMATE_CHANGE_RISK_SCREENING_PERMIT_LENGTH.path
@@ -28,6 +26,19 @@ const nextRoutePath = CLIMATE_CHANGE_RISK_SCREENING_FLOOD_RISK.path
 
 let sandbox
 let mocks
+
+const checkCommonElements = async (doc) => {
+  Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Continue')
+
+  // Test for the existence of expected static content
+  GeneralTestHelper.checkElementsExist(doc, [
+    'permit-length-summary',
+    'permit-length-visually-hidden',
+    'less-than-5',
+    'between-2020-and-2040',
+    'until-2060-or-beyond'
+  ])
+}
 
 lab.beforeEach(() => {
   mocks = new Mocks()
@@ -63,6 +74,11 @@ lab.experiment('Climate change - permit length tests:', () => {
         url: routePath,
         headers: {}
       }
+    })
+
+    lab.test('Page successfully loads', async () => {
+      const doc = await GeneralTestHelper.getDoc(getRequest)
+      await checkCommonElements(doc)
     })
   })
 
