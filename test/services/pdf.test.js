@@ -6,6 +6,8 @@ const Code = require('@hapi/code')
 
 const pdf = require('../../src/services/pdf')
 
+const { MCP_STANDARD_RULES, MCP_BESPOKE } = require('../../src/dynamics').BUSINESS_TRACKS
+
 const testSections = [
   {
     headingId: 'section-permit-heading',
@@ -21,7 +23,10 @@ const testSections = [
   }
 ]
 
-const testApplication = { applicationNumber: '123' }
+const testApplication = {
+  applicationNumber: '123',
+  businessTrack: MCP_STANDARD_RULES.dynamicsGuid
+}
 
 lab.experiment('pdf module tests:', () => {
   lab.test('module presents an simple interface', () => {
@@ -50,5 +55,19 @@ lab.experiment('pdf module tests:', () => {
       error = err
     }
     Code.expect(error.message).to.equal('PDF render failed')
+  })
+
+  lab.test('contains standard rules text when application is standard rules', () => {
+    const result = pdf.createPdfDocDefinition(testSections, testApplication)
+
+    Code.expect(JSON.stringify(result)).to.contain('their operation meets the standard rules')
+  })
+
+  lab.test('does not contain standard rules text when application is bespoke', () => {
+    testApplication.businessTrack = MCP_BESPOKE.dynamicsGuid
+
+    const result = pdf.createPdfDocDefinition(testSections, testApplication)
+
+    Code.expect(JSON.stringify(result)).to.not.contain('their operation meets the standard rules')
   })
 })
