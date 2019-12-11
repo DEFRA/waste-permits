@@ -36,4 +36,8 @@ module.exports = class BespokeTaskList extends BaseTaskList {
 
     return task.required || (task.route && taskNames.includes(task.shortName))
   }
+
+  static get isBespoke () {
+    return true
+  }
 }

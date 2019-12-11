@@ -38,6 +38,7 @@ const OdourManagementPlanCheck = require('./odourManagementPlan.check')
 const EmissionsManagementPlanCheck = require('./emissionsManagementPlan.check')
 const SiteConditionReportCheck = require('./siteConditionReport.check')
 const TechnicalStandardsCheck = require('./technicalStandards.check')
+const BespokePermitCheck = require('./bespokePermit.check')
 
 module.exports = class CheckList {
   constructor () {
@@ -57,6 +58,7 @@ module.exports = class CheckList {
       SiteConditionReportCheck,
       NonTechnicalSummaryCheck,
       McpBespokeTypeCheck,
+      BespokePermitCheck,
       McpDetailsCheck,
       McpBusinessActivityCheck,
       MiningWasteCheck,
@@ -96,6 +98,7 @@ module.exports = class CheckList {
     const availableFlags = await Promise.all(this.Checks.map((Check) => {
       return (TaskList.isStandardRules && Check.name === 'PermitCheck') ||
       (TaskList.isMcpBespoke && Check.name === 'McpBespokeTypeCheck') ||
+      (TaskList.isBespoke && Check.name === 'BespokePermitCheck') ||
       taskList.isAvailable(Check.task)
     }))
     const availableChecks = this.Checks.filter((Check, index) => availableFlags[index])
