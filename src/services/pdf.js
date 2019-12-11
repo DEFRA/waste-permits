@@ -4,11 +4,9 @@ const PdfMake = require('pdfmake')
 const moment = require('moment')
 const { BUSINESS_TRACKS } = require('../dynamics')
 
-function checkIfStandardRules (application) {
-  const { businessTrack } = application
-  const { id } = Object.values(BUSINESS_TRACKS).find(({ dynamicsGuid }) => dynamicsGuid === businessTrack)
-  return id.includes('standard rules')
-}
+const getBusinessTrackId = application => Object.values(BUSINESS_TRACKS).find(({ dynamicsGuid }) => dynamicsGuid === application.businessTrack).id
+
+const checkIfStandardRules = application => getBusinessTrackId(application).includes('standard rules')
 
 const createPdfDocDefinition = (sections, application) => {
   const permitHeading = sections.find(({ headingId }) => headingId === 'section-permit-heading')
@@ -16,7 +14,8 @@ const createPdfDocDefinition = (sections, application) => {
   const title = 'Application for ' + permitHeading.answers.map(a => a.answer).join(' ')
   const timestamp = moment()
 
-  const declarationList = [ 'a written management system will be in place before they start operating',
+  const declarationList = [
+    'a written management system will be in place before they start operating',
     'they were authorised to apply for the permit by the organisation or individual responsible',
     'the information they gave was true'
   ]
