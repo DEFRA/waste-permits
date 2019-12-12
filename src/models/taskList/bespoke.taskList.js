@@ -1,6 +1,7 @@
 const { bespoke,
   tasks: {
     WASTE_WEIGHTS: { shortName: wasteWeightsShortName },
+    WASTE_TREATMENT_CAPACITY: { shortName: wasteTreatmentCapacityShortName },
     CLIMATE_CHANGE_RISK_SCREENING: { shortName: climateChangeRiskScreeningShortName },
     CLINICAL_WASTE_APPENDIX: { shortName: clinicalWasteShortName },
     MANAGE_HAZARDOUS_WASTE: { shortName: hazardousWasteShortName }
@@ -33,6 +34,7 @@ module.exports = class BespokeTaskList extends BaseTaskList {
 
     taskNames.push(climateChangeRiskScreeningShortName)
     taskNames.push(wasteWeightsShortName)
+    taskNames.push(wasteTreatmentCapacityShortName)
 
     return task.required || (task.route && taskNames.includes(task.shortName))
   }

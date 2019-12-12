@@ -1732,6 +1732,16 @@ const Routes = {
       fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
+  WASTE_TREATMENT_CAPACITY: {
+    path: '/wast-treatment-capacity',
+    params: ['activityIndex'],
+    view: 'wasteTreatmentCapacity',
+    pageHeading: 'Provide your waste treatment capacity',
+    controller: 'wasteTreatmentCapacity',
+    validator: 'wasteTreatmentCapacity',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   WASTE_TYPES_LIST: {
     path: '/waste-codes',
     view: 'upload/wasteTypesList/wasteTypesList',

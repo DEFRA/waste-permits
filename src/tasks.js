@@ -380,6 +380,14 @@ const tasks = {
     shortName: 'wrp',
     taskListModel: 'wasteRecoveryPlan'
   },
+  WASTE_TREATMENT_CAPACITY: {
+    id: 'waste-treatment-capacity',
+    label: 'Provide your waste treatment capacity',
+    route: Routes.WASTE_TREATMENT_CAPACITY,
+    completedLabelId: 'waste-treatment-capacity-completed',
+    shortName: 'wastetreatmentcapacity',
+    taskListModel: 'wasteTreatmentCapacity'
+  },
   WASTE_TYPES_LIST: {
     id: 'upload-waste-types-list',
     label: 'List the types of waste you want to accept',
@@ -476,6 +484,7 @@ const bespoke = [
     label: 'Activities',
     tasks: [
       tasks.WASTE_WEIGHTS,
+      tasks.WASTE_TREATMENT_CAPACITY,
       tasks.WASTE_TYPES_LIST,
       tasks.RECOVERY_AND_DISPOSAL_CODES
     ]
