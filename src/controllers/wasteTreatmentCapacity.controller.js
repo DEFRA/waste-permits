@@ -21,32 +21,20 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
     const wasteTreatmentCapacitys = await getModelForProvidedActivityIndex(context, request)
-    const pageHeading = `Enter the waste weights for ${wasteTreatmentCapacitys.activityDisplayName}`
+    const pageHeading = `Does ${wasteTreatmentCapacitys.activityDisplayName} include any treatment of these waste types?`
     const pageTitle = Constants.buildPageTitle(pageHeading)
 
-    const {
-      hasHazardousWaste,
-      nonHazardousThroughput,
-      nonHazardousMaximum,
-      hazardousThroughput,
-      hazardousMaximum
-    } = wasteTreatmentCapacitys
-
     const pageContext = this.createPageContext(h, errors)
-    Object.assign(pageContext, { pageHeading, pageTitle, hasHazardousWaste })
+    Object.assign(pageContext, { pageHeading, pageTitle })
 
     if (errors) {
       pageContext.formValues = request.payload
     } else {
-      const formValues = {
-        'non-hazardous-throughput': nonHazardousThroughput,
-        'non-hazardous-maximum': nonHazardousMaximum
-      }
-      if (hasHazardousWaste) {
-        formValues['hazardous-throughput'] = hazardousThroughput
-        formValues['hazardous-maximum'] = hazardousMaximum
-      }
-      pageContext.formValues = formValues
+      pageContext.treatments = [{
+        id: 'whatever',
+        checked: false,
+        text: 'oh yes!'
+      }]
     }
 
     return this.showView({ h, pageContext })

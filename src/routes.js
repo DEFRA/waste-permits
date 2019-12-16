@@ -1733,7 +1733,7 @@ const Routes = {
     }
   },
   WASTE_TREATMENT_CAPACITY: {
-    path: '/wast-treatment-capacity',
+    path: '/waste-treatment-capacity',
     params: ['activityIndex'],
     view: 'wasteTreatmentCapacity',
     pageHeading: 'Provide your waste treatment capacity',
