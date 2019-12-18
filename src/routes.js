@@ -1732,6 +1732,11 @@ const Routes = {
       fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
+  WASTE_TREATMENT_CAPACITIES: {
+    path: '/waste-treatment-capacities',
+    controller: 'wasteTreatmentCapacities',
+    types: 'GET'
+  },
   WASTE_TREATMENT_CAPACITY: {
     path: '/waste-treatment-capacity',
     params: ['activityIndex'],

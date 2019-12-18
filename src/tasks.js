@@ -383,7 +383,7 @@ const tasks = {
   WASTE_TREATMENT_CAPACITY: {
     id: 'waste-treatment-capacity',
     label: 'Provide your waste treatment capacity',
-    route: Routes.WASTE_TREATMENT_CAPACITY,
+    route: Routes.WASTE_TREATMENT_CAPACITIES,
     completedLabelId: 'waste-treatment-capacity-completed',
     shortName: 'wastetreatmentcapacity',
     taskListModel: 'wasteTreatmentCapacity'
