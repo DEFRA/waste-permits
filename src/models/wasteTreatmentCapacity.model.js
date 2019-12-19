@@ -4,23 +4,43 @@ const DataStore = require('../models/dataStore.model')
 const ApplicationLine = require('../persistence/entities/applicationLine.entity')
 const ApplicationAnswer = require('../persistence/entities/applicationAnswer.entity')
 
-const NON_HAZ_THROUGHPUT_APPLICATION_ANSWER = 'non-haz-waste-throughput-weight'
-const NON_HAZ_MAXIMUM_APPLICATION_ANSWER = 'non-haz-waste-maximum-weight'
-const HAZ_THROUGHPUT_APPLICATION_ANSWER = 'haz-waste-throughput-weight'
-const HAZ_MAXIMUM_APPLICATION_ANSWER = 'haz-waste-maximum-weight'
+const TREATMENT_HAZARDOUS_ANSWER = 'treatment-hazardous'
+const TREATMENT_BIOLOGICAL_ANSWER = 'treatment-biological'
+const TREATMENT_CHEMICAL_ANSWER = 'treatment-chemical'
+const TREATMENT_INCINERATION_ANSWER = 'treatment-incineration'
+const TREATMENT_SLAGS_ANSWER = 'treatment-slags'
+const TREATMENT_METAL_ANSWER = 'treatment-metal'
+const TREATMENT_NONE_ANSWER = 'treatment-none'
+
+const TREATMENT_HAZARDOUS_DAILY = 'treatment-hazardous-daily'
+const TREATMENT_BIOLOGICAL_DAILY = 'treatment-biological-daily'
+const TREATMENT_CHEMICAL_DAILY = 'treatment-chemical-daily'
+const TREATMENT_INCINERARION_DAILY = 'treatment-incineration-daily'
+const TREATMENT_SLAGS_DAILY = 'treatment-slags-daily'
+const TREATMENT_METAL_DAILY = 'treatment-metal-daily'
+
 const APPLICATION_ANSWERS = {
-  [NON_HAZ_THROUGHPUT_APPLICATION_ANSWER]: 'nonHazardousThroughput',
-  [NON_HAZ_MAXIMUM_APPLICATION_ANSWER]: 'nonHazardousMaximum',
-  [HAZ_THROUGHPUT_APPLICATION_ANSWER]: 'hazardousThroughput',
-  [HAZ_MAXIMUM_APPLICATION_ANSWER]: 'hazardousMaximum'
+  [TREATMENT_HAZARDOUS_ANSWER]: 'hazAnswer',
+  [TREATMENT_BIOLOGICAL_ANSWER]: 'bioAnswer',
+  [TREATMENT_CHEMICAL_ANSWER]: 'chemAnswer',
+  [TREATMENT_INCINERATION_ANSWER]: 'incinerationAnswer',
+  [TREATMENT_SLAGS_ANSWER]: 'slagAnswer',
+  [TREATMENT_METAL_ANSWER]: 'metalAnswer',
+  [TREATMENT_NONE_ANSWER]: 'noneAnswer',
+  [TREATMENT_HAZARDOUS_DAILY]: 'hazWeight',
+  [TREATMENT_BIOLOGICAL_DAILY]: 'bioWeight',
+  [TREATMENT_CHEMICAL_DAILY]: 'chemWeight',
+  [TREATMENT_INCINERARION_DAILY]: 'incinerationWeight',
+  [TREATMENT_SLAGS_DAILY]: 'slagWeight',
+  [TREATMENT_METAL_DAILY]: 'metalWeight'
 }
 
 async function listForWasteActivitiesMinusDiscountLines (context) {
   // fetch all applikcation lines, including discounts
-  const allWasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
+  const allWasteTreatmentCapacityApplicationLines = await ApplicationLine.listForWasteActivities(context)
   // filter out the discounts, prevents them being included in task list
-  const wasteActivityApplicationLines = allWasteActivityApplicationLines.filter(({ value }) => value > -1)
-  return wasteActivityApplicationLines
+  const wasteTreatmentCapacityApplicationLines = allWasteTreatmentCapacityApplicationLines.filter(({ value }) => value > -1)
+  return wasteTreatmentCapacityApplicationLines
 }
 
 module.exports = class WasteTreatmentCapacitys {
@@ -28,31 +48,47 @@ module.exports = class WasteTreatmentCapacitys {
     forActivityIndex = 0,
     activityDisplayName = '',
     hasNext = false,
-    hasHazardousWaste = false,
-    nonHazardousThroughput,
-    nonHazardousMaximum,
-    hazardousThroughput,
-    hazardousMaximum
+    hazAnswer,
+    bioAnswer,
+    chemAnswer,
+    incinerationAnswer,
+    slagAnswer,
+    metalAnswer,
+    noneAnswer,
+    hazWeight,
+    bioWeight,
+    chemWeight,
+    incinerationWeight,
+    slagWeight,
+    metalWeight
   } = {}) {
     Object.assign(this, {
       forActivityIndex,
       activityDisplayName,
       hasNext,
-      hasHazardousWaste,
-      nonHazardousThroughput,
-      nonHazardousMaximum,
-      hazardousThroughput,
-      hazardousMaximum
+      hazAnswer,
+      bioAnswer,
+      chemAnswer,
+      incinerationAnswer,
+      slagAnswer,
+      metalAnswer,
+      noneAnswer,
+      hazWeight,
+      bioWeight,
+      chemWeight,
+      incinerationWeight,
+      slagWeight,
+      metalWeight
     })
   }
 
   static async getForActivity (context, activityIndex) {
-    const wasteActivityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
-    const wasteActivityApplicationLine = wasteActivityApplicationLines[activityIndex]
+    const wasteTreatmentCapacityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
+    const wasteTreatmentCapacityApplicationLine = wasteTreatmentCapacityApplicationLines[activityIndex]
 
-    if (wasteActivityApplicationLine) {
-      const hasNext = Boolean(wasteActivityApplicationLines[activityIndex + 1])
-      const definedName = wasteActivityApplicationLine.lineName || ''
+    if (wasteTreatmentCapacityApplicationLine) {
+      const hasNext = Boolean(wasteTreatmentCapacityApplicationLines[activityIndex + 1])
+      const definedName = wasteTreatmentCapacityApplicationLine.lineName || ''
       const activityDisplayName = `${definedName}`.trim()
       const { data: { acceptsHazardousWaste } } = await DataStore.get(context)
       const hasHazardousWaste = Boolean(acceptsHazardousWaste)
@@ -60,7 +96,7 @@ module.exports = class WasteTreatmentCapacitys {
       const wasteTreatmentCapacityAnswers = await ApplicationAnswer
         .listForApplicationLine(
           context,
-          wasteActivityApplicationLine.id,
+          wasteTreatmentCapacityApplicationLine.id,
           Object.keys(APPLICATION_ANSWERS)
         )
       const data = wasteTreatmentCapacityAnswers.reduce((acc, { questionCode, answerText }) => {
@@ -75,8 +111,8 @@ module.exports = class WasteTreatmentCapacitys {
   }
 
   static async getAllForApplication (context) {
-    const wasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
-    if (!wasteActivityApplicationLines) {
+    const wasteTreatmentCapacityApplicationLines = await ApplicationLine.listForWasteActivities(context)
+    if (!wasteTreatmentCapacityApplicationLines) {
       return []
     }
 
@@ -86,12 +122,12 @@ module.exports = class WasteTreatmentCapacitys {
     const allWasteWeightAnswers = await ApplicationAnswer
       .listByMultipleQuestionCodes(context, Object.keys(APPLICATION_ANSWERS))
 
-    return wasteActivityApplicationLines.map((wasteActivityApplicationLine, index, allLines) => {
+    return wasteTreatmentCapacityApplicationLines.map((wasteTreatmentCapacityApplicationLine, index, allLines) => {
       const hasNext = Boolean(allLines[index + 1])
-      const definedName = wasteActivityApplicationLine.lineName || ''
+      const definedName = wasteTreatmentCapacityApplicationLine.lineName || ''
       const activityDisplayName = `${definedName}`.trim()
 
-      const wasteTreatmentCapacityAnswers = allWasteWeightAnswers.filter(({ applicationLineId }) => applicationLineId === wasteActivityApplicationLine.id)
+      const wasteTreatmentCapacityAnswers = allWasteWeightAnswers.filter(({ applicationLineId }) => applicationLineId === wasteTreatmentCapacityApplicationLine.id)
 
       const data = wasteTreatmentCapacityAnswers.reduce((acc, { questionCode, answerText }) => {
         const propertyName = APPLICATION_ANSWERS[questionCode]
@@ -105,10 +141,10 @@ module.exports = class WasteTreatmentCapacitys {
   }
 
   async save (context) {
-    const wasteActivityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
-    const wasteActivityApplicationLine = wasteActivityApplicationLines[this.forActivityIndex]
-    if (wasteActivityApplicationLine) {
-      const applicationLineId = wasteActivityApplicationLine.id
+    const wasteTreatmentCapacityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
+    const wasteTreatmentCapacityApplicationLine = wasteTreatmentCapacityApplicationLines[this.forActivityIndex]
+    if (wasteTreatmentCapacityApplicationLine) {
+      const applicationLineId = wasteTreatmentCapacityApplicationLine.id
       const applicationAnswerSaves = []
       applicationAnswerSaves.push(new ApplicationAnswer({ applicationLineId, questionCode: NON_HAZ_THROUGHPUT_APPLICATION_ANSWER, answerText: this.nonHazardousThroughput }).save(context))
       applicationAnswerSaves.push(new ApplicationAnswer({ applicationLineId, questionCode: NON_HAZ_MAXIMUM_APPLICATION_ANSWER, answerText: this.nonHazardousMaximum }).save(context))
@@ -125,7 +161,7 @@ module.exports = class WasteTreatmentCapacitys {
   }
 
   static async getAllWeightsHaveBeenEnteredForApplication (context) {
-    const wasteActivityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
+    const wasteTreatmentCapacityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
     const { data: { acceptsHazardousWaste } } = await DataStore.get(context)
     const requiredEntries = [
       NON_HAZ_THROUGHPUT_APPLICATION_ANSWER,
@@ -138,7 +174,7 @@ module.exports = class WasteTreatmentCapacitys {
     const wasteTreatmentCapacityAnswers = await ApplicationAnswer
       .listByMultipleQuestionCodes(context, Object.keys(APPLICATION_ANSWERS))
 
-    return wasteActivityApplicationLines
+    return wasteTreatmentCapacityApplicationLines
       .every(({ id }) => requiredEntries
         .every((requiredEntry) => wasteTreatmentCapacityAnswers
           .find(({ applicationLineId, questionCode, answerText }) => (applicationLineId === id) && (questionCode === requiredEntry) && answerText)))
