@@ -3,15 +3,15 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const WasteTreatmentCapacitys = require('../models/wasteTreatmentCapacity.model')
+const WasteTreatmentCapacities = require('../models/wasteTreatmentCapacity.model')
 const { WASTE_WEIGHT: { path } } = require('../routes')
 
 const getModelForProvidedActivityIndex = async (context, request) => {
   const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
   if (!Number.isNaN(activityIndexInt)) {
-    const wasteTreatmentCapacitys = await WasteTreatmentCapacitys.getForActivity(context, activityIndexInt)
-    if (wasteTreatmentCapacitys) {
-      return wasteTreatmentCapacitys
+    const wasteTreatmentCapacities = await WasteTreatmentCapacities.getForActivity(context, activityIndexInt)
+    if (wasteTreatmentCapacities) {
+      return wasteTreatmentCapacities
     }
   }
   throw new Error('Invalid activity')
@@ -20,8 +20,8 @@ const getModelForProvidedActivityIndex = async (context, request) => {
 module.exports = class WasteTreatmentCapacityController extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
-    const wasteTreatmentCapacitys = await getModelForProvidedActivityIndex(context, request)
-    const pageHeading = `Does ${wasteTreatmentCapacitys.activityDisplayName} include any treatment of these waste types?`
+    const wasteTreatmentCapacities = await getModelForProvidedActivityIndex(context, request)
+    const pageHeading = `Does ${wasteTreatmentCapacities.activityDisplayName} include any treatment of these waste types?`
     const pageTitle = Constants.buildPageTitle(pageHeading)
 
     const pageContext = this.createPageContext(h, errors)
@@ -42,7 +42,7 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    const wasteTreatmentCapacitys = await getModelForProvidedActivityIndex(context, request)
+    const wasteTreatmentCapacities = await getModelForProvidedActivityIndex(context, request)
 
     const {
       'non-hazardous-throughput': nonHazardousThroughput,
@@ -51,21 +51,21 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
       'hazardous-maximum': hazardousMaximum
     } = request.payload
 
-    Object.assign(wasteTreatmentCapacitys, {
+    Object.assign(wasteTreatmentCapacities, {
       nonHazardousThroughput: String(nonHazardousThroughput),
       nonHazardousMaximum: String(nonHazardousMaximum)
     })
-    if (wasteTreatmentCapacitys.hasHazardousWaste) {
-      Object.assign(wasteTreatmentCapacitys, {
+    if (wasteTreatmentCapacities.hasHazardousWaste) {
+      Object.assign(wasteTreatmentCapacities, {
         hazardousThroughput: String(hazardousThroughput),
         hazardousMaximum: String(hazardousMaximum)
       })
     }
-    await wasteTreatmentCapacitys.save(context)
+    await wasteTreatmentCapacities.save(context)
 
     // If there are more activities, redirect to the next set of weights
-    if (wasteTreatmentCapacitys.hasNext) {
-      return this.redirect({ h, path: `${path}/${wasteTreatmentCapacitys.forActivityIndex + 1}` })
+    if (wasteTreatmentCapacities.hasNext) {
+      return this.redirect({ h, path: `${path}/${wasteTreatmentCapacities.forActivityIndex + 1}` })
     }
 
     return this.redirect({ h })

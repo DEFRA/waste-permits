@@ -43,7 +43,7 @@ async function listForWasteActivitiesMinusDiscountLines (context) {
   return wasteTreatmentCapacityApplicationLines
 }
 
-module.exports = class WasteTreatmentCapacitys {
+module.exports = class WasteTreatmentCapacities {
   constructor ({
     forActivityIndex = 0,
     activityDisplayName = '',
@@ -106,7 +106,7 @@ module.exports = class WasteTreatmentCapacitys {
       }, {})
       const { nonHazardousThroughput, nonHazardousMaximum, hazardousThroughput, hazardousMaximum } = data
 
-      return new WasteTreatmentCapacitys({ forActivityIndex: activityIndex, activityDisplayName, hasNext, hasHazardousWaste, nonHazardousThroughput, nonHazardousMaximum, hazardousThroughput, hazardousMaximum })
+      return new WasteTreatmentCapacities({ forActivityIndex: activityIndex, activityDisplayName, hasNext, hasHazardousWaste, nonHazardousThroughput, nonHazardousMaximum, hazardousThroughput, hazardousMaximum })
     }
   }
 
@@ -136,7 +136,7 @@ module.exports = class WasteTreatmentCapacitys {
       }, {})
       const { nonHazardousThroughput, nonHazardousMaximum, hazardousThroughput, hazardousMaximum } = data
 
-      return new WasteTreatmentCapacitys({ forActivityIndex: index, activityDisplayName, hasNext, hasHazardousWaste, nonHazardousThroughput, nonHazardousMaximum, hazardousThroughput, hazardousMaximum })
+      return new WasteTreatmentCapacities({ forActivityIndex: index, activityDisplayName, hasNext, hasHazardousWaste, nonHazardousThroughput, nonHazardousMaximum, hazardousThroughput, hazardousMaximum })
     })
   }
 
@@ -146,14 +146,38 @@ module.exports = class WasteTreatmentCapacitys {
     if (wasteTreatmentCapacityApplicationLine) {
       const applicationLineId = wasteTreatmentCapacityApplicationLine.id
       const applicationAnswerSaves = []
-      applicationAnswerSaves.push(new ApplicationAnswer({ applicationLineId, questionCode: NON_HAZ_THROUGHPUT_APPLICATION_ANSWER, answerText: this.nonHazardousThroughput }).save(context))
-      applicationAnswerSaves.push(new ApplicationAnswer({ applicationLineId, questionCode: NON_HAZ_MAXIMUM_APPLICATION_ANSWER, answerText: this.nonHazardousMaximum }).save(context))
+      applicationAnswerSaves.push(new ApplicationAnswer({
+        applicationLineId,
+        questionCode: NON_HAZ_THROUGHPUT_APPLICATION_ANSWER,
+        answerText: this.nonHazardousThroughput
+      }).save(context))
+
+      applicationAnswerSaves.push(new ApplicationAnswer({
+        applicationLineId,
+        questionCode: NON_HAZ_MAXIMUM_APPLICATION_ANSWER,
+        answerText: this.nonHazardousMaximum
+      }).save(context))
+
       if (this.hasHazardousWaste) {
-        applicationAnswerSaves.push(new ApplicationAnswer({ applicationLineId, questionCode: HAZ_THROUGHPUT_APPLICATION_ANSWER, answerText: this.hazardousThroughput }).save(context))
-        applicationAnswerSaves.push(new ApplicationAnswer({ applicationLineId, questionCode: HAZ_MAXIMUM_APPLICATION_ANSWER, answerText: this.hazardousMaximum }).save(context))
+        applicationAnswerSaves.push(new ApplicationAnswer({
+          applicationLineId,
+          questionCode: HAZ_THROUGHPUT_APPLICATION_ANSWER,
+          answerText: this.hazardousThroughput
+        }).save(context))
+        applicationAnswerSaves.push(new ApplicationAnswer({
+          applicationLineId,
+          questionCode: HAZ_MAXIMUM_APPLICATION_ANSWER,
+          answerText: this.hazardousMaximum
+        }).save(context))
       } else {
-        applicationAnswerSaves.push(new ApplicationAnswer({ applicationLineId, questionCode: HAZ_THROUGHPUT_APPLICATION_ANSWER }).save(context))
-        applicationAnswerSaves.push(new ApplicationAnswer({ applicationLineId, questionCode: HAZ_MAXIMUM_APPLICATION_ANSWER }).save(context))
+        applicationAnswerSaves.push(new ApplicationAnswer({
+          applicationLineId,
+          questionCode: HAZ_THROUGHPUT_APPLICATION_ANSWER
+        }).save(context))
+        applicationAnswerSaves.push(new ApplicationAnswer({
+          applicationLineId,
+          questionCode: HAZ_MAXIMUM_APPLICATION_ANSWER
+        }).save(context))
       }
 
       await Promise.all(applicationAnswerSaves)
