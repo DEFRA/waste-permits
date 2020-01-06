@@ -81,13 +81,6 @@ lab.experiment('Waste activity controller tests:', () => {
       // Code.expect(pageContext.activities.length).to.equal(3)
       Code.expect(pageContext.activities.length).to.equal(4)
     })
-
-    lab.test('GET supplies correct installation flags to view', async () => {
-      await controller.doGet()
-      const activities = showViewSpy.args[0][0].pageContext.activities
-      const flaggedAsCouldBeAnInstallation = activities.filter(({ couldBeAnInstallation }) => couldBeAnInstallation)
-      Code.expect(flaggedAsCouldBeAnInstallation.length).to.equal(1)
-    })
   })
 
   lab.experiment('POST:', () => {
@@ -97,7 +90,7 @@ lab.experiment('Waste activity controller tests:', () => {
     let request
     lab.beforeEach(() => {
       request = { payload: { activity: 'FAKE_ACTIVITY_ID' } }
-      sandbox.stub(WasteActivities, 'get').resolves(new WasteActivities(fakeActivities,[]))
+      sandbox.stub(WasteActivities, 'get').resolves(new WasteActivities(fakeActivities, []))
       redirectSpy = sandbox.stub(Controller.prototype, 'redirect')
       addWasteActivitySpy = sandbox.stub(WasteActivities.prototype, 'addWasteActivity')
       saveWasteActivitySpy = sandbox.stub(WasteActivities.prototype, 'save')

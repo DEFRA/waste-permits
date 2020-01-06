@@ -5,9 +5,6 @@ const RecoveryService = require('../services/recovery.service')
 const WasteActivities = require('../models/wasteActivities.model')
 const ItemEntity = require('../persistence/entities/item.entity')
 const Routes = require('../routes')
-const couldBeInstallations = {
-  '1-16-9': true
-}
 
 module.exports = class WasteActivityController extends BaseController {
   async doGet (request, h, errors) {
@@ -24,7 +21,7 @@ module.exports = class WasteActivityController extends BaseController {
 
     pageContext.activities = onlyOnlineWasteActivitiesForFacilityTypes
       .sort((a, b) => (a.itemName > b.itemName) ? 1 : ((b.itemName > a.itemName) ? -1 : 0))
-      .map(({ shortName, itemName }) => ({ id: shortName, text: itemName, couldBeAnInstallation: couldBeInstallations[shortName] }))
+      .map(({ shortName, itemName }) => ({ id: shortName, text: itemName }))
 
     pageContext.previousLink = Routes[this.route.previousRoute].path
 
