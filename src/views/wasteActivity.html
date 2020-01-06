@@ -12,8 +12,13 @@
       {{> common/pageHeading pageHeading }}
 
       <p>
-        These activities are for waste operations.
-        <a id="change-facility" href="{{previousLink}}">Change facility type</a>.
+        The below activities are for waste operations.
+        Any of these activities could also be an installation.
+        To check you’re applying for the correct type of permit,
+        <a id="activity-{{this.id}}-link" target="_blank" rel="noopener noreferrer"
+          href="https://www.gov.uk/guidance/check-if-you-need-an-environmental-permit#what-you-need-a-permit-for">
+          read the guidance on installations (opens new tab)
+        </a>
       </p>
 
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
@@ -29,15 +34,6 @@
               <input id="activity-{{this.id}}-input" type="radio" name="activity" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
               <label id="activity-{{this.id}}-label" for="activity-{{this.id}}-input" class="selection-button-radio">
                 <span id="activity-{{this.id}}-text">{{this.text}}</span>
-                {{#if this.couldBeAnInstallation}}
-                  <span id="activity-{{this.id}}-hint" class="panel panel-border-narrow js-hidden">
-                    This activity could be an installation. To check you’re applying for the correct type of permit,
-                    <a id="activity-{{this.id}}-link" target="_blank" rel="noopener noreferrer"
-                       href="https://www.gov.uk/guidance/check-if-you-need-an-environmental-permit#what-you-need-a-permit-for">
-                      read the guidance on installations (opens new tab)
-                    </a>
-                  </span>
-                {{/if}}
               </label>
             </div>
             {{/each}}
@@ -46,7 +42,7 @@
         </fieldset>
 
         <div class="form-group">
-          <p><span id="helpline-text">Not sure? Call our helpline on</span> <a id="helpline-number" href="tel:+443708506506">03708 506 506.</a></p>
+          <p><a id="change-facility" href="{{previousLink}}">Change facility type</a>.</p>
         </div>
 
         {{> common/submitButton }}
