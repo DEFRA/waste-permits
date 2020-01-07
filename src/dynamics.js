@@ -55,6 +55,10 @@ const Dynamics = {
       NAME: 'Postholder contact details'
     }
   },
+  DiscountTypes: {
+    DUPLICATE_ACTIVITY: 910400000,
+    MULTIPLE_ACTIVITY: 910400001
+  },
   ApplicationQuestions: {
     AQMA: {
       IS_IN_AQMA: {

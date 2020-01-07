@@ -10,6 +10,7 @@ const Mocks = require('../helpers/mocks')
 const CookieService = require('../../src/services/cookie.service')
 const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
+const { DiscountTypes } = require('../../src/dynamics')
 
 const ApplicationCost = require('../../src/models/applicationCost.model')
 
@@ -65,6 +66,22 @@ lab.experiment('Triage confirm costs page tests:', () => {
       const doc = await GeneralTestHelper.getDoc(getRequest)
       Code.expect(doc.getElementById('change-waste-activities')).to.exist()
       Code.expect(doc.getElementById('change-waste-activities').getAttribute('href')).to.equal(expectedWasteActivitiesPath)
+    })
+
+    lab.experiment('GET displays correct multiple activity text', () => {
+      lab.test('displayed when there are multiple activities', async () => {
+        mocks.applicationCostModel.items[0].discountType = DiscountTypes.MULTIPLE_ACTIVITY
+
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+
+        Code.expect(doc.getElementById('multiple-activity-text')).to.exist()
+      })
+
+      lab.test('not displayed when there are no multiple activities', async () => {
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+
+        Code.expect(doc.getElementById('multiple-activity-text')).to.not.exist()
+      })
     })
 
     lab.experiment('GET displays the correct costs', () => {

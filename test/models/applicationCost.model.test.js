@@ -15,7 +15,7 @@ const context = { }
 const ACTIVITY_ITEM_TYPE_ID = 'ACTIVITY_ITEM_TYPE_ID'
 const ASSESSMENT_ITEM_TYPE_ID = 'ASSESSMENT_ITEM_TYPE_ID'
 
-const { PERMIT_HOLDER_TYPES: DYNAMICS_PERMIT_HOLDER_TYPES } = require('../../src/dynamics')
+const { PERMIT_HOLDER_TYPES: DYNAMICS_PERMIT_HOLDER_TYPES, DiscountTypes } = require('../../src/dynamics')
 
 const ITEMS = {
   wasteActivities: [{
@@ -204,6 +204,25 @@ lab.experiment('Application Cost Model test:', () => {
         .getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
       const allDescriptionText = applicationCost.items.map(({ description }) => description)
       Code.expect(allDescriptionText).to.equal(DESCRIPTION_TEXT)
+      Code.expect(spy.callCount).to.equal(2)
+    })
+    lab.test('includesMultipleActivities returns true if there is a multiple activity', async () => {
+      const spy = sinon.spy(dynamicsDal, 'callAction')
+      fakeApplicationLineEntities[0].discountType = DiscountTypes.MULTIPLE_ACTIVITY
+
+      const applicationCost = await ApplicationCostModel
+        .getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
+
+      Code.expect(applicationCost.includesMultipleActivities).to.equal(true)
+      Code.expect(spy.callCount).to.equal(2)
+    })
+    lab.test('includesMultipleActivities returns false if there are no multiple activities', async () => {
+      const spy = sinon.spy(dynamicsDal, 'callAction')
+
+      const applicationCost = await ApplicationCostModel
+        .getApplicationCostForApplicationId(context, fakeApplicationEntity.id)
+
+      Code.expect(applicationCost.includesMultipleActivities).to.equal(false)
       Code.expect(spy.callCount).to.equal(2)
     })
   })

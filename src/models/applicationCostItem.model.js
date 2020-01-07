@@ -1,12 +1,19 @@
 'use strict'
 
+const { MULTIPLE_ACTIVITY } = require('../dynamics').DiscountTypes
+
 module.exports = class ApplicationCostItem {
-  constructor ({ wasteActivity, wasteAssessment, description, cost, displayOrder }) {
+  constructor ({ wasteActivity, wasteAssessment, description, cost, displayOrder, discountType }) {
     this.wasteActivity = wasteActivity
     this.wasteAssessment = wasteAssessment
     this.description = description
     this.cost = cost
     this.displayOrder = displayOrder
+    this.discountType = discountType
+  }
+
+  get isMultipleActivity () {
+    return this.discountType === MULTIPLE_ACTIVITY
   }
 
   get costValue () {
