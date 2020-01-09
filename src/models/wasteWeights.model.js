@@ -16,7 +16,7 @@ const APPLICATION_ANSWERS = {
 }
 
 async function listForWasteActivitiesMinusDiscountLines (context) {
-  // fetch all applikcation lines, including discounts
+  // fetch all application lines, including discounts
   const allWasteActivityApplicationLines = await ApplicationLine.listForWasteActivities(context)
   // filter out the discounts, prevents them being included in task list
   const wasteActivityApplicationLines = allWasteActivityApplicationLines.filter(({ value }) => value > -1)

@@ -4,7 +4,7 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const WasteTreatmentCapacities = require('../models/wasteTreatmentCapacity.model')
-const { WASTE_WEIGHT: { path } } = require('../routes')
+const { WASTE_TREATMENT_CAPACITY: { path } } = require('../routes')
 
 const getModelForProvidedActivityIndex = async (context, request) => {
   const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
@@ -21,6 +21,7 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
     const wasteTreatmentCapacities = await getModelForProvidedActivityIndex(context, request)
+    console.log(wasteTreatmentCapacities)
     const pageHeading = `Does ${wasteTreatmentCapacities.activityDisplayName} include any treatment of these waste types?`
     const pageTitle = Constants.buildPageTitle(pageHeading)
 
@@ -35,6 +36,15 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
         checked: false,
         text: 'oh yes!'
       }]
+      const treatments = []
+      for (const item in wasteTreatmentCapacities) {
+        treatments.push({
+          id: item,
+          text: item,
+          checked: wasteTreatmentCapacities[item] === undefined ? false : wasteTreatmentCapacities[item]
+        })
+      }
+      pageContext.treatments = treatments
     }
 
     return this.showView({ h, pageContext })

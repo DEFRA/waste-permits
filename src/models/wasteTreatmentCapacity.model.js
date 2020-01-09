@@ -36,7 +36,7 @@ const APPLICATION_ANSWERS = {
 }
 
 async function listForWasteActivitiesMinusDiscountLines (context) {
-  // fetch all applikcation lines, including discounts
+  // fetch all application lines, including discounts
   const allWasteTreatmentCapacityApplicationLines = await ApplicationLine.listForWasteActivities(context)
   // filter out the discounts, prevents them being included in task list
   const wasteTreatmentCapacityApplicationLines = allWasteTreatmentCapacityApplicationLines.filter(({ value }) => value > -1)
@@ -99,6 +99,7 @@ module.exports = class WasteTreatmentCapacities {
           wasteTreatmentCapacityApplicationLine.id,
           Object.keys(APPLICATION_ANSWERS)
         )
+      console.log(wasteTreatmentCapacityAnswers)
       const data = wasteTreatmentCapacityAnswers.reduce((acc, { questionCode, answerText }) => {
         const propertyName = APPLICATION_ANSWERS[questionCode]
         acc[propertyName] = answerText
@@ -148,37 +149,9 @@ module.exports = class WasteTreatmentCapacities {
       const applicationAnswerSaves = []
       applicationAnswerSaves.push(new ApplicationAnswer({
         applicationLineId,
-        questionCode: NON_HAZ_THROUGHPUT_APPLICATION_ANSWER,
+        questionCode: TREATMENT_HAZARDOUS_ANSWER,
         answerText: this.nonHazardousThroughput
       }).save(context))
-
-      applicationAnswerSaves.push(new ApplicationAnswer({
-        applicationLineId,
-        questionCode: NON_HAZ_MAXIMUM_APPLICATION_ANSWER,
-        answerText: this.nonHazardousMaximum
-      }).save(context))
-
-      if (this.hasHazardousWaste) {
-        applicationAnswerSaves.push(new ApplicationAnswer({
-          applicationLineId,
-          questionCode: HAZ_THROUGHPUT_APPLICATION_ANSWER,
-          answerText: this.hazardousThroughput
-        }).save(context))
-        applicationAnswerSaves.push(new ApplicationAnswer({
-          applicationLineId,
-          questionCode: HAZ_MAXIMUM_APPLICATION_ANSWER,
-          answerText: this.hazardousMaximum
-        }).save(context))
-      } else {
-        applicationAnswerSaves.push(new ApplicationAnswer({
-          applicationLineId,
-          questionCode: HAZ_THROUGHPUT_APPLICATION_ANSWER
-        }).save(context))
-        applicationAnswerSaves.push(new ApplicationAnswer({
-          applicationLineId,
-          questionCode: HAZ_MAXIMUM_APPLICATION_ANSWER
-        }).save(context))
-      }
 
       await Promise.all(applicationAnswerSaves)
     }
@@ -186,14 +159,7 @@ module.exports = class WasteTreatmentCapacities {
 
   static async getAllWeightsHaveBeenEnteredForApplication (context) {
     const wasteTreatmentCapacityApplicationLines = await listForWasteActivitiesMinusDiscountLines(context)
-    const { data: { acceptsHazardousWaste } } = await DataStore.get(context)
-    const requiredEntries = [
-      NON_HAZ_THROUGHPUT_APPLICATION_ANSWER,
-      NON_HAZ_MAXIMUM_APPLICATION_ANSWER
-    ]
-    if (acceptsHazardousWaste) {
-      requiredEntries.push(HAZ_THROUGHPUT_APPLICATION_ANSWER, HAZ_MAXIMUM_APPLICATION_ANSWER)
-    }
+    const requiredEntries = []
 
     const wasteTreatmentCapacityAnswers = await ApplicationAnswer
       .listByMultipleQuestionCodes(context, Object.keys(APPLICATION_ANSWERS))
