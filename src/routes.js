@@ -760,7 +760,7 @@ const Routes = {
     controller: 'bespokeOrStandardRules',
     validator: 'bespokeOrStandardRules',
     nextRoute: 'PERMIT_CATEGORY',
-    bespokeRoute: 'FACILITY_TYPE',
+    bespokeRoute: 'PRE_APPLICATION_DISCUSSED',
     types: 'GET, POST',
     cookieValidationRequired: false,
     applicationRequired: false
@@ -1372,11 +1372,14 @@ const Routes = {
     validator: 'permitSelect',
     types: 'GET, POST'
   },
-  PRE_APPLICATION: {
-    path: '/pre-application',
-    view: 'preApplication',
+  PRE_APPLICATION_DISCUSSED: {
+    path: '/pre-application-discussed',
+    view: 'preApplicationDiscussed',
     pageHeading: 'Have you discussed this application with us?',
-    controller: 'preApplication',
+    controller: 'preApplicationDiscussed',
+    validator: 'preApplicationDiscussed',
+    nextRoute: 'FACILITY_TYPE',
+    wantAdvicePath: 'https://www.gov.uk/government/publications/environmental-permit-pre-application-advice-form',
     types: 'GET, POST'
   },
   PRIVACY: {
