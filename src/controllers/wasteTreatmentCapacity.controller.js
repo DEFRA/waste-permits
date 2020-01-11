@@ -4,12 +4,15 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const WasteTreatmentCapacities = require('../models/wasteTreatmentCapacity.model')
+const WasteTreatmentCapacitiesPt2 = require('../models/wasteTreatmentCapacityPt2.model')
 const { WASTE_TREATMENT_CAPACITY: { path } } = require('../routes')
 
 const getModelForProvidedActivityIndex = async (context, request) => {
   const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
   if (!Number.isNaN(activityIndexInt)) {
     const wasteTreatmentCapacities = await WasteTreatmentCapacities.getForActivity(context, activityIndexInt)
+    const wasteTreatmentCapacitiesPt2 = await WasteTreatmentCapacitiesPt2.getForActivity(context, activityIndexInt)
+    console.log(wasteTreatmentCapacitiesPt2)
     if (wasteTreatmentCapacities) {
       return wasteTreatmentCapacities
     }
