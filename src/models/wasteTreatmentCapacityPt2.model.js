@@ -95,7 +95,10 @@ module.exports = {
     }
   },
   saveAnswers: async function (answers) {
-    console.log('ANSWERS TO SAVE:', answers)
+    Object.keys(answers).forEach(key => {
+      console.log(`${key} : ${answers[key]}`)
+    })
+
     /*
     await saveAnswer({
       applicationLineId: wasteTreatmentCapacityApplicationLine.id,

@@ -28,10 +28,10 @@
           <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
 
           <div id="treatment" class="form-group {{#getFormErrorGroupClass errors.treatment}}{{/getFormErrorGroupClass}}">
-            {{> common/fieldError fieldId='treatment-error' message=errors.treatment }}
+            {{> common/fieldError fieldId='select-error' message=errors.select }}
             {{#each treatments}}
             <div class="multiple-choice">
-              <input id="{{this.id}}-input" type="checkbox" name="treatment" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
+              <input id="{{this.id}}-input" type="checkbox" name="{{this.id}}" value="yes" {{#if this.isSelected}}checked="checked"{{/if}}>
               <label id="{{this.id}}-label" for="{{this.id}}-input">
                 <span id="{{this.id}}-text">{{this.text}}</span>
               </label>

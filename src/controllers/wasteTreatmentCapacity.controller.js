@@ -51,6 +51,7 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
+    await wasteTreatmentCapacitiesPt2.saveAnswers(request.payload)
 
     const pageContext = {
       pageHeading: 'Thanks',
