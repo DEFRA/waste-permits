@@ -51,42 +51,14 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
-    await wasteTreatmentCapacitiesPt2.saveAnswers(request.payload)
+    const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
+    const saveResult = await wasteTreatmentCapacitiesPt2.saveAnswers(context, activityIndexInt, request.payload)
 
-    const pageContext = {
-      pageHeading: 'Thanks',
-      treatment: []
-    }
-
-    return this.showView({ h, pageContext })
-    /*
-    const wasteTreatmentCapacities = await getModelForProvidedActivityIndex(context, request)
-
-    const {
-      'non-hazardous-throughput': nonHazardousThroughput,
-      'non-hazardous-maximum': nonHazardousMaximum,
-      'hazardous-throughput': hazardousThroughput,
-      'hazardous-maximum': hazardousMaximum
-    } = request.payload
-
-    Object.assign(wasteTreatmentCapacities, {
-      nonHazardousThroughput: String(nonHazardousThroughput),
-      nonHazardousMaximum: String(nonHazardousMaximum)
-    })
-    if (wasteTreatmentCapacities.hasHazardousWaste) {
-      Object.assign(wasteTreatmentCapacities, {
-        hazardousThroughput: String(hazardousThroughput),
-        hazardousMaximum: String(hazardousMaximum)
-      })
-    }
-    await wasteTreatmentCapacities.save(context)
-
-    // If there are more activities, redirect to the next set of weights
-    if (wasteTreatmentCapacities.hasNext) {
-      return this.redirect({ h, path: `${path}/${wasteTreatmentCapacities.forActivityIndex + 1}` })
+    // If there are more activities, redirect to the next set
+    if (saveResult.hasNext) {
+      return this.redirect({ h, path: `${path}/${saveResult.forActivityIndex + 1}` })
     }
 
     return this.redirect({ h })
-    */
   }
 }

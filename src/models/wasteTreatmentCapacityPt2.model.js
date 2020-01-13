@@ -53,14 +53,19 @@ const treatmentAnswers = [
   }
 ]
 
-async function listForWasteActivitiesMinusDiscountLines (context) {
+async function getRelevantApplicationLine (context, activityIndex) {
   // fetch all application lines, including discounts
   const allWasteTreatmentCapacityApplicationLines =
     await ApplicationLine.listForWasteActivities(context)
   // filter out the discounts, prevents them being included in task list
   const wasteTreatmentCapacityApplicationLines =
     allWasteTreatmentCapacityApplicationLines.filter(({ value }) => value > -1)
-  return wasteTreatmentCapacityApplicationLines
+  return {
+    applicationLine: wasteTreatmentCapacityApplicationLines[activityIndex],
+    hasNext: wasteTreatmentCapacityApplicationLines
+      .slice(activityIndex + 1)
+      .length > 0
+  }
 }
 
 async function saveAnswer (answer, context) {
@@ -71,43 +76,41 @@ async function saveAnswer (answer, context) {
 module.exports = {
   treatmentAnswers,
   getForActivity: async function (context, activityIndex) {
-    const wasteTreatmentCapacityApplicationLines =
-      await listForWasteActivitiesMinusDiscountLines(context)
-
-    const wasteTreatmentCapacityApplicationLine =
-      wasteTreatmentCapacityApplicationLines[activityIndex]
+    const { applicationLine, hasNext } =
+      await getRelevantApplicationLine(context, activityIndex)
 
     const activityDisplayName =
-      (wasteTreatmentCapacityApplicationLine.lineName || '').trim()
+      (applicationLine.lineName || '').trim()
 
     const wasteTreatmentCapacityAnswers = await ApplicationAnswer
       .listForApplicationLine(
         context,
-        wasteTreatmentCapacityApplicationLine.id,
+        applicationLine.id,
         treatmentAnswers.map(answer => answer.questionCode)
       )
     return {
       wasteTreatmentCapacityAnswers,
       activityDisplayName,
-      hasNext: wasteTreatmentCapacityApplicationLines
-        .slice(activityIndex + 1)
-        .length > 0
+      hasNext
     }
   },
-  saveAnswers: async function (answers) {
-    Object.keys(answers).forEach(key => {
-      console.log(`${key} : ${answers[key]}`)
-    })
+  saveAnswers: async function (context, activityIndex, answers) {
+    const positiveAnswers = Object.keys(answers)
+    const { applicationLine, hasNext } =
+      await getRelevantApplicationLine(context, activityIndex)
 
-    /*
-    await saveAnswer({
-      applicationLineId: wasteTreatmentCapacityApplicationLine.id,
-      questionCode: 'treatment-biological',
-      answerCode: 'yes'
-      // answerText: undefined
-    }, context)
-      .then(() => { console.log('SUCCESS:') })
-      .catch(err => { console.log('FAIL', err) })
-    */
+    const toSave = treatmentAnswers.map(ta => ({
+      applicationLineId: applicationLine.id,
+      questionCode: ta.questionCode,
+      answerCode: positiveAnswers.indexOf(ta.questionCode) >= 0 ? 'yes' : 'no'
+    }))
+
+    const savePromises = toSave.map(answer => saveAnswer(answer, context))
+    await Promise.all(savePromises)
+
+    return {
+      hasNext,
+      forActivityIndex: activityIndex
+    }
   }
 }
