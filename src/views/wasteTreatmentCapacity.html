@@ -31,9 +31,9 @@
             {{> common/fieldError fieldId='treatment-error' message=errors.treatment }}
             {{#each treatments}}
             <div class="multiple-choice">
-              <input id="treatment-{{this.id}}-input" type="checkbox" name="treatment" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
-              <label id="treatment-{{this.id}}-label" for="treatment-{{this.id}}-input">
-                <span id="treatment-{{this.id}}-text">{{this.text}}</span>
+              <input id="{{this.id}}-input" type="checkbox" name="treatment" value="{{this.id}}" {{#if this.isSelected}}checked="checked"{{/if}}>
+              <label id="{{this.id}}-label" for="{{this.id}}-input">
+                <span id="{{this.id}}-text">{{this.text}}</span>
               </label>
             </div>
             {{/each}}

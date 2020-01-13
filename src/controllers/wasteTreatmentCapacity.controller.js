@@ -3,18 +3,15 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const WasteTreatmentCapacities = require('../models/wasteTreatmentCapacity.model')
-const WasteTreatmentCapacitiesPt2 = require('../models/wasteTreatmentCapacityPt2.model')
+const wasteTreatmentCapacitiesPt2 = require('../models/wasteTreatmentCapacityPt2.model')
 const { WASTE_TREATMENT_CAPACITY: { path } } = require('../routes')
 
-const getModelForProvidedActivityIndex = async (context, request) => {
+const getSavedForProvidedActivityIndex = async (context, request) => {
   const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
   if (!Number.isNaN(activityIndexInt)) {
-    const wasteTreatmentCapacities = await WasteTreatmentCapacities.getForActivity(context, activityIndexInt)
-    const wasteTreatmentCapacitiesPt2 = await WasteTreatmentCapacitiesPt2.getForActivity(context, activityIndexInt)
-    console.log(wasteTreatmentCapacitiesPt2)
-    if (wasteTreatmentCapacities) {
-      return wasteTreatmentCapacities
+    const res = await wasteTreatmentCapacitiesPt2.getForActivity(context, activityIndexInt)
+    if (res) {
+      return res
     }
   }
   throw new Error('Invalid activity')
@@ -23,9 +20,11 @@ const getModelForProvidedActivityIndex = async (context, request) => {
 module.exports = class WasteTreatmentCapacityController extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
-    const wasteTreatmentCapacities = await getModelForProvidedActivityIndex(context, request)
-    console.log(wasteTreatmentCapacities)
-    const pageHeading = `Does ${wasteTreatmentCapacities.activityDisplayName} include any treatment of these waste types?`
+    const wasteTreatmentCapacities =
+      await getSavedForProvidedActivityIndex(context, request)
+
+    const pageHeading =
+      `Does ${wasteTreatmentCapacities.activityDisplayName} include any treatment of these waste types?`
     const pageTitle = Constants.buildPageTitle(pageHeading)
 
     const pageContext = this.createPageContext(h, errors)
@@ -34,20 +33,17 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
     if (errors) {
       pageContext.formValues = request.payload
     } else {
-      pageContext.treatments = [{
-        id: 'whatever',
-        checked: false,
-        text: 'oh yes!'
-      }]
-      const treatments = []
-      for (const item in wasteTreatmentCapacities) {
-        treatments.push({
-          id: item,
-          text: item,
-          checked: wasteTreatmentCapacities[item] === undefined ? false : wasteTreatmentCapacities[item]
-        })
-      }
-      pageContext.treatments = treatments
+      pageContext.treatments = wasteTreatmentCapacitiesPt2.treatmentAnswers.map(treatment => {
+        const saved = wasteTreatmentCapacities
+          .wasteTreatmentCapacityAnswers.find(ans =>
+            ans.questionCode === treatment.questionCode && ans.answerCode === 'yes')
+        const isSelected = Boolean(saved)
+        return {
+          id: treatment.questionCode,
+          text: treatment.questionText,
+          isSelected
+        }
+      })
     }
 
     return this.showView({ h, pageContext })
@@ -55,6 +51,14 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
 
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
+
+    const pageContext = {
+      pageHeading: 'Thanks',
+      treatment: []
+    }
+
+    return this.showView({ h, pageContext })
+    /*
     const wasteTreatmentCapacities = await getModelForProvidedActivityIndex(context, request)
 
     const {
@@ -82,5 +86,6 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
     }
 
     return this.redirect({ h })
+    */
   }
 }
