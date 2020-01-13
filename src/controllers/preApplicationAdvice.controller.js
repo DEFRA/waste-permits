@@ -3,7 +3,8 @@
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const PreApplicationModel = require('../models/preApplication.model')
-const { PRE_APPLICATION } = require('../routes')
+const { PRE_APPLICATION_ADVICE } = require('../routes')
+const DataStore = require('../models/dataStore.model')
 
 module.exports = class PreApplicationController extends BaseController {
   async doGet (request, h, errors) {
@@ -16,9 +17,9 @@ module.exports = class PreApplicationController extends BaseController {
       const preApplication = await PreApplicationModel.get(context)
 
       pageContext.formValues = {
-        'received-advice': preApplication.discussedApplication === 'received-advice',
-        'want-advice': preApplication.discussedApplication === 'want-advice',
-        'no-advice': preApplication.discussedApplication === 'no-advice'
+        'received-advice': preApplication.receivedAdvice === 'received-advice',
+        'want-advice': preApplication.receivedAdvice === 'want-advice',
+        'no-advice': preApplication.receivedAdvice === 'no-advice'
       }
     }
     return this.showView({ h, pageContext })
@@ -29,14 +30,18 @@ module.exports = class PreApplicationController extends BaseController {
 
     const context = await RecoveryService.createApplicationContext(h)
 
-    const { 'pre-application-discussed': discussedApplication } = request.payload
+    const { 'pre-application-advice': receivedAdvice } = request.payload
 
     const preApplicationModel = new PreApplicationModel(preApplication)
-    Object.assign(preApplicationModel, { discussedApplication })
+    Object.assign(preApplicationModel, { receivedAdvice })
     await preApplicationModel.save(context)
 
-    if (discussedApplication === 'want-advice') {
-      return this.redirect({ h, path: PRE_APPLICATION.wantAdvicePath })
+    await DataStore.save(context, {
+      receivedPreApplicationAdvice: receivedAdvice === 'received-advice'
+    })
+
+    if (receivedAdvice === 'want-advice') {
+      return this.redirect({ h, path: PRE_APPLICATION_ADVICE.wantAdvicePath })
     }
 
     return this.redirect({ h })

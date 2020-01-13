@@ -171,8 +171,8 @@ const Dynamics = {
       }
     },
     PRE_APPLICATION_ADVICE: {
-      DISCUSSED_APPLICATION: {
-        questionCode: 'pre-application-discussed'
+      APPLICATION_ADVICE: {
+        questionCode: 'pre-application-advice'
       }
     }
   },

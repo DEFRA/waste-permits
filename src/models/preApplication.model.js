@@ -3,10 +3,10 @@
 const ApplicationAnswer = require('../persistence/entities/applicationAnswer.entity')
 const { ApplicationQuestions } = require('../dynamics')
 const { PRE_APPLICATION_ADVICE } = ApplicationQuestions
-const { DISCUSSED_APPLICATION } = PRE_APPLICATION_ADVICE
+const { APPLICATION_ADVICE } = PRE_APPLICATION_ADVICE
 
 const answerIds = [
-  DISCUSSED_APPLICATION.questionCode
+  APPLICATION_ADVICE.questionCode
 ]
 
 module.exports = class PreApplicationAdvice {
@@ -19,7 +19,7 @@ module.exports = class PreApplicationAdvice {
   async save (context) {
     let applicationAnswers = []
 
-    if (this.discussedApplication) { applicationAnswers.push({ questionCode: DISCUSSED_APPLICATION.questionCode, answerText: this.discussedApplication }) }
+    if (this.applicationAdvice) { applicationAnswers.push({ questionCode: APPLICATION_ADVICE.questionCode, answerText: this.applicationAdvice }) }
 
     applicationAnswers.forEach(async (item) => {
       const applicationAnswer = new ApplicationAnswer(item)
@@ -31,10 +31,10 @@ module.exports = class PreApplicationAdvice {
 
   static async get (context) {
     const applicationAnswers = await ApplicationAnswer.listByMultipleQuestionCodes(context, answerIds)
-    const discussedApplicationAnswer = applicationAnswers.find(({ questionCode }) => questionCode === DISCUSSED_APPLICATION.questionCode)
+    const applicationAdviceAnswer = applicationAnswers.find(({ questionCode }) => questionCode === APPLICATION_ADVICE.questionCode)
 
     const preApplication = {
-      discussedApplication: discussedApplicationAnswer && discussedApplicationAnswer.answerText
+      applicationAdvice: applicationAdviceAnswer && applicationAdviceAnswer.answerText
     }
 
     return new PreApplicationAdvice(preApplication)

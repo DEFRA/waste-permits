@@ -26,23 +26,29 @@
 
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
-        <div class="form-group {{#getFormErrorGroupClass errors.pre-application-discussed}}{{/getFormErrorGroupClass}}">
+        <div class="form-group {{#getFormErrorGroupClass errors.pre-application-advice}}{{/getFormErrorGroupClass}}">
 
           <fieldset>
 
-            <legend id="pre-application-discussed-name-visually-hidden" class="visually-hidden">{{pageHeading}}</legend>
+            <legend id="pre-application-advice-name-visually-hidden" class="visually-hidden">{{pageHeading}}</legend>
 
-            {{> common/fieldError fieldId='pre-application-discussed-error' message=errors.pre-application-discussed }}
+            {{> common/fieldError fieldId='pre-application-advice-error' message=errors.pre-application-advice }}
 
-            <div class="multiple-choice">
-              <input id="received-advice" name="pre-application-discussed" type="radio" value="received-advice" {{#if formValues.received-advice}}checked="checked"{{/if}}>
+            <div class="multiple-choice" data-target="received-advice-info">
+              <input id="received-advice" name="pre-application-advice" type="radio" value="received-advice" {{#if formValues.received-advice}}checked="checked"{{/if}}>
               <label id="received-advice-label" for="received-advice">
                 I have received pre-application advice
               </label>
             </div>
 
+            <div class="panel panel-border-narrow js-hidden" id="received-advice-info">
+              <div class="body-text">
+                We’ll ask for the reference number later in your application
+              </div>
+            </div>
+
             <div class="multiple-choice" data-target="want-advice-info">
-              <input id="want-advice" name="pre-application-discussed" type="radio" value="want-advice" {{#if formValues.want-advice}}checked="checked"{{/if}}>
+              <input id="want-advice" name="pre-application-advice" type="radio" value="want-advice" {{#if formValues.want-advice}}checked="checked"{{/if}}>
               <label id="want-advice-label" for="want-advice">
                 I want to get basic or enhanced pre-application advice now
               </label>
@@ -55,7 +61,7 @@
             </div>
 
             <div class="multiple-choice">
-              <input id="no-advice" name="pre-application-discussed" type="radio" value="no-advice" {{#if formValues.no-advice}}checked="checked"{{/if}}>
+              <input id="no-advice" name="pre-application-advice" type="radio" value="no-advice" {{#if formValues.no-advice}}checked="checked"{{/if}}>
               <label id="no-advice-label" for="no-advice">
                 No, I do not require pre-application advice
               </label>

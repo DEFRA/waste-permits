@@ -258,12 +258,12 @@ const tasks = {
     shortName: 'pestmanagement',
     taskListModel: 'pestManagementPlan'
   },
-  PRE_APPLICATION: {
-    id: 'tell-us-if-youve-discussed-this-application-with-us',
-    label: 'Tell us if you have discussed this application with us',
-    route: Routes.PRE_APPLICATION,
+  PRE_APPLICATION_REFERENCE: {
+    id: 'provide-your-pre-application-reference',
+    label: 'Provide your pre-application reference',
+    route: Routes.PRE_APPLICATION_REFERENCE,
     completedLabelId: 'preapp-completed',
-    ruleSetId: 'defra_preapprequired',
+    // ruleSetId: 'defra_preapprequired',
     shortName: 'preapp'
   },
   RECOVERY_AND_DISPOSAL_CODES: {
@@ -415,7 +415,7 @@ const standardRules = [
     label: 'Prepare application',
     tasks: [
       tasks.WASTE_RECOVERY_PLAN,
-      tasks.PRE_APPLICATION,
+      tasks.PRE_APPLICATION_REFERENCE,
       tasks.CONTACT_DETAILS,
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.SITE_NAME_LOCATION,
@@ -452,7 +452,7 @@ const bespoke = [
     label: 'About the application',
     tasks: [
       tasks.CONTACT_DETAILS,
-      tasks.PRE_APPLICATION,
+      tasks.PRE_APPLICATION_REFERENCE,
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.CONFIRM_CONFIDENTIALLY,
       tasks.INVOICING_DETAILS,
@@ -529,6 +529,7 @@ const mcpBespoke = [
     label: 'About the application',
     tasks: [
       tasks.CONTACT_DETAILS,
+      tasks.PRE_APPLICATION_REFERENCE,
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.CONFIRM_CONFIDENTIALLY,
       tasks.INVOICING_DETAILS

@@ -1,6 +1,11 @@
+const { mcpBespoke,
+  tasks: {
+    PRE_APPLICATION_REFERENCE: { shortName: preApplicationShortName }
+  }
+} = require('../../tasks')
 
-const { mcpBespoke } = require('../../tasks')
 const BaseTaskList = require('./base.taskList')
+const DataStore = require('../../models/dataStore.model')
 
 module.exports = class mcpBespokeTaskList extends BaseTaskList {
   get taskListTemplate () {
@@ -11,6 +16,7 @@ module.exports = class mcpBespokeTaskList extends BaseTaskList {
     const { context } = this
     const { taskDeterminants } = context
     const currentTaskDeterminants = task.determinants
+    const { data: { receivedPreApplicationAdvice } } = await DataStore.get(context)
 
     // get list of tasks and flatten it
     // reduce is used since flat method isn't supported in Node 10
@@ -19,6 +25,9 @@ module.exports = class mcpBespokeTaskList extends BaseTaskList {
         return task.id
       })
     }).reduce((prev, curr) => prev.concat(curr))
+
+    // Add pre-application reference number to the tasklist if applicant has stated they received advice
+    if (receivedPreApplicationAdvice) { tasksFromTasklist.push(preApplicationShortName) }
 
     // if current task isn't in list of tasks then return false straight away
     // as no further checks are necessary

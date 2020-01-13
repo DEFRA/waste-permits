@@ -3,7 +3,8 @@ const { bespoke,
     WASTE_WEIGHTS: { shortName: wasteWeightsShortName },
     CLIMATE_CHANGE_RISK_SCREENING: { shortName: climateChangeRiskScreeningShortName },
     CLINICAL_WASTE_APPENDIX: { shortName: clinicalWasteShortName },
-    MANAGE_HAZARDOUS_WASTE: { shortName: hazardousWasteShortName }
+    MANAGE_HAZARDOUS_WASTE: { shortName: hazardousWasteShortName },
+    PRE_APPLICATION_REFERENCE: { shortName: preApplicationShortName }
   }
 } = require('../../tasks')
 
@@ -19,7 +20,7 @@ module.exports = class BespokeTaskList extends BaseTaskList {
   async isAvailable (task = {}) {
     const { context } = this
     const availableTasks = await Task.getAvailableTasks(context)
-    const { data: { acceptsClinicalWaste, acceptsHazardousWaste } } = await DataStore.get(context)
+    const { data: { acceptsClinicalWaste, acceptsHazardousWaste, receivedPreApplicationAdvice } } = await DataStore.get(context)
 
     // Remove clinical and hazardous waste from the tasklist when mapping
     // They are only shown if the applicant specifically states they accept those waste types
@@ -30,6 +31,9 @@ module.exports = class BespokeTaskList extends BaseTaskList {
     // Add clinical and hazardous waste to the tasklist if applicant has stated they accept them
     if (acceptsClinicalWaste) { taskNames.push(clinicalWasteShortName) }
     if (acceptsHazardousWaste) { taskNames.push(hazardousWasteShortName) }
+
+    // Add pre-application reference number to the tasklist if applicant has stated they received advice
+    if (receivedPreApplicationAdvice) { taskNames.push(preApplicationShortName) }
 
     taskNames.push(climateChangeRiskScreeningShortName)
     taskNames.push(wasteWeightsShortName)

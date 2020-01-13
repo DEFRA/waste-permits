@@ -15,15 +15,17 @@ const { COOKIE_RESULT } = require('../../src/constants')
 
 const PreApplicationModel = require('../../src/models/preApplication.model')
 
-const Routes = require('../../src/routes')
-const { PRE_APPLICATION_DISCUSSED } = Routes
+const DataStore = require('../../src/models/dataStore.model')
 
-const nextRoutePath = Routes[PRE_APPLICATION_DISCUSSED.nextRoute].path
-const wantAdvicePath = PRE_APPLICATION_DISCUSSED.wantAdvicePath
+const Routes = require('../../src/routes')
+const { PRE_APPLICATION_ADVICE } = Routes
+
+const nextRoutePath = Routes[PRE_APPLICATION_ADVICE.nextRoute].path
+const wantAdvicePath = PRE_APPLICATION_ADVICE.wantAdvicePath
 
 let sandbox
 
-const routePath = PRE_APPLICATION_DISCUSSED.path
+const routePath = PRE_APPLICATION_ADVICE.path
 
 const getRequest = {
   method: 'GET',
@@ -53,6 +55,8 @@ lab.beforeEach(() => {
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(PreApplicationModel, 'get').value(() => mocks.preApplication)
   sandbox.stub(PreApplicationModel.prototype, 'save').callsFake(async () => undefined)
+  sandbox.stub(DataStore, 'get').callsFake(() => mocks.dataStore)
+  sandbox.stub(DataStore.prototype, 'save').value(() => undefined)
 })
 
 lab.afterEach(() => {
@@ -60,7 +64,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment.only('Pre Application (Have you discussed this application with us?) page tests:', () => {
+lab.experiment('Pre Application (Have you received pre-application advice?) page tests:', () => {
   new GeneralTestHelper({ lab, routePath }).test()
 
   lab.test('The page should have a back link', async () => {
@@ -76,7 +80,7 @@ lab.experiment.only('Pre Application (Have you discussed this application with u
   })
 
   lab.test(`When 'Received advice' selected - redirects to ${nextRoutePath}`, async () => {
-    postRequest.payload = { 'pre-application-discussed': 'received-advice' }
+    postRequest.payload = { 'pre-application-advice': 'received-advice' }
 
     const res = await server.inject(postRequest)
 
@@ -85,7 +89,7 @@ lab.experiment.only('Pre Application (Have you discussed this application with u
   })
 
   lab.test(`When 'No advice' selected - redirects to ${nextRoutePath}`, async () => {
-    postRequest.payload = { 'pre-application-discussed': 'no-advice' }
+    postRequest.payload = { 'pre-application-advice': 'no-advice' }
 
     const res = await server.inject(postRequest)
 
@@ -94,7 +98,7 @@ lab.experiment.only('Pre Application (Have you discussed this application with u
   })
 
   lab.test(`When 'Want advice' selected - redirects to ${wantAdvicePath}`, async () => {
-    postRequest.payload = { 'pre-application-discussed': 'want-advice' }
+    postRequest.payload = { 'pre-application-advice': 'want-advice' }
 
     const res = await server.inject(postRequest)
 

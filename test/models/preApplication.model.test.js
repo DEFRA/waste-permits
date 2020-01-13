@@ -11,8 +11,8 @@ const PreApplication = require('../../src/models/preApplication.model')
 
 const context = { }
 
-const DISCUSSED_APPLICATION = {
-  questionCode: 'pre-application-discussed',
+const APPLICATION_ADVICE = {
+  questionCode: 'pre-application-advice',
   answerText: 'received-advice'
 }
 
@@ -40,20 +40,20 @@ lab.experiment('PreApplication model test:', () => {
   })
 
   lab.experiment('get', () => {
-    lab.test('Retrieve discussedApplication', async () => {
-      const { questionCode, answerText } = DISCUSSED_APPLICATION
+    lab.test('Retrieve applicationAdvice', async () => {
+      const { questionCode, answerText } = APPLICATION_ADVICE
       mocks.applicationAnswers[0] = { questionCode, answerText }
 
       const preApplication = await PreApplication.get(context)
 
-      Code.expect(preApplication.discussedApplication).to.equal(answerText)
+      Code.expect(preApplication.applicationAdvice).to.equal(answerText)
     })
   })
 
   lab.experiment('save', () => {
-    lab.test('Save discussedApplication', async () => {
+    lab.test('Save applicationAdvice', async () => {
       const preApplication = new PreApplication()
-      preApplication.discussedApplication = DISCUSSED_APPLICATION.answerText
+      preApplication.applicationAdvice = APPLICATION_ADVICE.answerText
 
       await preApplication.save(context)
 

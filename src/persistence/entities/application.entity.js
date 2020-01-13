@@ -44,7 +44,8 @@ class Application extends BaseEntity {
       { field: 'miningWastePlan', dynamics: 'defra_miningwasteplan' },
       { field: 'lineItemsTotalAmount', dynamics: 'defra_balance_line_items', readOnly: true },
       { field: 'regime', dynamics: '_defra_regimeid_value', bind: { id: 'defra_regimeid', relationship: 'defra_regime_defra_application_regimeid', dynamicsEntity: 'defra_regimes' } },
-      { field: 'businessTrack', dynamics: '_defra_businesstrackid_value', bind: { id: 'defra_businesstrackid', relationship: 'defra_businesstrack_defra_application_businesstrackid', dynamicsEntity: 'defra_businesstracks' } }
+      { field: 'businessTrack', dynamics: '_defra_businesstrackid_value', bind: { id: 'defra_businesstrackid', relationship: 'defra_businesstrack_defra_application_businesstrackid', dynamicsEntity: 'defra_businesstracks' } },
+      { field: 'preAppReference', dynamics: 'defra_external_system_reference' }
     ]
   }
 
