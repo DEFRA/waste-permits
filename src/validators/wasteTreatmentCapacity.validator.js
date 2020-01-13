@@ -2,7 +2,7 @@
 
 const Joi = require('@hapi/joi')
 const BaseValidator = require('./base.validator')
-const { treatmentAnswers } = require('../models/wasteTreatmentCapacityPt2.model')
+const { treatmentAnswers } = require('../models/wasteTreatmentCapacity.model')
 
 module.exports = class WasteTreatmentCapacityValidator extends BaseValidator {
   get errorMessages () {

@@ -3,13 +3,13 @@
 const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const wasteTreatmentCapacitiesPt2 = require('../models/wasteTreatmentCapacityPt2.model')
+const wasteTreatmentCapacities = require('../models/wasteTreatmentCapacity.model')
 const { WASTE_TREATMENT_CAPACITY: { path } } = require('../routes')
 
 const getSavedForProvidedActivityIndex = async (context, request) => {
   const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
   if (!Number.isNaN(activityIndexInt)) {
-    const res = await wasteTreatmentCapacitiesPt2.getForActivity(context, activityIndexInt)
+    const res = await wasteTreatmentCapacities.getForActivity(context, activityIndexInt)
     if (res) {
       return res
     }
@@ -20,11 +20,11 @@ const getSavedForProvidedActivityIndex = async (context, request) => {
 module.exports = class WasteTreatmentCapacityController extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
-    const wasteTreatmentCapacities =
+    const savedTreatmentCapacities =
       await getSavedForProvidedActivityIndex(context, request)
 
     const pageHeading =
-      `Does ${wasteTreatmentCapacities.activityDisplayName} include any treatment of these waste types?`
+      `Does ${savedTreatmentCapacities.activityDisplayName} include any treatment of these waste types?`
     const pageTitle = Constants.buildPageTitle(pageHeading)
 
     const pageContext = this.createPageContext(h, errors)
@@ -33,8 +33,8 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
     if (errors) {
       pageContext.formValues = request.payload
     } else {
-      pageContext.treatments = wasteTreatmentCapacitiesPt2.treatmentAnswers.map(treatment => {
-        const saved = wasteTreatmentCapacities
+      pageContext.treatments = wasteTreatmentCapacities.treatmentAnswers.map(treatment => {
+        const saved = savedTreatmentCapacities
           .wasteTreatmentCapacityAnswers.find(ans =>
             ans.questionCode === treatment.questionCode && ans.answerCode === 'yes')
         const isSelected = Boolean(saved)
@@ -52,7 +52,7 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
     const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
-    const saveResult = await wasteTreatmentCapacitiesPt2.saveAnswers(context, activityIndexInt, request.payload)
+    const saveResult = await wasteTreatmentCapacities.saveAnswers(context, activityIndexInt, request.payload)
 
     // If there are more activities, redirect to the next set
     if (saveResult.hasNext) {
