@@ -65,7 +65,8 @@ module.exports = class TaskDeterminants {
       aqmaRequired = false,
       siteNameRequired = false,
       businessActivityRequired = false,
-      screeningToolRequired = false
+      screeningToolRequired = false,
+      receivedPreApplicationAdvice = false
     } = this
 
     if (this._hasChanged('mcpType')) {
@@ -84,7 +85,8 @@ module.exports = class TaskDeterminants {
       aqmaRequired,
       siteNameRequired,
       businessActivityRequired,
-      screeningToolRequired
+      screeningToolRequired,
+      receivedPreApplicationAdvice
     }
     await DataStore.save(this.context, data)
   }

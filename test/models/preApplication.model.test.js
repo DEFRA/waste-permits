@@ -40,20 +40,20 @@ lab.experiment('PreApplication model test:', () => {
   })
 
   lab.experiment('get', () => {
-    lab.test('Retrieve applicationAdvice', async () => {
+    lab.test('Retrieve preApplicationAdvice', async () => {
       const { questionCode, answerText } = APPLICATION_ADVICE
       mocks.applicationAnswers[0] = { questionCode, answerText }
 
       const preApplication = await PreApplication.get(context)
 
-      Code.expect(preApplication.applicationAdvice).to.equal(answerText)
+      Code.expect(preApplication.receivedPreApplicationAdvice).to.equal(answerText)
     })
   })
 
   lab.experiment('save', () => {
-    lab.test('Save applicationAdvice', async () => {
+    lab.test('Save preApplicationAdvice', async () => {
       const preApplication = new PreApplication()
-      preApplication.applicationAdvice = APPLICATION_ADVICE.answerText
+      preApplication.receivedPreApplicationAdvice = APPLICATION_ADVICE.answerText
 
       await preApplication.save(context)
 

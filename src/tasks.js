@@ -262,9 +262,10 @@ const tasks = {
     id: 'provide-your-pre-application-reference',
     label: 'Provide your pre-application reference',
     route: Routes.PRE_APPLICATION_REFERENCE,
+    determinants: ['receivedPreApplicationAdvice'],
     completedLabelId: 'preapp-completed',
-    // ruleSetId: 'defra_preapprequired',
-    shortName: 'preapp'
+    shortName: 'preapp',
+    taskListModel: 'preApplication'
   },
   RECOVERY_AND_DISPOSAL_CODES: {
     id: 'recovery-and-disposal-codes',
@@ -414,8 +415,8 @@ const standardRules = [
     id: 'prepare-application-section',
     label: 'Prepare application',
     tasks: [
-      tasks.WASTE_RECOVERY_PLAN,
       tasks.PRE_APPLICATION_REFERENCE,
+      tasks.WASTE_RECOVERY_PLAN,
       tasks.CONTACT_DETAILS,
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.SITE_NAME_LOCATION,
@@ -451,8 +452,8 @@ const bespoke = [
     id: 'about-the-application-section',
     label: 'About the application',
     tasks: [
-      tasks.CONTACT_DETAILS,
       tasks.PRE_APPLICATION_REFERENCE,
+      tasks.CONTACT_DETAILS,
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.CONFIRM_CONFIDENTIALLY,
       tasks.INVOICING_DETAILS,
@@ -528,8 +529,8 @@ const mcpBespoke = [
     id: 'about-the-application-section',
     label: 'About the application',
     tasks: [
-      tasks.CONTACT_DETAILS,
       tasks.PRE_APPLICATION_REFERENCE,
+      tasks.CONTACT_DETAILS,
       tasks.PERMIT_HOLDER_DETAILS,
       tasks.CONFIRM_CONFIDENTIALLY,
       tasks.INVOICING_DETAILS

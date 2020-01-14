@@ -760,7 +760,7 @@ const Routes = {
     controller: 'bespokeOrStandardRules',
     validator: 'bespokeOrStandardRules',
     nextRoute: 'PERMIT_CATEGORY',
-    bespokeRoute: 'PRE_APPLICATION_ADVICE',
+    bespokeRoute: 'FACILITY_TYPE',
     types: 'GET, POST',
     cookieValidationRequired: false,
     applicationRequired: false
@@ -1378,7 +1378,7 @@ const Routes = {
     pageHeading: 'Have you received pre-application advice?',
     controller: 'preApplicationAdvice',
     validator: 'preApplicationAdvice',
-    nextRoute: 'FACILITY_TYPE',
+    nextRoute: 'BESPOKE_OR_STANDARD_RULES',
     wantAdvicePath: 'https://www.gov.uk/government/publications/environmental-permit-pre-application-advice-form',
     types: 'GET, POST'
   },
@@ -1386,10 +1386,9 @@ const Routes = {
     path: '/pre-application/reference',
     view: 'preApplicationReference',
     pageHeading: 'Provide your pre-application reference',
-    controller: 'preApplicationAdvice',
-    validator: 'preApplicationAdvice',
-    nextRoute: 'FACILITY_TYPE',
-    wantAdvicePath: 'https://www.gov.uk/government/publications/environmental-permit-pre-application-advice-form',
+    controller: 'preApplicationReference',
+    validator: 'preApplicationReference',
+    nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
   PRIVACY: {
@@ -1527,6 +1526,7 @@ const Routes = {
     pageHeading: 'Apply for an environmental permit',
     controller: 'startOrOpenSaved',
     validator: 'startOrOpenSaved',
+    nextRoute: 'PRE_APPLICATION_ADVICE',
     types: 'GET, POST',
     cookieValidationRequired: false,
     applicationRequired: false

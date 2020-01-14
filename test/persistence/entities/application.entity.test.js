@@ -38,7 +38,7 @@ const fakeApplicationData = {
   organisationType: 'ORGANISATION_TYPE',
   paymentReceived: 'PAYMENT_RECEIVED',
   permitHolderIndividualId: 'PERMIT_HOLDER_ID',
-  preAppReference: 'PRE_APP_REFERENCE',
+  preApplicationReference: 'PRE_APP_REFERENCE',
   relevantOffences: 'RELEVANT_OFFENCES',
   relevantOffencesDetails: 'RELEVANT_OFFENCES_DETAILS',
   recoveryPlanAssessmentStatus: 910400000,
@@ -92,7 +92,7 @@ const fakeApplicationDynamicsRecord = (options = {}) => {
     defra_balance_line_items: application.lineItemsTotalAmount,
     _defra_regimeid_value: application.regime,
     _defra_businesstrackid_value: application.businessTrack,
-    defra_external_system_reference: application.preAppReference
+    defra_external_system_reference: application.preApplicationReference
   }
 }
 

@@ -1,0 +1,35 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <div class="body-text">
+        <p>Providing your pre-application reference will help us when we’re determining your application.</p>
+      </div>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+        <div class="form-group {{#getFormErrorGroupClass errors.pre-application-reference}}{{/getFormErrorGroupClass}}">
+          <label class="form-label" for="pre-application-reference">
+            <span id="pre-application-reference-label">Enter your pre-application reference number (for example, EPR/AB1234CD/A001)</span>
+          </label>
+
+          {{> common/fieldError fieldId='pre-application-reference-error' message=errors.pre-application-reference }}
+
+          <input class="form-control form-control-char-25 {{#if errors.pre-application-reference}}form-control-error{{/if}}" id="pre-application-reference" name="pre-application-reference" type="text" value="{{formValues.pre-application-reference}}">
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>

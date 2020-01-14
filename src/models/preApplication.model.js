@@ -9,7 +9,7 @@ const answerIds = [
   APPLICATION_ADVICE.questionCode
 ]
 
-module.exports = class PreApplicationAdvice {
+module.exports = class PreApplication {
   constructor (data = {}) {
     Object.entries(data).forEach(([field, value]) => {
       this[field] = value
@@ -17,26 +17,34 @@ module.exports = class PreApplicationAdvice {
   }
 
   async save (context) {
-    let applicationAnswers = []
+    const { application } = context
 
-    if (this.applicationAdvice) { applicationAnswers.push({ questionCode: APPLICATION_ADVICE.questionCode, answerText: this.applicationAdvice }) }
-
-    applicationAnswers.forEach(async (item) => {
-      const applicationAnswer = new ApplicationAnswer(item)
+    if (this.receivedPreApplicationAdvice) {
+      const { questionCode } = APPLICATION_ADVICE
+      const answerText = this.receivedPreApplicationAdvice
+      const applicationAnswer = new ApplicationAnswer({ questionCode, answerText })
       await applicationAnswer.save(context)
-    })
+    }
+
+    if (this.preApplicationReference) {
+      application.preApplicationReference = this.preApplicationReference
+      await application.save(context)
+    }
 
     return null
   }
 
   static async get (context) {
+    const { application } = context
+
     const applicationAnswers = await ApplicationAnswer.listByMultipleQuestionCodes(context, answerIds)
-    const applicationAdviceAnswer = applicationAnswers.find(({ questionCode }) => questionCode === APPLICATION_ADVICE.questionCode)
+    const preApplicationAdviceAnswer = applicationAnswers.find(({ questionCode }) => questionCode === APPLICATION_ADVICE.questionCode)
 
     const preApplication = {
-      applicationAdvice: applicationAdviceAnswer && applicationAdviceAnswer.answerText
+      receivedPreApplicationAdvice: preApplicationAdviceAnswer && preApplicationAdviceAnswer.answerText,
+      preApplicationReference: application && application.preApplicationReference
     }
 
-    return new PreApplicationAdvice(preApplication)
+    return new PreApplication(preApplication)
   }
 }
