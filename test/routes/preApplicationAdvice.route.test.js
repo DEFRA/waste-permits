@@ -15,7 +15,7 @@ const { COOKIE_RESULT } = require('../../src/constants')
 
 const PreApplicationModel = require('../../src/models/preApplication.model')
 
-const DataStore = require('../../src/models/dataStore.model')
+const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 
 const Routes = require('../../src/routes')
 const { PRE_APPLICATION_ADVICE } = Routes
@@ -55,8 +55,8 @@ lab.beforeEach(() => {
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
   sandbox.stub(PreApplicationModel, 'get').value(() => mocks.preApplication)
   sandbox.stub(PreApplicationModel.prototype, 'save').callsFake(async () => undefined)
-  sandbox.stub(DataStore, 'get').callsFake(() => mocks.dataStore)
-  sandbox.stub(DataStore.prototype, 'save').value(() => undefined)
+  sandbox.stub(TaskDeterminants, 'get').value(() => mocks.taskDeterminants)
+  sandbox.stub(TaskDeterminants.prototype, 'save').value(() => undefined)
 })
 
 lab.afterEach(() => {

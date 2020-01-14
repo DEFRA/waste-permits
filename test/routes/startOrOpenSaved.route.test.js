@@ -15,9 +15,12 @@ const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 
-const routePath = '/start/start-or-open-saved'
-const nextRoutePath = '/bespoke-or-standard-rules'
-const checkEmailRoutePath = '/save-return/search-your-email'
+const Routes = require('../../src/routes')
+const { START_OR_OPEN_SAVED, SEARCH_YOUR_EMAIL } = Routes
+
+const routePath = START_OR_OPEN_SAVED.path
+const nextRoutePath = Routes[START_OR_OPEN_SAVED.nextRoute].path
+const checkEmailRoutePath = SEARCH_YOUR_EMAIL.path
 
 let getRequest
 let postRequest
