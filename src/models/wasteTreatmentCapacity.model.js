@@ -1,7 +1,5 @@
 'use strict'
 
-const DataStore =
-  require('../models/dataStore.model')
 const ApplicationLine =
   require('../persistence/entities/applicationLine.entity')
 const ApplicationAnswer =
