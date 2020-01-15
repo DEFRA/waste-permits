@@ -30,21 +30,25 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
     const pageContext = this.createPageContext(h, errors)
     Object.assign(pageContext, { pageHeading, pageTitle })
 
-    if (errors) {
-      pageContext.formValues = request.payload
-    } else {
-      pageContext.treatments = wasteTreatmentCapacities.treatmentAnswers.map(treatment => {
-        const saved = savedTreatmentCapacities
-          .wasteTreatmentCapacityAnswers.find(ans =>
-            ans.questionCode === treatment.questionCode && ans.answerCode === 'yes')
-        const isSelected = Boolean(saved)
-        return {
-          id: treatment.questionCode,
-          text: treatment.questionText,
-          isSelected
-        }
-      })
-    }
+    pageContext.treatments = wasteTreatmentCapacities.treatmentAnswers.map(treatment => {
+      const saved = savedTreatmentCapacities
+        .wasteTreatmentCapacityAnswers
+        .find(ans =>
+          // check the appropriate boxes based on the data coming
+          // back from dynamics
+          ans.questionCode ===
+          treatment.questionCode && ans.answerCode === 'yes')
+      const isSelected = Boolean(saved) ||
+        // there are errors so use the payload to work out what is checked
+        errors
+        ? request.payload.hasOwnProperty(treatment.questionCode)
+        : false
+      return {
+        id: treatment.questionCode,
+        text: treatment.questionText,
+        isSelected
+      }
+    })
 
     return this.showView({ h, pageContext })
   }
@@ -52,13 +56,21 @@ module.exports = class WasteTreatmentCapacityController extends BaseController {
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
     const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
-    const saveResult = await wasteTreatmentCapacities.saveAnswers(context, activityIndexInt, request.payload)
+    const saveResult = await wasteTreatmentCapacities.saveAnswers(
+      context,
+      activityIndexInt,
+      request.payload
+    )
 
-    // If there are more activities, redirect to the next set
     if (saveResult.hasNext) {
-      return this.redirect({ h, path: `${path}/${saveResult.forActivityIndex + 1}` })
+      //  there are more activities
+      //  redirect to the next set of questions
+      return this.redirect({
+        h,
+        path: `${path}/${saveResult.forActivityIndex + 1}`
+      })
     }
-
+    // we're done, back to the task list
     return this.redirect({ h })
   }
 }

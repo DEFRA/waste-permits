@@ -114,6 +114,6 @@ module.exports = {
     }
   },
   getAllWeightsHaveBeenEnteredForApplication: async function (context) {
-    return []
+    return true
   }
 }
