@@ -21,6 +21,12 @@ module.exports = class ApplicationCost {
     return this.totalCostItem
   }
 
+  get includesMultipleActivities () {
+    return this.items
+      .map(item => item.isMultipleActivity)
+      .includes(true)
+  }
+
   static async getApplicationCostForApplicationId (entityContextToUse) {
     const { applicationId } = entityContextToUse
 
@@ -67,7 +73,8 @@ module.exports = class ApplicationCost {
       const description = line.lineName
       const cost = line.value
       const displayOrder = line.displayOrder
-      return new ApplicationCostItem({ description, cost, displayOrder })
+      const discountType = line.discountType
+      return new ApplicationCostItem({ description, cost, displayOrder, discountType })
     })
     const wasteAssessmentApplicationCostItems = wasteAssessmentLineEntities.map((line) => {
       const wasteAssessment = wasteAssessmentItemEntities.find(({ id }) => id === line.itemId)

@@ -12,7 +12,10 @@ module.exports = class ConfirmCostController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
     const { taskDeterminants: { facilityType } } = context
 
-    pageContext.calculatedCosts = await ApplicationCost.getApplicationCostForApplicationId(context)
+    const calculatedCosts = await ApplicationCost.getApplicationCostForApplicationId(context)
+
+    pageContext.calculatedCosts = calculatedCosts
+    pageContext.includesMultipleActivities = calculatedCosts.includesMultipleActivities
 
     if (facilityType !== MCP) {
       pageContext.wasteActivitiesLink = WASTE_ACTIVITY_CONTINUE.path
