@@ -38,11 +38,13 @@ module.exports = class WasteTreatmentCapacityTypesController extends BaseControl
           // back from dynamics
           ans.questionCode ===
           treatment.questionCode && ans.answerCode === 'yes')
-      const isSelected = Boolean(saved) ||
+      let isSelected = Boolean(saved)
+      if (errors) {
         // there are errors so use the payload to work out what is checked
-        errors
-        ? request.payload.hasOwnProperty(treatment.questionCode)
-        : false
+        isSelected = errors
+          ? request.payload.hasOwnProperty(treatment.questionCode)
+          : false
+      }
       return {
         id: treatment.questionCode,
         text: treatment.questionText,

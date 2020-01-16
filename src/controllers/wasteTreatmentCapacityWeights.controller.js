@@ -31,7 +31,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
     const pageContext = this.createPageContext(h, errors)
     Object.assign(pageContext, { pageHeading, pageTitle })
 
-    pageContext.treatments = wasteTreatmentCapacities.treatmentAnswers.map(treatment => {
+    pageContext.treatments = wasteTreatmentCapacities.treatmentAnswers.filter(treatment => {
       const saved = savedTreatmentCapacities
         .wasteTreatmentCapacityAnswers
         .find(ans =>
@@ -39,17 +39,11 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
           // back from dynamics
           ans.questionCode ===
           treatment.questionCode && ans.answerCode === 'yes')
-      const isSelected = Boolean(saved) ||
-        // there are errors so use the payload to work out what is checked
-        errors
-        ? request.payload.hasOwnProperty(treatment.questionCode)
-        : false
-      return {
-        id: treatment.questionCode,
-        text: treatment.questionText,
-        isSelected
-      }
-    })
+      return Boolean(saved)
+    }).map(treatment => ({
+      text: treatment.questionText
+    }))
+    console.log(pageContext.treatments)
 
     return this.showView({ h, pageContext })
   }

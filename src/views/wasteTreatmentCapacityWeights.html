@@ -12,13 +12,13 @@
       {{> common/pageHeading pageHeading }}
 
       <p>
-        The daily treatment capacity for these types of activities
-        will confirm that you are applying for the correct permit.
+        Enter the weights and make sure they are within the limits
+        for a waste permit. If not, you'll need to apply for an
+        installation permit.
       </p>
 
       <p>
-        If your operation exceeds certain thresholds, you may need
-        to apply for an installation permit.
+        More information about daily limits
       </p>
 
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
@@ -30,11 +30,21 @@
           <div id="treatment" class="form-group {{#getFormErrorGroupClass errors.treatment}}{{/getFormErrorGroupClass}}">
             {{> common/fieldError fieldId='select-error' message=errors.select }}
             {{#each treatments}}
+            <!--
             <div class="multiple-choice">
               <input id="{{this.id}}-input" type="checkbox" name="{{this.id}}" value="yes" {{#if this.isSelected}}checked="checked"{{/if}}>
               <label id="{{this.id}}-label" for="{{this.id}}-input">
                 <span id="{{this.id}}-text">{{this.text}}</span>
               </label>
+            </div>
+            -->
+            <div class="form-group">
+              <label id="hazardous-throughput-label" class="form-label" for="hazardous-throughput">
+                Daily capacity for {{this.text}}
+              </label>
+              {{> common/fieldError fieldId='hazardous-throughput-error' message=errors.hazardous-throughput}}
+              <input class="form-control form-control-char-15 {{#if errors.hazardous-throughput}}form-control-error{{/if}}" id="hazardous-throughput" name="hazardous-throughput" type="text" value="{{formValues.hazardous-throughput}}">
+              <span id="hazardous-throughput-unit">tonnes</span>
             </div>
             {{/each}}
           </div>
