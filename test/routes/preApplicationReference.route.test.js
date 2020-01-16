@@ -112,7 +112,7 @@ lab.experiment('Pre Application (Provide your pre-application reference) page te
       })
     })
 
-    lab.experiment.only(`POST ${routePath}`, () => {
+    lab.experiment(`POST ${routePath}`, () => {
       let postRequest
 
       lab.beforeEach(() => {
