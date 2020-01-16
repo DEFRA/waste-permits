@@ -31,6 +31,8 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
     const pageContext = this.createPageContext(h, errors)
     Object.assign(pageContext, { pageHeading, pageTitle })
 
+    console.log('&&&', request.payload)
+
     pageContext.treatments = wasteTreatmentCapacities.treatmentAnswers.filter(treatment => {
       const saved = savedTreatmentCapacities
         .wasteTreatmentCapacityAnswers
