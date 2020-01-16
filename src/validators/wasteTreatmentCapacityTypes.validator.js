@@ -16,7 +16,8 @@ module.exports = class WasteTreatmentCapacityValidator extends BaseValidator {
 
   get formValidators () {
     const codes = treatmentAnswers.map(ta => ta.questionCode)
-    return Joi.object({ 'treatment-none': Joi.string().label('select') })
+    return Joi
+      .object({ 'treatment-none': Joi.string().label('select') })
       .or(...codes)
       .label('select') // The name of the field that object-level errors should be attached to on the page
       .when(Joi.object({ 'treatment-none': Joi.exist() }), {

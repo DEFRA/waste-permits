@@ -37,20 +37,24 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
         .find(ans =>
           // check the appropriate boxes based on the data coming
           // back from dynamics
-          ans.questionCode ===
-          treatment.questionCode && ans.answerCode === 'yes')
+          ans.questionCode === treatment.questionCode &&
+            ans.answerCode === 'yes')
       return Boolean(saved)
     }).map(treatment => ({
-      text: treatment.questionText
+      text: treatment.questionText,
+      id: treatment.weightCode,
+      weightText: treatment.weightText
     }))
-    console.log(pageContext.treatments)
 
     return this.showView({ h, pageContext })
   }
 
   async doPost (request, h) {
-    const context = await RecoveryService.createApplicationContext(h)
-    const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
+    // const context = await RecoveryService.createApplicationContext(h)
+    // const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
+    console.log(request.payload)
+    return 'YO'
+    /*
     const saveResult = await wasteTreatmentCapacities.saveAnswers(
       context,
       activityIndexInt,
@@ -67,5 +71,6 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
     }
     // we're done, back to the task list
     return this.redirect({ h })
+    */
   }
 }

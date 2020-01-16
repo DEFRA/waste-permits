@@ -9,39 +9,48 @@ const treatmentAnswers = [
   {
     questionCode: 'treatment-hazardous',
     questionText: 'Treatment of hazardous waste',
-    answerCode: 'no'
-
+    answerCode: 'no',
+    weightCode: 'treatment-hazardous-daily',
+    weightText: undefined
   },
   {
     questionCode: 'treatment-biological',
     questionText: 'Biological treatment (eg composting or anaerobic digestion)',
-    answerCode: 'no'
+    answerCode: 'no',
+    weightCode: 'treatment-biological-daily',
+    weightText: undefined
 
   },
   {
     questionCode: 'treatment-chemical',
     questionText: 'Physico-chemical treatment for disposal',
-    answerCode: 'no'
+    answerCode: 'no',
+    weightCode: 'treatment-chemical-daily',
+    weightText: undefined
 
   },
   {
     questionCode: 'treatment-incineration',
     questionText: 'Pre-treatment of waste for incineration or co-incineration',
-    answerCode: 'no'
-
+    answerCode: 'no',
+    weightCode: 'treatment-incineration-daily',
+    weightText: undefined
   },
   {
     questionCode: 'treatment-slags',
     questionText: 'Treatment of slags and ashes',
-    answerCode: 'no'
-
+    answerCode: 'no',
+    weightCode: 'treatment-slags-daily',
+    weightText: undefined
   },
   {
     questionCode: 'treatment-metal',
     questionText: `Treatment in shredders of metal waste, including
       waste electrical and electronic equipment and end-of-life
       vehicles and their components`,
-    answerCode: 'no'
+    answerCode: 'no',
+    weightCode: 'treatment-metal-daily',
+    weightText: undefined
 
   },
   {
