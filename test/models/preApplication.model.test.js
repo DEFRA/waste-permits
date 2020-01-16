@@ -7,17 +7,20 @@ const sinon = require('sinon')
 const Mocks = require('../helpers/mocks')
 
 const ApplicationAnswer = require('../../src/persistence/entities/applicationAnswer.entity')
+const Application = require('../../src/persistence/entities/application.entity')
 const PreApplication = require('../../src/models/preApplication.model')
-
-const context = { }
 
 const APPLICATION_ADVICE = {
   questionCode: 'pre-application-advice',
   answerText: 'received-advice'
 }
 
+const PRE_APPLICATION_REFERENCE = 'EPR/AB1234CD/A001'
+
 let mocks
-let saveSpy
+let applicationSaveSpy
+let applicationAnswerSaveSpy
+let context
 
 lab.experiment('PreApplication model test:', () => {
   let sandbox
@@ -25,13 +28,19 @@ lab.experiment('PreApplication model test:', () => {
   lab.beforeEach(() => {
     mocks = new Mocks()
 
+    context = mocks.context
+
     // Create a sinon sandbox to stub methods
     sandbox = sinon.createSandbox()
 
     // Stub methods
+    sandbox.stub(Application, 'getById').callsFake(() => mocks.application)
+    sandbox.stub(Application.prototype, 'save').value(() => undefined)
+    applicationSaveSpy = sandbox.stub(Application.prototype, 'save')
+    applicationSaveSpy.callsFake(async () => undefined)
     sandbox.stub(ApplicationAnswer, 'listByMultipleQuestionCodes').callsFake(async () => mocks.applicationAnswers)
-    saveSpy = sandbox.stub(ApplicationAnswer.prototype, 'save')
-    saveSpy.callsFake(async () => undefined)
+    applicationAnswerSaveSpy = sandbox.stub(ApplicationAnswer.prototype, 'save')
+    applicationAnswerSaveSpy.callsFake(async () => undefined)
   })
 
   lab.afterEach(() => {
@@ -48,6 +57,14 @@ lab.experiment('PreApplication model test:', () => {
 
       Code.expect(preApplication.receivedPreApplicationAdvice).to.equal(answerText)
     })
+
+    lab.test('Retrieve preApplicationReference', async () => {
+      mocks.application.preApplicationReference = PRE_APPLICATION_REFERENCE
+
+      const preApplication = await PreApplication.get(context)
+
+      Code.expect(preApplication.preApplicationReference).to.equal(PRE_APPLICATION_REFERENCE)
+    })
   })
 
   lab.experiment('save', () => {
@@ -57,7 +74,16 @@ lab.experiment('PreApplication model test:', () => {
 
       await preApplication.save(context)
 
-      Code.expect(saveSpy.callCount).to.equal(1)
+      Code.expect(applicationAnswerSaveSpy.callCount).to.equal(1)
+    })
+
+    lab.test('Save preApplicationReference', async () => {
+      const preApplication = new PreApplication()
+      preApplication.preApplicationReference = PRE_APPLICATION_REFERENCE
+
+      await preApplication.save(context)
+
+      Code.expect(applicationSaveSpy.callCount).to.equal(1)
     })
   })
 })

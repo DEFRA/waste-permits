@@ -8,6 +8,12 @@ const { bespoke,
   }
 } = require('../../tasks')
 
+const shortNamesToFilter = [
+  clinicalWasteShortName,
+  hazardousWasteShortName,
+  preApplicationShortName
+]
+
 const BaseTaskList = require('./base.taskList')
 const Task = require('../../persistence/entities/task.entity')
 const DataStore = require('../../models/dataStore.model')
@@ -22,13 +28,12 @@ module.exports = class BespokeTaskList extends BaseTaskList {
     const availableTasks = await Task.getAvailableTasks(context)
     const { data: { acceptsClinicalWaste, acceptsHazardousWaste, receivedPreApplicationAdvice } } = await DataStore.get(context)
 
-    // Remove clinical and hazardous waste from the tasklist when mapping
-    // They are only shown if the applicant specifically states they accept those waste types
+    // When mapping, remove tasks that we are about to check for
     const taskNames = availableTasks
       .map(({ shortName }) => shortName)
-      .filter((shortName) => shortName !== clinicalWasteShortName && shortName !== hazardousWasteShortName)
+      .filter((shortName) => !shortNamesToFilter.includes(shortName))
 
-    // Add clinical and hazardous waste to the tasklist if applicant has stated they accept them
+    // Add clinical and hazardous waste to the tasklist if applicant has specifically stated they accept them
     if (acceptsClinicalWaste) { taskNames.push(clinicalWasteShortName) }
     if (acceptsHazardousWaste) { taskNames.push(hazardousWasteShortName) }
 

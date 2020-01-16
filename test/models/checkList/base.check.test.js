@@ -23,6 +23,7 @@ const McpBusinessType = require('../../../src/models/mcpBusinessType.model')
 const AirQualityManagementArea = require('../../../src/models/airQualityManagementArea.model')
 const WasteDisposalAndRecoveryCodes = require('../../../src/models/wasteDisposalAndRecoveryCodes.model')
 const WasteWeights = require('../../../src/models/wasteWeights.model')
+const PreApplication = require('../../../src/models/preApplication.model')
 
 const RecoveryService = require('../../../src/services/recovery.service')
 
@@ -64,6 +65,7 @@ lab.beforeEach(() => {
   sandbox.stub(WasteDisposalAndRecoveryCodes, 'getAllForApplication').resolves([])
   sandbox.stub(WasteWeights, 'getAllForApplication').resolves([])
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
+  sandbox.stub(PreApplication, 'get').value(() => mocks.preApplication)
 })
 
 lab.afterEach(() => {
@@ -211,7 +213,7 @@ lab.experiment('Base Check tests:', () => {
     Code.expect(standardRule).to.equal(mocks.standardRule)
     Code.expect(context.standardRule).to.equal(await check.getStandardRule())
   })
-  
+
   lab.test('getEmissionsAndMonitoringDetails works correctly if no details provided', async () => {
     sandbox.stub(DataStore, 'get').value(() => { return { data: { emissionsAndMonitoringDetailsRequired: false } } })
 
@@ -301,5 +303,13 @@ lab.experiment('Base Check tests:', () => {
     const allWasteWeights = await check.getAllWasteWeights()
     Code.expect(allWasteWeights).to.equal([])
     Code.expect(context.allWasteWeights).to.equal(await check.getAllWasteWeights())
+  })
+
+  lab.test('getPreApplication works correctly', async () => {
+    delete context.preApplication
+    const check = new BaseCheck(context)
+    const preApplication = await check.getPreApplication()
+    Code.expect(preApplication).to.equal(mocks.preApplication)
+    Code.expect(context.preApplication).to.equal(await check.getPreApplication())
   })
 })

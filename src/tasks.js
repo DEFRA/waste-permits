@@ -264,6 +264,7 @@ const tasks = {
     route: Routes.PRE_APPLICATION_REFERENCE,
     determinants: ['receivedPreApplicationAdvice'],
     completedLabelId: 'preapp-completed',
+    ruleSetId: 'defra_preapprequired',
     shortName: 'preapp',
     taskListModel: 'preApplication'
   },

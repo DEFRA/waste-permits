@@ -100,7 +100,8 @@ class MockData {
       relevantOffencesDetails: 'RELEVANT OFFENCES DETAILS',
       bankruptcy: true,
       bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS',
-      saveAndReturnEmail: 'SAVE@RETURN.EMAIL'
+      saveAndReturnEmail: 'SAVE@RETURN.EMAIL',
+      preApplicationReference: 'PRE_APPLICATION_REFERENCE'
     }
   }
 

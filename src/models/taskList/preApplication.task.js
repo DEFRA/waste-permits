@@ -6,6 +6,6 @@ const PreApplicationModel = require('../preApplication.model')
 module.exports = class PreApplication extends BaseTask {
   static async checkComplete (context) {
     const preApplication = await PreApplicationModel.get(context)
-    return preApplication.preApplicationReference
+    return Boolean(preApplication.preApplicationReference)
   }
 }
