@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseController = require('./base.controller')
-const { WASTE_TREATMENT_CAPACITY: { path: wasteTreatmentCapacityBasePath } } = require('../routes')
+const { WASTE_TREATMENT_CAPACITY_TYPES: { path: wasteTreatmentCapacityBasePath } } = require('../routes')
 
 module.exports = class WasteTreatmentCapacities extends BaseController {
   async doGet (request, h) {

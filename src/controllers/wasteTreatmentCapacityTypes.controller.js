@@ -4,7 +4,7 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const wasteTreatmentCapacities = require('../models/wasteTreatmentCapacity.model')
-const { WASTE_TREATMENT_CAPACITY: { path } } = require('../routes')
+const { WASTE_TREATMENT_CAPACITY_TYPES: { path } } = require('../routes')
 
 const getSavedForProvidedActivityIndex = async (context, request) => {
   const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
@@ -17,7 +17,7 @@ const getSavedForProvidedActivityIndex = async (context, request) => {
   throw new Error('Invalid activity')
 }
 
-module.exports = class WasteTreatmentCapacityController extends BaseController {
+module.exports = class WasteTreatmentCapacityTypesController extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
     const savedTreatmentCapacities =

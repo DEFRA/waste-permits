@@ -1737,13 +1737,23 @@ const Routes = {
     controller: 'wasteTreatmentCapacities',
     types: 'GET'
   },
-  WASTE_TREATMENT_CAPACITY: {
-    path: '/waste-treatment-capacity',
+  WASTE_TREATMENT_CAPACITY_TYPES: {
+    path: '/waste-treatment-capacity/types',
     params: ['activityIndex'],
-    view: 'wasteTreatmentCapacity',
-    pageHeading: 'Provide your waste treatment capacity',
-    controller: 'wasteTreatmentCapacity',
-    validator: 'wasteTreatmentCapacity',
+    view: 'wasteTreatmentCapacityTypes',
+    pageHeading: 'Select relevant your waste treatment capacity types',
+    controller: 'wasteTreatmentCapacityTypes',
+    validator: 'wasteTreatmentCapacityTypes',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
+  WASTE_TREATMENT_CAPACITY_WEIGHTS: {
+    path: '/waste-treatment-capacity/weights',
+    params: ['activityIndex'],
+    view: 'wasteTreatmentCapacityWeights',
+    pageHeading: 'Provide your waste treatment capacity weights',
+    controller: 'wasteTreatmentCapacityWeights',
+    validator: 'wasteTreatmentCapacityWeights',
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
