@@ -27,20 +27,17 @@
         <fieldset>
           <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
 
-          <div id="treatment" class="form-group {{#getFormErrorGroupClass errors.waste-weight}}{{/getFormErrorGroupClass}}">
-            {{> common/fieldError fieldId='select-error' message=errors.waste-weight }}
+          <div id="treatment" class="form-group">
             {{#each treatments}}
             <div class="form-group">
               <label id="{{this.id}}-label" class="form-label" for="{{this.id}}">
                 Daily capacity for {{this.text}}
               </label>
-              {{> common/fieldError fieldId='waste-weight-error' message=errors.waste-weight}}
-              <div>{{errors}}</div>
               <input
-                class="form-control form-control-char-15 {{#if errors.waste-weight}}form-control-error{{/if}}"
-                id="{{this.id}}" name="{{this.id}}"
+                class="form-control form-control-char-15 {{#if this.error}}form-control-error{{/if}}"
+                id="{{this.id}}" type="number" name="{{this.id}}"
                 value="{{this.weight}}">
-              <span id="hazardous-throughput-unit">tonnes</span>
+              <span id="{{this.id}}-unit">tonnes</span>
             </div>
             {{/each}}
           </div>

@@ -11,14 +11,14 @@ const treatmentAnswers = [
     questionText: 'Treatment of hazardous waste',
     answerCode: 'no',
     weightCode: 'treatment-hazardous-daily',
-    weightText: undefined
+    weight: 0
   },
   {
     questionCode: 'treatment-biological',
     questionText: 'Biological treatment (eg composting or anaerobic digestion)',
     answerCode: 'no',
     weightCode: 'treatment-biological-daily',
-    weightText: undefined
+    weight: 0
 
   },
   {
@@ -26,7 +26,7 @@ const treatmentAnswers = [
     questionText: 'Physico-chemical treatment for disposal',
     answerCode: 'no',
     weightCode: 'treatment-chemical-daily',
-    weightText: undefined
+    weight: 0
 
   },
   {
@@ -34,14 +34,14 @@ const treatmentAnswers = [
     questionText: 'Pre-treatment of waste for incineration or co-incineration',
     answerCode: 'no',
     weightCode: 'treatment-incineration-daily',
-    weightText: undefined
+    weight: 0
   },
   {
     questionCode: 'treatment-slags',
     questionText: 'Treatment of slags and ashes',
     answerCode: 'no',
     weightCode: 'treatment-slags-daily',
-    weightText: undefined
+    weight: 0
   },
   {
     questionCode: 'treatment-metal',
@@ -50,7 +50,7 @@ const treatmentAnswers = [
       vehicles and their components`,
     answerCode: 'no',
     weightCode: 'treatment-metal-daily',
-    weightText: undefined
+    weight: 0
 
   },
   {
@@ -105,17 +105,24 @@ module.exports = {
     const positiveAnswers = Object.keys(answers)
     const { applicationLine, hasNext } =
       await getRelevantApplicationLine(context, activityIndex)
-
-    const toSave = treatmentAnswers.map(ta => ({
-      applicationLineId: applicationLine.id,
-      questionCode: ta.questionCode,
-      answerCode: positiveAnswers.indexOf(ta.questionCode) >= 0 ? 'yes' : 'no'
-    }))
+    let noTreatment = false
+    const toSave = treatmentAnswers.map(ta => {
+      const answerCode = positiveAnswers.indexOf(ta.questionCode) >= 0 ? 'yes' : 'no'
+      if (ta.questionCode === 'treatment-none' && answerCode === 'yes') {
+        noTreatment = true
+      }
+      return {
+        applicationLineId: applicationLine.id,
+        questionCode: ta.questionCode,
+        answerCode
+      }
+    })
 
     const savePromises = toSave.map(answer => saveAnswer(answer, context))
     await Promise.all(savePromises)
 
     return {
+      noTreatment,
       hasNext,
       forActivityIndex: activityIndex
     }

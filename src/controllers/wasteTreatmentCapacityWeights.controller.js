@@ -31,21 +31,25 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
     const pageContext = this.createPageContext(h, errors)
     Object.assign(pageContext, { pageHeading, pageTitle })
 
-    console.log('&&&', request.payload)
+    const errArr = pageContext.errorList.map(err => err.fieldName)
 
     pageContext.treatments = wasteTreatmentCapacities.treatmentAnswers.filter(treatment => {
       const saved = savedTreatmentCapacities
         .wasteTreatmentCapacityAnswers
         .find(ans =>
-          // check the appropriate boxes based on the data coming
-          // back from dynamics
+          // feed the view the appropriate weights, based on data
+          // from previous screen
           ans.questionCode === treatment.questionCode &&
             ans.answerCode === 'yes')
       return Boolean(saved)
     }).map(treatment => ({
       text: treatment.questionText,
       id: treatment.weightCode,
-      weightText: treatment.weightText
+      // feed the weight submitted back to the view (not saved yet)
+      weight: request.payload[treatment.weightCode] || treatment.weight,
+      // if the weightCode show up in the validation errors feed
+      // that back to the view for error highlight
+      error: errArr.indexOf(treatment.weightCode) >= 0
     }))
 
     return this.showView({ h, pageContext })
@@ -54,7 +58,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
   async doPost (request, h) {
     // const context = await RecoveryService.createApplicationContext(h)
     // const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
-    console.log(request.payload)
+    console.log('***', request.payload)
     return 'YO'
     /*
     const saveResult = await wasteTreatmentCapacities.saveAnswers(

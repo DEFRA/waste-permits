@@ -1,60 +1,30 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
 const BaseValidator = require('./base.validator')
 const { treatmentAnswers } = require('../models/wasteTreatmentCapacity.model.js')
-const MAX_LENGTH = 15
 
 module.exports = class WasteTreatmentCapacityWeightValidator extends BaseValidator {
   get errorMessages () {
-    /*
-    return {
-      'waste-weight': {
-        'custom.invalid': '',
-        'any.required': 'You must enter a number/weight for each waste type',
-        'string.max': `You can enter up to ${MAX_LENGTH} characters`,
-        'number.base': 'Weights must be numbers',
-        'number.unsafe': `Enter the weights between 0 and 999999999999999`
-      }
-    } */
     const obj = {}
     treatmentAnswers.forEach(ans => {
       obj[ans.weightCode] = {
-        'custom.invalid': 'whaaa'
+        'custom-invalid': ans.questionText + ' must be a number between 1 and 999999999999999'
       }
     })
     return obj
   }
-  /*
-  get formValidators () {
-    return {
-      'waste-weight': Joi.number().max(MAX_LENGTH).required()
-    }
-  }
-*/
-  // TODO: loop on the model add one of these each and compare!
   get customValidators () {
     const obj = {}
     treatmentAnswers.forEach(ans => {
       obj[ans.weightCode] = {
-        'custom.invalid': (...value) => {
-          // console.log(treatmentAnswers)
-          console.log(`###### ${ans.weightCode}`, value)
-          return true
+        'custom-invalid': (...value) => {
+          const numVal = Number(value[0])
+          if (Object.keys(value[1]).indexOf(ans.weightCode) >= 0) {
+            return Number.isNaN(numVal) || numVal <= 0 || numVal > 999999999999999
+          }
         }
       }
     })
     return obj
-    /*
-    return {
-      'waste-weight': {
-        'custom.invalid': (...value) => {
-          console.log(treatmentAnswers)
-          console.log('######', value)
-          return true
-        }
-      }
-    }
-    */
   }
 }
