@@ -23,8 +23,6 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
     const savedTreatmentCapacities =
       await getSavedForProvidedActivityIndex(context, request)
 
-    console.log('%%%', savedTreatmentCapacities)
-
     const pageHeading =
       `Enter the daily treatment capacity for
         ${savedTreatmentCapacities.activityDisplayName}`
@@ -37,24 +35,31 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
       ? pageContext.errorList.map(err => err.fieldName)
       : []
 
-    pageContext.treatments = wasteTreatmentCapacities.treatmentAnswers.filter(treatment => {
+    pageContext.treatments = []
+    wasteTreatmentCapacities.treatmentAnswers.forEach(treatment => {
       const saved = savedTreatmentCapacities
         .wasteTreatmentCapacityAnswers
-        .find(ans =>
+        .find(ans => {
           // feed the view the appropriate weights, based on data
           // from previous screen
-          ans.questionCode === treatment.questionCode &&
-            ans.answerCode === 'yes')
+          return ans.questionCode === treatment.weightCode ||
+            (ans.questionCode === treatment.questionCode && ans.answerCode === 'yes')
+          //TODO: if answer code is 'no' make sure that answer is erased
+        })
+      if (saved) {
+        const forView = {
+          text: treatment.questionText,
+          id: treatment.weightCode,
+          // feed the weight submitted back to the view (not saved yet)
+          weight: request.payload ? request.payload[treatment.weightCode] : saved.answerText || 0,
+          // if the weightCode show up in the validation errors feed
+          // that back to the view for error highlight
+          error: errArr.indexOf(treatment.weightCode) >= 0
+        }
+        pageContext.treatments.push(forView)
+      }
       return Boolean(saved)
-    }).map(treatment => ({
-      text: treatment.questionText,
-      id: treatment.weightCode,
-      // feed the weight submitted back to the view (not saved yet)
-      weight: request.payload ? request.payload[treatment.weightCode] : treatment.weight,
-      // if the weightCode show up in the validation errors feed
-      // that back to the view for error highlight
-      error: errArr.indexOf(treatment.weightCode) >= 0
-    }))
+    })
 
     return this.showView({ h, pageContext })
   }

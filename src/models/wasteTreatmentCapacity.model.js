@@ -94,6 +94,7 @@ module.exports = {
         context,
         applicationLine.id,
         treatmentAnswers.map(answer => answer.questionCode)
+          .concat(treatmentAnswers.map(answer => answer.weightCode))
       )
     return {
       wasteTreatmentCapacityAnswers,
@@ -102,7 +103,6 @@ module.exports = {
     }
   },
   saveWeights: async function (context, activityIndex, weights) {
-    console.log(weights)
     const { applicationLine, hasNext } =
       await getRelevantApplicationLine(context, activityIndex)
     const toSave = Object.keys(weights).map(weightId => {
@@ -112,11 +112,8 @@ module.exports = {
         answerText: String(weights[weightId])
       }
     })
-    console.log('£££', toSave)
     const savePromises = toSave.map(answer => saveAnswer(answer, context))
     await Promise.all(savePromises)
-      .then(x => { console.log('SUCCESS', x) })
-      .catch(err => console.error('ERRRRR', err))
     return {
       hasNext,
       forActivityIndex: activityIndex
