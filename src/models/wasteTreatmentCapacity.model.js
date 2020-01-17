@@ -101,6 +101,27 @@ module.exports = {
       hasNext
     }
   },
+  saveWeights: async function (context, activityIndex, weights) {
+    console.log(weights)
+    const { applicationLine, hasNext } =
+      await getRelevantApplicationLine(context, activityIndex)
+    const toSave = Object.keys(weights).map(weightId => {
+      return {
+        applicationLineId: applicationLine.id,
+        questionCode: weightId,
+        answerText: String(weights[weightId])
+      }
+    })
+    console.log('£££', toSave)
+    const savePromises = toSave.map(answer => saveAnswer(answer, context))
+    await Promise.all(savePromises)
+      .then(x => { console.log('SUCCESS', x) })
+      .catch(err => console.error('ERRRRR', err))
+    return {
+      hasNext,
+      forActivityIndex: activityIndex
+    }
+  },
   saveAnswers: async function (context, activityIndex, answers) {
     const positiveAnswers = Object.keys(answers)
     const { applicationLine, hasNext } =
@@ -117,7 +138,7 @@ module.exports = {
         answerCode
       }
     })
-
+    console.log('$$$', toSave)
     const savePromises = toSave.map(answer => saveAnswer(answer, context))
     await Promise.all(savePromises)
 

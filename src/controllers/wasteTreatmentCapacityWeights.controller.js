@@ -4,7 +4,7 @@ const Constants = require('../constants')
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
 const wasteTreatmentCapacities = require('../models/wasteTreatmentCapacity.model')
-// const { WASTE_TREATMENT_CAPACITY_TYPES: { path } } = require('../routes')
+const { WASTE_TREATMENT_CAPACITY_TYPES: { path } } = require('../routes')
 
 const getSavedForProvidedActivityIndex = async (context, request) => {
   const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
@@ -23,6 +23,8 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
     const savedTreatmentCapacities =
       await getSavedForProvidedActivityIndex(context, request)
 
+    console.log('%%%', savedTreatmentCapacities)
+
     const pageHeading =
       `Enter the daily treatment capacity for
         ${savedTreatmentCapacities.activityDisplayName}`
@@ -31,7 +33,9 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
     const pageContext = this.createPageContext(h, errors)
     Object.assign(pageContext, { pageHeading, pageTitle })
 
-    const errArr = pageContext.errorList.map(err => err.fieldName)
+    const errArr = pageContext.errorList
+      ? pageContext.errorList.map(err => err.fieldName)
+      : []
 
     pageContext.treatments = wasteTreatmentCapacities.treatmentAnswers.filter(treatment => {
       const saved = savedTreatmentCapacities
@@ -46,7 +50,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
       text: treatment.questionText,
       id: treatment.weightCode,
       // feed the weight submitted back to the view (not saved yet)
-      weight: request.payload[treatment.weightCode] || treatment.weight,
+      weight: request.payload ? request.payload[treatment.weightCode] : treatment.weight,
       // if the weightCode show up in the validation errors feed
       // that back to the view for error highlight
       error: errArr.indexOf(treatment.weightCode) >= 0
@@ -56,12 +60,9 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
   }
 
   async doPost (request, h) {
-    // const context = await RecoveryService.createApplicationContext(h)
-    // const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
-    console.log('***', request.payload)
-    return 'YO'
-    /*
-    const saveResult = await wasteTreatmentCapacities.saveAnswers(
+    const context = await RecoveryService.createApplicationContext(h)
+    const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
+    const saveResult = await wasteTreatmentCapacities.saveWeights(
       context,
       activityIndexInt,
       request.payload
@@ -77,6 +78,5 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
     }
     // we're done, back to the task list
     return this.redirect({ h })
-    */
   }
 }
