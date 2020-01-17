@@ -44,7 +44,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
           // from previous screen
           return ans.questionCode === treatment.weightCode ||
             (ans.questionCode === treatment.questionCode && ans.answerCode === 'yes')
-          //TODO: if answer code is 'no' make sure that answer is erased
+          // TODO: if answer code is 'no' make sure that answer is erased
         })
       if (saved) {
         const forView = {
