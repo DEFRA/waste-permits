@@ -18,6 +18,7 @@ Constants.FILE_TYPES = {
   DOC: { extension: 'doc' },
   DOCX: { extension: 'docx' },
   JPG: { extension: ['jpg', 'jpeg'] },
+  PNG: { extension: 'png' },
   ODS: { extension: 'ods' },
   ODT: { extension: 'odt' },
   PDF: { extension: 'pdf' },
