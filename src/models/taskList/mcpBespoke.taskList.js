@@ -1,4 +1,3 @@
-
 const { mcpBespoke } = require('../../tasks')
 const BaseTaskList = require('./base.taskList')
 
@@ -22,9 +21,7 @@ module.exports = class mcpBespokeTaskList extends BaseTaskList {
 
     // if current task isn't in list of tasks then return false straight away
     // as no further checks are necessary
-    if (!tasksFromTasklist.includes(task.id)) {
-      return false
-    }
+    if (!tasksFromTasklist.includes(task.id)) { return false }
 
     // this task is available if there are no determinants listed
     // or if none of the listed determinants are false in taskDeterminants

@@ -253,7 +253,8 @@ Constants.Validation = {
   LETTERS_HYPHENS_SPACES_AND_APOSTROPHES_REGEX: /^(?!(?:\S*\s){3})([A-Za-zÀ-ÖØ-öø-ÿ'\-\s]+)$/,
   PLUSES_AND_SPACES_REGEX: /(\+|\s)/g,
   PLUSES_SPACES_AND_NUMBERS_REGEX: /^[0-9 +]*$/,
-  PLUSES_CANNOT_PRECEDE_ZERO: /^(\+[ ]*[1-9][0-9 ]*|[^+][0-9 ]*)$/
+  PLUSES_CANNOT_PRECEDE_ZERO: /^(\+[ ]*[1-9][0-9 ]*|[^+][0-9 ]*)$/,
+  PRE_APPLICATION_REFERENCE_REGEX: /^[A-Za-z]{3}\/[A-Za-z]{2}\d{4}[A-Za-z]{2}\/[A-Za-z]\d{3}$/
 }
 
 Constants.getVersion = () => {

@@ -18,9 +18,12 @@ const { COOKIE_RESULT } = require('../../src/constants')
 
 let sandbox
 
-const routePath = '/bespoke-or-standard-rules'
-const nextRoutePath = '/permit/category'
-const bespokeRoutePath = '/facility-type'
+const Routes = require('../../src/routes')
+const { BESPOKE_OR_STANDARD_RULES } = Routes
+
+const routePath = BESPOKE_OR_STANDARD_RULES.path
+const nextRoutePath = Routes[BESPOKE_OR_STANDARD_RULES.nextRoute].path
+const bespokeRoutePath = Routes[BESPOKE_OR_STANDARD_RULES.bespokeRoute].path
 
 const permitTypeQuery = '?permit-type='
 const bespokeQuery = `${permitTypeQuery}bespoke`

@@ -1,0 +1,78 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <div class="body-text">
+        <p>The Environment Agency offers free basic pre-application advice to:</p>
+        <ul class="list list-bullet">
+          <li>check that your activity meets the criteria for a permit</li>
+          <li>carry out nature and heritage conservation screening</li>
+          <li>advise which risk assessments are needed for your application</li>
+        </ul>
+
+        <p>If you need more in-depth advice they offer an enhanced pre-application advice service which costs £100 an hour plus VAT.</p>
+
+        <p><strong class="bold">We strongly recommend that you get advice before you apply</strong></p>
+      </div>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+        <div class="form-group {{#getFormErrorGroupClass errors.pre-application-advice}}{{/getFormErrorGroupClass}}">
+
+          <fieldset>
+
+            <legend id="pre-application-advice-name-visually-hidden" class="visually-hidden">{{pageHeading}}</legend>
+
+            {{> common/fieldError fieldId='pre-application-advice-error' message=errors.pre-application-advice }}
+
+            <div class="multiple-choice" data-target="received-advice-info">
+              <input id="received-advice" name="pre-application-advice" type="radio" value="received-advice" {{#if formValues.received-advice}}checked="checked"{{/if}}>
+              <label id="received-advice-label" for="received-advice">
+                I have received pre-application advice
+              </label>
+            </div>
+
+            <div class="panel panel-border-narrow js-hidden" id="received-advice-info">
+              <div class="body-text">
+                We’ll ask for the reference number later in your application
+              </div>
+            </div>
+
+            <div class="multiple-choice" data-target="want-advice-info">
+              <input id="want-advice" name="pre-application-advice" type="radio" value="want-advice" {{#if formValues.want-advice}}checked="checked"{{/if}}>
+              <label id="want-advice-label" for="want-advice">
+                I want to get basic or enhanced pre-application advice now
+              </label>
+            </div>
+
+            <div class="panel panel-border-narrow js-hidden" id="want-advice-info">
+              <div class="body-text">
+                We'll close this permit application and take you to the pre-application advice form when you click 'Continue'
+              </div>
+            </div>
+
+            <div class="multiple-choice">
+              <input id="no-advice" name="pre-application-advice" type="radio" value="no-advice" {{#if formValues.no-advice}}checked="checked"{{/if}}>
+              <label id="no-advice-label" for="no-advice">
+                No, I do not require pre-application advice
+              </label>
+            </div>
+
+          </fieldset>
+        </div>
+
+        {{> common/submitButton }}
+      </form>
+
+    </div>
+  </div>
+</main>

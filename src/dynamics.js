@@ -173,6 +173,11 @@ const Dynamics = {
       WATER_SOURCE: {
         questionCode: 'climate-change-water-source'
       }
+    },
+    PRE_APPLICATION_ADVICE: {
+      APPLICATION_ADVICE: {
+        questionCode: 'pre-application-advice'
+      }
     }
   },
   BACS_EMAIL_CONFIG: 'PSC-BACS-EMAIL',

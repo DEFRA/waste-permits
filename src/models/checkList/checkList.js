@@ -39,12 +39,14 @@ const EmissionsManagementPlanCheck = require('./emissionsManagementPlan.check')
 const SiteConditionReportCheck = require('./siteConditionReport.check')
 const TechnicalStandardsCheck = require('./technicalStandards.check')
 const BespokePermitCheck = require('./bespokePermit.check')
+const PreApplicationCheck = require('./preApplication.check')
 
 module.exports = class CheckList {
   constructor () {
     // List of Checks.
     // Please note order is display order.
     this._checks = [
+      PreApplicationCheck,
       DrainageCheck,
       ContactCheck,
       PermitHolderCheck,

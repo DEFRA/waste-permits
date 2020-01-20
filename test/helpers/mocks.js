@@ -22,17 +22,14 @@ const CharityDetail = require('../../src/models/charityDetail.model')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const DataStore = require('../../src/models/dataStore.model')
 const McpBusinessType = require('../../src/models/mcpBusinessType.model')
-
 const ApplicationCostModel = require('../../src/models/applicationCost.model')
 const ApplicationCostItemModel = require('../../src/models/applicationCostItem.model')
-
 const NeedToConsult = require('../../src/models/needToConsult.model')
 const AirQualityManagementArea = require('../../src/models/airQualityManagementArea.model')
 const OperatingUnder500Hours = require('../../src/models/operatingUnder500Hours.model')
-
 const StoreTreat = require('../../src/models/storeTreat.model')
-
 const ClimateChangeRiskScreening = require('../../src/models/climateChangeRiskScreening.model')
+const PreApplication = require('../../src/models/preApplication.model')
 
 // ************* Data used by exported mocks ************* //
 class MockData {
@@ -103,7 +100,8 @@ class MockData {
       relevantOffencesDetails: 'RELEVANT OFFENCES DETAILS',
       bankruptcy: true,
       bankruptcyDetails: 'BANKRUPTCY DETAILS\nINSOLVENCY DETAILS',
-      saveAndReturnEmail: 'SAVE@RETURN.EMAIL'
+      saveAndReturnEmail: 'SAVE@RETURN.EMAIL',
+      preApplicationReference: 'PRE_APPLICATION_REFERENCE'
     }
   }
 
@@ -517,6 +515,10 @@ class Mocks {
 
   get climateChangeRiskScreening () {
     return this._climateChangeRiskScreening || (this._climateChangeRiskScreening = new ClimateChangeRiskScreening())
+  }
+
+  get preApplication () {
+    return this._preApplication || (this._preApplication = new PreApplication())
   }
 
   get payment () {
