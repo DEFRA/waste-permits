@@ -112,6 +112,7 @@ module.exports = {
         answerText: String(weights[weightId])
       }
     })
+    console.log(toSave)
     const savePromises = toSave.map(answer => saveAnswer(answer, context))
     await Promise.all(savePromises)
     return {
@@ -125,18 +126,27 @@ module.exports = {
       await getRelevantApplicationLine(context, activityIndex)
     let noTreatment = false
     const toSave = treatmentAnswers.map(ta => {
+      const rtn = []
       const answerCode = positiveAnswers.indexOf(ta.questionCode) >= 0 ? 'yes' : 'no'
+      if (answerCode === 'no' && ta.questionCode !== 'treatment-none') {
+        // make sure corresponding weight is set to empty
+        rtn.push({
+          applicationLineId: applicationLine.id,
+          questionCode: ta.weightCode,
+          answerText: undefined
+        })
+      }
       if (ta.questionCode === 'treatment-none' && answerCode === 'yes') {
         noTreatment = true
       }
-      return {
+      rtn.push({
         applicationLineId: applicationLine.id,
         questionCode: ta.questionCode,
         answerCode
-      }
+      })
+      return rtn
     })
-    console.log('$$$', toSave)
-    const savePromises = toSave.map(answer => saveAnswer(answer, context))
+    const savePromises = [].concat(...toSave).map(answer => saveAnswer(answer, context))
     await Promise.all(savePromises)
 
     return {

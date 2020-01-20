@@ -42,10 +42,11 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
         .find(ans => {
           // feed the view the appropriate weights, based on data
           // from previous screen
-          return ans.questionCode === treatment.weightCode ||
+          return (ans.questionCode === treatment.weightCode && ans.answerText !== undefined) ||
             (ans.questionCode === treatment.questionCode && ans.answerCode === 'yes')
-          // TODO: if answer code is 'no' make sure that answer is erased
         })
+      // TODO: refreshing the weights screen shows only first ids saved
+      console.log('%%%', treatment, saved)
       if (saved) {
         const forView = {
           text: treatment.questionText,
