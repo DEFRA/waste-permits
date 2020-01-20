@@ -1014,7 +1014,7 @@ const Routes = {
   CLIMATE_CHANGE_RISK_SCREENING_PERMIT_LENGTH: {
     path: '/climate-change-risk-screening/permit-length',
     view: 'climateChangeRiskScreening/permitLength',
-    pageHeading: 'Climate change risk screening',
+    pageHeading: 'How long will a permit be required for this site or activity?',
     controller: 'climateChangeRiskScreening/permitLength',
     validator: 'climateChangeRiskScreening/permitLength',
     nextRoute: 'CLIMATE_CHANGE_RISK_SCREENING_FLOOD_RISK',
@@ -1023,7 +1023,7 @@ const Routes = {
   CLIMATE_CHANGE_RISK_SCREENING_FLOOD_RISK: {
     path: '/climate-change-risk-screening/flood-risk',
     view: 'climateChangeRiskScreening/floodRisk',
-    pageHeading: 'Climate change risk screening',
+    pageHeading: 'What is your site’s risk of flooding from rivers or the sea?',
     controller: 'climateChangeRiskScreening/floodRisk',
     validator: 'climateChangeRiskScreening/floodRisk',
     nextRoute: 'CLIMATE_CHANGE_RISK_SCREENING_WATER_SOURCE',
@@ -1032,7 +1032,7 @@ const Routes = {
   CLIMATE_CHANGE_RISK_SCREENING_WATER_SOURCE: {
     path: '/climate-change-risk-screening/water-source',
     view: 'climateChangeRiskScreening/waterSource',
-    pageHeading: 'Climate change risk screening',
+    pageHeading: 'If you use water at your site, what’s the source?',
     controller: 'climateChangeRiskScreening/waterSource',
     validator: 'climateChangeRiskScreening/waterSource',
     types: 'GET, POST'
@@ -1054,7 +1054,7 @@ const Routes = {
   CLIMATE_CHANGE_RISK_SCREENING_NO_UPLOAD: {
     path: '/climate-change-risk-screening/no-assessment-now',
     view: 'climateChangeRiskScreening/noAssessmentNow',
-    pageHeading: 'Climate change risk screening',
+    pageHeading: 'A climate change risk assessment is not required',
     controller: 'climateChangeRiskScreening/noAssessmentNow',
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
