@@ -49,7 +49,7 @@ lab.experiment('Best available techniques assessment upload tests:', () => {
     const options = {
       pageHeading: 'Upload the best available techniques (BAT) assessment',
       submitButton: 'Continue',
-      fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT', 'JPG']
+      fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT', 'JPG', 'PNG']
     }
 
     // Perform general get tests
@@ -65,7 +65,7 @@ lab.experiment('Best available techniques assessment upload tests:', () => {
   lab.experiment(`POST ${uploadPath}`, () => {
     // Perform general upload tests
     helper.uploadSuccess('application/msword')
-    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT', 'JPG'] }, 'application/msword')
+    helper.uploadInvalid({ fileTypes: ['PDF', 'DOC', 'DOCX', 'ODT', 'JPG', 'PNG'] }, 'application/msword')
     helper.uploadFailure('application/msword')
   })
 

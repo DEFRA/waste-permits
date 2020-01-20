@@ -1,5 +1,5 @@
 const { AccountRoleCodes } = require('./dynamics')
-const { AAI, ABS, ADI, AMI, APL, BIN, BPI, CNA, CSV, DAT, DBF, DEM, DGM, DIN, DOC, DOCX, EMI, FAC, FIL, FMS, FMT, GEO, GOT, GRF, HRL, JPG, MET, ODS, ODT, PDF, PFL, ROU, RUF, SFC, SHP, SHX, TER, VAR, XLS, XLSX } = require('./constants').FILE_TYPES
+const { AAI, ABS, ADI, AMI, APL, BIN, BPI, CNA, CSV, DAT, DBF, DEM, DGM, DIN, DOC, DOCX, EMI, FAC, FIL, FMS, FMT, GEO, GOT, GRF, HRL, JPG, PNG, MET, ODS, ODT, PDF, PFL, ROU, RUF, SFC, SHP, SHX, TER, VAR, XLS, XLSX } = require('./constants').FILE_TYPES
 
 const Routes = {
   ROOT: {
@@ -776,7 +776,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'BEST_AVAILABLE_TECHNIQUES_ASSESSMENT',
     validatorOptions: {
-      fileTypes: [PDF, DOC, DOCX, ODT, JPG]
+      fileTypes: [PDF, DOC, DOCX, ODT, JPG, PNG]
     }
   },
   CHECK_BEFORE_SENDING: {
@@ -1089,7 +1089,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'FIRE_PREVENTION_PLAN',
     validatorOptions: {
-      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, ODT, ODS]
     }
   },
   HAZARDOUS_WASTE_PLANS_GUIDANCE: {
@@ -1507,7 +1507,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'SITE_PLAN',
     validatorOptions: {
-      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, ODT, ODS]
     }
   },
   SITE_NAME: {
@@ -1586,7 +1586,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_QUALIFICATION',
     validatorOptions: {
-      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, ODT, ODS]
     }
   },
   UPLOAD_DEEMED_EVIDENCE: {
@@ -1600,7 +1600,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_QUALIFICATION',
     validatorOptions: {
-      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, ODT, ODS]
     }
   },
   UPLOAD_ESA_EU_SKILLS: {
@@ -1614,7 +1614,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_QUALIFICATION',
     validatorOptions: {
-      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, ODT, ODS]
     }
   },
   UPLOAD_WAMITAB_QUALIFICATION: {
@@ -1628,7 +1628,7 @@ const Routes = {
     baseRoute: 'uploadRoute',
     subject: 'TECHNICAL_QUALIFICATION',
     validatorOptions: {
-      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, ODT, ODS]
+      fileTypes: [PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, ODT, ODS]
     }
   },
   VERSION: {

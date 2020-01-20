@@ -16,7 +16,7 @@ const UploadService = require('../../src/services/upload.service')
 const VirusScan = require('../../src/services/virusScan')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-const defaultFileTypes = 'PDF,DOC,DOCX,XLS,XLSX,JPG,ODT,ODS'
+const defaultFileTypes = 'PDF,DOC,DOCX,XLS,XLSX,JPG,PNG,ODT,ODS'
 
 const server = require('../../server')
 
