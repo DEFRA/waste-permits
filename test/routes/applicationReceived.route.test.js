@@ -96,7 +96,6 @@ lab.experiment('ApplicationReceived page tests:', () => {
         'confirmation-email-message-prefix',
         'what-happens-next-heading',
         'application-received-info',
-        'application-received-hint',
         'application-received-warning',
         'give-feedback-link'
       ])
@@ -117,7 +116,6 @@ lab.experiment('ApplicationReceived page tests:', () => {
         'emailed-confirmation',
         'what-happens-next-heading',
         'application-received-info',
-        'application-received-hint',
         'application-received-warning',
         'give-feedback-link'
       ])
