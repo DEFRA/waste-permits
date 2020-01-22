@@ -155,6 +155,54 @@ module.exports = {
     }
   },
   getAllWeightsHaveBeenEnteredForApplication: async function (context) {
+    // console.log('111 LETS CHECK ALL THE WEIGHTS ARE PRESENT')
+    const allWasteTreatmentCapacityApplicationLines =
+      await ApplicationLine.listForWasteActivities(context)
+    const applicationLinesMinusDiscounts = allWasteTreatmentCapacityApplicationLines.filter(al => al.value >= 0)
+    // console.log('222 ALL APPLICATION LINES', applicationLinesMinusDiscounts)
+    const weightArrays = await Promise.all(applicationLinesMinusDiscounts.map(async al => {
+      const wasteTreatmentCapacityAnswers = await ApplicationAnswer
+        .listForApplicationLine(
+          context,
+          al.id,
+          treatmentAnswers.map(answer => answer.questionCode)
+            .concat(treatmentAnswers.map(answer => answer.weightCode))
+        )
+      return wasteTreatmentCapacityAnswers
+    }))
+    const weights = [].concat.apply([], weightArrays)
+    // console.log('333 WEIGHTS?', weights)
+    const weightsByActivity = weights.reduce((accumulator, weightAnswer) => {
+      const arr = accumulator[weightAnswer.applicationLineId]
+        ? accumulator[weightAnswer.applicationLineId]
+        : []
+      accumulator[weightAnswer.applicationLineId] = arr.concat(weightAnswer)
+      return accumulator
+    }, {})
+    // console.log('444', weightsByActivity)
+    const submittedPerActivity = {}
+    Object.keys(weightsByActivity).forEach(activityId => {
+      // console.log(`555 ${activityId}`)
+      const submittedArr = weightsByActivity[activityId]
+        .filter(answer => answer.answerCode === 'yes' || answer.answerText)
+      // console.log(submitted)
+      /*
+      console.log(submittedArr.reduce((accumulator, answer) => {
+        const index = accumulator.findIndex(i => i.questionCode === answer.questionCode) || 0
+        if (index >= 0) {
+          accumulator[index].questionCode = answer.questionCode
+        } else {
+          accumulator.push({
+            questionCode: answer.questionCode
+          })
+        }
+        return accumulator
+      }, []))
+      */
+      submittedPerActivity[activityId] = submittedArr
+    })
+    console.log('666', submittedPerActivity)
+
     return true
   }
 }
