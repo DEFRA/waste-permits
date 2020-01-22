@@ -15,8 +15,10 @@ const RecoveryService = require('../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 
-const routePath = '/mcp-check/habitat-assessment'
-const nextRoutePath = '/maintain-application-lines'
+const Routes = require('../../src/routes')
+const { MCP_HABITAT_ASSESSMENT } = Routes
+const routePath = MCP_HABITAT_ASSESSMENT.path
+const nextRoutePath = Routes[MCP_HABITAT_ASSESSMENT.nextRoute].path
 
 let sandbox
 let mocks

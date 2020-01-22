@@ -1191,7 +1191,7 @@ const Routes = {
     pageHeading: 'Will your MCP operate for less than 500 hours a year?',
     controller: 'operatingUnder500Hours',
     validator: 'operatingUnder500Hours',
-    nextRoute: 'MCP_AIR_DISPERSION_MODELLING',
+    nextRoute: 'MCP_HABITAT_ASSESSMENT',
     types: 'GET, POST'
   },
   MCP_AIR_DISPERSION_MODELLING: {
@@ -1217,7 +1217,7 @@ const Routes = {
     pageHeading: 'Do you need a habitat assessment?',
     controller: 'habitatAssessment',
     validator: 'habitatAssessment',
-    nextRoute: 'MAINTAIN_APPLICATION_LINES',
+    nextRoute: 'MCP_AIR_DISPERSION_MODELLING',
     types: 'GET, POST'
   },
   MCP_HAS_EXISTING_PERMIT: {
@@ -1250,7 +1250,7 @@ const Routes = {
     pageHeading: 'Does any single generator unit have a net rated thermal input between 20MW and 50MW?',
     controller: 'thermalInput20To50Mw',
     validator: 'thermalInput20To50Mw',
-    nextRoute: 'MCP_HABITAT_ASSESSMENT',
+    nextRoute: 'MAINTAIN_APPLICATION_LINES',
     types: 'GET, POST'
   },
   BURNING_WASTE_BIOMASS: {
@@ -1259,7 +1259,7 @@ const Routes = {
     pageHeading: 'Are you burning waste biomass?',
     controller: 'burningWasteBiomass',
     validator: 'burningWasteBiomass',
-    nextRoute: 'MCP_HABITAT_ASSESSMENT',
+    nextRoute: 'MAINTAIN_APPLICATION_LINES',
     types: 'GET, POST'
   },
   MCP_REQUIRES_ENERGY_REPORT: {
