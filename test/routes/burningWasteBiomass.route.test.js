@@ -13,9 +13,12 @@ const RecoveryService = require('../../src/services/recovery.service')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const { COOKIE_RESULT } = require('../../src/constants')
 const { STATIONARY_MCP } = require('../../src/dynamics').MCP_TYPES
-const routePath = '/mcp-check/best-available-techniques/mcp'
 
-const nextRoutePath = '/mcp-check/habitat-assessment'
+const Routes = require('../../src/routes')
+const { BURNING_WASTE_BIOMASS } = Routes
+const routePath = BURNING_WASTE_BIOMASS.path
+const nextRoutePath = Routes[BURNING_WASTE_BIOMASS.nextRoute].path
+
 let sandbox
 let mocks
 let taskDeterminantsStub

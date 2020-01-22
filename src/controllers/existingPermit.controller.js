@@ -2,7 +2,7 @@
 
 const BaseController = require('./base.controller')
 const RecoveryService = require('../services/recovery.service')
-const { MCP_AIR_DISPERSION_MODELLING, MCP_HAS_EXISTING_PERMIT, MCP_UNDER_500_HOURS, TASK_LIST } = require('../routes')
+const { MCP_HABITAT_ASSESSMENT, MCP_HAS_EXISTING_PERMIT, MCP_UNDER_500_HOURS, TASK_LIST } = require('../routes')
 const { STATIONARY_SG } = require('../dynamics').MCP_TYPES
 
 module.exports = class ExistingPermitController extends BaseController {
@@ -33,7 +33,7 @@ module.exports = class ExistingPermitController extends BaseController {
     const { isBespoke, taskDeterminants: { mcpType } } = await RecoveryService.createApplicationContext(h)
     if (isBespoke) {
       if (mcpType === STATIONARY_SG) {
-        return this.redirect({ h, route: MCP_AIR_DISPERSION_MODELLING })
+        return this.redirect({ h, route: MCP_HABITAT_ASSESSMENT })
       } else {
         return this.redirect({ h, route: MCP_UNDER_500_HOURS })
       }

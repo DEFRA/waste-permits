@@ -13,10 +13,13 @@ const RecoveryService = require('../../src/services/recovery.service')
 const TaskDeterminants = require('../../src/models/taskDeterminants.model')
 const { COOKIE_RESULT } = require('../../src/constants')
 const { STATIONARY_MCP_AND_SG, STATIONARY_SG } = require('../../src/dynamics').MCP_TYPES
-const routePath = '/mcp-check/best-available-techniques/sg'
 
-const nextRoutePath = '/mcp-check/habitat-assessment'
+const Routes = require('../../src/routes')
+const { THERMAL_INPUT_20MW_TO_50MW } = Routes
+const routePath = THERMAL_INPUT_20MW_TO_50MW.path
+const nextRoutePath = Routes[THERMAL_INPUT_20MW_TO_50MW.nextRoute].path
 const burningWasteBiomassRoutePath = '/mcp-check/best-available-techniques/mcp'
+
 let sandbox
 let mocks
 let taskDeterminantsStub

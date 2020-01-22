@@ -23,9 +23,11 @@ const {
   STATIONARY_MCP_AND_SG
 } = require('../../src/dynamics').MCP_TYPES
 
-const routePath = '/mcp-check/under-500-hours'
+const Routes = require('../../src/routes')
+const { MCP_UNDER_500_HOURS } = Routes
+const routePath = MCP_UNDER_500_HOURS.path
+const noRoutePath = Routes[MCP_UNDER_500_HOURS.nextRoute].path
 const yesRoutePath = '/maintain-application-lines'
-const noRoutePath = '/mcp-check/air-dispersion-modelling-report'
 
 let sandbox
 let mocks

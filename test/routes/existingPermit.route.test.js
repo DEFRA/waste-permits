@@ -19,7 +19,7 @@ const routePath = '/existing-permit'
 const nextRoutePathYes = '/existing-permit/yes'
 const nextRoutePathNoSr = '/task-list'
 const nextRoutePathNoBespoke = '/mcp-check/under-500-hours'
-const nextRoutePathNoBespokeStationarySg = '/mcp-check/air-dispersion-modelling-report'
+const nextRoutePathNoBespokeStationarySg = '/mcp-check/habitat-assessment'
 
 lab.experiment('Existing permit page tests:', () => {
   let mocks
