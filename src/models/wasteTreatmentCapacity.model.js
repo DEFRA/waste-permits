@@ -112,7 +112,6 @@ module.exports = {
         answerText: String(weights[weightId])
       }
     })
-    console.log(toSave)
     const savePromises = toSave.map(answer => saveAnswer(answer, context))
     await Promise.all(savePromises)
     return {
