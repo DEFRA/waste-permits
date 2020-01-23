@@ -18,8 +18,11 @@ module.exports = class WasteTreatmentCapacityWeightValidator extends BaseValidat
     treatmentAnswers.forEach(ans => {
       obj[ans.weightTreatmentCode] = {
         'custom-invalid': (...value) => {
-          const numVal = Number(value[0])
+          const numVal = Number.parseInt(value[0])
           if (Object.keys(value[1]).indexOf(ans.weightTreatmentCode) >= 0) {
+            console.log(numVal)
+            console.log(Number.isNaN(numVal))
+            console.log(numVal <= 0 || numVal > 999999999999999)
             return Number.isNaN(numVal) || numVal <= 0 || numVal > 999999999999999
           }
         }

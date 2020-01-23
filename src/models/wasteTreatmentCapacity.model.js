@@ -5,6 +5,10 @@ const ApplicationLine =
 const ApplicationAnswer =
   require('../persistence/entities/applicationAnswer.entity')
 
+// an array that contains waste treatment answers as if each pair
+// (check-box and weight input) were a single object
+// questionCode is for the check-box questions and is always present
+// weightTreatmentCode is for the text/entry questions
 const treatmentAnswers = [
   {
     questionCode: 'treatment-hazardous',
@@ -61,12 +65,17 @@ const treatmentAnswers = [
 ]
 
 function getTreatmentAnswerForQuestionCode (questionCode) {
+  // pick out a treatment answer (from our list) based on its questionCode/check-box id
   return treatmentAnswers.find(ta => ta.questionCode === questionCode)
 }
 
+/*
 function getAnswerFromArrayByQuestionCode (questionCode, answerArr) {
+  // pick out a treatment answer (coming back from dynamics) based
+  // on its questionCode/check-box id
   return answerArr.find(a => a.questionCode === questionCode)
 }
+*/
 
 async function getRelevantApplicationLine (context, activityIndex) {
   // fetch all application lines, including discounts
@@ -75,6 +84,7 @@ async function getRelevantApplicationLine (context, activityIndex) {
   // filter out the discounts, prevents them being included in task list
   const wasteTreatmentCapacityApplicationLines =
     allWasteTreatmentCapacityApplicationLines.filter(({ value }) => value > -1)
+  // return and add a boolean "has next" pagination flag
   return {
     applicationLine: wasteTreatmentCapacityApplicationLines[activityIndex],
     hasNext: wasteTreatmentCapacityApplicationLines
@@ -88,162 +98,168 @@ async function saveAnswer (answer, context) {
   return saver.save(context)
 }
 
-module.exports = {
-  treatmentAnswers,
-  getForActivity: async function (context, activityIndex) {
-    const { applicationLine, hasNext } =
-      await getRelevantApplicationLine(context, activityIndex)
-
-    const activityDisplayName =
-      (applicationLine.lineName || '').trim()
-
-    const wasteTreatmentCapacityAnswers = await ApplicationAnswer
-      .listForApplicationLine(
-        context,
-        applicationLine.id,
-        treatmentAnswers.map(answer => answer.questionCode)
-          .concat(treatmentAnswers.map(answer => answer.weightTreatmentCode))
-      )
-    return {
-      wasteTreatmentCapacityAnswers,
-      activityDisplayName,
-      hasNext
+async function listAllAnswers (context) {
+  const submittedPerActivity = {}
+  // get all application lines
+  const allWasteTreatmentCapacityApplicationLines =
+    await ApplicationLine.listForWasteActivities(context)
+  // remove discount lines
+  const applicationLinesMinusDiscounts = allWasteTreatmentCapacityApplicationLines.filter(al => al.value >= 0)
+  applicationLinesMinusDiscounts.forEach(al => {
+    submittedPerActivity[al.id] = {
+      lineName: al.lineName,
+      answers: []
     }
-  },
-  saveWeights: async function (context, activityIndex, weightTreatments) {
-    const { applicationLine, hasNext } =
-      await getRelevantApplicationLine(context, activityIndex)
-    console.log(weightTreatments)
-    const toSave = Object.keys(weightTreatments).map(weightTreatmentId => {
-      return {
-        applicationLineId: applicationLine.id,
-        questionCode: weightTreatmentId,
-        answerText: String(weightTreatments[weightTreatmentId])
-      }
-    })
-    const savePromises = toSave.map(answer => saveAnswer(answer, context))
-    await Promise.all(savePromises)
-    return {
-      hasNext,
-      forActivityIndex: activityIndex
+  })
+  // create an array containing answer arrays for each application line
+  const weightTreatmentArrays = await Promise
+    .all(applicationLinesMinusDiscounts.map(async al => {
+      const wasteTreatmentCapacityAnswers = await ApplicationAnswer
+        .listForApplicationLine(
+          context,
+          al.id,
+          treatmentAnswers.map(answer => answer.questionCode)
+            .concat(treatmentAnswers.map(answer => answer.weightTreatmentCode))
+        )
+      return wasteTreatmentCapacityAnswers
+    }))
+  // flatten the arrays
+  const weightTreatments = [].concat.apply([], weightTreatmentArrays)
+  // turn the arrays into an object, using applicationLineId as key
+  const weightTreatmentsByActivity = weightTreatments
+    .reduce((accumulator, weightTreatmentAnswer) => {
+      const arr =
+        accumulator[weightTreatmentAnswer.applicationLineId].answers
+      accumulator[weightTreatmentAnswer.applicationLineId].answers =
+        arr.concat(weightTreatmentAnswer)
+      return accumulator
+    }, submittedPerActivity)
+  // iterate the object and filter the questions down to those with user input
+  Object.keys(weightTreatmentsByActivity).forEach(activityId => {
+    const submittedArr = weightTreatmentsByActivity[activityId].answers
+      .filter(answer => {
+        return answer.answerCode === 'yes' || answer.answerText
+      })
+    submittedPerActivity[activityId].answers = submittedArr
+  })
+  // for use in task-list validation
+  let allValid = true
+  // iterate the object again and work out if all the questions have a satisfactory answer
+  Object.keys(submittedPerActivity).forEach(activityId => {
+    const answers = submittedPerActivity[activityId].answers
+    let valid = false
+    if (answers.length === 1 && answers[0].questionCode === 'treatment-none') {
+      // need to check that every answer questionCode
+      // has an answer with a corresponding weightTreatmentCode
+      valid = true
     }
-  },
-  saveAnswers: async function (context, activityIndex, answers) {
-    const positiveAnswers = Object.keys(answers)
-    const { applicationLine, hasNext } =
-      await getRelevantApplicationLine(context, activityIndex)
-    let noTreatment = false
-    const toSave = treatmentAnswers.map(ta => {
-      const rtn = []
-      const answerCode = positiveAnswers.indexOf(ta.questionCode) >= 0 ? 'yes' : 'no'
-      if (answerCode === 'no' && ta.questionCode !== 'treatment-none') {
-        // make sure corresponding weightTreatment is set to empty
-        rtn.push({
-          applicationLineId: applicationLine.id,
-          questionCode: ta.weightTreatmentCode,
-          answerText: undefined
-        })
-      }
-      if (ta.questionCode === 'treatment-none' && answerCode === 'yes') {
-        noTreatment = true
-      }
+    if (answers.length > 1 && answers.length % 2 === 0) {
+      answers.forEach(a => {
+        const res = getTreatmentAnswerForQuestionCode(a.questionCode)
+        const weightTreatmentCode = res ? res.weightTreatmentCode : false
+        if (res && weightTreatmentCode) {
+          valid = true
+        }
+      })
+    }
+    submittedPerActivity[activityId].valid = valid
+    if (valid === false) {
+      // when we find an invalid answer, let the task-list know
+      allValid = false
+    }
+  })
+  submittedPerActivity.allValid = allValid
+  return submittedPerActivity
+}
+
+async function saveAnswers (context, activityIndex, answers) {
+  // take aswers that have been checked
+  const positiveAnswers = Object.keys(answers)
+  const { applicationLine, hasNext } =
+    await getRelevantApplicationLine(context, activityIndex)
+  let noTreatment = false
+  const toSave = treatmentAnswers.map(ta => {
+    const rtn = []
+    const answerCode = positiveAnswers.indexOf(ta.questionCode) >= 0 ? 'yes' : 'no'
+    if (answerCode === 'no' && ta.questionCode !== 'treatment-none') {
+      // editing may cause previous weights to becom invalid
+      // make sure corresponding weightTreatment is set to empty (remove it)
       rtn.push({
         applicationLineId: applicationLine.id,
-        questionCode: ta.questionCode,
-        answerCode
+        questionCode: ta.weightTreatmentCode,
+        answerText: undefined
       })
-      return rtn
-    })
-    const savePromises = [].concat(...toSave).map(answer => saveAnswer(answer, context))
-    await Promise.all(savePromises)
-
-    return {
-      noTreatment,
-      hasNext,
-      forActivityIndex: activityIndex
     }
-  },
-  getAllWeightsHaveBeenEnteredForApplication: async function (context) {
-    const submittedPerActivity = {}
-    console.log('111 LETS CHECK ALL THE WEIGHTS ARE PRESENT')
-    const allWasteTreatmentCapacityApplicationLines =
-      await ApplicationLine.listForWasteActivities(context)
-    const applicationLinesMinusDiscounts = allWasteTreatmentCapacityApplicationLines.filter(al => al.value >= 0)
-    // console.log('222 ALL APPLICATION LINES', applicationLinesMinusDiscounts)
-    applicationLinesMinusDiscounts.forEach(al => {
-      submittedPerActivity[al.id] = {
-        lineName: al.lineName,
-        answers: []
-      }
+    if (ta.questionCode === 'treatment-none' && answerCode === 'yes') {
+      // let controller know not to route to the weights screen
+      noTreatment = true
+    }
+    rtn.push({
+      applicationLineId: applicationLine.id,
+      questionCode: ta.questionCode,
+      answerCode
     })
-    const weightTreatmentArrays = await Promise
-      .all(applicationLinesMinusDiscounts.map(async al => {
-        const wasteTreatmentCapacityAnswers = await ApplicationAnswer
-          .listForApplicationLine(
-            context,
-            al.id,
-            treatmentAnswers.map(answer => answer.questionCode)
-              .concat(treatmentAnswers.map(answer => answer.weightTreatmentCode))
-          )
-        return wasteTreatmentCapacityAnswers
-      }))
-    const weightTreatments = [].concat.apply([], weightTreatmentArrays)
-    // console.log('333 WEIGHTS?', weightTreatments)
-    const weightTreatmentsByActivity = weightTreatments
-      .reduce((accumulator, weightTreatmentAnswer) => {
-        const arr =
-          accumulator[weightTreatmentAnswer.applicationLineId].answers
-        accumulator[weightTreatmentAnswer.applicationLineId].answers =
-          arr.concat(weightTreatmentAnswer)
-        return accumulator
-      }, submittedPerActivity)
-    // console.log('444', weightTreatmentsByActivity)
-    Object.keys(weightTreatmentsByActivity).forEach(activityId => {
-      // console.log(`555 ${activityId}`)
-      const submittedArr = weightTreatmentsByActivity[activityId].answers
-        .filter(answer => {
-          // console.log('^^^', answer)
-          return answer.answerCode === 'yes' || answer.answerText
-        })
-      submittedPerActivity[activityId].answers = submittedArr
-    })
-    // console.log('666', submittedPerActivity)
-    let allValid = true
-    Object.keys(submittedPerActivity).forEach(activityId => {
-      const answers = submittedPerActivity[activityId].answers
-      // console.log(answers)
-      let valid = false
-      if (answers.length === 1 && answers[0].questionCode === 'treatment-none') {
-        // need to check that every answer questionCode
-        // has an answer with a corresponding weightTreatmentCode
-        valid = true
-      }
-      if (answers.length > 1 && answers.length % 2 === 0) {
-        answers.forEach(a => {
-          const res = getTreatmentAnswerForQuestionCode(a.questionCode)
-          const weightTreatmentCode = res ? res.weightTreatmentCode : false
-          if (res && weightTreatmentCode) {
-            /*
-            console.log(
-              '###',
-              activityId,
-              a.questionCode,
-              weightTreatmentCode,
-              getAnswerFromArrayByQuestionCode(weightTreatmentCode, answers)
-            )
-            */
-            valid = true
-          }
-        })
-      }
-      submittedPerActivity[activityId].valid = valid
-      if (valid === false) {
-        allValid = false
-      }
-    })
-    console.log('777', submittedPerActivity)
-    console.log('888', allValid)
+    return rtn
+  })
+  const savePromises = [].concat(...toSave).map(answer => saveAnswer(answer, context))
+  await Promise.all(savePromises)
 
-    return allValid
+  return {
+    noTreatment,
+    hasNext,
+    forActivityIndex: activityIndex
+  }
+}
+
+async function saveWeights (context, activityIndex, weightTreatments) {
+  const { applicationLine, hasNext } =
+    await getRelevantApplicationLine(context, activityIndex)
+  const toSave = Object.keys(weightTreatments).map(weightTreatmentId => {
+    return {
+      applicationLineId: applicationLine.id,
+      questionCode: weightTreatmentId,
+      answerText: String(weightTreatments[weightTreatmentId])
+    }
+  })
+  const savePromises = toSave.map(answer => saveAnswer(answer, context))
+  await Promise.all(savePromises)
+  return {
+    hasNext,
+    forActivityIndex: activityIndex
+  }
+}
+
+async function getForActivity (context, activityIndex) {
+  const { applicationLine, hasNext } =
+    await getRelevantApplicationLine(context, activityIndex)
+
+  const activityDisplayName =
+    (applicationLine.lineName || '').trim()
+
+  const wasteTreatmentCapacityAnswers = await ApplicationAnswer
+    .listForApplicationLine(
+      context,
+      applicationLine.id,
+      treatmentAnswers.map(answer => answer.questionCode)
+        .concat(treatmentAnswers.map(answer => answer.weightTreatmentCode))
+    )
+  return {
+    wasteTreatmentCapacityAnswers,
+    activityDisplayName,
+    hasNext
+  }
+}
+
+// wasteTreatmentCapacityModel
+module.exports = {
+  treatmentAnswers,
+  getForActivity,
+  saveWeights,
+  saveAnswers,
+  getTreatmentAnswerForQuestionCode,
+  listAllAnswers,
+  getAllWeightsHaveBeenEnteredForApplication: async function (context) {
+    const allAnswers = await listAllAnswers(context)
+    return allAnswers.allValid
   }
 }
