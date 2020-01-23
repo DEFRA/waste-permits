@@ -10,38 +10,38 @@ const treatmentAnswers = [
     questionCode: 'treatment-hazardous',
     questionText: 'Treatment of hazardous waste',
     answerCode: 'no',
-    weightCode: 'treatment-hazardous-daily',
-    weight: 0
+    weightTreatmentCode: 'treatment-hazardous-daily',
+    weightTreatment: 0
   },
   {
     questionCode: 'treatment-biological',
     questionText: 'Biological treatment (eg composting or anaerobic digestion)',
     answerCode: 'no',
-    weightCode: 'treatment-biological-daily',
-    weight: 0
+    weightTreatmentCode: 'treatment-biological-daily',
+    weightTreatment: 0
 
   },
   {
     questionCode: 'treatment-chemical',
     questionText: 'Physico-chemical treatment for disposal',
     answerCode: 'no',
-    weightCode: 'treatment-chemical-daily',
-    weight: 0
+    weightTreatmentCode: 'treatment-chemical-daily',
+    weightTreatment: 0
 
   },
   {
     questionCode: 'treatment-incineration',
     questionText: 'Pre-treatment of waste for incineration or co-incineration',
     answerCode: 'no',
-    weightCode: 'treatment-incineration-daily',
-    weight: 0
+    weightTreatmentCode: 'treatment-incineration-daily',
+    weightTreatment: 0
   },
   {
     questionCode: 'treatment-slags',
     questionText: 'Treatment of slags and ashes',
     answerCode: 'no',
-    weightCode: 'treatment-slags-daily',
-    weight: 0
+    weightTreatmentCode: 'treatment-slags-daily',
+    weightTreatment: 0
   },
   {
     questionCode: 'treatment-metal',
@@ -49,8 +49,8 @@ const treatmentAnswers = [
       waste electrical and electronic equipment and end-of-life
       vehicles and their components`,
     answerCode: 'no',
-    weightCode: 'treatment-metal-daily',
-    weight: 0
+    weightTreatmentCode: 'treatment-metal-daily',
+    weightTreatment: 0
 
   },
   {
@@ -59,6 +59,14 @@ const treatmentAnswers = [
     answerCode: 'no'
   }
 ]
+
+function getTreatmentAnswerForQuestionCode (questionCode) {
+  return treatmentAnswers.find(ta => ta.questionCode === questionCode)
+}
+
+function getAnswerFromArrayByQuestionCode (questionCode, answerArr) {
+  return answerArr.find(a => a.questionCode === questionCode)
+}
 
 async function getRelevantApplicationLine (context, activityIndex) {
   // fetch all application lines, including discounts
@@ -94,7 +102,7 @@ module.exports = {
         context,
         applicationLine.id,
         treatmentAnswers.map(answer => answer.questionCode)
-          .concat(treatmentAnswers.map(answer => answer.weightCode))
+          .concat(treatmentAnswers.map(answer => answer.weightTreatmentCode))
       )
     return {
       wasteTreatmentCapacityAnswers,
@@ -102,14 +110,15 @@ module.exports = {
       hasNext
     }
   },
-  saveWeights: async function (context, activityIndex, weights) {
+  saveWeights: async function (context, activityIndex, weightTreatments) {
     const { applicationLine, hasNext } =
       await getRelevantApplicationLine(context, activityIndex)
-    const toSave = Object.keys(weights).map(weightId => {
+    console.log(weightTreatments)
+    const toSave = Object.keys(weightTreatments).map(weightTreatmentId => {
       return {
         applicationLineId: applicationLine.id,
-        questionCode: weightId,
-        answerText: String(weights[weightId])
+        questionCode: weightTreatmentId,
+        answerText: String(weightTreatments[weightTreatmentId])
       }
     })
     const savePromises = toSave.map(answer => saveAnswer(answer, context))
@@ -128,10 +137,10 @@ module.exports = {
       const rtn = []
       const answerCode = positiveAnswers.indexOf(ta.questionCode) >= 0 ? 'yes' : 'no'
       if (answerCode === 'no' && ta.questionCode !== 'treatment-none') {
-        // make sure corresponding weight is set to empty
+        // make sure corresponding weightTreatment is set to empty
         rtn.push({
           applicationLineId: applicationLine.id,
-          questionCode: ta.weightCode,
+          questionCode: ta.weightTreatmentCode,
           answerText: undefined
         })
       }
@@ -155,53 +164,67 @@ module.exports = {
     }
   },
   getAllWeightsHaveBeenEnteredForApplication: async function (context) {
-    // console.log('111 LETS CHECK ALL THE WEIGHTS ARE PRESENT')
+    const submittedPerActivity = {}
+    console.log('111 LETS CHECK ALL THE WEIGHTS ARE PRESENT')
     const allWasteTreatmentCapacityApplicationLines =
       await ApplicationLine.listForWasteActivities(context)
     const applicationLinesMinusDiscounts = allWasteTreatmentCapacityApplicationLines.filter(al => al.value >= 0)
     // console.log('222 ALL APPLICATION LINES', applicationLinesMinusDiscounts)
-    const weightArrays = await Promise.all(applicationLinesMinusDiscounts.map(async al => {
-      const wasteTreatmentCapacityAnswers = await ApplicationAnswer
-        .listForApplicationLine(
-          context,
-          al.id,
-          treatmentAnswers.map(answer => answer.questionCode)
-            .concat(treatmentAnswers.map(answer => answer.weightCode))
-        )
-      return wasteTreatmentCapacityAnswers
-    }))
-    const weights = [].concat.apply([], weightArrays)
-    // console.log('333 WEIGHTS?', weights)
-    const weightsByActivity = weights.reduce((accumulator, weightAnswer) => {
-      const arr = accumulator[weightAnswer.applicationLineId]
-        ? accumulator[weightAnswer.applicationLineId]
-        : []
-      accumulator[weightAnswer.applicationLineId] = arr.concat(weightAnswer)
-      return accumulator
-    }, {})
-    // console.log('444', weightsByActivity)
-    const submittedPerActivity = {}
-    Object.keys(weightsByActivity).forEach(activityId => {
-      // console.log(`555 ${activityId}`)
-      const submittedArr = weightsByActivity[activityId]
-        .filter(answer => answer.answerCode === 'yes' || answer.answerText)
-      // console.log(submitted)
-      /*
-      console.log(submittedArr.reduce((accumulator, answer) => {
-        const index = accumulator.findIndex(i => i.questionCode === answer.questionCode) || 0
-        if (index >= 0) {
-          accumulator[index].questionCode = answer.questionCode
-        } else {
-          accumulator.push({
-            questionCode: answer.questionCode
-          })
-        }
+    applicationLinesMinusDiscounts.forEach(al => {
+      submittedPerActivity[al.id] = {
+        lineName: al.lineName,
+        answers: []
+      }
+    })
+    const weightTreatmentArrays = await Promise
+      .all(applicationLinesMinusDiscounts.map(async al => {
+        const wasteTreatmentCapacityAnswers = await ApplicationAnswer
+          .listForApplicationLine(
+            context,
+            al.id,
+            treatmentAnswers.map(answer => answer.questionCode)
+              .concat(treatmentAnswers.map(answer => answer.weightTreatmentCode))
+          )
+        return wasteTreatmentCapacityAnswers
+      }))
+    const weightTreatments = [].concat.apply([], weightTreatmentArrays)
+    // console.log('333 WEIGHTS?', weightTreatments)
+    const weightTreatmentsByActivity = weightTreatments
+      .reduce((accumulator, weightTreatmentAnswer) => {
+        const arr =
+          accumulator[weightTreatmentAnswer.applicationLineId].answers
+        accumulator[weightTreatmentAnswer.applicationLineId].answers =
+          arr.concat(weightTreatmentAnswer)
         return accumulator
-      }, []))
-      */
-      submittedPerActivity[activityId] = submittedArr
+      }, submittedPerActivity)
+    console.log('444', weightTreatmentsByActivity)
+    Object.keys(weightTreatmentsByActivity).forEach(activityId => {
+      // console.log(`555 ${activityId}`)
+      const submittedArr = weightTreatmentsByActivity[activityId].answers
+        .filter(answer => {
+          // console.log('^^^', answer)
+          return answer.answerCode === 'yes' || answer.answerText
+        })
+      submittedPerActivity[activityId].answers = submittedArr
     })
     console.log('666', submittedPerActivity)
+    Object.keys(submittedPerActivity).forEach(activityId => {
+      const answers = submittedPerActivity[activityId].answers
+      console.log(answers)
+      let valid = false
+      if (answers.length === 1 && answers[0].questionCode === 'treatment-none') {
+        // need to check that every answer questionCode
+        // has an answer with a corresponding weightTreatmentCode
+        valid = true
+      }
+      if (answers.length > 1 && answers.length % 2 === 0) {
+        const weightTreatmentCode = getTreatmentAnswerForQuestionCode(answers[0].questionCode)
+        console.log('###', getAnswerFromArrayByQuestionCode(weightTreatmentCode, answers))
+        valid = true
+      }
+      submittedPerActivity[activityId].valid = valid
+    })
+    console.log('777', submittedPerActivity)
 
     return true
   }

@@ -51,12 +51,12 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
 
     pageContext.treatments = filtered.map(treatment => ({
       text: treatment.questionText,
-      id: treatment.weightCode,
-      // feed the weight submitted back to the view (not saved yet)
-      weight: request.payload ? request.payload[treatment.weightCode] : 0,
-      // if the weightCode show up in the validation errors feed
+      id: treatment.weightTreatmentCode,
+      // feed the weightTreatment submitted back to the view (not saved yet)
+      weightTreatment: request.payload ? request.payload[treatment.weightTreatmentCode] : 0,
+      // if the weightTreatmentCode show up in the validation errors feed
       // that back to the view for error highlight
-      error: errArr.indexOf(treatment.weightCode) >= 0
+      error: errArr.indexOf(treatment.weightTreatmentCode) >= 0
     }))
 
     pageContext.treatments.forEach(t => {
@@ -73,6 +73,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
   }
 
   async doPost (request, h) {
+    console.log('^^^', request.payload)
     const context = await RecoveryService.createApplicationContext(h)
     const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
     const saveResult = await wasteTreatmentCapacities.saveWeights(
