@@ -62,10 +62,16 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
     pageContext.treatments.forEach(t => {
       const saved = savedWeights.find(tw => tw.questionCode === t.id)
       if (saved) {
-        t.weight = Number(saved.answerText)
+        t.weight = Number.parseInt(saved.answerText, 10)
+        if (Number.isNaN(t.weight)) {
+          t.weight = 0
+        }
       }
       if (request.payload && request.payload[t.id]) {
         t.weight = request.payload[t.id]
+        if (Number.isNaN(t.weight)) {
+          t.weight = 0
+        }
       }
     })
 
