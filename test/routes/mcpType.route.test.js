@@ -16,11 +16,12 @@ const { COOKIE_RESULT } = require('../../src/constants')
 const { MCP_TYPES } = require('../../src/dynamics')
 const { MOBILE_SG, MOBILE_MCP, STATIONARY_MCP, STATIONARY_MCP_AND_SG, STATIONARY_SG } = MCP_TYPES
 
-const routePath = '/mcp-type'
+const Routes = require('../../src/routes')
+const { MCP_TYPE, MCP_EXISTING_PERMIT, MCP_AIR_DISPERSION_MODELLING } = Routes
+const routePath = MCP_TYPE.path
 const nextRoutePath = '/select/bespoke'
-const existingPermitPath = '/existing-permit'
-const maintainApplicationLinesPath = '/maintain-application-lines'
-const requiresEnergyReportPath = '/mcp-check/energy-report'
+const existingPermitPath = MCP_EXISTING_PERMIT.path
+const airDispersionModellingPath = MCP_AIR_DISPERSION_MODELLING.path
 
 let mocks
 let sandbox
@@ -93,10 +94,8 @@ lab.experiment('Mcp Type page tests:', () => {
               Code.expect(res.headers['location']).to.equal(existingPermitPath)
               break
             case MOBILE_SG.id:
-              Code.expect(res.headers['location']).to.equal(maintainApplicationLinesPath)
-              break
             case MOBILE_MCP.id:
-              Code.expect(res.headers['location']).to.equal(requiresEnergyReportPath)
+              Code.expect(res.headers['location']).to.equal(airDispersionModellingPath)
               break
           }
         })
