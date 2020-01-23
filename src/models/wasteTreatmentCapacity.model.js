@@ -197,7 +197,7 @@ module.exports = {
           arr.concat(weightTreatmentAnswer)
         return accumulator
       }, submittedPerActivity)
-    console.log('444', weightTreatmentsByActivity)
+    // console.log('444', weightTreatmentsByActivity)
     Object.keys(weightTreatmentsByActivity).forEach(activityId => {
       // console.log(`555 ${activityId}`)
       const submittedArr = weightTreatmentsByActivity[activityId].answers
@@ -207,10 +207,11 @@ module.exports = {
         })
       submittedPerActivity[activityId].answers = submittedArr
     })
-    console.log('666', submittedPerActivity)
+    // console.log('666', submittedPerActivity)
+    let allValid = true
     Object.keys(submittedPerActivity).forEach(activityId => {
       const answers = submittedPerActivity[activityId].answers
-      console.log(answers)
+      // console.log(answers)
       let valid = false
       if (answers.length === 1 && answers[0].questionCode === 'treatment-none') {
         // need to check that every answer questionCode
@@ -218,14 +219,31 @@ module.exports = {
         valid = true
       }
       if (answers.length > 1 && answers.length % 2 === 0) {
-        const weightTreatmentCode = getTreatmentAnswerForQuestionCode(answers[0].questionCode)
-        console.log('###', getAnswerFromArrayByQuestionCode(weightTreatmentCode, answers))
-        valid = true
+        answers.forEach(a => {
+          const res = getTreatmentAnswerForQuestionCode(a.questionCode)
+          const weightTreatmentCode = res ? res.weightTreatmentCode : false
+          if (res && weightTreatmentCode) {
+            /*
+            console.log(
+              '###',
+              activityId,
+              a.questionCode,
+              weightTreatmentCode,
+              getAnswerFromArrayByQuestionCode(weightTreatmentCode, answers)
+            )
+            */
+            valid = true
+          }
+        })
       }
       submittedPerActivity[activityId].valid = valid
+      if (valid === false) {
+        allValid = false
+      }
     })
     console.log('777', submittedPerActivity)
+    console.log('888', allValid)
 
-    return true
+    return allValid
   }
 }

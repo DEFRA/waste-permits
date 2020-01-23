@@ -73,7 +73,6 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
   }
 
   async doPost (request, h) {
-    console.log('^^^', request.payload)
     const context = await RecoveryService.createApplicationContext(h)
     const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
     const saveResult = await wasteTreatmentCapacities.saveWeights(
