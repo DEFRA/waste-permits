@@ -40,6 +40,7 @@ const SiteConditionReportCheck = require('./siteConditionReport.check')
 const TechnicalStandardsCheck = require('./technicalStandards.check')
 const BespokePermitCheck = require('./bespokePermit.check')
 const PreApplicationCheck = require('./preApplication.check')
+const WasteTreatmentCapacityCheck = require('./wasteTreatmentCapacity.check')
 
 module.exports = class CheckList {
   constructor () {
@@ -65,6 +66,7 @@ module.exports = class CheckList {
       McpBusinessActivityCheck,
       MiningWasteCheck,
       WasteWeights,
+      WasteTreatmentCapacityCheck,
       WasteTypesListCheck,
       WasteDisposalAndRecoveryCodes,
       AirDispersionModellingReportCheck,

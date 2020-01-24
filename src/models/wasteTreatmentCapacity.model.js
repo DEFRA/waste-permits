@@ -69,6 +69,25 @@ function getTreatmentAnswerForQuestionCode (questionCode) {
   return treatmentAnswers.find(ta => ta.questionCode === questionCode)
 }
 
+function getTreatmentAnswerForWeightTreatmentCode (weightTreatmentCode) {
+  // pick out a treatment answer (from our list) based on its weightTreatmentCode
+  return treatmentAnswers.find(ta => ta.weightTreatmentCode === weightTreatmentCode)
+}
+
+function getCleanQuestionText (questionCode) {
+  const { questionText } = getTreatmentAnswerForQuestionCode(questionCode)
+
+  // if text contains a bracket, return the portion before it
+  const bracketIndex = questionText.indexOf('(')
+  if (bracketIndex !== -1) { return questionText.substring(0, bracketIndex).trim() }
+
+  // if text contains a comma, return the portion before it
+  const commaIndex = questionText.indexOf(',')
+  if (commaIndex !== -1) { return questionText.substring(0, commaIndex).trim() }
+
+  return questionText
+}
+
 /*
 function getAnswerFromArrayByQuestionCode (questionCode, answerArr) {
   // pick out a treatment answer (coming back from dynamics) based
@@ -257,6 +276,8 @@ module.exports = {
   saveWeights,
   saveAnswers,
   getTreatmentAnswerForQuestionCode,
+  getTreatmentAnswerForWeightTreatmentCode,
+  getCleanQuestionText,
   listAllAnswers,
   getAllWeightsHaveBeenEnteredForApplication: async function (context) {
     const allAnswers = await listAllAnswers(context)
