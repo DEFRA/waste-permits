@@ -70,4 +70,32 @@ lab.experiment('wasteTreatmentCapacyModel test', () => {
       .be
       .undefined()
   })
+  lab.test('getTreatmentAnswerForWeightTreatmentCode', () => {
+    Code
+      .expect(wasteTreatmentCapacities.getTreatmentAnswerForWeightTreatmentCode)
+      .to
+      .be
+      .a
+      .function()
+    Code
+      .expect(
+        wasteTreatmentCapacities
+          .getTreatmentAnswerForWeightTreatmentCode(
+            wasteTreatmentCapacities
+              .treatmentAnswers[0].weightTreatmentCode
+          )
+      )
+      .to
+      .be
+      .an
+      .object()
+    Code
+      .expect(
+        wasteTreatmentCapacities
+          .getTreatmentAnswerForWeightTreatmentCode('nonsense')
+      )
+      .to
+      .be
+      .undefined()
+  })
 })
