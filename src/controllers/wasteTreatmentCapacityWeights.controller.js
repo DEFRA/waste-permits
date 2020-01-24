@@ -27,7 +27,6 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
       `Enter the daily treatment capacity for
         ${savedTreatmentCapacities.activityDisplayName}`
     const pageTitle = Constants.buildPageTitle(pageHeading)
-
     const pageContext = this.createPageContext(h, errors)
     Object.assign(pageContext, { pageHeading, pageTitle })
 
@@ -50,6 +49,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
       .filter(t => savedTypes.find(st => st.questionCode === t.questionCode))
 
     pageContext.treatments = filtered.map(treatment => ({
+
       text: treatment.questionText,
       id: treatment.weightTreatmentCode,
       // feed the weightTreatment submitted back to the view (not saved yet)
@@ -81,6 +81,47 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
     const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
+    if (request.payload) {
+      // although validation has passed, due to the dynamic
+      // construction of the form we have to check some things
+      // again
+      const errors = []
+      const savedTreatmentCapacities =
+        await getSavedForProvidedActivityIndex(context, request)
+      const pageHeading =
+        `Enter the daily treatment capacity for
+          ${savedTreatmentCapacities.activityDisplayName}`
+      const pageTitle = Constants.buildPageTitle(pageHeading)
+
+      const pageContext = this.createPageContext(h, errors)
+      Object.assign(pageContext, { pageHeading, pageTitle })
+      const savedTypes = savedTreatmentCapacities
+        .wasteTreatmentCapacityAnswers
+        .filter(t => t.answerCode === 'yes')
+
+      savedTypes.forEach(t => {
+        const found = wasteTreatmentCapacities.getTreatmentAnswerForQuestionCode(t.questionCode)
+        if (found.weightTreatmentCode) {
+          if (!request.payload.hasOwnProperty(found.weightTreatmentCode)) {
+            errors.push(found)
+            request.payload[found.weightTreatmentCode] = '0'
+          }
+        }
+      })
+      if (errors.length > 0) {
+        // we've found more validation errors so feed them back to
+        // the form via the doGet method
+        return this.doGet(request, h, {
+          details: errors.map(e => {
+            return {
+              message: e.questionText + 'must be a number wetween 1 and 99999999999999',
+              path: [e.weightTreatmentCode],
+              type: "custom-invalid"
+            }
+          })
+        })
+      }
+    }
     const saveResult = await wasteTreatmentCapacities.saveWeights(
       context,
       activityIndexInt,
