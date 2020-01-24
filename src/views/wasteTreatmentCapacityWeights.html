@@ -1,0 +1,56 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>
+        Enter the weights and make sure they are within the limits
+        for a waste permit. If not, you'll need to apply for an
+        installation permit.
+      </p>
+
+      <p>
+        More information about daily limits
+      </p>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div id="treatment" class="form-group">
+            {{#each treatments}}
+            <div class="form-group">
+              <label id="{{this.id}}-label" class="form-label" for="{{this.id}}">
+                Daily capacity for {{this.text}}
+              </label>
+              <input
+                class="form-control form-control-char-15 {{#if this.error}}form-control-error{{/if}}"
+                id="{{this.id}}" type="number" name="{{this.id}}"
+                value="{{this.weight}}">
+              <span id="{{this.id}}-unit">tonnes</span>
+            </div>
+            {{/each}}
+          </div>
+
+        </fieldset>
+
+        <div class="form-group">
+          <p><span id="helpline-text">Not sure? Call our helpline on</span> <a id="helpline-number" href="tel:+443708506506">03708 506 506.</a></p>
+        </div>
+
+        {{> common/submitButton }}
+
+      </form>
+    </div>
+  </div>
+</main>

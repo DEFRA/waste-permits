@@ -1745,6 +1745,31 @@ const Routes = {
       fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
+  WASTE_TREATMENT_CAPACITIES: {
+    path: '/waste-treatment-capacities',
+    controller: 'wasteTreatmentCapacities',
+    types: 'GET'
+  },
+  WASTE_TREATMENT_CAPACITY_TYPES: {
+    path: '/waste-treatment-capacity/types',
+    params: ['activityIndex'],
+    view: 'wasteTreatmentCapacityTypes',
+    pageHeading: 'Select relevant your waste treatment capacity types',
+    controller: 'wasteTreatmentCapacityTypes',
+    validator: 'wasteTreatmentCapacityTypes',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
+  WASTE_TREATMENT_CAPACITY_WEIGHTS: {
+    path: '/waste-treatment-capacity/weights',
+    params: ['activityIndex'],
+    view: 'wasteTreatmentCapacityWeights',
+    pageHeading: 'Provide your waste treatment capacity weights',
+    controller: 'wasteTreatmentCapacityWeights',
+    validator: 'wasteTreatmentCapacityWeights',
+    nextRoute: 'TASK_LIST',
+    types: 'GET, POST'
+  },
   WASTE_TYPES_LIST: {
     path: '/waste-codes',
     view: 'upload/wasteTypesList/wasteTypesList',

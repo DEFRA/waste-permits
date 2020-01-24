@@ -1,0 +1,53 @@
+<main id="content" tabindex="-1" role="main">
+
+  {{> common/betaBanner }}
+
+  {{> common/backLink }}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      {{> common/errorSummary }}
+
+      {{> common/pageHeading pageHeading }}
+
+      <p>
+        The daily treatment capacity for these types of activities
+        will confirm that you are applying for the correct permit.
+      </p>
+
+      <p>
+        If your operation exceeds certain thresholds, you may need
+        to apply for an installation permit.
+      </p>
+
+      <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
+        {{> common/csrfToken token=DefraCsrfToken}}
+
+        <fieldset>
+          <legend id="legend" class="visuallyhidden">{{ pageHeading }}</legend>
+
+          <div id="treatment" class="form-group {{#getFormErrorGroupClass errors.treatment}}{{/getFormErrorGroupClass}}">
+            {{> common/fieldError fieldId='select-error' message=errors.select }}
+            {{#each treatments}}
+            <div class="multiple-choice">
+              <input id="{{this.id}}-input" type="checkbox" name="{{this.id}}" value="yes" {{#if this.isSelected}}checked="checked"{{/if}}>
+              <label id="{{this.id}}-label" for="{{this.id}}-input">
+                <span id="{{this.id}}-text">{{this.text}}</span>
+              </label>
+            </div>
+            {{/each}}
+          </div>
+
+        </fieldset>
+
+        <div class="form-group">
+          <p><span id="helpline-text">Not sure? Call our helpline on</span> <a id="helpline-number" href="tel:+443708506506">03708 506 506.</a></p>
+        </div>
+
+        {{> common/submitButton }}
+
+      </form>
+    </div>
+  </div>
+</main>
