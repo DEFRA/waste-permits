@@ -116,7 +116,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
             return {
               message: e.questionText + 'must be a number wetween 1 and 99999999999999',
               path: [e.weightTreatmentCode],
-              type: "custom-invalid"
+              type: 'custom-invalid'
             }
           })
         })
