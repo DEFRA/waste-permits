@@ -53,7 +53,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
       text: treatment.questionText,
       id: treatment.weightTreatmentCode,
       // feed the weightTreatment submitted back to the view (not saved yet)
-      weightTreatment: request.payload ? request.payload[treatment.weightTreatmentCode] : 0,
+      weight: request.payload ? request.payload[treatment.weightTreatmentCode] : 0,
       // if the weightTreatmentCode show up in the validation errors feed
       // that back to the view for error highlight
       error: errArr.indexOf(treatment.weightTreatmentCode) >= 0
