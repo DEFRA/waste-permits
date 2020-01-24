@@ -82,6 +82,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
     const context = await RecoveryService.createApplicationContext(h)
     const activityIndexInt = Number.parseInt(request.params.activityIndex, 10)
     if (request.payload) {
+      console.log('request.payload', request.payload)
       // although validation has passed, due to the dynamic
       // construction of the form we have to check some things
       // again
@@ -99,6 +100,15 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
         .wasteTreatmentCapacityAnswers
         .filter(t => t.answerCode === 'yes')
 
+      Object.keys(request.payload).forEach(treatmentCode => {
+        const numVal = request.payload[treatmentCode]
+        const invalid = Number.isNaN(numVal) || numVal <= 0 || numVal > 999999999999999
+        if (invalid) {
+          console.log(treatmentCode, invalid)
+          const found = wasteTreatmentCapacities.getTreatmentAnswerForWeightTreatmentCode(treatmentCode)
+          errors.push(found)
+        }
+      })
       savedTypes.forEach(t => {
         const found = wasteTreatmentCapacities.getTreatmentAnswerForQuestionCode(t.questionCode)
         if (found.weightTreatmentCode) {

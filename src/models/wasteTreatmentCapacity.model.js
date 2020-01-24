@@ -68,6 +68,10 @@ function getTreatmentAnswerForQuestionCode (questionCode) {
   // pick out a treatment answer (from our list) based on its questionCode/check-box id
   return treatmentAnswers.find(ta => ta.questionCode === questionCode)
 }
+function getTreatmentAnswerForWeightTreatmentCode (weightTreatmentCode) {
+  // pick out a treatment answer (from our list) based on its weightTreatmentCode
+  return treatmentAnswers.find(ta => ta.weightTreatmentCode === weightTreatmentCode)
+}
 
 /*
 function getAnswerFromArrayByQuestionCode (questionCode, answerArr) {
@@ -257,6 +261,7 @@ module.exports = {
   saveWeights,
   saveAnswers,
   getTreatmentAnswerForQuestionCode,
+  getTreatmentAnswerForWeightTreatmentCode,
   listAllAnswers,
   getAllWeightsHaveBeenEnteredForApplication: async function (context) {
     const allAnswers = await listAllAnswers(context)

@@ -14,6 +14,7 @@ module.exports = class WasteTreatmentCapacityWeightValidator extends BaseValidat
     return obj
   }
   get customValidators () {
+    /*
     const obj = {}
     treatmentAnswers.forEach(ans => {
       obj[ans.weightTreatmentCode] = {
@@ -26,5 +27,7 @@ module.exports = class WasteTreatmentCapacityWeightValidator extends BaseValidat
       }
     })
     return obj
+    */
+    return false
   }
 }
