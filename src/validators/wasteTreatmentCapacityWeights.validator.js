@@ -8,7 +8,7 @@ module.exports = class WasteTreatmentCapacityWeightValidator extends BaseValidat
     const obj = {}
     treatmentAnswers.forEach(ans => {
       obj[ans.weightTreatmentCode] = {
-        'custom-invalid': ans.questionText + ' must be a number between 1 and 999999999999999'
+        'custom-invalid': 'You must enter a valid value'
       }
     })
     return obj

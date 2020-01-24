@@ -114,7 +114,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
         return this.doGet(request, h, {
           details: errors.map(e => {
             return {
-              message: e.questionText + 'must be a number wetween 1 and 99999999999999',
+              message: 'You must enter an amount',
               path: [e.weightTreatmentCode],
               type: 'custom-invalid'
             }

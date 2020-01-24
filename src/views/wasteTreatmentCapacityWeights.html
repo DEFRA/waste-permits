@@ -17,9 +17,22 @@
         installation permit.
       </p>
 
-      <p>
-        More information about daily limits
-      </p>
+      <div class="body-text">
+        <details role="group" class="form-hint-details">
+          <summary role="button" aria-controls="details-content-0">
+            <span id="daily-limits-summary" class="summary">More information about daily limits</span>
+          </summary>
+          <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="true" tabindex="-1">
+            <div class="body-text">
+              If you're unsure of daily treatment capacity limits, you can:
+              <ul class="list list-bullet">
+                <li><a href="https://www.gov.uk/government/publications/environmental-permit-pre-application-advice-form" target="_blank">request pre-application advice</a></li>
+                <li><a href="http://www.legislation.gov.uk/uksi/2016/1154/schedule/1/part/2/chapter/5/made" target="_blank">check the Environmental Permitting Regulations 2016 that define the activity thresholds for an installation</a></li>
+              </ul>
+            </div>
+          </div>
+        </details>
+      </div>
 
       <form id="form" method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
@@ -33,6 +46,9 @@
               <label id="{{this.id}}-label" class="form-label" for="{{this.id}}">
                 Daily capacity for {{this.text}}
               </label>
+              {{#if this.error}}error
+                <div><span class="error-message">You must enter a valid value</span></div>
+              {{/if}}
               <input
                 class="form-control form-control-char-15 {{#if this.error}}form-control-error{{/if}}"
                 id="{{this.id}}" type="number" name="{{this.id}}"
