@@ -97,7 +97,6 @@ module.exports = class WasteActivities {
   // Reference name of an activity is included if there is one
   // Note that the – is an en-dash
   formattedActivityName (activity) {
-    console.log(activity)
     const { item, referenceName } = activity
     return referenceName ? `${item.itemName} – ${referenceName}` : item.itemName
   }
