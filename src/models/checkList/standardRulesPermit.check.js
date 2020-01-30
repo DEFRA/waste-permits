@@ -2,19 +2,20 @@ const BaseCheck = require('./base.check')
 
 const { path } = require('../../routes').BESPOKE_OR_STANDARD_RULES
 
-module.exports = class BespokePermitCheck extends BaseCheck {
+module.exports = class StandardRulesPermitCheck extends BaseCheck {
   get prefix () {
     return `${super.prefix}-permit`
   }
 
   async buildLines () {
-    return [await this.getBespokeTypeLine()]
+    return [await this.getPermitLine()]
   }
 
-  async getBespokeTypeLine () {
+  async getPermitLine () {
+    const { code = '', permitName = '' } = await this.getStandardRule()
     return this.buildLine({
       heading: 'Permit',
-      answers: ['Bespoke environmental permit'],
+      answers: [`${permitName} ${code}`],
       links: [{ path, type: 'contact details' }]
     })
   }

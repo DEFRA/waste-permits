@@ -18,6 +18,7 @@ const WasteWeights = require('../wasteWeights.model')
 const ClimateChangeRiskScreening = require('../climateChangeRiskScreening.model')
 const PreApplication = require('../preApplication.model')
 const WasteTreatmentCapacity = require('../wasteTreatmentCapacity.model')
+const WasteActivities = require('../wasteActivities.model')
 
 const {
   BILLING_INVOICING,
@@ -279,5 +280,13 @@ module.exports = class BaseCheck {
       this.data.wasteTreatmentCapacity = await WasteTreatmentCapacity.listAllAnswers(this.data)
     }
     return this.data.wasteTreatmentCapacity || []
+  }
+
+  async getWasteActivities () {
+    const { wasteActivities } = this.data
+    if (!wasteActivities) {
+      this.data.wasteActivities = await WasteActivities.get(this.data)
+    }
+    return this.data.wasteActivities || []
   }
 }
