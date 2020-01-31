@@ -7,7 +7,7 @@ const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
-const McpBespokeTypeCheck = require('../../../src/models/checkList/mcpBespokeType.check')
+const McpBespokePermitCheck = require('../../../src/models/checkList/mcpBespokePermit.check')
 
 const prefix = 'section-permit'
 
@@ -27,9 +27,9 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('MCP Bespoke Type Check tests:', () => {
+lab.experiment('MCP Bespoke Permit Check tests:', () => {
   lab.test('buildlines works correctly', async () => {
-    const check = new McpBespokeTypeCheck()
+    const check = new McpBespokePermitCheck()
     const lines = await check.buildLines()
 
     const { heading, headingId, answers, links } = lines.pop()

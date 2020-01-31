@@ -7,7 +7,7 @@ const sinon = require('sinon')
 const Mocks = require('../../helpers/mocks')
 
 const BaseCheck = require('../../../src/models/checkList/base.check')
-const PermitCheck = require('../../../src/models/checkList/permit.check')
+const PermitCheck = require('../../../src/models/checkList/standardRulesPermit.check')
 
 const prefix = 'section-permit'
 let sandbox
@@ -26,7 +26,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Permit Check tests:', () => {
+lab.experiment('Standard Rules Permit Check tests:', () => {
   lab.test('buildlines works correctly', async () => {
     const check = new PermitCheck()
     const lines = await check.buildLines()

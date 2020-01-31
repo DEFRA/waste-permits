@@ -200,6 +200,7 @@ lab.beforeEach(() => {
   sandbox.stub(StandardRulesTaskList, 'buildTaskList').value(() => fakeTaskList)
   sandbox.stub(BespokeTaskList, 'buildTaskList').value(() => fakeTaskList)
   sandbox.stub(McpBespokeTaskList, 'buildTaskList').value(() => fakeTaskList)
+  sandbox.stub(WasteActivities.prototype, 'formattedActivityName').value(() => 'ACTIVITY_NAME')
 })
 
 lab.afterEach(() => {

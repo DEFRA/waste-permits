@@ -93,6 +93,14 @@ module.exports = class WasteActivities {
     return selectedWasteActivity
   }
 
+  // Provides activity name in required format
+  // Reference name of an activity is included if there is one
+  // Note that the – is an en-dash
+  formattedActivityName (activity) {
+    const { item, referenceName } = activity
+    return referenceName ? `${item.itemName} – ${referenceName}` : item.itemName
+  }
+
   // Data in a form suitable for persisting
   get wasteActivitiesData () {
     return this.selectedWasteActivities.map(({ id, referenceName }) => ({ id, referenceName }))
@@ -102,6 +110,11 @@ module.exports = class WasteActivities {
   get wasteActivitiesValues () {
     const copy = this.selectedWasteActivities.map(({ id, referenceName }) => ({ id, referenceName }))
     return addMatchingItemsToList(copy, this.allWasteActivities)
+  }
+
+  // Return array of formatted names of selected activities
+  get wasteActivityNames () {
+    return this.wasteActivitiesValues.map(activity => this.formattedActivityName(activity))
   }
 
   get wasteActivitiesLength () {

@@ -1,8 +1,8 @@
 
 const BaseTaskList = require('../taskList/base.taskList')
 
-const PermitCheck = require('./permit.check')
-const McpBespokeTypeCheck = require('./mcpBespokeType.check')
+const StandardRulesPermitCheck = require('./standardRulesPermit.check')
+const McpBespokePermitCheck = require('./mcpBespokePermit.check')
 const DrainageCheck = require('./drainage.check')
 const SiteCheck = require('./site.check')
 const SitePlanCheck = require('./sitePlan.check')
@@ -38,9 +38,23 @@ const OdourManagementPlanCheck = require('./odourManagementPlan.check')
 const EmissionsManagementPlanCheck = require('./emissionsManagementPlan.check')
 const SiteConditionReportCheck = require('./siteConditionReport.check')
 const TechnicalStandardsCheck = require('./technicalStandards.check')
-const BespokePermitCheck = require('./bespokePermit.check')
+const WasteBespokePermitCheck = require('./wasteBespokePermit.check')
+const WasteActivitesCheck = require('./wasteActivities.check')
 const PreApplicationCheck = require('./preApplication.check')
 const WasteTreatmentCapacityCheck = require('./wasteTreatmentCapacity.check')
+
+const STANDARD_RULES_CHECKS = [
+  'PermitCheck'
+]
+
+const MCP_BESPOKE_CHECKS = [
+  'McpBespokePermitCheck'
+]
+
+const BESPOKE_CHECKS = [
+  'WasteBespokePermitCheck',
+  'WasteActivitiesCheck'
+]
 
 module.exports = class CheckList {
   constructor () {
@@ -51,7 +65,7 @@ module.exports = class CheckList {
       DrainageCheck,
       ContactCheck,
       PermitHolderCheck,
-      PermitCheck,
+      StandardRulesPermitCheck,
       ConfidentialityCheck,
       InvoiceCheck,
       NeedToConsult,
@@ -60,8 +74,9 @@ module.exports = class CheckList {
       AirQualityManagementAreaCheck,
       SiteConditionReportCheck,
       NonTechnicalSummaryCheck,
-      McpBespokeTypeCheck,
-      BespokePermitCheck,
+      McpBespokePermitCheck,
+      WasteBespokePermitCheck,
+      WasteActivitesCheck,
       McpDetailsCheck,
       McpBusinessActivityCheck,
       MiningWasteCheck,
@@ -100,9 +115,9 @@ module.exports = class CheckList {
 
     // Only include the permit/MCP bespoke type check and those checks that are available for this application
     const availableFlags = await Promise.all(this.Checks.map((Check) => {
-      return (TaskList.isStandardRules && Check.name === 'PermitCheck') ||
-      (TaskList.isMcpBespoke && Check.name === 'McpBespokeTypeCheck') ||
-      (TaskList.isBespoke && Check.name === 'BespokePermitCheck') ||
+      return (TaskList.isStandardRules && STANDARD_RULES_CHECKS.includes(Check.name)) ||
+      (TaskList.isMcpBespoke && MCP_BESPOKE_CHECKS.includes(Check.name)) ||
+      (TaskList.isBespoke && BESPOKE_CHECKS.includes(Check.name)) ||
       taskList.isAvailable(Check.task)
     }))
     const availableChecks = this.Checks.filter((Check, index) => availableFlags[index])

@@ -48,7 +48,7 @@ module.exports = class TaskListController extends BaseController {
         pageContext.isWaste = true
         pageContext.activitiesNumberText = wasteActivities.textForNumberOfWasteActivities
         if (wasteActivities.wasteActivitiesLength) {
-          pageContext.activities = wasteActivities.wasteActivitiesValues
+          pageContext.activities = wasteActivities.wasteActivityNames
         }
         pageContext.assessmentsNumberText = (wasteAssessments.length || 'no') +
           ' assessment' +
