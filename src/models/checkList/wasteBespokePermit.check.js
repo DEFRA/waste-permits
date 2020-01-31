@@ -15,7 +15,7 @@ module.exports = class WasteBespokePermitCheck extends BaseCheck {
     return this.buildLine({
       heading: 'Permit',
       answers: ['Bespoke environmental permit'],
-      links: [{ path, type: 'contact details' }]
+      links: [{ path, type: 'bespoke environmental permit' }]
     })
   }
 }

@@ -88,6 +88,26 @@ lab.experiment('WasteActivities test:', () => {
     Code.expect(wasteActivitiesData[0].item).to.not.exist()
   })
 
+  lab.experiment('get wasteActivityNames:', () => {
+    lab.test('Correct list when there is a reference name', async () => {
+      const allWasteActivities = await WasteActivities.getAllWasteActivities()
+      const wasteActivities = new WasteActivities(allWasteActivities, [{ id: 'FAKE_ACTIVITY_ID', referenceName: 'Fake name' }])
+      const wasteActivityNames = wasteActivities.wasteActivityNames
+      Code.expect(wasteActivityNames).to.exist()
+      Code.expect(wasteActivityNames.length).to.equal(1)
+      Code.expect(wasteActivityNames[0]).to.equal('Fake activity text – Fake name')
+    })
+
+    lab.test('Correct list when there is no reference name', async () => {
+      const allWasteActivities = await WasteActivities.getAllWasteActivities()
+      const wasteActivities = new WasteActivities(allWasteActivities, [{ id: 'FAKE_ACTIVITY_ID' }])
+      const wasteActivityNames = wasteActivities.wasteActivityNames
+      Code.expect(wasteActivityNames).to.exist()
+      Code.expect(wasteActivityNames.length).to.equal(1)
+      Code.expect(wasteActivityNames[0]).to.equal('Fake activity text')
+    })
+  })
+
   lab.experiment('hasDuplicateWasteActivities:', () => {
     lab.test('false when no activities', async () => {
       const wasteActivities = new WasteActivities([], [])
@@ -96,9 +116,9 @@ lab.experiment('WasteActivities test:', () => {
 
     lab.test('false when no duplicates', async () => {
       const wasteActivities = new WasteActivities([], [
-          { id: 'FAKE_ACTIVITY_ID', referenceName: '' },
-          { id: 'FAKE_ACTIVITY_ID2', referenceName: '' }
-        ])
+        { id: 'FAKE_ACTIVITY_ID', referenceName: '' },
+        { id: 'FAKE_ACTIVITY_ID2', referenceName: '' }
+      ])
       Code.expect(wasteActivities.hasDuplicateWasteActivities).to.be.false()
     })
 
@@ -138,9 +158,9 @@ lab.experiment('WasteActivities test:', () => {
       ])
       const duplicateValues = wasteActivities.duplicateWasteActivitiesValues
       const duplicateIndexes = duplicateValues.map(({ index }) => index)
-      Code.expect(duplicateIndexes).to.equal([1,2,4,5])
+      Code.expect(duplicateIndexes).to.equal([1, 2, 4, 5])
       const duplicateOrders = duplicateValues.map(({ order }) => order)
-      Code.expect(duplicateOrders).to.equal([1,2,1,2])
+      Code.expect(duplicateOrders).to.equal([1, 2, 1, 2])
     })
   })
 
@@ -243,7 +263,7 @@ lab.experiment('WasteActivities test:', () => {
     lab.test(`Doesn't add if the list is full`, async () => {
       mocks.dataStore.data.wasteActivities = []
       for (let i = 0; i < 50; i++) {
-        mocks.dataStore.data.wasteActivities.push({ id: 'FAKE_ACTIVITY_ID', referenceName: 'Fake 1' },)
+        mocks.dataStore.data.wasteActivities.push({ id: 'FAKE_ACTIVITY_ID', referenceName: 'Fake 1' })
       }
       const wasteActivities = await WasteActivities.get(mocks.context)
       Code.expect(wasteActivities.selectedWasteActivities.length).to.equal(50)

@@ -1,6 +1,6 @@
 const BaseCheck = require('./base.check')
 
-const { path } = require('../../routes').BESPOKE_OR_STANDARD_RULES
+const { path } = require('../../routes').WASTE_ACTIVITY_CONTINUE
 
 module.exports = class WasteActivitiesCheck extends BaseCheck {
   get prefix () {
