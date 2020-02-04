@@ -19,6 +19,7 @@ const ApplicationLine = require('../../src/persistence/entities/applicationLine.
 const StandardRule = require('../../src/persistence/entities/standardRule.entity')
 const StandardRuleType = require('../../src/persistence/entities/standardRuleType.entity')
 const { COOKIE_RESULT } = require('../../src/constants')
+const { BUSINESS_TRACKS, REGIMES } = require('../../src/dynamics')
 
 const routePath = '/permit/select'
 const nextRoutePath = '/task-list'
@@ -38,6 +39,7 @@ lab.beforeEach(() => {
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(TaskDeterminants.prototype, 'save').value(() => undefined)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
+  sandbox.stub(Application.prototype, 'save').value(() => undefined)
   sandbox.stub(ApplicationLine, 'getById').value(() => undefined)
   sandbox.stub(ApplicationLine.prototype, 'save').value(() => undefined)
   sandbox.stub(ApplicationLine.prototype, 'delete').value(() => undefined)
@@ -209,6 +211,25 @@ lab.experiment('Select a permit page tests:', () => {
         // Make sure a redirection has taken place correctly
         Code.expect(res.statusCode).to.equal(302)
         Code.expect(res.headers['location']).to.equal(existingPermitRoutePath)
+      })
+
+      lab.test('regime and business track are set correctly when permit is waste', async () => {
+        postRequest.payload['chosen-permit'] = mocks.standardRule.cryptoId
+        await server.inject(postRequest)
+
+        Code.expect(mocks.application.regime).to.equal(REGIMES.WASTE.dynamicsGuid)
+        Code.expect(mocks.application.businessTrack).to.equal(BUSINESS_TRACKS.WASTE_STANDARD_RULES.dynamicsGuid)
+      })
+
+      lab.test('regime and business track are set correctly when permit is MCP', async () => {
+        mocks.standardRuleType.category = 'MCPD category'
+        mocks.standardRuleType.hint = 'category_HINT'
+        mocks.standardRuleType.categoryName = 'mcpd-mcp'
+        postRequest.payload['chosen-permit'] = mocks.standardRule.cryptoId
+        await server.inject(postRequest)
+
+        Code.expect(mocks.application.regime).to.equal(REGIMES.MCP.dynamicsGuid)
+        Code.expect(mocks.application.businessTrack).to.equal(BUSINESS_TRACKS.MCP_STANDARD_RULES.dynamicsGuid)
       })
     })
 

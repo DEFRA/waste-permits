@@ -11,8 +11,16 @@ const StandardRuleType = require('../persistence/entities/standardRuleType.entit
 const ApplicationLine = require('../persistence/entities/applicationLine.entity')
 const { PermitTypes } = require('../dynamics')
 const { STANDARD_RULES: { id: STANDARD_RULES } } = Constants.PermitTypes
+const { BUSINESS_TRACKS, REGIMES } = require('../dynamics')
 
 module.exports = class PermitSelectController extends BaseController {
+  async setRegimeAndBusinessTrack ({ context, regime, businessTrack }) {
+    const { application } = context
+    application.regime = regime
+    application.businessTrack = businessTrack
+    await application.save(context)
+  }
+
   async doGet (request, h, errors) {
     const pageContext = this.createPageContext(h, errors)
     const context = await RecoveryService.createApplicationContext(h)
@@ -65,8 +73,20 @@ module.exports = class PermitSelectController extends BaseController {
     await taskDeterminants.save({ permitType: STANDARD_RULES })
 
     if (isMcp) {
+      await this.setRegimeAndBusinessTrack({
+        context,
+        regime: REGIMES.MCP.dynamicsGuid,
+        businessTrack: BUSINESS_TRACKS.MCP_STANDARD_RULES.dynamicsGuid
+      })
+
       return this.redirect({ h, route: Routes.MCP_EXISTING_PERMIT })
     }
+
+    await this.setRegimeAndBusinessTrack({
+      context,
+      regime: REGIMES.WASTE.dynamicsGuid,
+      businessTrack: BUSINESS_TRACKS.WASTE_STANDARD_RULES.dynamicsGuid
+    })
 
     return this.redirect({ h, route: Routes.TASK_LIST })
   }
