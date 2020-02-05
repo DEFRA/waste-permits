@@ -44,7 +44,7 @@ const PreApplicationCheck = require('./preApplication.check')
 const WasteTreatmentCapacityCheck = require('./wasteTreatmentCapacity.check')
 
 const STANDARD_RULES_CHECKS = [
-  'PermitCheck'
+  'StandardRulesPermitCheck'
 ]
 
 const MCP_BESPOKE_CHECKS = [
