@@ -56,7 +56,7 @@ lab.experiment('Emissions and monitoring check page tests:', () => {
     lab.experiment('Success', () => {
       lab.test('Check the page loads', async () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
-        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Does the operation make any point source emissions to air or water?')
+        Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Does the operation make any point source emissions to air, water or land?')
       })
     })
   })
