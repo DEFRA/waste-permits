@@ -171,6 +171,11 @@ const checkElement = (element, text, href) => {
   }
 }
 
+const checkElementList = (list, text) => {
+  // converting to an array allows us to iterate over all elements with forEach
+  Array.from(list).forEach(element => checkElement(element, text))
+}
+
 let sandbox
 let mocks
 
@@ -273,7 +278,7 @@ lab.experiment('Task List page tests:', () => {
     mocks.taskDeterminants.mcpType = STATIONARY_MCP
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
-    // Check the existence of the page title and Bespoke info
+    // Check the existence of the page title and Bespoke MCP info
     checkElement(doc.getElementById('page-heading'), 'Apply for a bespoke environmental permit')
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
     checkElement(doc.getElementById('activity-name'), `Medium combustion plant site - does not require dispersion modelling`)
@@ -307,12 +312,14 @@ lab.experiment('Task List page tests:', () => {
       getWasteActivitiesStub.resolves(new WasteActivities([], []))
       const doc = await GeneralTestHelper.getDoc(getRequest)
       checkElement(doc.getElementById('waste-details-line'), 'You’ve selected no activities and no assessments for this permit application.')
+      Code.expect(doc.getElementById('waste-activities-list')).to.not.exist()
     })
     lab.test('1 activity and assessment', async () => {
       getWasteActivitiesStub.resolves(new WasteActivities([], [{ id: 'a' }]))
       mocks.taskDeterminants.wasteAssessments.push({})
       const doc = await GeneralTestHelper.getDoc(getRequest)
       checkElement(doc.getElementById('waste-details-line'), 'You’ve selected 1 activity and 1 assessment for this permit application.')
+      checkElementList(doc.getElementById('waste-activities-list').getElementsByTagName('li'), 'ACTIVITY_NAME')
     })
     lab.test('multiple activities and assessments', async () => {
       getWasteActivitiesStub.resolves(new WasteActivities([], [{ id: 'a' }, { id: 'b' }]))
@@ -320,6 +327,7 @@ lab.experiment('Task List page tests:', () => {
       mocks.taskDeterminants.wasteAssessments.push({})
       const doc = await GeneralTestHelper.getDoc(getRequest)
       checkElement(doc.getElementById('waste-details-line'), 'You’ve selected 2 activities and 2 assessments for this permit application.')
+      checkElementList(doc.getElementById('waste-activities-list').getElementsByTagName('li'), 'ACTIVITY_NAME')
     })
   })
 
