@@ -949,7 +949,7 @@ const Routes = {
   EMISSIONS_AND_MONITORING_CHECK: {
     path: '/emissions/check',
     view: 'emissionsAndMonitoringCheck',
-    pageHeading: 'Does the operation make any point source emissions to air or water?',
+    pageHeading: 'Does the operation make any point source emissions to air, water or land?',
     controller: 'emissionsAndMonitoringCheck',
     validator: 'emissionsAndMonitoringCheck',
     nextRoute: 'EMISSIONS_AND_MONITORING_UPLOAD',
