@@ -3,7 +3,7 @@
 const pdf = require('../services/pdf')
 const moment = require('moment')
 const UploadService = require('../services/upload.service')
-const { APPLICATION_STANDARD_RULES_FORM } = require('../constants').UploadSubject
+const { APPLICATION_FORM } = require('../constants').UploadSubject
 const { PRIMARY_CONTACT_DETAILS } = require('../dynamics').AddressTypes
 const BaseController = require('./base.controller')
 const Payment = require('../persistence/entities/payment.entity')
@@ -35,7 +35,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
         context,
         application,
         pdfStream,
-        APPLICATION_STANDARD_RULES_FORM
+        APPLICATION_FORM
       )
     } catch (err) {
       LoggingService.logError(`Unable to send ${name} application pdf to dynamics`, err)

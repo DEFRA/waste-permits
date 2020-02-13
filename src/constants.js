@@ -205,7 +205,7 @@ Constants.UploadSubject = {
   NON_TECHNICAL_SUMMARY: 'non-technical summary',
   MANAGEMENT_SYSTEM_SUMMARY: 'management system summary',
   MCP_DETAILS: 'mcp details',
-  APPLICATION_STANDARD_RULES_FORM: 'application standard rules forms',
+  APPLICATION_FORM: 'application forms',
   ODOUR_MANAGEMENT_PLAN: 'odour management plan',
   ARBITRARY_UPLOADS: 'arbitrary uploads',
   EMISSIONS_MANAGEMENT_PLAN: 'dust and emissions management plan',
