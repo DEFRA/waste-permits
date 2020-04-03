@@ -13,7 +13,7 @@ module.exports = class RecoverController extends BaseController {
     if (!context) {
       return this.redirect({ h, route: RECOVERY_FAILED })
     }
-    const { application, isBespoke, isMcp, isStandardRule, slug } = context
+    const { application, isBespoke, isMcp, isStandardRule, isWaste, slug } = context
     const applicationNumber = application.applicationNumber
     const pageContext = this.createPageContext(h)
     pageContext.formAction = request.path
@@ -28,6 +28,8 @@ module.exports = class RecoverController extends BaseController {
         ? 'Medium combustion plant site - requires dispersion modelling'
         : 'Medium combustion plant site - does not require dispersion modelling'
       Object.assign(pageContext, { slug, applicationNumber, permitName, permitType: mcpType.text, isBespoke })
+    } else if (isBespoke && isWaste) {
+      Object.assign(pageContext, { slug, applicationNumber })
     } else {
       // Permit type has not been determined so log an error and continue
       const errorMessage = `Invalid permit type for application ${applicationNumber}`
