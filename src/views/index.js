@@ -1,4 +1,14 @@
+// permitSelect.controller.js requires access to prototype properties to function correctly
+// This is no longer possible in Handlebars 4.6.0+ for security reasons
+// https://handlebarsjs.com/api-reference/runtime-options.html#options-to-control-prototype-access
+
+// Page templates are not user-created so this is not an issue for us
+// Therefore https://www.npmjs.com/package/@handlebars/allow-prototype-access is used to override this
+
 const handlebars = require('handlebars')
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
+const insecureHandlebars = allowInsecurePrototypeAccess(handlebars)
+
 const Path = require('path')
 const fs = require('fs')
 
@@ -40,7 +50,7 @@ const defaultContext = {
 
 module.exports = {
   engines: {
-    html: handlebars
+    html: insecureHandlebars
   },
   relativeTo: __dirname,
   path: Path.join(__dirname, ''),
