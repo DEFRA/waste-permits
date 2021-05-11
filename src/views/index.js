@@ -31,9 +31,10 @@ const defaultContext = {
   pageTitle: 'Generic Page',
   htmlLang: 'en',
   bodyClasses: '',
-  bodyStart: loadCommonPartial('bodyStart'),
+  bodyStart: '',
   skipLinkMessage: '',
-  cookieMessage: '<p>We use cookies to store an encrypted reference number, remember choices and help count visits. <a href="/information/cookies">Find out more about these cookies</a>.</p>',
+  cookieMessage: '<p id="global-cookie-message-heading">Cookies on the apply for an environmental permit service</p>' +
+    '<p>We use some essential cookies to make this service work.</p><p><a href="/information/cookies">View cookies</a></p>',
   headerClass: 'with-proposition',
   homepageUrl: 'https://www.gov.uk',
   logoLinkTitle: 'Go to the GOV.UK homepage',
