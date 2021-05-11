@@ -33,7 +33,8 @@ const defaultContext = {
   bodyClasses: '',
   bodyStart: '',
   skipLinkMessage: '',
-  cookieMessage: '<p id="global-cookie-message-heading">Cookies on the apply for an environmental permit service</p><p>We use some essential cookies to make this service work.</p><p><a href="/information/cookies">View cookies</a></p>',
+  cookieMessage: '<p id="global-cookie-message-heading">Cookies on the apply for an environmental permit service</p>' +
+    '<p>We use some essential cookies to make this service work.</p><p><a href="/information/cookies">View cookies</a></p>',
   headerClass: 'with-proposition',
   homepageUrl: 'https://www.gov.uk',
   logoLinkTitle: 'Go to the GOV.UK homepage',
