@@ -264,3 +264,9 @@ textarea+ .form-hint {
 th.no-wrap {
   white-space: nowrap;
 }
+
+// The cookie banner message is split into separate parts to make the message clearer, the heading is in bold.
+// This makes it slightly more akin to the new cookie banners from the Design System.
+p#global-cookie-message-heading {
+  font-weight: bold;
+}
