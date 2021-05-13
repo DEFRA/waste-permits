@@ -66,11 +66,9 @@ lab.experiment('Privacy page tests:', () => {
       'personal-information-item-1',
       'personal-information-item-2',
       'personal-information-item-3',
-      'personal-information-item-4',
-      'personal-information-item-5'
+      'personal-information-item-4'
     ])
 
     Code.expect(doc.getElementById('personal-information-charter-link').getAttribute('href')).to.equal('https://www.gov.uk/government/organisations/environment-agency/about/personal-information-charter')
-    Code.expect(doc.getElementById('cookies-link').getAttribute('href')).to.equal('/information/cookies')
   })
 })

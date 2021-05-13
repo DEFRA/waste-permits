@@ -1395,7 +1395,7 @@ const Routes = {
     path: '/information/privacy',
     view: 'privacy',
     pageHeading: 'Privacy: how we use your personal information',
-    controller: 'privacy',
+    controller: 'staticPage',
     types: 'GET',
     cookieValidationRequired: false,
     applicationRequired: false
