@@ -176,7 +176,7 @@ lab.experiment('Technical Management Qualification tests:', () => {
         postRequest.payload['technical-qualification'] = Qualification[type].TYPE
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath[type])
+        Code.expect(res.headers.location).to.equal(nextRoutePath[type])
       }))
     })
 

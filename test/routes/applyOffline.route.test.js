@@ -100,7 +100,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
     })
 
     lab.experiment('success', () => {
-      lab.experiment(`when the category is`, () => {
+      lab.experiment('when the category is', () => {
         Object.keys(offlineCategories)
           .forEach((type) => {
             const standardRuleType = offlineCategories[type]
@@ -145,7 +145,7 @@ lab.experiment('Apply Offline: Download and fill in these forms to apply for tha
         const res = await server.inject(getRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(startPath)
+        Code.expect(res.headers.location).to.equal(startPath)
       })
     })
   })

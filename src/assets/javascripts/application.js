@@ -8,23 +8,23 @@ $(window).on('load', function () {
 })
 
 function uploadFilePanel () {
-  var pageBusy = false
-  var $uploadFilePanel = $('#upload-file-panel')
+  let pageBusy = false
+  const $uploadFilePanel = $('#upload-file-panel')
 
-  var setBusy = function () {
+  const setBusy = function () {
     pageBusy = true
     $uploadFilePanel.find('#submit-button').css('cursor', 'progress')
     $uploadFilePanel.find('.remove-file-link').css('cursor', 'progress')
     $uploadFilePanel.find('input').css('cursor', 'progress')
   }
 
-  var skipIfBusy = function (e) {
+  const skipIfBusy = function (e) {
     if (pageBusy) {
       e.preventDefault()
     }
   }
 
-  var onUpload = function (e) {
+  const onUpload = function (e) {
     e.preventDefault()
     if (!pageBusy) {
       setBusy()
@@ -32,7 +32,7 @@ function uploadFilePanel () {
     }
   }
 
-  var removeFile = function (e) {
+  const removeFile = function (e) {
     e.preventDefault()
     if (!pageBusy) {
       setBusy()
@@ -52,7 +52,7 @@ $(document).ready(function () {
 
   // Show and hide toggled content
   // Where .multiple-choice uses the data-target attribute to toggle hidden content
-  var showHideContent = new GOVUK.ShowHideContent()
+  const showHideContent = new GOVUK.ShowHideContent()
   showHideContent.init()
 
   // don't allow user interaction while an upload or remove is in progress

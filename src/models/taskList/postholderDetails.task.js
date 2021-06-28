@@ -16,7 +16,7 @@ module.exports = class PostholderDetails extends BaseTask {
 
   static async getContactDetail (request) {
     const context = request.app.data
-    let { partnerId } = request.params
+    const { partnerId } = request.params
     const id = CryptoService.decrypt(partnerId)
     return ContactDetail.get(context, { id })
   }
@@ -46,7 +46,7 @@ module.exports = class PostholderDetails extends BaseTask {
   static async saveSelectedAddress (request, addressDto) {
     const context = request.app.data
     if (!addressDto.uprn) {
-      const errorMessage = `Unable to save individual permit holder address as it does not have a UPRN`
+      const errorMessage = 'Unable to save individual permit holder address as it does not have a UPRN'
       LoggingService.logError(errorMessage, request)
       throw new Error(errorMessage)
     }

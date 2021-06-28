@@ -13,7 +13,7 @@ let AuthenticationContext
 
 let sandbox
 let fakeConfig
-let fakeAccessToken = 'FAKE_ACCESS_TOKEN'
+const fakeAccessToken = 'FAKE_ACCESS_TOKEN'
 let err
 let tokenResponse
 

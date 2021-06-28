@@ -14,15 +14,15 @@ const { capitalizeFirstLetter } = require('../../../src/utilities/utilities')
 const ContactDetail = require('../../../src/models/contactDetail.model')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-let memberId = 'MEMBER_ID'
+const memberId = 'MEMBER_ID'
 
 const routes = {
-  'partner': {
+  partner: {
     routePath: `/permit-holder/partners/details/${memberId}`,
     nextPath: `/permit-holder/partners/address/postcode/${memberId}`,
     PermitHolderTask: require('../../../src/models/taskList/partnerDetails.task')
   },
-  'postholder': {
+  postholder: {
     routePath: `/permit-holder/group/post-holder/contact-details/${memberId}`,
     nextPath: `/permit-holder/group/post-holder/address/postcode/${memberId}`,
     PermitHolderTask: require('../../../src/models/taskList/postholderDetails.task')
@@ -112,21 +112,21 @@ Object.entries(routes).forEach(([member, { routePath, nextPath, PermitHolderTask
 
       lab.experiment(`Get ${routePath}`, () => {
         lab.experiment('Success:', () => {
-          lab.test(`when returns the page correctly when the partner exists with no email and telephone number`, async () => {
+          lab.test('when returns the page correctly when the partner exists with no email and telephone number', async () => {
             delete mocks.contactDetail.email
             delete mocks.contactDetail.telephone
             const { firstName, lastName } = mocks.contactDetail
             return checkPageElements(getRequest, '', '', `${firstName} ${lastName}`)
           })
 
-          lab.test(`when returns the page correctly when the partner exists with an existing email and telephone number`, async () => {
+          lab.test('when returns the page correctly when the partner exists with an existing email and telephone number', async () => {
             const { firstName, lastName, email, telephone } = mocks.contactDetail
             return checkPageElements(getRequest, email, telephone, `${firstName} ${lastName}`)
           })
         })
 
         lab.experiment('Failure:', () => {
-          lab.test(`when the contactDetail does not exist`, async () => {
+          lab.test('when the contactDetail does not exist', async () => {
             const stub = sinon.stub(PermitHolderTask, 'getContactDetail').value(() => undefined)
             const res = await server.inject(getRequest)
             stub.restore()
@@ -137,15 +137,15 @@ Object.entries(routes).forEach(([member, { routePath, nextPath, PermitHolderTask
 
       lab.experiment(`POST ${routePath}`, () => {
         lab.experiment('Success:', () => {
-          lab.test(`when the telephone and email are entered correctly`, async () => {
+          lab.test('when the telephone and email are entered correctly', async () => {
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
         })
 
         lab.experiment('Failure:', () => {
-          lab.test(`when the contactDetail does not exist`, async () => {
+          lab.test('when the contactDetail does not exist', async () => {
             const stub = sinon.stub(PermitHolderTask, 'getContactDetail').value(() => undefined)
             const res = await server.inject(postRequest)
             stub.restore()
@@ -154,28 +154,28 @@ Object.entries(routes).forEach(([member, { routePath, nextPath, PermitHolderTask
         })
 
         lab.experiment('Invalid:', () => {
-          lab.test(`shows an error message when the email is blank`, async () => {
-            postRequest.payload['email'] = ''
+          lab.test('shows an error message when the email is blank', async () => {
+            postRequest.payload.email = ''
             await checkValidationErrors('email', ['Enter an email address'])
           })
 
-          lab.test(`shows an error message when the email has an invalid format`, async () => {
-            postRequest.payload['email'] = 'INVALID_EMAIL'
+          lab.test('shows an error message when the email has an invalid format', async () => {
+            postRequest.payload.email = 'INVALID_EMAIL'
             await checkValidationErrors('email', ['Enter a valid email address'])
           })
 
-          lab.test(`shows an error message when the telephone is blank`, async () => {
-            postRequest.payload['telephone'] = ''
+          lab.test('shows an error message when the telephone is blank', async () => {
+            postRequest.payload.telephone = ''
             await checkValidationErrors('telephone', ['Enter a telephone number'])
           })
 
-          lab.test(`shows an error message when the telephone contains invalid characters`, async () => {
-            postRequest.payload['telephone'] = '0123456789A'
+          lab.test('shows an error message when the telephone contains invalid characters', async () => {
+            postRequest.payload.telephone = '0123456789A'
             await checkValidationErrors('telephone', ['Telephone number can only include numbers, spaces and the + sign. Please remove any other characters.'])
           })
 
-          lab.test(`shows multiple error messages on the telephone field`, async () => {
-            postRequest.payload['telephone'] = '+0123456789A'
+          lab.test('shows multiple error messages on the telephone field', async () => {
+            postRequest.payload.telephone = '+0123456789A'
             const expectedErrors = [
               'Telephone number can only include numbers, spaces and the + sign. Please remove any other characters.',
               'The + sign for international numbers should be at the start of the number, followed by a number 1 to 9, not a 0'

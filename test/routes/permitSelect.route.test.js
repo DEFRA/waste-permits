@@ -188,7 +188,7 @@ lab.experiment('Select a permit page tests:', () => {
 
         // Make sure a redirection has taken place correctly
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test(`redirects to "${offlineRoutePath}" when permit selected is an offline permit`, async () => {
@@ -198,7 +198,7 @@ lab.experiment('Select a permit page tests:', () => {
 
         // Make sure a redirection has taken place correctly
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(offlineRoutePath)
+        Code.expect(res.headers.location).to.equal(offlineRoutePath)
       })
 
       lab.test(`redirects to "${existingPermitRoutePath}" when permit selected is an MCP permit`, async () => {
@@ -210,7 +210,7 @@ lab.experiment('Select a permit page tests:', () => {
 
         // Make sure a redirection has taken place correctly
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(existingPermitRoutePath)
+        Code.expect(res.headers.location).to.equal(existingPermitRoutePath)
       })
 
       lab.test('regime and business track are set correctly when permit is waste', async () => {

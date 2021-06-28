@@ -79,7 +79,7 @@ lab.experiment('Waste weight', () => {
     lab.test('success', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextPath)
+      Code.expect(res.headers.location).to.equal(nextPath)
     })
 
     lab.test('displays errors (no values supplied)', async () => {

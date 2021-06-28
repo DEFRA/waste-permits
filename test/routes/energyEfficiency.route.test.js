@@ -9,7 +9,7 @@ const EnergyEfficiencyReport = require('../../src/models/taskList/energyEfficien
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/mcp/energy-efficiency/upload'
 const paths = {

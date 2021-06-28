@@ -91,11 +91,11 @@ lab.experiment('Mcp Type page tests:', () => {
             case STATIONARY_MCP.id:
             case STATIONARY_SG.id:
             case STATIONARY_MCP_AND_SG.id:
-              Code.expect(res.headers['location']).to.equal(existingPermitPath)
+              Code.expect(res.headers.location).to.equal(existingPermitPath)
               break
             case MOBILE_SG.id:
             case MOBILE_MCP.id:
-              Code.expect(res.headers['location']).to.equal(airDispersionModellingPath)
+              Code.expect(res.headers.location).to.equal(airDispersionModellingPath)
               break
           }
         })

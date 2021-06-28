@@ -28,7 +28,7 @@ module.exports = class ContactDetail extends BaseModel {
     const { applicationId } = context
     const { organisationType } = await Application.getById(context, applicationId)
     const { id, jobTitle, firstName, lastName, email, telephone, type, dateOfBirth, addressId, customerId } = addressDetail
-    let contactDetailData = { id, applicationId, firstName, lastName, jobTitle, email, telephone, type, dateOfBirth, organisationType, customerId }
+    const contactDetailData = { id, applicationId, firstName, lastName, jobTitle, email, telephone, type, dateOfBirth, organisationType, customerId }
     if (addressId) {
       const address = await Address.getById(context, addressId)
       if (address) {
@@ -67,7 +67,7 @@ module.exports = class ContactDetail extends BaseModel {
 
   async save (context) {
     const { applicationId, firstName, lastName, jobTitle, telephone, email, dateOfBirth, type, addressId, customerId } = this
-    let { id } = this
+    const { id } = this
 
     if (!id && !type) {
       throw new Error('Expected either contact details id or type to be declared')

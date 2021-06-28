@@ -7,8 +7,8 @@ const hash = crypto.createHash('sha256')
 hash.update(cookieValidationPassword)
 
 const digest = hash.digest()
-let key = digest.slice(0, 16)
-let iv = digest.slice(16, 32)
+const key = digest.slice(0, 16)
+const iv = digest.slice(16, 32)
 
 const algorithm = 'aes-128-cbc'
 

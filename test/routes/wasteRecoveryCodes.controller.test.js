@@ -35,7 +35,7 @@ lab.experiment('Waste recovery codes controller tests:', () => {
   })
 
   lab.experiment('GET:', () => {
-    let getRequest = { params: { activityIndex: 0 } }
+    const getRequest = { params: { activityIndex: 0 } }
 
     lab.test('GET returns a view', async () => {
       showViewSpy.returns(true)
@@ -120,7 +120,7 @@ lab.experiment('Waste recovery codes controller tests:', () => {
       Code.expect(redirectSpy.args[0][0].path).to.equal('/recovery-disposal/disposal/1')
     })
 
-    lab.test(`POST doesn't redirect if no disposal or recovery codes selected`, async () => {
+    lab.test('POST doesn\'t redirect if no disposal or recovery codes selected', async () => {
       getForActivityStub.resolves(new WasteDisposalAndRecoveryCodes({}))
       const doGetSpy = sandbox.stub(Controller.prototype, 'doGet')
       postRequest = { params: { activityIndex: 0 }, payload: {} }

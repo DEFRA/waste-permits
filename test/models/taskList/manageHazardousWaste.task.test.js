@@ -26,19 +26,19 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: ManageHazardousWaste Model tests:', () => {
-  lab.test(`checkComplete() method correctly returns FALSE when no summary provided`, async () => {
+  lab.test('checkComplete() method correctly returns FALSE when no summary provided', async () => {
     listAnnotationsStub.withArgs({}, 'hazardous waste treatment summary').resolves([])
     const result = await ManageHazardousWaste.checkComplete({})
     Code.expect(result).to.equal(false)
   })
 
-  lab.test(`checkComplete() method correctly returns FALSE when no plans provided`, async () => {
+  lab.test('checkComplete() method correctly returns FALSE when no plans provided', async () => {
     listAnnotationsStub.withArgs({}, 'hazardous waste layout plans and process flows').resolves([])
     const result = await ManageHazardousWaste.checkComplete({})
     Code.expect(result).to.equal(false)
   })
 
-  lab.test(`checkComplete() method correctly returns TRUE when summary and plans provided`, async () => {
+  lab.test('checkComplete() method correctly returns TRUE when summary and plans provided', async () => {
     const result = await ManageHazardousWaste.checkComplete({})
     Code.expect(result).to.equal(true)
   })

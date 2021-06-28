@@ -41,7 +41,7 @@ lab.experiment('OdourManagementPlan Check tests:', () => {
       lines = await check.buildLines()
     })
 
-    lab.test(`(odour management plan line) works correctly`, async () => {
+    lab.test('(odour management plan line) works correctly', async () => {
       const { heading, headingId, answers, links } = lines.pop()
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${prefix}-heading`)

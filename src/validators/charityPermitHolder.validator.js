@@ -7,7 +7,7 @@ module.exports = class CharityPermitHolderValidator extends BaseValidator {
   get errorMessages () {
     return {
       'charity-permit-holder-type': {
-        'any.required': `Select the permit holder`
+        'any.required': 'Select the permit holder'
       }
     }
   }

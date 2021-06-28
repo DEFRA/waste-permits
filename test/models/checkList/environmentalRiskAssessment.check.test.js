@@ -42,7 +42,7 @@ lab.experiment('Environmental Risk Assessment Check tests:', () => {
       lines = await check.buildLines()
     })
 
-    lab.test(`(environmental risk assessment line) works correctly`, async () => {
+    lab.test('(environmental risk assessment line) works correctly', async () => {
       const { heading, headingId, answers, links } = lines.pop()
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${prefix}-heading`)

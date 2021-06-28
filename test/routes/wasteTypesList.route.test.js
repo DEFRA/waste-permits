@@ -9,7 +9,7 @@ const WasteTypesList = require('../../src/models/taskList/wasteTypesList.task')
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/waste-codes'
 const paths = {

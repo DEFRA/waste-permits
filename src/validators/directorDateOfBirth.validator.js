@@ -8,7 +8,7 @@ module.exports = class DirectorDateOfBirthValidator extends BaseValidator {
   setErrorMessages (directors) {
     this.errorMessages = {
       'director-dobs-not-entered': {
-        'any.required': `Enter a date of birth`
+        'any.required': 'Enter a date of birth'
       }
     }
     // Iterate the directors and build error messages for each one
@@ -22,7 +22,7 @@ module.exports = class DirectorDateOfBirthValidator extends BaseValidator {
 
       this.errorMessages[`director-dob-day-${i}`] = {
         'any.required': `Enter a date of birth for ${directorName}`,
-        'invalid': `Enter a day between 1 and ${daysInBirthMonth} for ${directorName}`
+        invalid: `Enter a day between 1 and ${daysInBirthMonth} for ${directorName}`
       }
     }
   }

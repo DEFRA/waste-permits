@@ -14,20 +14,20 @@ class TestValidator extends BaseValidator {
 
   get errorMessages () {
     return {
-      'telephone': {
-        'any.empty': `Enter a telephone number`,
-        'any.required': `Enter a telephone number`,
-        'min': `Enter a telephone number with at least 6 numbers`,
-        'custom.invalid': `Telephone number is invalid`,
-        'custom.test': `Telephone Test failed`,
-        'custom.async.test': `Telephone Test failed asynchronously`
+      telephone: {
+        'any.empty': 'Enter a telephone number',
+        'any.required': 'Enter a telephone number',
+        min: 'Enter a telephone number with at least 6 numbers',
+        'custom.invalid': 'Telephone number is invalid',
+        'custom.test': 'Telephone Test failed',
+        'custom.async.test': 'Telephone Test failed asynchronously'
       }
     }
   }
 
   get customValidators () {
     return {
-      'telephone': {
+      telephone: {
         'custom.invalid': () => true,
         'custom.test': () => true,
         'custom.async.test': () => Promise.resolve(true)

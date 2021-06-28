@@ -35,7 +35,7 @@ class ApplicationAnswer extends BaseEntity {
       if (this.applicationLineId) {
         actionData.ApplicationLine = {
           '@odata.type': 'Microsoft.Dynamics.CRM.defra_applicationline',
-          'defra_applicationlineid': this.applicationLineId
+          defra_applicationlineid: this.applicationLineId
         }
       }
       await dynamicsDal.callAction(action, actionData)

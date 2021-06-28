@@ -142,7 +142,7 @@ lab.experiment('Payment Entity tests:', () => {
     Code.expect(payment.type).to.equal(BACS_PAYMENT)
   })
 
-  lab.test(`getCardPaymentResult() method is successful`, async () => {
+  lab.test('getCardPaymentResult() method is successful', async () => {
     const expectedActionDataObject = {
       ConfigurationPrefix: CONFIGURATION_PREFIX,
       LookupByPaymentReference: fakePaymentData.referenceNumber
@@ -155,7 +155,7 @@ lab.experiment('Payment Entity tests:', () => {
     Code.expect(await testPayment.getCardPaymentResult(context)).to.equal(true)
   })
 
-  lab.test(`makeCardPayment() method is successful`, async () => {
+  lab.test('makeCardPayment() method is successful', async () => {
     const description = 'DESCRIPTION'
     const returnUrl = 'RETURN_URL'
     const expectedActionDataObject = {

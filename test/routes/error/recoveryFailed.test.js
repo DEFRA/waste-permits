@@ -13,7 +13,7 @@ const CookieService = require('../../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 const routePath = '/errors/recovery-failed'
-const pageHeading = `Sorry, we cannot find that application`
+const pageHeading = 'Sorry, we cannot find that application'
 
 let sandbox
 let mocks
@@ -56,7 +56,7 @@ lab.experiment('Recovery failed page tests:', () => {
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
-    let element = doc.getElementById('back-link')
+    const element = doc.getElementById('back-link')
     Code.expect(element).to.not.exist()
   })
 

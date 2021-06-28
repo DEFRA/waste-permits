@@ -48,7 +48,7 @@ const checkPageElements = async (getRequest, expectedValue) => {
   const doc = await GeneralTestHelper.getDoc(getRequest)
 
   let element = doc.getElementById('page-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`What is the grid reference for the centre of the site?`)
+  Code.expect(element.nodeValue).to.equal('What is the grid reference for the centre of the site?')
 
   // Test for the existence of expected static content
   GeneralTestHelper.checkElementsExist(doc, [
@@ -170,7 +170,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test(`POST ${routePath} success (new grid reference) redirects to the Site Postcode route`, async () => {
@@ -183,7 +183,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test(`POST ${routePath}  success (existing grid reference) redirects to the Site Postcode route`, async () => {
@@ -191,7 +191,7 @@ lab.experiment('Site Grid Reference page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
   })

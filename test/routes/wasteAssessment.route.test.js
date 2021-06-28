@@ -35,7 +35,7 @@ const viewableAssessments = [
   { id: 'ass-3', shortName: '1-19-3', itemName: 'Section 1.19.3', canApplyFor: true, canApplyOnline: true }
 ]
 const nonViewableAssessment = { id: 'ass-4', shortName: '1-19-99', itemName: 'Section 1.19.99', canApplyFor: false, canApplyOnline: false }
-const allAssessments = [ ...viewableAssessments, nonViewableAssessment ]
+const allAssessments = [...viewableAssessments, nonViewableAssessment]
 
 const FPP_INPUT = 'assessment-1-19-3-input'
 const OMP_INPUT = 'assessment-1-19-6-input'
@@ -104,7 +104,7 @@ lab.experiment('Waste assessments', () => {
         Code.expect(doc.getElementById(`assessment-${nonViewableAssessment.shortName}-input`)).to.not.exist()
       })
 
-      lab.test(`should show selected option`, async () => {
+      lab.test('should show selected option', async () => {
         mocks.taskDeterminants.wasteAssessments = [mocks.taskDeterminants.allAssessments[0]]
         const doc = await GeneralTestHelper.getDoc(getRequest)
         Code.expect(doc.getElementById(`assessment-${viewableAssessments[0].shortName}-input`)).to.exist()
@@ -191,7 +191,7 @@ lab.experiment('Waste assessments', () => {
         method: 'POST',
         url: routePath,
         headers: {},
-        payload: { 'assessment': 'ass-1' }
+        payload: { assessment: 'ass-1' }
       }
     })
 
@@ -200,7 +200,7 @@ lab.experiment('Waste assessments', () => {
       Code.expect(saveSpy.called).to.be.true()
       Code.expect(dataStoreSaveSpy.called).to.be.true()
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextPath)
+      Code.expect(res.headers.location).to.equal(nextPath)
     })
 
     lab.test('POST with no waste assessments also redirects to next route', async () => {
@@ -209,31 +209,31 @@ lab.experiment('Waste assessments', () => {
       Code.expect(saveSpy.called).to.be.true()
       Code.expect(dataStoreSaveSpy.called).to.be.true()
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextPath)
+      Code.expect(res.headers.location).to.equal(nextPath)
     })
 
     lab.test('POST for waste assessment that cannot be applied for online shows apply offline page', async () => {
-      postRequest.payload = { 'assessment': 'ass-2' }
+      postRequest.payload = { assessment: 'ass-2' }
       mocks.taskDeterminants.wasteAssessments = [mocks.taskDeterminants.allAssessments[1]]
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(applyOfflinePath)
+      Code.expect(res.headers.location).to.equal(applyOfflinePath)
     })
 
     lab.test('POST for waste assessment that cannot be applied for shows apply offline page', async () => {
-      postRequest.payload = { 'assessment': 'ass-4' }
+      postRequest.payload = { assessment: 'ass-4' }
       mocks.taskDeterminants.wasteAssessments = [mocks.taskDeterminants.allAssessments[3]]
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(applyOfflinePath)
+      Code.expect(res.headers.location).to.equal(applyOfflinePath)
     })
 
     lab.test('POST for multiple waste assessments where some cannot be applied for online shows apply offline page', async () => {
-      postRequest.payload = { 'assessment': 'ass-1,ass-2' }
+      postRequest.payload = { assessment: 'ass-1,ass-2' }
       mocks.context.taskDeterminants.wasteAssessments = [mocks.taskDeterminants.allAssessments[0], mocks.taskDeterminants.allAssessments[1]]
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(applyOfflinePath)
+      Code.expect(res.headers.location).to.equal(applyOfflinePath)
     })
   })
 })

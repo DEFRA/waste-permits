@@ -93,7 +93,7 @@ lab.experiment('Habitat assessment page tests:', () => {
       postRequest.payload['habitat-assessment'] = 'yes'
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
       Code.expect(taskDeterminantsStub.callCount).to.equal(1)
       Code.expect(taskDeterminantsStub.args[0][0].habitatAssessmentRequired).to.equal(true)
     })
@@ -103,7 +103,7 @@ lab.experiment('Habitat assessment page tests:', () => {
       postRequest.payload['habitat-assessment'] = 'no'
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
       Code.expect(taskDeterminantsStub.callCount).to.equal(1)
       Code.expect(taskDeterminantsStub.args[0][0].habitatAssessmentRequired).to.equal(false)
     })

@@ -104,7 +104,7 @@ lab.experiment('CharityDetail Model tests:', () => {
     })
 
     lab.test('delete() method correctly saves the charity details when the charity is for a public body', async () => {
-      let applicationAnswerSpy = sinon.spy(ApplicationAnswer.prototype, 'clear')
+      const applicationAnswerSpy = sinon.spy(ApplicationAnswer.prototype, 'clear')
       await mocks.charityDetail.delete(context)
       Code.expect(applicationAnswerSpy.callCount).to.equal(2)
       applicationAnswerSpy.restore()

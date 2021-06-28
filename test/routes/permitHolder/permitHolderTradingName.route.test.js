@@ -88,7 +88,7 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
         Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal('')
       })
 
-      lab.test(`returns the contact page correctly on first load when don't use trading name is selected`, async () => {
+      lab.test('returns the contact page correctly on first load when don\'t use trading name is selected', async () => {
         mocks.application.useTradingName = NO
         delete mocks.application.tradingName
 
@@ -100,7 +100,7 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
         Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal('')
       })
 
-      lab.test(`returns the contact page correctly on first load when use trading name is selected`, async () => {
+      lab.test('returns the contact page correctly on first load when use trading name is selected', async () => {
         mocks.application.useTradingName = YES
 
         const doc = await GeneralTestHelper.getDoc(getRequest)
@@ -142,7 +142,7 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
         postRequest.payload = { 'use-trading-name': NO.toString() }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when trade name usage is selected with a trade name entered', async () => {
@@ -152,7 +152,7 @@ lab.experiment('Permit Holder Trading Name page tests:', () => {
         }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 

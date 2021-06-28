@@ -28,7 +28,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: EnvironmentRiskAssessment Model tests:', () => {
-  lab.test(`checkComplete() method correctly returns FALSE when annotations don't exist`, async () => {
+  lab.test('checkComplete() method correctly returns FALSE when annotations don\'t exist', async () => {
     Annotation.listByApplicationIdAndSubject = () => []
     const result = await EnvironmentalRiskAssessment.checkComplete(mocks.context)
     Code.expect(result).to.equal(false)

@@ -24,7 +24,7 @@ module.exports = class EmissionsAndMonitoringController extends BaseController {
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
 
-    var emissionsAndMonitoringDetailsRequired = request.payload['emissions-made'] === 'yes'
+    const emissionsAndMonitoringDetailsRequired = request.payload['emissions-made'] === 'yes'
     await DataStore.save(context, { emissionsAndMonitoringDetailsRequired })
 
     // Redirect to upload page if response is yes or back to the task list otherwise

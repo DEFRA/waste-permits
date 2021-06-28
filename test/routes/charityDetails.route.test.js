@@ -71,7 +71,7 @@ const checkPageElements = async (request, expectedName, expectedNumber) => {
   const doc = await GeneralTestHelper.getDoc(request)
 
   let element = doc.getElementById('page-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`What is the charity’s name and number?`)
+  Code.expect(element.nodeValue).to.equal('What is the charity’s name and number?')
 
   // Test for the existence of expected static content
   GeneralTestHelper.checkElementsExist(doc, [
@@ -141,19 +141,19 @@ lab.experiment('Charity Details page tests:', () => {
           mocks.charityDetail.charityPermitHolder = 'limited-company'
         })
 
-        lab.test(`redirects to the correct route`, async () => {
+        lab.test('redirects to the correct route', async () => {
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(companyRoutePath)
+          Code.expect(res.headers.location).to.equal(companyRoutePath)
         })
 
-        lab.test(`sets charity details`, async () => {
+        lab.test('sets charity details', async () => {
           await server.inject(postRequest)
           Code.expect(mocks.charityDetail.charityName).to.equal(charityName)
           Code.expect(mocks.charityDetail.charityNumber).to.equal(charityNumber)
         })
 
-        lab.test(`does not set organisation details`, async () => {
+        lab.test('does not set organisation details', async () => {
           await server.inject(postRequest)
           Code.expect(mocks.application.permitHolderOrganisationId).to.equal(originalPermitHolderOrganisationId)
           Code.expect(mocks.application.useTradingName).to.equal(originalUseTradingName)
@@ -166,19 +166,19 @@ lab.experiment('Charity Details page tests:', () => {
           mocks.charityDetail.charityPermitHolder = 'individual'
         })
 
-        lab.test(`redirects to the correct route`, async () => {
+        lab.test('redirects to the correct route', async () => {
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(individualRoutePath)
+          Code.expect(res.headers.location).to.equal(individualRoutePath)
         })
 
-        lab.test(`sets charity details`, async () => {
+        lab.test('sets charity details', async () => {
           await server.inject(postRequest)
           Code.expect(mocks.charityDetail.charityName).to.equal(charityName)
           Code.expect(mocks.charityDetail.charityNumber).to.equal(charityNumber)
         })
 
-        lab.test(`does not set organisation details`, async () => {
+        lab.test('does not set organisation details', async () => {
           await server.inject(postRequest)
           Code.expect(mocks.application.permitHolderOrganisationId).to.equal(originalPermitHolderOrganisationId)
           Code.expect(mocks.application.useTradingName).to.equal(originalUseTradingName)
@@ -191,19 +191,19 @@ lab.experiment('Charity Details page tests:', () => {
           mocks.charityDetail.charityPermitHolder = 'public-body'
         })
 
-        lab.test(`redirects to the correct route`, async () => {
+        lab.test('redirects to the correct route', async () => {
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(publicBodyRoutePath)
+          Code.expect(res.headers.location).to.equal(publicBodyRoutePath)
         })
 
-        lab.test(`sets charity details`, async () => {
+        lab.test('sets charity details', async () => {
           await server.inject(postRequest)
           Code.expect(mocks.charityDetail.charityName).to.equal(charityName)
           Code.expect(mocks.charityDetail.charityNumber).to.equal(charityNumber)
         })
 
-        lab.test(`sets organisation details`, async () => {
+        lab.test('sets organisation details', async () => {
           await server.inject(postRequest)
           Code.expect(mocks.application.useTradingName).to.equal(TRADING_NAME_USAGE.YES)
           Code.expect(mocks.application.tradingName).to.equal(charityName)

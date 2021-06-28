@@ -15,15 +15,15 @@ const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDe
 const { capitalizeFirstLetter } = require('../../../src/utilities/utilities')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-let memberId = 'MEMBER_ID'
+const memberId = 'MEMBER_ID'
 
 const routes = {
-  'partner': {
+  partner: {
     routePath: `/permit-holder/partners/delete/${memberId}`,
     nextPath: '/permit-holder/partners/list',
     PermitHolderTask: require('../../../src/models/taskList/partnerDetails.task')
   },
-  'postholder': {
+  postholder: {
     routePath: `/permit-holder/group/post-holder/delete/${memberId}`,
     nextPath: '/permit-holder/group/list',
     PermitHolderTask: require('../../../src/models/taskList/postholderDetails.task')
@@ -89,7 +89,7 @@ Object.entries(routes).forEach(([member, { routePath, nextPath, PermitHolderTask
       Code.expect(doc.getElementById('skip-delete-member-link').getAttribute('href')).to.equal(nextPath)
     }
 
-    lab.experiment(`Delete page tests:`, () => {
+    lab.experiment('Delete page tests:', () => {
       new GeneralTestHelper({ lab, routePath }).test()
 
       lab.experiment(`Get ${routePath}`, () => {
@@ -101,7 +101,7 @@ Object.entries(routes).forEach(([member, { routePath, nextPath, PermitHolderTask
         })
 
         lab.experiment('Failure:', () => {
-          lab.test(`when the contactDetail does not exist`, async () => {
+          lab.test('when the contactDetail does not exist', async () => {
             const stub = sinon.stub(PermitHolderTask, 'getContactDetail').value(() => undefined)
             const res = await server.inject(getRequest)
             stub.restore()
@@ -115,12 +115,12 @@ Object.entries(routes).forEach(([member, { routePath, nextPath, PermitHolderTask
           lab.test(`when the ${member} is deleted`, async () => {
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
         })
 
         lab.experiment('Failure:', () => {
-          lab.test(`when the contactDetail does not exist`, async () => {
+          lab.test('when the contactDetail does not exist', async () => {
             const stub = sinon.stub(PermitHolderTask, 'getContactDetail').value(() => undefined)
             const res = await server.inject(postRequest)
             stub.restore()

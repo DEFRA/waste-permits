@@ -21,8 +21,8 @@ const permitLengthScores = {
 const floodRiskScores = {
   'not-in-flood-risk-zone': 0,
   'very-low-or-low': 1,
-  'medium': 2,
-  'high': 5
+  medium: 2,
+  high: 5
 }
 
 const waterSourceScores = {
@@ -61,7 +61,7 @@ module.exports = class ClimateChangeRiskScreening {
   }
 
   async save (context) {
-    let applicationAnswers = []
+    const applicationAnswers = []
 
     if (this.permitLength) { applicationAnswers.push({ questionCode: PERMIT_LENGTH.questionCode, answerText: this.permitLength }) }
     if (this.floodRisk) { applicationAnswers.push({ questionCode: FLOOD_RISK.questionCode, answerText: this.floodRisk }) }

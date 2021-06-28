@@ -33,7 +33,7 @@ module.exports = class DataStore extends BaseModel {
 
   async save (context) {
     const { applicationId } = context
-    let { id, data } = this
+    const { id, data } = this
 
     const applicationData = id ? await ApplicationData.getById(context, id) : new ApplicationData({ applicationId })
 

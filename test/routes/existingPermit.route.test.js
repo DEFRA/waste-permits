@@ -93,7 +93,7 @@ lab.experiment('Existing permit page tests:', () => {
         const res = await server.inject(postRequest)
         checkTaskDeterminants()
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePathYes)
+        Code.expect(res.headers.location).to.equal(nextRoutePathYes)
       })
       lab.test('when standard rule and no selected', async () => {
         mocks.context.isBespoke = false
@@ -101,7 +101,7 @@ lab.experiment('Existing permit page tests:', () => {
         const res = await server.inject(postRequest)
         checkTaskDeterminants()
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePathNoSr)
+        Code.expect(res.headers.location).to.equal(nextRoutePathNoSr)
       })
       lab.test('when bespoke and no selected', async () => {
         mocks.context.isBespoke = true
@@ -109,7 +109,7 @@ lab.experiment('Existing permit page tests:', () => {
         const res = await server.inject(postRequest)
         checkTaskDeterminants()
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePathNoBespoke)
+        Code.expect(res.headers.location).to.equal(nextRoutePathNoBespoke)
       })
       lab.test('when bespoke and stationary-sg and no selected', async () => {
         mocks.context.isBespoke = true
@@ -118,7 +118,7 @@ lab.experiment('Existing permit page tests:', () => {
         const res = await server.inject(postRequest)
         checkTaskDeterminants()
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePathNoBespokeStationarySg)
+        Code.expect(res.headers.location).to.equal(nextRoutePathNoBespokeStationarySg)
       })
     })
 

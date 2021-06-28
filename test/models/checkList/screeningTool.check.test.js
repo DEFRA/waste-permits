@@ -41,7 +41,7 @@ lab.experiment('Screening Tool Check tests:', () => {
       lines = await check.buildLines()
     })
 
-    lab.test(`(screening tool line) works correctly`, async () => {
+    lab.test('(screening tool line) works correctly', async () => {
       const { heading, headingId, answers, links } = lines.pop()
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${prefix}-heading`)

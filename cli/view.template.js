@@ -7,12 +7,12 @@ module.exports = class view {
 
   {{> common/betaBanner }}
   
-  ${hasBackLink ? `{{> common/backLink }}` : ''}
+  ${hasBackLink ? '{{> common/backLink }}' : ''}
 
   <div class="grid-row">
     <div class="column-two-thirds">
-      ${hasValidator ? `{{> common/errorSummary }}` : ''}
-      ${hasPageHeading ? `{{> common/pageHeading pageHeading }}` : ''}     
+      ${hasValidator ? '{{> common/errorSummary }}' : ''}
+      ${hasPageHeading ? '{{> common/pageHeading pageHeading }}' : ''}     
       ${isUpload ? `
       {{#if annotations.length}}
 
@@ -33,7 +33,7 @@ module.exports = class view {
           <input class="form-control form-control-char-15 {{#if errors.some-data}}form-control-error{{/if}}" id="some-data" name="some-data" type="text" value="{{formValues.some-data}}">
         </div>
         ` : ''}
-        ${hasSubmitButton ? `{{> common/submitButton }}` : ''}
+        ${hasSubmitButton ? '{{> common/submitButton }}' : ''}
       </form>
       `}  
     </div>

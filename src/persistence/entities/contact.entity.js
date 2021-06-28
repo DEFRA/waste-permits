@@ -32,7 +32,7 @@ class Contact extends BaseEntity {
     if (permitHolderOrganisationId) {
       filter += ` and parentcustomerid_account/accountid eq ${permitHolderOrganisationId}`
     }
-    let orderBy = 'lastname asc,firstname asc'
+    const orderBy = 'lastname asc,firstname asc'
     const query = `contacts?$select=${Contact.selectedDynamicsFields()}${filter ? `&$filter=${filter}` : ''}&$orderby=${orderBy}`
 
     try {

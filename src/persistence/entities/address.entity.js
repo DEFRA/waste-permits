@@ -34,7 +34,7 @@ class Address extends BaseEntity {
     }
     try {
       // Call Dynamics Companies House action
-      let action = `defra_postcodelookup`
+      const action = 'defra_postcodelookup'
       const response = await dynamicsDal.callAction(action, actionDataObject)
 
       if (response) {

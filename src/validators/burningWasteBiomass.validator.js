@@ -24,7 +24,8 @@ module.exports = class BurningWasteBiomassValidator extends BaseValidator {
       'meets-criteria': Joi
         .when('thermal-rating', {
           is: 'over 20',
-          then: Joi.required() })
+          then: Joi.required()
+        })
     }
   }
 }

@@ -112,7 +112,7 @@ lab.experiment('We found your application:', () => {
         ApplicationReturn.getBySlug = () => undefined
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(recoveryFailedPath)
+        Code.expect(res.headers.location).to.equal(recoveryFailedPath)
       })
     })
   })
@@ -137,20 +137,20 @@ lab.experiment('We found your application:', () => {
 
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
 
     lab.test('success when there are no application lines', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRouteNoLinesPath)
+      Code.expect(res.headers.location).to.equal(nextRouteNoLinesPath)
     })
 
     lab.test('success when outstanding BACS payment', async () => {
       bacsPaymentStub.resolves(mocks.payment)
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextPathForBacs)
+      Code.expect(res.headers.location).to.equal(nextPathForBacs)
     })
 
     lab.experiment('failure', () => {

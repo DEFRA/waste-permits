@@ -53,7 +53,7 @@ class DynamicsDalService {
       json: true,
       body: dataObject,
       headers: {
-        'Authorization': `Bearer ${await this.getAuthToken()}`
+        Authorization: `Bearer ${await this.getAuthToken()}`
       }
     }
     LoggingService.logDebug('Dynamics Call Action POST options', options)
@@ -109,12 +109,12 @@ class DynamicsDalService {
     const options = url.parse(`${this.dynamicsPath}${query}`)
     options.method = method
     options.headers = {
-      'Authorization': `Bearer ${authToken}`,
+      Authorization: `Bearer ${authToken}`,
       'OData-MaxVersion': '4.0',
       'OData-Version': '4.0',
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json; charset=utf-8',
-      'Prefer': 'odata.maxpagesize=500, odata.include-annotations=OData.Community.Display.V1.FormattedValue'
+      Prefer: 'odata.maxpagesize=500, odata.include-annotations=OData.Community.Display.V1.FormattedValue'
     }
     // Set the content length
     if (dataObject) {

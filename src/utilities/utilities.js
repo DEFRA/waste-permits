@@ -26,7 +26,7 @@ module.exports = class Utilities {
   }
 
   static _deepReplaceNull (dataObject) {
-    for (let [key, value] of Object.entries(dataObject)) {
+    for (const [key, value] of Object.entries(dataObject)) {
       if (typeof (value) === 'object' && value !== null) {
         Utilities._deepReplaceNull(value)
       } else {
@@ -36,7 +36,7 @@ module.exports = class Utilities {
   }
 
   static _deepReplaceUndefined (dataObject) {
-    for (let [key, value] of Object.entries(dataObject)) {
+    for (const [key, value] of Object.entries(dataObject)) {
       if (typeof (value) === 'object' && value !== undefined) {
         Utilities._deepReplaceUndefined(value)
       } else {

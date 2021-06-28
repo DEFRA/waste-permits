@@ -104,7 +104,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
       }
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
 
     lab.test('POST on Start or Open Saved page to open an existing application redirects to the correct route', async () => {
@@ -113,7 +113,7 @@ lab.experiment('Start or Open Saved page tests:', () => {
       }
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(checkEmailRoutePath)
+      Code.expect(res.headers.location).to.equal(checkEmailRoutePath)
     })
 
     lab.test('POST Start or Open Saved page shows the error message summary panel when new or open has not been selected', async () => {

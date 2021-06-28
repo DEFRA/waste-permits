@@ -69,7 +69,7 @@ class Application extends BaseEntity {
 
     // Make sure application and applicationId are added to the entity context
     if (application) {
-      const [ context ] = args
+      const [context] = args
       context.application = application
       context.applicationId = application.id
     }
@@ -78,7 +78,7 @@ class Application extends BaseEntity {
   }
 
   async save (...args) {
-    const [ context = {} ] = args
+    const [context = {}] = args
     const { charityDetail = {} } = context
     if (this.isIndividual || charityDetail.isIndividual) {
       this.permitHolderOrganisationId = undefined
@@ -101,7 +101,7 @@ class Application extends BaseEntity {
     }
     try {
       // Call Dynamics save and return email action
-      let action = `${this.constructor.dynamicsEntity}(${this.id})/Microsoft.Dynamics.CRM.defra_saveandreturnemail`
+      const action = `${this.constructor.dynamicsEntity}(${this.id})/Microsoft.Dynamics.CRM.defra_saveandreturnemail`
       await dynamicsDal.callAction(action, actionDataObject)
       const applicationReturn = await ApplicationReturn.getByApplicationId(context, this.id)
       LoggingService.logInfo(`Save and Return Url for Application "${this.applicationNumber}": ${origin}${SAVE_AND_RETURN_RECOVER.path}/${applicationReturn.slug}`)

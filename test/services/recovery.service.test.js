@@ -86,7 +86,7 @@ lab.experiment('RecoveryService tests:', () => {
     })
 
     lab.test('undefined if there is no permit holder type matching application types', () => {
-      let application = {
+      const application = {
         applicantType: 1,
         organisationType: 2
       }
@@ -94,7 +94,7 @@ lab.experiment('RecoveryService tests:', () => {
     })
 
     lab.test('undefined if there are mismatching a permit holder types', () => {
-      let application = {
+      const application = {
         applicantType: PERMIT_HOLDER_TYPES.LIMITED_LIABILITY_PARTNERSHIP.dynamicsApplicantTypeId,
         organisationType: PERMIT_HOLDER_TYPES.INDIVIDUAL.dynamicsOrganisationTypeId
       }
@@ -102,7 +102,7 @@ lab.experiment('RecoveryService tests:', () => {
     })
 
     lab.test('a permit holder type if there is a permit holder type matching application types', () => {
-      let application = {
+      const application = {
         applicantType: PERMIT_HOLDER_TYPES.PUBLIC_BODY.dynamicsApplicantTypeId,
         organisationType: PERMIT_HOLDER_TYPES.PUBLIC_BODY.dynamicsOrganisationTypeId
       }

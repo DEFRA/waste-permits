@@ -24,7 +24,7 @@ const COMPANY_STATUSES = {
   VOLUNTARY_ARRANGEMENT: 'is insolvent and has a Company Voluntary Arrangement',
   CONVERTED_CLOSED: 'has been closed or converted',
   INSOLVENCY_PROCEEDINGS: 'is insolvent',
-  NOT_ACTIVE: `is not active`
+  NOT_ACTIVE: 'is not active'
 }
 
 const routes = {
@@ -124,14 +124,14 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
             mocks.companyData.isActive = true
             const res = await server.inject(getRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
 
           lab.test('for a company that does not exist', async () => {
             delete mocks.companyData.status
             const res = await server.inject(getRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
         })
 

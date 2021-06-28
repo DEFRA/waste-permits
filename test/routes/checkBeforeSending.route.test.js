@@ -185,7 +185,7 @@ lab.experiment(`POST ${routePath}`, () => {
     lab.test('redirects to the Application Received route after an UPDATE', async () => {
       const res = await server.inject(request)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
   })
 })

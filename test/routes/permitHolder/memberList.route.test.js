@@ -18,21 +18,21 @@ const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDe
 const { capitalizeFirstLetter } = require('../../../src/utilities/utilities')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-let memberId = 'MEMBER_ID'
+const memberId = 'MEMBER_ID'
 let memberView
 
 const routes = {
-  'partner': {
+  partner: {
     heading: 'Business partners you have added to this application',
-    routePath: `/permit-holder/partners/list`,
+    routePath: '/permit-holder/partners/list',
     nextPath: '/permit-holder/company/declare-offences',
     editMemberPath: `/permit-holder/partners/name/${memberId}`,
     deleteMemberPath: `/permit-holder/partners/delete/${memberId}`
   },
-  'postholder': {
+  postholder: {
     includesJobTitle: true,
     heading: 'Postholders you have added',
-    routePath: `/permit-holder/group/list`,
+    routePath: '/permit-holder/group/list',
     nextPath: '/permit-holder/group/post-holder/declare-offences',
     editMemberPath: `/permit-holder/group/post-holder/name/${memberId}`,
     deleteMemberPath: `/permit-holder/group/post-holder/delete/${memberId}`
@@ -82,7 +82,7 @@ Object.entries(routes).forEach(([member, { includesJobTitle, heading, routePath,
       sandbox.restore()
     })
 
-    lab.experiment(`List page tests:`, () => {
+    lab.experiment('List page tests:', () => {
       new GeneralTestHelper({ lab, routePath }).test()
 
       const checkElements = async (doc, data) => {
@@ -139,7 +139,7 @@ Object.entries(routes).forEach(([member, { includesJobTitle, heading, routePath,
             mocks.contactDetailList = []
             const res = await server.inject(getRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(editMemberPath)
+            Code.expect(res.headers.location).to.equal(editMemberPath)
           })
 
           lab.test(`returns the contact page correctly for one ${member}`, async () => {
@@ -189,14 +189,14 @@ Object.entries(routes).forEach(([member, { includesJobTitle, heading, routePath,
           lab.test(`redirects to ${nextPath} when currently there is one ${member}`, async () => {
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(editMemberPath)
+            Code.expect(res.headers.location).to.equal(editMemberPath)
           })
 
           lab.test(`redirects to ${nextPath} when currently there are two ${member}s`, async () => {
             mocks.contactDetailList = [mocks.contactDetail, mocks.contactDetail]
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
         })
 

@@ -7,7 +7,7 @@ module.exports = class PermitSelectValidator extends BaseValidator {
   get errorMessages () {
     return {
       'chosen-permit': {
-        'any.required': `Select the permit you want`
+        'any.required': 'Select the permit you want'
       }
     }
   }

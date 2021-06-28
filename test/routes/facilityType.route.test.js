@@ -108,13 +108,13 @@ lab.experiment('Facility Type page tests:', () => {
           Code.expect(res.statusCode).to.equal(302)
           switch (facilityType) {
             case 'mcp':
-              Code.expect(res.headers['location']).to.equal(mcpPath)
+              Code.expect(res.headers.location).to.equal(mcpPath)
               break
             case 'waste':
-              Code.expect(res.headers['location']).to.equal(wastePath)
+              Code.expect(res.headers.location).to.equal(wastePath)
               break
             default:
-              Code.expect(res.headers['location']).to.equal(applyOfflinePath)
+              Code.expect(res.headers.location).to.equal(applyOfflinePath)
               break
           }
         })

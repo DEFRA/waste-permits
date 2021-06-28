@@ -101,7 +101,7 @@ gulp.task('images', () =>
     .pipe(imagemin({
       progressive: true,
       interlaced: true,
-      svgoPlugins: [ { removeViewBox: false }, { removeUselessStrokeAndFill: false } ]
+      svgoPlugins: [{ removeViewBox: false }, { removeUselessStrokeAndFill: false }]
     }))
     .pipe(gulp.dest(paths.public + 'images/'))
 )
@@ -173,7 +173,8 @@ gulp.task('test-ci', () => {
       args: '--coverage --reporter console --output stdout --reporter lcov --output lcov.info --verbose --bail',
       opts: {
         emitLabError: true
-      } }))
+      }
+    }))
 })
 
 // Build task

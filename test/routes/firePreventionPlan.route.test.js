@@ -9,7 +9,7 @@ const FirePreventionPlan = require('../../src/models/taskList/firePreventionPlan
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/fire-prevention-plan'
 const paths = {

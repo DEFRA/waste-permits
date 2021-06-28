@@ -20,7 +20,7 @@ const { COOKIE_RESULT } = require('../../../src/constants')
 const slug = 'SLUG'
 const paymentErrorStatus = 'error'
 
-const routePath = `/pay/card`
+const routePath = '/pay/card'
 const cardProblemPath = `/pay/card-problem/${slug}?status=${paymentErrorStatus}`
 const returnFromGovPayUrl = '/return/from/govr/pay/url'
 
@@ -56,7 +56,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment(`How do you want to pay?:`, () => {
+lab.experiment('How do you want to pay?:', () => {
   new GeneralTestHelper({ lab, routePath }).test({
     excludeHtmlTests: true,
     excludeCookieGetTests: true,
@@ -80,14 +80,14 @@ lab.experiment(`How do you want to pay?:`, () => {
       lab.test('redirects to returnUrl', async () => {
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(returnFromGovPayUrl)
+        Code.expect(res.headers.location).to.equal(returnFromGovPayUrl)
       })
 
       lab.test('redirects to card problem when status is error', async () => {
         mocks.paymentResult.PaymentStatus = paymentErrorStatus
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(cardProblemPath)
+        Code.expect(res.headers.location).to.equal(cardProblemPath)
       })
     })
 

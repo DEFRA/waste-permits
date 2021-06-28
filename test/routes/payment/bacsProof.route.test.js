@@ -64,7 +64,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment(`Give proof of your Bacs payment:`, () => {
+lab.experiment('Give proof of your Bacs payment:', () => {
   new GeneralTestHelper({ lab, routePath }).test({ includeTasksNotCompleteTest: true })
 
   lab.experiment(`GET ${routePath}`, () => {
@@ -139,7 +139,7 @@ lab.experiment(`Give proof of your Bacs payment:`, () => {
     lab.test('success', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
 
     lab.experiment('failure', () => {

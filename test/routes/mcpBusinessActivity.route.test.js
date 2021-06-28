@@ -130,14 +130,14 @@ lab.experiment('MCP business or activity page tests:', () => {
         postRequest.payload = { 'type-codes-option': '00.01' }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when other value entered', async () => {
         postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': '99.99' }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 
@@ -145,32 +145,32 @@ lab.experiment('MCP business or activity page tests:', () => {
       lab.test('when no option selected', async () => {
         postRequest.payload = {}
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-option', `Select the business or activity`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-option', 'Select the business or activity')
       })
-      lab.test(`when 'other' option selected but no value entered`, async () => {
+      lab.test('when \'other\' option selected but no value entered', async () => {
         postRequest.payload['type-codes-option'] = 'other'
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Enter a valid 4-digit code that includes the decimal dot`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', 'Enter a valid 4-digit code that includes the decimal dot')
       })
-      lab.test(`when incorrect format value entered 9999`, async () => {
+      lab.test('when incorrect format value entered 9999', async () => {
         postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': '9999' }
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Enter a valid 4-digit code that includes the decimal dot`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', 'Enter a valid 4-digit code that includes the decimal dot')
       })
-      lab.test(`when non-numeric value entered 9a.99`, async () => {
+      lab.test('when non-numeric value entered 9a.99', async () => {
         postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': '9a.99' }
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Enter a valid 4-digit code that includes the decimal dot`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', 'Enter a valid 4-digit code that includes the decimal dot')
       })
-      lab.test(`when too long value entered 999.99`, async () => {
+      lab.test('when too long value entered 999.99', async () => {
         postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': '999.99' }
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Enter a valid 4-digit code that includes the decimal dot`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', 'Enter a valid 4-digit code that includes the decimal dot')
       })
-      lab.test(`when too long value entered 99.999`, async () => {
+      lab.test('when too long value entered 99.999', async () => {
         postRequest.payload = { 'type-codes-option': 'other', 'type-codes-other': '99.999' }
         const doc = await GeneralTestHelper.getDoc(postRequest)
-        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', `Enter a valid 4-digit code that includes the decimal dot`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'type-codes-other', 'Enter a valid 4-digit code that includes the decimal dot')
       })
     })
   })

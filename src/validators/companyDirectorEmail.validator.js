@@ -10,9 +10,9 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
   get errorMessages () {
     return {
       email: {
-        'any.empty': `Enter a valid email address`,
-        'any.required': `Enter a valid email address`,
-        'string.regex.base': `Enter a valid email address`,
+        'any.empty': 'Enter a valid email address',
+        'any.required': 'Enter a valid email address',
+        'string.regex.base': 'Enter a valid email address',
         'string.max': `Enter a shorter email address with no more than ${AddressDetail.email.length.max} characters`
       }
     }

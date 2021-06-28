@@ -254,7 +254,7 @@ module.exports = class BaseEntity {
   static async getById (context = {}, id, customFilter = () => true) {
     // See the explanation of a custom filter in the method selectedDynamicsFields above
     let model
-    let cachedData = context[Utilities.firstCharToLowercase(this.name)]
+    const cachedData = context[Utilities.firstCharToLowercase(this.name)]
     if (id) {
       if (cachedData && cachedData.id === id) {
         return cachedData
@@ -301,14 +301,14 @@ module.exports = class BaseEntity {
     // Then the select portion of the query that is generated within the code below will be:
     // "$select=defra_id, defra_age, defra_firstname, defra_lastname, defra_date_day, defra_date_month, defra_date_year, _defra_primarycontactid_value&$filter=defra_age eq 30 and (defra_firstname eq 'Fred' or defra_firstname eq 'Joe') and defra_lastname eq 'Blogs'&$orderby=defra_age asc defra_lastname asc"
     //
-    let filter = Object.entries(Utilities.convertToDynamics(filterData))
+    const filter = Object.entries(Utilities.convertToDynamics(filterData))
       .map(([field, val]) =>
         Array.isArray(val)
           ? '(' + val.map((orVal) => this._buildQueryCriterion(this[field].dynamics, this[field].encode, orVal)).join(' or ') + ')'
           : this._buildQueryCriterion(this[field].dynamics, this[field].encode, val)
       ).join(' and ')
 
-    let orderBy = orderByFields.split(' ')
+    const orderBy = orderByFields.split(' ')
       .filter((fieldName) => fieldName)
       .map((fieldName) => `${this[fieldName].dynamics} asc`)
       .join(' ')
@@ -389,7 +389,7 @@ module.exports = class BaseEntity {
       const entityQuery = `${dynamicsEntity}(${this.id})?$select=${selectedFields}`
       const result = await dynamicsDal.search(entityQuery)
       // using the original value of each reference, build the query and delete the bound reference
-      let deleteCalls = boundMapping.map(async ({ dynamics, bind: { relationship, dynamicsEntity } }) => {
+      const deleteCalls = boundMapping.map(async ({ dynamics, bind: { relationship, dynamicsEntity } }) => {
         const ref = result[dynamics]
         if (ref) {
           const deleteQuery = `${dynamicsEntity}(${ref})/${relationship}(${this.id})/$ref`
@@ -449,7 +449,7 @@ module.exports = class BaseEntity {
       throw new Error(errorMessage)
     }
     try {
-      let query = `${dynamicsEntity}(${id})`
+      const query = `${dynamicsEntity}(${id})`
       await dynamicsDal.delete(query)
     } catch (error) {
       LoggingService.logError(`Unable to delete ${dynamicsEntity} with id ${id}: ${error}`)

@@ -68,7 +68,7 @@ lab.experiment('Base Entity tests:', () => {
 
     dynamicsReplyData = {
       dynamicsId: 'ID',
-      '_dynamicsOtherId_value': 'OTHERID',
+      _dynamicsOtherId_value: 'OTHERID',
       dynamicsName: 'ENTITY_NAME',
       dynamicsDobMonth: 'MONTH',
       dynamicsDobYear: 'YEAR',
@@ -151,7 +151,7 @@ lab.experiment('Base Entity tests:', () => {
     entityData.secret = undefined
     const dynamicsData = { value: [dynamicsReplyData, dynamicsReplyData] }
     sinon.stub(dynamicsDal, 'search').value(() => dynamicsData)
-    let list = await Entity.listUsingFetchXml(context)
+    const list = await Entity.listUsingFetchXml(context)
     Code.expect(list.length).to.equal(dynamicsData.value.length)
     Code.expect(list[0]).to.equal(entityData)
   })

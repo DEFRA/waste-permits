@@ -83,7 +83,7 @@ lab.experiment('Partnership Trading Name page tests:', () => {
         Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal('')
       })
 
-      lab.test(`returns the contact page correctly when trading name has already been entered previously`, async () => {
+      lab.test('returns the contact page correctly when trading name has already been entered previously', async () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('trading-name').getAttribute('value')).to.equal(mocks.application.tradingName)
@@ -122,7 +122,7 @@ lab.experiment('Partnership Trading Name page tests:', () => {
         }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 

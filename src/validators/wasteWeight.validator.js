@@ -9,7 +9,7 @@ const ERROR_MESSAGES = {
   'any.required': 'You must enter a number',
   'string.max': `You can enter up to ${MAX_LENGTH} characters`,
   'number.base': 'The weight must be a number',
-  'number.unsafe': `Enter the weight between 0 and 99999999`
+  'number.unsafe': 'Enter the weight between 0 and 99999999'
 }
 const JOI_WEIGHT = Joi.number().max(999999).required()
 

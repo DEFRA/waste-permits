@@ -18,13 +18,13 @@ module.exports = class CompanyLookupService {
     }
 
     LoggingService.logDebug(`CompanyLookupService - looking up company details for Company Number: ${companyNumber}`)
-    LoggingService.logDebug(`CompanyLookupService request options:`, options)
+    LoggingService.logDebug('CompanyLookupService request options:', options)
 
     let company
     await rp(options)
       .then((data) => {
         if (data) {
-          LoggingService.logDebug(`CompanyLookupService - retrieved data:`, data)
+          LoggingService.logDebug('CompanyLookupService - retrieved data:', data)
 
           const formattedCompanyStatus = CompanyLookupService._formatCompanyStatus(data.company_status)
           const formattedCompanyType = CompanyLookupService._formatCompanyType(data.type)
@@ -55,13 +55,13 @@ module.exports = class CompanyLookupService {
     }
 
     LoggingService.logDebug(`CompanyLookupService - looking up officers for Company Number: ${companyNumber}`)
-    LoggingService.logDebug(`CompanyLookupService request options:`, options)
+    LoggingService.logDebug('CompanyLookupService request options:', options)
 
     let active = []
     await rp(options)
       .then((data) => {
         if (data && data.items) {
-          LoggingService.logDebug(`CompanyLookupService - retrieved data:`, data)
+          LoggingService.logDebug('CompanyLookupService - retrieved data:', data)
           if (type) {
             active = data.items.filter((officer) => officer.officer_role === type && !officer.resigned_on)
           } else {
@@ -110,7 +110,7 @@ module.exports = class CompanyLookupService {
         'postal_code'
       ]
 
-      for (let field of addressFields) {
+      for (const field of addressFields) {
         if (registeredOffice[field] && registeredOffice[field].length > 0) {
           formattedAddress += `${registeredOffice[field]}, `
         }

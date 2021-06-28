@@ -42,7 +42,7 @@ lab.experiment('Manage Hazardous Waste Check tests:', () => {
       lines = await check.buildLines()
     })
 
-    lab.test(`(Summary of how you’ll treat hazardous waste line) works correctly`, async () => {
+    lab.test('(Summary of how you’ll treat hazardous waste line) works correctly', async () => {
       const { heading, headingId, answers, links } = lines[0]
       Code.expect(heading).to.equal('Summary of how you’ll treat hazardous waste')
       Code.expect(headingId).to.equal(`${prefix}-treatment-heading`)
@@ -59,7 +59,7 @@ lab.experiment('Manage Hazardous Waste Check tests:', () => {
       Code.expect(linkId).to.equal(`${prefix}-treatment-link`)
     })
 
-    lab.test(`(Hazardous waste layout plans and process flows line) works correctly`, async () => {
+    lab.test('(Hazardous waste layout plans and process flows line) works correctly', async () => {
       const { heading, headingId, answers, links } = lines[1]
       Code.expect(heading).to.equal('Hazardous waste layout plans and process flows')
       Code.expect(headingId).to.equal(`${prefix}-plans-heading`)
@@ -76,7 +76,7 @@ lab.experiment('Manage Hazardous Waste Check tests:', () => {
       Code.expect(linkId).to.equal(`${prefix}-plans-link`)
     })
 
-    lab.test(`Provides the correct task`, async () => {
+    lab.test('Provides the correct task', async () => {
       Code.expect(ManageHazardousWasteCheck.task.id).to.equal('hazardous-waste')
     })
   })

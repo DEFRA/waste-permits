@@ -17,7 +17,7 @@ const CheckList = require('../../src/models/checkList/checkList')
 const pdf = require('../../src/services/pdf')
 const { COOKIE_RESULT } = require('../../src/constants')
 
-const routePath = `/done/slug`
+const routePath = '/done/slug'
 
 let bacsPayment
 let cardPayment
@@ -121,7 +121,7 @@ lab.experiment('ApplicationReceived page tests:', () => {
       ])
     })
 
-    lab.test(`returns the application received page correctly even when the payment email hasn't been set`, async () => {
+    lab.test('returns the application received page correctly even when the payment email hasn\'t been set', async () => {
       bacsPayment = mocks.payment
       delete mocks.contactDetail.email
 

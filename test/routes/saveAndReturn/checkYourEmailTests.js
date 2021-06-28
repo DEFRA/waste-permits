@@ -28,7 +28,7 @@ module.exports = (lab, { routePath, nextPath, pageHeading, excludeAlreadySubmitt
 
     // Stub cookies
     GeneralTestHelper.stubGetCookies(sandbox, CookieService, {
-      'saveAndReturnEmail': () => mocks.contactDetail.email
+      saveAndReturnEmail: () => mocks.contactDetail.email
     })
 
     // Stub methods
@@ -43,7 +43,7 @@ module.exports = (lab, { routePath, nextPath, pageHeading, excludeAlreadySubmitt
     sandbox.restore()
   })
 
-  lab.experiment(`Check your email: Search for 'environmental permit application' in your email page tests:`, () => {
+  lab.experiment('Check your email: Search for \'environmental permit application\' in your email page tests:', () => {
     new GeneralTestHelper({ lab, routePath }).test({
       excludeCookieGetTests: true,
       excludeCookiePostTests: true,
@@ -110,7 +110,7 @@ module.exports = (lab, { routePath, nextPath, pageHeading, excludeAlreadySubmitt
       lab.test('success', async () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextPath)
+        Code.expect(res.headers.location).to.equal(nextPath)
       })
 
       lab.experiment('invalid', () => {

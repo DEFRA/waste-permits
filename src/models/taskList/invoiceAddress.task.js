@@ -31,7 +31,7 @@ module.exports = class InvoiceAddress extends BaseTask {
     const { applicationId } = context
 
     if (!addressDto.uprn) {
-      const errorMessage = `Unable to save invoice address as it does not have a UPRN`
+      const errorMessage = 'Unable to save invoice address as it does not have a UPRN'
       LoggingService.logError(errorMessage, request)
       throw new Error(errorMessage)
     }

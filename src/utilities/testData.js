@@ -3,7 +3,7 @@
 module.exports = {
   pageSize: 'A4',
   pageOrientation: 'portrait',
-  pageMargins: [ 25 ],
+  pageMargins: [25],
   info: {
     title: 'Application for standard rules permit EPR/WE1234AB/A001',
     author: 'Southern Star Power Plc',

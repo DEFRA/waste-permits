@@ -7,7 +7,7 @@ module.exports = class AddressSelectValidator extends BaseValidator {
   get errorMessages () {
     return {
       'select-address': {
-        'any.required': `Select an address`
+        'any.required': 'Select an address'
       }
     }
   }

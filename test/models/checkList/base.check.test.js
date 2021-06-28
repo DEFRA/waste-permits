@@ -236,11 +236,11 @@ lab.experiment('Base Check tests:', () => {
   })
 
   lab.test('getUploadedFileDetails works correctly', async () => {
-    delete context['testFileDetails']
+    delete context.testFileDetails
     const check = new BaseCheck(context)
     const fileDetails = await check.getUploadedFileDetails('fileSubject', 'testFileDetails')
     Code.expect(fileDetails).to.equal([mocks.annotation])
-    Code.expect(context['testFileDetails']).to.equal(await check.getUploadedFileDetails('fileSubject', 'testFileDetails'))
+    Code.expect(context.testFileDetails).to.equal(await check.getUploadedFileDetails('fileSubject', 'testFileDetails'))
   })
 
   lab.test('getManagementSystem works correctly', async () => {

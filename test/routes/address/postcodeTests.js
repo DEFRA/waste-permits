@@ -72,7 +72,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, nextRoutePa
 
   const checkPageElements = async (request, expectedValue) => {
     const doc = await GeneralTestHelper.getDoc(request)
-    let heading = GeneralTestHelper.getText(doc.getElementById('page-heading'))
+    const heading = GeneralTestHelper.getText(doc.getElementById('page-heading'))
     if (contactDetailId) {
       const { firstName, lastName } = mocks.contactDetail
       Code.expect(heading).to.equal(`${pageHeading} ${firstName} ${lastName}?`)
@@ -108,7 +108,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, nextRoutePa
     Code.expect(element.getAttribute('value')).to.equal(expectedValue)
 
     element = doc.getElementById('no-postcode-link-text').firstChild
-    Code.expect(element.nodeValue).to.equal(`Enter address manually`)
+    Code.expect(element.nodeValue).to.equal('Enter address manually')
 
     element = doc.getElementById('submit-button').firstChild
     Code.expect(element.nodeValue).to.equal('Find address')
@@ -131,7 +131,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, nextRoutePa
     new GeneralTestHelper({ lab, routePath }).test()
 
     lab.experiment(`GET ${routePath}`, () => {
-      lab.test(`when returns the postcode page correctly when there is no saved postcode`, async () => {
+      lab.test('when returns the postcode page correctly when there is no saved postcode', async () => {
         TaskModel.getAddress = () => undefined
         await checkPageElements(getRequest, '')
       })
@@ -145,7 +145,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, nextRoutePa
         TaskModel.getAddress = () => mocks.address
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePathManual)
+        Code.expect(res.headers.location).to.equal(nextRoutePathManual)
       })
     })
 
@@ -158,30 +158,30 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, nextRoutePa
 
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextRoutePath)
+          Code.expect(res.headers.location).to.equal(nextRoutePath)
         })
       })
 
       lab.experiment('Invalid:', () => {
-        lab.test(`when shows an error message when the postcode is blank`, async () => {
+        lab.test('when shows an error message when the postcode is blank', async () => {
           postRequest.payload.postcode = ''
           await checkValidationError('Enter a postcode')
         })
 
-        lab.test(`when an error message when the postcode is whitespace`, async () => {
+        lab.test('when an error message when the postcode is whitespace', async () => {
           postRequest.payload.postcode = '     \t       '
           await checkValidationError('Enter a postcode')
         })
 
-        lab.test(`when an error message when no addresses are found`, async () => {
+        lab.test('when an error message when no addresses are found', async () => {
           postRequest.payload.postcode = mocks.address.postcode
           Address.listByPostcode = () => []
-          await checkValidationError(`We cannot find any addresses for that postcode - check it is correct or enter address manually`)
+          await checkValidationError('We cannot find any addresses for that postcode - check it is correct or enter address manually')
         })
       })
 
       lab.experiment('Failure:', () => {
-        lab.test(`when redirects to manual address input with an error`, async () => {
+        lab.test('when redirects to manual address input with an error', async () => {
           postRequest.payload.postcode = 'INVALID_POSTCODE'
           Address.listByPostcode = () => {
             throw new Error('AddressBase error')
@@ -189,7 +189,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, nextRoutePa
 
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(`${nextRoutePathManual}?addressLookupFailed=true`)
+          Code.expect(res.headers.location).to.equal(`${nextRoutePathManual}?addressLookupFailed=true`)
         })
       })
     })

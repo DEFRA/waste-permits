@@ -30,7 +30,7 @@ const fakeDynamicsRecord = (options = {}) => {
     filename: annotation.filename,
     subject: annotation.subject,
     annotationid: annotation.id,
-    '_objectid_value': annotation.applicationId
+    _objectid_value: annotation.applicationId
   }
 }
 

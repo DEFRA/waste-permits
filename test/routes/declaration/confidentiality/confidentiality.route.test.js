@@ -22,7 +22,7 @@ let sandbox
 let mocks
 
 function trimLines (value) {
-  return value.replace(/[\\n\s]+\s/g, `\n`)
+  return value.replace(/[\\n\s]+\s/g, '\n')
 }
 
 lab.beforeEach(() => {
@@ -99,7 +99,7 @@ lab.experiment('Is part of your application commercially confidential? page test
         url: routePath,
         headers: {},
         payload: {
-          'declared': mocks.application.confidentiality,
+          declared: mocks.application.confidentiality,
           'declaration-details': mocks.application.confidentialityDetails
         }
       }
@@ -111,7 +111,7 @@ lab.experiment('Is part of your application commercially confidential? page test
       lab.test('when application is saved', async () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 
@@ -130,16 +130,16 @@ lab.experiment('Is part of your application commercially confidential? page test
 
       lab.test('when confidentiality not checked', async () => {
         postRequest.payload = {}
-        await checkValidationMessage('declared', `Select yes if you want to claim confidentiality or no if you do not`)
+        await checkValidationMessage('declared', 'Select yes if you want to claim confidentiality or no if you do not')
       })
 
       lab.test('when confidentiality set to yes and no details entered', async () => {
-        postRequest.payload = { 'declared': 'yes' }
+        postRequest.payload = { declared: 'yes' }
         await checkValidationMessage('declaration-details', 'Explain what information is confidential and why', true)
       })
 
       lab.test('when confidentiality set to yes and details entered with 2001 characters', async () => {
-        postRequest.payload = { 'declared': 'yes', 'declaration-details': 'a'.repeat(2001) }
+        postRequest.payload = { declared: 'yes', 'declaration-details': 'a'.repeat(2001) }
         await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you have written', true)
       })
     })

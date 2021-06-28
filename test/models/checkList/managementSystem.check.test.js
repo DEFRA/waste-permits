@@ -48,7 +48,7 @@ lab.experiment('Management system Check tests:', () => {
       lines = await check.buildLines()
     })
 
-    lab.test(`(management system summary line) works correctly`, async () => {
+    lab.test('(management system summary line) works correctly', async () => {
       const { heading, headingId, answers, links } = lines.pop()
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${prefix}-heading`)
@@ -74,7 +74,7 @@ lab.experiment('Management system Check tests:', () => {
       Code.expect(linkId).to.equal(`${prefix}-link`)
     })
 
-    lab.test(`Provides the correct task`, async () => {
+    lab.test('Provides the correct task', async () => {
       Code.expect(ManagementSystemCheck.task.id).to.equal('management-system')
     })
   })

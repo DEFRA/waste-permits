@@ -11,8 +11,8 @@ module.exports = class SiteNameValidator extends BaseValidator {
   get errorMessages () {
     return {
       'site-name': {
-        'any.empty': `Enter the site name`,
-        'any.required': `Enter the site name`,
+        'any.empty': 'Enter the site name',
+        'any.required': 'Enter the site name',
         'string.max': `Enter a shorter site name with no more than ${Location.siteName.length.max} characters`,
         'custom.invalid': `The site name cannot contain any of these characters: ${DISALLOWED_CHARACTERS}`
       }

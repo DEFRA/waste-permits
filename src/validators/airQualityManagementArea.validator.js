@@ -38,7 +38,8 @@ module.exports = class AirQualityManagementAreaValidator extends BaseValidator {
       .max(NAME_LENGTH_MAX)
       .when('aqma-is-in-aqma', {
         is: 'yes',
-        then: Joi.required() })
+        then: Joi.required()
+      })
 
     // This has to be validated as a string, otherwise Joi converts our input to a number
     // and Dynamics will only accept values cast as a string, not a number.
@@ -48,7 +49,8 @@ module.exports = class AirQualityManagementAreaValidator extends BaseValidator {
       .regex(/^([1-9]?\d|100)$/)
       .when('aqma-is-in-aqma', {
         is: 'yes',
-        then: Joi.required() })
+        then: Joi.required()
+      })
 
     return {
       'aqma-is-in-aqma': isInAqmaCheck,

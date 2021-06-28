@@ -69,7 +69,7 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
     })
 
     lab.experiment('success', () => {
-      let holderTypes = [
+      const holderTypes = [
         { id: 'limited-company', type: 'Limited company' },
         { id: 'individual', type: 'Individual' },
         { id: 'sole-trader', type: 'Sole trader' },
@@ -142,7 +142,7 @@ lab.experiment('Permit holder type: Who will be the permit holder? page tests:',
 
         // Make sure a redirection has taken place correctly
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(route)
+        Code.expect(res.headers.location).to.equal(route)
       }
 
       lab.beforeEach(() => {

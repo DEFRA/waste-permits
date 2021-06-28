@@ -50,7 +50,7 @@ lab.experiment('Version page tests:', () => {
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
-    let element = doc.getElementById('back-link')
+    const element = doc.getElementById('back-link')
     Code.expect(element).to.not.exist()
   })
 

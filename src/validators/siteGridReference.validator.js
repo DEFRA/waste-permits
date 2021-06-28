@@ -12,9 +12,9 @@ module.exports = class SiteGridReferenceValidator extends BaseValidator {
   get errorMessages () {
     return {
       'site-grid-reference': {
-        'any.empty': `Enter a grid reference`,
-        'any.required': `Enter a grid reference`,
-        'string.regex.base': `Make sure that the grid reference has 2 letters and 10 digits`
+        'any.empty': 'Enter a grid reference',
+        'any.required': 'Enter a grid reference',
+        'string.regex.base': 'Make sure that the grid reference has 2 letters and 10 digits'
       }
     }
   }

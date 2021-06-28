@@ -58,7 +58,7 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
 
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(companyNumberPath)
+        Code.expect(res.headers.location).to.equal(companyNumberPath)
       })
 
       lab.test('redirects to permit holder name screen if permit holder type is individual', async () => {
@@ -67,7 +67,7 @@ lab.experiment('Permit holder details: Redirect to correct details flow', () => 
 
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(permitHolderNamePath)
+        Code.expect(res.headers.location).to.equal(permitHolderNamePath)
       })
     })
   })

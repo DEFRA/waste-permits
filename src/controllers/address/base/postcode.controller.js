@@ -52,7 +52,7 @@ module.exports = class PostcodeController extends BaseController {
 
   async doPost (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
-    const postcode = request.payload['postcode']
+    const postcode = request.payload.postcode
     const errorPath = 'postcode'
 
     // Save the postcode in the cookie

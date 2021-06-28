@@ -87,7 +87,7 @@ lab.experiment('Maintain application lines: Redirect to confirm costs', () => {
           Code.expect(saveSpy.callCount).to.equal(0)
           Code.expect(deleteSpy.callCount).to.equal(0)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextPath)
+          Code.expect(res.headers.location).to.equal(nextPath)
         })
 
         lab.test('when there are application lines but no changes', async () => {
@@ -99,7 +99,7 @@ lab.experiment('Maintain application lines: Redirect to confirm costs', () => {
           Code.expect(saveSpy.callCount).to.equal(allActivities.length)
           Code.expect(deleteSpy.callCount).to.equal(allActivities.length)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextPath)
+          Code.expect(res.headers.location).to.equal(nextPath)
         })
 
         lab.test('when there are application lines to delete and some to add', async () => {
@@ -112,7 +112,7 @@ lab.experiment('Maintain application lines: Redirect to confirm costs', () => {
           Code.expect(saveSpy.callCount).to.equal(2)
           Code.expect(deleteSpy.callCount).to.equal(2)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextPath)
+          Code.expect(res.headers.location).to.equal(nextPath)
         })
 
         lab.test('when the facility type is mcp and all flags have been set to true', async () => {
@@ -128,7 +128,7 @@ lab.experiment('Maintain application lines: Redirect to confirm costs', () => {
           Code.expect(saveSpy.callCount).to.equal(4)
           Code.expect(deleteSpy.callCount).to.equal(0)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextPath)
+          Code.expect(res.headers.location).to.equal(nextPath)
         })
 
         lab.test('when the facility type is mcp and all flags have been set to false', async () => {
@@ -150,7 +150,7 @@ lab.experiment('Maintain application lines: Redirect to confirm costs', () => {
           Code.expect(saveSpy.callCount).to.equal(1)
           Code.expect(deleteSpy.callCount).to.equal(7)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextPath)
+          Code.expect(res.headers.location).to.equal(nextPath)
         })
 
         lab.test('mcp facility does not add waste activities', async () => {
@@ -165,7 +165,7 @@ lab.experiment('Maintain application lines: Redirect to confirm costs', () => {
           const res = await server.inject(getRequest)
           Code.expect(saveSpy.callCount).to.equal(1)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextPath)
+          Code.expect(res.headers.location).to.equal(nextPath)
         })
       })
     })

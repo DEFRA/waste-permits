@@ -35,7 +35,7 @@ const createPdfDocDefinition = (sections, application) => {
         style: 'td'
       },
       {
-        'ul': declarationList
+        ul: declarationList
       }
     ]
   ]
@@ -58,7 +58,7 @@ const createPdfDocDefinition = (sections, application) => {
   return {
     pageSize: 'A4',
     pageOrientation: 'portrait',
-    pageMargins: [ 25, 25, 25, 25 ],
+    pageMargins: [25, 25, 25, 25],
     defaultStyle: {
       font: 'helvetica',
       fontSize: 12,
@@ -141,7 +141,7 @@ module.exports = {
       const doc = printer
         .createPdfKitDocument(createPdfDocDefinition(sections, application))
 
-      let chunks = []
+      const chunks = []
 
       doc.on('readable', function () {
         let chunk

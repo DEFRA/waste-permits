@@ -14,7 +14,7 @@ const fs = require('fs')
 
 const cacheBust = (source) => {
   // Get the application version number
-  let version = require(Path.join(__dirname, '..', '..', 'package.json')).version
+  const version = require(Path.join(__dirname, '..', '..', 'package.json')).version
 
   // Replace the token in the source string with the application version number to bust the browser cache
   return source.replace(/APP_VERSION/g, version)

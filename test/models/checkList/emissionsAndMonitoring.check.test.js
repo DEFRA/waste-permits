@@ -24,12 +24,12 @@ lab.afterEach(() => {
 
 lab.experiment('Emission and monitoring check tests:', () => {
   lab.experiment('buildlines', () => {
-    lab.test(`(emissions and monitoring details line) works correctly if no details`, async () => {
-      let blah = { emissionsAndMonitoringDetailsRequired: false }
+    lab.test('(emissions and monitoring details line) works correctly if no details', async () => {
+      const blah = { emissionsAndMonitoringDetailsRequired: false }
 
       sandbox.stub(BaseCheck.prototype, 'getEmissionsAndMonitoringDetails').value(() => blah)
-      let check = new EmissionsAndMonitoringCheck()
-      let lines = await check.buildLines()
+      const check = new EmissionsAndMonitoringCheck()
+      const lines = await check.buildLines()
 
       const { heading, headingId, answers, links } = lines.pop()
       Code.expect(heading).to.equal(heading)
@@ -45,18 +45,19 @@ lab.experiment('Emission and monitoring check tests:', () => {
       Code.expect(linkId).to.equal(`${prefix}-link`)
     })
 
-    lab.test(`(emissions and monitoring details line) works correctly with details`, async () => {
+    lab.test('(emissions and monitoring details line) works correctly with details', async () => {
       const fakeEmissionsAndMonitoringDetails = {
         emissionsAndMonitoringDetailsRequired: true,
         files: [
           { filename: 'FILENAME_1' },
           { filename: 'FILENAME_2' },
           { filename: 'FILENAME_3' }
-        ] }
+        ]
+      }
 
       sandbox.stub(BaseCheck.prototype, 'getEmissionsAndMonitoringDetails').value(() => fakeEmissionsAndMonitoringDetails)
-      let check = new EmissionsAndMonitoringCheck()
-      let lines = await check.buildLines()
+      const check = new EmissionsAndMonitoringCheck()
+      const lines = await check.buildLines()
 
       const { heading, headingId, answers, links } = lines.pop()
       Code.expect(heading).to.equal(heading)

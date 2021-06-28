@@ -95,7 +95,7 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
         postRequest.payload['engine-type'] = 'boiler etc'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('Thermal rating 20MW to 50MW, boiler', async () => {
@@ -104,7 +104,7 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
         const res = await server.inject(postRequest)
         checkTaskDeterminants({ bestAvailableTechniquesAssessment: true })
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('Thermal rating 20MW to 50MW, spark ignition', async () => {
@@ -113,7 +113,7 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
         const res = await server.inject(postRequest)
         checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(burningWasteBiomassRoutePath)
+        Code.expect(res.headers.location).to.equal(burningWasteBiomassRoutePath)
       })
 
       lab.test('Thermal rating not 20MW to 50MW, boiler', async () => {
@@ -122,7 +122,7 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
         const res = await server.inject(postRequest)
         checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(burningWasteBiomassRoutePath)
+        Code.expect(res.headers.location).to.equal(burningWasteBiomassRoutePath)
       })
 
       lab.test('Thermal rating not 20MW to 50MW, boiler and stationary sg', async () => {
@@ -132,7 +132,7 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
         const res = await server.inject(postRequest)
         checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('Thermal rating not 20MW to 50MW, spark ignition', async () => {
@@ -141,7 +141,7 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
         const res = await server.inject(postRequest)
         checkTaskDeterminants({ bestAvailableTechniquesAssessment: false })
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(burningWasteBiomassRoutePath)
+        Code.expect(res.headers.location).to.equal(burningWasteBiomassRoutePath)
       })
     })
 

@@ -25,7 +25,7 @@ const routes = {
   },
   'Limited Company (Charity)': {
     charityPermitHolder: 'CHARITY_PERMIT_HOLDER',
-    pageHeading: `What is the company or Charitable Incorporated Organisation registration number?`,
+    pageHeading: 'What is the company or Charitable Incorporated Organisation registration number?',
     routePath: '/permit-holder/company/number',
     nextPath: '/permit-holder/company/wrong-type',
     validCompanyNumber: '01234567',
@@ -133,13 +133,13 @@ Object.entries(routes).forEach(([companyType, { pageHeading, charityPermitHolder
           lab.test('when account is saved', async () => {
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
 
           lab.test('when account is updated', async () => {
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
         })
 

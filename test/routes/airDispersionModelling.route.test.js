@@ -113,7 +113,7 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       postRequest.payload['air-dispersion-modelling'] = 'yes'
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
       checkTaskDeterminants({ airDispersionModellingRequired: true, screeningToolRequired: false })
     })
 
@@ -123,7 +123,7 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       postRequest.payload['air-dispersion-modelling'] = 'yes'
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
       checkTaskDeterminants({ airDispersionModellingRequired: true, screeningToolRequired: false })
     })
 
@@ -133,7 +133,7 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       postRequest.payload['air-dispersion-modelling'] = 'yes'
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(thermalInput20To50MwRoutePath)
+      Code.expect(res.headers.location).to.equal(thermalInput20To50MwRoutePath)
       checkTaskDeterminants({ airDispersionModellingRequired: true, screeningToolRequired: false })
     })
 
@@ -142,7 +142,7 @@ lab.experiment('Dispersion modelling report page tests:', () => {
       postRequest.payload['air-dispersion-modelling'] = 'no'
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
       checkTaskDeterminants({ airDispersionModellingRequired: false, screeningToolRequired: true })
     })
 

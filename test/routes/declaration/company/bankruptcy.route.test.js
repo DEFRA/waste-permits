@@ -44,25 +44,25 @@ lab.afterEach(() => {
 })
 
 const routes = {
-  'Company': {
+  Company: {
     permitHolderType: PERMIT_HOLDER_TYPES.LIMITED_COMPANY
   },
-  'Individual': {
+  Individual: {
     permitHolderType: PERMIT_HOLDER_TYPES.INDIVIDUAL
   },
-  'Partnership': {
+  Partnership: {
     permitHolderType: PERMIT_HOLDER_TYPES.PARTNERSHIP
   },
   'Limited Liability Partnership': {
     permitHolderType: PERMIT_HOLDER_TYPES.LIMITED_LIABILITY_PARTNERSHIP
   },
   'Public Body': {
-    pageHeading: `Does anyone connected with the public body or local authority have current or past bankruptcy or insolvency proceedings to declare?`,
+    pageHeading: 'Does anyone connected with the public body or local authority have current or past bankruptcy or insolvency proceedings to declare?',
     permitHolderType: PERMIT_HOLDER_TYPES.PUBLIC_BODY,
     routePath: '/permit-holder/public-body/bankruptcy-insolvency'
   },
   'Charity Body': {
-    pageHeading: `Does anyone connected with the body have current or past bankruptcy or insolvency proceedings to declare?`,
+    pageHeading: 'Does anyone connected with the body have current or past bankruptcy or insolvency proceedings to declare?',
     isCharity: true,
     permitHolderType: PERMIT_HOLDER_TYPES.PUBLIC_BODY,
     routePath: '/permit-holder/public-body/bankruptcy-insolvency'
@@ -170,7 +170,7 @@ Object.entries(routes).forEach(([operator, {
           url: routePath,
           headers: {},
           payload: {
-            'declared': mocks.application.bankruptcy,
+            declared: mocks.application.bankruptcy,
             'declaration-details': mocks.application.bankruptcyDetails
           }
         }
@@ -182,7 +182,7 @@ Object.entries(routes).forEach(([operator, {
         lab.test('when application is saved', async () => {
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextPath)
+          Code.expect(res.headers.location).to.equal(nextPath)
         })
       })
 
@@ -201,16 +201,16 @@ Object.entries(routes).forEach(([operator, {
 
         lab.test('when bankruptcy not checked', async () => {
           postRequest.payload = {}
-          await checkValidationMessage('declared', `Select yes if you have bankruptcy or insolvency to declare or no if you do not`)
+          await checkValidationMessage('declared', 'Select yes if you have bankruptcy or insolvency to declare or no if you do not')
         })
 
         lab.test('when bankruptcy set to yes and no details entered', async () => {
-          postRequest.payload = { 'declared': 'yes' }
+          postRequest.payload = { declared: 'yes' }
           await checkValidationMessage('declaration-details', 'Enter details of the bankruptcy or insolvency', true)
         })
 
         lab.test('when bankruptcy set to yes and details entered with 2001 characters', async () => {
-          postRequest.payload = { 'declared': 'yes', 'declaration-details': 'a'.repeat(2001) }
+          postRequest.payload = { declared: 'yes', 'declaration-details': 'a'.repeat(2001) }
           await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you have written', true)
         })
       })

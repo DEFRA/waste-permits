@@ -10,14 +10,14 @@ module.exports = class CharityDetailsValidator extends BaseValidator {
   get errorMessages () {
     return {
       'charity-name': {
-        'any.empty': `Enter the charity name`,
-        'any.required': `Enter the charity name`,
+        'any.empty': 'Enter the charity name',
+        'any.required': 'Enter the charity name',
         'string.max': `Enter a shorter name with no more than ${MAX_NAME_LENGTH} characters`
       },
       'charity-number': {
-        'any.empty': `Enter a valid charity number`,
-        'any.required': `Enter a valid charity number`,
-        'string.max': `Enter a valid charity number`
+        'any.empty': 'Enter a valid charity number',
+        'any.required': 'Enter a valid charity number',
+        'string.max': 'Enter a valid charity number'
       }
     }
   }

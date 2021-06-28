@@ -194,7 +194,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
 
         // Make sure a redirection has taken place correctly
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(route)
+        Code.expect(res.headers.location).to.equal(route)
       }
 
       lab.test('when online category is selected', async () => {

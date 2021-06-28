@@ -102,7 +102,7 @@ lab.experiment('Management system select tests:', () => {
           postRequest.payload[questionCode] = id
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextRoutePath)
+          Code.expect(res.headers.location).to.equal(nextRoutePath)
         })
       })
     })

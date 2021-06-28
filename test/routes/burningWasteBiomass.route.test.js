@@ -95,7 +95,7 @@ lab.experiment('Best available techniques report required for MCP tests:', () =>
         postRequest.payload['meets-criteria'] = 'yes'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('Thermal rating over 20MW, meets criteria', async () => {

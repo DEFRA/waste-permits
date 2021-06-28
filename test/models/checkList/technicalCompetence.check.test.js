@@ -16,7 +16,7 @@ const Qualifications = {
   },
   REGISTERED_ON_A_COURSE: {
     technicalQualification: 910400001,
-    description: `We are getting WAMITAB or EPOC qualifications`
+    description: 'We are getting WAMITAB or EPOC qualifications'
   },
   DEEMED_COMPETENCE: {
     technicalQualification: 910400002,
@@ -62,7 +62,7 @@ lab.experiment('TechnicalCompetence Check tests:', () => {
     Code.expect(TechnicalCompetenceCheck.task.ruleSetId).to.equal('defra_techcompetenceevreq')
   })
 
-  for (let qualification in Qualifications) {
+  for (const qualification in Qualifications) {
     lab.experiment('buildlines', () => {
       const { technicalQualification, description } = Qualifications[qualification]
       let check
@@ -70,7 +70,7 @@ lab.experiment('TechnicalCompetence Check tests:', () => {
 
       lab.beforeEach(async () => {
         sandbox.stub(BaseCheck.prototype, 'getApplication').value(() => ({ technicalQualification }))
-        let getUploadedFileDetails = sandbox.stub(BaseCheck.prototype, 'getUploadedFileDetails')
+        const getUploadedFileDetails = sandbox.stub(BaseCheck.prototype, 'getUploadedFileDetails')
         getUploadedFileDetails.withArgs(UploadSubject.TECHNICAL_QUALIFICATION, 'technicalCompetenceEvidence').returns(fakeTechnicalCompetenceEvidence)
         getUploadedFileDetails.withArgs(UploadSubject.TECHNICAL_MANAGERS, 'technicalManagers').returns(fakeTechnicalManagersEvidence)
         check = new TechnicalCompetenceCheck()
@@ -107,7 +107,7 @@ lab.experiment('TechnicalCompetence Check tests:', () => {
         Code.expect(linkId).to.equal(`${evidencePrefix}-link`)
       })
 
-      lab.test(`(technical managers evidence line) works correctly`, async () => {
+      lab.test('(technical managers evidence line) works correctly', async () => {
         if (Qualifications[qualification] === Qualifications.ESA_EU_SKILLS) {
           Code.expect(lines.length).to.equal(1)
           return

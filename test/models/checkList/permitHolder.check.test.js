@@ -86,7 +86,7 @@ lab.experiment('PermitHolder Check tests:', () => {
 
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/type')
-      Code.expect(linkType).to.equal(`permit holder`)
+      Code.expect(linkType).to.equal('permit holder')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
@@ -113,7 +113,7 @@ lab.experiment('PermitHolder Check tests:', () => {
       })
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/charity-details')
-      Code.expect(linkType).to.equal(`charity details`)
+      Code.expect(linkType).to.equal('charity details')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
@@ -291,7 +291,7 @@ lab.experiment('PermitHolder Check tests:', () => {
 
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/public-body/officer')
-      Code.expect(linkType).to.equal(`responsible officer`)
+      Code.expect(linkType).to.equal('responsible officer')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
@@ -320,7 +320,7 @@ lab.experiment('PermitHolder Check tests:', () => {
 
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/public-body/name')
-      Code.expect(linkType).to.equal(`permit holder`)
+      Code.expect(linkType).to.equal('permit holder')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 
@@ -339,7 +339,7 @@ lab.experiment('PermitHolder Check tests:', () => {
 
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/permit-holder/company/director-date-of-birth')
-      Code.expect(linkType).to.equal(`director's date of birth`)
+      Code.expect(linkType).to.equal('director\'s date of birth')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 

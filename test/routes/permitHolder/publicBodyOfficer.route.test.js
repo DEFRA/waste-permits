@@ -32,7 +32,8 @@ lab.beforeEach(() => {
     firstName: 'John',
     lastName: 'Smith',
     jobTitle: 'Officer',
-    email: 'john.smith@email.com' }
+    email: 'john.smith@email.com'
+  }
   )
 
   const { firstName, lastName, jobTitle, email } = mocks.contactDetail
@@ -41,7 +42,7 @@ lab.beforeEach(() => {
     'first-name': firstName,
     'last-name': lastName,
     'job-title': jobTitle,
-    'email': email
+    email: email
   }
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
@@ -130,7 +131,7 @@ lab.experiment('Public Body Officer page tests:', () => {
       lab.test(`redirects to ${nextRoutePath}`, async () => {
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 

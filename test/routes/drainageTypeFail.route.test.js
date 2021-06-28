@@ -90,21 +90,21 @@ lab.experiment('Your drainage system is not suitable - please contact us page te
         mocks.application.drainageType = DrainageTypes.SEWER
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(redirectPath)
+        Code.expect(res.headers.location).to.equal(redirectPath)
       })
 
       lab.test('when drainage type is a blind sump', async () => {
         mocks.application.drainageType = DrainageTypes.BLIND_SUMP
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(redirectPath)
+        Code.expect(res.headers.location).to.equal(redirectPath)
       })
 
       lab.test('when drainage type is an oil separator', async () => {
         mocks.application.drainageType = DrainageTypes.OIL_SEPARATOR
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(redirectPath)
+        Code.expect(res.headers.location).to.equal(redirectPath)
       })
 
       lab.test('when drainage type is an oil separator and standard rule is an exception', async () => {

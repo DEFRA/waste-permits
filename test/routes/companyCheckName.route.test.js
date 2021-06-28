@@ -118,7 +118,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
       } else {
         // Company not found page elements
         element = doc.getElementById('page-heading-company-not-found').firstChild
-        Code.expect(element.nodeValue).to.equal(`We cannot find that company`)
+        Code.expect(element.nodeValue).to.equal('We cannot find that company')
 
         // Test for the existence of expected static content
         GeneralTestHelper.checkElementsExist(doc, [
@@ -170,7 +170,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
 
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
 
           lab.test('Checkbox not ticked and no trading name entered - redirects to the next route', async () => {
@@ -179,7 +179,7 @@ Object.entries(routes).forEach(([companyType, { pageHeading, routePath, nextPath
 
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
 
           lab.test('Account is confirmed', async () => {

@@ -9,7 +9,7 @@ const WasteRecoveryPlan = require('../../src/models/taskList/wasteRecoveryPlan.t
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/waste-recovery-plan'
 const paths = {

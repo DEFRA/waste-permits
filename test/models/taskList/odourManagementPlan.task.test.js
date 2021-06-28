@@ -28,7 +28,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: OdourManagementPlan Model tests:', () => {
-  lab.test(`checkComplete() method correctly returns FALSE when annotations don't exist`, async () => {
+  lab.test('checkComplete() method correctly returns FALSE when annotations don\'t exist', async () => {
     Annotation.listByApplicationIdAndSubject = () => []
     const result = await OdourManagementPlan.checkComplete(mocks.context)
     Code.expect(result).to.equal(false)

@@ -42,7 +42,7 @@ lab.experiment('Non-technical Summary Check tests:', () => {
       lines = await check.buildLines()
     })
 
-    lab.test(`(non-technical summary line) works correctly`, async () => {
+    lab.test('(non-technical summary line) works correctly', async () => {
       const { heading, headingId, answers, links } = lines.pop()
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${prefix}-heading`)
@@ -59,7 +59,7 @@ lab.experiment('Non-technical Summary Check tests:', () => {
       Code.expect(linkId).to.equal(`${prefix}-link`)
     })
 
-    lab.test(`Provides the correct task`, async () => {
+    lab.test('Provides the correct task', async () => {
       Code.expect(NonTechnicalSummaryCheck.task.id).to.equal('non-technical-summary')
     })
   })

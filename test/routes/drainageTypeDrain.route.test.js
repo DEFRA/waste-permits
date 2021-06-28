@@ -134,7 +134,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when blind sump selected', async () => {
@@ -143,7 +143,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when oil separator selected and standard rule is allowed', async () => {
@@ -152,7 +152,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when oil separator selected and standard rule is not allowed', async () => {
@@ -162,7 +162,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(failRoutePath)
+        Code.expect(res.headers.location).to.equal(failRoutePath)
       })
 
       lab.test('when watercourse selected', async () => {
@@ -171,7 +171,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
         const res = await server.inject(postRequest)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(failRoutePath)
+        Code.expect(res.headers.location).to.equal(failRoutePath)
       })
     })
 

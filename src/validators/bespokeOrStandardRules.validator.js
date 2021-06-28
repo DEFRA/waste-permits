@@ -7,7 +7,7 @@ module.exports = class BespokeOrStandardRulesValidator extends BaseValidator {
   get errorMessages () {
     return {
       'permit-type': {
-        'any.required': `Select the type of permit you want`
+        'any.required': 'Select the type of permit you want'
       }
     }
   }

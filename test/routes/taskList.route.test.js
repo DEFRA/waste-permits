@@ -56,7 +56,7 @@ const fakeTaskList = {
         },
         {
           id: 'tell-us-if-youve-discussed-this-application-with-us',
-          label: `Tell us if you have discussed this application with us`,
+          label: 'Tell us if you have discussed this application with us',
           href: '/pre-application',
           completedLabelId: 'preapp-completed',
           ruleSetId: 'defra_preapprequired',
@@ -232,7 +232,7 @@ lab.experiment('Task List page tests:', () => {
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
-    let element = doc.getElementById('back-link')
+    const element = doc.getElementById('back-link')
     Code.expect(element).to.not.exist()
   })
 
@@ -262,7 +262,7 @@ lab.experiment('Task List page tests:', () => {
     // Check the existence of the page title and Bespoke info
     checkElement(doc.getElementById('page-heading'), 'Apply for a bespoke environmental permit')
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
-    checkElement(doc.getElementById('activity-name'), `Medium combustion plant site - requires dispersion modelling`)
+    checkElement(doc.getElementById('activity-name'), 'Medium combustion plant site - requires dispersion modelling')
     checkElement(doc.getElementById('select-a-different-permit'))
     Code.expect(doc.getElementById('select-a-different-permit')
       .getAttribute('href'))
@@ -281,7 +281,7 @@ lab.experiment('Task List page tests:', () => {
     // Check the existence of the page title and Bespoke MCP info
     checkElement(doc.getElementById('page-heading'), 'Apply for a bespoke environmental permit')
     checkElement(doc.getElementById('task-list-heading-visually-hidden'))
-    checkElement(doc.getElementById('activity-name'), `Medium combustion plant site - does not require dispersion modelling`)
+    checkElement(doc.getElementById('activity-name'), 'Medium combustion plant site - does not require dispersion modelling')
     checkElement(doc.getElementById('select-a-different-permit'))
     Code.expect(doc.getElementById('select-a-different-permit')
       .getAttribute('href'))
@@ -336,7 +336,7 @@ lab.experiment('Task List page tests:', () => {
 
     const res = await server.inject(getRequest)
     Code.expect(res.statusCode).to.equal(302)
-    Code.expect(res.headers['location']).to.equal(alreadySubmittedRoutePath)
+    Code.expect(res.headers.location).to.equal(alreadySubmittedRoutePath)
   })
 
   lab.experiment('Task list page contains the correct section headings and correct task list items', () => {

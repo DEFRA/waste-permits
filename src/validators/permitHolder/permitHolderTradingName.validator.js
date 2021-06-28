@@ -14,8 +14,8 @@ module.exports = class PermitHolderTradingNameValidator extends BaseValidator {
         'any.required': 'Select own name or a trading name'
       },
       'trading-name': {
-        'any.empty': `Enter a trading or business name`,
-        'any.required': `Enter a trading or business name`,
+        'any.empty': 'Enter a trading or business name',
+        'any.required': 'Enter a trading or business name',
         'string.max': `Enter a shorter trading, business or company name with no more than ${Application.tradingName.length.max} characters`
       }
     }
@@ -30,7 +30,8 @@ module.exports = class PermitHolderTradingNameValidator extends BaseValidator {
         .max(Application.tradingName.length.max)
         .when('use-trading-name', {
           is: TRADING_NAME_USAGE.YES,
-          then: Joi.required() })
+          then: Joi.required()
+        })
     }
   }
 }

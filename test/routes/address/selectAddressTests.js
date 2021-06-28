@@ -81,7 +81,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
 
   const checkPageElements = async (request) => {
     const doc = await GeneralTestHelper.getDoc(request)
-    let heading = GeneralTestHelper.getText(doc.getElementById('page-heading'))
+    const heading = GeneralTestHelper.getText(doc.getElementById('page-heading'))
     if (contactDetailId) {
       const { firstName, lastName } = mocks.contactDetail
       Code.expect(heading).to.equal(`${pageHeading} ${firstName} ${lastName}?`)
@@ -114,7 +114,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
     new GeneralTestHelper({ lab, routePath }).test()
     lab.experiment(`GET ${routePath}`, () => {
       lab.experiment('Success:', () => {
-        lab.test(`when returns the Address Select page correctly`, async () => {
+        lab.test('when returns the Address Select page correctly', async () => {
           await checkPageElements(getRequest)
         })
       })
@@ -129,12 +129,12 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
           Code.expect(saveSelectedAddressSpy.callCount).to.equal(1)
 
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextRoutePath)
+          Code.expect(res.headers.location).to.equal(nextRoutePath)
         })
       })
 
       lab.experiment('Failure:', () => {
-        lab.test(`when shows an error message when an address has not been selected`, async () => {
+        lab.test('when shows an error message when an address has not been selected', async () => {
           const doc = await GeneralTestHelper.getDoc(postRequest)
           await GeneralTestHelper.checkValidationMessage(doc, 'select-address', 'Select an address')
         })

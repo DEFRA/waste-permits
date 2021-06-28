@@ -15,15 +15,15 @@ const PermitHolderDetails = require('../../../src/models/taskList/permitHolderDe
 const { capitalizeFirstLetter } = require('../../../src/utilities/utilities')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
-let memberId = 'MEMBER_ID'
+const memberId = 'MEMBER_ID'
 
 const routes = {
-  'partner': {
+  partner: {
     routePath: `/permit-holder/partners/name/${memberId}`,
     nextPath: `/permit-holder/partners/details/${memberId}`,
     PermitHolderTask: require('../../../src/models/taskList/partnerDetails.task')
   },
-  'postholder': {
+  postholder: {
     includesJobTitle: true,
     routePath: `/permit-holder/group/post-holder/name/${memberId}`,
     nextPath: `/permit-holder/group/post-holder/contact-details/${memberId}`,
@@ -132,7 +132,7 @@ Object.entries(routes).forEach(([member, { includesJobTitle, routePath, nextPath
 
       lab.experiment(`Get ${routePath}`, () => {
         lab.experiment('Success:', () => {
-          lab.test(`when returns the page correctly when the first partner is being added`, async () => {
+          lab.test('when returns the page correctly when the first partner is being added', async () => {
             delete mocks.contactDetail.firstName
             delete mocks.contactDetail.lastName
             delete mocks.contactDetail.jobTitle
@@ -143,7 +143,7 @@ Object.entries(routes).forEach(([member, { includesJobTitle, routePath, nextPath
             return checkPageElements(getRequest, data)
           })
 
-          lab.test(`when returns the page correctly when another partner is being added`, async () => {
+          lab.test('when returns the page correctly when another partner is being added', async () => {
             delete mocks.contactDetail.firstName
             delete mocks.contactDetail.lastName
             delete mocks.contactDetail.jobTitle
@@ -155,7 +155,7 @@ Object.entries(routes).forEach(([member, { includesJobTitle, routePath, nextPath
             return checkPageElements(getRequest, data)
           })
 
-          lab.test(`when returns the page correctly when the partner exists with an existing email and telephone number`, async () => {
+          lab.test('when returns the page correctly when the partner exists with an existing email and telephone number', async () => {
             const data = {
               firstName: mocks.contactDetail.firstName,
               lastName: mocks.contactDetail.lastName,
@@ -168,7 +168,7 @@ Object.entries(routes).forEach(([member, { includesJobTitle, routePath, nextPath
         })
 
         lab.experiment('Failure:', () => {
-          lab.test(`when the contactDetail does not exist`, async () => {
+          lab.test('when the contactDetail does not exist', async () => {
             const stub = sinon.stub(PermitHolderTask, 'getContactDetail').value(() => undefined)
             const res = await server.inject(getRequest)
             stub.restore()
@@ -179,15 +179,15 @@ Object.entries(routes).forEach(([member, { includesJobTitle, routePath, nextPath
 
       lab.experiment(`POST ${routePath}`, () => {
         lab.experiment('Success:', () => {
-          lab.test(`when the telephone and email are entered correctly`, async () => {
+          lab.test('when the telephone and email are entered correctly', async () => {
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
         })
 
         lab.experiment('Failure:', () => {
-          lab.test(`when the contactDetail does not exist`, async () => {
+          lab.test('when the contactDetail does not exist', async () => {
             const stub = sinon.stub(PermitHolderTask, 'getContactDetail').value(() => undefined)
             const res = await server.inject(postRequest)
             stub.restore()
@@ -206,17 +206,17 @@ Object.entries(routes).forEach(([member, { includesJobTitle, routePath, nextPath
             postRequest.payload['dob-month'] = month
           })
 
-          lab.test(`shows an error message when the first name is blank`, async () => {
+          lab.test('shows an error message when the first name is blank', async () => {
             postRequest.payload['first-name'] = ''
             await checkValidationErrors('first-name', ['Enter a first name'])
           })
 
-          lab.test(`shows an error message when the first name contains invalid characters`, async () => {
+          lab.test('shows an error message when the first name contains invalid characters', async () => {
             postRequest.payload['first-name'] = '___INVALID_FIRST_NAME___'
             await checkValidationErrors('first-name', ['First name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters'])
           })
 
-          lab.test(`shows multiple error messages on the first name field`, async () => {
+          lab.test('shows multiple error messages on the first name field', async () => {
             postRequest.payload['first-name'] = '_01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
             const expectedErrors = [
               'Enter a shorter first name with no more than 50 characters',
@@ -225,17 +225,17 @@ Object.entries(routes).forEach(([member, { includesJobTitle, routePath, nextPath
             await checkValidationErrors('first-name', expectedErrors)
           })
 
-          lab.test(`shows an error message when the last name is blank`, async () => {
+          lab.test('shows an error message when the last name is blank', async () => {
             postRequest.payload['last-name'] = ''
             await checkValidationErrors('last-name', ['Enter a last name'])
           })
 
-          lab.test(`shows an error message when the last name contains invalid characters`, async () => {
+          lab.test('shows an error message when the last name contains invalid characters', async () => {
             postRequest.payload['last-name'] = '___INVALID_LAST_NAME___'
             await checkValidationErrors('last-name', ['Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters'])
           })
 
-          lab.test(`shows multiple error messages on the last name field`, async () => {
+          lab.test('shows multiple error messages on the last name field', async () => {
             postRequest.payload['last-name'] = '_01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789X'
             const expectedErrors = [
               'Enter a shorter last name with no more than 50 characters',
@@ -244,33 +244,33 @@ Object.entries(routes).forEach(([member, { includesJobTitle, routePath, nextPath
             await checkValidationErrors('last-name', expectedErrors)
           })
 
-          lab.test(`shows an error message when the day of birth is blank`, async () => {
+          lab.test('shows an error message when the day of birth is blank', async () => {
             postRequest.payload['dob-day'] = ''
             await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
           })
 
-          lab.test(`shows an error message when the month of birth is blank`, async () => {
+          lab.test('shows an error message when the month of birth is blank', async () => {
             postRequest.payload['dob-month'] = ''
             await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
           })
 
-          lab.test(`shows an error message when the year of birth is blank`, async () => {
+          lab.test('shows an error message when the year of birth is blank', async () => {
             postRequest.payload['dob-year'] = ''
             await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
           })
 
-          lab.test(`shows an error message when the date of birth is not a real date`, async () => {
+          lab.test('shows an error message when the date of birth is not a real date', async () => {
             postRequest.payload['dob-month'] = '15'
             await checkValidationErrors('dob-day', ['Enter a valid date of birth'])
           })
 
-          lab.test(`shows an error message when the age is less than 16`, async () => {
+          lab.test('shows an error message when the age is less than 16', async () => {
             postRequest.payload['dob-day'] = day + 1
             postRequest.payload['dob-year'] = year - 16
             await checkValidationErrors('dob-day', ['Enter a date of birth that is older than 16 and under 120 years of age'])
           })
 
-          lab.test(`shows an error message when the age is greater than 120`, async () => {
+          lab.test('shows an error message when the age is greater than 120', async () => {
             postRequest.payload['dob-year'] = year - 120
             await checkValidationErrors('dob-day', ['Enter a date of birth that is older than 16 and under 120 years of age'])
           })

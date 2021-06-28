@@ -88,7 +88,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
 
   const checkPageElements = async (request, expectedValue) => {
     const doc = await GeneralTestHelper.getDoc(request)
-    let heading = GeneralTestHelper.getText(doc.getElementById('page-heading'))
+    const heading = GeneralTestHelper.getText(doc.getElementById('page-heading'))
     if (contactDetailId) {
       const { firstName, lastName } = mocks.contactDetail
       Code.expect(heading).to.equal(`${pageHeading} ${firstName} ${lastName}?`)
@@ -102,7 +102,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
       Code.expect(doc.getElementById('charity-address-subheading')).to.not.exist()
     }
 
-    for (let id of Object.values(FORM_FIELD_ID)) {
+    for (const id of Object.values(FORM_FIELD_ID)) {
       const element = doc.getElementById(id)
       Code.expect(doc.getElementById(id)).to.exist()
       const value = element.getAttribute('value')
@@ -165,7 +165,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
           Code.expect(spy.callCount).to.equal(1)
 
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextRoutePath)
+          Code.expect(res.headers.location).to.equal(nextRoutePath)
         })
       })
 
@@ -190,7 +190,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
           postRequest.payload[FORM_FIELD_ID.addressLine2] = ''
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextRoutePath)
+          Code.expect(res.headers.location).to.equal(nextRoutePath)
         })
 
         lab.test(`POST ${routePath} shows an error message when the town or city is blank or whitespace`, async () => {
@@ -205,7 +205,7 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
           postRequest.payload[FORM_FIELD_ID.townOrCity] = ''
           await checkValidationError(FORM_FIELD_ID.townOrCity, 'Enter a town or city')
 
-          postRequest.payload[FORM_FIELD_ID.townOrCity] = `King's Cros's`
+          postRequest.payload[FORM_FIELD_ID.townOrCity] = 'King\'s Cros\'s'
           await checkValidationError(FORM_FIELD_ID.townOrCity, 'Town or city can only contain one apostrophe - remove all but one')
         })
 
@@ -220,15 +220,15 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
           postRequest.payload[FORM_FIELD_ID.townOrCity] = longTownOrCity
           postRequest.payload[FORM_FIELD_ID.postcode] = longPostcode
 
-          await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Enter a shorter building name or number with no more than 50 characters`, 0)
-          await checkValidationError(FORM_FIELD_ID.addressLine1, `Enter a shorter address line 1 with no more than 80 characters`, 1)
-          await checkValidationError(FORM_FIELD_ID.addressLine2, `Enter a shorter address line 2 with no more than 80 characters`, 2)
-          await checkValidationError(FORM_FIELD_ID.townOrCity, `Enter a shorter town or city with no more than 30 characters`, 3)
-          await checkValidationError(FORM_FIELD_ID.postcode, `Enter a shorter postcode with no more than 8 characters`, 4)
+          await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, 'Enter a shorter building name or number with no more than 50 characters', 0)
+          await checkValidationError(FORM_FIELD_ID.addressLine1, 'Enter a shorter address line 1 with no more than 80 characters', 1)
+          await checkValidationError(FORM_FIELD_ID.addressLine2, 'Enter a shorter address line 2 with no more than 80 characters', 2)
+          await checkValidationError(FORM_FIELD_ID.townOrCity, 'Enter a shorter town or city with no more than 30 characters', 3)
+          await checkValidationError(FORM_FIELD_ID.postcode, 'Enter a shorter postcode with no more than 8 characters', 4)
         })
 
         lab.test(`POST ${routePath} shows an error message when a field starts with a hyphen`, async () => {
-          let valueWithHyphen = '-VALUE'
+          const valueWithHyphen = '-VALUE'
 
           postRequest.payload[FORM_FIELD_ID.buildingNameOrNumber] = valueWithHyphen
           postRequest.payload[FORM_FIELD_ID.addressLine1] = valueWithHyphen
@@ -236,15 +236,15 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
           postRequest.payload[FORM_FIELD_ID.townOrCity] = valueWithHyphen
           postRequest.payload[FORM_FIELD_ID.postcode] = valueWithHyphen
 
-          await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Building name or number cannot start or end with a dash - please delete it`, 0)
-          await checkValidationError(FORM_FIELD_ID.addressLine1, `Address line 1 cannot start or end with a dash - please delete it`, 1)
-          await checkValidationError(FORM_FIELD_ID.addressLine2, `Address line 2 cannot start or end with a dash - please delete it`, 2)
-          await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city cannot start or end with a dash - please delete it`, 3)
-          await checkValidationError(FORM_FIELD_ID.postcode, `Postcode cannot start or end with a dash - please delete it`, 4)
+          await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, 'Building name or number cannot start or end with a dash - please delete it', 0)
+          await checkValidationError(FORM_FIELD_ID.addressLine1, 'Address line 1 cannot start or end with a dash - please delete it', 1)
+          await checkValidationError(FORM_FIELD_ID.addressLine2, 'Address line 2 cannot start or end with a dash - please delete it', 2)
+          await checkValidationError(FORM_FIELD_ID.townOrCity, 'Town or city cannot start or end with a dash - please delete it', 3)
+          await checkValidationError(FORM_FIELD_ID.postcode, 'Postcode cannot start or end with a dash - please delete it', 4)
         })
 
         lab.test(`POST ${routePath} shows an error message when a field ends with a hyphen`, async () => {
-          let valueWithHyphen = 'VALUE-'
+          const valueWithHyphen = 'VALUE-'
 
           postRequest.payload[FORM_FIELD_ID.buildingNameOrNumber] = valueWithHyphen
           postRequest.payload[FORM_FIELD_ID.addressLine1] = valueWithHyphen
@@ -252,25 +252,25 @@ module.exports = (lab, { permitHolderType, routePath, nextRoutePath, pageHeading
           postRequest.payload[FORM_FIELD_ID.townOrCity] = valueWithHyphen
           postRequest.payload[FORM_FIELD_ID.postcode] = valueWithHyphen
 
-          await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Building name or number cannot start or end with a dash - please delete it`, 0)
-          await checkValidationError(FORM_FIELD_ID.addressLine1, `Address line 1 cannot start or end with a dash - please delete it`, 1)
-          await checkValidationError(FORM_FIELD_ID.addressLine2, `Address line 2 cannot start or end with a dash - please delete it`, 2)
-          await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city cannot start or end with a dash - please delete it`, 3)
-          await checkValidationError(FORM_FIELD_ID.postcode, `Postcode cannot start or end with a dash - please delete it`, 4)
+          await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, 'Building name or number cannot start or end with a dash - please delete it', 0)
+          await checkValidationError(FORM_FIELD_ID.addressLine1, 'Address line 1 cannot start or end with a dash - please delete it', 1)
+          await checkValidationError(FORM_FIELD_ID.addressLine2, 'Address line 2 cannot start or end with a dash - please delete it', 2)
+          await checkValidationError(FORM_FIELD_ID.townOrCity, 'Town or city cannot start or end with a dash - please delete it', 3)
+          await checkValidationError(FORM_FIELD_ID.postcode, 'Postcode cannot start or end with a dash - please delete it', 4)
         })
 
         lab.test(`POST ${routePath} shows an error message when the entered text contains invalid characters`, async () => {
-          let valueWithNumbers = 'VALUE123'
+          const valueWithNumbers = 'VALUE123'
 
           postRequest.payload[FORM_FIELD_ID.townOrCity] = valueWithNumbers
-          await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city contains text we cannot accept - enter only letters, apostrophes, dashes and spaces`, 0)
+          await checkValidationError(FORM_FIELD_ID.townOrCity, 'Town or city contains text we cannot accept - enter only letters, apostrophes, dashes and spaces', 0)
 
-          let valueWithPunctuation = 'VALUE...'
+          const valueWithPunctuation = 'VALUE...'
           postRequest.payload[FORM_FIELD_ID.buildingNameOrNumber] = valueWithPunctuation
           postRequest.payload[FORM_FIELD_ID.townOrCity] = valueWithPunctuation
 
-          await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, `Building name or number contains text we cannot accept - enter only numbers, letters, apostrophes, dashes and spaces`, 0)
-          await checkValidationError(FORM_FIELD_ID.townOrCity, `Town or city contains text we cannot accept - enter only letters, apostrophes, dashes and spaces`, 1)
+          await checkValidationError(FORM_FIELD_ID.buildingNameOrNumber, 'Building name or number contains text we cannot accept - enter only numbers, letters, apostrophes, dashes and spaces', 0)
+          await checkValidationError(FORM_FIELD_ID.townOrCity, 'Town or city contains text we cannot accept - enter only letters, apostrophes, dashes and spaces', 1)
         })
       })
     })

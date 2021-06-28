@@ -1,11 +1,11 @@
 const config = require('./config')
 
-let squeezeConfig = [{
-  'error': '*',
-  'log': '*',
-  'ops': '*',
-  'request': '*',
-  'response': { exclude: 'public' }
+const squeezeConfig = [{
+  error: '*',
+  log: '*',
+  ops: '*',
+  request: '*',
+  response: { exclude: 'public' }
 }]
 
 // Don't log when running tests
@@ -25,8 +25,8 @@ if (config.nodeEnvironment !== 'test') {
       }, {
         module: '@hapi/good-console',
         args: [{
-          'format': 'YYYY-MM-DD HH:mm:ss',
-          'utc': false
+          format: 'YYYY-MM-DD HH:mm:ss',
+          utc: false
         }]
       }, 'stdout'],
 
