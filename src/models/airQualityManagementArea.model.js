@@ -21,9 +21,7 @@ module.exports = class AirQualityManagementArea {
   }
 
   async save (context) {
-    let applicationAnswers
-
-    applicationAnswers = [{
+    const applicationAnswers = [{
       questionCode: IS_IN_AQMA.questionCode,
       answerText: this.isInAqma ? YES : NO
     }, {
