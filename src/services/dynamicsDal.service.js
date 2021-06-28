@@ -106,7 +106,11 @@ class DynamicsDalService {
   }
 
   _requestOptions (authToken, query, method, dataObject = undefined) {
+    // Temporarily disable rule against using deprecated APIs; changing this to 'new URL()' does not work without
+    // further modification which is out of scope for now.
+    /* eslint-disable node/no-deprecated-api */
     const options = url.parse(`${this.dynamicsPath}${query}`)
+    /* eslint-enable */
     options.method = method
     options.headers = {
       Authorization: `Bearer ${authToken}`,
