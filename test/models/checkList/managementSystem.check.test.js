@@ -62,9 +62,10 @@ lab.experiment('Management system Check tests:', () => {
           case 1:
             Code.expect(answer).to.equal('Summary:')
             break
-          default:
+          default: {
             const { filename } = fakeManagementSystemSummaries[answerIndex - 2]
             Code.expect(answer).to.equal(filename)
+          }
         }
       })
 

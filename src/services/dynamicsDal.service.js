@@ -148,7 +148,7 @@ class DynamicsDalService {
             case 204:
               resolve(response.headers['odata-entityid'])
               break
-            default:
+            default: {
               let crmMessage = ''
               if (responseParts.length) {
                 try {
@@ -167,6 +167,7 @@ class DynamicsDalService {
               }
               const message = crmMessage ? `Bad response from Dynamics. Code: ${response.statusCode}, Message: ${crmMessage}` : `Unknown response from Dynamics. Code: ${response.statusCode}, Message: ${response.statusMessage}`
               reject(new Error(message))
+            }
           }
         })
       })

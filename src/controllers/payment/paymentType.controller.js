@@ -53,11 +53,12 @@ module.exports = class PaymentTypeController extends BaseController {
 
     const paymentType = parseInt(request.payload['payment-type'])
     switch (paymentType) {
-      case CARD_PAYMENT:
+      case CARD_PAYMENT: {
         const origin = config.wastePermitsAppUrl || request.headers.origin
         const returnUrl = `${origin}${Routes.PAYMENT_RESULT.path}/${finalSlug}`
         path = `${Routes.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
         break
+      }
       case BACS_PAYMENT:
         path = Routes.BACS_PAYMENT.path
         break
