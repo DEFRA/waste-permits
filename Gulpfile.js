@@ -4,7 +4,7 @@ const gulp = require('gulp')
 const htmlhint = require('gulp-htmlhint')
 const sass = require('gulp-sass')
 const concat = require('gulp-concat')
-const uglify = require('gulp-uglify')
+const terser = require('gulp-terser')
 const sourcemaps = require('gulp-sourcemaps')
 const imagemin = require('gulp-imagemin')
 const autoprefixer = require('gulp-autoprefixer')
@@ -88,7 +88,7 @@ gulp.task('copy-scripts', () => {
 gulp.task('scripts', gulp.series('copy-scripts', (done) => {
   return gulp.src([paths.assets + 'javascripts/govuk/*.js', paths.assets + 'javascripts/application.js'])
     .pipe(concat('application.min.js'))
-    .pipe(uglify())
+    .pipe(terser())
     .pipe(gulp.dest(paths.public + 'javascripts/'))
     .pipe(reload({
       stream: true
