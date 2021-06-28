@@ -49,7 +49,8 @@ module.exports = class PaymentTypeController extends BaseController {
 
     // try to find a slug, otherwise make it an empty string
     const finalSlug = applicationReturn
-      ? applicationReturn.slug : slug || ''
+      ? applicationReturn.slug
+      : slug || ''
 
     const paymentType = parseInt(request.payload['payment-type'])
     switch (paymentType) {
