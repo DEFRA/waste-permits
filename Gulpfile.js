@@ -20,10 +20,12 @@ require('dotenv').config()
 
 const paths = {
   assets: 'src/assets/',
+  cli: 'cli/',
   govukModules: 'govuk_modules/',
   nodeModules: 'node_modules/',
   public: 'public/',
   src: 'src/',
+  test: 'test/',
   views: 'src/views/'
 }
 
@@ -128,7 +130,12 @@ gulp.task('sass', () => {
 
 // Run StardardJS checks
 gulp.task('standard', () => {
-  return gulp.src([paths.src + '**/*.js'])
+  return gulp.src([
+    './*.js',
+    paths.cli + '**/*.js',
+    paths.src + '**/*.js',
+    paths.test + '**/*.js'
+  ])
     .pipe(standard())
     .pipe(standard.reporter('default', {
       breakOnError: true,
