@@ -15,6 +15,8 @@ const {
   PLUSES_SPACES_AND_NUMBERS_REGEX
 } = Constants.Validation
 
+const generalEmailError = 'Enter a valid email address'
+
 module.exports = class InvoiceContactValidator extends BaseValidator {
   get errorMessages () {
     return {
@@ -35,9 +37,9 @@ module.exports = class InvoiceContactValidator extends BaseValidator {
         'string.max': `Enter a shorter last name with no more than ${Contact.lastName.length.max} characters`
       },
       email: {
-        'any.empty': 'Enter a valid email address',
-        'any.required': 'Enter a valid email address',
-        'string.regex.base': 'Enter a valid email address',
+        'any.empty': generalEmailError,
+        'any.required': generalEmailError,
+        'string.regex.base': generalEmailError,
         'string.max': `Enter a shorter email address with no more than ${Contact.email.length.max} characters`
       },
       telephone: {

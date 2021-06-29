@@ -24,7 +24,8 @@ const sections = [
   },
   {
     heading: 'Introductory message cookie',
-    intro: ['You may see a pop-up welcome message when you first visit this service. We will store a cookie so that your computer knows you have seen it and knows not to show it again.'],
+    intro: ['You may see a pop-up welcome message when you first visit this service. ' +
+      'We will store a cookie so that your computer knows you have seen it and knows not to show it again.'],
     id: 'introductory-message-cookie',
     cookies: [
       {
