@@ -55,7 +55,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
+lab.experiment('You have chosen to pay by bank transfer using Bacs:', () => {
   new GeneralTestHelper({ lab, routePath }).test({ includeTasksNotCompleteTest: true })
 
   lab.experiment(`GET ${routePath}`, () => {
@@ -99,7 +99,7 @@ lab.experiment(`You have chosen to pay by bank transfer using Bacs:`, () => {
     lab.test('success', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
 
     lab.experiment('failure', () => {

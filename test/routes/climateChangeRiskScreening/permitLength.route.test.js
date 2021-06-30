@@ -19,7 +19,8 @@ const ClimateChangeRiskScreeningModel = require('../../../src/models/climateChan
 const {
   CLIMATE_CHANGE_RISK_SCREENING_PERMIT_LENGTH,
   CLIMATE_CHANGE_RISK_SCREENING_FLOOD_RISK,
-  TASK_LIST } = require('../../../src/routes')
+  TASK_LIST
+} = require('../../../src/routes')
 
 const routePath = CLIMATE_CHANGE_RISK_SCREENING_PERMIT_LENGTH.path
 const nextRoutePath = CLIMATE_CHANGE_RISK_SCREENING_FLOOD_RISK.path

@@ -96,7 +96,7 @@ lab.experiment('Designated Member Email page tests:', () => {
       lab.test('redirects to the Task List route', async () => {
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 

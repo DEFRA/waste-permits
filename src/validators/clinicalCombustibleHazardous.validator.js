@@ -6,9 +6,9 @@ const BaseValidator = require('./base.validator')
 module.exports = class NeedToConsultValidator extends BaseValidator {
   get errorMessages () {
     return {
-      'select': {
-        'object.without': `You cannot select a type and ‘None of these’. Please deselect one of them.`,
-        'object.missing': `Select at least one option. If you don’t accept any of these select ‘None of these’.`
+      select: {
+        'object.without': 'You cannot select a type and ‘None of these’. Please deselect one of them.',
+        'object.missing': 'Select at least one option. If you don’t accept any of these select ‘None of these’.'
       }
     }
   }

@@ -83,12 +83,12 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
         Code.expect(doc.getElementById('selection-changed-input').getAttribute('value')).to.equal(PLAN_HAS_CHANGED.toString())
       }
 
-      lab.test(`The page should load correctly when nothing is selected`, async () => {
+      lab.test('The page should load correctly when nothing is selected', async () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
       })
 
-      lab.test(`The page should load correctly when already assessed is selected`, async () => {
+      lab.test('The page should load correctly when already assessed is selected', async () => {
         mocks.application.recoveryPlanAssessmentStatus = ALREADY_ASSESSED
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
@@ -97,7 +97,7 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
         Code.expect(doc.getElementById('selection-changed-input').getAttribute('checked')).to.equal('')
       })
 
-      lab.test(`The page should load correctly when not assessed is selected`, async () => {
+      lab.test('The page should load correctly when not assessed is selected', async () => {
         mocks.application.recoveryPlanAssessmentStatus = NOT_ASSESSED
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
@@ -106,7 +106,7 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
         Code.expect(doc.getElementById('selection-changed-input').getAttribute('checked')).to.equal('')
       })
 
-      lab.test(`The page should load correctly when plan has changed is selected`, async () => {
+      lab.test('The page should load correctly when plan has changed is selected', async () => {
         mocks.application.recoveryPlanAssessmentStatus = PLAN_HAS_CHANGED
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
@@ -147,7 +147,7 @@ lab.experiment('Waste Recovery Plan Approval page tests:', () => {
     lab.test('success', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
 
     lab.experiment('invalid', () => {

@@ -35,7 +35,7 @@ class ApplicationAnswer extends BaseEntity {
       if (this.applicationLineId) {
         actionData.ApplicationLine = {
           '@odata.type': 'Microsoft.Dynamics.CRM.defra_applicationline',
-          'defra_applicationlineid': this.applicationLineId
+          defra_applicationlineid: this.applicationLineId
         }
       }
       await dynamicsDal.callAction(action, actionData)
@@ -70,14 +70,16 @@ class ApplicationAnswer extends BaseEntity {
           </filter>
           <link-entity name="defra_applicationquestion" from="defra_applicationquestionid" to="defra_question" link-type="inner" alias="question">
             <attribute name="defra_shortname" />
-            ${questionCodes ? `
+            ${questionCodes
+              ? `
             <filter type="and">
               <condition attribute="statecode" operator="eq" value="0" />
               <condition attribute="defra_shortname" operator="in">
                 ${questionCodes.map((questionCode) => `<value>${questionCode}</value>`).join('')}
               </condition>
             </filter>
-            ` : ''}
+            `
+              : ''}
           </link-entity>
           <link-entity name="defra_applicationquestionoption" from="defra_applicationquestionoptionid" to="defra_answer_option" link-type="outer" alias="answeroption">
             <attribute name="defra_option" />

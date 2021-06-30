@@ -43,7 +43,7 @@ lab.experiment('Application Answer Entity tests:', () => {
 
   lab.test('getByQuestionCode() method should return the applicationAnswer correctly', async () => {
     fakeApplicationAnswer = { questionCode, answerCode: 'ANSWER_CODE', answerDescription: 'ANSWER_DESCRIPTION', answerText: 'ANSWER_TEXT' }
-    let applicationAnswer = await ApplicationAnswer.getByQuestionCode(context, questionCode)
+    const applicationAnswer = await ApplicationAnswer.getByQuestionCode(context, questionCode)
     Code.expect(applicationAnswer.answerCode).to.equal(fakeApplicationAnswer.answerCode)
     Code.expect(applicationAnswer.answerDescription).to.equal(fakeApplicationAnswer.answerDescription)
     Code.expect(applicationAnswer.answerText).to.equal(fakeApplicationAnswer.answerText)
@@ -53,7 +53,7 @@ lab.experiment('Application Answer Entity tests:', () => {
   lab.test('listByMultipleQuestionCodes() method should return the applicationAnswer correctly', async () => {
     fakeApplicationAnswer = { questionCode, answerCode: 'ANSWER_CODE', answerDescription: 'ANSWER_DESCRIPTION', answerText: 'ANSWER_TEXT' }
     const applicationAnswers = await ApplicationAnswer.listByMultipleQuestionCodes(context, [questionCode])
-    let applicationAnswer = applicationAnswers.pop()
+    const applicationAnswer = applicationAnswers.pop()
     Code.expect(applicationAnswer.answerCode).to.equal(fakeApplicationAnswer.answerCode)
     Code.expect(applicationAnswer.answerDescription).to.equal(fakeApplicationAnswer.answerDescription)
     Code.expect(applicationAnswer.answerText).to.equal(fakeApplicationAnswer.answerText)
@@ -64,7 +64,7 @@ lab.experiment('Application Answer Entity tests:', () => {
     const callActionSpy = sinon.spy(dynamicsDal, 'callAction')
     const applicationAnswer = new ApplicationAnswer({ questionCode, answerCode: 'ANSWER_CODE', answerDescription: 'ANSWER_DESCRIPTION', answerText: 'ANSWER_TEXT' })
     await applicationAnswer.save(context)
-    let action = `defra_applications(${applicationId})/Microsoft.Dynamics.CRM.defra_set_application_answer`
+    const action = `defra_applications(${applicationId})/Microsoft.Dynamics.CRM.defra_set_application_answer`
     Code.expect(callActionSpy.calledWith(action, {
       QuestionCode: questionCode,
       AnswerCode: applicationAnswer.answerCode,
@@ -76,14 +76,14 @@ lab.experiment('Application Answer Entity tests:', () => {
     const callActionSpy = sinon.spy(dynamicsDal, 'callAction')
     const applicationAnswer = new ApplicationAnswer({ questionCode, answerCode: 'ANSWER_CODE', answerDescription: 'ANSWER_DESCRIPTION', answerText: 'ANSWER_TEXT', applicationLineId: 'LINE_ID' })
     await applicationAnswer.save(context)
-    let action = `defra_applications(${applicationId})/Microsoft.Dynamics.CRM.defra_set_application_answer`
+    const action = `defra_applications(${applicationId})/Microsoft.Dynamics.CRM.defra_set_application_answer`
     Code.expect(callActionSpy.calledWith(action, {
       QuestionCode: questionCode,
       AnswerCode: applicationAnswer.answerCode,
       AnswerText: applicationAnswer.answerText,
-      ApplicationLine : {
+      ApplicationLine: {
         '@odata.type': 'Microsoft.Dynamics.CRM.defra_applicationline',
-        'defra_applicationlineid': 'LINE_ID'
+        defra_applicationlineid: 'LINE_ID'
       }
     })).to.be.true()
   })

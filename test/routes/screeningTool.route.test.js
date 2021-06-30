@@ -9,7 +9,7 @@ const ScreeningTool = require('../../src/models/taskList/screeningTool.task')
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/mcp/air-dispersion-modelling/upload/screening-only'
 const paths = {

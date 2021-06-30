@@ -20,9 +20,9 @@ module.exports = class TechnicalQualificationController extends BaseController {
     }
 
     Object.assign(pageContext.formValues, {
-      'wamitab': WAMITAB_QUALIFICATION.TYPE,
+      wamitab: WAMITAB_QUALIFICATION.TYPE,
       'getting-qualification': REGISTERED_ON_A_COURSE.TYPE,
-      'deemed': DEEMED_COMPETENCE.TYPE,
+      deemed: DEEMED_COMPETENCE.TYPE,
       'esa-eu': ESA_EU_SKILLS.TYPE
     })
 

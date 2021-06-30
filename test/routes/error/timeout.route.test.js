@@ -33,14 +33,14 @@ lab.experiment('Timeout page tests:', () => {
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
-    let element = doc.getElementById('back-link')
+    const element = doc.getElementById('back-link')
     Code.expect(element).to.not.exist()
   })
 
   lab.test(`GET ${routePath} returns the timeout page correctly`, async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
-    let element = doc.getElementById('page-heading').firstChild
+    const element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(pageTitle)
 
     // Test for the existence of expected static content

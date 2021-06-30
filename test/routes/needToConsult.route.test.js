@@ -157,14 +157,14 @@ lab.experiment('Consultees page tests:', () => {
       lab.test('when all selected', async () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when none selected', async () => {
         postRequest.payload = { 'consult-none-required': 'yes' }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when each selected', async () => {
@@ -172,17 +172,17 @@ lab.experiment('Consultees page tests:', () => {
         postRequest.payload = { 'consult-sewer-required': 'yes', 'consult-sewerage-undertaker': 'SEWERAGE UNDERTAKER' }
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
 
         postRequest.payload = { 'consult-harbour-required': 'yes', 'consult-harbour-authority': 'HARBOUR AUTHORITY' }
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
 
         postRequest.payload = { 'consult-fisheries-required': 'yes', 'consult-fisheries-committee': 'FISHERIES COMMITTEE' }
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 
@@ -191,20 +191,20 @@ lab.experiment('Consultees page tests:', () => {
         postRequest.payload = {}
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'consult-select', `Select at least one option. If there are no releases select 'None of these'.`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'consult-select', 'Select at least one option. If there are no releases select \'None of these\'.')
       })
-      lab.test(`when both releases and 'None' are selected`, async () => {
+      lab.test('when both releases and \'None\' are selected', async () => {
         postRequest.payload['consult-none-required'] = 'yes'
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'consult-select', `You cannot select a release and 'None of these'. Please deselect one of them.`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'consult-select', 'You cannot select a release and \'None of these\'. Please deselect one of them.')
       })
-      lab.test(`when both releases and 'None' are selected, only shows single error message`, async () => {
+      lab.test('when both releases and \'None\' are selected, only shows single error message', async () => {
         postRequest.payload['consult-none-required'] = 'yes'
         delete postRequest.payload['consult-sewerage-undertaker']
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'consult-select', `You cannot select a release and 'None of these'. Please deselect one of them.`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'consult-select', 'You cannot select a release and \'None of these\'. Please deselect one of them.')
         await GeneralTestHelper.checkValidationMessageCount(doc, 1)
         await GeneralTestHelper.checkNoValidationMessage(doc, 'consult-sewerage-undertaker')
       })

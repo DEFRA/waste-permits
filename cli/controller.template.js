@@ -10,27 +10,31 @@ const RecoveryService = require('../services/recovery.service')
 module.exports = class ${controllerName}Controller extends BaseController {
   async doGet (request, h, errors) {
     const context = await RecoveryService.createApplicationContext(h)
-    ${hasView ? `
+    ${hasView
+      ? `
     const pageContext = this.createPageContext(h, errors)
     
-    ${hasSubmitButton ? `
+    ${hasSubmitButton
+      ? `
     if (request.payload) {
       pageContext.formValues = request.payload
     } else {
       pageContext.formValues = {
         'some-data': 'valid'
       }    
-    }` : ''}
+    }`
+      : ''}
     
     // ToDo: Add code here
     
     return this.showView({ h, pageContext })`
-    : `
+      : `
     // ToDo: Add code here
     
     return this.redirect({ h })`}
   }
-  ${hasSubmitButton ? `
+  ${hasSubmitButton
+    ? `
   async doPost (request, h) {
     const context = await RecoveryService.createApplicationContext(h)
 
@@ -41,7 +45,8 @@ module.exports = class ${controllerName}Controller extends BaseController {
     // ToDo: Add code here
     
     return this.redirect({ h })
-  }` : ''}
+  }`
+    : ''}
 }            
 `
   }

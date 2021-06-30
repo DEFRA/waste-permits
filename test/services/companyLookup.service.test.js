@@ -134,7 +134,7 @@ lab.experiment('Company Lookup Service tests:', () => {
         })
       })
 
-      lab.test(`for unknown status`, async () => {
+      lab.test('for unknown status', async () => {
         const serviceResponse = new ServiceResponse({ company_status: 'unknown status' })
         mockResponse(serviceResponse)
         const company = await CompanyLookupService.getCompany('07421224')

@@ -33,7 +33,7 @@ lab.experiment('Cookies Disabled page tests:', () => {
   lab.test(`GET ${routePath} returns the disabled cookies page correctly`, async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
-    let element = doc.getElementById('page-heading').firstChild
+    const element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(pageHeading)
 
     // Test for the existence of expected static content

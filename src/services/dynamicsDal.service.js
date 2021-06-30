@@ -53,7 +53,7 @@ class DynamicsDalService {
       json: true,
       body: dataObject,
       headers: {
-        'Authorization': `Bearer ${await this.getAuthToken()}`
+        Authorization: `Bearer ${await this.getAuthToken()}`
       }
     }
     LoggingService.logDebug('Dynamics Call Action POST options', options)
@@ -106,15 +106,19 @@ class DynamicsDalService {
   }
 
   _requestOptions (authToken, query, method, dataObject = undefined) {
+    // Temporarily disable rule against using deprecated APIs; changing this to 'new URL()' does not work without
+    // further modification which is out of scope for now.
+    /* eslint-disable node/no-deprecated-api */
     const options = url.parse(`${this.dynamicsPath}${query}`)
+    /* eslint-enable */
     options.method = method
     options.headers = {
-      'Authorization': `Bearer ${authToken}`,
+      Authorization: `Bearer ${authToken}`,
       'OData-MaxVersion': '4.0',
       'OData-Version': '4.0',
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json; charset=utf-8',
-      'Prefer': 'odata.maxpagesize=500, odata.include-annotations=OData.Community.Display.V1.FormattedValue'
+      Prefer: 'odata.maxpagesize=500, odata.include-annotations=OData.Community.Display.V1.FormattedValue'
     }
     // Set the content length
     if (dataObject) {
@@ -148,7 +152,7 @@ class DynamicsDalService {
             case 204:
               resolve(response.headers['odata-entityid'])
               break
-            default:
+            default: {
               let crmMessage = ''
               if (responseParts.length) {
                 try {
@@ -167,6 +171,7 @@ class DynamicsDalService {
               }
               const message = crmMessage ? `Bad response from Dynamics. Code: ${response.statusCode}, Message: ${crmMessage}` : `Unknown response from Dynamics. Code: ${response.statusCode}, Message: ${response.statusMessage}`
               reject(new Error(message))
+            }
           }
         })
       })

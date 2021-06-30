@@ -46,7 +46,7 @@ lab.experiment('Waste Disposal and Recovery Codes Check tests:', () => {
     Code.expect(linkId).to.equal(`${prefix}-link`)
   })
 
-  lab.test(`Provides the correct task`, async () => {
+  lab.test('Provides the correct task', async () => {
     Code.expect(WasteDisposalAndRecoveryCodesCheck.task.id).to.equal('recovery-and-disposal-codes')
   })
 })

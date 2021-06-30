@@ -66,7 +66,7 @@ module.exports = class WasteTreatmentCapacityTypesController extends BaseControl
       if (errors) {
         // there are errors so use the payload to work out what is checked
         isSelected = errors
-          ? request.payload.hasOwnProperty(treatment.questionCode)
+          ? Object.prototype.hasOwnProperty.call(request.payload, treatment.questionCode)
           : false
       }
       return {

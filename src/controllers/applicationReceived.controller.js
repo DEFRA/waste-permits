@@ -19,7 +19,7 @@ module.exports = class ApplicationReceivedController extends BaseController {
     const checkList = new CheckList()
     const sections = await checkList.buildSections(context)
 
-    let pdfStream = pdf.createPDFStream(sections, application)
+    const pdfStream = pdf.createPDFStream(sections, application)
     const dateStr = moment().format('YYYY-MM-DD-HH-mm-ss')
     const name = `_Application-${dateStr}`.replace(/\//g, '_')
     try {

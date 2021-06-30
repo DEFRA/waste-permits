@@ -26,7 +26,7 @@ let mocks
 
 const fakeSlug = 'SLUG'
 
-const routePath = `/pay/type`
+const routePath = '/pay/type'
 
 lab.beforeEach(() => {
   mocks = new Mocks()
@@ -50,7 +50,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment(`How do you want to pay?:`, () => {
+lab.experiment('How do you want to pay?:', () => {
   new GeneralTestHelper({ lab, routePath }).test({ includeTasksNotCompleteTest: true })
 
   lab.experiment(`GET ${routePath}`, () => {
@@ -132,14 +132,14 @@ lab.experiment(`How do you want to pay?:`, () => {
         postRequest.payload = { 'payment-type': PaymentTypes.BACS_PAYMENT }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/pay/bacs')
+        Code.expect(res.headers.location).to.equal('/pay/bacs')
       })
 
       lab.test('when payment is selected as card', async () => {
         postRequest.payload = { 'payment-type': PaymentTypes.CARD_PAYMENT }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.startWith('/pay/card')
+        Code.expect(res.headers.location).to.startWith('/pay/card')
       })
     })
 

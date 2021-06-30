@@ -112,7 +112,7 @@ module.exports = class WasteTreatmentCapacityWeightsController extends BaseContr
       savedTypes.forEach(t => {
         const found = wasteTreatmentCapacities.getTreatmentAnswerForQuestionCode(t.questionCode)
         if (found.weightTreatmentCode) {
-          if (!request.payload.hasOwnProperty(found.weightTreatmentCode)) {
+          if (!Object.prototype.hasOwnProperty.call(request.payload, found.weightTreatmentCode)) {
             errors.push(found)
             request.payload[found.weightTreatmentCode] = '0'
           }

@@ -25,11 +25,11 @@ module.exports = class McpTypeController extends BaseController {
     let aqmaRequired = false
     let siteNameRequired = false
     let businessActivityRequired = false
-    let bestAvailableTechniquesAssessment = false
-    let airDispersionModellingRequired = false
-    let screeningToolRequired = false
-    let habitatAssessmentRequired = false
-    let energyEfficiencyReportRequired = false
+    const bestAvailableTechniquesAssessment = false
+    const airDispersionModellingRequired = false
+    const screeningToolRequired = false
+    const habitatAssessmentRequired = false
+    const energyEfficiencyReportRequired = false
 
     // set determinants based on mcpType
     switch (mcpType) {

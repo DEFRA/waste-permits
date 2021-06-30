@@ -9,7 +9,7 @@ const BestAvailableTechniquesAssessment = require('../../src/models/taskList/bes
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/mcp/best-available-techniques-assessment/upload'
 const paths = {

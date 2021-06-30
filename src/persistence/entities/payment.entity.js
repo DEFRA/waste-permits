@@ -36,6 +36,7 @@ class Payment extends BaseEntity {
     const { isMcp } = context
     return isMcp ? MCP_PREFIX : WASTE_PREFIX
   }
+
   static async getBacsPayment (context) {
     return this.getByApplicationLineIdAndType(context, BACS_PAYMENT)
   }
@@ -69,12 +70,12 @@ class Payment extends BaseEntity {
       Description: description,
       PaymentRecord: {
         '@odata.type': 'Microsoft.Dynamics.CRM.defra_payment',
-        'defra_paymentid': this.id
+        defra_paymentid: this.id
       }
     }
     try {
       // Call the Dynamics 'create payment' action
-      let action = `defra_create_payment_transaction`
+      const action = 'defra_create_payment_transaction'
       return await dynamicsDal.callAction(action, actionDataObject)
     } catch (error) {
       LoggingService.logError(`Unable to call Dynamics card payment action: ${error}`)
@@ -89,7 +90,7 @@ class Payment extends BaseEntity {
     }
     try {
       // Call the Dynamics 'payment status' action
-      let action = `defra_get_payment_status`
+      const action = 'defra_get_payment_status'
       const actionResult = await dynamicsDal.callAction(action, actionDataObject)
 
       Utilities.convertFromDynamics(actionResult)

@@ -9,7 +9,7 @@ const NonTechnicalSummary = require('../../src/models/taskList/nonTechnicalSumma
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/non-technical-summary'
 const paths = {

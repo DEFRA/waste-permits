@@ -60,7 +60,7 @@ const checkPageElements = async (request, expectedValue) => {
   const doc = await GeneralTestHelper.getDoc(request)
 
   let element = doc.getElementById('page-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`What is the site name?`)
+  Code.expect(element.nodeValue).to.equal('What is the site name?')
 
   // Test for the existence of expected static content
   GeneralTestHelper.checkElementsExist(doc, [
@@ -124,7 +124,7 @@ lab.experiment('Site Name page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test(`POST ${routePath} (existing Site) redirects to the next route ${nextRoutePath}`, async () => {
@@ -132,7 +132,7 @@ lab.experiment('Site Name page tests:', () => {
         const res = await server.inject(postRequest)
 
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 

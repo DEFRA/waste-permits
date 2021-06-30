@@ -21,7 +21,7 @@ let sandbox
 
 const fakeSlug = 'SLUG'
 
-const routePath = `/pay/result`
+const routePath = '/pay/result'
 const nextRoutePath = `/done/${fakeSlug}`
 const problemRoutePath = '/pay/card-problem/SLUG'
 
@@ -49,7 +49,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment(`Payment result:`, () => {
+lab.experiment('Payment result:', () => {
   new GeneralTestHelper({ lab, routePath }).test({
     excludeHtmlTests: true,
     excludeCookieGetTests: true,
@@ -74,14 +74,14 @@ lab.experiment(`Payment result:`, () => {
         mocks.payment.status = 'success'
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('redirects to card problem', async () => {
         mocks.payment.status = 'problem'
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(`${problemRoutePath}?status=problem`)
+        Code.expect(res.headers.location).to.equal(`${problemRoutePath}?status=problem`)
       })
     })
 

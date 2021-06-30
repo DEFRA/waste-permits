@@ -53,7 +53,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
     })
     lab.test('returns content when entered', async () => {
       const applicationWasteDisposalAndRecoveryCodes = {
-        'b': {
+        b: {
           selectedWasteDisposalCodes: ['d01', 'd02'],
           selectedWasteRecoveryCodes: ['r01', 'r02']
         }
@@ -81,7 +81,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
     })
     lab.test('returns content when entered', async () => {
       const applicationWasteDisposalAndRecoveryCodes = {
-        'b': {
+        b: {
           selectedWasteDisposalCodes: ['d01', 'd02'],
           selectedWasteRecoveryCodes: ['r01', 'r02']
         }
@@ -110,7 +110,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
   })
 
   lab.test('wasteDisposalCodeList', async () => {
-    const applicationWasteDisposalAndRecoveryCodes = { 'a': { selectedWasteDisposalCodes: ['d01'] } }
+    const applicationWasteDisposalAndRecoveryCodes = { a: { selectedWasteDisposalCodes: ['d01'] } }
     getStub.resolves(new DataStore({ data: { applicationWasteDisposalAndRecoveryCodes } }))
     const wasteDisposalAndRecoveryCodes = await WasteDisposalAndRecoveryCodes.getForActivity(undefined, 0)
     const wasteDisposalCodeList = wasteDisposalAndRecoveryCodes.wasteDisposalCodeList
@@ -120,7 +120,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
   })
 
   lab.test('wasteRecoveryCodeList', async () => {
-    const applicationWasteDisposalAndRecoveryCodes = { 'a': { selectedWasteRecoveryCodes: ['r01'] } }
+    const applicationWasteDisposalAndRecoveryCodes = { a: { selectedWasteRecoveryCodes: ['r01'] } }
     getStub.resolves(new DataStore({ data: { applicationWasteDisposalAndRecoveryCodes } }))
     const wasteDisposalAndRecoveryCodes = await WasteDisposalAndRecoveryCodes.getForActivity(undefined, 0)
     const wasteRecoveryCodeList = wasteDisposalAndRecoveryCodes.wasteRecoveryCodeList
@@ -131,7 +131,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
 
   lab.test('get combinedSelectedCodesForDisplay', async () => {
     const applicationWasteDisposalAndRecoveryCodes = {
-      'b': {
+      b: {
         selectedWasteDisposalCodes: ['d01', 'd02'],
         selectedWasteRecoveryCodes: ['r01', 'r02']
       }
@@ -150,7 +150,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
   })
 
   lab.experiment('getAllCodesHaveBeenSelectedForApplication', () => {
-    let storedData = {}
+    const storedData = {}
     lab.beforeEach(() => {
       getStub.resolves(new DataStore({ data: { applicationWasteDisposalAndRecoveryCodes: storedData } }))
     })
@@ -162,7 +162,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
 
     lab.test('started but not selected disposal codes', async () => {
       Object.assign(storedData, {
-        'a': {
+        a: {
           selectedWasteDisposalCodes: []
         }
       })
@@ -172,7 +172,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
 
     lab.test('started but not selected recovery codes', async () => {
       Object.assign(storedData, {
-        'a': {
+        a: {
           selectedWasteRecoveryCodes: []
         }
       })
@@ -182,7 +182,7 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
 
     lab.test('only one completed', async () => {
       Object.assign(storedData, {
-        'b': {
+        b: {
           selectedWasteDisposalCodes: ['d01']
         }
       })
@@ -192,15 +192,15 @@ lab.experiment('WasteDisposalAndRecoveryCodes test:', () => {
 
     lab.test('all completed', async () => {
       Object.assign(storedData, {
-        'a': {
+        a: {
           selectedWasteDisposalCodes: ['d01'],
           selectedWasteRecoveryCodes: []
         },
-        'b': {
+        b: {
           selectedWasteDisposalCodes: [],
           selectedWasteRecoveryCodes: ['r01']
         },
-        'c': {
+        c: {
           selectedWasteRecoveryCodes: ['r01', 'r02']
         }
       })

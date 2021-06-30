@@ -26,7 +26,7 @@ module.exports = class ManagementSystemCheck extends BaseCheck {
 
     const evidence = await this.getUploadedFileDetails(UploadSubject.MANAGEMENT_SYSTEM_SUMMARY, 'managementSystemSummary')
     const files = evidence.map(({ filename }) => filename)
-    let answers = [answerText, 'Summary:', ...files]
+    const answers = [answerText, 'Summary:', ...files]
     return this.buildLine({
       heading: 'Management system',
       answers,

@@ -79,7 +79,7 @@ lab.experiment('Check company type page tests:', () => {
         mocks.companyData.type = VALID_TYPE
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.experiment('for company with a type of', () => {
@@ -100,7 +100,7 @@ lab.experiment('Check company type page tests:', () => {
         sinon.stub(CompanyLookupService, 'getCompany').value(() => undefined)
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 

@@ -24,7 +24,7 @@ const Scooter = require('@hapi/scooter')
 const HapiDevErrors = require('hapi-dev-errors')
 const Crumb = require('@hapi/crumb')
 
-let serverOptions = {
+const serverOptions = {
   port: config.port,
   routes: {
     validate: {
@@ -173,10 +173,10 @@ const registerPlugins = async () => server.register([
     options: {
       generateNonces: false,
       defaultSrc: 'self',
-      scriptSrc: [ 'self', 'unsafe-inline', 'unsafe-eval', 'www.googletagmanager.com', 'www.google-analytics.com' , 'ajax.googleapis.com'],
-      imgSrc: [ 'self', 'www.google-analytics.com' ],
-      fontSrc: [ 'self', 'data:' ],
-      connectSrc: [ 'self', 'www.google-analytics.com' ],
+      scriptSrc: ['self', 'unsafe-inline', 'unsafe-eval', 'www.googletagmanager.com', 'www.google-analytics.com', 'ajax.googleapis.com'],
+      imgSrc: ['self', 'www.google-analytics.com'],
+      fontSrc: ['self', 'data:'],
+      connectSrc: ['self', 'www.google-analytics.com'],
       objectSrc: ['none']
     }
   }

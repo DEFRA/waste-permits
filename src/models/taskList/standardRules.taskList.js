@@ -1,4 +1,5 @@
-const { standardRules,
+const {
+  standardRules,
   tasks: {
     PRE_APPLICATION_REFERENCE: { ruleSetId: preApplicationRuleSet }
   }

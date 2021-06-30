@@ -13,7 +13,7 @@ const PageNotFoundController = require('../../../src/controllers/error/pageNotFo
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 const routePath = '/errors/page-not-found'
-const pageHeading = `We cannot find that page`
+const pageHeading = 'We cannot find that page'
 
 let getRequest
 let sandbox
@@ -49,14 +49,14 @@ lab.experiment('Page Not Found (404) page tests:', () => {
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest, 404)
 
-    let element = doc.getElementById('back-link')
+    const element = doc.getElementById('back-link')
     Code.expect(element).to.not.exist()
   })
 
   lab.test(`GET ${routePath} returns the 404 page correctly when there is no application`, async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest, 404)
 
-    let element = doc.getElementById('page-heading').firstChild
+    const element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(pageHeading)
 
     // Test for the existence of expected static content
@@ -71,7 +71,7 @@ lab.experiment('Page Not Found (404) page tests:', () => {
 
     const doc = await GeneralTestHelper.getDoc(getRequest, 404)
 
-    let element = doc.getElementById('page-heading').firstChild
+    const element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal(pageHeading)
 
     // Test for the existence of expected static content

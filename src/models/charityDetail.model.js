@@ -3,10 +3,12 @@ const ApplicationAnswer = require('../persistence/entities/applicationAnswer.ent
 const DataStore = require('../models/dataStore.model')
 const { INDIVIDUAL, LIMITED_COMPANY, PUBLIC_BODY } = require('../dynamics').PERMIT_HOLDER_TYPES
 
-const { CHARITY_DETAILS: {
-  NAME: { questionCode: questionCodeName },
-  NUMBER: { questionCode: questionCodeNumber }
-} } = require('../dynamics').ApplicationQuestions
+const {
+  CHARITY_DETAILS: {
+    NAME: { questionCode: questionCodeName },
+    NUMBER: { questionCode: questionCodeNumber }
+  }
+} = require('../dynamics').ApplicationQuestions
 
 module.exports = class CharityDetail {
   constructor (data) {

@@ -9,7 +9,7 @@ const NoiseVibrationDocuments = require('../../src/models/taskList/noiseVibratio
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/noise-vibration-plan/upload'
 const paths = {

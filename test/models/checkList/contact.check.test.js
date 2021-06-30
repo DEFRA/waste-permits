@@ -88,7 +88,7 @@ lab.experiment('Contact Check tests:', () => {
 
       const { link, linkId, linkType } = links.pop()
       Code.expect(link).to.equal('/contact-details')
-      Code.expect(linkType).to.equal(`agent details`)
+      Code.expect(linkType).to.equal('agent details')
       Code.expect(linkId).to.equal(`${linePrefix}-link`)
     })
 

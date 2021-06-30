@@ -9,11 +9,13 @@ const BaseCheck = require('../../../src/models/checkList/base.check')
 const WasteActivitiesCheck = require('../../../src/models/checkList/wasteActivities.check')
 const { path } = require('../../../src/routes').WASTE_ACTIVITY_CONTINUE
 
-const fakeWasteActivities = { wasteActivityNames: [
-  'ACTIVITY_1',
-  'ACTIVITY_2',
-  'ACTIVITY_3'
-] }
+const fakeWasteActivities = {
+  wasteActivityNames: [
+    'ACTIVITY_1',
+    'ACTIVITY_2',
+    'ACTIVITY_3'
+  ]
+}
 
 const prefix = 'section-activity'
 
@@ -42,7 +44,7 @@ lab.experiment('WasteActivities Check tests:', () => {
       lines = await check.buildLines()
     })
 
-    lab.test(`(waste activities line) works correctly`, async () => {
+    lab.test('(waste activities line) works correctly', async () => {
       const { heading, headingId, answers, links } = lines.pop()
       Code.expect(heading).to.equal(heading)
       Code.expect(headingId).to.equal(`${prefix}-heading`)

@@ -23,7 +23,7 @@ module.exports = class WasteWeightsCheck extends BaseCheck {
     keys.forEach(entry => {
       const object = wasteTreatmentCapacity[entry]
       // only interested in objects with a lineName property
-      if (object.hasOwnProperty('lineName')) {
+      if (Object.prototype.hasOwnProperty.call(object, 'lineName')) {
         const { answers } = object
         answers.forEach(answer => {
           const { answerText, questionCode } = answer

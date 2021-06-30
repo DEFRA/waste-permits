@@ -8,8 +8,8 @@ module.exports = class NeedToConsultValidator extends BaseValidator {
   get errorMessages () {
     return {
       'consult-select': {
-        'object.without': `You cannot select a release and 'None of these'. Please deselect one of them.`,
-        'object.missing': `Select at least one option. If there are no releases select 'None of these'.`
+        'object.without': 'You cannot select a release and \'None of these\'. Please deselect one of them.',
+        'object.missing': 'Select at least one option. If there are no releases select \'None of these\'.'
       },
       'consult-sewerage-undertaker': {
         'any.required': 'Enter the water or sewerage company name',

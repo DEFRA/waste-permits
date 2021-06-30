@@ -22,7 +22,8 @@ const mapping = [
   // { field: 'defra_applicationline', dynamics: 'defra_applicationline' }
 ]
 
-const FETCH_START = `<fetch version='1.0' mapping='logical' distinct='true'><entity name='defra_item'>` + mapping.map(({ dynamics }) => `<attribute name='${dynamics}'/>`).join('')
+const FETCH_START = '<fetch version=\'1.0\' mapping=\'logical\' distinct=\'true\'><entity name=\'defra_item\'>' +
+  mapping.map(({ dynamics }) => `<attribute name='${dynamics}'/>`).join('')
 const FETCH_END = '</entity></fetch>'
 
 const listItemsForDetailTypeValuesQuery = (itemType, detailType, detailValues) => {

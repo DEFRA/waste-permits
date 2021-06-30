@@ -74,7 +74,7 @@ lab.experiment('ApplicationLine Entity tests:', () => {
     })
     const applicationLines = await ApplicationLine.listForWasteActivities(context)
     Code.expect(searchSpy.callCount).to.equal(1)
-    Code.expect (applicationLines.length).to.equal(1)
+    Code.expect(applicationLines.length).to.equal(1)
     const applicationLine = applicationLines[0]
     Code.expect(applicationLine.applicationId).to.equal(fakeApplicationLine.applicationId)
     Code.expect(applicationLine.standardRuleId).to.equal(fakeApplicationLine.standardRuleId)

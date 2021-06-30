@@ -73,14 +73,14 @@ lab.experiment('Cost and time for this permit page tests:', () => {
     })
 
     lab.experiment('success', () => {
-      lab.test(`when standard rule is not a recovery plan`, async () => {
+      lab.test('when standard rule is not a recovery plan', async () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
         Code.expect(doc.getElementById('includes-waste-recovery-plan')).to.not.exist()
         Code.expect(GeneralTestHelper.getText(doc.getElementById('length-of-time-text'))).to.equal('up to 13 weeks')
       })
 
-      lab.test(`when standard rule is a recovery plan`, async () => {
+      lab.test('when standard rule is a recovery plan', async () => {
         mocks.standardRule.code = 'SR2015 No 39'
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
@@ -88,7 +88,7 @@ lab.experiment('Cost and time for this permit page tests:', () => {
         Code.expect(GeneralTestHelper.getText(doc.getElementById('length-of-time-text'))).to.equal('up to 13 weeks')
       })
 
-      lab.test(`when standard rule is for an mcp`, async () => {
+      lab.test('when standard rule is for an mcp', async () => {
         mocks.standardRuleType.categoryName = 'MCPD-MCP'
         const doc = await GeneralTestHelper.getDoc(getRequest)
         checkCommonElements(doc)
@@ -113,7 +113,7 @@ lab.experiment('Cost and time for this permit page tests:', () => {
     lab.test('success', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
 
     lab.experiment('failure', () => {

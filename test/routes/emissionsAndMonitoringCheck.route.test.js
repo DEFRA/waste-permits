@@ -78,7 +78,7 @@ lab.experiment('Emissions and monitoring check page tests:', () => {
       postRequest.payload['emissions-made'] = 'yes'
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(yesPath)
+      Code.expect(res.headers.location).to.equal(yesPath)
     })
 
     lab.test('Success - no', async () => {
@@ -86,7 +86,7 @@ lab.experiment('Emissions and monitoring check page tests:', () => {
       postRequest.payload['emissions-made'] = 'no'
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(noPath)
+      Code.expect(res.headers.location).to.equal(noPath)
     })
 
     lab.test('Invalid input', async () => {

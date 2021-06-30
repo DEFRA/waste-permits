@@ -134,28 +134,28 @@ lab.experiment('Air Quality Management Area page tests:', () => {
       lab.test('when Yes to AQMA and all fields completed', async () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when a nitrogen dioxide level of 0 is entered', async () => {
         postRequest.payload['aqma-nitrogen-dioxide-level'] = '0'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when a nitrogen dioxide level of 100 is entered', async () => {
         postRequest.payload['aqma-nitrogen-dioxide-level'] = '100'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when No to AQMA', async () => {
         postRequest.payload = { 'aqma-is-in-aqma': 'no' }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 

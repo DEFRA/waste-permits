@@ -7,7 +7,7 @@ module.exports = class ConfirmMiningWastePlanValidator extends BaseValidator {
   get errorMessages () {
     return {
       'mining-waste-plan': {
-        'any.required': `Select the plan you will use`
+        'any.required': 'Select the plan you will use'
       }
     }
   }

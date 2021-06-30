@@ -45,7 +45,7 @@ const checkPageElements = async (request, expectedEmail, expectedTelephone) => {
   const doc = await GeneralTestHelper.getDoc(request)
 
   let element = doc.getElementById('page-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`What are the permit holder's contact details?`)
+  Code.expect(element.nodeValue).to.equal('What are the permit holder\'s contact details?')
 
   // Test for the existence of expected static content
   GeneralTestHelper.checkElementsExist(doc, [
@@ -116,45 +116,45 @@ lab.experiment('Permit Holder Contact Details page tests:', () => {
         url: routePath,
         headers: {},
         payload: {
-          'email': mocks.contactDetail.email,
-          'telephone': mocks.contactDetail.telephone
+          email: mocks.contactDetail.email,
+          telephone: mocks.contactDetail.telephone
         }
       }
     })
 
     lab.experiment('Success:', () => {
       lab.experiment(`POST ${routePath} (new Permit Holder) redirects to the next route ${nextRoutePath}`, () => {
-        lab.test(`when the permit holder is the matching contact`, async () => {
+        lab.test('when the permit holder is the matching contact', async () => {
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextRoutePath)
+          Code.expect(res.headers.location).to.equal(nextRoutePath)
         })
       })
     })
 
     lab.experiment('Invalid:', () => {
       lab.test(`POST ${routePath} shows an error message when the email is blank`, async () => {
-        postRequest.payload['email'] = ''
+        postRequest.payload.email = ''
         await checkValidationErrors('email', ['Enter an email address'])
       })
 
       lab.test(`POST ${routePath} shows an error message when the email has an invalid format`, async () => {
-        postRequest.payload['email'] = 'INVALID_EMAIL'
+        postRequest.payload.email = 'INVALID_EMAIL'
         await checkValidationErrors('email', ['Enter a valid email address'])
       })
 
       lab.test(`POST ${routePath} shows an error message when the telephone is blank`, async () => {
-        postRequest.payload['telephone'] = ''
+        postRequest.payload.telephone = ''
         await checkValidationErrors('telephone', ['Enter a telephone number'])
       })
 
       lab.test(`POST ${routePath} shows an error message when the telephone contains invalid characters`, async () => {
-        postRequest.payload['telephone'] = '0123456789A'
+        postRequest.payload.telephone = '0123456789A'
         await checkValidationErrors('telephone', ['Telephone number can only include numbers, spaces and the + sign. Please remove any other characters.'])
       })
 
       lab.test(`POST ${routePath} shows multiple error messages on the telephone field`, async () => {
-        postRequest.payload['telephone'] = '+0123456789A'
+        postRequest.payload.telephone = '+0123456789A'
         const expectedErrors = [
           'Telephone number can only include numbers, spaces and the + sign. Please remove any other characters.',
           'The + sign for international numbers should be at the start of the number, followed by a number 1 to 9, not a 0'

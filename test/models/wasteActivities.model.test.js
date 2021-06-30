@@ -254,13 +254,13 @@ lab.experiment('WasteActivities test:', () => {
       Code.expect(wasteActivities.selectedWasteActivities[1].referenceName).to.be.empty()
     })
 
-    lab.test(`Doesn't add invalid activity`, async () => {
+    lab.test('Doesn\'t add invalid activity', async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       wasteActivities.addWasteActivity('INVALID_ACTIVITY_ID')
       Code.expect(wasteActivities.selectedWasteActivities.length).to.equal(2)
     })
 
-    lab.test(`Doesn't add if the list is full`, async () => {
+    lab.test('Doesn\'t add if the list is full', async () => {
       mocks.dataStore.data.wasteActivities = []
       for (let i = 0; i < 50; i++) {
         mocks.dataStore.data.wasteActivities.push({ id: 'FAKE_ACTIVITY_ID', referenceName: 'Fake 1' })
@@ -284,7 +284,7 @@ lab.experiment('WasteActivities test:', () => {
       }
     })
 
-    lab.test(`Deletes existing activity`, async () => {
+    lab.test('Deletes existing activity', async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       const wasteActivity = wasteActivities.deleteWasteActivity(1)
       Code.expect(wasteActivity).to.exist()
@@ -292,14 +292,14 @@ lab.experiment('WasteActivities test:', () => {
       Code.expect(wasteActivities.wasteActivitiesLength).to.equal(2)
     })
 
-    lab.test(`Doesn't delete non-existent activity`, async () => {
+    lab.test('Doesn\'t delete non-existent activity', async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       const wasteActivity = wasteActivities.deleteWasteActivity('not-an-index')
       Code.expect(wasteActivity).to.not.exist()
       Code.expect(wasteActivities.wasteActivitiesLength).to.equal(3)
     })
 
-    lab.test(`Keeps referenceName for entries that are still duplicates`, async () => {
+    lab.test('Keeps referenceName for entries that are still duplicates', async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       wasteActivities.deleteWasteActivity(0)
       Code.expect(wasteActivities.wasteActivitiesLength).to.equal(2)
@@ -307,7 +307,7 @@ lab.experiment('WasteActivities test:', () => {
       Code.expect(wasteActivities.selectedWasteActivities[1].referenceName).to.equal('Fake 3')
     })
 
-    lab.test(`Clears referenceName for entry that is no longer a duplicate`, async () => {
+    lab.test('Clears referenceName for entry that is no longer a duplicate', async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       wasteActivities.deleteWasteActivity(0)
       wasteActivities.deleteWasteActivity(0)
@@ -327,28 +327,28 @@ lab.experiment('WasteActivities test:', () => {
       }
     })
 
-    lab.test(`Updates existing value`, async () => {
+    lab.test('Updates existing value', async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       const wasteActivity = wasteActivities.setWasteActivityReferenceName(0, 'New name')
       Code.expect(wasteActivity).to.exist()
       Code.expect(wasteActivities.selectedWasteActivities[0].referenceName).to.equal('New name')
     })
 
-    lab.test(`Updates blank value`, async () => {
+    lab.test('Updates blank value', async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       const wasteActivity = wasteActivities.setWasteActivityReferenceName(1, 'New name')
       Code.expect(wasteActivity).to.exist()
       Code.expect(wasteActivities.selectedWasteActivities[1].referenceName).to.equal('New name')
     })
 
-    lab.test(`Sets non-existent value`, async () => {
+    lab.test('Sets non-existent value', async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       const wasteActivity = wasteActivities.setWasteActivityReferenceName(2, 'New name')
       Code.expect(wasteActivity).to.exist()
       Code.expect(wasteActivities.selectedWasteActivities[2].referenceName).to.equal('New name')
     })
 
-    lab.test(`Doesn't update non-existent activity`, async () => {
+    lab.test('Doesn\'t update non-existent activity', async () => {
       const wasteActivities = await WasteActivities.get(mocks.context)
       const wasteActivity = wasteActivities.setWasteActivityReferenceName('not-an-index', 'New name')
       Code.expect(wasteActivity).to.not.exist()

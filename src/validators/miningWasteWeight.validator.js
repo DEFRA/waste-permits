@@ -7,9 +7,9 @@ module.exports = class MiningWasteWeightValidator extends BaseValidator {
   get errorMessages () {
     return {
       'mining-waste-weight': {
-        'any.required': `Enter a weight`,
+        'any.required': 'Enter a weight',
         'number.base': 'The weight must be a number',
-        'number.unsafe': `Enter the weight between 0 and 99999999`
+        'number.unsafe': 'Enter the weight between 0 and 99999999'
       }
     }
   }

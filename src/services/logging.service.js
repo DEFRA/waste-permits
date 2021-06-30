@@ -6,7 +6,7 @@ const AirbrakeClient = require('airbrake-js')
 const { ERROR, INFO, DEBUG } = Constants.LogLevels
 
 let airbrake
-let log = (level, message, request) => {
+const log = (level, message, request) => {
   if (request && request.log) {
     request.log(level, message)
   } else {

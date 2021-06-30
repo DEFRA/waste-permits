@@ -19,8 +19,8 @@ module.exports = class InvoiceContactController extends BaseController {
         pageContext.formValues = {
           'first-name': contactDetail.firstName,
           'last-name': contactDetail.lastName,
-          'telephone': contactDetail.telephone,
-          'email': contactDetail.email
+          telephone: contactDetail.telephone,
+          email: contactDetail.email
         }
       }
     }

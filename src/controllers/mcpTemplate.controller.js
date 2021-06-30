@@ -5,15 +5,15 @@ const McpTemplate = require('../models/taskList/mcpTemplate.task')
 const RecoveryService = require('../services/recovery.service')
 const { BESPOKE, STANDARD_RULES } = require('../constants').PermitTypes
 const { STATIONARY_MCP, STATIONARY_SG, STATIONARY_MCP_AND_SG, MOBILE_SG, MOBILE_MCP } = require('../dynamics').MCP_TYPES
-let templatesStandardRules = [
+const templatesStandardRules = [
   { id: 'mcp-template-xls-link', name: 'Plant or generator list template (Excel XLS)', file: 'mcp-plant-generator-list-template-v0-1.xls' },
   { id: 'mcp-template-ods-link', name: 'Plant or generator list template (Open Document ODS)', file: 'mcp-plant-generator-list-template-v0-1.ods' }
 ]
-let templatesBespokeAppendix1 = [
+const templatesBespokeAppendix1 = [
   { id: 'mcp-template-xls-link', name: 'Plant or generator list template APPENDIX 1 (Excel XLS)', file: 'plant-generator-list-template-app1-v1-0.xls' },
   { id: 'mcp-template-ods-link', name: 'Plant or generator list template APPENDIX 1 (Open Document ODS)', file: 'plant-generator-list-template-app1-v1-0.ods' }
 ]
-let templatesBespokeAppendix2 = [
+const templatesBespokeAppendix2 = [
   { id: 'mcp-template-xls-link', name: 'Plant or generator list template APPENDIX 2 (Excel XLS)', file: 'plant-generator-list-template-app2-v1-0.xls' },
   { id: 'mcp-template-ods-link', name: 'Plant or generator list template APPENDIX 2 (Open Document ODS)', file: 'plant-generator-list-template-app2-v1-0.ods' }
 ]

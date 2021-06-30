@@ -18,8 +18,8 @@ module.exports = class PermitLengthController extends BaseController {
       pageContext.formValues = {
         'not-in-flood-risk-zone': climateChangeRiskScreening.floodRisk === 'not-in-flood-risk-zone',
         'very-low-or-low': climateChangeRiskScreening.floodRisk === 'very-low-or-low',
-        'medium': climateChangeRiskScreening.floodRisk === 'medium',
-        'high': climateChangeRiskScreening.floodRisk === 'high'
+        medium: climateChangeRiskScreening.floodRisk === 'medium',
+        high: climateChangeRiskScreening.floodRisk === 'high'
       }
     }
 

@@ -28,7 +28,7 @@ module.exports = class WasteRecoveryPlanApprovalController extends BaseControlle
     const context = await RecoveryService.createApplicationContext(h)
     const { application } = context
 
-    application.recoveryPlanAssessmentStatus = request.payload['selection']
+    application.recoveryPlanAssessmentStatus = request.payload.selection
     await application.save(context)
 
     return this.redirect({ h })

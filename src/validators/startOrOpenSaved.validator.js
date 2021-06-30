@@ -7,7 +7,7 @@ module.exports = class StartOrOpenSavedValidator extends BaseValidator {
   get errorMessages () {
     return {
       'started-application': {
-        'any.required': `Select start new or open a saved application`
+        'any.required': 'Select start new or open a saved application'
       }
     }
   }

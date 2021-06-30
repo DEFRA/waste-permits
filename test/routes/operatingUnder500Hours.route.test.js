@@ -133,7 +133,7 @@ lab.experiment('Operating under 500 hours page tests:', () => {
       postRequest.payload['operating-under-500-hours'] = 'yes'
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(yesRoutePath)
+      Code.expect(res.headers.location).to.equal(yesRoutePath)
       checkTaskDeterminants()
     })
 
@@ -142,7 +142,7 @@ lab.experiment('Operating under 500 hours page tests:', () => {
       postRequest.payload['operating-under-500-hours'] = 'no'
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(noRoutePath)
+      Code.expect(res.headers.location).to.equal(noRoutePath)
     })
 
     lab.test('Invalid input', async () => {

@@ -131,7 +131,7 @@ module.exports = class BaseController {
   }
 
   showView (params) {
-    let {
+    const {
       h,
       pageContext,
       code = 200
@@ -144,7 +144,7 @@ module.exports = class BaseController {
   }
 
   showViewFromRoute (params) {
-    let {
+    const {
       viewPropertyName,
       h,
       pageContext,

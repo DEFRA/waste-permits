@@ -142,7 +142,7 @@ lab.experiment('MCP template download page tests:', () => {
     lab.test('success', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
 
     lab.experiment('failure', () => {

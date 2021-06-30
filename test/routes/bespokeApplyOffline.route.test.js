@@ -16,10 +16,10 @@ const { COOKIE_RESULT } = require('../../src/constants')
 const ItemEntity = require('../../src/persistence/entities/item.entity')
 const Routes = require('../../src/routes')
 
-let routesToTest = {}
+const routesToTest = {}
 
 for (const key in Routes) {
-  let item = Routes[key]
+  const item = Routes[key]
   if (item.controller === 'bespokeApplyOffline') {
     routesToTest[key] = item
   }
@@ -126,7 +126,7 @@ Object.entries(routesToTest).forEach(([route, { path: routePath, itemType, pageH
         })
 
         lab.experiment('checks', () => {
-          lab.test(`correctly displays names of permits that can't be applied for`, async () => {
+          lab.test('correctly displays names of permits that can\'t be applied for', async () => {
             const doc = await GeneralTestHelper.getDoc(getRequest)
 
             const values = Object

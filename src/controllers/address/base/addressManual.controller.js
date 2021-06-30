@@ -60,7 +60,7 @@ module.exports = class AddressManualController extends BaseController {
       addressLine1: request.payload['address-line-1'],
       addressLine2: request.payload['address-line-2'],
       townOrCity: request.payload['town-or-city'],
-      postcode: request.payload['postcode']
+      postcode: request.payload.postcode
     }
 
     await this.task.saveManualAddress(request, addressDto)

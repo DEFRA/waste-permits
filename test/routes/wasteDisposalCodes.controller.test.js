@@ -33,7 +33,7 @@ lab.experiment('Waste disposal codes controller tests:', () => {
   })
 
   lab.experiment('GET:', () => {
-    let getRequest = { params: { activityIndex: 0 } }
+    const getRequest = { params: { activityIndex: 0 } }
     let showViewSpy
     lab.beforeEach(() => {
       showViewSpy = sandbox.stub(Controller.prototype, 'showView')
@@ -83,7 +83,7 @@ lab.experiment('Waste disposal codes controller tests:', () => {
   })
 
   lab.experiment('POST:', () => {
-    let postRequest = { params: { activityIndex: 0 }, payload: { code: 'd01,d02' } }
+    const postRequest = { params: { activityIndex: 0 }, payload: { code: 'd01,d02' } }
     let redirectSpy
     let setSpy
     let saveSpy

@@ -21,8 +21,8 @@ module.exports = class PermitHolderContactDetailsController extends BaseControll
 
       if (contactDetail) {
         pageContext.formValues = {
-          'email': contactDetail.email,
-          'telephone': contactDetail.telephone
+          email: contactDetail.email,
+          telephone: contactDetail.telephone
         }
       }
     }

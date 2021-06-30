@@ -47,7 +47,7 @@ const checkPageElements = async (request, expectedFirstName = '', expectedLastNa
   const doc = await GeneralTestHelper.getDoc(request)
 
   let element = doc.getElementById('page-heading').firstChild
-  Code.expect(element.nodeValue).to.equal(`Who will be the permit holder?`)
+  Code.expect(element.nodeValue).to.equal('Who will be the permit holder?')
 
   // Test for the existence of expected static content
   GeneralTestHelper.checkElementsExist(doc, [
@@ -151,7 +151,7 @@ lab.experiment('Permit Holder Name page tests:', () => {
 
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test(`POST ${routePath} (existing Permit Holder) redirects to the next route ${nextRoutePath}`, async () => {
@@ -163,7 +163,7 @@ lab.experiment('Permit Holder Name page tests:', () => {
         const res = await server.inject(postRequest)
 
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test(`POST ${routePath} (updated Permit Holder) redirects to the next route ${nextRoutePath}`, async () => {
@@ -175,7 +175,7 @@ lab.experiment('Permit Holder Name page tests:', () => {
         const res = await server.inject(postRequest)
 
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 

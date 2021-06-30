@@ -12,11 +12,13 @@ const DataStore = require('../../../src/models/dataStore.model')
 
 const availableTasks = []
 
-const { tasks: {
-  CLINICAL_WASTE_APPENDIX: { shortName: clinicalWasteShortName },
-  MANAGE_HAZARDOUS_WASTE: { shortName: hazardousWasteShortName },
-  PRE_APPLICATION_REFERENCE: { shortName: preApplicationShortName }
-} } = require('../../../src/tasks')
+const {
+  tasks: {
+    CLINICAL_WASTE_APPENDIX: { shortName: clinicalWasteShortName },
+    MANAGE_HAZARDOUS_WASTE: { shortName: hazardousWasteShortName },
+    PRE_APPLICATION_REFERENCE: { shortName: preApplicationShortName }
+  }
+} = require('../../../src/tasks')
 
 const clinicalWasteTask = { shortName: clinicalWasteShortName, route: true }
 const hazardousWasteTask = { shortName: hazardousWasteShortName, route: true }

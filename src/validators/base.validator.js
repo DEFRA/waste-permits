@@ -40,12 +40,12 @@ module.exports = class BaseValidator {
     // Get current errors
     const currentErrors = ObjectPath.get(errors, 'details') || []
     // Get custom errors
-    let customErrors = (await _customValidate(data, currentErrors, this.customValidators, this.errorMessages))
+    const customErrors = (await _customValidate(data, currentErrors, this.customValidators, this.errorMessages))
       .filter((error) => error)
     if (customErrors.length) {
       // Now merge the errors based on the order of the fields within the errorMessages definition
       const details = []
-      for (let fieldName in this.errorMessages) {
+      for (const fieldName in this.errorMessages) {
         currentErrors
           .filter(({ path }) => path[0] === fieldName)
           .forEach((error) => details.push(error))

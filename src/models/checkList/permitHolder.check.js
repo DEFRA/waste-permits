@@ -56,7 +56,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
   }
 
   async buildLines () {
-    let { type } = await this.getPermitHolderType()
+    const { type } = await this.getPermitHolderType()
 
     const lines = [this.getTypeLine()]
     const { charityPermitHolder } = await this.getCharityDetails()
@@ -156,7 +156,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const { firstName = '', lastName = '', email = '', telephone = 'unknown', dateOfBirth = '---', fullAddress = '' } = await this.getContactDetails(INDIVIDUAL_PERMIT_HOLDER)
     const { tradingName = '' } = await this.getApplication()
     const [year, month, day] = dateOfBirth.split('-')
-    let answers = []
+    const answers = []
     answers.push(`${firstName} ${lastName}`)
     if (tradingName) {
       answers.push(`Trading as: ${tradingName}`)
@@ -193,13 +193,14 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       links: [{ path, type: 'company details' }]
     })
   }
+
   async getGroupLine () {
     const { path } = GROUP_NAME
     const { tradingName = '' } = await this.getApplication()
-    let answers = []
+    const answers = []
     answers.push(tradingName)
     return this.buildLine({
-      heading: `Other organisation name`,
+      heading: 'Other organisation name',
       prefix: 'other-organisation-name',
       answers,
       links: [{ path, type: 'other organisation name' }]
@@ -209,10 +210,10 @@ module.exports = class PermitHolderCheck extends BaseCheck {
   async getPartnershipLine () {
     const { path } = PARTNERSHIP_TRADING_NAME
     const { tradingName = '' } = await this.getApplication()
-    let answers = []
+    const answers = []
     answers.push(tradingName)
     return this.buildLine({
-      heading: `Partnership name`,
+      heading: 'Partnership name',
       prefix: 'partnership-name',
       answers,
       links: [{ path, type: 'partnership name' }]
@@ -226,7 +227,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
     const { fullAddress } = await this.getMainAddress()
     const answers = [tradingName, fullAddress]
     return this.buildLine({
-      heading: `Permit holder`,
+      heading: 'Permit holder',
       prefix: 'permit-holder',
       answers,
       links: [{ path, type: 'permit holder' }]
@@ -243,10 +244,10 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       return `${firstName} ${lastName}: ${Utilities.formatFullDateForDisplay({ day, month, year })}`
     })
     return this.buildLine({
-      heading: directors.length === 1 ? `Director's date of birth` : `Directors' dates of birth`,
+      heading: directors.length === 1 ? 'Director\'s date of birth' : 'Directors\' dates of birth',
       prefix: 'director',
       answers,
-      links: [{ path, type: `director's date of birth` }]
+      links: [{ path, type: 'director\'s date of birth' }]
     })
   }
 
@@ -265,17 +266,17 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       })
       .concat(companies.map(({ accountName }) => accountName))
     return this.buildLine({
-      heading: members.length === 1 ? `Designated member's date of birth` : `Designated members' dates of birth`,
+      heading: members.length === 1 ? 'Designated member\'s date of birth' : 'Designated members\' dates of birth',
       prefix: 'designated-member',
       answers,
-      links: [{ path, type: `designated member's date of birth` }]
+      links: [{ path, type: 'designated member\'s date of birth' }]
     })
   }
 
   async getPostHoldersLine () {
     const { path } = GROUP_LIST
     const partners = await this.listContactDetails(POSTHOLDER_CONTACT_DETAILS)
-    let answers = ['The postholders will be the permit holders and each will be responsible for the operation of the permit.']
+    const answers = ['The postholders will be the permit holders and each will be responsible for the operation of the permit.']
     partners.forEach(({ firstName = '', lastName = '', jobTitle = '', email = '', telephone = '', dateOfBirth = '---', fullAddress = '' }) => {
       answers.push(blankLine)
       answers.push(`Post: ${jobTitle}`)
@@ -290,14 +291,14 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       heading: 'Permit holder',
       prefix: 'postholder',
       answers,
-      links: [{ path, type: `postholders` }]
+      links: [{ path, type: 'postholders' }]
     })
   }
 
   async getPartnersLine () {
     const { path } = PARTNERSHIP_PARTNER_LIST
     const partners = await this.listContactDetails(PARTNER_CONTACT_DETAILS)
-    let answers = ['The partners will be the permit holders and each will be responsible for the operation of the permit.']
+    const answers = ['The partners will be the permit holders and each will be responsible for the operation of the permit.']
     partners.forEach(({ firstName = '', lastName = '', email = '', telephone = '', dateOfBirth = '---', fullAddress = '' }) => {
       answers.push(blankLine)
       answers.push(`${firstName} ${lastName}`)
@@ -311,7 +312,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       heading: 'Permit holder',
       prefix: 'partner',
       answers,
-      links: [{ path, type: `partners` }]
+      links: [{ path, type: 'partners' }]
     })
   }
 
@@ -323,7 +324,7 @@ module.exports = class PermitHolderCheck extends BaseCheck {
       heading: 'Responsible officer or executive',
       prefix: 'responsible-officer',
       answers: [name, jobTitle, email],
-      links: [{ path, type: `responsible officer` }]
+      links: [{ path, type: 'responsible officer' }]
     })
   }
 

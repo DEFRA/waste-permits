@@ -14,9 +14,7 @@ module.exports = class OperatingUnder500Hours {
   }
 
   async save (context) {
-    let answer
-
-    answer = {
+    const answer = {
       questionCode: OPERATING_UNDER_500_HOURS,
       answerText: this.operatingUnder500Hours ? YES : NO
     }

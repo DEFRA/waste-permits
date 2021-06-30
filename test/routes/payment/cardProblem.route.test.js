@@ -48,7 +48,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment(`Your card payment failed:`, () => {
+lab.experiment('Your card payment failed:', () => {
   new GeneralTestHelper({ lab, routePath }).test({
     excludeCookieGetTests: true,
     excludeCookiePostTests: true,
@@ -130,14 +130,14 @@ lab.experiment(`Your card payment failed:`, () => {
         postRequest.payload = { 'payment-type': PaymentTypes.BACS_PAYMENT }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal('/pay/bacs')
+        Code.expect(res.headers.location).to.equal('/pay/bacs')
       })
 
       lab.test('when payment is selected as card', async () => {
         postRequest.payload = { 'payment-type': PaymentTypes.CARD_PAYMENT }
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.startWith('/pay/card')
+        Code.expect(res.headers.location).to.startWith('/pay/card')
       })
     })
 

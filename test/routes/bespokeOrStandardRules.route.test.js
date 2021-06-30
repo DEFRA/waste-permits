@@ -135,7 +135,7 @@ lab.experiment('Bespoke or standard rules page tests:', () => {
       }
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
 
     lab.test('POST on Bespoke or Standard Rules page for bespoke redirects to the correct route', async () => {
@@ -144,7 +144,7 @@ lab.experiment('Bespoke or standard rules page tests:', () => {
       }
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(bespokeRoutePath)
+      Code.expect(res.headers.location).to.equal(bespokeRoutePath)
     })
 
     lab.test('POST Bespoke or Standard Rules page shows the error message summary panel when bespoke or standard rules has not been selected', async () => {

@@ -38,26 +38,26 @@ lab.afterEach(() => {
 })
 
 const routes = {
-  'Company': {
+  Company: {
     permitHolderType: PERMIT_HOLDER_TYPES.LIMITED_COMPANY
   },
-  'Individual': {
+  Individual: {
     permitHolderType: PERMIT_HOLDER_TYPES.INDIVIDUAL
   },
-  'Partnership': {
+  Partnership: {
     permitHolderType: PERMIT_HOLDER_TYPES.PARTNERSHIP
   },
   'Limited Liability Partnership': {
     permitHolderType: PERMIT_HOLDER_TYPES.LIMITED_LIABILITY_PARTNERSHIP
   },
   'Public Body': {
-    pageHeading: `Does anyone connected with the public body or local authority have a conviction for a relevant offence?`,
+    pageHeading: 'Does anyone connected with the public body or local authority have a conviction for a relevant offence?',
     permitHolderType: PERMIT_HOLDER_TYPES.PUBLIC_BODY,
     routePath: '/permit-holder/public-body/declare-offences',
     nextPath: '/permit-holder/public-body/bankruptcy-insolvency'
   },
   'Charity Body': {
-    pageHeading: `Does anyone connected with the body have a conviction for a relevant offence?`,
+    pageHeading: 'Does anyone connected with the body have a conviction for a relevant offence?',
     isCharity: true,
     permitHolderType: PERMIT_HOLDER_TYPES.PUBLIC_BODY,
     routePath: '/permit-holder/public-body/declare-offences',
@@ -70,7 +70,7 @@ Object.entries(routes).forEach(([operator, {
   isCharity = false,
   permitHolderType,
   routePath = '/permit-holder/company/declare-offences',
-  nextPath = '/permit-holder/company/bankruptcy-insolvency',
+  nextPath = '/permit-holder/company/bankruptcy-insolvency'
 }]) => {
   lab.experiment(`${operator} Declare Offences tests:`, () => {
     new GeneralTestHelper({ lab, routePath }).test()
@@ -165,7 +165,7 @@ Object.entries(routes).forEach(([operator, {
           url: routePath,
           headers: {},
           payload: {
-            'declared': mocks.application.relevantOffences,
+            declared: mocks.application.relevantOffences,
             'declaration-details': mocks.application.relevantOffencesDetails
           }
         }
@@ -177,7 +177,7 @@ Object.entries(routes).forEach(([operator, {
         lab.test('when application is saved', async () => {
           const res = await server.inject(postRequest)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextPath)
+          Code.expect(res.headers.location).to.equal(nextPath)
         })
       })
 
@@ -196,16 +196,16 @@ Object.entries(routes).forEach(([operator, {
 
         lab.test('when offences not checked', async () => {
           postRequest.payload = {}
-          await checkValidationMessage('declared', `Select yes if you have convictions to declare or no if you do not`)
+          await checkValidationMessage('declared', 'Select yes if you have convictions to declare or no if you do not')
         })
 
         lab.test('when offences set to yes and no details entered', async () => {
-          postRequest.payload = { 'declared': 'yes' }
+          postRequest.payload = { declared: 'yes' }
           await checkValidationMessage('declaration-details', 'Enter details of the convictions', true)
         })
 
         lab.test('when offences set to yes and details entered with 2001 characters', async () => {
-          postRequest.payload = { 'declared': 'yes', 'declaration-details': 'a'.repeat(2001) }
+          postRequest.payload = { declared: 'yes', 'declaration-details': 'a'.repeat(2001) }
           await checkValidationMessage('declaration-details', 'You can only enter 2,000 characters - please shorten what you have written', true)
         })
       })

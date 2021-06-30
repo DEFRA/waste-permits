@@ -49,15 +49,17 @@ module.exports = class PaymentTypeController extends BaseController {
 
     // try to find a slug, otherwise make it an empty string
     const finalSlug = applicationReturn
-      ? applicationReturn.slug : slug || ''
+      ? applicationReturn.slug
+      : slug || ''
 
     const paymentType = parseInt(request.payload['payment-type'])
     switch (paymentType) {
-      case CARD_PAYMENT:
+      case CARD_PAYMENT: {
         const origin = config.wastePermitsAppUrl || request.headers.origin
         const returnUrl = `${origin}${Routes.PAYMENT_RESULT.path}/${finalSlug}`
         path = `${Routes.CARD_PAYMENT.path}?returnUrl=${encodeURI(returnUrl)}`
         break
+      }
       case BACS_PAYMENT:
         path = Routes.BACS_PAYMENT.path
         break

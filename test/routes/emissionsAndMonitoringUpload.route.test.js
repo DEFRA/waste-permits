@@ -9,7 +9,7 @@ const EmissionsAndMonitoring = require('../../src/models/taskList/emissionsAndMo
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/emissions/upload'
 const paths = {

@@ -55,11 +55,11 @@ module.exports = class SiteNameAndLocation extends BaseTask {
       const context = request.app.data
 
       // Get the Location for this application
-      let location = await Location.getByApplicationId(context)
+      const location = await Location.getByApplicationId(context)
 
       if (location) {
         // Get the LocationDetail for this application (if there is one)
-        let locationDetail = await LocationDetail.getByLocationId(context, location.id)
+        const locationDetail = await LocationDetail.getByLocationId(context, location.id)
         if (locationDetail) {
           gridReference = locationDetail.gridReference
         }
@@ -116,11 +116,11 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     try {
       const context = request.app.data
       // Get the Location for this application
-      let location = await Location.getByApplicationId(context)
+      const location = await Location.getByApplicationId(context)
 
       if (location) {
         // Get the LocationDetail for this application
-        let locationDetail = await LocationDetail.getByLocationId(context, location.id)
+        const locationDetail = await LocationDetail.getByLocationId(context, location.id)
 
         if (locationDetail && locationDetail.addressId !== undefined) {
           // Get the Address for this Location Detail
@@ -139,7 +139,7 @@ module.exports = class SiteNameAndLocation extends BaseTask {
     const { applicationId, applicationLineId } = context
 
     if (!addressDto.uprn) {
-      const errorMessage = `Unable to save site address as it does not have a UPRN`
+      const errorMessage = 'Unable to save site address as it does not have a UPRN'
       LoggingService.logError(errorMessage, request)
       throw new Error(errorMessage)
     }

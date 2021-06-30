@@ -7,9 +7,9 @@ const { treatmentAnswers } = require('../models/wasteTreatmentCapacity.model')
 module.exports = class WasteTreatmentCapacityValidator extends BaseValidator {
   get errorMessages () {
     return {
-      'select': {
-        'object.without': `You cannot select a type and ‘None of the above’. Please deselect one of them.`,
-        'object.missing': `Select at least one option. If the facility does not accept any of these select ‘None of these’.`
+      select: {
+        'object.without': 'You cannot select a type and ‘None of the above’. Please deselect one of them.',
+        'object.missing': 'Select at least one option. If the facility does not accept any of these select ‘None of these’.'
       }
     }
   }

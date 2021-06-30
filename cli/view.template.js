@@ -7,13 +7,16 @@ module.exports = class view {
 
   {{> common/betaBanner }}
   
-  ${hasBackLink ? `{{> common/backLink }}` : ''}
+  ${hasBackLink
+    ? '{{> common/backLink }}'
+    : ''}
 
   <div class="grid-row">
     <div class="column-two-thirds">
-      ${hasValidator ? `{{> common/errorSummary }}` : ''}
-      ${hasPageHeading ? `{{> common/pageHeading pageHeading }}` : ''}     
-      ${isUpload ? `
+      ${hasValidator ? '{{> common/errorSummary }}' : ''}
+      ${hasPageHeading ? '{{> common/pageHeading pageHeading }}' : ''}     
+      ${isUpload
+        ? `
       {{#if annotations.length}}
 
       {{> upload/annotations }}
@@ -21,10 +24,12 @@ module.exports = class view {
       {{/if}}
 
       {{> upload/uploadForm }}
-      ` : `          
+      `
+        : `          
       <form method="POST" action="{{formAction}}" novalidate="novalidate">
         {{> common/csrfToken token=DefraCsrfToken}}
-        ${hasValidator ? `
+        ${hasValidator
+          ? `
         <div class="form-group {{#getFormErrorGroupClass errors.some-data}}{{/getFormErrorGroupClass}}">
           <label id="some-data-label" class="form-label" for="some-data">
             Some data
@@ -32,8 +37,9 @@ module.exports = class view {
           {{> common/fieldError fieldId='some-data-error' message=errors.some-data }}
           <input class="form-control form-control-char-15 {{#if errors.some-data}}form-control-error{{/if}}" id="some-data" name="some-data" type="text" value="{{formValues.some-data}}">
         </div>
-        ` : ''}
-        ${hasSubmitButton ? `{{> common/submitButton }}` : ''}
+        `
+          : ''}
+        ${hasSubmitButton ? '{{> common/submitButton }}' : ''}
       </form>
       `}  
     </div>

@@ -173,13 +173,13 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
 
     lab.experiment('success', async () => {
       lab.test('when all selected', async () => {
-        postRequest.payload['clinical'] = 'yes'
-        postRequest.payload['combustible'] = 'yes'
-        postRequest.payload['hazardous'] = 'yes'
+        postRequest.payload.clinical = 'yes'
+        postRequest.payload.combustible = 'yes'
+        postRequest.payload.hazardous = 'yes'
         const res = await server.inject(postRequest)
 
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
         Code.expect(dataStoreSaveFake.calledWith(mocks.recovery, {
           acceptsClinicalWaste: true,
           acceptsCombustibleWaste: true,
@@ -193,7 +193,7 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
         const res = await server.inject(postRequest)
 
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
         Code.expect(dataStoreSaveFake.calledWith(mocks.recovery, {
           acceptsClinicalWaste: false,
           acceptsCombustibleWaste: false,
@@ -204,10 +204,10 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
 
       lab.test('when each selected', async () => {
         let res
-        postRequest.payload = { 'clinical': 'yes' }
+        postRequest.payload = { clinical: 'yes' }
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
         Code.expect(dataStoreSaveFake.calledWith(mocks.recovery, {
           acceptsClinicalWaste: true,
           acceptsCombustibleWaste: false,
@@ -215,10 +215,10 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
           doesntAcceptClinicalCombustibleOrHazardousWaste: false
         })).to.be.true()
 
-        postRequest.payload = { 'combustible': 'yes' }
+        postRequest.payload = { combustible: 'yes' }
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
         Code.expect(dataStoreSaveFake.calledWith(mocks.recovery, {
           acceptsClinicalWaste: false,
           acceptsCombustibleWaste: true,
@@ -226,10 +226,10 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
           doesntAcceptClinicalCombustibleOrHazardousWaste: false
         })).to.be.true()
 
-        postRequest.payload = { 'hazardous': 'yes' }
+        postRequest.payload = { hazardous: 'yes' }
         res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
         Code.expect(dataStoreSaveFake.calledWith(mocks.recovery, {
           acceptsClinicalWaste: false,
           acceptsCombustibleWaste: false,
@@ -243,22 +243,22 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
       lab.test('when no values selected', async () => {
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'select', `Select at least one option. If you don’t accept any of these select ‘None of these’.`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'select', 'Select at least one option. If you don’t accept any of these select ‘None of these’.')
       })
-      lab.test(`when both waste types and 'None' are selected`, async () => {
+      lab.test('when both waste types and \'None\' are selected', async () => {
         postRequest.payload['none-required'] = 'yes'
-        postRequest.payload['clinical'] = 'yes'
+        postRequest.payload.clinical = 'yes'
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'select', `You cannot select a type and ‘None of these’. Please deselect one of them.`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'select', 'You cannot select a type and ‘None of these’. Please deselect one of them.')
       })
-      lab.test(`when multiple types and 'None' are selected, only shows single error message`, async () => {
+      lab.test('when multiple types and \'None\' are selected, only shows single error message', async () => {
         postRequest.payload['none-required'] = 'yes'
-        postRequest.payload['clinical'] = 'yes'
-        postRequest.payload['hazardous'] = 'yes'
+        postRequest.payload.clinical = 'yes'
+        postRequest.payload.hazardous = 'yes'
         const doc = await GeneralTestHelper.getDoc(postRequest)
         await checkCommonElements(doc)
-        await GeneralTestHelper.checkValidationMessage(doc, 'select', `You cannot select a type and ‘None of these’. Please deselect one of them.`)
+        await GeneralTestHelper.checkValidationMessage(doc, 'select', 'You cannot select a type and ‘None of these’. Please deselect one of them.')
         await GeneralTestHelper.checkValidationMessageCount(doc, 1)
         await GeneralTestHelper.checkNoValidationMessage(doc, 'hazardous')
       })

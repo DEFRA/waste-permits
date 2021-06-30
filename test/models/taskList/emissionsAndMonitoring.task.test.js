@@ -26,7 +26,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: EmissionsAndMonitoring Model tests:', () => {
-  lab.test(`checkComplete() method correctly returns FALSE when annotations don't exist and details required true`, async () => {
+  lab.test('checkComplete() method correctly returns FALSE when annotations don\'t exist and details required true', async () => {
     sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [])
     sandbox.stub(DataStore, 'get').value(() => { return { data: { emissionsAndMonitoringDetailsRequired: true } } })
 
@@ -42,7 +42,7 @@ lab.experiment('Task List: EmissionsAndMonitoring Model tests:', () => {
     Code.expect(result).to.equal(true)
   })
 
-  lab.test(`checkComplete() method correctly returns TRUE when details required is false`, async () => {
+  lab.test('checkComplete() method correctly returns TRUE when details required is false', async () => {
     sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [])
     sandbox.stub(DataStore, 'get').value(() => { return { data: { emissionsAndMonitoringDetailsRequired: false } } })
 
@@ -50,7 +50,7 @@ lab.experiment('Task List: EmissionsAndMonitoring Model tests:', () => {
     Code.expect(result).to.equal(true)
   })
 
-  lab.test(`checkComplete() method correctly returns FALSE when details required not specified`, async () => {
+  lab.test('checkComplete() method correctly returns FALSE when details required not specified', async () => {
     sandbox.stub(Annotation, 'listByApplicationIdAndSubject').value(() => [])
     sandbox.stub(DataStore, 'get').value(() => { return { data: { emissionsAndMonitoringDetailsRequired: undefined } } })
 

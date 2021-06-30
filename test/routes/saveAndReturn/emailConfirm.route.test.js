@@ -61,7 +61,7 @@ lab.experiment('Save and return confirm page tests:', () => {
         SaveAndReturn.isComplete = () => true
         const res = await server.inject(getRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('when incomplete', async () => {
@@ -97,7 +97,7 @@ lab.experiment('Save and return confirm page tests:', () => {
     lab.test('success', async () => {
       const res = await server.inject(postRequest)
       Code.expect(res.statusCode).to.equal(302)
-      Code.expect(res.headers['location']).to.equal(nextRoutePath)
+      Code.expect(res.headers.location).to.equal(nextRoutePath)
     })
 
     lab.experiment('invalid', () => {

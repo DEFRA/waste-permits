@@ -19,15 +19,15 @@ const { LIMITED_LIABILITY_PARTNERSHIP, LIMITED_COMPANY } = require('../../src/dy
 
 const routes = {
   'Limited Company': {
-    singleDirectorPageHeading: `What is the director's date of birth?`,
-    multipleDirectorPageHeading: `What are the directors' dates of birth?`,
+    singleDirectorPageHeading: 'What is the director\'s date of birth?',
+    multipleDirectorPageHeading: 'What are the directors\' dates of birth?',
     permitHolderType: LIMITED_COMPANY,
     routePath: '/permit-holder/company/director-date-of-birth',
     nextPath: '/permit-holder/company/director-email'
   },
   'Limited Liability Partnership': {
-    singleDirectorPageHeading: `What is the member's date of birth?`,
-    multipleDirectorPageHeading: `What are the members' dates of birth?`,
+    singleDirectorPageHeading: 'What is the member\'s date of birth?',
+    multipleDirectorPageHeading: 'What are the members\' dates of birth?',
     permitHolderType: LIMITED_LIABILITY_PARTNERSHIP,
     pageHeading: 'What is the company number for the  limited liability partnership?',
     routePath: '/permit-holder/limited-liability-partnership/member-date-of-birth',
@@ -134,7 +134,7 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
 
       // Check for the 'no data' message (if there is one)
       if (mocks.directors.length + mocks.companies.length === 0) {
-        element = doc.getElementById(`no-directors`)
+        element = doc.getElementById('no-directors')
         Code.expect(element).to.exist()
       }
 
@@ -163,45 +163,45 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
       new GeneralTestHelper({ lab, routePath }).test()
 
       lab.experiment(`GET ${routePath} returns the Director DOB page correctly`, () => {
-        lab.test(`when there are no Directors or Companies`, async () => {
+        lab.test('when there are no Directors or Companies', async () => {
           // Empty site name response
           mocks.directors = []
           mocks.companies = []
           await checkPageElements(getRequest)
         })
 
-        lab.test(`for a single Director and no Companies`, async () => {
+        lab.test('for a single Director and no Companies', async () => {
           // Empty site name response
           mocks.directors = [mocks.directors[0]]
           mocks.companies = []
           await checkPageElements(getRequest)
         })
 
-        lab.test(`for a single Company and no Directors`, async () => {
+        lab.test('for a single Company and no Directors', async () => {
           // Empty site name response
           mocks.directors = [mocks.directors[0]]
           mocks.companies = []
           await checkPageElements(getRequest)
         })
 
-        lab.test(`for multiple Directors and no Companies`, async () => {
+        lab.test('for multiple Directors and no Companies', async () => {
           mocks.companies = []
           await checkPageElements(getRequest)
         })
 
-        lab.test(`multiple Directors with existing data`, async () => {
+        lab.test('multiple Directors with existing data', async () => {
           mocks.directors[0].dob.day = 10
           mocks.directors[1].dob.day = 20
           mocks.directors[2].dob.day = 30
           await checkPageElements(getRequest)
         })
 
-        lab.test(`for multiple Companies and no Directors`, async () => {
+        lab.test('for multiple Companies and no Directors', async () => {
           mocks.directors = []
           await checkPageElements(getRequest)
         })
 
-        lab.test(`for multiple Companies and Directors`, async () => {
+        lab.test('for multiple Companies and Directors', async () => {
           await checkPageElements(getRequest)
         })
       })
@@ -215,7 +215,7 @@ Object.entries(routes).forEach(([companyType, { singleDirectorPageHeading, multi
 
             const res = await server.inject(postRequest)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
         })
 

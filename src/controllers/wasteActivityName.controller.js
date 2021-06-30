@@ -12,7 +12,7 @@ module.exports = class WasteActivityNameController extends BaseController {
     const pageContext = this.createPageContext(h, errors)
 
     // Add attributes for form display (mostly for any errors)
-    for (let activity of duplicateWasteActivitiesValues) {
+    for (const activity of duplicateWasteActivitiesValues) {
       activity.formFieldId = 'activity-name-' + activity.index
       activity.errorFormFieldId = activity.formFieldId + '-error'
       // Attach any page errors to their activities
@@ -35,7 +35,7 @@ module.exports = class WasteActivityNameController extends BaseController {
     // It is possible for the client to have failed to send values for all of the activities requiring names,
     // which will bypass the validation, so check here that all names have been supplied
     const requiredPayload = {}
-    for (let activity of duplicateWasteActivitiesValues) {
+    for (const activity of duplicateWasteActivitiesValues) {
       const formFieldId = 'activity-name-' + activity.index
       activity.referenceName = request.payload[formFieldId]
       requiredPayload[formFieldId] = activity.referenceName
@@ -45,7 +45,7 @@ module.exports = class WasteActivityNameController extends BaseController {
     if (error) {
       return this.doGet(request, h, error)
     } else {
-      for (let activity of duplicateWasteActivitiesValues) {
+      for (const activity of duplicateWasteActivitiesValues) {
         wasteActivities.setWasteActivityReferenceName(activity.index, activity.referenceName)
       }
       await wasteActivities.save(context)

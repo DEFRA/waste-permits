@@ -92,8 +92,8 @@ lab.experiment('Contact details page tests:', () => {
         payload: {
           'first-name': mocks.contactDetail.firstName,
           'last-name': mocks.contactDetail.lastName,
-          'telephone': mocks.contactDetail.telephone,
-          'email': mocks.contactDetail.email
+          telephone: mocks.contactDetail.telephone,
+          email: mocks.contactDetail.email
         }
       }
     })
@@ -103,14 +103,14 @@ lab.experiment('Contact details page tests:', () => {
         // TODO Ensure that this is a CREATE
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test('redirects to the Task List route after an UPDATE', async () => {
         // TODO Ensure that this is an UPDATE
         const res = await server.inject(request)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 

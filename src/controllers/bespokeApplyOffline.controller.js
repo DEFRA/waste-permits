@@ -15,12 +15,13 @@ module.exports = class BespokeApplyOfflineController extends BaseController {
       const context = await RecoveryService.createApplicationContext(h)
       const { taskDeterminants: { facilityType, wasteActivities } } = context
       switch (itemType) {
-        case 'wasteActivity':
+        case 'wasteActivity': {
           const wasteActivitiesForFacilityTypes = (await ItemEntity.listWasteActivitiesForFacilityTypes(context, [facilityType.id])).filter(({ shortName }) => wasteActivities.includes(shortName))
             .filter(({ canApplyFor, canApplyOnline }) => !canApplyFor || !canApplyOnline)
           if (wasteActivitiesForFacilityTypes.length) {
             pageContext.items = wasteActivitiesForFacilityTypes.map(({ itemName }) => itemName)
           }
+        }
       }
     }
 

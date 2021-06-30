@@ -14,9 +14,11 @@ module.exports = class PermitCategoryController extends BaseController {
     // Check if the categoryId matches one of the offline categories
     return Object.values(OFFLINE_CATEGORIES).some(({ id }) => id === categoryId)
   }
+
   static isMcpCategory (categoryName) {
     return Boolean(MCP_CATEGORY_NAMES.find((mcpCategoryName) => mcpCategoryName === categoryName))
   }
+
   static useMcpFeature () {
     return featureConfig.hasMcpFeature
   }

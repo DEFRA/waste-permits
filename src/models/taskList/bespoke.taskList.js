@@ -1,4 +1,5 @@
-const { bespoke,
+const {
+  bespoke,
   tasks: {
     WASTE_WEIGHTS: { shortName: wasteWeightsShortName },
     WASTE_TREATMENT_CAPACITY: { shortName: wasteTreatmentCapacityShortName },

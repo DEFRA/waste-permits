@@ -30,9 +30,9 @@ module.exports = class NeedToConsultController extends BaseController {
       }
 
       pageContext.formValues = {
-        'clinical': acceptsClinicalWaste,
-        'combustible': acceptsCombustibleWaste,
-        'hazardous': acceptsHazardousWaste,
+        clinical: acceptsClinicalWaste,
+        combustible: acceptsCombustibleWaste,
+        hazardous: acceptsHazardousWaste,
         'none-required': doesntAcceptClinicalCombustibleOrHazardousWaste
       }
     }
@@ -44,9 +44,9 @@ module.exports = class NeedToConsultController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
 
     const {
-      'clinical': acceptsClinicalWaste,
-      'combustible': acceptsCombustibleWaste,
-      'hazardous': acceptsHazardousWaste,
+      clinical: acceptsClinicalWaste,
+      combustible: acceptsCombustibleWaste,
+      hazardous: acceptsHazardousWaste,
       'none-required': doesntAcceptClinicalCombustibleOrHazardousWaste
     } = request.payload
 

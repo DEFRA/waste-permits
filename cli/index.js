@@ -16,7 +16,7 @@ function snakeToCamel (string) {
 }
 
 function buildFilename (type, name) {
-  let fileType = type === 'view' ? 'html' : `${type}.js`
+  const fileType = type === 'view' ? 'html' : `${type}.js`
   return `./src/${type}s/${name}.${fileType}`
 }
 
@@ -134,7 +134,7 @@ class RouteGenerator {
         if (!param) {
           return true
         }
-        const [ parameter ] = param.split('?')
+        const [parameter] = param.split('?')
         if (params.includes(parameter) || params.includes(`${parameter}?`)) {
           error(`Route Parameter "${param}" already added!`)
         } else {
@@ -159,7 +159,7 @@ class RouteGenerator {
 
   async getView (defaultVal, isUpload) {
     if (!isUpload && defaultVal) {
-      const { confirm } = await this.getConfirm(`Is a view required? `)
+      const { confirm } = await this.getConfirm('Is a view required? ')
       if (!confirm) {
         return {}
       }
@@ -189,8 +189,8 @@ class RouteGenerator {
     } else {
       const { confirm } = await this.getConfirm(`View "${file}" doesn't exist. Create? `)
       if (confirm) {
-        const { confirm: hasBackLink } = await this.getConfirm(`Does this view contain a back link? `)
-        const { confirm: hasSubmitButton } = isUpload ? { confirm: true } : await this.getConfirm(`Does this view contain a submit button? `)
+        const { confirm: hasBackLink } = await this.getConfirm('Does this view contain a back link? ')
+        const { confirm: hasSubmitButton } = isUpload ? { confirm: true } : await this.getConfirm('Does this view contain a submit button? ')
         return { view, isNewView: true, hasBackLink, hasSubmitButton }
       }
     }
@@ -199,14 +199,14 @@ class RouteGenerator {
   }
 
   async getPageHeading (defaultVal) {
-    let { pageHeading } = await inquirer.prompt({
+    const { pageHeading } = await inquirer.prompt({
       type: 'input',
       name: 'pageHeading',
       message: 'Page heading eg "My Page Heading"',
       default: defaultVal
     })
     if (!pageHeading) {
-      const { confirm } = await this.getConfirm(`You did not enter a page heading, is this correct? `)
+      const { confirm } = await this.getConfirm('You did not enter a page heading, is this correct? ')
       if (!confirm) {
         return this.getPageHeading()
       }
@@ -238,7 +238,7 @@ class RouteGenerator {
       }
     })
 
-    let isUpload = (controller === 'upload') || (await this.getConfirm(`Is ${controller} an upload controller? `, false)).confirm
+    const isUpload = (controller === 'upload') || (await this.getConfirm(`Is ${controller} an upload controller? `, false)).confirm
 
     const file = buildFilename('controller', controller)
 
@@ -259,7 +259,7 @@ class RouteGenerator {
 
   async getValidator (defaultVal) {
     if (defaultVal) {
-      const { confirm } = await this.getConfirm(`Is a validator required? `)
+      const { confirm } = await this.getConfirm('Is a validator required? ')
       if (!confirm) {
         return {}
       }
@@ -304,11 +304,11 @@ class RouteGenerator {
   const routeGenerator = new RouteGenerator()
 
   const { routeId } = await routeGenerator.getRouteId()
-  const { path } = await routeGenerator.getPath(`/${routeId.replace(/_/g, `-`).toLowerCase()}`)
+  const { path } = await routeGenerator.getPath(`/${routeId.replace(/_/g, '-').toLowerCase()}`)
   const { params } = await routeGenerator.getRouteParam()
   const { controller, isUpload, isNewController } = await routeGenerator.getController(snakeToCamel(routeId))
   const { view, isNewView, hasBackLink, hasSubmitButton } = await routeGenerator.getView(controller, isUpload)
-  const { pageHeading } = view ? await routeGenerator.getPageHeading(utilities.capitalizeFirstLetter(routeId.replace(/_/g, ` `).toLowerCase())) : {}
+  const { pageHeading } = view ? await routeGenerator.getPageHeading(utilities.capitalizeFirstLetter(routeId.replace(/_/g, ' ').toLowerCase())) : {}
   const { validator, isNewValidator } = isUpload ? { validator: 'upload' } : view ? await routeGenerator.getValidator(controller) : {}
   const { nextRoute } = await routeGenerator.getNextRoute('TASK_LIST')
   const types = `GET${isUpload ? ', REMOVE, UPLOAD' : hasSubmitButton ? ', POST' : ''}`
@@ -350,7 +350,7 @@ class RouteGenerator {
 
   // Format and add route to routes file
   const props = Object.entries(route)
-    .map(([prop, val]) => `${prop}: ${JSON.stringify(val)}`.replace(/"/g, `'`))
+    .map(([prop, val]) => `${prop}: ${JSON.stringify(val)}`.replace(/"/g, '\''))
     .join(`,
      `)
 

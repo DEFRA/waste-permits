@@ -14,7 +14,7 @@ module.exports = class AirDispersionModellingController extends BaseController {
     const { taskDeterminants } = context
 
     // display mcpText block if permit is for stationary MCP or mobile MCP
-    pageContext.mcpText = [ STATIONARY_MCP, MOBILE_MCP ].includes(taskDeterminants.mcpType)
+    pageContext.mcpText = [STATIONARY_MCP, MOBILE_MCP].includes(taskDeterminants.mcpType)
 
     return this.showView({ h, pageContext })
   }

@@ -6,7 +6,7 @@ const BaseValidator = require('./base.validator')
 module.exports = class WasteActivityValidator extends BaseValidator {
   get errorMessages () {
     return {
-      'activity': {
+      activity: {
         'any.empty': 'Select at least one activity',
         'any.required': 'Select at least one activity'
       }
@@ -15,7 +15,7 @@ module.exports = class WasteActivityValidator extends BaseValidator {
 
   get formValidators () {
     return {
-      'activity': Joi
+      activity: Joi
         .string()
         .required()
     }

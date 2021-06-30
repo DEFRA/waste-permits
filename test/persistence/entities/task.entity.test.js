@@ -36,7 +36,7 @@ lab.experiment('Item Entity tests:', () => {
   })
 
   lab.test('getAvailableTasks() method should call listUsingFetchXml with correct xml', async () => {
-    let listUsingFetchXmlSpy = sinon.spy(BaseEntity, 'listUsingFetchXml')
+    const listUsingFetchXmlSpy = sinon.spy(BaseEntity, 'listUsingFetchXml')
     await Task.getAvailableTasks(entityContext)
     Code.expect(listUsingFetchXmlSpy.calledWith(entityContext, expectedXml)).to.be.true()
   })

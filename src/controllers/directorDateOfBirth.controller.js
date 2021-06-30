@@ -143,7 +143,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
   // Obtains the Directors that relate to an application
   async _getDirectors (context, permitHolderOrganisationId) {
     const directors = await Contact.list(context, permitHolderOrganisationId, this.route.officerRole)
-    for (let director of directors) {
+    for (const director of directors) {
       director.dateOfBirthFormatted = Utilities.formatDateForDisplay(director.dob)
     }
     return directors
@@ -177,7 +177,7 @@ module.exports = class DirectorDateOfBirthController extends BaseController {
       for (let i = 0; i < directors.length; i++) {
         const director = directors[i]
         const directorDobField = `director-dob-day-${i}`
-        let dobDay = request.payload[directorDobField]
+        const dobDay = request.payload[directorDobField]
 
         if (dobDay === undefined) {
           // DOB day has not been entered

@@ -24,7 +24,8 @@ module.exports = class ThermalInput20To50MwValidator extends BaseValidator {
       'engine-type': Joi
         .when('thermal-rating', {
           is: '20 to 50',
-          then: Joi.required() })
+          then: Joi.required()
+        })
     }
   }
 }

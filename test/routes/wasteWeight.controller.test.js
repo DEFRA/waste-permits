@@ -35,7 +35,7 @@ lab.experiment('Waste weight controller tests:', () => {
   })
 
   lab.experiment('GET:', () => {
-    let getRequest = { params: { activityIndex: 0 } }
+    const getRequest = { params: { activityIndex: 0 } }
 
     lab.test('GET returns a view', async () => {
       showViewSpy.returns(true)
@@ -118,7 +118,7 @@ lab.experiment('Waste weight controller tests:', () => {
   })
 
   lab.experiment('POST:', () => {
-    let postRequest = {
+    const postRequest = {
       params: { activityIndex: 0 },
       payload: {
         'non-hazardous-throughput': '1',

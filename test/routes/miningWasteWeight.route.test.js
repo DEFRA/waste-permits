@@ -108,7 +108,7 @@ lab.experiment('How much extractive waste will you produce? page tests:', () => 
       lab.test('when weight entered is valid', async () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
 

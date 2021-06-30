@@ -13,7 +13,7 @@ const RecoveryService = require('../../../src/services/recovery.service')
 const { COOKIE_RESULT } = require('../../../src/constants')
 
 const routePath = '/errors/order/done-cant-go-back'
-const pageHeading = `You have sent your application so you cannot go back and change it`
+const pageHeading = 'You have sent your application so you cannot go back and change it'
 
 let sandbox
 let mocks
@@ -55,7 +55,7 @@ lab.experiment('Already Submitted page tests:', () => {
   lab.test('The page should NOT have a back link', async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
-    let element = doc.getElementById('back-link')
+    const element = doc.getElementById('back-link')
     Code.expect(element).to.not.exist()
   })
 

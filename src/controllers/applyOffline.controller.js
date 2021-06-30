@@ -46,11 +46,10 @@ module.exports = class ApplyOfflineController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
     const { standardRuleId, permitHolderType } = context
 
-    let offlineCategory
     let standardRule
 
     const standardRuleTypeId = CookieService.get(request, Constants.COOKIE_KEY.STANDARD_RULE_TYPE_ID)
-    offlineCategory = ApplyOfflineController.getOfflineCategory(standardRuleTypeId)
+    const offlineCategory = ApplyOfflineController.getOfflineCategory(standardRuleTypeId)
     if (standardRuleId) {
       standardRule = await StandardRule.getById(context, standardRuleId)
     }

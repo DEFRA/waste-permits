@@ -13,6 +13,7 @@ module.exports = class WasteTreatmentCapacityWeightValidator extends BaseValidat
     })
     return obj
   }
+
   get customValidators () {
     /*
     const obj = {}

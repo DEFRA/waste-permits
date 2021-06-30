@@ -28,7 +28,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Task List: SitePlan Model tests:', () => {
-  lab.test(`isComplete() method correctly returns FALSE when annotations don't exist`, async () => {
+  lab.test('isComplete() method correctly returns FALSE when annotations don\'t exist', async () => {
     Annotation.listByApplicationIdAndSubject = () => []
     const result = await SitePlan.isComplete(mocks.context)
     Code.expect(result).to.equal(false)

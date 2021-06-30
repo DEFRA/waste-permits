@@ -95,7 +95,7 @@ lab.experiment('Energy efficiency report page tests:', () => {
         postRequest.payload['new-or-refurbished'] = 'yes'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
 
       lab.test(`Redirects correctly to ${stationaryMcpRoutePath} when ${STATIONARY_MCP.id}`, async () => {
@@ -104,7 +104,7 @@ lab.experiment('Energy efficiency report page tests:', () => {
         postRequest.payload['new-or-refurbished'] = 'yes'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(stationaryMcpRoutePath)
+        Code.expect(res.headers.location).to.equal(stationaryMcpRoutePath)
       })
 
       lab.test(`Redirects correctly to ${maintainApplicationLinesRoutePath} when ${MOBILE_MCP.id}`, async () => {
@@ -113,7 +113,7 @@ lab.experiment('Energy efficiency report page tests:', () => {
         postRequest.payload['new-or-refurbished'] = 'yes'
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(maintainApplicationLinesRoutePath)
+        Code.expect(res.headers.location).to.equal(maintainApplicationLinesRoutePath)
       })
 
       lab.test('New or refurbished, thermal input over 20MW, boiler', async () => {

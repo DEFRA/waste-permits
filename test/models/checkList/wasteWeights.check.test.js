@@ -13,7 +13,7 @@ const prefix = 'section-waste-weights'
 let sandbox
 let stub
 
-const checkLine = (line, expectedLinePrefix, expectedHeading, ) => {
+const checkLine = (line, expectedLinePrefix, expectedHeading) => {
   Code.expect(line.heading).to.equal(expectedHeading)
   Code.expect(line.headingId).to.equal(`${expectedLinePrefix}-heading`)
   Code.expect(line.answers.length).to.equal(1)
@@ -136,7 +136,7 @@ lab.experiment('Waste Weights Check tests:', () => {
     Code.expect(lines[3].answers[0].answer).to.equal('4; 8')
   })
 
-  lab.test(`Provides the correct task`, async () => {
+  lab.test('Provides the correct task', async () => {
     Code.expect(WasteWeightsCheck.task.id).to.equal('waste-weights')
   })
 })

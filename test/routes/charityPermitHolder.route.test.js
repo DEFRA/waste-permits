@@ -63,7 +63,7 @@ lab.afterEach(() => {
 const checkPageElements = async (request) => {
   const doc = await GeneralTestHelper.getDoc(request)
 
-  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal(`Choose the permit holder for the charity or trust`)
+  Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Choose the permit holder for the charity or trust')
 
   // Test for the existence of expected static content
   GeneralTestHelper.checkElementsExist(doc, [
@@ -119,7 +119,7 @@ lab.experiment('Charity permit holder page tests:', () => {
             const res = await server.inject(postRequest)
             Code.expect(mocks.charityDetail.charityPermitHolder).to.equal(permitHolderType.id)
             Code.expect(res.statusCode).to.equal(302)
-            Code.expect(res.headers['location']).to.equal(nextPath)
+            Code.expect(res.headers.location).to.equal(nextPath)
           })
         )
       })

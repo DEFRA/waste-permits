@@ -92,7 +92,7 @@ module.exports = class TaskDeterminants {
   }
 
   static async get (context) {
-    let [
+    const [
       { data = {} },
       allAssessments,
       allCategories,

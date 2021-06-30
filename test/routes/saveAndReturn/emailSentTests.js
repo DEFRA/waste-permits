@@ -138,7 +138,7 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, pageHeading, firs
           const res = await server.inject(postRequest)
           Code.expect(origin).to.equal(undefined)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(nextRoutePath)
+          Code.expect(res.headers.location).to.equal(nextRoutePath)
         })
 
         lab.test('when not got email selected', async () => {
@@ -149,7 +149,7 @@ module.exports = (lab, { routePath, nextRoutePath, resentPath, pageHeading, firs
           const res = await server.inject(postRequest)
           Code.expect(origin).to.equal(fakeAppUrl)
           Code.expect(res.statusCode).to.equal(302)
-          Code.expect(res.headers['location']).to.equal(resentPath)
+          Code.expect(res.headers.location).to.equal(resentPath)
         })
       })
 

@@ -11,8 +11,9 @@ const sections = [
       {
         id: 'defra-session-cookie',
         name: 'DefraSession',
-        purpose: `Used to store encrypted information that we need to help you complete your application. For example, to link securely to the data you have already entered.`,
-        expires: 'After 3 hours of inactivity or when you close your browser' },
+        purpose: 'Used to store encrypted information that we need to help you complete your application. For example, to link securely to the data you have already entered.',
+        expires: 'After 3 hours of inactivity or when you close your browser'
+      },
       {
         id: 'defra-csrf-token-cookie',
         name: 'DefraCsrfToken',
@@ -23,7 +24,8 @@ const sections = [
   },
   {
     heading: 'Introductory message cookie',
-    intro: [`You may see a pop-up welcome message when you first visit this service. We will store a cookie so that your computer knows you have seen it and knows not to show it again.`],
+    intro: ['You may see a pop-up welcome message when you first visit this service. ' +
+      'We will store a cookie so that your computer knows you have seen it and knows not to show it again.'],
     id: 'introductory-message-cookie',
     cookies: [
       {

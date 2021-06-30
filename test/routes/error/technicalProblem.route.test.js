@@ -32,7 +32,7 @@ lab.experiment('Technical Problem page tests:', () => {
   lab.test(`GET ${routePath} returns the technical problem page correctly`, async () => {
     const doc = await GeneralTestHelper.getDoc(getRequest)
 
-    let element = doc.getElementById('page-heading').firstChild
+    const element = doc.getElementById('page-heading').firstChild
     Code.expect(element.nodeValue).to.equal('Something went wrong')
 
     // Test for the existence of expected static content

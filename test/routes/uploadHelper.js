@@ -162,7 +162,7 @@ module.exports = class UploadTestHelper {
         const req = this._removeRequest(removePath)
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(routePath)
+        Code.expect(res.headers.location).to.equal(routePath)
       })
     })
   }
@@ -207,7 +207,7 @@ module.exports = class UploadTestHelper {
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(1)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(routePath)
+        Code.expect(res.headers.location).to.equal(routePath)
         spy.restore()
       })
 
@@ -218,7 +218,7 @@ module.exports = class UploadTestHelper {
         const res = await server.inject(req)
         Code.expect(spy.callCount).to.equal(0)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(routePath)
+        Code.expect(res.headers.location).to.equal(routePath)
         spy.restore()
         stub.restore()
       })
@@ -262,14 +262,14 @@ module.exports = class UploadTestHelper {
           contentType
         })
         const doc = await GeneralTestHelper.getDoc(req)
-        checkExpectedErrors(doc, `That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.`)
+        checkExpectedErrors(doc, 'That file’s name is greater than 255 characters - please rename the file with a shorter name before uploading it again.')
       })
 
       lab.test('when the file has a virus', async () => {
         VirusScan.isInfected = () => Promise.resolve(true)
-        const req = this._uploadRequest({ filename: filename || `virus.pdf`, contentType })
+        const req = this._uploadRequest({ filename: filename || 'virus.pdf', contentType })
         const doc = await GeneralTestHelper.getDoc(req)
-        checkExpectedErrors(doc, `Our scanner detected a virus in that file. It has not been uploaded. Please use your own virus scanner to check and clean the file. You should either upload a clean copy of the file or contact us if you think that the file does not have a virus.`)
+        checkExpectedErrors(doc, 'Our scanner detected a virus in that file. It has not been uploaded. Please use your own virus scanner to check and clean the file. You should either upload a clean copy of the file or contact us if you think that the file does not have a virus.')
       })
     })
   }
@@ -319,11 +319,11 @@ module.exports = class UploadTestHelper {
   postSuccess (options) {
     const { lab, nextRoutePath } = this
     lab.experiment('success', () => {
-      lab.test(`when continue button pressed and there are files uploaded`, async () => {
+      lab.test('when continue button pressed and there are files uploaded', async () => {
         const req = this._postRequest(options)
         const res = await server.inject(req)
         Code.expect(res.statusCode).to.equal(302)
-        Code.expect(res.headers['location']).to.equal(nextRoutePath)
+        Code.expect(res.headers.location).to.equal(nextRoutePath)
       })
     })
   }

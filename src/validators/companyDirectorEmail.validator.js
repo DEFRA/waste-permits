@@ -6,13 +6,15 @@ const Constants = require('../constants')
 const AddressDetail = require('../persistence/entities/addressDetail.entity')
 const { EMAIL_VALID_REGEX } = Constants.Validation
 
+const generalEmailError = 'Enter a valid email address'
+
 module.exports = class ContactDetailsValidator extends BaseValidator {
   get errorMessages () {
     return {
       email: {
-        'any.empty': `Enter a valid email address`,
-        'any.required': `Enter a valid email address`,
-        'string.regex.base': `Enter a valid email address`,
+        'any.empty': generalEmailError,
+        'any.required': generalEmailError,
+        'string.regex.base': generalEmailError,
         'string.max': `Enter a shorter email address with no more than ${AddressDetail.email.length.max} characters`
       }
     }

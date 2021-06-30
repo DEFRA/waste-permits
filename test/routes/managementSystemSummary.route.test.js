@@ -9,7 +9,7 @@ const ManagementSystemTask = require('../../src/models/taskList/managementSystem
 const GeneralTestHelper = require('./generalTestHelper.test')
 const UploadTestHelper = require('./uploadHelper')
 
-let fakeAnnotationId = 'ANNOTATION_ID'
+const fakeAnnotationId = 'ANNOTATION_ID'
 
 const routePath = '/management-system/upload'
 const paths = {

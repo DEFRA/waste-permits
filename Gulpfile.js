@@ -4,7 +4,7 @@ const gulp = require('gulp')
 const htmlhint = require('gulp-htmlhint')
 const sass = require('gulp-sass')
 const concat = require('gulp-concat')
-const uglify = require('gulp-uglify')
+const terser = require('gulp-terser')
 const sourcemaps = require('gulp-sourcemaps')
 const imagemin = require('gulp-imagemin')
 const autoprefixer = require('gulp-autoprefixer')
@@ -20,10 +20,12 @@ require('dotenv').config()
 
 const paths = {
   assets: 'src/assets/',
+  cli: 'cli/',
   govukModules: 'govuk_modules/',
   nodeModules: 'node_modules/',
   public: 'public/',
   src: 'src/',
+  test: 'test/',
   views: 'src/views/'
 }
 
@@ -88,7 +90,7 @@ gulp.task('copy-scripts', () => {
 gulp.task('scripts', gulp.series('copy-scripts', (done) => {
   return gulp.src([paths.assets + 'javascripts/govuk/*.js', paths.assets + 'javascripts/application.js'])
     .pipe(concat('application.min.js'))
-    .pipe(uglify())
+    .pipe(terser())
     .pipe(gulp.dest(paths.public + 'javascripts/'))
     .pipe(reload({
       stream: true
@@ -101,7 +103,7 @@ gulp.task('images', () =>
     .pipe(imagemin({
       progressive: true,
       interlaced: true,
-      svgoPlugins: [ { removeViewBox: false }, { removeUselessStrokeAndFill: false } ]
+      svgoPlugins: [{ removeViewBox: false }, { removeUselessStrokeAndFill: false }]
     }))
     .pipe(gulp.dest(paths.public + 'images/'))
 )
@@ -128,7 +130,12 @@ gulp.task('sass', () => {
 
 // Run StardardJS checks
 gulp.task('standard', () => {
-  return gulp.src([paths.src + '**/*.js'])
+  return gulp.src([
+    './*.js',
+    paths.cli + '**/*.js',
+    paths.src + '**/*.js',
+    paths.test + '**/*.js'
+  ])
     .pipe(standard())
     .pipe(standard.reporter('default', {
       breakOnError: true,
@@ -173,7 +180,8 @@ gulp.task('test-ci', () => {
       args: '--coverage --reporter console --output stdout --reporter lcov --output lcov.info --verbose --bail',
       opts: {
         emitLabError: true
-      } }))
+      }
+    }))
 })
 
 // Build task

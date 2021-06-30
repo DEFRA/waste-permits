@@ -72,7 +72,7 @@ module.exports = class DeclarationsController extends BaseController {
     }
     return {
       'declaration-details': data[declarationDetails],
-      'declared': data[declared] ? 'yes' : (data[declared] === false ? 'no' : '')
+      declared: data[declared] ? 'yes' : (data[declared] === false ? 'no' : '')
     }
   }
 

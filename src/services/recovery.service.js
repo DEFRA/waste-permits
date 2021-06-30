@@ -113,8 +113,8 @@ module.exports = class RecoveryService {
   }
 
   static async createApplicationContext (h, options = {}) {
-    let { request } = h
-    let { slug = '' } = request.params
+    const { request } = h
+    const { slug = '' } = request.params
 
     if (!request.app.data) {
       request.app.data = {}
