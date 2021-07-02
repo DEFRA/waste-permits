@@ -142,29 +142,26 @@ lab.experiment('Dynamics Service tests:', () => {
   })
 
   lab.test('search() handles unknown result from Dynamics', async () => {
-    await dynamicsDal.search('__DYNAMICS_KNOWN_BAD_QUERY__')
-      .catch((err) => {
-        Code.expect(dynamicsCallSpy.callCount).to.equal(1)
-        Code.expect(err.query).to.endWith('/__DYNAMICS_KNOWN_BAD_QUERY__')
-        Code.expect(err.dataObject).to.equal(undefined)
-        Code.expect(err.message).to.endWith('KNOWN_BAD_QUERY')
-        Code.expect(loggingSpy.callCount).to.equal(1)
-      })
+    const err = await Code.expect(dynamicsDal.search('__DYNAMICS_KNOWN_BAD_QUERY__')).to.reject()
+
+    Code.expect(dynamicsCallSpy.callCount).to.equal(1)
+    Code.expect(err.query).to.endWith('/__DYNAMICS_KNOWN_BAD_QUERY__')
+    Code.expect(err.dataObject).to.equal(undefined)
+    Code.expect(err.message).to.endWith('KNOWN_BAD_QUERY')
+    Code.expect(loggingSpy.callCount).to.equal(1)
   })
 
   lab.test('search() handles known bad result from Dynamics', async () => {
-    await dynamicsDal.search('__DYNAMICS_UNKNOWN_BAD_QUERY__')
-      .catch((err) => {
-        Code.expect(dynamicsCallSpy.callCount).to.equal(1)
-        Code.expect(err.message).to.endWith('Code: 500, Message: null')
-      })
+    const err = await Code.expect(dynamicsDal.search('__DYNAMICS_UNKNOWN_BAD_QUERY__')).to.reject()
+
+    Code.expect(dynamicsCallSpy.callCount).to.equal(1)
+    Code.expect(err.message).to.endWith('Code: 500, Message: null')
   })
 
   lab.test('search() times out based on app configuration', async () => {
-    await dynamicsDal.search('__DYNAMICS_TIMEOUT_QUERY__')
-      .catch((err) => {
-        Code.expect(dynamicsCallSpy.callCount).to.equal(1)
-        Code.expect(err.message).to.equal('socket hang up')
-      })
+    const err = await Code.expect(dynamicsDal.search('__DYNAMICS_TIMEOUT_QUERY__')).to.reject()
+
+    Code.expect(dynamicsCallSpy.callCount).to.equal(1)
+    Code.expect(err.message).to.equal('socket hang up')
   })
 })
