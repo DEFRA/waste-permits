@@ -9,7 +9,7 @@ module.exports = class FloodRiskValidator extends BaseValidator {
   get errorMessages () {
     return {
       'flood-risk': {
-        'any.empty': ERROR_MESSAGE,
+        'string.empty': ERROR_MESSAGE,
         'any.required': ERROR_MESSAGE
       }
     }

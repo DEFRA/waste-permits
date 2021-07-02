@@ -7,7 +7,7 @@ module.exports = class TechnicalQualificationValidator extends BaseValidator {
   get errorMessages () {
     return {
       'technical-qualification': {
-        'any.empty': 'Select a qualification',
+        'string.empty': 'Select a qualification',
         'any.required': 'Select a qualification'
       }
     }

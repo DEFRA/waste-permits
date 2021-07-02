@@ -38,7 +38,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
   get errorMessages () {
     return {
       'first-name': {
-        'any.empty': 'Enter a first name',
+        'string.empty': 'Enter a first name',
         'any.required': 'Enter a first name',
         'string.min': 'First name must have at least two letters - if you entered an initial please enter a name',
         'custom.invalid': 'First name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters',
@@ -46,7 +46,7 @@ module.exports = class PermitHolderNameAndDateOfBirthValidator extends BaseValid
         'string.max': `Enter a shorter first name with no more than ${Contact.firstName.length.max} characters`
       },
       'last-name': {
-        'any.empty': 'Enter a last name',
+        'string.empty': 'Enter a last name',
         'any.required': 'Enter a last name',
         'string.min': 'Last name must have at least two letters - if you entered an initial please enter a name',
         'custom.invalid': 'Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters',

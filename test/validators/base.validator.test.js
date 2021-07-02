@@ -15,7 +15,7 @@ class TestValidator extends BaseValidator {
   get errorMessages () {
     return {
       telephone: {
-        'any.empty': 'Enter a telephone number',
+        'string.empty': 'Enter a telephone number',
         'any.required': 'Enter a telephone number',
         min: 'Enter a telephone number with at least 6 numbers',
         'custom.invalid': 'Telephone number is invalid',

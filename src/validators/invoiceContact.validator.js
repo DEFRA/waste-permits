@@ -21,7 +21,7 @@ module.exports = class InvoiceContactValidator extends BaseValidator {
   get errorMessages () {
     return {
       'first-name': {
-        'any.empty': 'Enter a first name',
+        'string.empty': 'Enter a first name',
         'any.required': 'Enter a first name',
         'string.min': 'First name must have at least two letters - if you entered an initial please enter a name',
         'custom.invalid': 'First name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters',
@@ -29,7 +29,7 @@ module.exports = class InvoiceContactValidator extends BaseValidator {
         'string.max': `Enter a shorter first name with no more than ${Contact.firstName.length.max} characters`
       },
       'last-name': {
-        'any.empty': 'Enter a last name',
+        'string.empty': 'Enter a last name',
         'any.required': 'Enter a last name',
         'string.min': 'Last name must have at least two letters - if you entered an initial please enter a name',
         'custom.invalid': 'Last name can only include letters, hyphens, apostrophes and up to 2 spaces - delete any other characters',
@@ -37,13 +37,13 @@ module.exports = class InvoiceContactValidator extends BaseValidator {
         'string.max': `Enter a shorter last name with no more than ${Contact.lastName.length.max} characters`
       },
       email: {
-        'any.empty': generalEmailError,
+        'string.empty': generalEmailError,
         'any.required': generalEmailError,
         'string.regex.base': generalEmailError,
         'string.max': `Enter a shorter email address with no more than ${Contact.email.length.max} characters`
       },
       telephone: {
-        'any.empty': 'Enter a valid telephone number',
+        'string.empty': 'Enter a valid telephone number',
         'any.required': 'Enter a valid telephone number',
         'custom.invalid': 'Telephone number can only include numbers, spaces and the + sign. Please remove any other characters.',
         'custom.plus-zero': 'The + sign for international numbers should be at the start of the number, followed by a number 1 to 9, not a 0',

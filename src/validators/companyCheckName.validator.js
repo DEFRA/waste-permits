@@ -8,7 +8,7 @@ module.exports = class CompanyCheckNameValidator extends BaseValidator {
   get errorMessages () {
     return {
       'business-trading-name': {
-        'any.empty': 'Enter a business trading name',
+        'string.empty': 'Enter a business trading name',
         'any.required': 'Enter a business trading name',
         'string.max': `Enter a shorter trading name with no more than ${Application.tradingName.length.max} characters`
       }

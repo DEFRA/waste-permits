@@ -7,7 +7,7 @@ module.exports = class PermitCategoryValidator extends BaseValidator {
   get errorMessages () {
     return {
       selection: {
-        'any.empty': 'Tell us if we have assessed your waste recovery plan',
+        'string.empty': 'Tell us if we have assessed your waste recovery plan',
         'any.required': 'Tell us if we have assessed your waste recovery plan'
       }
     }

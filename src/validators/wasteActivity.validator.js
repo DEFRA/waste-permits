@@ -7,7 +7,7 @@ module.exports = class WasteActivityValidator extends BaseValidator {
   get errorMessages () {
     return {
       activity: {
-        'any.empty': 'Select at least one activity',
+        'string.empty': 'Select at least one activity',
         'any.required': 'Select at least one activity'
       }
     }

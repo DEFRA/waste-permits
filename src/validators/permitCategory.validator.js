@@ -7,7 +7,7 @@ module.exports = class PermitCategoryValidator extends BaseValidator {
   get errorMessages () {
     return {
       'chosen-category': {
-        'any.empty': 'Select what you want the permit for',
+        'string.empty': 'Select what you want the permit for',
         'any.required': 'Select what you want the permit for'
       }
     }

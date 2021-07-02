@@ -7,7 +7,7 @@ module.exports = class PermitHolderTypeValidator extends BaseValidator {
   get errorMessages () {
     return {
       'chosen-holder-type': {
-        'any.empty': 'Select who will be the permit holder',
+        'string.empty': 'Select who will be the permit holder',
         'any.required': 'Select who will be the permit holder'
       }
     }

@@ -9,7 +9,7 @@ module.exports = class OperatingUnder500HoursValidator extends BaseValidator {
   get errorMessages () {
     return {
       'operating-under-500-hours': {
-        'any.empty': OPERATING_UNDER_500_HOURS_ERROR_MESSAGE,
+        'string.empty': OPERATING_UNDER_500_HOURS_ERROR_MESSAGE,
         'any.required': OPERATING_UNDER_500_HOURS_ERROR_MESSAGE
       }
     }

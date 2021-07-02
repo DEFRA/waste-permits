@@ -5,7 +5,7 @@ const ObjectPath = require('object-path')
 const _getRequired = (errors) => {
   const requiredFields = {}
   errors
-    .filter(({ type }) => type === 'any.required' || type === 'any.empty')
+    .filter(({ type }) => type === 'any.required' || type === 'string.empty')
     .forEach(({ type, path }) => {
       requiredFields[path[0]] = true
     })

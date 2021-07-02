@@ -7,7 +7,7 @@ module.exports = class HabitatAssessmentValidator extends BaseValidator {
   get errorMessages () {
     return {
       'habitat-assessment': {
-        'any.empty': 'Select yes or no',
+        'string.empty': 'Select yes or no',
         'any.required': 'Select yes or no'
       }
     }

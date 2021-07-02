@@ -24,7 +24,7 @@ module.exports = class AddressManualValidator extends BaseValidator {
   get errorMessages () {
     return {
       'building-name-or-number': {
-        'any.empty': 'Enter the building name or number',
+        'string.empty': 'Enter the building name or number',
         'any.required': 'Enter the building name or number',
         'string.max': `Enter a shorter building name or number with no more than ${Address.buildingNameOrNumber.length.max} characters`,
         'custom.starts.or.ends.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', 'Building name or number'),
@@ -32,7 +32,7 @@ module.exports = class AddressManualValidator extends BaseValidator {
         'custom.address.lookup.failed': 'Please enter the address below'
       },
       'address-line-1': {
-        'any.empty': 'Enter an address line 1',
+        'string.empty': 'Enter an address line 1',
         'any.required': 'Enter an address line 1',
         'string.max': `Enter a shorter address line 1 with no more than ${Address.addressLine1.length.max} characters`,
         'custom.starts.or.ends.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', 'Address line 1')
@@ -42,7 +42,7 @@ module.exports = class AddressManualValidator extends BaseValidator {
         'custom.starts.or.ends.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', 'Address line 2')
       },
       'town-or-city': {
-        'any.empty': 'Enter a town or city',
+        'string.empty': 'Enter a town or city',
         'any.required': 'Enter a town or city',
         'string.max': `Enter a shorter town or city with no more than ${Address.townOrCity.length.max} characters`,
         'custom.starts.or.ends.hyphen': STARTS_OR_ENDS_WITH_HYPHEN_MESSAGE.replace('<FIELD>', 'Town or city'),

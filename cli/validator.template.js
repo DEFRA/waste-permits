@@ -11,7 +11,7 @@ module.exports = class ${validatorName}Validator extends BaseValidator {
   get errorMessages () {
     return {
       'some-data': {
-        'any.empty': 'Enter some data',
+        'string.empty': 'Enter some data',
         'any.required': 'Enter some data',
         'custom.invalid': 'Enter some valid data'
       }

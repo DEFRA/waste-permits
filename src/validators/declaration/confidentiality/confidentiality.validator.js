@@ -8,11 +8,11 @@ module.exports = class ConfidentialityValidator extends BaseValidator {
   get errorMessages () {
     return {
       declared: {
-        'any.empty': 'Select yes if you want to claim confidentiality or no if you do not',
+        'string.empty': 'Select yes if you want to claim confidentiality or no if you do not',
         'any.required': 'Select yes if you want to claim confidentiality or no if you do not'
       },
       'declaration-details': {
-        'any.empty': 'Explain what information is confidential and why',
+        'string.empty': 'Explain what information is confidential and why',
         'any.required': 'Explain what information is confidential and why',
         'string.max': `You can only enter ${Application.confidentialityDetails.length.max.toLocaleString()} characters - please shorten what you have written`
       }

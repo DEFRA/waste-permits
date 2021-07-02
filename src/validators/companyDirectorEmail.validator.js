@@ -12,7 +12,7 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
   get errorMessages () {
     return {
       email: {
-        'any.empty': generalEmailError,
+        'string.empty': generalEmailError,
         'any.required': generalEmailError,
         'string.regex.base': generalEmailError,
         'string.max': `Enter a shorter email address with no more than ${AddressDetail.email.length.max} characters`

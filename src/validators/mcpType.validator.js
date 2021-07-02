@@ -7,7 +7,7 @@ module.exports = class McpTypeValidator extends BaseValidator {
   get errorMessages () {
     return {
       'mcp-type': {
-        'any.empty': 'Select what your permit is for',
+        'string.empty': 'Select what your permit is for',
         'any.required': 'Select what your permit is for'
       }
     }

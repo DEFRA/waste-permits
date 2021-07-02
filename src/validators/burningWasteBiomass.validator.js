@@ -7,11 +7,11 @@ module.exports = class BurningWasteBiomassValidator extends BaseValidator {
   get errorMessages () {
     return {
       'thermal-rating': {
-        'any.empty': 'Select yes or no',
+        'string.empty': 'Select yes or no',
         'any.required': 'Select yes or no'
       },
       'meets-criteria': {
-        'any.empty': 'Select yes or no',
+        'string.empty': 'Select yes or no',
         'any.required': 'Select yes or no'
       }
     }

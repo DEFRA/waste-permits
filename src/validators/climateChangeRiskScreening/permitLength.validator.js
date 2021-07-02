@@ -9,7 +9,7 @@ module.exports = class PermitLengthValidator extends BaseValidator {
   get errorMessages () {
     return {
       'permit-length': {
-        'any.empty': ERROR_MESSAGE,
+        'string.empty': ERROR_MESSAGE,
         'any.required': ERROR_MESSAGE
       }
     }

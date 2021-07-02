@@ -12,7 +12,7 @@ module.exports = class CompanyNumberValidator extends BaseValidator {
   get errorMessages () {
     return {
       'company-number': {
-        'any.empty': 'Enter a company registration number',
+        'string.empty': 'Enter a company registration number',
         'any.required': 'Enter a company registration number',
         'string.regex.base': 'Enter a valid company registration number with either 8 digits or 2 letters and 6 digits'
       }

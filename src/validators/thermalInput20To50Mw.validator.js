@@ -7,11 +7,11 @@ module.exports = class ThermalInput20To50MwValidator extends BaseValidator {
   get errorMessages () {
     return {
       'thermal-rating': {
-        'any.empty': 'Select yes or no',
+        'string.empty': 'Select yes or no',
         'any.required': 'Select yes or no'
       },
       'engine-type': {
-        'any.empty': 'Select where it get its energy from',
+        'string.empty': 'Select where it get its energy from',
         'any.required': 'Select where it get its energy from'
       }
     }

@@ -7,7 +7,7 @@ module.exports = class AirDispersionModellingValidator extends BaseValidator {
   get errorMessages () {
     return {
       'air-dispersion-modelling': {
-        'any.empty': 'Say if you need to include a dispersion modelling report',
+        'string.empty': 'Say if you need to include a dispersion modelling report',
         'any.required': 'Say if you need to include a dispersion modelling report'
       }
     }

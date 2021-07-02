@@ -7,7 +7,7 @@ module.exports = class DrainageTypeDrainValidator extends BaseValidator {
   get errorMessages () {
     return {
       'drainage-type': {
-        'any.empty': 'Select where the area drains to',
+        'string.empty': 'Select where the area drains to',
         'any.required': 'Select where the area drains to'
       }
     }

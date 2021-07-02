@@ -7,7 +7,7 @@ module.exports = class EmissionsAndMonitoringCheckValidator extends BaseValidato
   get errorMessages () {
     return {
       'emissions-made': {
-        'any.empty': 'Select yes or no',
+        'string.empty': 'Select yes or no',
         'any.required': 'Select yes or no'
       }
     }

@@ -9,7 +9,7 @@ module.exports = class WaterSourceValidator extends BaseValidator {
   get errorMessages () {
     return {
       'water-source': {
-        'any.empty': ERROR_MESSAGE,
+        'string.empty': ERROR_MESSAGE,
         'any.required': ERROR_MESSAGE
       }
     }
