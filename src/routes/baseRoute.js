@@ -1,5 +1,6 @@
 const Merge = require('deepmerge')
 const Constants = require('../constants')
+const Joi = require('@hapi/joi')
 
 class Route {
   static GET (controller, validator) {
@@ -40,7 +41,10 @@ class Route {
         options: {
           allowUnknown: true
         },
-        payload: validator.formValidators,
+        // As of v19 Hapi no longer provides a default validation compiler. To fix this we use Joi.compile() which will
+        // either compile an uncompiled schema or return an already-compiled schema (which is the case with validators
+        // which return a Joi object, eg. NeedToConsultValidator)
+        payload: Joi.compile(validator.formValidators),
         failAction: controller.failAction
       }
     }
