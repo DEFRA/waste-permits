@@ -98,7 +98,7 @@ lab.beforeEach(() => {
 
   nock(`https://${config.dynamicsWebApiHost}`)
     .get(`${config.dynamicsWebApiPath}__DYNAMICS_TIMEOUT_QUERY__`)
-    .socketDelay(7000)
+    .delayConnection(150000)
     .reply(200, {})
 
   // Create a sinon sandbox to stub methods
