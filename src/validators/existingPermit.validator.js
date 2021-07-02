@@ -8,7 +8,7 @@ module.exports = class StartOrOpenSavedValidator extends BaseValidator {
     return {
       'existing-permit': {
         'any.required': 'Select a value',
-        'any.allowOnly': 'Provide a valid value'
+        'any.only': 'Provide a valid value'
       }
     }
   }
