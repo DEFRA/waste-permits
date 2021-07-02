@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 // Must be 2 letters (case insensitive) and 10 digits, e.g. AB1234567890 or ab1234567890

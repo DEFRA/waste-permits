@@ -1,4 +1,4 @@
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 const Constants = require('../../constants')
 const Contact = require('../../persistence/entities/contact.entity')

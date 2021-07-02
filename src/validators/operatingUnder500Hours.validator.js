@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 const OPERATING_UNDER_500_HOURS_ERROR_MESSAGE = 'Select yes or no'

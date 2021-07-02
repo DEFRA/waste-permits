@@ -4,7 +4,7 @@ module.exports = class controller {
     return `
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class ${validatorName}Validator extends BaseValidator {

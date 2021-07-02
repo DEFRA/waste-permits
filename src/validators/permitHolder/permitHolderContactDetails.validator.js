@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 
 const Constants = require('../../constants')
 const BaseValidator = require('../base.validator')

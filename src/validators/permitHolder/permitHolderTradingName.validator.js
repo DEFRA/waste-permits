@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 const Application = require('../../persistence/entities/application.entity')
 
