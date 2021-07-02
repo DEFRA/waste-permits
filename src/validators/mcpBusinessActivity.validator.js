@@ -13,7 +13,7 @@ module.exports = class McpBusinessActivityValidator extends BaseValidator {
       'type-codes-other': {
         'string.empty': 'Enter a valid 4-digit code that includes the decimal dot',
         'any.required': 'Enter a valid 4-digit code that includes the decimal dot',
-        'string.regex.base': 'Enter a valid 4-digit code that includes the decimal dot'
+        'string.pattern.base': 'Enter a valid 4-digit code that includes the decimal dot'
       }
     }
   }

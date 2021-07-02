@@ -20,7 +20,7 @@ module.exports = class PermitHolderContactDetailsValidator extends BaseValidator
       email: {
         'string.empty': 'Enter an email address',
         'any.required': 'Enter an email address',
-        'string.regex.base': 'Enter a valid email address',
+        'string.pattern.base': 'Enter a valid email address',
         'string.max': `Enter a shorter email address with no more than ${Contact.email.length.max} characters`
       },
       telephone: {

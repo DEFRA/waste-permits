@@ -18,7 +18,7 @@ module.exports = class AirQualityManagementAreaValidator extends BaseValidator {
       'aqma-nitrogen-dioxide-level': {
         'string.empty': 'Enter the background level of nitrogen dioxide',
         'any.required': 'Enter the background level of nitrogen dioxide',
-        'string.regex.base': 'The background level should be a whole number between 0 and 100'
+        'string.pattern.base': 'The background level should be a whole number between 0 and 100'
       },
       'aqma-local-authority-name': {
         'any.required': 'Enter the local authority name',

@@ -14,7 +14,7 @@ module.exports = class SiteGridReferenceValidator extends BaseValidator {
       'site-grid-reference': {
         'string.empty': 'Enter a grid reference',
         'any.required': 'Enter a grid reference',
-        'string.regex.base': 'Make sure that the grid reference has 2 letters and 10 digits'
+        'string.pattern.base': 'Make sure that the grid reference has 2 letters and 10 digits'
       }
     }
   }

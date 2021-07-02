@@ -32,7 +32,7 @@ module.exports = class PublicBodyOfficerValidator extends BaseValidator {
       email: {
         'string.empty': 'Enter an email address for the main contact',
         'any.required': 'Enter an email address for the main contact',
-        'string.regex.base': 'Enter a valid email address for the main contact',
+        'string.pattern.base': 'Enter a valid email address for the main contact',
         'string.max': `Enter a shorter email address for the main contact with no more than ${AddressDetail.email.length.max} characters`
       },
       'job-title': {

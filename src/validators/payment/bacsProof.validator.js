@@ -28,7 +28,7 @@ module.exports = class BacsProofValidator extends BaseValidator {
       'amount-paid': {
         'string.empty': 'Enter the amount paid',
         'any.required': 'Enter the amount paid',
-        'string.regex.base': 'Enter an amount of money',
+        'string.pattern.base': 'Enter an amount of money',
         'custom.too-many-digits': 'Enter the amount with a maximum of two decimal places'
       },
       'payment-reference': {

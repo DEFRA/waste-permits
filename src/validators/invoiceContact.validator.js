@@ -39,7 +39,7 @@ module.exports = class InvoiceContactValidator extends BaseValidator {
       email: {
         'string.empty': generalEmailError,
         'any.required': generalEmailError,
-        'string.regex.base': generalEmailError,
+        'string.pattern.base': generalEmailError,
         'string.max': `Enter a shorter email address with no more than ${Contact.email.length.max} characters`
       },
       telephone: {
