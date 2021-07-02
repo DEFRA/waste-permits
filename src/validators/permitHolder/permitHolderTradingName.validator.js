@@ -29,7 +29,9 @@ module.exports = class PermitHolderTradingNameValidator extends BaseValidator {
         .string()
         .max(Application.tradingName.length.max)
         .when('use-trading-name', {
-          is: TRADING_NAME_USAGE.YES,
+          // TRADING_NAME_USAGE.YES is an integer while 'use-trading-name' is string. Before updating Joi to v17, the
+          // two could be compared directly but we now need to change TRADING_NAME_USAGE.YES to a string.
+          is: TRADING_NAME_USAGE.YES.toString(),
           then: Joi.required()
         })
     }
