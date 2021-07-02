@@ -154,7 +154,9 @@ gulp.task('standard', () => {
     './*.js',
     paths.cli + '**/*.js',
     paths.src + '**/*.js',
-    paths.test + '**/*.js'
+    paths.test + '**/*.js',
+    // We exclude imported frontend javascript files to ensure they don't cause linting to fail
+    '!' + paths.src + 'assets/javascripts/govuk/**/*.js'
   ])
     .pipe(standard())
     .pipe(standard.reporter('default', {
