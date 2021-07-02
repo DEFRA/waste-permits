@@ -15,6 +15,11 @@ $path: "/public/images/";
 @import 'patterns/task-list';
 @import 'patterns/cost-time';
 
+// Import the govuk-frontend files. We use a separate folder within /public/ for them to avoid clashes with existing
+// from the govuk frontend toolkit
+$govuk-assets-path: '/public/';
+@import "node_modules/govuk-frontend/govuk/all";
+
 .no-js {
   display: none;
 }

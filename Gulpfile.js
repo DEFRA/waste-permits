@@ -34,7 +34,7 @@ gulp.task('clean', async (done) => {
   done()
 })
 
-// Copy govuk files
+// Copy govuk files into govukModules/ folder
 
 gulp.task('copy-govuk-toolkit', () => {
   return gulp.src([paths.nodeModules + 'govuk_frontend_toolkit/**/*.*'])
@@ -51,13 +51,20 @@ gulp.task('copy-govuk-elements-sass', () => {
     .pipe(gulp.dest(paths.govukModules + '/govuk-elements-sass/'))
 })
 
+gulp.task('copy-govuk-frontend', () => {
+  return gulp.src([paths.nodeModules + 'govuk-frontend/govuk/**/*.*'])
+    .pipe(gulp.dest(paths.govukModules + 'govuk-frontend/'))
+})
+
 gulp.task('copy-govuk-files', gulp.series(
   'copy-govuk-toolkit',
   'copy-govuk-template',
-  'copy-govuk-elements-sass'
+  'copy-govuk-elements-sass',
+  'copy-govuk-frontend'
 ))
 
 // Install the govuk files into our application
+// This copies the chosen files from govukModules/ to public/
 
 gulp.task('copy-toolkit-assets', () => {
   return gulp.src(paths.govukModules + '/govuk_frontend_toolkit/{images/**/*.*,javascripts/**/*.*,stylesheets/**/*.*}')
@@ -74,21 +81,34 @@ gulp.task('copy-template-view', () => {
     .pipe(gulp.dest(paths.views + 'govuk_template_mustache/'))
 })
 
+gulp.task('copy-frontend-assets', () => {
+  return gulp.src(paths.govukModules + '/govuk-frontend/assets/{fonts/**/*.*,images/**/*.*}')
+    .pipe(gulp.dest(paths.public))
+})
+
 gulp.task('install-govuk-files', gulp.series(
   'copy-toolkit-assets',
   'copy-template-assets',
-  'copy-template-view'
+  'copy-template-view',
+  'copy-frontend-assets'
 ))
 
 // Copy and unglify the javascript
 gulp.task('copy-scripts', () => {
   return gulp
-    .src([paths.govukModules + 'govuk_frontend_toolkit/javascripts/govuk/show-hide-content.js', paths.govukModules + 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill.js'])
+    .src([
+      paths.govukModules + 'govuk_frontend_toolkit/javascripts/govuk/show-hide-content.js',
+      paths.govukModules + 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill.js',
+      paths.govukModules + 'govuk-frontend/all.js'
+    ])
     .pipe(gulp.dest(paths.assets + 'javascripts/govuk'))
 })
 
 gulp.task('scripts', gulp.series('copy-scripts', (done) => {
-  return gulp.src([paths.assets + 'javascripts/govuk/*.js', paths.assets + 'javascripts/application.js'])
+  return gulp.src([
+    paths.assets + 'javascripts/govuk/*.js',
+    paths.assets + 'javascripts/application.js'
+  ])
     .pipe(concat('application.min.js'))
     .pipe(terser())
     .pipe(gulp.dest(paths.public + 'javascripts/'))
