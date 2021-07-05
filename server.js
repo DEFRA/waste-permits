@@ -59,6 +59,9 @@ const server = new Hapi.Server(serverOptions)
 // Create a session cookie in which to store a waste permit application token
 server.state(Constants.DEFRA_COOKIE_KEY, cookieConfig.options)
 
+// Set default validator
+server.validator(require('@hapi/joi'))
+
 const registerPlugins = async () => server.register([
   // Static file and directory handlers plugin for hapi.js
   // See https://www.npmjs.com/package/inert

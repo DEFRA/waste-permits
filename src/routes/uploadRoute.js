@@ -42,7 +42,8 @@ class UploadRoute extends BaseRoute {
           parse: true,
           allow: 'multipart/form-data',
           maxBytes: Constants.MAX_FILE_SIZE,
-          failAction: controller.uploadFailAction.bind(controller)
+          failAction: controller.uploadFailAction.bind(controller),
+          multipart: true
         },
         cache: Constants.CacheOptions,
         security: Constants.SecurityOptions,
