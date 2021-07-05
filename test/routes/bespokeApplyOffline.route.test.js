@@ -65,7 +65,7 @@ Object.entries(routesToTest).forEach(([route, { path: routePath, itemType, pageH
     lab.beforeEach(() => {
       mocks = new Mocks()
 
-      Object.assign(mocks.wasteActivities, { activities: 'item-1,item-2,item-3,item-4' })
+      mocks.taskDeterminants.wasteActivities = ['item-1', 'item-2', 'item-3', 'item-4']
 
       // Create a sinon sandbox to stub methods
       sandbox = sinon.createSandbox()
@@ -82,7 +82,7 @@ Object.entries(routesToTest).forEach(([route, { path: routePath, itemType, pageH
       sandbox.restore()
     })
 
-    lab.experiment('bespokeApplyOffline page tests:', () => {
+    lab.experiment.only('bespokeApplyOffline page tests:', () => {
       new GeneralTestHelper({ lab, routePath }).test({
         excludeCookiePostTests: true
       })
