@@ -26,7 +26,7 @@
     "version-tag": "git tag --annotate --message=\"Update version to v$npm_package_version\" v$npm_package_version && git push origin v$npm_package_version"
   },
   "devDependencies": {
-    "@hapi/code": "^5.3.1",
+    "@hapi/code": "^8.0.3",
     "@hapi/good": "^9.0.1",
     "@hapi/good-console": "^9.0.1",
     "@hapi/good-squeeze": "^6.0.0",
