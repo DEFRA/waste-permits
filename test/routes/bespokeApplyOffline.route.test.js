@@ -18,9 +18,15 @@ const Routes = require('../../src/routes')
 
 const routesToTest = {}
 
+// Iterate over Routes and add any routes with the controller bespokeApplyOffline to the routesToTest object. We have a
+// deny list of routes which have this controller but which do not have behaviour defined in
+// BespokeApplyOfflineController. These routes should be removed from the deny list if and when the controller is
+// updated to act on them.
+const routeDenyList = ['FACILITY_APPLY_OFFLINE', 'WASTE_ASSESSMENT_APPLY_OFFLINE']
+
 for (const key in Routes) {
   const item = Routes[key]
-  if (item.controller === 'bespokeApplyOffline') {
+  if (item.controller === 'bespokeApplyOffline' && !routeDenyList.includes(key)) {
     routesToTest[key] = item
   }
 }
@@ -82,7 +88,7 @@ Object.entries(routesToTest).forEach(([route, { path: routePath, itemType, pageH
       sandbox.restore()
     })
 
-    lab.experiment.only('bespokeApplyOffline page tests:', () => {
+    lab.experiment('bespokeApplyOffline page tests:', () => {
       new GeneralTestHelper({ lab, routePath }).test({
         excludeCookiePostTests: true
       })
