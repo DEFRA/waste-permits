@@ -15,10 +15,12 @@ const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
 const ItemEntity = require('../../src/persistence/entities/item.entity')
 
-const Routes = require('../../src/routes')
-const { WASTE_ACTIVITY_APPLY_OFFLINE } = Routes
-const routePath = WASTE_ACTIVITY_APPLY_OFFLINE.path
-const pageHeading = WASTE_ACTIVITY_APPLY_OFFLINE.pageHeading
+const {
+  WASTE_ACTIVITY_APPLY_OFFLINE: {
+    pageHeading,
+    path: routePath
+  }
+} = require('../../src/routes')
 
 // Define activity items with various combinations of canApplyFor and canApplyOnline true/false
 const ACTIVITY_ITEMS = [
@@ -73,7 +75,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Waste Activity Apply Offline tests', () => {
+lab.experiment.only('Waste Activity Apply Offline tests', () => {
   new GeneralTestHelper({ lab, routePath }).test({
     excludeCookiePostTests: true
   })
