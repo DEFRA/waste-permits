@@ -104,7 +104,7 @@ lab.experiment('How much extractive waste will you produce? page tests:', () => 
       }
     })
 
-    lab.experiment('success', async () => {
+    lab.experiment('success', () => {
       lab.test('when weight entered is valid', async () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)

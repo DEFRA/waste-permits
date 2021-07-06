@@ -96,7 +96,7 @@ lab.experiment('Management system select tests:', () => {
       }
     })
 
-    lab.experiment('success', async () => {
+    lab.experiment('success', () => {
       MANAGEMENT_SYSTEM.answers.forEach(({ id, description }) => {
         lab.test(`when ${description} selected`, async () => {
           postRequest.payload[questionCode] = id
@@ -128,7 +128,7 @@ lab.experiment('Management system select tests:', () => {
     })
   })
 
-  lab.experiment('Build description template', async () => {
+  lab.experiment('Build description template', () => {
     lab.test('with ISO abbreviation', async () => {
       const description = await ManagementSystemSelectController._buildDescription('<div>{{{ISO}}}</div>', 'ID')
       Code.expect(description).to.equal('<div><abbr id="ID" title="International Organization of Standardization">ISO</abbr></div>')

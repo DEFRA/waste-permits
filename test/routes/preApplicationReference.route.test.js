@@ -124,7 +124,7 @@ lab.experiment('Pre Application (Provide your pre-application reference) page te
         }
       })
 
-      lab.experiment('success', async () => {
+      lab.experiment('success', () => {
         lab.test('when a valid string is entered', async () => {
           postRequest.payload['pre-application-reference'] = SAMPLE_REFERENCE
 

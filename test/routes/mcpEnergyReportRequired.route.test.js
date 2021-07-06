@@ -88,7 +88,7 @@ lab.experiment('Energy efficiency report page tests:', () => {
       }
     })
 
-    lab.experiment('Success', async () => {
+    lab.experiment('success', () => {
       lab.test(`Redirects correctly to ${nextRoutePath} when ${STATIONARY_MCP_AND_SG.id}`, async () => {
         mocks.taskDeterminants.mcpType = STATIONARY_MCP_AND_SG
         // Make selections and click 'Continue'
@@ -128,7 +128,7 @@ lab.experiment('Energy efficiency report page tests:', () => {
         checkTaskDeterminants({ energyEfficiencyReportRequired: false })
       })
     })
-    lab.experiment('Invalid input', async () => {
+    lab.experiment('Invalid input', () => {
       lab.test('Missing new or refurbished', async () => {
         postRequest.payload['total-aggregated-thermal-input'] = 'under 20'
         postRequest.payload['engine-type'] = 'boiler etc'

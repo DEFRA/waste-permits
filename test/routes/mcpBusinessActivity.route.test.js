@@ -125,7 +125,7 @@ lab.experiment('MCP business or activity page tests:', () => {
       }
     })
 
-    lab.experiment('success', async () => {
+    lab.experiment('success', () => {
       lab.test('when option selected', async () => {
         postRequest.payload = { 'type-codes-option': '00.01' }
         const res = await server.inject(postRequest)

@@ -1,7 +1,7 @@
 'use strict'
 
 const moment = require('moment')
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 const Payment = require('../../persistence/entities/payment.entity')
 
@@ -26,13 +26,13 @@ module.exports = class BacsProofValidator extends BaseValidator {
         'custom.future': 'Date cannot be in the future. You must pay before you send the application.'
       },
       'amount-paid': {
-        'any.empty': 'Enter the amount paid',
+        'string.empty': 'Enter the amount paid',
         'any.required': 'Enter the amount paid',
-        'string.regex.base': 'Enter an amount of money',
+        'string.pattern.base': 'Enter an amount of money',
         'custom.too-many-digits': 'Enter the amount with a maximum of two decimal places'
       },
       'payment-reference': {
-        'any.empty': 'Enter a payment reference',
+        'string.empty': 'Enter a payment reference',
         'any.required': 'Enter a payment reference',
         'string.max': `Enter a payment reference with no more than ${Payment.customerPaymentReference.length.max} characters`
       }

@@ -136,7 +136,7 @@ lab.experiment('Charity Details page tests:', () => {
         originalTradingName = mocks.application.tradingName
       })
 
-      lab.experiment('when the permit holder is a limited company', async () => {
+      lab.experiment('when the permit holder is a limited company', () => {
         lab.beforeEach(() => {
           mocks.charityDetail.charityPermitHolder = 'limited-company'
         })
@@ -161,7 +161,7 @@ lab.experiment('Charity Details page tests:', () => {
         })
       })
 
-      lab.experiment('when the permit holder is an individual', async () => {
+      lab.experiment('when the permit holder is an individual', () => {
         lab.beforeEach(() => {
           mocks.charityDetail.charityPermitHolder = 'individual'
         })
@@ -186,7 +186,7 @@ lab.experiment('Charity Details page tests:', () => {
         })
       })
 
-      lab.experiment('when the permit holder is a public body', async () => {
+      lab.experiment('when the permit holder is a public body', () => {
         lab.beforeEach(() => {
           mocks.charityDetail.charityPermitHolder = 'public-body'
         })

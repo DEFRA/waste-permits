@@ -88,7 +88,7 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
       }
     })
 
-    lab.experiment('Success', async () => {
+    lab.experiment('success', () => {
       lab.test('Redirects correctly', async () => {
         // Make selections and click 'Continue'
         postRequest.payload['thermal-rating'] = '20 to 50'
@@ -145,7 +145,7 @@ lab.experiment('Best available techniques report required for SG tests:', () => 
       })
     })
 
-    lab.experiment('Invalid rating', async () => {
+    lab.experiment('Invalid rating', () => {
       lab.test('Missing thermal rating', async () => {
         postRequest.payload['engine-type'] = 'boiler etc'
         const doc = await GeneralTestHelper.getDoc(postRequest)
