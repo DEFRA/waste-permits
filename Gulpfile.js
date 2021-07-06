@@ -2,7 +2,9 @@
 
 const gulp = require('gulp')
 const htmlhint = require('gulp-htmlhint')
-const sass = require('gulp-sass')
+const sassCompiler = require('sass')
+const gulpSass = require('gulp-sass')
+const sass = gulpSass(sassCompiler)
 const concat = require('gulp-concat')
 const terser = require('gulp-terser')
 const sourcemaps = require('gulp-sourcemaps')
