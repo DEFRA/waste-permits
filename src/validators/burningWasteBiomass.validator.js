@@ -1,17 +1,17 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class BurningWasteBiomassValidator extends BaseValidator {
   get errorMessages () {
     return {
       'thermal-rating': {
-        'any.empty': 'Select yes or no',
+        'string.empty': 'Select yes or no',
         'any.required': 'Select yes or no'
       },
       'meets-criteria': {
-        'any.empty': 'Select yes or no',
+        'string.empty': 'Select yes or no',
         'any.required': 'Select yes or no'
       }
     }

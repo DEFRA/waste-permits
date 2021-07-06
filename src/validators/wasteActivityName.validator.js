@@ -1,11 +1,11 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 const activityNameMessages = function () {
   return {
-    'any.empty': 'Enter a short name',
+    'string.empty': 'Enter a short name',
     'any.required': 'Enter a short name',
     'string.max': 'Enter a shorter name with no more than 70 characters'
   }

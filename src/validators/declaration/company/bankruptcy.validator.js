@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('../../base.validator')
 const Application = require('../../../persistence/entities/application.entity')
 
@@ -8,11 +8,11 @@ module.exports = class BankruptcyValidator extends BaseValidator {
   get errorMessages () {
     return {
       declared: {
-        'any.empty': 'Select yes if you have bankruptcy or insolvency to declare or no if you do not',
+        'string.empty': 'Select yes if you have bankruptcy or insolvency to declare or no if you do not',
         'any.required': 'Select yes if you have bankruptcy or insolvency to declare or no if you do not'
       },
       'declaration-details': {
-        'any.empty': 'Enter details of the bankruptcy or insolvency',
+        'string.empty': 'Enter details of the bankruptcy or insolvency',
         'any.required': 'Enter details of the bankruptcy or insolvency',
         'string.max': `You can only enter ${Application.bankruptcyDetails.length.max.toLocaleString()} characters - please shorten what you have written`
       }

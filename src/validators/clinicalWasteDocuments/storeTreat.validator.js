@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('../base.validator')
 
 const STORE_TREAT_ERROR_MESSAGE = 'Select yes or no'
@@ -9,7 +9,7 @@ module.exports = class StoreTreatValidator extends BaseValidator {
   get errorMessages () {
     return {
       'store-treat': {
-        'any.empty': STORE_TREAT_ERROR_MESSAGE,
+        'string.empty': STORE_TREAT_ERROR_MESSAGE,
         'any.required': STORE_TREAT_ERROR_MESSAGE
       }
     }

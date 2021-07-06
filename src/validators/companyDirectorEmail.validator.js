@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 const Constants = require('../constants')
 const AddressDetail = require('../persistence/entities/addressDetail.entity')
@@ -12,9 +12,9 @@ module.exports = class ContactDetailsValidator extends BaseValidator {
   get errorMessages () {
     return {
       email: {
-        'any.empty': generalEmailError,
+        'string.empty': generalEmailError,
         'any.required': generalEmailError,
-        'string.regex.base': generalEmailError,
+        'string.pattern.base': generalEmailError,
         'string.max': `Enter a shorter email address with no more than ${AddressDetail.email.length.max} characters`
       }
     }

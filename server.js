@@ -60,7 +60,7 @@ const server = new Hapi.Server(serverOptions)
 server.state(Constants.DEFRA_COOKIE_KEY, cookieConfig.options)
 
 // Set default validator
-server.validator(require('@hapi/joi'))
+server.validator(require('joi'))
 
 const registerPlugins = async () => server.register([
   // Static file and directory handlers plugin for hapi.js
