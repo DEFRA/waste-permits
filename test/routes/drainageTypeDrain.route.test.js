@@ -128,7 +128,7 @@ lab.experiment('Where does the vehicle storage area drain to? page tests:', () =
       }
     })
 
-    lab.experiment('success', async () => {
+    lab.experiment('success', () => {
       lab.test('when sewer selected', async () => {
         const spy = sinon.spy(DrainageTypeDrain, 'updateCompleteness')
         const res = await server.inject(postRequest)

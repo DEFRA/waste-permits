@@ -88,7 +88,7 @@ lab.experiment('Best available techniques report required for MCP tests:', () =>
       }
     })
 
-    lab.experiment('Success', async () => {
+    lab.experiment('success', () => {
       lab.test('Redirects correctly', async () => {
         // Make selections and click 'Continue'
         postRequest.payload['thermal-rating'] = 'over 20'
@@ -128,7 +128,7 @@ lab.experiment('Best available techniques report required for MCP tests:', () =>
       })
     })
 
-    lab.experiment('Invalid rating', async () => {
+    lab.experiment('Invalid rating', () => {
       lab.test('Missing thermal rating', async () => {
         postRequest.payload['meets-criteria'] = 'no'
         const doc = await GeneralTestHelper.getDoc(postRequest)

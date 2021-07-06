@@ -130,7 +130,7 @@ lab.experiment('Air Quality Management Area page tests:', () => {
       }
     })
 
-    lab.experiment('success', async () => {
+    lab.experiment('success', () => {
       lab.test('when Yes to AQMA and all fields completed', async () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)

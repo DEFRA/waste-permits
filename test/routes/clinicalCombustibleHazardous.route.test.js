@@ -171,7 +171,7 @@ lab.experiment('Clinical, combustible and hazardous waste page tests:', () => {
       }
     })
 
-    lab.experiment('success', async () => {
+    lab.experiment('success', () => {
       lab.test('when all selected', async () => {
         postRequest.payload.clinical = 'yes'
         postRequest.payload.combustible = 'yes'
