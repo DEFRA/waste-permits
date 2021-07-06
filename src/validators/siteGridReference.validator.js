@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 // Must be 2 letters (case insensitive) and 10 digits, e.g. AB1234567890 or ab1234567890
@@ -12,9 +12,9 @@ module.exports = class SiteGridReferenceValidator extends BaseValidator {
   get errorMessages () {
     return {
       'site-grid-reference': {
-        'any.empty': 'Enter a grid reference',
+        'string.empty': 'Enter a grid reference',
         'any.required': 'Enter a grid reference',
-        'string.regex.base': 'Make sure that the grid reference has 2 letters and 10 digits'
+        'string.pattern.base': 'Make sure that the grid reference has 2 letters and 10 digits'
       }
     }
   }

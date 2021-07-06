@@ -4,14 +4,14 @@ module.exports = class controller {
     return `
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class ${validatorName}Validator extends BaseValidator {
   get errorMessages () {
     return {
       'some-data': {
-        'any.empty': 'Enter some data',
+        'string.empty': 'Enter some data',
         'any.required': 'Enter some data',
         'custom.invalid': 'Enter some valid data'
       }

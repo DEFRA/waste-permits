@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const BaseValidator = require('./base.validator')
 
 module.exports = class StartOrOpenSavedValidator extends BaseValidator {
@@ -8,7 +8,7 @@ module.exports = class StartOrOpenSavedValidator extends BaseValidator {
     return {
       'existing-permit': {
         'any.required': 'Select a value',
-        'any.allowOnly': 'Provide a valid value'
+        'any.only': 'Provide a valid value'
       }
     }
   }

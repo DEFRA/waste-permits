@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 
 const Constants = require('../../constants')
 const BaseValidator = require('../base.validator')
@@ -18,13 +18,13 @@ module.exports = class PermitHolderContactDetailsValidator extends BaseValidator
   get errorMessages () {
     return {
       email: {
-        'any.empty': 'Enter an email address',
+        'string.empty': 'Enter an email address',
         'any.required': 'Enter an email address',
-        'string.regex.base': 'Enter a valid email address',
+        'string.pattern.base': 'Enter a valid email address',
         'string.max': `Enter a shorter email address with no more than ${Contact.email.length.max} characters`
       },
       telephone: {
-        'any.empty': 'Enter a telephone number',
+        'string.empty': 'Enter a telephone number',
         'any.required': 'Enter a telephone number',
         'custom.invalid': 'Telephone number can only include numbers, spaces and the + sign. Please remove any other characters.',
         'custom.plus-zero': 'The + sign for international numbers should be at the start of the number, followed by a number 1 to 9, not a 0',
