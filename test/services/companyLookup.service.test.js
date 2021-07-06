@@ -104,7 +104,7 @@ lab.afterEach(() => {
 })
 
 lab.experiment('Company Lookup Service tests:', () => {
-  lab.experiment('getCompany() method should', async () => {
+  lab.experiment('getCompany() method should', () => {
     lab.test('handle a company that does not exist', async () => {
       mockResponse()
       const company = await CompanyLookupService.getCompany('07421224')
@@ -154,7 +154,7 @@ lab.experiment('Company Lookup Service tests:', () => {
     })
   })
 
-  lab.experiment('getActiveDirectors() method should', async () => {
+  lab.experiment('getActiveDirectors() method should', () => {
     lab.test('handle a company that does not exist', async () => {
       mockOfficersResponse()
       const directors = await CompanyLookupService.getActiveDirectors('07421224')
@@ -180,7 +180,7 @@ lab.experiment('Company Lookup Service tests:', () => {
     })
   })
 
-  lab.experiment('_formatAddress() method should', async () => {
+  lab.experiment('_formatAddress() method should', () => {
     lab.test('handle formatting an address that does not exist', async () => {
       const formattedAddress = await CompanyLookupService._formatAddress()
       Code.expect(formattedAddress).to.be.equal('')

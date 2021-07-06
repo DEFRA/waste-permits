@@ -30,7 +30,7 @@
     "@hapi/good": "^9.0.1",
     "@hapi/good-console": "^9.0.1",
     "@hapi/good-squeeze": "^6.0.0",
-    "@hapi/lab": "^19.1.0",
+    "@hapi/lab": "^24.2.1",
     "acorn": "^8.4.1",
     "browser-sync": "^2.27.3",
     "colors": "^1.4.0",

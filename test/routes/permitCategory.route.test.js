@@ -187,7 +187,7 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
       }
     })
 
-    lab.experiment('success', async () => {
+    lab.experiment('success', () => {
       const checkSuccessRoute = async (route) => {
         postRequest.payload['chosen-category'] = mocks.standardRuleType.id
         const res = await server.inject(postRequest)

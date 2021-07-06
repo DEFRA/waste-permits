@@ -103,7 +103,7 @@ lab.experiment('Which mining waste plan will you use? page tests:', () => {
       }
     })
 
-    lab.experiment('success', async () => {
+    lab.experiment('success', () => {
       lab.test('when water based selected', async () => {
         const res = await server.inject(postRequest)
         Code.expect(res.statusCode).to.equal(302)
