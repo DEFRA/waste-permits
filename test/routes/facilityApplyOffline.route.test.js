@@ -13,43 +13,13 @@ const RecoveryService = require('../../src/services/recovery.service')
 const LoggingService = require('../../src/services/logging.service')
 const CookieService = require('../../src/services/cookie.service')
 const { COOKIE_RESULT } = require('../../src/constants')
-const ItemEntity = require('../../src/persistence/entities/item.entity')
 
 const {
-  WASTE_ACTIVITY_APPLY_OFFLINE: {
+  FACILITY_APPLY_OFFLINE: {
     pageHeading,
     path: routePath
   }
 } = require('../../src/routes')
-
-// Define activity items with various combinations of canApplyFor and canApplyOnline true/false
-const ACTIVITY_ITEMS = [
-  {
-    id: 'ITEM_1',
-    itemName: 'ITEM_1',
-    shortName: 'item-1',
-    canApplyFor: true,
-    canApplyOnline: true
-  }, {
-    id: 'ITEM_2',
-    itemName: 'ITEM_2',
-    shortName: 'item-2',
-    canApplyFor: true,
-    canApplyOnline: false
-  }, {
-    id: 'ITEM_3',
-    itemName: 'ITEM_3',
-    shortName: 'item-3',
-    canApplyFor: false,
-    canApplyOnline: true
-  }, {
-    id: 'ITEM_4',
-    itemName: 'ITEM_4',
-    shortName: 'item-4',
-    canApplyFor: false,
-    canApplyOnline: false
-  }
-]
 
 let sandbox
 let mocks
@@ -57,16 +27,12 @@ let mocks
 lab.beforeEach(() => {
   mocks = new Mocks()
 
-  // Add all 4 waste activities to the task determinants
-  mocks.taskDeterminants.wasteActivities = ['item-1', 'item-2', 'item-3', 'item-4']
-
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
 
   // Stub methods
   sandbox.stub(CookieService, 'validateCookie').value(() => COOKIE_RESULT.VALID_COOKIE)
   sandbox.stub(Application.prototype, 'isSubmitted').value(() => false)
-  sandbox.stub(ItemEntity, 'listWasteActivitiesForFacilityTypes').value(() => ACTIVITY_ITEMS)
   sandbox.stub(RecoveryService, 'createApplicationContext').value(() => mocks.recovery)
 })
 
@@ -75,7 +41,7 @@ lab.afterEach(() => {
   sandbox.restore()
 })
 
-lab.experiment('Waste Activity Apply Offline tests', () => {
+lab.experiment('Waste Assessment Apply Offline tests', () => {
   new GeneralTestHelper({ lab, routePath }).test({
     excludeCookiePostTests: true
   })
@@ -119,7 +85,7 @@ lab.experiment('Waste Activity Apply Offline tests', () => {
     })
 
     lab.experiment('checks', () => {
-      lab.test('correctly displays names of permits that can\'t be applied for', async () => {
+      lab.test('correctly displays empty list of permits', async () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
 
         const values = Object
@@ -127,7 +93,7 @@ lab.experiment('Waste Activity Apply Offline tests', () => {
           .filter(({ firstChild }) => firstChild && firstChild.nodeValue)
           .map(({ firstChild }) => firstChild.nodeValue)
 
-        Code.expect(values).to.only.include(['ITEM_2', 'ITEM_3', 'ITEM_4'])
+        Code.expect(values).to.be.empty()
       })
     })
   })
