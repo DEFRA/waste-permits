@@ -15,6 +15,14 @@ $path: "/public/images/";
 @import 'patterns/task-list';
 @import 'patterns/cost-time';
 
+// Enable govuk-frontend compatibility mode. This will style it correctly when used alongside older frontend toolkits
+$govuk-compatibility-govukelements: true;
+$govuk-compatibility-govukfrontendtoolkit: true;
+
+// Import the govuk-frontend files. We need to specify the assets path as it defaults to /assets/
+$govuk-assets-path: '/public/';
+@import 'govuk_modules/govuk-frontend/all';
+
 .no-js {
   display: none;
 }
