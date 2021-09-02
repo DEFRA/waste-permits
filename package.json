@@ -90,7 +90,7 @@
     "https-proxy-agent": "^3.0.1",
     "joi": "^17.4.0",
     "moment": "^2.29.1",
-    "object-path": "^0.11.5",
+    "object-path": "^0.11.6",
     "path": "^0.12.7",
     "pdfmake": "^0.1.72",
     "request-promise": "^4.2.6"
