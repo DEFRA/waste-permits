@@ -135,7 +135,7 @@ lab.experiment('Check your answers before sending your application page tests:',
 
       Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Check your answers')
       Code.expect(doc.getElementById('submit-button').firstChild.nodeValue).to.equal('Confirm and continue')
-      Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('/information/privacy')
+      Code.expect(doc.getElementById('privacy-link').getAttribute('href')).to.equal('https://www.gov.uk/guidance/environmental-permits-privacy-notice')
 
       // Test for the existence of expected static content
       GeneralTestHelper.checkElementsExist(doc, [

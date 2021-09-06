@@ -196,7 +196,7 @@ module.exports = class GeneralTestHelper {
 
           const element = doc.getElementById('footer-privacy-link')
           Code.expect(element).to.exist()
-          Code.expect(element.getAttribute('href')).to.equal('/information/privacy')
+          Code.expect(element.getAttribute('href')).to.equal('https://www.gov.uk/guidance/environmental-permits-privacy-notice')
         })
       }
     })

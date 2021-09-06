@@ -1391,15 +1391,6 @@ const Routes = {
     nextRoute: 'TASK_LIST',
     types: 'GET, POST'
   },
-  PRIVACY: {
-    path: '/information/privacy',
-    view: 'privacy',
-    pageHeading: 'Privacy: how we use your personal information',
-    controller: 'staticPage',
-    types: 'GET',
-    cookieValidationRequired: false,
-    applicationRequired: false
-  },
   SAVE_AND_RETURN_SENT_CHECK: {
     path: '/save-return/email-sent-check',
     view: 'saveAndReturn/emailSent',
