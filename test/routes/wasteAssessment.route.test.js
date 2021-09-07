@@ -212,6 +212,24 @@ lab.experiment('Waste assessments', () => {
       Code.expect(res.headers.location).to.equal(nextPath)
     })
 
+    lab.test('POST with multiple waste assessments also redirects to next route', async () => {
+      postRequest.payload.assessment = ['ass-1', 'ass-3']
+      const res = await server.inject(postRequest)
+      Code.expect(saveSpy.called).to.be.true()
+      Code.expect(dataStoreSaveSpy.called).to.be.true()
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers.location).to.equal(nextPath)
+    })
+
+    lab.test('POST with old-style concatenated waste assessments still redirects to next route', async () => {
+      postRequest.payload.assessment = 'ass-1,ass-3'
+      const res = await server.inject(postRequest)
+      Code.expect(saveSpy.called).to.be.true()
+      Code.expect(dataStoreSaveSpy.called).to.be.true()
+      Code.expect(res.statusCode).to.equal(302)
+      Code.expect(res.headers.location).to.equal(nextPath)
+    })
+
     lab.test('POST for waste assessment that cannot be applied for online shows apply offline page', async () => {
       postRequest.payload = { assessment: 'ass-2' }
       mocks.taskDeterminants.wasteAssessments = [mocks.taskDeterminants.allAssessments[1]]
