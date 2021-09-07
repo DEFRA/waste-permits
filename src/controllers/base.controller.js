@@ -230,4 +230,21 @@ module.exports = class BaseController {
         }
     }
   }
+
+  static getMultivalueFormValueAsArray (valueFromPayload) {
+    if (!valueFromPayload) {
+      return []
+    }
+    // Older versions of the framework concatenate multiple values into a comma-separated string
+    if (typeof valueFromPayload === 'string') {
+      return valueFromPayload.split(',', 50) // Limit of 50 to guard against rogue values
+    }
+    // Newer versions already provide them as an array
+    if (Array.isArray(valueFromPayload)) {
+      return valueFromPayload
+    }
+    // Anything else that has already been processed into a different data type will just be treated
+    // as a single array entry
+    return [valueFromPayload]
+  }
 }

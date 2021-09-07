@@ -59,7 +59,7 @@ module.exports = class WasteAssessmentController extends BaseController {
 
     const { assessment: assessments } = request.payload
 
-    const wasteAssessments = assessments ? assessments.split(',') : []
+    const wasteAssessments = BaseController.getMultivalueFormValueAsArray(assessments)
     await taskDeterminants.save({ wasteAssessments })
 
     await DataStore.save(context, { alreadyConfirmedWasteAssessments: true })

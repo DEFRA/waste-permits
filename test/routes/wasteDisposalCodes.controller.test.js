@@ -83,11 +83,12 @@ lab.experiment('Waste disposal codes controller tests:', () => {
   })
 
   lab.experiment('POST:', () => {
-    const postRequest = { params: { activityIndex: 0 }, payload: { code: 'd01,d02' } }
+    let postRequest
     let redirectSpy
     let setSpy
     let saveSpy
     lab.beforeEach(() => {
+      postRequest = { params: { activityIndex: 0 }, payload: { code: ['d01', 'd02'] } }
       redirectSpy = sandbox.stub(Controller.prototype, 'redirect')
       setSpy = sandbox.stub(WasteDisposalAndRecoveryCodes.prototype, 'setWasteDisposalCodes')
       saveSpy = sandbox.stub(WasteDisposalAndRecoveryCodes.prototype, 'save')
@@ -95,6 +96,14 @@ lab.experiment('Waste disposal codes controller tests:', () => {
     })
 
     lab.test('POST sets the selected codes and saves', async () => {
+      await controller.doPost(postRequest)
+      Code.expect(setSpy.called).to.be.true()
+      Code.expect(setSpy.args[0][0]).to.equal(['d01', 'd02'])
+      Code.expect(saveSpy.called).to.be.true()
+    })
+
+    lab.test('POST still works with old-style concatenated values', async () => {
+      postRequest.payload.code = 'd01,d02'
       await controller.doPost(postRequest)
       Code.expect(setSpy.called).to.be.true()
       Code.expect(setSpy.args[0][0]).to.equal(['d01', 'd02'])

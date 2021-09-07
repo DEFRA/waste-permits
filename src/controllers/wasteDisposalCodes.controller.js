@@ -36,7 +36,7 @@ module.exports = class WasteDisposalCodesController extends BaseController {
     const context = await RecoveryService.createApplicationContext(h)
     const wasteDisposalAndRecoveryCodes = await getModelForProvidedActivityIndex(context, request)
 
-    const selectedWasteDisposalCodes = request.payload.code ? request.payload.code.split(',', 50) : []
+    const selectedWasteDisposalCodes = BaseController.getMultivalueFormValueAsArray(request.payload.code)
 
     wasteDisposalAndRecoveryCodes.setWasteDisposalCodes(selectedWasteDisposalCodes)
     await wasteDisposalAndRecoveryCodes.save(context)
