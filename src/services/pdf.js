@@ -94,7 +94,7 @@ const createPdfDocDefinition = (sections, application) => {
       keywords: 'environmental permit, environment agency, application',
       creator: 'Environment Agency',
       producer: 'GOV.UK',
-      creationDate: timestamp.format('DD/MM/YYYY')
+      creationDate: timestamp.toDate()
     },
     content: [
       { text: title, style: 'h1' },

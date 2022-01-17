@@ -90,7 +90,7 @@
     "moment": "^2.29.1",
     "object-path": "^0.11.8",
     "path": "^0.12.7",
-    "pdfmake": "^0.1.72",
+    "pdfmake": "^0.2.4",
     "request-promise": "^4.2.6"
   },
   "standard": {
