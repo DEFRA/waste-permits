@@ -85,7 +85,7 @@
     "hapi-dev-errors": "^4.0.0",
     "hapi-robots": "^3.2.2",
     "hapi-router": "^5.1.0",
-    "hapi-sanitize-payload": "^2.3.0",
+    "hapi-sanitize-payload": "^3.0.0",
     "https-proxy-agent": "^3.0.1",
     "joi": "^17.5.0",
     "moment": "^2.29.1",
