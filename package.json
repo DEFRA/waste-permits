@@ -49,7 +49,6 @@
     "gulp-standard": "^14.0.0",
     "gulp-terser": "^2.1.0",
     "gulp-watch": "^5.0.1",
-    "htmlhint": "^0.15.2",
     "inquirer": "^8.2.0",
     "nock": "^13.2.2",
     "run-sequence": "^2.2.1",
