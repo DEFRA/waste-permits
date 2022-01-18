@@ -5,11 +5,9 @@ const lab = exports.lab = Lab.script()
 const Code = require('@hapi/code')
 const sinon = require('sinon')
 
-const AdalNode = require('adal-node')
+const msalNode = require('@azure/msal-node')
 const ActiveDirectoryAuthService = require('../../src/services/activeDirectoryAuth.service')
 const config = require('../../src/config/config')
-
-let AuthenticationContext
 
 let sandbox
 let fakeConfig
@@ -32,22 +30,34 @@ lab.beforeEach(() => {
     resource: 'RESOURCE'
   }
 
-  AuthenticationContext = class {
-    constructor (authorityUrl) {
-      Code.expect(authorityUrl).to.equal(`https://${fakeConfig.host}/${fakeConfig.tenant}`)
+  const ConfidentialClientApplication = class {
+    constructor (configuration) {
+      Code.expect(configuration).to.exist()
+      Code.expect(configuration.auth).to.exist()
+      Code.expect(configuration.auth).to.equal({
+        clientId: fakeConfig.clientId,
+        clientSecret: fakeConfig.clientSecret,
+        authority: `https://${fakeConfig.host}/${fakeConfig.tenant}`
+      })
     }
 
-    async acquireTokenWithClientCredentials (resource, clientId, clientSecret, callback) {
-      Code.expect(resource).to.equal(fakeConfig.resource)
-      Code.expect(clientId).to.equal(fakeConfig.clientId)
-      Code.expect(clientSecret).to.equal(fakeConfig.clientSecret)
-      return callback(err, tokenResponse)
+    async acquireTokenByClientCredential (request) {
+      Code.expect(request).to.exist()
+      Code.expect(request.scopes).to.exist()
+      Code.expect(request.scopes[0]).to.exist()
+      Code.expect(request.scopes[0]).to.equal(`${fakeConfig.resource}/.default`)
+
+      if (err) {
+        throw err
+      } else {
+        return tokenResponse
+      }
     }
   }
 
   // Create a sinon sandbox to stub methods
   sandbox = sinon.createSandbox()
-  sandbox.stub(AdalNode, 'AuthenticationContext').value(AuthenticationContext)
+  sandbox.stub(msalNode, 'ConfidentialClientApplication').value(ConfidentialClientApplication)
   sandbox.stub(config, 'azureAuthHost').value(fakeConfig.host)
   sandbox.stub(config, 'azureAuthTenant').value(fakeConfig.tenant)
   sandbox.stub(config, 'serverToServerClientId').value(fakeConfig.clientId)
@@ -65,13 +75,13 @@ lab.experiment('Active Directory Auth Service tests:', () => {
     lab.beforeEach(() => {
     })
 
-    lab.test('should return the correct authentication token', async () => {
+    lab.test('returns the correct authentication token', async () => {
       const authService = new ActiveDirectoryAuthService()
       const authToken = await authService.getToken()
       Code.expect(authToken).to.equal(fakeAccessToken)
     })
 
-    lab.test('should fail to return authentication token', async () => {
+    lab.test('reports error if the token lookup fails', async () => {
       const authService = new ActiveDirectoryAuthService()
       err = new Error('Failed')
       let msg
@@ -81,7 +91,7 @@ lab.experiment('Active Directory Auth Service tests:', () => {
       Code.expect(msg).to.equal('Failed')
     })
 
-    lab.test('should return invalid authentication token', async () => {
+    lab.test('reports error if token lookup does not return a token', async () => {
       const authService = new ActiveDirectoryAuthService()
       tokenResponse = { broken: true }
       let msg
