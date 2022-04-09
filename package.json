@@ -89,7 +89,7 @@
     "hapi-sanitize-payload": "^2.0.0",
     "https-proxy-agent": "^3.0.1",
     "joi": "^17.4.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "object-path": "^0.11.5",
     "path": "^0.12.7",
     "pdfmake": "^0.1.72",
