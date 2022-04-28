@@ -70,7 +70,7 @@
     "blankie": "^5.0.0",
     "blipp": "^4.0.2",
     "clamscan": "^1.4.2",
-    "cross-fetch": "^3.1.4",
+    "cross-fetch": "^3.1.5",
     "dateformat": "^4.5.1",
     "deepmerge": "^4.2.2",
     "del": "^6.0.0",
