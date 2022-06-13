@@ -136,6 +136,7 @@ gulp.task('sass', () => {
     .pipe(sourcemaps.init())
     .pipe(sass({
       outputStyle: 'compressed',
+      quietDeps: true,
       includePaths: [
         paths.govukModules + 'govuk_frontend_toolkit/stylesheets',
         paths.govukModules + 'govuk_template_mustache/assets/stylesheets',
