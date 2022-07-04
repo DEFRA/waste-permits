@@ -36,6 +36,10 @@ module.exports = class PermitCategoryController extends BaseController {
       categories = categories.filter(({ categoryName }) => !PermitCategoryController.isMcpCategory(categoryName))
     }
 
+    // Anaerobic standard rules are no longer available so they will not be displayed as an option to be selected
+    // for new applications. They still exist in the underlying entity for any existing applications.
+    categories = categories.filter(({ categoryName }) => categoryName !== 'anaerobic')
+
     pageContext.categories = categories
 
     pageContext.formValues = request.payload
