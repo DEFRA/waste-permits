@@ -120,25 +120,33 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
             categoryName: 'mcpd-mcp',
             category: 'MCP',
             hint: ''
+          },
+          {
+            id: 'category-5',
+            categoryName: 'anaerobic',
+            category: 'Anaerobic',
+            hint: ''
           }
         ]
 
         StandardRuleType.getCategories = () => categories
       })
 
-      lab.test('should include categories ', async () => {
+      lab.test('should include non-anaerobic categories ', async () => {
         const doc = await GeneralTestHelper.getDoc(getRequest)
-        checkCommonElements(doc)
+        await checkCommonElements(doc)
 
         categories.forEach(({ id, categoryName, category, hint }) => {
-          const prefix = `chosen-category-${categoryName}`
-          Code.expect(doc.getElementById(`${prefix}-input`).getAttribute('value')).to.equal(id)
-          Code.expect(doc.getElementById(`${prefix}-label`)).to.exist()
-          Code.expect(doc.getElementById(`${prefix}-category`).firstChild.nodeValue.trim()).to.equal(category)
-          if (hint) {
-            Code.expect(doc.getElementById(`${prefix}-hint`).firstChild.nodeValue.trim()).to.equal(hint)
-          } else {
-            Code.expect(doc.getElementById(`${prefix}-hint`)).to.not.exist()
+          if (categoryName !== 'anaerobic') {
+            const prefix = `chosen-category-${categoryName}`
+            Code.expect(doc.getElementById(`${prefix}-input`).getAttribute('value')).to.equal(id)
+            Code.expect(doc.getElementById(`${prefix}-label`)).to.exist()
+            Code.expect(doc.getElementById(`${prefix}-category`).firstChild.nodeValue.trim()).to.equal(category)
+            if (hint) {
+              Code.expect(doc.getElementById(`${prefix}-hint`).firstChild.nodeValue.trim()).to.equal(hint)
+            } else {
+              Code.expect(doc.getElementById(`${prefix}-hint`)).to.not.exist()
+            }
           }
         })
       })
@@ -147,6 +155,11 @@ lab.experiment('What do you want the permit for? (permit category) page tests:',
         mcpFeatureStub.callsFake(() => false)
         const doc = await GeneralTestHelper.getDoc(getRequest)
         Code.expect(doc.getElementById('chosen-category-mcpd-mcp-input')).to.not.exist()
+      })
+
+      lab.test('should exclude Anaerobic category ', async () => {
+        const doc = await GeneralTestHelper.getDoc(getRequest)
+        Code.expect(doc.getElementById('chosen-category-anaerobic-input')).to.not.exist()
       })
     })
 
