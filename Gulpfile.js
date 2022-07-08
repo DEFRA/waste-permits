@@ -222,6 +222,7 @@ gulp.task('nodemon', (done) => {
 
   return nodemon({
     script: 'server.js',
+    watch: ['src', 'server.js'],
     ext: 'js html'
   }).once('start', () => {
     // To avoid nodemon being started multiple times
