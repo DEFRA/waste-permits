@@ -33,7 +33,7 @@ lab.experiment('Accessibility page tests:', () => {
     excludeAlreadySubmittedTest: true
   })
 
-  lab.test(`GET ${routePath} success`, async () => {
+  lab.test(`GET ${routePath} success, contains legally required text`, async () => {
     const request = {
       method: 'GET',
       url: routePath,
@@ -43,6 +43,10 @@ lab.experiment('Accessibility page tests:', () => {
 
     const doc = await GeneralTestHelper.getDoc(request)
     Code.expect(doc.getElementById('accessibility-statement-page')).to.exist()
-    Code.expect(doc.getElementById('page-heading').firstChild.nodeValue).to.equal('Accessibility statement')
+    Code.expect(doc.getElementById('technical-information-text')).to.exist()
+    Code.expect(doc.getElementById('compliance-status-text')).to.exist()
+    Code.expect(doc.getElementById('preparation-status-text')).to.exist()
+    Code.expect(doc.getElementById('preparation-testing-text')).to.exist()
+    Code.expect(doc.getElementById('preparation-sampling-text')).to.exist()
   })
 })
