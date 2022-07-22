@@ -705,7 +705,7 @@ const Routes = {
   ACCESSIBILITY: {
     path: '/information/accessibility',
     view: 'accessibility',
-    pageHeading: 'Accessibility statement',
+    pageHeading: 'Accessibility statement for the apply for an environmental permit service',
     controller: 'accessibility',
     types: 'GET',
     cookieValidationRequired: false,
