@@ -3,7 +3,9 @@ const {
   tasks: {
     WASTE_WEIGHTS: { shortName: wasteWeightsShortName },
     WASTE_TREATMENT_CAPACITY: { shortName: wasteTreatmentCapacityShortName },
-    CLIMATE_CHANGE_RISK_SCREENING: { shortName: climateChangeRiskScreeningShortName },
+    // Climate change risk screening has been moved from the permitting to the compliance
+    // business process so the task is no longer required during the application process.
+    // CLIMATE_CHANGE_RISK_SCREENING: { shortName: climateChangeRiskScreeningShortName },
     CLINICAL_WASTE_APPENDIX: { shortName: clinicalWasteShortName },
     MANAGE_HAZARDOUS_WASTE: { shortName: hazardousWasteShortName },
     PRE_APPLICATION_REFERENCE: { shortName: preApplicationShortName }
@@ -42,7 +44,10 @@ module.exports = class BespokeTaskList extends BaseTaskList {
     // Add pre-application reference number to the tasklist if applicant has stated they received advice
     if (receivedPreApplicationAdvice) { taskNames.push(preApplicationShortName) }
 
-    taskNames.push(climateChangeRiskScreeningShortName)
+    // Climate change risk screening has been moved from the permitting to the compliance
+    // business process so the task is no longer required during the application process.
+    // taskNames.push(climateChangeRiskScreeningShortName)
+
     taskNames.push(wasteWeightsShortName)
     taskNames.push(wasteTreatmentCapacityShortName)
 
