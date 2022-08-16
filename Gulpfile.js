@@ -136,6 +136,7 @@ gulp.task('sass', () => {
     .pipe(sourcemaps.init())
     .pipe(sass({
       outputStyle: 'compressed',
+      quietDeps: true,
       includePaths: [
         paths.govukModules + 'govuk_frontend_toolkit/stylesheets',
         paths.govukModules + 'govuk_template_mustache/assets/stylesheets',
@@ -221,6 +222,7 @@ gulp.task('nodemon', (done) => {
 
   return nodemon({
     script: 'server.js',
+    watch: ['src', 'server.js'],
     ext: 'js html'
   }).once('start', () => {
     // To avoid nodemon being started multiple times

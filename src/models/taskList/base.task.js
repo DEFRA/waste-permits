@@ -1,6 +1,5 @@
 'use strict'
 
-const dateformat = require('dateformat')
 const LoggingService = require('../../services/logging.service')
 const DataStore = require('../dataStore.model')
 
@@ -21,7 +20,8 @@ module.exports = class BaseTask {
   }
 
   static async updateCompleteness (...args) {
-    await this._updateCompleteness(...args, dateformat(Date.now(), 'yyyy-mm-dd'))
+    const dateStamp = new Date().toISOString().split('T')[0]
+    await this._updateCompleteness(...args, dateStamp)
   }
 
   static async clearCompleteness (...args) {

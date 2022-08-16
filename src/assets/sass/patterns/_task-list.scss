@@ -1,5 +1,8 @@
 // Task list pattern
 
+// Use math library for division
+@use "sass:math";
+
 // Override column width for tablet and up
 .column-minimum {
   @include media(tablet) {
@@ -22,12 +25,12 @@ $task-list-indent: 35px;
   display: table;
 
   @include bold-24;
-  padding-bottom: ($gutter / 6);
+  padding-bottom: math.div($gutter, 6);
 }
 
 .task-list-section-number {
   display: table-cell;
-  padding-right: ($gutter / 6);
+  padding-right: math.div($gutter, 6);
 
   @include media(tablet) {
     min-width: $task-list-indent;

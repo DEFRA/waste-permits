@@ -17,7 +17,7 @@ module.exports = class VirusScan {
     const clamscan = await new NodeClam().init(config)
 
     // Scan the file
-    const { file, is_infected: isInfected, viruses } = await clamscan.is_infected(path)
+    const { file, isInfected, viruses } = await clamscan.isInfected(path)
 
     // If `is_infected` is TRUE, file is a virus!
     if (isInfected === false) {
