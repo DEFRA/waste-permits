@@ -5,7 +5,7 @@ const BaseController = require('./base.controller')
 const featureConfig = require('../config/featureConfig')
 const RecoveryService = require('../services/recovery.service')
 const { BUSINESS_TRACKS, FACILITY_TYPES, FACILITY_TYPES: { MCP, WASTE_OPERATION }, REGIMES } = require('../dynamics')
-const { FACILITY_APPLY_OFFLINE, MCP_TYPE, WASTE_ACTIVITY } = require('../routes')
+const { FACILITY_APPLY_OFFLINE, MCP_APPLY_OFFLINE, WASTE_ACTIVITY } = require('../routes')
 
 module.exports = class FacilityTypeController extends BaseController {
   async setRegimeAndBusinessTrack ({ context, regime, businessTrack }) {
@@ -40,7 +40,7 @@ module.exports = class FacilityTypeController extends BaseController {
           regime: REGIMES.MCP.dynamicsGuid,
           businessTrack: BUSINESS_TRACKS.MCP_BESPOKE.dynamicsGuid
         })
-        return this.redirect({ h, route: MCP_TYPE })
+        return this.redirect({ h, route: MCP_APPLY_OFFLINE })
 
       case WASTE_OPERATION.id:
         // Todo: Remove this redirect when Bespoke is live
