@@ -19,7 +19,7 @@ const { BUSINESS_TRACKS, REGIMES } = require('../../src/dynamics')
 const routePath = '/facility-type'
 const nextRoutePath = '/select/bespoke'
 const applyOfflinePath = '/facility-type/apply-offline'
-const mcpPath = '/mcp-type'
+const mcpPath = '/facility-type/mcp-apply-offline'
 const wastePath = '/waste-activity'
 
 let mocks

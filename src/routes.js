@@ -1162,6 +1162,16 @@ const Routes = {
       fileTypes: [PDF, DOC, DOCX, ODT]
     }
   },
+  MCP_APPLY_OFFLINE: {
+    path: '/facility-type/mcp-apply-offline',
+    view: 'mcpApplyOffline',
+    pageHeading: 'Apply for your permit offline.',
+    pageDescription: 'You cannot apply for that type of facility online. We hope to add them soon.',
+    controller: 'staticPage',
+    nextRoute: 'FACILITY_TYPE',
+    types: 'GET',
+    cookieValidationRequired: true
+  },
   MCP_BUSINESS_ACTIVITY: {
     path: '/mcp/business-activity',
     view: 'mcpBusinessActivity',
