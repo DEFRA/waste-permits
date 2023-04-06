@@ -32,7 +32,7 @@
     "@hapi/good-squeeze": "^6.0.0",
     "@hapi/lab": "^24.7.1",
     "acorn": "^8.7.1",
-    "browser-sync": "^2.27.10",
+    "browser-sync": "^2.29.1",
     "colors": "^1.4.0",
     "eslint": "^6.8.0",
     "fs-extra": "^10.1.0",
